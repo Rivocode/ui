@@ -1,5 +1,6 @@
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentPropsWithoutRef, Ref } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, Ref } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -30,6 +31,11 @@ export const buttonVariants = cva(
         // Quadrado, para botao que so tem icone. Tabela vive cheio deles, e
         // botao de icone com padding de texto fica torto.
         icon: "size-[var(--rc-control-md)] p-0",
+        // Chamada para acao de marketing: maior e em negrito, com medida
+        // propria em vez de altura de controle. Botao de landing e botao de
+        // formulario tem trabalhos diferentes, e forcar um no outro estraga
+        // os dois.
+        cta: "px-6.5 py-3.75 text-[15.5px] font-bold",
         iconSm: "size-[var(--rc-control-sm)] p-0",
       },
       shape: {
@@ -45,6 +51,13 @@ export type ButtonProps = ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & {
     /** Desabilita e anuncia ocupado enquanto uma acao esta em andamento. */
     loading?: boolean;
+    /**
+     * Troca o elemento renderizado mantendo a aparencia. Use para link:
+     * `<Button render={<a href="..." />}>`. Sem isto, todo link que parece
+     * botao vira uma string de classe copiada, que e o problema que este
+     * componente existe para resolver.
+     */
+    render?: ReactElement;
     ref?: Ref<HTMLButtonElement>;
   };
 
@@ -60,15 +73,11 @@ export function Button({
   loading = false,
   disabled,
   children,
+  render,
   ...props
 }: ButtonProps) {
-  return (
-    <button
-      {...props}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      className={cn(buttonVariants({ variant, size, shape }), className)}
-    >
+  const conteudo = (
+    <>
       {loading && (
         <span
           aria-hidden="true"
@@ -79,6 +88,17 @@ export function Button({
         />
       )}
       {children}
-    </button>
+    </>
   );
+
+  return useRender({
+    render: render ?? <button />,
+    props: {
+      ...props,
+      ...(render ? {} : { disabled: disabled || loading }),
+      "aria-busy": loading || undefined,
+      className: cn(buttonVariants({ variant, size, shape }), className),
+      children: conteudo,
+    },
+  });
 }

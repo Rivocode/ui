@@ -95,23 +95,23 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catalogo
 
-| Peca | Para que serve |
-|---|---|
-| `Button` | quatro variantes, tres tamanhos, forma em pilula e tamanho de icone |
-| `Card` | superficie com cabecalho, corpo, rodape e duas elevacoes |
-| `Badge` | selo de estado, seis tons |
-| `Field`, `Input` | campo com rotulo, ajuda e erro ligados por acessibilidade |
-| `Dialog` | janela modal, em portal |
-| `Table` | tabela semantica, com selecao de linha |
-| `Checkbox` | caixa de marcar, com o estado misto do "selecionar todos" |
-| `Tabs` | abas com risco deslizante |
-| `Select` | escolha unica, em portal |
-| `Menu` | menu de acoes, com grupos e item destrutivo |
-| `Tooltip` | dica, para botao que so tem icone |
-| `Toast` | aviso que passa, via `useToast()` |
-| `Alert` | aviso que fica, com o papel certo de leitor de tela por tom |
-| `Skeleton` | marca de lugar enquanto o dado nao chegou |
-| `EmptyState` | estado vazio, com descricao e saida obrigatorias |
+| Peca             | Para que serve                                                      |
+| ---------------- | ------------------------------------------------------------------- |
+| `Button`         | quatro variantes, tres tamanhos, forma em pilula e tamanho de icone |
+| `Card`           | superficie com cabecalho, corpo, rodape e duas elevacoes            |
+| `Badge`          | selo de estado, seis tons                                           |
+| `Field`, `Input` | campo com rotulo, ajuda e erro ligados por acessibilidade           |
+| `Dialog`         | janela modal, em portal                                             |
+| `Table`          | tabela semantica, com selecao de linha                              |
+| `Checkbox`       | caixa de marcar, com o estado misto do "selecionar todos"           |
+| `Tabs`           | abas com risco deslizante                                           |
+| `Select`         | escolha unica, em portal                                            |
+| `Menu`           | menu de acoes, com grupos e item destrutivo                         |
+| `Tooltip`        | dica, para botao que so tem icone                                   |
+| `Toast`          | aviso que passa, via `useToast()`                                   |
+| `Alert`          | aviso que fica, com o papel certo de leitor de tela por tom         |
+| `Skeleton`       | marca de lugar enquanto o dado nao chegou                           |
+| `EmptyState`     | estado vazio, com descricao e saida obrigatorias                    |
 
 Tres coisas que a biblioteca resolve por voce e que costumam dar trabalho:
 

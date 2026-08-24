@@ -74,3 +74,22 @@ test("o tamanho de icone e quadrado, para o botao de acao da tabela", () => {
   expect(classes).toContain("size-[var(--rc-control-md)]");
   expect(classes).toContain("p-0");
 });
+
+test("o botao sabe virar link, porque metade dos botoes de um site e link", () => {
+  render(
+    <Button render={<a href="https://wa.me/55" />} shape="pill">
+      Falar no WhatsApp
+    </Button>,
+  );
+  const link = screen.getByRole("link", { name: "Falar no WhatsApp" });
+  expect(link.tagName).toBe("A");
+  expect(link.getAttribute("href")).toBe("https://wa.me/55");
+  expect(link.className).toContain("rounded-pill");
+});
+
+test("o tamanho de chamada tem o peso de marketing, nao o de formulario", () => {
+  render(<Button size="cta">Quero um diagnostico</Button>);
+  const classes = screen.getByRole("button").className;
+  expect(classes).toContain("font-bold");
+  expect(classes).not.toContain("--rc-control-md");
+});
