@@ -1,7 +1,27 @@
 import { createRoot } from "react-dom/client";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Line, LineChart, Pie, PieChart, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-import { Card, CardContent, CardHeader, CardTitle, RivoProvider, type RivoTheme } from "../src/index";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  RivoProvider,
+  type RivoTheme,
+} from "../src/index";
 import {
   ChartContainer,
   ChartLegend,
@@ -71,8 +91,20 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 <YAxis tickLine={false} axisLine={false} />
                 <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
                 <ChartLegend content={<ChartLegendContent config={NOTAS} />} />
-                <Line dataKey="emitidas" stroke="var(--color-emitidas)" strokeWidth={2} dot={false} {...movimento} />
-                <Line dataKey="pagas" stroke="var(--color-pagas)" strokeWidth={2} dot={false} {...movimento} />
+                <Line
+                  dataKey="emitidas"
+                  stroke="var(--color-emitidas)"
+                  strokeWidth={2}
+                  dot={false}
+                  {...movimento}
+                />
+                <Line
+                  dataKey="pagas"
+                  stroke="var(--color-pagas)"
+                  strokeWidth={2}
+                  dot={false}
+                  {...movimento}
+                />
               </LineChart>
             </ChartContainer>
           </CardContent>
@@ -97,8 +129,20 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                   }
                 />
                 <ChartLegend content={<ChartLegendContent config={RECEITA} />} />
-                <Bar dataKey="servico" stackId="a" fill="var(--color-servico)" radius={[0, 0, 4, 4]} {...movimento} />
-                <Bar dataKey="produto" stackId="a" fill="var(--color-produto)" radius={[4, 4, 0, 0]} {...movimento} />
+                <Bar
+                  dataKey="servico"
+                  stackId="a"
+                  fill="var(--color-servico)"
+                  radius={[0, 0, 4, 4]}
+                  {...movimento}
+                />
+                <Bar
+                  dataKey="produto"
+                  stackId="a"
+                  fill="var(--color-produto)"
+                  radius={[4, 4, 0, 0]}
+                  {...movimento}
+                />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -138,7 +182,14 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             <ChartContainer config={SITUACOES} className="h-56">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent config={SITUACOES} hideIndicator />} />
-                <Pie data={SITUACAO} dataKey="valor" nameKey="nome" innerRadius={48} strokeWidth={0} {...movimento}>
+                <Pie
+                  data={SITUACAO}
+                  dataKey="valor"
+                  nameKey="nome"
+                  innerRadius={48}
+                  strokeWidth={0}
+                  {...movimento}
+                >
                   {SITUACAO.map((fatia) => (
                     <Cell key={fatia.nome} fill={`var(--color-${fatia.nome})`} />
                   ))}

@@ -20,11 +20,7 @@ export type ChartLegendContentProps = {
  * fatias dividem o mesmo `dataKey` (`valor`), e quem separa uma da outra e o
  * `name`. Olhar so o `dataKey` faz a pizza inteira cair no mesmo nome.
  */
-function chaveDaSerie(
-  dataKey: unknown,
-  value: unknown,
-  config: ChartConfig | undefined,
-): string {
+function chaveDaSerie(dataKey: unknown, value: unknown, config: ChartConfig | undefined): string {
   const candidatos = [dataKey, value].filter((x) => x != null).map(String);
   return candidatos.find((candidato) => config?.[candidato]) ?? candidatos[0] ?? "";
 }

@@ -66,6 +66,7 @@ export function App() {
 | `theme`   | `rivocode-dark`, `rivocode-light`, `system` | `system` segue a preferência do sistema operacional                |
 | `density` | `comfortable`, `compact`                    | `compact` encolhe a altura de todo controle, para tela de operação |
 | `scope`   | `global`, `local`                           | `global` veste a página inteira. `local` veste só esta árvore      |
+| `dir`     | `ltr`, `rtl`                                | em `rtl` a Base UI espelha o que depende de lado                   |
 
 Use `scope="local"` quando o design system entra num projeto que já existe e não
 pode vazar estilo para o resto da página. Nesse modo o Provider também cria um
@@ -95,15 +96,16 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-Quarenta e uma peças. A tabela diz para que cada uma serve, e a diferença entre
-as que se parecem.
+Cinquenta e cinco peças. A tabela diz para que cada uma serve, e a diferença
+entre as que se parecem — que é a parte que costuma faltar.
 
 ### Ação
 
-| Peça                    | Para que serve                                                     |
-| ----------------------- | ------------------------------------------------------------------ |
-| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone |
-| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro     |
+| Peça                    | Para que serve                                                       |
+| ----------------------- | -------------------------------------------------------------------- |
+| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone   |
+| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro       |
+| `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
 
 ### Campo
 
@@ -161,12 +163,19 @@ as que se parecem.
 | `Alert`      | aviso que fica, com o papel de leitor de tela certo por tom |
 | `Skeleton`   | marca de lugar enquanto o dado não chegou                   |
 | `Spinner`    | espera sem fim previsto                                     |
-| `Progress`   | espera com fim conhecido                                    |
+| `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |
+| `Meter`      | capacidade em uso, que **sobe e desce**: cota, limite       |
 | `EmptyState` | estado vazio, com descrição e saída obrigatórias            |
 
 ### Estrutura
 
-`Card`, `Separator`, `Accordion`, `RivoProvider`.
+`Card`, `Separator`, `RivoProvider`, mais:
+
+| Peça          | Para que serve                                                         |
+| ------------- | ---------------------------------------------------------------------- |
+| `Accordion`   | seções que se fecham entre si                                          |
+| `Collapsible` | um bloco só, sem moldura e sem coordenação entre irmãos                |
+| `ScrollArea`  | barra de rolagem própria, para quando a do sistema atrapalha o desenho |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 

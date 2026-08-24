@@ -50,7 +50,12 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <Bloco titulo="Numero com passo">
             <Field>
               <FieldLabel>Parcelas</FieldLabel>
-              <NumberField value={parcelas} onValueChange={(v) => setParcelas(v ?? 1)} min={1} max={12} />
+              <NumberField
+                value={parcelas}
+                onValueChange={(v) => setParcelas(v ?? 1)}
+                min={1}
+                max={12}
+              />
             </Field>
           </Bloco>
 

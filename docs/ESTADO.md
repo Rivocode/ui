@@ -4,12 +4,12 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 
 ## O que existe hoje
 
-| Peca | Onde | Estado |
-|---|---|---|
-| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 55 componentes + subcaminhos `/form` e `/chart`, 213 testes, tudo verde |
-| Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras de 26 novos** |
-| Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
-| Site de documentacao | nao existe | Pendente |
+| Peca                        | Onde                                                           | Estado                                                                  |
+| --------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Biblioteca `@rivocode/ui`   | `Rivocode/ui` (este repo), privado                             | 55 componentes + subcaminhos `/form` e `/chart`, 213 testes, tudo verde |
+| Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b`     | 52 componentes, **atras de 26 novos**                                   |
+| Migracao da landing         | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada**                                               |
+| Site de documentacao        | nao existe                                                     | Pendente                                                                |
 
 **Catalogo atual**, por familia:
 
