@@ -1,0 +1,5 @@
+# 14 MB de imagens, fontes e vendor do sync. A documentacao leva os tipos que
+# precisa em apps/docs/src/component-types.json.
+ds-bundle
+demo/dist
+.design-sync/_screenshots

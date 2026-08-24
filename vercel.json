@@ -1,14 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "bun run build",
-  "outputDirectory": "dist",
+  "installCommand": "bun install",
+  "buildCommand": "cd apps/docs && bun run build",
+  "outputDirectory": "apps/docs/dist",
   "framework": null,
-  "rewrites": [
-    {
-      "source": "/((?!.*\\.).*)",
-      "destination": "/index.html"
-    }
-  ],
+  "rewrites": [{ "source": "/((?!.*\\.).*)", "destination": "/index.html" }],
   "headers": [
     {
       "source": "/(.*).md",
