@@ -8,6 +8,7 @@ const PAGINAS = [
   { rota: "/dialog.html", saida: "demo/dist/dialogo.png", janela: "1240,760" },
   { rota: "/listagem.html", saida: "demo/dist/listagem.png", janela: "1240,1900" },
   { rota: "/flutuantes.html", saida: "demo/dist/flutuantes.png", janela: "1240,1120" },
+  { rota: "/datas.html", saida: "demo/dist/datas.png", janela: "1240,1240" },
 ];
 
 const servidor = servir();

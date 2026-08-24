@@ -29,7 +29,7 @@
     "check": "bun run lint && bun run check:colors && bun run check:contrast && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
-    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
+    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
     "shot": "bun run demo && bun run scripts/shot.ts",
     "serve": "bun run scripts/serve.ts"
   },
@@ -40,6 +40,7 @@
     "@fontsource/poppins": "^5.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "react-day-picker": "^10.0.1",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

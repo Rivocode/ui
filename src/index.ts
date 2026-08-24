@@ -73,6 +73,14 @@ export {
   PopoverTrigger,
   type PopoverContentProps,
 } from "./components/popover";
+export { Calendar, type CalendarProps } from "./components/calendar";
+export { DatePicker, type DatePickerProps } from "./components/date-picker";
+export {
+  DateRangePicker,
+  type DateRange,
+  type DateRangePickerProps,
+} from "./components/date-range-picker";
+export { formatarData, lerData, mascararData } from "./lib/data";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {
