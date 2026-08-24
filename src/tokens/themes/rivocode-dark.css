@@ -21,6 +21,10 @@
    * lima a 0.14 suja a linha inteira de oliva. A barra lateral e que carrega
    * o sinal, o fundo so acompanha. */
   --rc-selected: rgb(212 243 74 / 0.05);
+  /* Marca de lugar do carregamento. Precisa contrastar com a superficie, e
+   * nao ser outra superficie: no tema claro surface-raised e branco puro,
+   * igual ao cartao, e o esqueleto sumia por completo. */
+  --rc-skeleton: rgb(255 255 255 / 0.08);
 
   --rc-border: rgb(255 255 255 / 0.09);
   --rc-border-strong: rgb(255 255 255 / 0.14);

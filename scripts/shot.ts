@@ -6,7 +6,7 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PAGINAS = [
   { rota: "/index.html", saida: "demo/dist/vitrine.png", janela: "1240,2600" },
   { rota: "/dialog.html", saida: "demo/dist/dialogo.png", janela: "1240,760" },
-  { rota: "/listagem.html", saida: "demo/dist/listagem.png", janela: "1240,1180" },
+  { rota: "/listagem.html", saida: "demo/dist/listagem.png", janela: "1240,1900" },
   { rota: "/flutuantes.html", saida: "demo/dist/flutuantes.png", janela: "1240,1120" },
 ];
 

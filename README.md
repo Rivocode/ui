@@ -93,6 +93,37 @@ vermelho que preenche um botão e recebe `text-danger-fg` por cima.
 serve bem para as duas coisas: a que tem contraste como texto não aguenta texto
 branco por cima, e vice-versa. Vale o mesmo para o acento.
 
+## O catalogo
+
+| Peca | Para que serve |
+|---|---|
+| `Button` | quatro variantes, tres tamanhos, forma em pilula e tamanho de icone |
+| `Card` | superficie com cabecalho, corpo, rodape e duas elevacoes |
+| `Badge` | selo de estado, seis tons |
+| `Field`, `Input` | campo com rotulo, ajuda e erro ligados por acessibilidade |
+| `Dialog` | janela modal, em portal |
+| `Table` | tabela semantica, com selecao de linha |
+| `Checkbox` | caixa de marcar, com o estado misto do "selecionar todos" |
+| `Tabs` | abas com risco deslizante |
+| `Select` | escolha unica, em portal |
+| `Menu` | menu de acoes, com grupos e item destrutivo |
+| `Tooltip` | dica, para botao que so tem icone |
+| `Toast` | aviso que passa, via `useToast()` |
+| `Alert` | aviso que fica, com o papel certo de leitor de tela por tom |
+| `Skeleton` | marca de lugar enquanto o dado nao chegou |
+| `EmptyState` | estado vazio, com descricao e saida obrigatorias |
+
+Tres coisas que a biblioteca resolve por voce e que costumam dar trabalho:
+
+- **Portal com tema.** Dialogo, menu, selecao e dica renderizam fora da arvore.
+  O Provider cria um container que carrega o tema, entao eles nunca aparecem sem
+  estilo, nem no modo escopado.
+- **Fiacao de aviso.** Provedor, portal e area de exibicao ja vivem no Provider.
+  Voce chama `useToast().add({...})` e pronto.
+- **Identidade estavel do `useToast()`.** O gerenciador da Base UI devolve objeto
+  novo a cada renderizacao, e um `useEffect` que dependa dele entra em laco
+  infinito. Aqui ele e estavel.
+
 ## Tema de cliente
 
 Copie `src/tokens/themes/rivocode-light.css`, troque os valores, e rode a

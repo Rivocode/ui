@@ -20,6 +20,7 @@
   --rc-accent-text: var(--rc-p-lima-700);
   --rc-accent-subtle: rgb(212 243 74 / 0.22);
   --rc-selected: rgb(212 243 74 / 0.16);
+  --rc-skeleton: rgb(15 17 19 / 0.08);
 
   --rc-border: rgb(15 17 19 / 0.1);
   --rc-border-strong: rgb(15 17 19 / 0.18);
