@@ -30,7 +30,7 @@ import {
   WizardFooter,
   type Passo,
 } from '@rivocode/ui'
-import { currency } from '@rivocode/ui/chart'
+import { currencyShort } from '@rivocode/ui/chart'
 import { useState } from 'react'
 
 const STEPS: Passo[] = [
@@ -163,7 +163,7 @@ export function NewInvoice() {
                 ['Cliente', 'Clínica São Lucas'],
                 ['CNPJ', '12.345.678/0001-90'],
                 ['Natureza', kind === 'service' ? 'Prestação de serviço' : 'Venda de produto'],
-                ['Valor', currency(value)],
+                ['Valor', currencyShort(value)],
                 ['Retenções', 'ISS na fonte'],
               ].map(([label, text]) => (
                 <div key={label} className="flex items-baseline justify-between gap-4">
@@ -176,7 +176,7 @@ export function NewInvoice() {
 
               <div className="flex items-baseline justify-between">
                 <span className="text-fg">Total</span>
-                <span className="font-display text-xl text-fg">{currency(value)}</span>
+                <span className="font-display text-xl text-fg">{currencyShort(value)}</span>
               </div>
             </div>
           )}

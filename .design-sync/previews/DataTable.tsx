@@ -3,8 +3,8 @@ import { Badge, Button, DataTable, type Coluna } from '@rivocode/ui'
 type Nota = { id: string; numero: string; cliente: string; valor: string; situacao: string }
 
 const NOTAS: Nota[] = [
-  { id: '1', numero: '4813', cliente: 'Clinica Sao Lucas', valor: 'R$ 2.480,00', situacao: 'Paga' },
-  { id: '2', numero: '4814', cliente: 'Transportes Cabo Branco', valor: 'R$ 940,00', situacao: 'Aberta' },
+  { id: '1', numero: '4813', cliente: 'Clinica Sao Lucas', valor: 'R$ 2,5K', situacao: 'Paga' },
+  { id: '2', numero: '4814', cliente: 'Transportes Cabo Branco', valor: 'R$ 940', situacao: 'Aberta' },
 ]
 
 const COLUNAS: Coluna<Nota>[] = [

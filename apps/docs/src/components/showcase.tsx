@@ -50,9 +50,9 @@ import { useState } from 'react'
  * ------------------------------------------------------------------------- */
 
 const INVOICES = [
-  { id: '4812', customer: 'Prefeitura de João Pessoa', amount: 'R$ 12.400,00', status: 'Paga' },
-  { id: '4813', customer: 'Clínica São Lucas', amount: 'R$ 3.280,00', status: 'Aberta' },
-  { id: '4814', customer: 'Transportes Cabo Branco', amount: 'R$ 8.750,00', status: 'Vencida' },
+  { id: '4812', customer: 'Prefeitura de João Pessoa', amount: 'R$ 12,4K', status: 'Paga' },
+  { id: '4813', customer: 'Clínica São Lucas', amount: 'R$ 3,3K', status: 'Aberta' },
+  { id: '4814', customer: 'Transportes Cabo Branco', amount: 'R$ 8,8K', status: 'Vencida' },
 ]
 
 const TONE = {
@@ -263,7 +263,7 @@ export function Showcase() {
               <BillingChart />
 
               <p className="mt-2 text-sm text-fg-subtle">
-                O eixo abrevia sozinho: R$ 246 mil, e não 246000.
+                O eixo abrevia sozinho: R$ 246K, e não 246000.
               </p>
             </TabPanel>
           </Tabs>

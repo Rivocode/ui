@@ -19,7 +19,7 @@ export function Vertical() {
       <Separator orientation="vertical" />
       <span>Clínica São Lucas</span>
       <Separator orientation="vertical" />
-      <span>R$ 2.480,00</span>
+      <span>R$ 2,5K</span>
     </div>
   )
 }

@@ -39,7 +39,7 @@ import {
   type DateRange,
   type No,
 } from '@rivocode/ui'
-import { currency } from '@rivocode/ui/chart'
+import { currencyShort } from '@rivocode/ui/chart'
 import { Grid2x2, List, Plus, Users } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
@@ -187,7 +187,7 @@ function CustomerRow({ customer, onAction }: { customer: Customer; onAction: () 
           <ItemActions>
             <Popover>
               <PopoverTrigger render={<Button size="sm" variant="ghost" />}>
-                {currency(customer.billed)}
+                {currencyShort(customer.billed)}
               </PopoverTrigger>
               <PopoverContent>
                 <PopoverTitle>Limite de crédito</PopoverTitle>
@@ -197,7 +197,7 @@ function CustomerRow({ customer, onAction }: { customer: Customer; onAction: () 
                 <div className="mt-4">
                   <Meter
                     value={used}
-                    label={`${currency(customer.billed)} de ${currency(customer.limit)}`}
+                    label={`${currencyShort(customer.billed)} de ${currencyShort(customer.limit)}`}
                     showValue
                   />
                 </div>
@@ -236,7 +236,7 @@ function CustomerCard({ customer }: { customer: Customer }) {
         <Separator className="my-3" />
 
         <p className="text-sm text-fg-muted">{customer.city}</p>
-        <p className="mt-1 font-display text-xl text-fg">{currency(customer.billed)}</p>
+        <p className="mt-1 font-display text-xl text-fg">{currencyShort(customer.billed)}</p>
 
         <div className="mt-3">
           <Meter value={used} label="do limite" showValue />

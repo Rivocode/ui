@@ -106,6 +106,11 @@ mesmo global:
   menos pixel. `compactWords` e `currencyShortWords` escrevem `12,4 mil`, que
   le melhor em texto corrido. **Nao misture as duas na mesma tela.**
 
+  **Dinheiro sai abreviado.** Use `currencyShort` em indicador, tabela, eixo,
+  legenda e dica. O `currency`, que escreve `R$ 2.480,00` por extenso, fica
+  para o lugar onde o centavo e o assunto: o valor que a pessoa confirma antes
+  de emitir, e o comprovante depois.
+
   As pecas da Recharts que saem por aqui: `Area`, `AreaChart`, `Bar`,
   `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`, `Cell`, `Scatter`,
   `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`, `RadialBarChart`,

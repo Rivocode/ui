@@ -219,6 +219,10 @@ cabe em menos pixel, e num eixo largura é espaço tirado do gráfico.
 `compactWords` e `currencyShortWords` escrevem `12,4 mil`, que lê melhor em
 texto corrido. **Não misture as duas na mesma tela.**
 
+**Dinheiro sai abreviado.** `currencyShort` em indicador, tabela, eixo, legenda
+e dica. O `currency`, por extenso, fica para onde o centavo é o assunto: o valor
+que a pessoa confirma antes de emitir, e o comprovante depois.
+
 | Peça | Para que |
 |---|---|
 | `ChartAreaGradient` + `areaGradient(id, série)` | Gradiente de área. **O `id` é seu, e precisa ser único na página** |

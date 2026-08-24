@@ -11,7 +11,7 @@ export function Basic() {
       </TabList>
       <TabPanel value="todas">Quarenta e duas notas no período.</TabPanel>
       <TabPanel value="abertas">Doze notas aguardando pagamento.</TabPanel>
-      <TabPanel value="vencidas">Três notas vencidas, somando R$ 18.400,00.</TabPanel>
+      <TabPanel value="vencidas">Três notas vencidas, somando R$ 18,4K.</TabPanel>
     </Tabs>
   )
 }

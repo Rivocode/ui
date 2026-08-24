@@ -21,7 +21,7 @@ export function WithOwnValue() {
         <ChartRadial
           value={246_700}
           max={300_000}
-          centerLabel={`${currencyShort(246_700)} de R$ 300 mil`}
+          centerLabel={`${currencyShort(246_700)} de ${currencyShort(300_000)}`}
           label="82% da meta"
         />
       </CardContent>

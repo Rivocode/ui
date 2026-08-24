@@ -26,7 +26,7 @@ import {
   useToast,
   type Coluna,
 } from '@rivocode/ui'
-import { currency } from '@rivocode/ui/chart'
+import { currencyShort } from '@rivocode/ui/chart'
 import { Download, MoreHorizontal, Search, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { INVOICES, STATUS_LABEL, STATUS_TONE, type Invoice, type Status } from '@/demo/data'
@@ -98,7 +98,7 @@ export function Invoices() {
       key: 'amount',
       header: 'Valor',
       align: 'right',
-      cell: (invoice) => <span className="font-mono">{currency(invoice.amount)}</span>,
+      cell: (invoice) => <span className="font-mono">{currencyShort(invoice.amount)}</span>,
     },
     {
       key: 'actions',
@@ -256,7 +256,7 @@ export function Invoices() {
                 ['CNPJ', open.document],
                 ['Emissão', open.issuedAt],
                 ['Vencimento', open.dueAt],
-                ['Valor', currency(open.amount)],
+                ['Valor', currencyShort(open.amount)],
               ].map(([label, value]) => (
                 <div key={label} className="flex items-center justify-between">
                   <span className="text-sm text-fg-muted">{label}</span>

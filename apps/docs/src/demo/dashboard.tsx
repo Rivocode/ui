@@ -35,7 +35,6 @@ import {
   ChartYAxis,
   Sparkline,
   compact,
-  currency,
   currencyShort,
   areaGradient,
   useSeriesToggle,
@@ -157,18 +156,18 @@ export function Dashboard() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi
           label="Faturado em agosto"
-          value={currency(246_700)}
+          value={currencyShort(246_700)}
           delta={20}
           trend={TRENDS.billed}
         />
         <Kpi
           label="Recebido"
-          value={currency(198_300)}
+          value={currencyShort(198_300)}
           delta={3}
           trend={TRENDS.received}
           hint="Só o que já caiu na conta. O que está em compensação entra no dia seguinte."
         />
-        <Kpi label="Em aberto" value={currency(total('open'))} delta={-8} trend={TRENDS.open} />
+        <Kpi label="Em aberto" value={currencyShort(total('open'))} delta={-8} trend={TRENDS.open} />
         <Kpi
           label="Vencidas"
           value={String(overdue)}

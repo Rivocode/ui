@@ -1,4 +1,4 @@
-import { ChartTooltipContent, type ChartConfig } from '@rivocode/ui/chart'
+import { ChartTooltipContent, currencyShort, type ChartConfig } from '@rivocode/ui/chart'
 
 const NOTAS: ChartConfig = {
   emitidas: { label: 'Emitidas' },
@@ -29,7 +29,7 @@ export function WithFormattedValue() {
       active
       label="Junho"
       config={{ servico: { label: 'Serviço' } }}
-      formatValue={(valor) => `R$ ${valor.toLocaleString('pt-BR')}`}
+      formatValue={currencyShort}
       payload={[{ dataKey: 'servico', value: 62000, color: 'var(--rc-chart-1)' }] as never}
     />
   )
