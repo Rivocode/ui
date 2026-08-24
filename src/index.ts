@@ -20,3 +20,4 @@ export {
   cardVariants,
   type CardProps,
 } from './primitives/card'
+export { Badge, badgeVariants, type BadgeProps } from './primitives/badge'
