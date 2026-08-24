@@ -6,14 +6,24 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 
 | Peca | Onde | Estado |
 |---|---|---|
-| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 19 componentes + subcaminho `/form`, 117 testes, tudo verde |
+| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 41 componentes + subcaminho `/form`, 192 testes, tudo verde |
 | Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras dos 4 novos** |
 | Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
 | Site de documentacao | nao existe | Pendente |
 
-**Catalogo atual:** Button, Card, Badge, Field, Input, Checkbox, Select, Tabs,
-Table, Menu, Dialog, Popover, Tooltip, Alert, Skeleton, EmptyState, Calendar,
-DatePicker, DateRangePicker, mais o `RivoProvider` e o `useToast()`.
+**Catalogo atual**, por familia:
+
+- **Acao:** Button, Toggle, ToggleGroup
+- **Campo:** Field, Input, Textarea, MaskedInput, InputGroup, Checkbox, Radio,
+  Switch, Select, Combobox, TreeSelect, DatePicker, DateRangePicker, Calendar
+- **Flutuante:** Dialog, AlertDialog, Sheet, Popover, Tooltip, Menu, Toast
+- **Navegacao:** Sidebar, Tabs, Breadcrumb, Pagination, Steps
+- **Dado:** Table, DataTable, Item, Tree, Badge, Avatar
+- **Estado:** Alert, Skeleton, Spinner, Progress, EmptyState
+- **Estrutura:** Card, Separator, Accordion, RivoProvider
+
+Mais os utilitarios: `useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`,
+`formatarData`, `aplicarMascara` e os adaptadores de formulario.
 
 **Fundacao:** tokens em tres camadas, temas `rivocode-dark` e `rivocode-light`,
 densidade confortavel e compacta, guarda de cor literal e guarda de contraste
@@ -141,11 +151,24 @@ O spec e o plano da fundacao estao em `docs/`. As notas do sync com o
 claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
 `.design-sync/NOTES.md`.
 
+## O que ficou de fora, e por que
+
+- **Command, a paleta de busca por atalho.** Cabe sobre o Combobox, mas o
+  padrao de lista sem painel ancorado precisa de um teste de mesa antes.
+- **Receitas de tela inteira** (login, painel, listagem pronta). E o que mais
+  aproxima de "redondo", e depende de decidir se elas moram aqui ou num pacote
+  separado, porque receita nao versiona igual a componente.
+- **Graficos.** Fora do escopo por ora; entra junto com a decisao de dependencia
+  de biblioteca de grafico.
+- **Site de documentacao.** Continua pendente, e a vitrine em `demo/` faz as
+  vezes.
+
 ## Ordem sugerida
 
 1. Publicar o pacote e destravar a landing (depende do token)
 2. ~~`Popover`~~ feito
 3. ~~`Calendar`, `DatePicker` e `DateRangePicker`~~ feito
 4. ~~`@rivocode/ui/form` com RHF e Zod, e a ponte do `DatePicker` com o `Field`~~ feito
-5. `DataTable` com os estados de consulta
+5. ~~`DataTable` com os estados de consulta~~ feito
 6. Site de documentacao
+7. Sync com o claude.ai/design, que esta atras de vinte e dois componentes
