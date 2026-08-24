@@ -2,7 +2,7 @@ import { Button, Spinner } from '@rivocode/ui'
 
 export function Tamanhos() {
   return (
-    <div className="flex items-center gap-4 text-fg-muted">
+    <div className="flex items-center gap-4 text-fg">
       <Spinner size="sm" />
       <Spinner />
       <Spinner size="lg" />

@@ -245,6 +245,20 @@ claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
 - ~~**Graficos**~~ feito, sobre a Recharts, em `@rivocode/ui/chart`.
 - **Site de documentacao.** Continua pendente, e a vitrine em `demo/` faz as
   vezes.
+- **TanStack Table.** Decidido em 24/08/2026 **ficar de fora por enquanto**, e
+  entrar como melhoria futura. A `Coluna<Linha>` do `DataTable` continua nossa:
+  trocar por `ColumnDef` poria a biblioteca de terceiro na assinatura publica e
+  obrigaria todo projeto de cliente a importa-la so para declarar quatro
+  colunas de listagem. Quando entrar, o lugar e um subcaminho `@rivocode/ui/
+  datagrid` com dependencia de par opcional, vestindo os primitivos `Table*`,
+  como ja foi feito com a Recharts em `/chart` e o React Hook Form em `/form`.
+  Ela ganha em ordenacao no cliente, filtro por coluna, agrupamento, coluna
+  fixa e redimensionavel e virtualizacao — nada que o `DataTable` faca hoje.
+  Atencao ao calendario da propria biblioteca: a v8 e `useReactTable`, e a v9
+  troca para `useTable` mais `tableFeatures()`, movendo os row models para
+  dentro disso. O passo barato antes dela e ordenacao por coluna no proprio
+  `DataTable`, com `sortable` na coluna e `onSortChange` por fora, que serve a
+  paginacao no servidor sem custar dependencia.
 
 ## Ordem sugerida
 

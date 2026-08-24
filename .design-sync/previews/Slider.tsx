@@ -11,7 +11,12 @@ export function ComRotulo() {
 export function Faixa() {
   return (
     <div className="w-72">
-      <Slider defaultValue={[20, 60]} label="Faixa de valor" showValue thumbLabel="Valor" />
+        <Slider
+        defaultValue={[20, 60]}
+        label="Faixa de valor"
+        showValue
+        thumbLabel={['Valor minimo', 'Valor maximo']}
+      />
     </div>
   )
 }
