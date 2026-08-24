@@ -55,6 +55,33 @@ export function Input({ className, size, ...props }: InputProps) {
   return <BaseField.Control {...props} className={cn(inputVariants({ size }), className)} />;
 }
 
+export type TextareaProps = Omit<ComponentProps<typeof BaseField.Control>, "size"> & {
+  /** Quantas linhas o campo mostra antes de rolar. */
+  rows?: number;
+};
+
+/**
+ * Campo de varias linhas. Passa pelo `Field.Control` como o `Input`, e nao
+ * como `<textarea>` solto, para o rotulo, a ajuda e o erro se ligarem sozinhos
+ * quando ele estiver dentro de um `Field`.
+ *
+ * Nao tem variante de tamanho: altura aqui e numero de linhas, e mistura-la
+ * com a escala de controle so criaria um `lg` que nao quer dizer nada.
+ */
+export function Textarea({ className, rows = 4, ...props }: TextareaProps) {
+  return (
+    <BaseField.Control
+      {...props}
+      render={<textarea rows={rows} />}
+      className={cn(
+        inputVariants(),
+        "h-auto min-h-[calc(var(--rc-control-md)*2)] resize-y py-2 leading-[var(--rc-leading-normal)]",
+        className,
+      )}
+    />
+  );
+}
+
 export function FieldDescription({
   className,
   ...props

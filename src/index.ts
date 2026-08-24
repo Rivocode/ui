@@ -29,8 +29,10 @@ export {
   FieldLabel,
   Input,
   inputVariants,
+  Textarea,
   type FieldProps,
   type InputProps,
+  type TextareaProps,
 } from "./components/field";
 export {
   Dialog,
@@ -94,6 +96,24 @@ export {
   type SheetProps,
   type SheetSide,
 } from "./components/sheet";
+export { Switch, type SwitchProps } from "./components/switch";
+export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from "./components/radio";
+export { Separator, type SeparatorProps } from "./components/separator";
+export { Avatar, avatarVariants, type AvatarProps } from "./components/avatar";
+export { Progress, type ProgressProps } from "./components/progress";
+export { Spinner, spinnerVariants, type SpinnerProps } from "./components/spinner";
+export { Accordion, AccordionItem, type AccordionItemProps } from "./components/accordion";
+export {
+  AlertDialog,
+  AlertDialogClose,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  type AlertDialogContentProps,
+} from "./components/alert-dialog";
+export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {
