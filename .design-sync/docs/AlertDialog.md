@@ -1,14 +1,14 @@
 ---
-category: Sobreposicao
+category: Sobreposição
 ---
 
 # AlertDialog
 
-A confirmacao de coisa que nao volta atras: excluir, cancelar nota, sair sem
+A confirmacao de coisa que não volta atrás: excluir, cancelar nota, sair sem
 salvar.
 
-Parece o `Dialog` e nao e: este nao fecha com Esc nem com clique fora, e o foco
-comeca no botao de cancelar. Quem esta prestes a apagar algo tem que dizer que
-sim de proposito, e nao esbarrar num clique.
+Parece o `Dialog` e não é: este não fecha com Esc nem com clique fora, e o foco
+começa no botão de cancelar. Quem esta prestes a apagar algo tem que dizer que
+sim de propósito, e não esbarrar num clique.
 
-No celular os botoes empilham e ocupam a largura toda.
+No celular os botões empilham e ocupam a largura toda.

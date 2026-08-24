@@ -1,10 +1,12 @@
 import { Calendar } from '@rivocode/ui'
 
-export function DataUnica() {
+/** Data única */
+export function SingleDate() {
   return <Calendar mode="single" selected={new Date(2026, 2, 3)} month={new Date(2026, 2, 1)} />
 }
 
-export function Intervalo() {
+/** Intervalo */
+export function DateRange() {
   return (
     <Calendar
       mode="range"

@@ -5,7 +5,8 @@ const NOTAS: ChartConfig = {
   pagas: { label: 'Pagas' },
 }
 
-export function ComDuasSeries() {
+/** Com duas séries */
+export function TwoSeries() {
   return (
     <ChartTooltipContent
       active
@@ -21,12 +22,13 @@ export function ComDuasSeries() {
   )
 }
 
-export function ComValorFormatado() {
+/** Com valor formatado */
+export function WithFormattedValue() {
   return (
     <ChartTooltipContent
       active
       label="Junho"
-      config={{ servico: { label: 'Servico' } }}
+      config={{ servico: { label: 'Serviço' } }}
       formatValue={(valor) => `R$ ${valor.toLocaleString('pt-BR')}`}
       payload={[{ dataKey: 'servico', value: 62000, color: 'var(--rc-chart-1)' }] as never}
     />

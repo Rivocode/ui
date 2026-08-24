@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@rivocode/ui'
 
-export function Confirmacao() {
+/** Confirmação */
+export function Confirmation() {
   return (
     <div className="min-h-72">
       <Dialog defaultOpen>
@@ -8,7 +9,7 @@ export function Confirmacao() {
         <DialogContent>
           <DialogTitle>Excluir projeto</DialogTitle>
           <DialogDescription>
-            Isto remove o projeto, o historico e os arquivos ligados a ele. Nao da para desfazer.
+            Isto remove o projeto, o histórico e os arquivos ligados a ele. Não da para desfazer.
           </DialogDescription>
           <DialogFooter>
             <DialogClose render={<Button variant="ghost" />}>Cancelar</DialogClose>
@@ -20,12 +21,13 @@ export function Confirmacao() {
   )
 }
 
-export function Fechado() {
+/** Fechado */
+export function ClosedState() {
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="secondary" />}>Abrir dialogo</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Titulo</DialogTitle>
+        <DialogTitle>Título</DialogTitle>
         <DialogDescription>Corpo do dialogo.</DialogDescription>
       </DialogContent>
     </Dialog>

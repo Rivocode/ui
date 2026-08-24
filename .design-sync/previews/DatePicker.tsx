@@ -1,6 +1,7 @@
 import { DatePicker, Field, FieldLabel } from '@rivocode/ui'
 
-export function ComRotulo() {
+/** Com rótulo */
+export function WithLabel() {
   return (
     <Field className="w-64">
       <FieldLabel htmlFor="vencimento">Vencimento</FieldLabel>
@@ -9,6 +10,7 @@ export function ComRotulo() {
   )
 }
 
-export function Vazio() {
+/** Vazio */
+export function Empty() {
   return <DatePicker className="w-64" />
 }

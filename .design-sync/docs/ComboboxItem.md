@@ -1,7 +1,7 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # ComboboxItem
 
-Uma opcao. Mostra o visto quando escolhida.
+Uma opção. Mostra o visto quando escolhida.

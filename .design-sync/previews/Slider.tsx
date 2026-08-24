@@ -1,6 +1,7 @@
 import { Slider } from '@rivocode/ui'
 
-export function ComRotulo() {
+/** Com rótulo */
+export function WithLabel() {
   return (
     <div className="w-72">
       <Slider defaultValue={25} max={50} label="Desconto" showValue thumbLabel="Desconto" />
@@ -8,7 +9,8 @@ export function ComRotulo() {
   )
 }
 
-export function Faixa() {
+/** Faixa */
+export function Range() {
   return (
     <div className="w-72">
         <Slider

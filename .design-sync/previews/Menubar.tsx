@@ -1,6 +1,7 @@
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger, Menubar } from '@rivocode/ui'
 
-export function Principal() {
+/** Principal */
+export function Primary() {
   return (
     <Menubar aria-label="Principal">
       <Menu>

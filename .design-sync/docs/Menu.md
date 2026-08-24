@@ -1,14 +1,14 @@
 ---
-category: Navegacao
+category: Navegação
 ---
 
 # Menu
 
-Menu de acoes, tipico dos tres pontinhos de uma linha de tabela.
+Menu de ações, típico dos três pontinhos de uma linha de tabela.
 
-Compoe com `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` e
-`MenuSeparator`. O titulo de grupo e a propriedade `label` do `MenuGroup`, nao
-uma peca separada.
+Compõe com `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` e
+`MenuSeparator`. O título de grupo e a propriedade `label` do `MenuGroup`, não
+uma peça separada.
 
-`tone="danger"` no item que apaga. Renderiza em portal, entao exige o
+`tone="danger"` no item que apaga. Renderiza em portal, então exige o
 `RivoProvider`.

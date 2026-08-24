@@ -1,12 +1,12 @@
 ---
-category: Sobreposicao
+category: Sobreposição
 ---
 
 # Tooltip
 
-Dica curta, para botao que so tem icone.
+Dica curta, para botão que só tem ícone.
 
-Compoe com `TooltipTrigger` e `TooltipContent`.
+Compõe com `TooltipTrigger` e `TooltipContent`.
 
-Nao guarde informacao essencial aqui: dica nao aparece no toque e nao e lida em
-todo contexto. O `aria-label` do botao continua obrigatorio.
+Não guarde informação essencial aqui: dica não aparece no toque e não é lida em
+todo contexto. O `aria-label` do botão continua obrigatório.

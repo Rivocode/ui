@@ -1,5 +1,6 @@
 import { Separator } from '@rivocode/ui'
 
+/** Horizontal */
 export function Horizontal() {
   return (
     <div className="w-80">
@@ -10,12 +11,13 @@ export function Horizontal() {
   )
 }
 
+/** Vertical */
 export function Vertical() {
   return (
     <div className="flex h-6 items-center gap-3 text-sm text-fg-muted">
       <span>4813</span>
       <Separator orientation="vertical" />
-      <span>Clinica Sao Lucas</span>
+      <span>Clínica São Lucas</span>
       <Separator orientation="vertical" />
       <span>R$ 2.480,00</span>
     </div>

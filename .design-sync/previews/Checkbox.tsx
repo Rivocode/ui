@@ -1,11 +1,12 @@
 import { Checkbox, Field, FieldLabel } from '@rivocode/ui'
 
-export function Estados() {
+/** Estados */
+export function States() {
   return (
     <div className="flex items-center gap-6">
       <label className="flex items-center gap-2 text-base text-fg">
-        <Checkbox aria-label="Nao marcada" />
-        Nao marcada
+        <Checkbox aria-label="Não marcada" />
+        Não marcada
       </label>
       <label className="flex items-center gap-2 text-base text-fg">
         <Checkbox checked aria-label="Marcada" />
@@ -23,7 +24,8 @@ export function Estados() {
   )
 }
 
-export function SelecionarTodas() {
+/** Selecionar todas */
+export function SelectAll() {
   return (
     <div className="flex max-w-xs flex-col gap-3">
       <label className="flex items-center gap-2 border-b border-border pb-3 text-base font-medium text-fg">
@@ -42,13 +44,25 @@ export function SelecionarTodas() {
   )
 }
 
-export function DentroDeCampo() {
+/** Dentro de campo */
+export function InsideAField() {
   return (
     <Field name="termos" className="max-w-sm">
       <div className="flex items-center gap-2">
         <Checkbox aria-label="Aceito os termos" />
-        <FieldLabel>Aceito os termos e condicoes</FieldLabel>
+        <FieldLabel>Aceito os termos e condições</FieldLabel>
       </div>
     </Field>
+  )
+}
+
+/** Com rótulo */
+export function WithText() {
+  return (
+    <div className="space-y-3">
+      <Checkbox defaultChecked>ISS retido na fonte</Checkbox>
+      <Checkbox>INSS</Checkbox>
+      <Checkbox disabled>IRRF, indisponível neste regime</Checkbox>
+    </div>
   )
 }

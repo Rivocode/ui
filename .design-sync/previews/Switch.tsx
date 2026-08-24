@@ -1,6 +1,7 @@
 import { Switch } from '@rivocode/ui'
 
-export function Estados() {
+/** Estados */
+export function States() {
   return (
     <div className="flex flex-col gap-4">
       <label className="flex items-center gap-3 text-base text-fg">
@@ -13,8 +14,18 @@ export function Estados() {
       </label>
       <label className="flex items-center gap-3 text-base text-fg-disabled">
         <Switch disabled defaultChecked />
-        Integracao com a prefeitura
+        Integração com a prefeitura
       </label>
+    </div>
+  )
+}
+
+/** Com rótulo */
+export function WithText() {
+  return (
+    <div className="space-y-4">
+      <Switch defaultChecked>Enviar o XML junto com o PDF</Switch>
+      <Switch>Avisar por e-mail quando a nota for paga</Switch>
     </div>
   )
 }

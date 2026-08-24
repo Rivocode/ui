@@ -7,7 +7,7 @@ category: Feedback
 Selo de estado, sempre em pilula, sempre curto.
 
 `tone`: `neutral`, `accent`, `success`, `warning`, `danger`, `info`. Use o tom
-pelo significado, nunca pela cor que voce quer.
+pelo significado, nunca pela cor que você quer.
 
-E a unica peca em pilula por padrao: selo em canto reto parece etiqueta de
-sistema antigo, e botao em pilula dentro de formulario parece brinquedo.
+E a única peça em pilula por padrão: selo em canto reto parece etiqueta de
+sistema antigo, e botão em pilula dentro de formulário parece brinquedo.

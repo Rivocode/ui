@@ -11,12 +11,13 @@ const SETORES: No[] = [
   },
   {
     id: 'operacao',
-    label: 'Operacao',
-    children: [{ id: 'expedicao', label: 'Expedicao' }],
+    label: 'Operação',
+    children: [{ id: 'expedicao', label: 'Expedição' }],
   },
 ]
 
-export function Escolhido() {
+/** Escolhido */
+export function Selected() {
   return (
     <TreeSelect
       className="w-72"
@@ -27,6 +28,7 @@ export function Escolhido() {
   )
 }
 
-export function Vazio() {
+/** Vazio */
+export function Empty() {
   return <TreeSelect className="w-72" items={SETORES} placeholder="Escolha os setores" />
 }

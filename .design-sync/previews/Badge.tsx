@@ -1,6 +1,7 @@
 import { Badge } from '@rivocode/ui'
 
-export function Tons() {
+/** Tons */
+export function Tones() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Badge>Rascunho</Badge>
@@ -13,11 +14,12 @@ export function Tons() {
   )
 }
 
-export function Tamanhos() {
+/** Tamanhos */
+export function Sizes() {
   return (
     <div className="flex items-center gap-2">
       <Badge size="sm" tone="success">Pequeno</Badge>
-      <Badge size="md" tone="success">Medio</Badge>
+      <Badge size="md" tone="success">Médio</Badge>
     </div>
   )
 }

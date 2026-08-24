@@ -7,7 +7,8 @@ const schema = z.object({
   vencimento: z.date('Escolha a data'),
 })
 
-export function EmitirNota() {
+/** Emitir nota */
+export function IssueInvoice() {
   const form = useZodForm(schema, {
     defaultValues: { email: 'financeiro@rivocode.com', vencimento: new Date(2026, 2, 3) },
   })
@@ -16,7 +17,7 @@ export function EmitirNota() {
     <div className="w-80">
       <Form form={form} onSubmit={() => {}}>
         <FormField name="email" label="E-mail" description="Para onde vai a nota">
-          {(campo) => <Input {...campo} placeholder="voce@empresa.com" />}
+          {(campo) => <Input {...campo} placeholder="você@empresa.com" />}
         </FormField>
 
         <FormField name="vencimento" label="Vencimento">

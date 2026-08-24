@@ -1,11 +1,12 @@
 import { Download, MoreHorizontal, Trash2 } from 'lucide-react'
 import { Button, Menu, MenuContent, MenuGroup, MenuItem, MenuSeparator, MenuTrigger } from '@rivocode/ui'
 
-export function AcoesDaLinha() {
+/** Ações da linha */
+export function RowActions() {
   return (
     <div className="min-h-64">
       <Menu defaultOpen>
-        <MenuTrigger render={<Button variant="secondary" size="icon" aria-label="Mais acoes" />}>
+        <MenuTrigger render={<Button variant="secondary" size="icon" aria-label="Mais ações" />}>
           <MoreHorizontal size={16} aria-hidden="true" />
         </MenuTrigger>
         <MenuContent>
@@ -28,10 +29,11 @@ export function AcoesDaLinha() {
   )
 }
 
-export function Fechado() {
+/** Fechado */
+export function ClosedState() {
   return (
     <Menu>
-      <MenuTrigger render={<Button variant="secondary" size="sm" />}>Acoes</MenuTrigger>
+      <MenuTrigger render={<Button variant="secondary" size="sm" />}>Ações</MenuTrigger>
       <MenuContent>
         <MenuItem>Baixar PDF</MenuItem>
         <MenuItem>Duplicar</MenuItem>

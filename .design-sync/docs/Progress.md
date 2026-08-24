@@ -4,7 +4,7 @@ category: Feedback
 
 # Progress
 
-Barra de progresso de tarefa com fim conhecido: enviar arquivo, gerar relatorio.
+Barra de progresso de tarefa com fim conhecido: enviar arquivo, gerar relatório.
 
 Sem `value` ela vira indeterminada; nesse caso prefira o `Spinner`, que ocupa
-menos e nao promete um fim que ninguem sabe medir.
+menos e não promete um fim que ninguém sabe medir.

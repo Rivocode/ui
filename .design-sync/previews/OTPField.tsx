@@ -1,9 +1,11 @@
 import { OTPField } from '@rivocode/ui'
 
-export function Preenchido() {
+/** Preenchido */
+export function Filled() {
   return <OTPField length={6} defaultValue="481337" />
 }
 
-export function Vazio() {
+/** Vazio */
+export function Empty() {
   return <OTPField length={6} />
 }

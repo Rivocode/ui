@@ -1,12 +1,13 @@
 import { Button, Popover, PopoverClose, PopoverContent, PopoverDescription, PopoverTitle, PopoverTrigger } from '@rivocode/ui'
 
-export function Painel() {
+/** Painel */
+export function Panel() {
   return (
     <div className="min-h-60">
       <Popover defaultOpen>
-        <PopoverTrigger render={<Button variant="outline" />}>Periodo</PopoverTrigger>
+        <PopoverTrigger render={<Button variant="outline" />}>Período</PopoverTrigger>
         <PopoverContent>
-          <PopoverTitle>Periodo do relatorio</PopoverTitle>
+          <PopoverTitle>Período do relatório</PopoverTitle>
           <PopoverDescription>O intervalo vale para o total e para a lista de notas.</PopoverDescription>
           <div className="mt-4 flex justify-end">
             <PopoverClose render={<Button variant="secondary" size="sm" />}>Aplicar</PopoverClose>

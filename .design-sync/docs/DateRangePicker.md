@@ -1,14 +1,14 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # DateRangePicker
 
-Periodo, para filtro de relatorio e de listagem.
+Periodo, para filtro de relatório e de listagem.
 
-Aqui nao ha digitacao, e essa e a diferenca de proposito para o `DatePicker`:
-mascara de intervalo pede duas datas num campo so, e o custo de acertar teclado,
-colagem e ordem invertida nao se paga.
+Aqui não ha digitacao, e essa é a diferença de propósito para o `DatePicker`:
+mascara de intervalo pede duas datas num campo só, e o custo de acertar teclado,
+colagem e ordem invertida não se paga.
 
-O rodape com Aplicar vem ligado por padrao, porque filtro de periodo quase sempre
+O rodape com Aplicar vem ligado por padrão, porque filtro de periodo quase sempre
 recarrega listagem, e sem confirmar ele recarregaria duas vezes.

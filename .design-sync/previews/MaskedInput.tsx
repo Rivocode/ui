@@ -1,6 +1,7 @@
 import { Field, FieldLabel, MaskedInput } from '@rivocode/ui'
 
-export function Moldes() {
+/** Moldes */
+export function Masks() {
   return (
     <div className="flex w-80 flex-col gap-3">
       <Field>

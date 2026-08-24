@@ -1,6 +1,7 @@
 import { Alert, AlertDescription, AlertTitle } from '@rivocode/ui'
 
-export function Tons() {
+/** Tons */
+export function Tones() {
   return (
     <div className="flex max-w-lg flex-col gap-3">
       <Alert tone="info">
@@ -13,11 +14,11 @@ export function Tons() {
       </Alert>
       <Alert tone="warning">
         <AlertTitle>Certificado vence em 8 dias</AlertTitle>
-        <AlertDescription>Renove antes de 01/09 para nao interromper a emissao.</AlertDescription>
+        <AlertDescription>Renove antes de 01/09 para não interromper a emissão.</AlertDescription>
       </Alert>
       <Alert tone="danger">
-        <AlertTitle>Nao foi possivel carregar</AlertTitle>
-        <AlertDescription>A prefeitura nao respondeu. Tente de novo em alguns minutos.</AlertDescription>
+        <AlertTitle>Não foi possível carregar</AlertTitle>
+        <AlertDescription>A prefeitura não respondeu. Tente de novo em alguns minutos.</AlertDescription>
       </Alert>
     </div>
   )

@@ -1,30 +1,33 @@
 import { Field, FieldDescription, FieldError, FieldLabel, Input } from '@rivocode/ui'
 
-export function Basico() {
+/** Básico */
+export function Basic() {
   return (
     <div className="flex max-w-sm flex-col gap-4">
       <Field name="empresa">
         <FieldLabel>Empresa</FieldLabel>
         <Input placeholder="RivoCode Tecnologia" />
-        <FieldDescription>Razao social como consta no CNPJ</FieldDescription>
+        <FieldDescription>Razão social como consta no CNPJ</FieldDescription>
       </Field>
     </div>
   )
 }
 
-export function ComErro() {
+/** Com erro */
+export function WithError() {
   return (
     <div className="max-w-sm">
       <Field name="email" invalid>
         <FieldLabel>Email</FieldLabel>
-        <Input placeholder="voce@empresa.com" />
-        <FieldError match>Informe um email valido</FieldError>
+        <Input placeholder="você@empresa.com" />
+        <FieldError match>Informe um email válido</FieldError>
       </Field>
     </div>
   )
 }
 
-export function Tamanhos() {
+/** Tamanhos */
+export function Sizes() {
   return (
     <div className="flex max-w-sm flex-col gap-4">
       <Field name="a">
@@ -32,24 +35,25 @@ export function Tamanhos() {
         <Input size="sm" placeholder="Denso, para tabela" />
       </Field>
       <Field name="b">
-        <FieldLabel>Medio</FieldLabel>
-        <Input size="md" placeholder="O padrao" />
+        <FieldLabel>Médio</FieldLabel>
+        <Input size="md" placeholder="O padrão" />
       </Field>
       <Field name="c">
         <FieldLabel>Grande</FieldLabel>
-        <Input size="lg" placeholder="Para formulario curto e destacado" />
+        <Input size="lg" placeholder="Para formulário curto e destacado" />
       </Field>
     </div>
   )
 }
 
-export function Desabilitado() {
+/** Desabilitado */
+export function Disabled() {
   return (
     <div className="max-w-sm">
       <Field name="cnpj" disabled>
         <FieldLabel>CNPJ</FieldLabel>
         <Input defaultValue="60.139.541/0001-27" />
-        <FieldDescription>Nao pode ser alterado depois do cadastro</FieldDescription>
+        <FieldDescription>Não pode ser alterado depois do cadastro</FieldDescription>
       </Field>
     </div>
   )

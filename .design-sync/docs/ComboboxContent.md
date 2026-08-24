@@ -1,5 +1,5 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # ComboboxContent

@@ -1,6 +1,7 @@
 import { Field, FieldDescription, FieldLabel, NumberField } from '@rivocode/ui'
 
-export function ComRotulo() {
+/** Com rótulo */
+export function WithLabel() {
   return (
     <Field className="w-56">
       <FieldLabel>Parcelas</FieldLabel>
@@ -10,7 +11,8 @@ export function ComRotulo() {
   )
 }
 
-export function Desabilitado() {
+/** Desabilitado */
+export function Disabled() {
   return (
     <div className="w-56">
       <NumberField defaultValue={1} disabled />

@@ -1,6 +1,7 @@
 import { Progress } from '@rivocode/ui'
 
-export function ComRotulo() {
+/** Com rótulo */
+export function WithLabel() {
   return (
     <div className="flex w-80 flex-col gap-6">
       <Progress value={62} label="Enviando notas" showValue />

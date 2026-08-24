@@ -28,7 +28,8 @@ const NOTAS: ChartConfig = {
   pagas: { label: 'Pagas' },
 }
 
-export function Linha() {
+/** Linha */
+export function AsLine() {
   return (
     <div className="w-full max-w-lg">
       <ChartContainer config={NOTAS} className="h-64">
@@ -58,7 +59,8 @@ export function Linha() {
   )
 }
 
-export function Barra() {
+/** Barra */
+export function Bars() {
   return (
     <div className="w-full max-w-lg">
       <ChartContainer config={NOTAS} className="h-64">

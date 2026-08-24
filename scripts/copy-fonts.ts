@@ -25,9 +25,21 @@ if (wanted.size === 0) {
   process.exit(0);
 }
 
+/*
+ * A varredura precisa alcancar tambem `node_modules/.bun`, onde o bun guarda o
+ * pacote de verdade — o que fica em `node_modules/@fontsource*` e um link, e o
+ * Glob nao atravessa link. Enquanto o repo tinha um pacote so isso nao
+ * aparecia; virou workspace, a instalacao mudou de forma, e o build passou a
+ * terminar dizendo que dezesseis fontes nao existem.
+ */
 const disponivel = new Map<string, string>();
-for await (const file of new Glob("node_modules/@fontsource*/**/files/*").scan(".")) {
-  disponivel.set(file.split("/").pop()!, file);
+const pastas = ["node_modules/@fontsource*/**/files/*", "node_modules/.bun/**/files/*"];
+
+for (const padrao of pastas) {
+  for await (const file of new Glob(padrao).scan({ cwd: ".", followSymlinks: true })) {
+    const nome = file.split("/").pop()!;
+    if (!disponivel.has(nome)) disponivel.set(nome, file);
+  }
 }
 
 const destino = join(dirname(cssPath), "files");

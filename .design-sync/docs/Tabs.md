@@ -1,13 +1,13 @@
 ---
-category: Navegacao
+category: Navegação
 ---
 
 # Tabs
 
-Alterna paineis irmaos na mesma pagina.
+Alterna paineis irmaos na mesma página.
 
-Compoe com `TabList`, `Tab` e `TabPanel`, casando `value` entre aba e painel. O
-risco que corre ate a aba ativa se posiciona sozinho.
+Compõe com `TabList`, `Tab` e `TabPanel`, casando `value` entre aba e painel. O
+risco que corre até a aba ativa se posiciona sozinho.
 
-Nao use para navegacao entre paginas: aba sugere que o conteudo esta ali do
-lado, nao em outro endereco.
+Não use para navegação entre páginas: aba sugere que o conteúdo esta ali do
+lado, não em outro endereco.

@@ -57,7 +57,7 @@ para o acento: `bg-accent` com `text-accent-fg`, ou `text-accent-text` solto.
 Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
-- **`@rivocode/ui/form`** — `Form`, `FormField`, `useZodForm` e os adaptadores
+- **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
   `paraDatePicker`, `paraSelect`, `paraCheckbox`. O controle vem por funcao,
   nao por clonagem do filho:
 
@@ -67,7 +67,7 @@ mesmo global:
   </FormField>
   ```
 
-- **`@rivocode/ui/chart`** — `ChartContainer`, `ChartTooltip`,
+- **`@rivocode/ui/chart`**, `ChartContainer`, `ChartTooltip`,
   `ChartTooltipContent`, `ChartLegend`, `ChartLegendContent`, `useChartMotion`,
   mais as pecas da Recharts que a biblioteca veste (`LineChart`, `Line`,
   `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`, `Cell`, `XAxis`,

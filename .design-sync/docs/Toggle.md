@@ -1,7 +1,7 @@
 ---
-category: Acoes
+category: Ações
 ---
 
 # Toggle
 
-Botao que fica apertado. Vive dentro de um `ToggleGroup`.
+Botão que fica apertado. Vive dentro de um `ToggleGroup`.

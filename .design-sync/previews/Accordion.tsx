@@ -1,17 +1,18 @@
 import { Accordion, AccordionItem } from '@rivocode/ui'
 
-export function Perguntas() {
+/** Perguntas */
+export function Questions() {
   return (
     <div className="w-96">
       <Accordion defaultValue={['como-emitir']}>
         <AccordionItem value="como-emitir" title="Como emito uma nota?">
-          Pelo botao Emitir nota, no topo da listagem. O rascunho fica salvo se voce sair no meio.
+          Pelo botão Emitir nota, no topo da listagem. O rascunho fica salvo se você sair no meio.
         </AccordionItem>
         <AccordionItem value="cancelar" title="Da para cancelar depois?">
-          Da, enquanto a prefeitura nao fechar o mes. Depois disso, so com nota de substituicao.
+          Da, enquanto a prefeitura não fechar o mês. Depois disso, so com nota de substituição.
         </AccordionItem>
         <AccordionItem value="email" title="Quem recebe o email?">
-          O endereco do cliente cadastrado, com copia para o financeiro.
+          O endereço do cliente cadastrado, com cópia para o financeiro.
         </AccordionItem>
       </Accordion>
     </div>

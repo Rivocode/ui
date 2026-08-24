@@ -1,6 +1,7 @@
 import { PreviewCard, PreviewCardContent, PreviewCardTrigger } from '@rivocode/ui'
 
-export function EmLink() {
+/** Em link */
+export function OnALink() {
   return (
     <div className="min-h-40 w-80">
       <p className="text-base text-fg">
@@ -10,10 +11,10 @@ export function EmLink() {
             href="#"
             className="text-accent-text underline decoration-1 underline-offset-2"
           >
-            Clinica Sao Lucas
+            Clínica São Lucas
           </PreviewCardTrigger>
           <PreviewCardContent>
-            <p className="font-medium text-fg">Clinica Sao Lucas</p>
+            <p className="font-medium text-fg">Clínica São Lucas</p>
             <p className="mt-1 text-sm text-fg-muted">
               12.345.678/0001-99, cliente desde 2023. Quatro notas em aberto.
             </p>

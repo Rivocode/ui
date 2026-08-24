@@ -1,6 +1,7 @@
 import { Tab, TabList, TabPanel, Tabs } from '@rivocode/ui'
 
-export function Basico() {
+/** Básico */
+export function Basic() {
   return (
     <Tabs defaultValue="abertas" className="max-w-lg">
       <TabList>
@@ -8,22 +9,23 @@ export function Basico() {
         <Tab value="abertas">Abertas</Tab>
         <Tab value="vencidas">Vencidas</Tab>
       </TabList>
-      <TabPanel value="todas">Quarenta e duas notas no periodo.</TabPanel>
+      <TabPanel value="todas">Quarenta e duas notas no período.</TabPanel>
       <TabPanel value="abertas">Doze notas aguardando pagamento.</TabPanel>
-      <TabPanel value="vencidas">Tres notas vencidas, somando R$ 18.400,00.</TabPanel>
+      <TabPanel value="vencidas">Três notas vencidas, somando R$ 18.400,00.</TabPanel>
     </Tabs>
   )
 }
 
-export function ComAbaDesabilitada() {
+/** Com aba desabilitada */
+export function WithDisabledTab() {
   return (
     <Tabs defaultValue="dados" className="max-w-lg">
       <TabList>
         <Tab value="dados">Dados</Tab>
         <Tab value="anexos">Anexos</Tab>
-        <Tab value="historico" disabled>Historico</Tab>
+        <Tab value="historico" disabled>Histórico</Tab>
       </TabList>
-      <TabPanel value="dados">Razao social, CNPJ e endereco.</TabPanel>
+      <TabPanel value="dados">Razão social, CNPJ e endereço.</TabPanel>
       <TabPanel value="anexos">Nenhum anexo enviado.</TabPanel>
     </Tabs>
   )

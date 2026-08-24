@@ -1,7 +1,8 @@
 import { Trash2 } from 'lucide-react'
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
 
-export function EmBotaoDeIcone() {
+/** Em botão de ícone */
+export function OnAnIconButton() {
   return (
     <div className="flex min-h-32 items-end justify-center">
       <Tooltip defaultOpen>
@@ -14,7 +15,8 @@ export function EmBotaoDeIcone() {
   )
 }
 
-export function Fechada() {
+/** Fechada */
+export function Closed() {
   return (
     <Tooltip>
       <TooltipTrigger render={<Button variant="secondary" size="sm" />}>Passe o mouse</TooltipTrigger>

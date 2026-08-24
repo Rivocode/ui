@@ -1,10 +1,11 @@
 import { ContextMenu, ContextMenuTrigger, MenuContent, MenuItem, MenuSeparator } from '@rivocode/ui'
 
-export function NaLinhaDaTabela() {
+/** Na linha da tabela */
+export function InATableRow() {
   return (
     <ContextMenu>
       <ContextMenuTrigger className="flex h-24 w-80 items-center justify-center rounded-md border border-dashed border-border text-base text-fg-muted">
-        Clique com o botao direito
+        Clique com o botão direito
       </ContextMenuTrigger>
       <MenuContent>
         <MenuItem>Baixar PDF</MenuItem>

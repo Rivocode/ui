@@ -1,11 +1,12 @@
 import { Toggle, ToggleGroup } from '@rivocode/ui'
 
-export function ModoDeExibicao() {
+/** Modo de exibição */
+export function ViewMode() {
   return (
     <ToggleGroup defaultValue={['lista']}>
       <Toggle value="lista">Lista</Toggle>
       <Toggle value="grade">Grade</Toggle>
-      <Toggle value="calendario">Calendario</Toggle>
+      <Toggle value="calendario">Calendário</Toggle>
     </ToggleGroup>
   )
 }

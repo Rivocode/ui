@@ -1,6 +1,7 @@
 import { Avatar, Badge, Button, Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '@rivocode/ui'
 
-export function LinhaDeLista() {
+/** Linha de lista */
+export function ListRow() {
   return (
     <div className="flex w-96 flex-col">
       <Item>
@@ -8,7 +9,7 @@ export function LinhaDeLista() {
           <Avatar size="sm" fallback="CS" />
         </ItemMedia>
         <ItemContent>
-          <ItemTitle>Clinica Sao Lucas</ItemTitle>
+          <ItemTitle>Clínica São Lucas</ItemTitle>
           <ItemDescription>12.345.678/0001-99</ItemDescription>
         </ItemContent>
         <ItemActions>
@@ -31,7 +32,8 @@ export function LinhaDeLista() {
   )
 }
 
-export function ComMoldura() {
+/** Com moldura */
+export function WithFrame() {
   return (
     <Item variant="outline" interactive className="w-96">
       <ItemMedia>

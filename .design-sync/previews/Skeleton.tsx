@@ -1,6 +1,7 @@
 import { Card, Skeleton } from '@rivocode/ui'
 
-export function LinhasDeTabela() {
+/** Linhas de tabela */
+export function TableRows() {
   return (
     <Card className="max-w-lg">
       <div className="flex flex-col gap-3 p-5" aria-busy="true">
@@ -17,7 +18,8 @@ export function LinhasDeTabela() {
   )
 }
 
-export function Cartao() {
+/** Cartão */
+export function AsCard() {
   return (
     <Card className="max-w-sm">
       <div className="flex flex-col gap-3 p-5" aria-busy="true">

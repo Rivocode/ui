@@ -1,25 +1,27 @@
 import { Breadcrumb } from '@rivocode/ui'
 
-export function Caminho() {
+/** Caminho */
+export function Path() {
   return (
     <Breadcrumb
       items={[
-        { label: 'Inicio', href: '#' },
+        { label: 'Início', href: '#' },
         { label: 'Clientes', href: '#' },
-        { label: 'Clinica Sao Lucas', href: '#' },
+        { label: 'Clínica São Lucas', href: '#' },
         { label: '4813' },
       ]}
     />
   )
 }
 
-export function Dobrado() {
+/** Dobrado */
+export function Folded() {
   return (
     <Breadcrumb
       items={[
-        { label: 'Inicio', href: '#' },
+        { label: 'Início', href: '#' },
         { label: 'Clientes', href: '#' },
-        { label: 'Clinica Sao Lucas', href: '#' },
+        { label: 'Clínica São Lucas', href: '#' },
         { label: 'Notas', href: '#' },
         { label: '4813' },
       ]}

@@ -1,13 +1,14 @@
 import { Combobox, ComboboxContent, ComboboxInput, ComboboxItem, ComboboxList } from '@rivocode/ui'
 
 const CLIENTES = [
-  { value: 'clinica', label: 'Clinica Sao Lucas' },
+  { value: 'clinica', label: 'Clínica São Lucas' },
   { value: 'transportes', label: 'Transportes Cabo Branco' },
   { value: 'supermercado', label: 'Supermercado Tambau' },
   { value: 'construtora', label: 'Construtora Litoral' },
 ]
 
-export function BuscaEmLista() {
+/** Busca em lista */
+export function SearchInList() {
   return (
     <div className="min-h-72 w-80">
       <Combobox items={CLIENTES} defaultOpen>

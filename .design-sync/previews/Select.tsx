@@ -6,10 +6,11 @@ const PERIODOS = [
   { label: 'Este ano', value: 'ano' },
 ]
 
-export function Fechado() {
+/** Fechado */
+export function ClosedState() {
   return (
     <Select items={PERIODOS} defaultValue="30">
-      <SelectTrigger aria-label="Periodo">
+      <SelectTrigger aria-label="Período">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -21,11 +22,12 @@ export function Fechado() {
   )
 }
 
-export function Aberto() {
+/** Aberto */
+export function Open() {
   return (
     <div className="min-h-56">
       <Select items={PERIODOS} defaultValue="90" defaultOpen>
-        <SelectTrigger aria-label="Periodo">
+        <SelectTrigger aria-label="Período">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -38,12 +40,13 @@ export function Aberto() {
   )
 }
 
-export function DentroDeCampo() {
+/** Dentro de campo */
+export function InsideAField() {
   return (
     <Field name="periodo" className="max-w-xs">
-      <FieldLabel>Periodo do relatorio</FieldLabel>
+      <FieldLabel>Período do relatório</FieldLabel>
       <Select items={PERIODOS} defaultValue="ano">
-        <SelectTrigger aria-label="Periodo do relatorio">
+        <SelectTrigger aria-label="Período do relatório">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

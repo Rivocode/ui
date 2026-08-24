@@ -1,6 +1,7 @@
 import { DateRangePicker } from '@rivocode/ui'
 
-export function Periodo() {
+/** Período */
+export function Period() {
   return (
     <DateRangePicker
       className="w-72"
@@ -9,6 +10,7 @@ export function Periodo() {
   )
 }
 
-export function Vazio() {
+/** Vazio */
+export function Empty() {
   return <DateRangePicker className="w-72" />
 }

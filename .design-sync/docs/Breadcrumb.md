@@ -1,13 +1,13 @@
 ---
-category: Navegacao
+category: Navegação
 ---
 
 # Breadcrumb
 
-O caminho ate onde a pessoa esta.
+O caminho até onde a pessoa esta.
 
 Encolhe sozinho: passando de `maxItems`, o meio vira reticencia. No celular
 sobram as duas ultimas migalhas, porque caminho comprido rola para fora da tela e
-ninguem le o comeco.
+ninguém le o começo.
 
-A ultima nao e link e leva `aria-current="page"`.
+A última não é link e leva `aria-current="page"`.

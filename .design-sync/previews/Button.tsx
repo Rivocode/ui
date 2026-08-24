@@ -1,23 +1,25 @@
 import { Download, MessageCircle, Trash2 } from 'lucide-react'
 import { Button } from '@rivocode/ui'
 
-export function Variantes() {
+/** Variantes */
+export function Variants() {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button>Salvar alteracoes</Button>
+      <Button>Salvar alterações</Button>
       <Button variant="secondary">Cancelar</Button>
-      <Button variant="outline">Quero um diagnostico</Button>
+      <Button variant="outline">Quero um diagnóstico</Button>
       <Button variant="ghost">Ver detalhes</Button>
       <Button variant="destructive">Excluir projeto</Button>
     </div>
   )
 }
 
-export function Tamanhos() {
+/** Tamanhos */
+export function Sizes() {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Button size="sm">Pequeno</Button>
-      <Button size="md">Medio</Button>
+      <Button size="md">Médio</Button>
       <Button size="lg">Grande</Button>
       <Button size="cta" shape="pill">
         <MessageCircle size={18} aria-hidden="true" />
@@ -27,11 +29,12 @@ export function Tamanhos() {
   )
 }
 
-export function Estados() {
+/** Estados */
+export function States() {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Button loading>Emitindo nota</Button>
-      <Button disabled>Indisponivel</Button>
+      <Button disabled>Indisponível</Button>
       <Button size="icon" variant="secondary" aria-label="Baixar">
         <Download size={16} aria-hidden="true" />
       </Button>
@@ -42,7 +45,8 @@ export function Estados() {
   )
 }
 
-export function ComoLink() {
+/** Como link */
+export function AsLink() {
   return (
     <Button render={<a href="https://rivocode.com" />} size="cta" shape="pill">
       Ver o site da RivoCode

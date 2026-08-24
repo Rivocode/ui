@@ -4,10 +4,10 @@ category: Estrutura
 
 # Card
 
-Superficie que agrupa conteudo relacionado.
+Superfície que agrupa conteúdo relacionado.
 
-Compoe com `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` e
-`CardFooter`. O titulo sai como `<h3>`, entao respeita a hierarquia da pagina.
+Compõe com `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` e
+`CardFooter`. O título sai como `<h3>`, então respeita a hierarquia da página.
 
-`elevation="flat"` (padrao) fica sobre o fundo. `raised` ganha sombra, para o que
-precisa saltar. Nao empilhe elevacoes: se tudo salta, nada salta.
+`elevation="flat"` (padrão) fica sobre o fundo. `raised` ganha sombra, para o que
+precisa saltar. Não empilhe elevacoes: se tudo salta, nada salta.

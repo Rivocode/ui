@@ -1,14 +1,14 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # FormField
 
-Uma linha de formulario inteira: rotulo, controle, ajuda e erro, ligados entre
+Uma linha de formulário inteira: rótulo, controle, ajuda e erro, ligados entre
 si. Vive em `@rivocode/ui/form`.
 
-O controle vem por funcao, e nao por clonagem do filho, porque cada controle do
-catalogo recebe valor de um jeito e adivinhar qual falha na tela, nao no tipo:
+O controle vem por funcao, e não por clonagem do filho, porque cada controle do
+catalogo recebe valor de um jeito e adivinhar qual falha na tela, não no tipo:
 
 ```tsx
 <FormField name="email" label="E-mail">
@@ -19,5 +19,5 @@ catalogo recebe valor de um jeito e adivinhar qual falha na tela, nao no tipo:
 Para `Input` e `Textarea`, espalhar o campo basta. Para `Select`, `Checkbox` e
 `DatePicker`, os adaptadores fazem a ponte.
 
-Ele nao inventa `id` nenhum: quem liga o rotulo ao controle e o `Field` da Base
+Ele não inventa `id` nenhum: quem liga o rótulo ao controle e o `Field` da Base
 UI, pelo contexto.

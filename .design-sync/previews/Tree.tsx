@@ -11,15 +11,16 @@ const SETORES: No[] = [
   },
   {
     id: 'operacao',
-    label: 'Operacao',
+    label: 'Operação',
     children: [
-      { id: 'expedicao', label: 'Expedicao' },
+      { id: 'expedicao', label: 'Expedição' },
       { id: 'estoque', label: 'Estoque' },
     ],
   },
 ]
 
-export function EstadoMisto() {
+/** Estado misto */
+export function MixedState() {
   return (
     <div className="w-72">
       <Tree

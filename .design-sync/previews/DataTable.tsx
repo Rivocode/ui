@@ -8,18 +8,19 @@ const NOTAS: Nota[] = [
 ]
 
 const COLUNAS: Coluna<Nota>[] = [
-  { key: 'numero', header: 'Numero' },
+  { key: 'numero', header: 'Número' },
   { key: 'cliente', header: 'Cliente' },
   { key: 'valor', header: 'Valor', align: 'right' },
   {
     key: 'situacao',
-    header: 'Situacao',
+    header: 'Situação',
     align: 'right',
     cell: (nota) => <Badge tone={nota.situacao === 'Paga' ? 'success' : 'neutral'}>{nota.situacao}</Badge>,
   },
 ]
 
-export function ComDados() {
+/** Com dados */
+export function WithData() {
   return (
     <DataTable
       data={NOTAS}
@@ -30,24 +31,27 @@ export function ComDados() {
   )
 }
 
-export function Carregando() {
+/** Carregando */
+export function Loading() {
   return <DataTable<Nota> data={undefined} columns={COLUNAS} rowKey={(nota) => nota.id} skeletonRows={3} />
 }
 
-export function Erro() {
+/** Erro */
+export function Error() {
   return (
     <DataTable<Nota>
       data={undefined}
       isError
       onRetry={() => {}}
-      errorMessage="A prefeitura nao respondeu. Tente de novo em alguns minutos."
+      errorMessage="A prefeitura não respondeu. Tente de novo em alguns minutos."
       columns={COLUNAS}
       rowKey={(nota) => nota.id}
     />
   )
 }
 
-export function Vazio() {
+/** Vazio */
+export function Empty() {
   return (
     <DataTable<Nota>
       data={[]}
@@ -55,7 +59,7 @@ export function Vazio() {
       rowKey={(nota) => nota.id}
       empty={{
         title: 'Nenhuma nota por aqui',
-        description: 'Quando voce emitir a primeira, ela aparece nesta lista.',
+        description: 'Quando você emitir a primeira, ela aparece nesta lista.',
         action: <Button size="sm">Emitir nota</Button>,
       }}
     />

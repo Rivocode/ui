@@ -1,5 +1,5 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # TreeSelect
@@ -11,5 +11,5 @@ centro de custo.
 marca todas as folhas debaixo dele. Guardar o pai junto criaria dois jeitos de
 dizer a mesma coisa.
 
-O gatilho resume em vez de listar: ate tres nomes eles aparecem, passando disso
-vem o numero. Nome cortado no meio diz menos do que "7 escolhidos".
+O gatilho resume em vez de listar: até três nomes eles aparecem, passando disso
+vem o número. Nome cortado no meio diz menos do que "7 escolhidos".

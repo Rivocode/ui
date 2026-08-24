@@ -1,6 +1,7 @@
 import { Avatar } from '@rivocode/ui'
 
-export function Tamanhos() {
+/** Tamanhos */
+export function Sizes() {
   return (
     <div className="flex items-center gap-3">
       <Avatar size="sm" fallback="EB" />

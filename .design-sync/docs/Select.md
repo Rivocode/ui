@@ -1,14 +1,14 @@
 ---
-category: Formulario
+category: Formulário
 ---
 
 # Select
 
-Escolha unica em lista.
+Escolha única em lista.
 
-Compoe com `SelectTrigger`, `SelectValue`, `SelectContent` e `SelectItem`.
+Compõe com `SelectTrigger`, `SelectValue`, `SelectContent` e `SelectItem`.
 
 **Passe `items` com `{ label, value }` na raiz.** Sem isso o gatilho mostra o
-valor cru em vez do rotulo, e essa e a armadilha mais facil de cair aqui.
+valor cru em vez do rótulo, e essa é a armadilha mais fácil de cair aqui.
 
-Renderiza em portal, entao exige o `RivoProvider`.
+Renderiza em portal, então exige o `RivoProvider`.

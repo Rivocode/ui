@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogClose, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger, Button } from '@rivocode/ui'
 
-export function Cancelamento() {
+/** Cancelamento */
+export function Cancelling() {
   return (
     <div className="min-h-72">
       <AlertDialog defaultOpen>
@@ -8,7 +9,7 @@ export function Cancelamento() {
         <AlertDialogContent>
           <AlertDialogTitle>Cancelar a nota 4813?</AlertDialogTitle>
           <AlertDialogDescription>
-            A prefeitura recebe o cancelamento e o cliente e avisado. Nao da para desfazer.
+            A prefeitura recebe o cancelamento e o cliente e avisado. Não da para desfazer.
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogClose render={<Button variant="secondary" />}>Manter nota</AlertDialogClose>

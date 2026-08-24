@@ -8,7 +8,8 @@ import {
   NavigationMenuViewport,
 } from '@rivocode/ui'
 
-export function TopoDeSite() {
+/** Topo de site */
+export function SiteHeader() {
   return (
     <div className="min-h-64">
       <NavigationMenu defaultValue="produtos">
@@ -16,9 +17,9 @@ export function TopoDeSite() {
           <NavigationMenuItem value="produtos">
             <NavigationMenuTrigger>Produtos</NavigationMenuTrigger>
             <NavigationMenuContent>
-              <NavigationMenuLink href="#">Emissao de notas</NavigationMenuLink>
+              <NavigationMenuLink href="#">Emissão de notas</NavigationMenuLink>
               <NavigationMenuLink href="#">Cobranca</NavigationMenuLink>
-              <NavigationMenuLink href="#">Conciliacao</NavigationMenuLink>
+              <NavigationMenuLink href="#">Conciliação</NavigationMenuLink>
             </NavigationMenuContent>
           </NavigationMenuItem>
 
