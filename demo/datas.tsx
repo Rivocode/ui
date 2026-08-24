@@ -26,7 +26,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <label htmlFor="vencimento" className="mb-1.5 block text-sm font-medium text-fg">
             Vencimento
           </label>
-          <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} />
+          <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} confirmar />
         </div>
 
         <div className="w-full max-w-72">

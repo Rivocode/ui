@@ -77,6 +77,7 @@ export {
   type PopoverContentProps,
 } from "./components/popover";
 export { Calendar, type CalendarProps } from "./components/calendar";
+export { CalendarPanel, type CalendarPanelProps } from "./components/calendar-panel";
 export { DatePicker, type DatePickerProps } from "./components/date-picker";
 export {
   DateRangePicker,

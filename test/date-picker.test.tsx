@@ -163,3 +163,74 @@ test("na largura de mesa os dois meses aparecem", () => {
   );
   expect(screen.getAllByRole("grid")).toHaveLength(2);
 });
+
+test("com rodape, o clique no dia e so rascunho ate o Aplicar", async () => {
+  let recebida: Date | undefined;
+  render(
+    <RivoProvider scope="local">
+      <DatePicker confirmar onValueChange={(d) => (recebida = d)} />
+    </RivoProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("Abrir calendario"));
+  fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
+  expect(recebida).toBeUndefined();
+
+  fireEvent.click(screen.getByText("Aplicar"));
+  expect(recebida).toBeDefined();
+});
+
+test("sem rodape, o clique no dia ja vale e o painel fecha", () => {
+  let recebida: Date | undefined;
+  render(
+    <RivoProvider scope="local">
+      <DatePicker onValueChange={(d) => (recebida = d)} />
+    </RivoProvider>,
+  );
+
+  fireEvent.click(screen.getByLabelText("Abrir calendario"));
+  fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
+  expect(recebida).toBeDefined();
+  expect(screen.queryByRole("grid")).toBeNull();
+});
+
+test("o Aplicar do intervalo so libera com o periodo fechado", () => {
+  render(
+    <RivoProvider scope="local">
+      <DateRangePicker />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByText("Escolha o periodo"));
+
+  const aplicar = screen.getByText("Aplicar").closest("button")!;
+  expect(aplicar.disabled).toBe(true);
+
+  // O primeiro clique ja fecha um periodo de um dia so, que e escolha
+  // legitima. O que o Aplicar barra e o periodo vazio.
+  const dias = screen.getAllByRole("gridcell");
+  fireEvent.click(dias[10]!.querySelector("button")!);
+  expect((screen.getByText("Aplicar").closest("button") as HTMLButtonElement).disabled).toBe(false);
+
+  fireEvent.click(dias[14]!.querySelector("button")!);
+  expect((screen.getByText("Aplicar").closest("button") as HTMLButtonElement).disabled).toBe(false);
+});
+
+test("o calendario mostra a inicial do dia numa letra so", () => {
+  render(
+    <RivoProvider scope="local">
+      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+    </RivoProvider>,
+  );
+  const colunas = [...document.querySelectorAll("th")].map((c) => c.textContent);
+  expect(colunas).toEqual(["D", "S", "T", "Q", "Q", "S", "S"]);
+});
+
+test("a legenda do mes vira lista de mes e ano", () => {
+  render(
+    <RivoProvider scope="local">
+      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+    </RivoProvider>,
+  );
+  const listas = screen.getAllByRole("combobox");
+  expect(listas.length).toBe(2);
+});

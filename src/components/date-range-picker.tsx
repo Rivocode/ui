@@ -1,14 +1,16 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import { useState, type ComponentProps } from "react";
 import type { DateRange } from "react-day-picker";
+
+import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
 import { formatarData } from "../lib/data";
+import { Button } from "./button";
 import { Calendar } from "./calendar";
+import { CalendarPanel } from "./calendar-panel";
 import { inputVariants } from "./field";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export type { DateRange };
 
@@ -31,6 +33,12 @@ export type DateRangePickerProps = Omit<
   /** Dias que nao podem ser escolhidos. */
   disabledDays?: ComponentProps<typeof Calendar>["disabled"];
   locale?: ComponentProps<typeof Calendar>["locale"];
+  /**
+   * Rodape com Aplicar. Ligado por padrao: filtro de periodo quase sempre
+   * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
+   * primeiro clique e outra no segundo.
+   */
+  confirmar?: boolean;
 };
 
 /**
@@ -57,52 +65,99 @@ export function DateRangePicker({
   disabledDays,
   numberOfMonths = 2,
   locale,
+  confirmar = true,
   ...props
 }: DateRangePickerProps) {
   const controlado = value !== undefined;
   const [intervaloInterno, setIntervaloInterno] = useState<DateRange | undefined>(defaultValue);
   const intervalo = controlado ? value : intervaloInterno;
 
+  const [aberto, setAberto] = useState(false);
+  const [rascunho, setRascunho] = useState<DateRange | undefined>(intervalo);
+  const escolhido = confirmar && aberto ? rascunho : intervalo;
+
   const rotulo = descrever(intervalo) ?? placeholder;
   const vazio = descrever(intervalo) === undefined;
 
-  return (
-    <Popover>
-      <PopoverTrigger
-        render={
-          <button
-            {...props}
-            type="button"
-            disabled={disabled}
-            className={cn(
-              inputVariants({ size }),
-              "flex items-center justify-between gap-2 text-left",
-              vazio && "text-fg-subtle",
-              className,
-            )}
-          />
-        }
-      >
-        <span className="truncate">{rotulo}</span>
-        <CalendarDays size={16} aria-hidden="true" className="shrink-0 text-fg-muted" />
-      </PopoverTrigger>
+  function mudar(novo: DateRange | undefined) {
+    if (!controlado) setIntervaloInterno(novo);
+    setRascunho(novo);
+    onValueChange?.(novo);
+  }
 
-      <PopoverContent align="start" className="w-auto min-w-0 p-3">
-        <Calendar
-          mode="range"
-          selected={intervalo}
-          defaultMonth={intervalo?.from}
-          numberOfMonths={numberOfMonths}
-          disabled={disabledDays}
-          locale={locale}
-          onSelect={(novo) => {
-            if (!controlado) setIntervaloInterno(novo);
-            onValueChange?.(novo);
-          }}
-          autoFocus
-        />
-      </PopoverContent>
-    </Popover>
+  const gatilho = (
+    <button
+      {...props}
+      type="button"
+      disabled={disabled}
+      className={cn(
+        inputVariants({ size }),
+        "flex items-center justify-between gap-2 text-left",
+        vazio && "text-fg-subtle",
+        className,
+      )}
+    >
+      <span className="truncate">{rotulo}</span>
+      <CalendarDays size={16} aria-hidden="true" className="shrink-0 text-fg-muted" />
+    </button>
+  );
+
+  return (
+    <CalendarPanel
+      open={aberto}
+      onOpenChange={(abrir) => {
+        setAberto(abrir);
+        if (abrir) setRascunho(intervalo);
+      }}
+      trigger={gatilho}
+      title="Escolher periodo"
+      align="start"
+      footer={
+        confirmar && (
+          <div className="flex items-center justify-between gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                mudar(undefined);
+                setAberto(false);
+              }}
+            >
+              Limpar
+            </Button>
+            <Button
+              size="sm"
+              // So com o intervalo fechado: aplicar com meia escolha mandaria
+              // para a listagem um periodo que comeca e nao termina.
+              disabled={!rascunho?.from || !rascunho.to}
+              onClick={() => {
+                mudar(rascunho);
+                setAberto(false);
+              }}
+            >
+              Aplicar
+            </Button>
+          </div>
+        )
+      }
+    >
+      <Calendar
+        mode="range"
+        selected={escolhido}
+        defaultMonth={escolhido?.from}
+        numberOfMonths={numberOfMonths}
+        disabled={disabledDays}
+        locale={locale}
+        onSelect={(novo) => {
+          if (confirmar) {
+            setRascunho(novo);
+            return;
+          }
+          mudar(novo);
+        }}
+        autoFocus
+      />
+    </CalendarPanel>
   );
 }
 
@@ -110,6 +165,6 @@ export function DateRangePicker({
 function descrever(intervalo: DateRange | undefined): string | undefined {
   if (!intervalo?.from) return undefined;
   const inicio = formatarData(intervalo.from);
-  if (!intervalo.to) return `${inicio} – ...`;
-  return `${inicio} – ${formatarData(intervalo.to)}`;
+  if (!intervalo.to) return `${inicio} \u2013 ...`;
+  return `${inicio} \u2013 ${formatarData(intervalo.to)}`;
 }
