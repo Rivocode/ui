@@ -20,7 +20,7 @@ Estas valem para toda tarefa, sem repetição.
 - **Runtime:** bun 1.3 ou superior. Nunca usar npm, yarn ou pnpm neste repositório
 - **Dependências de par:** `react@^19`, `react-dom@^19`, `tailwindcss@^4`, `lucide-react@^1`
 - **Dependência real:** `@base-ui/react@^1.6`, `class-variance-authority`, `clsx`, `tailwind-merge`
-- **Sem travessão:** nenhum `—` nem `–` em código, comentário, documentação, mensagem de commit ou texto visível. Usar vírgula, dois pontos, parênteses ou ponto
+- **Sem travessão:** nenhum `` nem `` em código, comentário, documentação, mensagem de commit ou texto visível. Usar vírgula, dois pontos, parênteses ou ponto
 - **Sem cor literal fora de `src/tokens`:** nenhum `#hex`, `rgb(`, `rgba(`, `hsl(` ou `oklch(` em `src/primitives`, `src/provider` ou `src/lib`
 - **Sem `z-index` literal:** empilhamento sempre por `var(--rc-z-*)`
 - **Contraste mínimo:** 4,5:1 para texto, 7:1 para texto principal

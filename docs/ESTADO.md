@@ -89,7 +89,7 @@ Tres coisas sairam do sync e viraram codigo, porque eram furos de verdade:
   ficam de fora, porque os nossos ja embrulham os dois e o nome colidiria.
 
 - **Os dois subcaminhos entram no bundle do design**, por `extraEntries`. Sem
-  isso o agente de design nao enxergava `Form`, `FormField` nem nada de
+  isso o agent de design nao enxergava `Form`, `FormField` nem nada de
   grafico.
 
 - **Componente de subcaminho precisa de `componentSrcMap`.** O conversor
@@ -146,7 +146,7 @@ Hook Form, e integracao com React Query.
 
 Abaixo esta a analise de cada um.
 
-### Seletor de data — **feito**
+### Seletor de data, **feito**
 
 **A Base UI nao tem seletor de data.** Este e o primeiro componente que precisa
 de outra fundacao, e e o mais dificil do catalogo: locale, teclado, intervalo,
@@ -164,7 +164,7 @@ vira data, e ao sair do campo o que nao virou data volta para a ultima valida.
 Com `name`, sai um campo escondido em `aaaa-mm-dd` para o formulario nativo.
 
 O `DateRangePicker` nao digita, so escolhe, e o gatilho mostra
-`03/03/2026 – 12/03/2026`. Mascara de intervalo pede duas datas num campo so,
+`03/03/2026, 12/03/2026`. Mascara de intervalo pede duas datas num campo so,
 e o custo de acertar teclado, colagem e ordem invertida nao se paga.
 
 O formato mora em `src/lib/data.ts`, com `formatarData`, `lerData` e
@@ -175,7 +175,7 @@ na API publica.
 descricao e erro nao se ligam sozinhos. Isso entra junto com a onda de
 formularios, que e onde o assunto vive.
 
-### Formularios com Zod e React Hook Form — **feito**
+### Formularios com Zod e React Hook Form, **feito**
 
 Saiu em `@rivocode/ui/form`, subcaminho separado, com `react-hook-form`, `zod`
 e `@hookform/resolvers` como dependencias de par opcionais. Projeto que nao usa
@@ -194,7 +194,7 @@ nao inventa id nenhum.
 
 O `Select` e o `Checkbox` ganharam a borda de invalido, que faltava.
 
-### React Query — **nao comecado**
+### React Query, **nao comecado**
 
 Aqui eu discordo em parte, e vale discutir antes de construir.
 
@@ -253,7 +253,7 @@ claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
   datagrid` com dependencia de par opcional, vestindo os primitivos `Table*`,
   como ja foi feito com a Recharts em `/chart` e o React Hook Form em `/form`.
   Ela ganha em ordenacao no cliente, filtro por coluna, agrupamento, coluna
-  fixa e redimensionavel e virtualizacao — nada que o `DataTable` faca hoje.
+  fixa e redimensionavel e virtualizacao, nada que o `DataTable` faca hoje.
   Atencao ao calendario da propria biblioteca: a v8 e `useReactTable`, e a v9
   troca para `useTable` mais `tableFeatures()`, movendo os row models para
   dentro disso. O passo barato antes dela e ordenacao por coluna no proprio

@@ -1,6 +1,9 @@
 {
   "name": "@rivocode/ui",
   "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
