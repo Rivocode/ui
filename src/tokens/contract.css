@@ -76,4 +76,5 @@
   --shadow-3: var(--rc-shadow-3);
 
   --ease-rc: var(--rc-ease);
+  --ease-rc-folha: var(--rc-ease-folha);
 }

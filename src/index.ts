@@ -1,6 +1,7 @@
 export const version = "0.1.0";
 
 export { cn } from "./lib/cn";
+export { useMediaQuery, useTelaEstreita } from "./lib/tela";
 export {
   RivoProvider,
   useRivoContext,
@@ -81,6 +82,18 @@ export {
   type DateRangePickerProps,
 } from "./components/date-range-picker";
 export { formatarData, lerData, mascararData } from "./lib/data";
+export {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHandle,
+  SheetTitle,
+  SheetTrigger,
+  type SheetContentProps,
+  type SheetProps,
+  type SheetSide,
+} from "./components/sheet";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {

@@ -44,6 +44,10 @@
   --rc-duration-base: 200ms;
   --rc-duration-slow: 320ms;
   --rc-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* A curva da folha que desliza. Sai rapido e chega devagar, para o painel
+     acompanhar o dedo em vez de parecer que decidiu sozinho. */
+  --rc-ease-folha: cubic-bezier(0.32, 0.72, 0, 1);
+  --rc-duration-folha: 450ms;
 
   /* Foco */
   --rc-ring-width: 2px;
@@ -76,5 +80,6 @@
     --rc-duration-fast: 0ms;
     --rc-duration-base: 0ms;
     --rc-duration-slow: 0ms;
+    --rc-duration-folha: 0ms;
   }
 }
