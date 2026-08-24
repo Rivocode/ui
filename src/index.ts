@@ -41,3 +41,14 @@ export {
   DialogTrigger,
   type DialogContentProps,
 } from './primitives/dialog'
+export {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  type TableRowProps,
+} from './primitives/table'
+export { Checkbox, type CheckboxProps } from './primitives/checkbox'
+export { Tab, TabList, TabPanel, Tabs } from './primitives/tabs'

@@ -58,3 +58,10 @@ test('carregando desabilita, anuncia ocupado e esconde o giro do leitor de tela'
   expect((botao as HTMLButtonElement).disabled).toBe(true)
   expect(botao.querySelector('[aria-hidden="true"]')).not.toBeNull()
 })
+
+test('o tamanho de icone e quadrado, para o botao de acao da tabela', () => {
+  render(<Button size="icon" aria-label="Mais acoes">.</Button>)
+  const classes = screen.getByRole('button', { name: 'Mais acoes' }).className
+  expect(classes).toContain('size-[var(--rc-control-md)]')
+  expect(classes).toContain('p-0')
+})

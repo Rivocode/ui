@@ -24,6 +24,7 @@
   --color-accent-fg: var(--rc-accent-fg);
   --color-accent-text: var(--rc-accent-text);
   --color-accent-subtle: var(--rc-accent-subtle);
+  --color-selected: var(--rc-selected);
 
   --color-border: var(--rc-border);
   --color-border-strong: var(--rc-border-strong);

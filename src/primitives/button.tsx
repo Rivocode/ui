@@ -27,6 +27,10 @@ export const buttonVariants = cva(
         sm: 'h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm',
         md: 'h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base',
         lg: 'h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md',
+        // Quadrado, para botao que so tem icone. Tabela vive cheio deles, e
+        // botao de icone com padding de texto fica torto.
+        icon: 'size-[var(--rc-control-md)] p-0',
+        iconSm: 'size-[var(--rc-control-sm)] p-0',
       },
       shape: {
         default: 'rounded-md',

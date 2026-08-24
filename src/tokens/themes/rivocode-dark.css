@@ -17,6 +17,10 @@
   --rc-accent-fg: var(--rc-p-graphite-900);
   --rc-accent-text: var(--rc-p-lima-500);
   --rc-accent-subtle: rgb(212 243 74 / 0.14);
+  /* Linha escolhida numa tabela. Area grande pede alfa baixo: no escuro a
+   * lima a 0.14 suja a linha inteira de oliva. A barra lateral e que carrega
+   * o sinal, o fundo so acompanha. */
+  --rc-selected: rgb(212 243 74 / 0.05);
 
   --rc-border: rgb(255 255 255 / 0.09);
   --rc-border-strong: rgb(255 255 255 / 0.14);

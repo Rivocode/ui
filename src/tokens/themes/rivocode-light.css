@@ -19,6 +19,7 @@
   /* Como texto a lima daria 1,6 para 1, entao aqui ela e escurecida. */
   --rc-accent-text: var(--rc-p-lima-700);
   --rc-accent-subtle: rgb(212 243 74 / 0.22);
+  --rc-selected: rgb(212 243 74 / 0.16);
 
   --rc-border: rgb(15 17 19 / 0.10);
   --rc-border-strong: rgb(15 17 19 / 0.18);
