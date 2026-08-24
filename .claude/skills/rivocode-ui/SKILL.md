@@ -60,7 +60,7 @@ container de portal que leva o tema junto. **Não monte nenhum deles à mão.**
 
 Escreva layout com as mesmas classes que os componentes usam.
 
-**Nunca escreva cor literal nem `z-index` numérico.** O `bun run check` do
+**Nunca escreva cor literal nem `z-index` numérico.** O `check` do
 repositório da biblioteca falha nisso, e no seu projeto o efeito é pior: a peça
 para de responder ao tema do cliente.
 

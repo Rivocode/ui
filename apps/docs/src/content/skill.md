@@ -3,18 +3,8 @@ leia skills, dá para ensiná-lo a biblioteca inteira de uma vez.
 
 ## Instalar
 
-Se o pacote já está no projeto, o comando dele resolve:
-
-```bash
-bunx rivocode-ui skill            # só neste projeto
-bunx rivocode-ui skill --global   # para todos os seus projetos
-```
-
-Isso copia a skill que veio **dentro da versão instalada**. Um projeto preso no
-`0.2.0` recebe a skill do `0.2.0`, e não a do site, que fala de peças que aquele
-projeto ainda não tem.
-
-Sem o pacote, ou para pegar sempre a mais nova, um `curl` faz o mesmo:
+O caminho que funciona em qualquer lugar, sem gerenciador de pacote e sem ter a
+biblioteca instalada:
 
 ```bash
 mkdir -p ~/.claude/skills/rivocode-ui && \
@@ -22,11 +12,38 @@ mkdir -p ~/.claude/skills/rivocode-ui && \
   -o ~/.claude/skills/rivocode-ui/SKILL.md
 ```
 
-A versão de projeto, que a equipe toda recebe junto pelo Git, troca `~/.claude`
-por `.claude`.
+Trocando `~/.claude` por `.claude` ela entra só no projeto, e a equipe recebe
+junto pelo Git.
 
-Depois disso o agente carrega a skill sozinho quando você pedir uma tela, um
-formulário ou um gráfico. Não é preciso citá-la no prompt.
+### Pelo comando do pacote
+
+Se o `@rivocode/ui` já está no projeto, o comando dele copia a skill **da versão
+instalada**. Um projeto preso no `0.2.0` recebe a skill do `0.2.0`, e não a do
+site, que fala de peças que ele ainda não tem.
+
+```bash
+npx rivocode-ui skill        # npm
+pnpm exec rivocode-ui skill  # pnpm
+yarn rivocode-ui skill       # yarn
+bunx rivocode-ui skill       # bun
+```
+
+Acrescente `--global` para instalar em `~/.claude` em vez do projeto.
+
+### Sem instalar nada
+
+```bash
+bunx @rivocode/ui skill
+pnpm dlx @rivocode/ui skill
+npx -y --legacy-peer-deps @rivocode/ui skill
+```
+
+O `--legacy-peer-deps` do npm não é enfeite: para rodar um comando ele instala o
+pacote num diretório temporário **com as dependências de par opcionais junto**, e
+a árvore do `@hookform/resolvers` entra em conflito ali. O `bunx` e o `pnpm dlx`
+não fazem isso. Se preferir evitar a flag, use o `curl`.
+
+O `yarn` clássico não tem `dlx`. Nele, instale o pacote e use a forma de cima.
 
 ## O que ela ensina
 

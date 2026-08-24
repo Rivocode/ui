@@ -3,9 +3,17 @@ de `.npmrc`, nem de acesso à organização.
 
 ## 1. Instalar
 
-```sh
+```bash
+npm install @rivocode/ui
+pnpm add @rivocode/ui
+yarn add @rivocode/ui
 bun add @rivocode/ui
-bun add -d tailwindcss @tailwindcss/vite
+```
+
+E o Tailwind, como dependência de desenvolvimento:
+
+```bash
+npm install -D tailwindcss @tailwindcss/vite
 ```
 
 React 19, React DOM 19 e Tailwind 4 são **dependências de par**: quem manda na
@@ -87,7 +95,7 @@ Até a versão `0.1.0` o pacote era privado, e todo projeto consumidor tinha um
 ```
 
 **Remova.** Mapeamento de escopo tem precedência sobre o registro padrão, então
-enquanto ela existir o `bun add @rivocode/ui` continua buscando no GitHub
+enquanto ela existir a instalação de `@rivocode/ui` continua buscando no GitHub
 Packages, e não encontra as versões novas. O token também deixa de ser
 necessário.
 

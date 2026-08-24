@@ -10,7 +10,7 @@ cliente X em outro, sem editar componente nenhum.
 ## Instalação
 
 ```bash
-bun add @rivocode/ui
+npm install @rivocode/ui   # ou pnpm add, yarn add, bun add
 ```
 
 Público no npm, sob licença MIT. Não precisa de token nem de `.npmrc`.
@@ -18,7 +18,7 @@ Público no npm, sob licença MIT. Não precisa de token nem de `.npmrc`.
 O Tailwind entra como dependência de desenvolvimento:
 
 ```bash
-bun add -d tailwindcss @tailwindcss/vite
+npm install -D tailwindcss @tailwindcss/vite
 ```
 
 React 19, React DOM 19 e Tailwind 4 são dependências de par, ou seja, quem manda
@@ -208,7 +208,7 @@ Zod e React Hook Form vivem no subcaminho `@rivocode/ui/form`, com dependências
 de par **opcionais**: quem não usa formulário não carrega nada disso.
 
 ```sh
-bun add react-hook-form zod @hookform/resolvers
+npm install react-hook-form zod @hookform/resolvers
 ```
 
 ```tsx
@@ -303,7 +303,7 @@ Recharts vive no subcaminho `@rivocode/ui/chart`, com dependência de par
 opcional: quem não faz gráfico não carrega os 200 kB dela.
 
 ```sh
-bun add recharts
+npm install recharts
 ```
 
 As peças da Recharts que a biblioteca veste saem pelo mesmo import — sem isso

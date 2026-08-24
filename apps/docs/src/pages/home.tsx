@@ -17,9 +17,9 @@ import { linkTo, type Route } from '@/routes'
  * picture, and the catalog is the last thing rather than the first.
  * ------------------------------------------------------------------------- */
 
-const INSTALL = 'bun add @rivocode/ui'
+const INSTALL = 'npm install @rivocode/ui'
 
-const SKILL_CMD = 'bunx rivocode-ui skill'
+const SKILL_CMD = 'npx rivocode-ui skill'
 
 const SKILL_PEEK = `| Situação                    | Peça certa    |
 | --------------------------- | ------------- |
