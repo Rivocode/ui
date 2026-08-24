@@ -48,10 +48,14 @@ const PAIRS: Array<[string, string, number]> = [
   ['--rc-fg-subtle', '--rc-surface', MIN_TEXT],
   ['--rc-accent-text', '--rc-bg', MIN_TEXT],
   ['--rc-accent-fg', '--rc-accent', MIN_TEXT],
-  ['--rc-success', '--rc-bg', MIN_TEXT],
-  ['--rc-warning', '--rc-bg', MIN_TEXT],
-  ['--rc-danger', '--rc-bg', MIN_TEXT],
-  ['--rc-info', '--rc-bg', MIN_TEXT],
+  ['--rc-success-text', '--rc-bg', MIN_TEXT],
+  ['--rc-warning-text', '--rc-bg', MIN_TEXT],
+  ['--rc-danger-text', '--rc-bg', MIN_TEXT],
+  ['--rc-info-text', '--rc-bg', MIN_TEXT],
+  ['--rc-success-text', '--rc-surface', MIN_TEXT],
+  ['--rc-warning-text', '--rc-surface', MIN_TEXT],
+  ['--rc-danger-text', '--rc-surface', MIN_TEXT],
+  ['--rc-info-text', '--rc-surface', MIN_TEXT],
   ['--rc-success-fg', '--rc-success', MIN_TEXT],
   ['--rc-warning-fg', '--rc-warning', MIN_TEXT],
   ['--rc-danger-fg', '--rc-danger', MIN_TEXT],
@@ -67,6 +71,9 @@ if (import.meta.main) {
 
   for (const file of files.sort()) {
     const tokens = readTokens(palette + '\n' + (await Bun.file(file).text()))
+    // Nem todo arquivo na pasta de temas e um tema: o de fontes, por exemplo,
+    // so traz @import. Um tema de verdade sempre declara o fundo.
+    if (!tokens['--rc-bg']) continue
     console.log(`\n${file}`)
     for (const [fg, bg, min] of PAIRS) {
       const a = tokens[fg]

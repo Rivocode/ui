@@ -26,15 +26,19 @@
 
   --rc-success: var(--rc-p-teal-700);
   --rc-success-fg: var(--rc-p-white);
+  --rc-success-text: var(--rc-p-teal-700);
   --rc-success-subtle: rgb(15 118 110 / 0.10);
   --rc-warning: var(--rc-p-amber-700);
   --rc-warning-fg: var(--rc-p-white);
+  --rc-warning-text: var(--rc-p-amber-700);
   --rc-warning-subtle: rgb(161 92 0 / 0.10);
   --rc-danger: var(--rc-p-red-700);
   --rc-danger-fg: var(--rc-p-white);
+  --rc-danger-text: var(--rc-p-red-700);
   --rc-danger-subtle: rgb(192 38 31 / 0.10);
   --rc-info: var(--rc-p-blue-700);
   --rc-info-fg: var(--rc-p-white);
+  --rc-info-text: var(--rc-p-blue-700);
   --rc-info-subtle: rgb(29 78 216 / 0.10);
 
   --rc-text-display: clamp(32px, 4.2vw, 54px);

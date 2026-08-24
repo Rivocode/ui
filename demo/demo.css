@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+@source '../src/primitives';
+@source '../src/provider';
+@source '.';
+
+@import '../src/preset.css';

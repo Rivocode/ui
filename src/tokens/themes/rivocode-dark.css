@@ -24,15 +24,22 @@
 
   --rc-success: var(--rc-p-teal-400);
   --rc-success-fg: var(--rc-p-graphite-900);
+  --rc-success-text: var(--rc-p-teal-400);
   --rc-success-subtle: rgb(61 220 151 / 0.14);
   --rc-warning: var(--rc-p-amber-400);
   --rc-warning-fg: var(--rc-p-graphite-900);
+  --rc-warning-text: var(--rc-p-amber-400);
   --rc-warning-subtle: rgb(242 178 28 / 0.14);
-  --rc-danger: var(--rc-p-red-400);
-  --rc-danger-fg: var(--rc-p-graphite-900);
+  /* O perigo e o unico estado que vira botao solido, e um botao de excluir
+   * precisa pesar. Por isso ele escurece e recebe texto branco, enquanto os
+   * outros preenchem claro com texto escuro. */
+  --rc-danger: var(--rc-p-red-600);
+  --rc-danger-fg: var(--rc-p-white);
+  --rc-danger-text: var(--rc-p-red-400);
   --rc-danger-subtle: rgb(255 107 107 / 0.14);
   --rc-info: var(--rc-p-blue-400);
   --rc-info-fg: var(--rc-p-graphite-900);
+  --rc-info-text: var(--rc-p-blue-400);
   --rc-info-subtle: rgb(106 169 255 / 0.14);
 
   /* Passos de marketing. Vivem no tema da marca, nao no nucleo: um sistema de

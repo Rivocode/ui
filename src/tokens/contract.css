@@ -31,15 +31,19 @@
 
   --color-success: var(--rc-success);
   --color-success-fg: var(--rc-success-fg);
+  --color-success-text: var(--rc-success-text);
   --color-success-subtle: var(--rc-success-subtle);
   --color-warning: var(--rc-warning);
   --color-warning-fg: var(--rc-warning-fg);
+  --color-warning-text: var(--rc-warning-text);
   --color-warning-subtle: var(--rc-warning-subtle);
   --color-danger: var(--rc-danger);
   --color-danger-fg: var(--rc-danger-fg);
+  --color-danger-text: var(--rc-danger-text);
   --color-danger-subtle: var(--rc-danger-subtle);
   --color-info: var(--rc-info);
   --color-info-fg: var(--rc-info-fg);
+  --color-info-text: var(--rc-info-text);
   --color-info-subtle: var(--rc-info-subtle);
 
   --radius-sm: var(--rc-radius-sm);

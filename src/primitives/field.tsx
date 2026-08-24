@@ -63,5 +63,5 @@ export function FieldDescription({
 }
 
 export function FieldError({ className, ...props }: ComponentProps<typeof BaseField.Error>) {
-  return <BaseField.Error {...props} className={cn('text-xs text-danger', className)} />
+  return <BaseField.Error {...props} className={cn('text-xs text-danger-text', className)} />
 }

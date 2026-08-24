@@ -1,4 +1,5 @@
 /* O vocabulario da RivoCode para o Tailwind do projeto consumidor. */
+@import './tokens/themes/rivocode-fonts.css';
 @import './tokens/palette.css';
 @import './tokens/scales.css';
 @import './tokens/contract.css';

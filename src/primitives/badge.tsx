@@ -13,10 +13,10 @@ export const badgeVariants = cva(
       tone: {
         neutral: 'border-border bg-surface-raised text-fg-muted',
         accent: 'border-border-strong bg-accent-subtle text-accent-text',
-        success: 'border-border bg-success-subtle text-success',
-        warning: 'border-border bg-warning-subtle text-warning',
-        danger: 'border-border bg-danger-subtle text-danger',
-        info: 'border-border bg-info-subtle text-info',
+        success: 'border-border bg-success-subtle text-success-text',
+        warning: 'border-border bg-warning-subtle text-warning-text',
+        danger: 'border-border bg-danger-subtle text-danger-text',
+        info: 'border-border bg-info-subtle text-info-text',
       },
       size: {
         sm: 'h-5 px-2 text-xs',

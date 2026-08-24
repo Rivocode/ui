@@ -10,7 +10,10 @@ export const buttonVariants = cva(
     'transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]',
     'outline-none focus-visible:ring-2 focus-visible:ring-ring',
     'focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
-    'disabled:pointer-events-none disabled:opacity-60',
+    // Desabilitado vira neutro de proposito. Desbotar a cor da marca produz
+    // um verde sujo que parece defeito, nao estado.
+    'disabled:pointer-events-none disabled:border-transparent',
+    'disabled:bg-surface-raised disabled:text-fg-disabled disabled:shadow-none',
   ),
   {
     variants: {
