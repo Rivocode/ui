@@ -21,3 +21,13 @@ export {
   type CardProps,
 } from './primitives/card'
 export { Badge, badgeVariants, type BadgeProps } from './primitives/badge'
+export {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  Input,
+  inputVariants,
+  type FieldProps,
+  type InputProps,
+} from './primitives/field'
