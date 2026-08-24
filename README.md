@@ -93,36 +93,235 @@ vermelho que preenche um botão e recebe `text-danger-fg` por cima.
 serve bem para as duas coisas: a que tem contraste como texto não aguenta texto
 branco por cima, e vice-versa. Vale o mesmo para o acento.
 
-## O catalogo
+## O catálogo
 
-| Peca             | Para que serve                                                      |
-| ---------------- | ------------------------------------------------------------------- |
-| `Button`         | quatro variantes, tres tamanhos, forma em pilula e tamanho de icone |
-| `Card`           | superficie com cabecalho, corpo, rodape e duas elevacoes            |
-| `Badge`          | selo de estado, seis tons                                           |
-| `Field`, `Input` | campo com rotulo, ajuda e erro ligados por acessibilidade           |
-| `Dialog`         | janela modal, em portal                                             |
-| `Table`          | tabela semantica, com selecao de linha                              |
-| `Checkbox`       | caixa de marcar, com o estado misto do "selecionar todos"           |
-| `Tabs`           | abas com risco deslizante                                           |
-| `Select`         | escolha unica, em portal                                            |
-| `Menu`           | menu de acoes, com grupos e item destrutivo                         |
-| `Tooltip`        | dica, para botao que so tem icone                                   |
-| `Toast`          | aviso que passa, via `useToast()`                                   |
-| `Alert`          | aviso que fica, com o papel certo de leitor de tela por tom         |
-| `Skeleton`       | marca de lugar enquanto o dado nao chegou                           |
-| `EmptyState`     | estado vazio, com descricao e saida obrigatorias                    |
+Quarenta e uma peças. A tabela diz para que cada uma serve, e a diferença entre
+as que se parecem.
 
-Tres coisas que a biblioteca resolve por voce e que costumam dar trabalho:
+### Ação
 
-- **Portal com tema.** Dialogo, menu, selecao e dica renderizam fora da arvore.
-  O Provider cria um container que carrega o tema, entao eles nunca aparecem sem
+| Peça                    | Para que serve                                                      |
+| ----------------------- | ------------------------------------------------------------------- |
+| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone  |
+| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro      |
+
+### Campo
+
+| Peça                             | Para que serve                                                             |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| `Field`, `Input`                 | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
+| `Textarea`                       | várias linhas; altura em número de linhas, sem variante de tamanho         |
+| `MaskedInput`                    | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, dinheiro, molde à mão |
+| `InputGroup`                     | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
+| `Checkbox`                       | caixa de marcar, com o estado misto do "selecionar todos"                  |
+| `Radio`, `RadioGroup`            | escolha única quando as opções cabem na tela                               |
+| `Switch`                         | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
+| `Select`                         | escolha única em lista curta e fixa                                        |
+| `Combobox`                       | escolha em lista longa ou vinda do servidor, com busca e fichas            |
+| `TreeSelect`, `Tree`             | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
+| `DatePicker`, `DateRangePicker`  | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
+| `Calendar`                       | o mês cru, para quem quer o calendário na própria tela                     |
+
+### Flutuante
+
+| Peça          | Para que serve                                                                |
+| ------------- | ----------------------------------------------------------------------------- |
+| `Dialog`      | janela modal; no celular encosta embaixo                                      |
+| `AlertDialog` | confirmação sem volta: não fecha com Esc nem com clique fora                  |
+| `Sheet`       | folha que desliza da borda, com gesto de arrastar; é o menu do celular        |
+| `Popover`     | painel ancorado de conteúdo livre                                             |
+| `Tooltip`     | dica, para botão que só tem ícone                                             |
+| `Menu`        | menu de ações, com grupos e item destrutivo                                   |
+| `Toast`       | aviso que passa, via `useToast()`                                             |
+
+### Navegação
+
+| Peça         | Para que serve                                                          |
+| ------------ | ----------------------------------------------------------------------- |
+| `Sidebar`    | barra lateral que encolhe até a coluna de ícones e vira folha no celular |
+| `Tabs`       | abas com risco deslizante; rolam de lado quando não cabem               |
+| `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo             |
+| `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas         |
+| `Steps`      | a régua de um formulário em etapas, com `useWizard()`                   |
+
+### Dado
+
+| Peça        | Para que serve                                                       |
+| ----------- | -------------------------------------------------------------------- |
+| `Table`     | tabela semântica, com seleção de linha                               |
+| `DataTable` | tabela com os três estados de consulta: carregando, erro e vazio     |
+| `Item`      | a linha de lista: ícone, texto e ação                                |
+| `Badge`     | selo de estado, seis tons                                            |
+| `Avatar`    | foto de pessoa, com a inicial por trás                               |
+
+### Estado
+
+| Peça         | Para que serve                                              |
+| ------------ | ----------------------------------------------------------- |
+| `Alert`      | aviso que fica, com o papel de leitor de tela certo por tom |
+| `Skeleton`   | marca de lugar enquanto o dado não chegou                   |
+| `Spinner`    | espera sem fim previsto                                     |
+| `Progress`   | espera com fim conhecido                                    |
+| `EmptyState` | estado vazio, com descrição e saída obrigatórias            |
+
+### Estrutura
+
+`Card`, `Separator`, `Accordion`, `RivoProvider`.
+
+Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
+
+- **Portal com tema.** Diálogo, menu, seleção e dica renderizam fora da árvore.
+  O Provider cria um container que carrega o tema, então eles nunca aparecem sem
   estilo, nem no modo escopado.
-- **Fiacao de aviso.** Provedor, portal e area de exibicao ja vivem no Provider.
-  Voce chama `useToast().add({...})` e pronto.
-- **Identidade estavel do `useToast()`.** O gerenciador da Base UI devolve objeto
-  novo a cada renderizacao, e um `useEffect` que dependa dele entra em laco
-  infinito. Aqui ele e estavel.
+- **Fiação de aviso.** Provedor, portal e área de exibição já vivem no Provider.
+  Você chama `useToast().add({...})` e pronto.
+- **Identidade estável do `useToast()`.** O gerenciador da Base UI devolve objeto
+  novo a cada renderização, e um `useEffect` que dependa dele entra em laço
+  infinito. Aqui ele é estável.
+
+## O que a biblioteca decide sozinha no celular
+
+Todo componente é pensado em 390px antes do desktop, e algumas decisões estão
+embutidas em vez de ficarem por sua conta:
+
+- Painel flutuante não encosta na borda da tela.
+- `Dialog` e `AlertDialog` encostam embaixo e ocupam a largura toda.
+- `Calendar` mostra um mês só, mesmo quando você pede dois.
+- `DatePicker` troca o painel ancorado por folha de baixo.
+- `Sidebar` vira folha da esquerda.
+- Dia do calendário tem 44px de alvo, contra 36 no desktop.
+- `Pagination` troca os números pelas setas, `Breadcrumb` guarda as duas últimas
+  migalhas, `Steps` vira uma linha de texto com barra de progresso.
+
+O `useTelaEstreita()` está exportado, para as decisões que o seu layout também
+precisa tomar em JS.
+
+## Formulários
+
+Zod e React Hook Form vivem no subcaminho `@rivocode/ui/form`, com dependências
+de par **opcionais**: quem não usa formulário não carrega nada disso.
+
+```sh
+bun add react-hook-form zod @hookform/resolvers
+```
+
+```tsx
+import { Input, DatePicker, Button } from "@rivocode/ui";
+import { Form, FormField, useZodForm, paraDatePicker } from "@rivocode/ui/form";
+import { z } from "zod";
+
+const schema = z.object({
+  email: z.email("Escreva um email válido"),
+  vencimento: z.date("Escolha a data"),
+});
+
+export function EmitirNota() {
+  const form = useZodForm(schema, { defaultValues: { email: "" } });
+
+  return (
+    <Form form={form} onSubmit={(valores) => console.log(valores)}>
+      <FormField name="email" label="E-mail" description="Para onde vai a nota">
+        {(campo) => <Input {...campo} placeholder="voce@empresa.com" />}
+      </FormField>
+
+      <FormField name="vencimento" label="Vencimento">
+        {(campo) => <DatePicker {...paraDatePicker(campo)} />}
+      </FormField>
+
+      <Button type="submit">Emitir</Button>
+    </Form>
+  );
+}
+```
+
+O `FormField` não inventa `id` nenhum: quem liga o rótulo ao controle é o
+`Field` da Base UI, pelo contexto. Por isso todo controle do catálogo passa pelo
+`Field.Control` dela, o `DatePicker` inclusive.
+
+O controle vem por função, e não por clonagem do filho, porque cada um recebe
+valor de um jeito. Para `Input` e `Textarea`, espalhar o campo basta. Para os
+outros, os adaptadores fazem a ponte: `paraDatePicker`, `paraSelect` e
+`paraCheckbox`.
+
+O `useZodForm` separa o tipo de entrada do de saída. Sem isso um
+`z.coerce.number()` mente sobre o tipo do campo.
+
+## Máscara
+
+O molde usa `9` para dígito, `A` para letra e `*` para os dois. O resto é
+literal, e a máscara põe sozinha.
+
+```tsx
+import { MaskedInput, aplicarMascara, emCentavos } from "@rivocode/ui";
+
+<MaskedInput mask="cnpj" onValueChange={(comPontuacao, cru) => guardar(cru)} />
+<MaskedInput mask="moeda" onValueChange={(texto) => guardar(emCentavos(texto))} />
+<MaskedInput mask="99-99/9999" />
+```
+
+**Guarde o valor cru**, não o pontuado: a pontuação muda com o tempo e o dado
+deixa de bater. O dinheiro sai em centavos, para o servidor receber inteiro em
+vez de ponto flutuante.
+
+Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
+`cartao` e `moeda`. O telefone troca de molde entre o fixo e o celular sozinho.
+
+## Listagem com estados de consulta
+
+O `DataTable` não conhece React Query, e isso é de propósito: entram três
+booleanos, e funciona igual com `fetch` na mão, com SWR ou com server component.
+
+```tsx
+<DataTable
+  data={query.data}
+  isLoading={query.isLoading}
+  isError={query.isError}
+  onRetry={query.refetch}
+  rowKey={(nota) => nota.id}
+  columns={[
+    { key: "numero", header: "Número" },
+    { key: "cliente", header: "Cliente" },
+    { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
+  ]}
+  empty={{ title: "Nenhuma nota", description: "Emita a primeira para ela aparecer." }}
+/>
+```
+
+Erro vence carregando, e vazio só vale depois que a consulta voltou. Sem essa
+ordem, uma nova busca sobre um erro pisca "nenhum resultado" antes de mostrar o
+problema.
+
+## Tela de aplicação
+
+```tsx
+<SidebarProvider defaultOpen>
+  <Sidebar>
+    <SidebarHeader>RivoCode</SidebarHeader>
+    <SidebarContent>
+      <SidebarGroup label="Operação">
+        <SidebarMenu>
+          <SidebarMenuItem href="/painel" icon={<LayoutDashboard size={16} />} active>
+            Painel
+          </SidebarMenuItem>
+          <SidebarMenuItem href="/notas" icon={<FileText size={16} />} badge={<Badge>4</Badge>}>
+            Notas fiscais
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
+
+  <SidebarInset>
+    <header>
+      <SidebarTrigger />
+    </header>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+Fechada quer dizer coisas diferentes em cada largura: na mesa, encolhida até a
+coluna de ícones, com o nome de cada item virando dica; no celular, fora da
+tela, e a barra vira a folha da esquerda. O atalho é Ctrl+B, ou Cmd+B no Mac.
 
 ## Tema de cliente
 
@@ -141,8 +340,8 @@ Ela mede quarenta pares que carregam texto e falha se algum ficar abaixo de
 
 ```sh
 bun install
-bun run check   # lint, guarda de cor, guarda de contraste, testes
-bun run shot    # gera a vitrine em demo/dist/vitrine.png
+bun run check   # lint, tipos, guarda de cor, guarda de contraste, testes
+bun run shot    # gera a vitrine em demo/dist/, de mesa e de celular
 bun run serve   # abre a vitrine em http://127.0.0.1:4173
 ```
 
@@ -169,3 +368,6 @@ export default defineConfig({
   usado.
 - A publicação é manual e disparada por tag, nunca automática em push. Biblioteca
   que publica sozinha publica engano.
+- O retrato de celular sai de dentro de um iframe, em `demo/celular.html`, e não
+  do tamanho da janela: o Chrome no macOS não abre janela abaixo de 500px, e
+  pedir 390 devolvia uma foto cortada em 390 **com layout de 500**.
