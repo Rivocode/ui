@@ -46,6 +46,11 @@ const ORDER: Array<{ slug: string; title: string; summary: string }> = [
     title: 'Para agents',
     summary: 'Markdown cru, llms.txt e como pedir no prompt.',
   },
+  {
+    slug: 'skill',
+    title: 'Skill',
+    summary: 'Um comando, e o agente aprende a biblioteca inteira.',
+  },
 ]
 
 const bodyOf = (slug: string) => CONTENT[`./content/${slug}.md`] ?? ''

@@ -15,6 +15,12 @@ const DOCS_DIR = here('../../.design-sync/docs')
 const PREVIEWS_DIR = here('../../.design-sync/previews')
 const TYPES_FILE = here('./src/component-types.json')
 const CONVENTIONS = here('../../.design-sync/conventions.md')
+/*
+ * A skill mora onde o Claude Code procura, e nao numa pasta so para o site: uma
+ * segunda copia divergiria da primeira no dia seguinte, e a que o site entrega
+ * e justamente a que precisa estar certa.
+ */
+const SKILL = here('../../.claude/skills/rivocode-ui/SKILL.md')
 
 type Doc = { name: string; slug: string; family: string; body: string }
 
@@ -146,6 +152,8 @@ Comece por [/convencoes.md](/convencoes.md): e o contrato de uso da biblioteca,
 com o RivoProvider, o vocabulario de classes e as regras que valem para todo
 componente.
 
+Se voce roda como agente com skills, ha uma pronta em [/skill/SKILL.md](/skill/SKILL.md).
+
 ${sections}
 `
 }
@@ -177,6 +185,13 @@ function rawDocs(): Plugin {
           return
         }
 
+        // A skill, servida crua no endereço que o comando de instalação usa.
+        if (path === '/skill/SKILL.md') {
+          res.setHeader('content-type', 'text/markdown; charset=utf-8')
+          res.end(readFileSync(SKILL, 'utf8'))
+          return
+        }
+
         const hit = /^\/componentes\/([a-z0-9-]+)\.md$/.exec(path)
         if (hit) {
           const docs = readDocs()
@@ -200,6 +215,11 @@ function rawDocs(): Plugin {
         type: 'asset',
         fileName: 'convencoes.md',
         source: readFileSync(CONVENTIONS, 'utf8'),
+      })
+      this.emitFile({
+        type: 'asset',
+        fileName: 'skill/SKILL.md',
+        source: readFileSync(SKILL, 'utf8'),
       })
 
       const sources = readAll(docs)

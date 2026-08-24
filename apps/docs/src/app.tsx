@@ -1,5 +1,5 @@
 import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
-import { Blocks, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
+import { BookOpen, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { ENTRIES, FAMILIES, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
@@ -202,19 +202,19 @@ export function App() {
             </div>
 
             <div className="flex items-center gap-2">
-              {/* The catalog needs its own way in from every page: on the home
-                  page there is no sidebar, and from the demo the only route to
-                  a component page was going back first. */}
+              {/* The documentation needs its own way in from every page, and
+                  it opens where someone actually starts: installation. From
+                  there the sidebar carries them to any piece. */}
               <a
-                {...linkTo({ kind: 'component', slug: 'button' }, navigate)}
+                {...linkTo({ kind: 'guide', slug: 'instalacao' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
-                  route.kind === 'component'
+                  route.kind === 'guide' || route.kind === 'component' || route.kind === 'foundation'
                     ? 'border-accent text-fg'
                     : 'border-border text-fg-subtle'
                 }`}
               >
-                <Blocks size={13} />
-                <span className="hidden sm:inline">componentes</span>
+                <BookOpen size={13} />
+                <span className="hidden sm:inline">documentação</span>
               </a>
 
               <a
