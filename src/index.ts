@@ -8,3 +8,5 @@ export {
   type RivoProviderProps,
   type RivoTheme,
 } from './provider/rivo-provider'
+
+export { Button, buttonVariants, type ButtonProps } from './primitives/button'
