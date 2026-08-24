@@ -177,12 +177,12 @@ O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentr
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 
 Controle que não fala a língua do React Hook Form entra por um adaptador:
-`paraDatePicker`, `paraSelect` e `paraCheckbox`. Eles traduzem o `onChange` do
+`forDatePicker`, `forSelect` e `forCheckbox`. Eles traduzem o `onChange` do
 campo para o que a peça espera.
 
 ```tsx
 <FormField name="vencimento" label="Vencimento" render={(field) => (
-  <DatePicker {...paraDatePicker(field)} />
+  <DatePicker {...forDatePicker(field)} />
 )} />
 ```
 

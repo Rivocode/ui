@@ -33,6 +33,6 @@ export function useMediaQuery(consulta: string): boolean {
 }
 
 /** Verdadeiro em largura de celular, abaixo do `sm` do Tailwind. */
-export function useTelaEstreita(): boolean {
+export function useNarrowScreen(): boolean {
   return useMediaQuery(CELULAR);
 }

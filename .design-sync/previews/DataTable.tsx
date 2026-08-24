@@ -1,4 +1,4 @@
-import { Badge, Button, DataTable, type Coluna } from '@rivocode/ui'
+import { Badge, Button, DataTable, type Column } from '@rivocode/ui'
 
 type Nota = { id: string; numero: string; cliente: string; valor: string; situacao: string }
 
@@ -7,7 +7,7 @@ const NOTAS: Nota[] = [
   { id: '2', numero: '4814', cliente: 'Transportes Cabo Branco', valor: 'R$ 940', situacao: 'Aberta' },
 ]
 
-const COLUNAS: Coluna<Nota>[] = [
+const COLUNAS: Column<Nota>[] = [
   { key: 'numero', header: 'Número' },
   { key: 'cliente', header: 'Cliente' },
   { key: 'valor', header: 'Valor', align: 'right' },

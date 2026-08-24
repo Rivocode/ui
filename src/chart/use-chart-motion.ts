@@ -2,7 +2,7 @@
 
 import { useMediaQuery } from "../lib/tela";
 
-export type MovimentoDoGrafico = {
+export type ChartMotion = {
   /** Espalhe em `Line`, `Bar`, `Area` e `Pie`. */
   isAnimationActive: boolean;
 };
@@ -18,7 +18,7 @@ export type MovimentoDoGrafico = {
  *     const movimento = useChartMotion();
  *     <Line dataKey="pagas" {...movimento} />
  */
-export function useChartMotion(): MovimentoDoGrafico {
+export function useChartMotion(): ChartMotion {
   const menosMovimento = useMediaQuery("(prefers-reduced-motion: reduce)");
   return { isAnimationActive: !menosMovimento };
 }

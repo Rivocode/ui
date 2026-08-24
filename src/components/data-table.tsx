@@ -9,22 +9,22 @@ import { EmptyState } from "./empty-state";
 import { Skeleton } from "./skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
 
-export type Coluna<Linha> = {
+export type Column<Row> = {
   /** Chave da coluna. Precisa ser unica na tabela. */
   key: string;
   header: ReactNode;
   /** O que a celula mostra. Sem isto, o valor cru da chave. */
-  cell?: (linha: Linha) => ReactNode;
+  cell?: (linha: Row) => ReactNode;
   align?: "left" | "right";
   /** Some no celular. Use para o que da para descobrir de outro jeito. */
   hideOnMobile?: boolean;
 };
 
-export type DataTableProps<Linha> = {
-  data: Linha[] | undefined;
-  columns: Coluna<Linha>[];
+export type DataTableProps<Row> = {
+  data: Row[] | undefined;
+  columns: Column<Row>[];
   /** Identidade da linha. Indice serve, mas quebra quando a lista reordena. */
-  rowKey: (linha: Linha, indice: number) => string;
+  rowKey: (linha: Row, indice: number) => string;
 
   isLoading?: boolean;
   isError?: boolean;
@@ -39,7 +39,7 @@ export type DataTableProps<Linha> = {
    */
   empty?: { title: string; description: string; action?: ReactNode; icon?: ReactNode };
 
-  onRowClick?: (linha: Linha) => void;
+  onRowClick?: (linha: Row) => void;
   /** Quantas linhas falsas o carregando mostra. */
   skeletonRows?: number;
   className?: string;
@@ -68,7 +68,7 @@ export type DataTableProps<Linha> = {
  * que a consulta voltou. Sem essa ordem, uma nova busca sobre um erro pisca
  * "nenhum resultado" antes de mostrar o problema.
  */
-export function DataTable<Linha>({
+export function DataTable<Row>({
   data,
   columns,
   rowKey,
@@ -81,7 +81,7 @@ export function DataTable<Linha>({
   skeletonRows = 5,
   className,
   caption,
-}: DataTableProps<Linha>) {
+}: DataTableProps<Row>) {
   if (isError) {
     return (
       <Alert tone="danger" className={className}>

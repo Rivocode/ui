@@ -28,12 +28,12 @@ import {
   useToast,
   useWizard,
   WizardFooter,
-  type Passo,
+  type Step,
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
 import { useState } from 'react'
 
-const STEPS: Passo[] = [
+const STEPS: Step[] = [
   { id: 'customer', title: 'Cliente', description: 'Quem recebe' },
   { id: 'service', title: 'Serviço', description: 'O que foi feito' },
   { id: 'taxes', title: 'Impostos', description: 'Retenções' },

@@ -37,7 +37,7 @@ import {
   Tree,
   useToast,
   type DateRange,
-  type No,
+  type TreeNode,
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
 import { Grid2x2, List, Plus, Users } from 'lucide-react'
@@ -126,7 +126,7 @@ const CUSTOMERS: Customer[] = [
   },
 ]
 
-const SEGMENTS: No[] = [
+const SEGMENTS: TreeNode[] = [
   {
     id: 'todos',
     label: 'Todos os segmentos',

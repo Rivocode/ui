@@ -15,7 +15,7 @@ import {
   SelectValue,
   type RivoTheme,
 } from "../src/index";
-import { Form, FormField, paraCheckbox, paraDatePicker, paraSelect, useZodForm } from "../src/form";
+import { Form, FormField, forCheckbox, forDatePicker, forSelect, useZodForm } from "../src/form";
 
 const FORMAS = [
   { label: "Boleto", value: "boleto" },
@@ -50,12 +50,12 @@ function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?:
       </FormField>
 
       <FormField name="vencimento" label="Vencimento">
-        {(campo) => <DatePicker {...paraDatePicker(campo)} />}
+        {(campo) => <DatePicker {...forDatePicker(campo)} />}
       </FormField>
 
       <FormField name="forma" label="Forma de pagamento">
         {(campo) => (
-          <Select {...paraSelect(campo)} items={FORMAS}>
+          <Select {...forSelect(campo)} items={FORMAS}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -73,7 +73,7 @@ function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?:
       <FormField name="aceite">
         {(campo) => (
           <label className="flex items-center gap-2 text-base text-fg">
-            <Checkbox {...paraCheckbox(campo)} />
+            <Checkbox {...forCheckbox(campo)} />
             Aceito emitir em nome do cliente
           </label>
         )}

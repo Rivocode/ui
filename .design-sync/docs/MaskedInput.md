@@ -12,6 +12,6 @@ Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
 
 `onValueChange` entrega o texto pontuado e o cru. **Guarde o cru**: a pontuacao
 muda com o tempo e o dado deixa de bater. O dinheiro sai também em centavos, por
-`emCentavos()`, para o servidor receber inteiro em vez de ponto flutuante.
+`toCents()`, para o servidor receber inteiro em vez de ponto flutuante.
 
 O telefone troca de molde entre o fixo e o celular sozinho.

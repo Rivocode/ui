@@ -2,12 +2,12 @@
 
 import { useState, type ComponentProps } from "react";
 
-import { aplicarMascara, moldeDeTelefone, semMascara, type Mascara } from "../lib/mascara";
+import { applyMask, phoneMask, unmask, type Mask } from "../lib/mascara";
 import { Input } from "./field";
 
 export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value"> & {
   /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
-  mask: Mascara;
+  mask: Mask;
   /** O texto ja com mascara, quando quem usa controla o estado. */
   value?: string;
   /** O texto inicial, quando o componente controla o proprio estado. */
@@ -41,7 +41,7 @@ export function MaskedInput({
   ...props
 }: MaskedInputProps) {
   const controlado = value !== undefined;
-  const [interno, setInterno] = useState(() => aplicarMascara(defaultValue, mask));
+  const [interno, setInterno] = useState(() => applyMask(defaultValue, mask));
   const texto = controlado ? value : interno;
 
   const soNumero = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in MOLDES_NUMERICOS;
@@ -53,11 +53,11 @@ export function MaskedInput({
       inputMode={inputMode ?? (soNumero ? "numeric" : undefined)}
       onChange={(evento) => {
         const cru = evento.target.value;
-        const molde = mask === "telefone" ? moldeDeTelefone(cru) : mask;
-        const mascarado = aplicarMascara(cru, molde);
+        const molde = mask === "telefone" ? phoneMask(cru) : mask;
+        const mascarado = applyMask(cru, molde);
 
         if (!controlado) setInterno(mascarado);
-        onValueChange?.(mascarado, semMascara(mascarado));
+        onValueChange?.(mascarado, unmask(mascarado));
         onChange?.(evento);
       }}
     />

@@ -5,14 +5,14 @@ import { Fragment, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 
-export type Migalha = {
+export type Crumb = {
   label: ReactNode;
   /** Sem `href`, a migalha e so texto. A ultima costuma ser assim. */
   href?: string;
 };
 
 export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
-  items: Migalha[];
+  items: Crumb[];
   /** Quantas migalhas cabem antes de o meio virar reticencia. */
   maxItems?: number;
 };
@@ -30,7 +30,7 @@ export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
  */
 export function Breadcrumb({ className, items, maxItems = 4, ...props }: BreadcrumbProps) {
   const dobrado = items.length > maxItems;
-  const visiveis: (Migalha | "reticencia")[] = dobrado
+  const visiveis: (Crumb | "reticencia")[] = dobrado
     ? [items[0]!, "reticencia", ...items.slice(-2)]
     : items;
 

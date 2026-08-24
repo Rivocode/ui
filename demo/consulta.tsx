@@ -12,8 +12,8 @@ import {
   Steps,
   useWizard,
   WizardFooter,
-  type Coluna,
-  type Passo,
+  type Column,
+  type Step,
   type RivoTheme,
 } from "../src/index";
 
@@ -37,7 +37,7 @@ const NOTAS: Nota[] = [
   },
 ];
 
-const COLUNAS: Coluna<Nota>[] = [
+const COLUNAS: Column<Nota>[] = [
   { key: "numero", header: "Numero" },
   { key: "cliente", header: "Cliente" },
   { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
@@ -51,7 +51,7 @@ const COLUNAS: Coluna<Nota>[] = [
   },
 ];
 
-const PASSOS: Passo[] = [
+const PASSOS: Step[] = [
   { id: "cliente", title: "Cliente", description: "Quem recebe" },
   { id: "servico", title: "Servico", description: "O que foi feito" },
   { id: "revisao", title: "Revisao", description: "Conferir e emitir" },

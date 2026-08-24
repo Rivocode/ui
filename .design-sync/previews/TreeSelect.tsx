@@ -1,6 +1,6 @@
-import { TreeSelect, type No } from '@rivocode/ui'
+import { TreeSelect, type TreeNode } from '@rivocode/ui'
 
-const SETORES: No[] = [
+const SETORES: TreeNode[] = [
   {
     id: 'financeiro',
     label: 'Financeiro',

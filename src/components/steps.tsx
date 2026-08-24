@@ -5,14 +5,14 @@ import { useCallback, useState, type ComponentProps, type ReactNode } from "reac
 
 import { cn } from "../lib/cn";
 
-export type Passo = {
+export type Step = {
   id: string;
   title: string;
   description?: string;
 };
 
 export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
-  steps: Passo[];
+  steps: Step[];
   /** Indice do passo atual, contando de zero. */
   current: number;
   /** Deixa voltar clicando num passo ja concluido. */
@@ -26,7 +26,7 @@ export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
  * regua inteira: quatro bolinhas com rotulo em 390px viram quatro palavras
  * cortadas, e o que importa ali e saber quanto falta.
  *
- * So da para voltar, nunca pular para frente. Passo adiante costuma depender
+ * So da para voltar, nunca pular para frente. Step adiante costuma depender
  * do que o anterior validou, e um clique que atravessa isso leva a pessoa a
  * uma tela que nao sabe se preencher.
  */
@@ -37,7 +37,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
     <>
       <div className="flex flex-col gap-2 sm:hidden">
         <p className="font-sans text-sm text-fg-muted">
-          Passo {current + 1} de {steps.length}
+          Step {current + 1} de {steps.length}
         </p>
         <p className="font-display text-lg text-fg">{atual?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
@@ -108,9 +108,9 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
   );
 }
 
-export type EstadoDoAssistente = {
+export type WizardState = {
   passo: number;
-  atual: Passo | undefined;
+  atual: Step | undefined;
   primeiro: boolean;
   ultimo: boolean;
   /**
@@ -127,7 +127,7 @@ export type EstadoDoAssistente = {
  * O estado de um formulario em etapas. So conta e valida a passagem; o
  * desenho fica com o `Steps` e o conteudo com quem usa.
  */
-export function useWizard(steps: Passo[], inicial = 0): EstadoDoAssistente {
+export function useWizard(steps: Step[], inicial = 0): WizardState {
   const [passo, setPasso] = useState(inicial);
 
   const avancar = useCallback(

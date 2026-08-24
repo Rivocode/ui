@@ -6,10 +6,10 @@ import { useMemo, useState, type ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { inputVariants } from "./field";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { folhasDe, Tree, type No } from "./tree";
+import { leavesOf, Tree, type TreeNode } from "./tree";
 
 export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "onChange"> & {
-  items: No[];
+  items: TreeNode[];
   /** Ids das folhas escolhidas. */
   value?: string[];
   defaultValue?: string[];
@@ -116,10 +116,10 @@ export function TreeSelect({
 }
 
 /** Os nomes das folhas marcadas, na ordem em que aparecem na arvore. */
-function nomesDe(items: No[], ids: string[]): string[] {
+function nomesDe(items: TreeNode[], ids: string[]): string[] {
   const saida: string[] = [];
 
-  function andar(nos: No[]) {
+  function andar(nos: TreeNode[]) {
     for (const no of nos) {
       if (!no.children?.length && ids.includes(no.id)) {
         saida.push(typeof no.label === "string" ? no.label : no.id);
@@ -132,5 +132,5 @@ function nomesDe(items: No[], ids: string[]): string[] {
   return saida;
 }
 
-export { folhasDe };
-export type { No };
+export { leavesOf };
+export type { TreeNode };

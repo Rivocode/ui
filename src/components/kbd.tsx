@@ -71,7 +71,7 @@ const NO_MAC =
   typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 /** Traduz o nome de uma tecla para a escrita da plataforma. */
-export function nomeDeTecla(tecla: string) {
+export function keyName(tecla: string) {
   const chave = tecla.toLowerCase();
   const tabela = NO_MAC ? MAC : OUTROS;
   return tabela[chave] ?? (tecla.length === 1 ? tecla.toUpperCase() : tecla);
@@ -111,7 +111,7 @@ export function Kbd({ className, size, keys, children, ...props }: KbdProps) {
             aria-hidden="true"
             className={cn(kbdVariants({ size }), className)}
           >
-            {nomeDeTecla(parte)}
+            {keyName(parte)}
           </kbd>
         ))}
       </span>

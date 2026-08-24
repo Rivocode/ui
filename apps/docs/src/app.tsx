@@ -270,12 +270,17 @@ export function App() {
           </div>
         )}
 
+        {/* O rodape da documentacao nao entra na demonstracao: ali a tela e o
+            sistema, e um rodape de site embaixo dele quebra a ilusao que a
+            pagina inteira existe para sustentar. */}
+        {route.kind !== 'demo' && (
         <footer className="border-t border-border px-6 py-8">
           <p className="mx-auto max-w-7xl text-sm text-fg-subtle">
             @rivocode/ui, {ENTRIES.length} peças no catálogo. Esta página é gerada dos mesmos
             arquivos que alimentam o design system, então ela não envelhece sozinha.
           </p>
         </footer>
+        )}
       </div>
     </RivoProvider>
   )

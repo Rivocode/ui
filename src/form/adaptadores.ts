@@ -46,7 +46,7 @@ export type PropsDeCheckbox = Identidade & {
  * O `ref` segue em frente: e por ele que o React Hook Form leva o foco ate o
  * primeiro erro.
  */
-export function paraDatePicker<V extends FieldValues, N extends FieldPath<V>>(
+export function forDatePicker<V extends FieldValues, N extends FieldPath<V>>(
   campo: Campo<V, N>,
 ): PropsDeDatePicker {
   const { onChange, value, name, ...resto } = campo;
@@ -65,7 +65,7 @@ export function paraDatePicker<V extends FieldValues, N extends FieldPath<V>>(
  * renderiza elemento nenhum, e nao ha onde prender nem de onde sair. Quem
  * precisa saber que o campo foi tocado le a propria escolha.
  */
-export function paraSelect<V extends FieldValues, N extends FieldPath<V>>(
+export function forSelect<V extends FieldValues, N extends FieldPath<V>>(
   campo: Campo<V, N>,
 ): PropsDeSelect {
   const { onChange, ref: _ref, onBlur: _onBlur, name, ...resto } = campo;
@@ -83,7 +83,7 @@ export function paraSelect<V extends FieldValues, N extends FieldPath<V>>(
  * Checkbox, e o React Hook Form so precisa saber que o campo foi tocado, o que
  * a propria marcacao ja diz.
  */
-export function paraCheckbox<V extends FieldValues, N extends FieldPath<V>>(
+export function forCheckbox<V extends FieldValues, N extends FieldPath<V>>(
   campo: Campo<V, N>,
 ): PropsDeCheckbox {
   const { onChange, value, onBlur: _onBlur, name, ...resto } = campo;

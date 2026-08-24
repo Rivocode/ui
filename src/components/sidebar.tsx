@@ -13,7 +13,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
-import { useTelaEstreita } from "../lib/tela";
+import { useNarrowScreen } from "../lib/tela";
 import { Menu, MenuContent, MenuGroup, MenuItem, MenuTrigger } from "./menu";
 import { Sheet, SheetContent, SheetTitle } from "./sheet";
 import { Skeleton } from "./skeleton";
@@ -75,7 +75,7 @@ export function SidebarProvider({
   children,
   ...props
 }: SidebarProviderProps) {
-  const narrow = useTelaEstreita();
+  const narrow = useNarrowScreen();
   const controlled = open !== undefined;
   const [internal, setInternal] = useState(defaultOpen);
   const isOpen = controlled ? open : internal;

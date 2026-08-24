@@ -151,9 +151,13 @@ export function DemoApp() {
 
   return (
     <RivoProvider scope="local" theme={theme} density={density}>
-      <div className="overflow-hidden rounded-xl border border-border">
+      {/* Sem moldura e sem altura fixa: a demonstracao e uma pagina, e nao a
+          foto de uma. Um sistema dentro de um cartao com cantos arredondados
+          continua parecendo exemplo; ocupando a tela ele passa a ser o sistema,
+          que e a pergunta que quem chega esta fazendo. */}
+      <div className="border-t border-border">
         <SidebarProvider defaultOpen className="min-h-0">
-          <Sidebar className="h-[46rem]">
+          <Sidebar className="h-[calc(100dvh-3.5rem)]">
             <SidebarHeader>
               <SidebarBrand mark={<Waves size={18} className="text-accent" />}>
                 RivoCode
@@ -238,7 +242,7 @@ export function DemoApp() {
             </SidebarFooter>
           </Sidebar>
 
-          <SidebarInset className="h-[46rem] overflow-y-auto bg-bg">
+          <SidebarInset className="h-[calc(100dvh-3.5rem)] overflow-y-auto bg-bg">
             <header className="sticky top-0 z-[var(--rc-z-sticky)] flex items-center gap-3 border-b border-border bg-bg/90 px-4 py-3 backdrop-blur-md">
               <SidebarTrigger />
 

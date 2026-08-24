@@ -4,7 +4,7 @@ import { CalendarDays } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { formatarData, lerData, mascararData } from "../lib/data";
+import { formatDate, parseDate, maskDate } from "../lib/data";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
@@ -75,7 +75,7 @@ export function DatePicker({
   const [dataInterna, setDataInterna] = useState<Date | undefined>(defaultValue);
   const data = controlado ? value : dataInterna;
 
-  const [texto, setTexto] = useState(() => formatarData(data));
+  const [texto, setTexto] = useState(() => formatDate(data));
   const [textoSujo, setTextoSujo] = useState(false);
   const [aberto, setAberto] = useState(false);
 
@@ -87,7 +87,7 @@ export function DatePicker({
 
   // Enquanto ninguem digita, o campo espelha a data. Isso mantem o campo certo
   // quando a data muda de fora, sem apagar o que esta sendo digitado agora.
-  const textoNaTela = textoSujo ? texto : formatarData(data);
+  const textoNaTela = textoSujo ? texto : formatDate(data);
 
   function mudarData(nova: Date | undefined) {
     if (!controlado) setDataInterna(nova);
@@ -126,11 +126,11 @@ export function DatePicker({
         placeholder={placeholder}
         value={textoNaTela}
         onChange={(evento) => {
-          const mascarado = mascararData(evento.target.value);
+          const mascarado = maskDate(evento.target.value);
           setTexto(mascarado);
           setTextoSujo(true);
 
-          const lida = lerData(mascarado);
+          const lida = parseDate(mascarado);
           // Campo esvaziado limpa a data; texto pela metade ainda nao diz nada,
           // entao a data anterior fica de pe ate o campo perder o foco.
           if (lida || mascarado === "") mudarData(lida);
@@ -212,7 +212,7 @@ export function DatePicker({
         <input
           type="hidden"
           name={name}
-          value={data ? formatarData(data).split("/").reverse().join("-") : ""}
+          value={data ? formatDate(data).split("/").reverse().join("-") : ""}
         />
       )}
     </div>

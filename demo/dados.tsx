@@ -33,7 +33,7 @@ import {
   TabPanel,
   Tabs,
   TreeSelect,
-  type No,
+  type TreeNode,
   type RivoTheme,
 } from "../src/index";
 
@@ -45,7 +45,7 @@ const CLIENTES = [
   { value: "escola", label: "Escola Monteiro" },
 ];
 
-const SETORES: No[] = [
+const SETORES: TreeNode[] = [
   {
     id: "financeiro",
     label: "Financeiro",

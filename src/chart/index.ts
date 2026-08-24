@@ -25,7 +25,7 @@ export {
 export { ChartDonut, type ChartDonutProps } from "./chart-donut";
 export { ChartRadial, type ChartRadialProps } from "./chart-radial";
 export { Sparkline, type SparklineProps } from "./sparkline";
-export { useChartMotion, type MovimentoDoGrafico } from "./use-chart-motion";
+export { useChartMotion, type ChartMotion } from "./use-chart-motion";
 
 /**
  * As pecas da Recharts que o nosso grafico compoe, reexportadas por aqui.

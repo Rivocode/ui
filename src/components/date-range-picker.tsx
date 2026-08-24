@@ -6,7 +6,7 @@ import type { DateRange } from "react-day-picker";
 import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { formatarData } from "../lib/data";
+import { formatDate } from "../lib/data";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
@@ -45,7 +45,7 @@ export type DateRangePickerProps = Omit<
  * Intervalo de datas, para filtro de relatorio e de listagem.
  *
  * Aqui nao ha digitacao, e essa e a diferenca de proposito para o DatePicker.
- * Mascara de intervalo pede duas datas num campo so, e o custo de acertar
+ * Mask de intervalo pede duas datas num campo so, e o custo de acertar
  * teclado, colagem e ordem invertida nao se paga: quem escolhe periodo quase
  * sempre esta comparando semanas na tela, nao repetindo uma data que sabe de
  * cabeca.
@@ -164,7 +164,7 @@ export function DateRangePicker({
 /** `undefined` quando nao ha nada para mostrar, para o gatilho cair no placeholder. */
 function descrever(intervalo: DateRange | undefined): string | undefined {
   if (!intervalo?.from) return undefined;
-  const inicio = formatarData(intervalo.from);
+  const inicio = formatDate(intervalo.from);
   if (!intervalo.to) return `${inicio} \u2013 ...`;
-  return `${inicio} \u2013 ${formatarData(intervalo.to)}`;
+  return `${inicio} \u2013 ${formatDate(intervalo.to)}`;
 }

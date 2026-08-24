@@ -24,7 +24,7 @@ import {
   ToggleGroup,
   Toggle,
   useToast,
-  type Coluna,
+  type Column,
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
 import { Download, MoreHorizontal, Search, SlidersHorizontal } from 'lucide-react'
@@ -66,7 +66,7 @@ export function Invoices() {
   const current = Math.min(page, pageCount)
   const rows = found.slice((current - 1) * PER_PAGE, current * PER_PAGE)
 
-  const columns: Coluna<Invoice>[] = [
+  const columns: Column<Invoice>[] = [
     {
       key: 'number',
       header: 'Número',

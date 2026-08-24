@@ -60,8 +60,8 @@ import { DataTable } from '@rivocode/ui'
 
 | Prop      | Tipo     | Obrigatória |
 | --------- | -------- | ----------- |
-| data      | Linha[]  | sim         |
-| columns   | Coluna[] | sim         |
+| data      | Row[]  | sim         |
+| columns   | Column[] | sim         |
 | isLoading | boolean  |, |`
 
 function CopyLine({ text }: { text: string }) {
@@ -116,7 +116,11 @@ function Argument({
 }) {
   return (
     <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-      <div className={reverse ? 'lg:order-2' : undefined}>
+      {/* `min-w-0` nas duas colunas: item de grid nao encolhe abaixo do
+          proprio `min-content`, e a figura carrega um `<pre>` de codigo. Sem
+          isto o `overflow-x-auto` de dentro dele nunca entra em acao, a coluna
+          cresce, e a pagina inteira ganha rolagem lateral no celular. */}
+      <div className={`min-w-0 ${reverse ? 'lg:order-2' : ''}`}>
         <p className="flex items-center gap-2 font-mono text-xs tracking-widest text-accent-text uppercase">
           {icon}
           {eyebrow}
@@ -125,7 +129,7 @@ function Argument({
         <div className="mt-4 space-y-3 text-fg-muted">{children}</div>
       </div>
 
-      <div className={reverse ? 'lg:order-1' : undefined}>{figure}</div>
+      <div className={`min-w-0 ${reverse ? 'lg:order-1' : ''}`}>{figure}</div>
     </div>
   )
 }

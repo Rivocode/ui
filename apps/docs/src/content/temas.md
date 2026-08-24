@@ -84,7 +84,7 @@ isolada no meio do azul do cliente.
 | `--rc-accent-text` | `text-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo |
 | `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
 
-### Linha, foco e estado de linha
+### Row, foco e estado de linha
 
 | Token | Classe | O que veste |
 |---|---|---|

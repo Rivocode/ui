@@ -3,10 +3,10 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
-import { Tree, type No } from "../src/components/tree";
+import { Tree, type TreeNode } from "../src/components/tree";
 import { TreeSelect } from "../src/components/tree-select";
 
-const ARVORE: No[] = [
+const ARVORE: TreeNode[] = [
   {
     id: "financeiro",
     label: "Financeiro",
@@ -116,7 +116,7 @@ test("o gatilho mostra os nomes enquanto eles cabem", () => {
 });
 
 test("passando de tres, o gatilho conta em vez de listar", () => {
-  const grande: No[] = [
+  const grande: TreeNode[] = [
     {
       id: "todos",
       label: "Todos",

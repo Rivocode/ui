@@ -45,9 +45,9 @@ export function Pagination({
         className,
       )}
     >
-      <Passo rotulo="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+      <Step rotulo="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
         <ChevronLeft size={16} aria-hidden="true" />
-      </Passo>
+      </Step>
 
       <span className="text-sm text-fg-muted sm:hidden">
         {page} de {pageCount}
@@ -83,18 +83,18 @@ export function Pagination({
         )}
       </ol>
 
-      <Passo
+      <Step
         rotulo="Próxima página"
         disabled={page >= pageCount}
         onClick={() => onPageChange(page + 1)}
       >
         <ChevronRight size={16} aria-hidden="true" />
-      </Passo>
+      </Step>
     </nav>
   );
 }
 
-function Passo({ rotulo, children, ...props }: ComponentProps<"button"> & { rotulo: string }) {
+function Step({ rotulo, children, ...props }: ComponentProps<"button"> & { rotulo: string }) {
   return (
     <button
       type="button"

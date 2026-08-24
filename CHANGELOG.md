@@ -1,5 +1,59 @@
 # Mudancas
 
+## 0.3.0
+
+Todo nome publico passa a ser ingles. E quebra, e vale a pena agora: o pacote
+saiu no npm ha poucas horas, entao renomear custa uma versao. Daqui a algumas
+semanas custaria um guia de migracao e a paciencia de quem ja usava. Sem alias
+de compatibilidade, de proposito: alias e divida que ninguem cobra e ninguem
+remove.
+
+A regra e a mesma do resto do projeto: codigo em ingles, conteudo em PT-BR.
+
+### Tipos
+
+| Antes | Agora |
+|---|---|
+| `Coluna` | `Column` |
+| `Passo` | `Step` |
+| `EstadoDoAssistente` | `WizardState` |
+| `Migalha` | `Crumb` |
+| `No` | `TreeNode` |
+| `Mascara` | `Mask` |
+| `NomeDeMolde` | `MaskName` |
+| `MovimentoDoGrafico` | `ChartMotion` |
+
+### Funcoes e constantes
+
+| Antes | Agora |
+|---|---|
+| `formatarData` | `formatDate` |
+| `lerData` | `parseDate` |
+| `mascararData` | `maskDate` |
+| `aplicarMascara` | `applyMask` |
+| `aplicarMoeda` | `applyCurrencyMask` |
+| `aplicarMolde` | `applyPattern` |
+| `emCentavos` | `toCents` |
+| `semMascara` | `unmask` |
+| `moldeDeTelefone` | `phoneMask` |
+| `MOLDES` | `MASKS` |
+| `folhasDe` | `leavesOf` |
+| `nomeDeTecla` | `keyName` |
+| `useTelaEstreita` | `useNarrowScreen` |
+
+### Adaptadores de formulario
+
+| Antes | Agora |
+|---|---|
+| `paraDatePicker` | `forDatePicker` |
+| `paraSelect` | `forSelect` |
+| `paraCheckbox` | `forCheckbox` |
+
+### Como migrar
+
+Busca e troca por palavra inteira resolve. Cuidado so com `No`, que e curto
+demais para trocar as cegas: procure por `type No`, `No[]`, `: No` e `<No>`.
+
 ## 0.2.0
 
 Primeira versao no npm publico, sob licenca MIT. O `0.1.0` saiu so no GitHub

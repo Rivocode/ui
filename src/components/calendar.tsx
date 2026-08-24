@@ -6,7 +6,7 @@ import { ptBR } from "react-day-picker/locale";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { useTelaEstreita } from "../lib/tela";
+import { useNarrowScreen } from "../lib/tela";
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
@@ -45,7 +45,7 @@ export function Calendar({
 }: CalendarProps) {
   // Dois meses no celular viram uma coluna de 700px de altura e o segundo fica
   // fora da tela. Um mes so, e a navegacao cobre o resto.
-  const estreita = useTelaEstreita();
+  const estreita = useNarrowScreen();
 
   return (
     <DayPicker

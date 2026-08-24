@@ -1,7 +1,7 @@
-export const version = "0.2.0";
+export const version = "0.3.0";
 
 export { cn } from "./lib/cn";
-export { useMediaQuery, useTelaEstreita } from "./lib/tela";
+export { useMediaQuery, useNarrowScreen } from "./lib/tela";
 export {
   RivoProvider,
   useRivoContext,
@@ -91,7 +91,7 @@ export {
   type DateRange,
   type DateRangePickerProps,
 } from "./components/date-range-picker";
-export { formatarData, lerData, mascararData } from "./lib/data";
+export { formatDate, parseDate, maskDate } from "./lib/data";
 export {
   Sheet,
   SheetClose,
@@ -124,15 +124,15 @@ export {
 export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
 export { MaskedInput, type MaskedInputProps } from "./components/masked-input";
 export {
-  aplicarMascara,
-  aplicarMoeda,
-  aplicarMolde,
-  emCentavos,
-  moldeDeTelefone,
-  semMascara,
-  MOLDES,
-  type Mascara,
-  type NomeDeMolde,
+  applyMask,
+  applyCurrencyMask,
+  applyPattern,
+  toCents,
+  phoneMask,
+  unmask,
+  MASKS,
+  type Mask,
+  type MaskName,
 } from "./lib/mascara";
 export {
   InputAction,
@@ -151,7 +151,7 @@ export {
   itemVariants,
   type ItemProps,
 } from "./components/item";
-export { Breadcrumb, type BreadcrumbProps, type Migalha } from "./components/breadcrumb";
+export { Breadcrumb, type BreadcrumbProps, type Crumb } from "./components/breadcrumb";
 export { Pagination, type PaginationProps } from "./components/pagination";
 export {
   Tooltip,
@@ -196,7 +196,7 @@ export {
   type AlertProps,
 } from "./components/alert";
 export { Skeleton } from "./components/skeleton";
-export { Kbd, kbdVariants, nomeDeTecla, type KbdProps } from "./components/kbd";
+export { Kbd, kbdVariants, keyName, type KbdProps } from "./components/kbd";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { AspectRatio, type AspectRatioProps } from "./components/aspect-ratio";
 export {
@@ -251,14 +251,14 @@ export {
   type ComboboxContentProps,
   type ComboboxInputProps,
 } from "./components/combobox";
-export { Tree, folhasDe, type No, type TreeProps } from "./components/tree";
+export { Tree, leavesOf, type TreeNode, type TreeProps } from "./components/tree";
 export { TreeSelect, type TreeSelectProps } from "./components/tree-select";
-export { DataTable, type Coluna, type DataTableProps } from "./components/data-table";
+export { DataTable, type Column, type DataTableProps } from "./components/data-table";
 export {
   Steps,
   useWizard,
   WizardFooter,
-  type EstadoDoAssistente,
-  type Passo,
+  type WizardState,
+  type Step,
   type StepsProps,
 } from "./components/steps";

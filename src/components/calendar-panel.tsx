@@ -3,7 +3,7 @@
 import type { ReactElement, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { useTelaEstreita } from "../lib/tela";
+import { useNarrowScreen } from "../lib/tela";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Sheet, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 
@@ -36,7 +36,7 @@ export function CalendarPanel({
   footer,
   align = "start",
 }: CalendarPanelProps) {
-  const estreita = useTelaEstreita();
+  const estreita = useNarrowScreen();
 
   if (estreita) {
     return (

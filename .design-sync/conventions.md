@@ -58,7 +58,7 @@ Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
 - **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
-  `paraDatePicker`, `paraSelect`, `paraCheckbox`. O controle vem por funcao,
+  `forDatePicker`, `forSelect`, `forCheckbox`. O controle vem por funcao,
   nao por clonagem do filho:
 
   ```tsx

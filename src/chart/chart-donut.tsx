@@ -8,12 +8,12 @@ import { ChartTooltipContent } from "./chart-tooltip";
 import { cn } from "../lib/cn";
 import { PALETA, type ChartConfig } from "./chart";
 
-export type ChartDonutProps<Fatia> = {
-  data: Fatia[];
+export type ChartDonutProps<Slice> = {
+  data: Slice[];
   /** De onde sai o numero de cada fatia. */
-  valueKey: keyof Fatia & string;
+  valueKey: keyof Slice & string;
   /** De onde sai o nome de cada fatia. E ele que o `config` procura. */
-  nameKey: keyof Fatia & string;
+  nameKey: keyof Slice & string;
   config?: ChartConfig;
   /** O numero grande no meio. Sem ele, o miolo fica vazio. */
   centerValue?: ReactNode;
@@ -57,7 +57,7 @@ export type ChartDonutProps<Fatia> = {
  * Acima de seis fatias ela para de informar: as menores viram tiras finas e a
  * legenda vira uma lista. Nesse caso, barra deitada le melhor.
  */
-export function ChartDonut<Fatia extends Record<string, unknown>>({
+export function ChartDonut<Slice extends Record<string, unknown>>({
   data,
   valueKey,
   nameKey,
@@ -68,13 +68,13 @@ export function ChartDonut<Fatia extends Record<string, unknown>>({
   legend = true,
   format,
   className,
-}: ChartDonutProps<Fatia>) {
+}: ChartDonutProps<Slice>) {
   // Em fracao do raio disponivel, e nao em pixel: assim a rosca acompanha a
   // altura que a classe deu ao contentor.
   const externo = "88%";
   const interno = `${Math.round(88 * (1 - thickness))}%`;
 
-  const corDe = (fatia: Fatia, indice: number) =>
+  const corDe = (fatia: Slice, indice: number) =>
     config?.[String(fatia[nameKey])]?.color ?? PALETA[indice % PALETA.length];
 
   return (

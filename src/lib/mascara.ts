@@ -1,5 +1,5 @@
 /**
- * Mascara de digitacao guiada por molde.
+ * Mask de digitacao guiada por molde.
  *
  * O molde usa `9` para digito, `A` para letra e `*` para os dois. Todo o
  * resto e literal e a mascara poe sozinha: `999.999.999-99` produz
@@ -10,7 +10,7 @@
  * caractere de verdade junto com a pontuacao dele.
  */
 
-export const MOLDES = {
+export const MASKS = {
   cpf: "999.999.999-99",
   cnpj: "99.999.999/9999-99",
   cep: "99999-999",
@@ -22,10 +22,10 @@ export const MOLDES = {
   telefone: "(99) 99999-9999",
 } as const;
 
-export type NomeDeMolde = keyof typeof MOLDES;
+export type MaskName = keyof typeof MASKS;
 
 /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
-export type Mascara = NomeDeMolde | "moeda" | (string & {});
+export type Mask = MaskName | "moeda" | (string & {});
 
 function combina(caractere: string, marca: string): boolean {
   if (marca === "9") return /\d/.test(caractere);
@@ -37,7 +37,7 @@ function combina(caractere: string, marca: string): boolean {
 const MARCAS = new Set(["9", "A", "*"]);
 
 /** Aplica o molde. O texto pode vir cru ou ja pontuado. */
-export function aplicarMolde(texto: string, molde: string): string {
+export function applyPattern(texto: string, molde: string): string {
   let saida = "";
   let posicao = 0;
 
@@ -63,7 +63,7 @@ export function aplicarMolde(texto: string, molde: string): string {
  * E o unico que nao usa molde: em dinheiro os centavos vem primeiro e a casa
  * anda para a esquerda a cada digito, o contrario de todo o resto.
  */
-export function aplicarMoeda(texto: string): string {
+export function applyCurrencyMask(texto: string): string {
   const digitos = texto.replace(/\D/g, "").replace(/^0+/, "").slice(0, 12);
   if (!digitos) return "";
 
@@ -75,14 +75,14 @@ export function aplicarMoeda(texto: string): string {
 }
 
 /** Aplica a mascara pedida, seja nome de molde, molde cru ou moeda. */
-export function aplicarMascara(texto: string, mascara: Mascara): string {
-  if (mascara === "moeda") return aplicarMoeda(texto);
-  const molde = MOLDES[mascara as NomeDeMolde] ?? mascara;
-  return aplicarMolde(texto, molde);
+export function applyMask(texto: string, mascara: Mask): string {
+  if (mascara === "moeda") return applyCurrencyMask(texto);
+  const molde = MASKS[mascara as MaskName] ?? mascara;
+  return applyPattern(texto, molde);
 }
 
 /** Tira a pontuacao e devolve so o que o usuario digitou. */
-export function semMascara(texto: string): string {
+export function unmask(texto: string): string {
   return texto.replace(/[^a-zA-Z0-9]/g, "");
 }
 
@@ -90,7 +90,7 @@ export function semMascara(texto: string): string {
  * O valor em centavos do campo de moeda, para mandar ao servidor sem passar
  * por ponto flutuante. `1.234,56` vira `123456`.
  */
-export function emCentavos(texto: string): number {
+export function toCents(texto: string): number {
   const digitos = texto.replace(/\D/g, "");
   return digitos ? Number(digitos) : 0;
 }
@@ -99,6 +99,6 @@ export function emCentavos(texto: string): number {
  * O telefone brasileiro tem oito ou nove casas depois do DDD, e o molde muda
  * no meio da digitacao. Sem isto, o fixo fica com a pontuacao do celular.
  */
-export function moldeDeTelefone(texto: string): string {
-  return semMascara(texto).length > 10 ? "(99) 99999-9999" : "(99) 9999-9999";
+export function phoneMask(texto: string): string {
+  return unmask(texto).length > 10 ? "(99) 99999-9999" : "(99) 9999-9999";
 }

@@ -56,13 +56,22 @@ function useActive(items: Item[]) {
       /*
        * No fim da pagina nao ha mais rolagem, entao os ultimos titulos nunca
        * chegam aos 96px do topo e nunca ficariam ativos: a marca parava no
-       * penultimo e tres itens da lista viravam enfeite. Chegando ao fim, o
-       * ativo e o ultimo, que e onde a pessoa esta de fato.
+       * penultimo e o resto da lista virava enfeite.
+       *
+       * Ali o ativo passa a ser o primeiro titulo ainda visivel, e nao o
+       * ultimo. Marcar o ultimo cego quebrava o caso de pular direto para uma
+       * ancora perto do fim: a pagina rolava ate onde dava, batia no fim, e a
+       * marca ia parar num titulo que a pessoa nem pediu.
        */
       const fim = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
 
       if (fim) {
-        setActive(items[items.length - 1].id)
+        const visivel = items.find((item) => {
+          const node = document.getElementById(item.id)
+          return node ? node.getBoundingClientRect().bottom > 96 : false
+        })
+
+        setActive((visivel ?? items[items.length - 1]).id)
         return
       }
 

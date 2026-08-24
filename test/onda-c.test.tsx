@@ -2,8 +2,8 @@ import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
-import { DataTable, type Coluna } from "../src/components/data-table";
-import { Steps, useWizard, type Passo } from "../src/components/steps";
+import { DataTable, type Column } from "../src/components/data-table";
+import { Steps, useWizard, type Step } from "../src/components/steps";
 
 type Nota = { id: string; numero: string; cliente: string; valor: string };
 
@@ -12,7 +12,7 @@ const NOTAS: Nota[] = [
   { id: "2", numero: "4814", cliente: "Transportes Cabo Branco", valor: "R$ 940,00" },
 ];
 
-const COLUNAS: Coluna<Nota>[] = [
+const COLUNAS: Column<Nota>[] = [
   { key: "numero", header: "Numero" },
   { key: "cliente", header: "Cliente" },
   { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
@@ -76,7 +76,7 @@ test("a linha avisa quem clicou nela", () => {
   expect(clicada?.numero).toBe("4813");
 });
 
-const PASSOS: Passo[] = [
+const PASSOS: Step[] = [
   { id: "dados", title: "Dados" },
   { id: "itens", title: "Itens" },
   { id: "revisao", title: "Revisao" },

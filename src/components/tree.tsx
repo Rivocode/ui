@@ -6,17 +6,17 @@ import { useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "r
 import { cn } from "../lib/cn";
 import { Checkbox } from "./checkbox";
 
-export type No = {
+export type TreeNode = {
   id: string;
   label: ReactNode;
   /** Texto usado na busca. Sem ele, a busca so acha pelo `label` de string. */
   search?: string;
-  children?: No[];
+  children?: TreeNode[];
   disabled?: boolean;
 };
 
 export type TreeProps = {
-  items: No[];
+  items: TreeNode[];
   /** Ids marcados. Pai marcado nao entra aqui: quem vale e a folha. */
   selected: string[];
   onSelectedChange: (ids: string[]) => void;
@@ -67,8 +67,8 @@ export function Tree({
     onExpandedChange?.(novo);
   }
 
-  function alternarEscolha(no: No) {
-    const folhas = folhasDe(no);
+  function alternarEscolha(no: TreeNode) {
+    const folhas = leavesOf(no);
 
     if (!multiple) {
       // Sem multipla, so folha escolhe, e a escolha troca em vez de somar.
@@ -151,7 +151,7 @@ function Ramo({
   onAlternarAberto,
   onAlternarEscolha,
 }: {
-  no: No;
+  no: TreeNode;
   nivel: number;
   primeiro: boolean;
   /** `null` quer dizer tudo aberto, que e o estado da busca. */
@@ -159,11 +159,11 @@ function Ramo({
   selected: string[];
   multiple?: boolean;
   onAlternarAberto: (id: string) => void;
-  onAlternarEscolha: (no: No) => void;
+  onAlternarEscolha: (no: TreeNode) => void;
 }) {
   const temFilhos = Boolean(no.children?.length);
   const aberto = abertos === null || abertos.includes(no.id);
-  const folhas = folhasDe(no);
+  const folhas = leavesOf(no);
   const marcadas = folhas.filter((folha) => selected.includes(folha)).length;
   const cheio = marcadas > 0 && marcadas === folhas.length;
   const misto = marcadas > 0 && !cheio;
@@ -247,17 +247,17 @@ function Ramo({
 }
 
 /** Todas as folhas debaixo de um no. Um no sem filhos e a propria folha. */
-export function folhasDe(no: No): string[] {
+export function leavesOf(no: TreeNode): string[] {
   if (!no.children?.length) return [no.id];
-  return no.children.flatMap(folhasDe);
+  return no.children.flatMap(leavesOf);
 }
 
-function texto(no: No): string {
+function texto(no: TreeNode): string {
   return (no.search ?? (typeof no.label === "string" ? no.label : "")).toLowerCase();
 }
 
 /** Mantem quem casou e o caminho ate ele. */
-function filtrar(items: No[], busca: string): No[] {
+function filtrar(items: TreeNode[], busca: string): TreeNode[] {
   if (!busca) return items;
 
   return items.flatMap((no) => {
@@ -268,7 +268,7 @@ function filtrar(items: No[], busca: string): No[] {
   });
 }
 
-function achar(items: No[], id: string): No | undefined {
+function achar(items: TreeNode[], id: string): TreeNode | undefined {
   for (const no of items) {
     if (no.id === id) return no;
     const dentro = no.children ? achar(no.children, id) : undefined;
@@ -277,7 +277,7 @@ function achar(items: No[], id: string): No | undefined {
   return undefined;
 }
 
-function paiDe(items: No[], id: string, pai?: No): No | undefined {
+function paiDe(items: TreeNode[], id: string, pai?: TreeNode): TreeNode | undefined {
   for (const no of items) {
     if (no.id === id) return pai;
     const dentro = no.children ? paiDe(no.children, id, no) : undefined;
