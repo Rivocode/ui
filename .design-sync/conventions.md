@@ -52,6 +52,47 @@ para o acento: `bg-accent` com `text-accent-fg`, ou `text-accent-text` solto.
 **Altura de controle vem da densidade**, nunca cravada:
 `h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.
 
+### Os dois subcaminhos
+
+Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo
+mesmo global:
+
+- **`@rivocode/ui/form`** — `Form`, `FormField`, `useZodForm` e os adaptadores
+  `paraDatePicker`, `paraSelect`, `paraCheckbox`. O controle vem por funcao,
+  nao por clonagem do filho:
+
+  ```tsx
+  <FormField name="email" label="E-mail" description="Para onde vai a nota">
+    {(campo) => <Input {...campo} />}
+  </FormField>
+  ```
+
+- **`@rivocode/ui/chart`** — `ChartContainer`, `ChartTooltip`,
+  `ChartTooltipContent`, `ChartLegend`, `ChartLegendContent`, `useChartMotion`,
+  mais as pecas da Recharts que a biblioteca veste (`LineChart`, `Line`,
+  `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`, `Cell`, `XAxis`,
+  `YAxis`, `CartesianGrid`, `ReferenceLine`). O `Tooltip` e o `Legend` da
+  Recharts nao saem por aqui: os nossos ja embrulham os dois.
+
+  A cor de cada serie vem do `config` e vira variavel com o nome da serie:
+
+  ```tsx
+  const config = { pagas: { label: "Pagas" } }
+  <ChartContainer config={config} className="h-64">
+    <LineChart data={dados}>
+      <Line dataKey="pagas" stroke="var(--color-pagas)" />
+    </LineChart>
+  </ChartContainer>
+  ```
+
+  A altura e sua, por classe: grafico sem altura definida some.
+
+**Paleta de serie:** oito cores por tema, em `var(--rc-chart-1)` a
+`var(--rc-chart-8)`, mais `var(--rc-chart-grid)` para a grade. Aqui a variavel
+vem antes da classe de propriedade: a folha que voce recebe e a compilada, e
+uma classe utilitaria que nenhum componente usa nao existe nela. A variavel
+sempre resolve.
+
 ### Onde esta a verdade
 
 - `_ds/<pasta>/styles.css` e o que ele importa: todos os tokens e os dois temas.

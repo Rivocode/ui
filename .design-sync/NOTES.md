@@ -56,9 +56,8 @@ build nem de `bun link`. Entrou no `bun run check`.
 
 A `sync.css` passou a varrer tambem `src/form`.
 
-**O upload ainda nao foi feito**: ele depende da skill `/design-sync`, que nao
-esta instalada nesta maquina. O material local esta pronto para quando ela
-estiver.
+**O upload ainda nao foi feito** nessa rodada: dependia da skill
+`/design-sync`, que so foi instalada depois.
 
 ## Riscos para o proximo sync
 
@@ -83,3 +82,71 @@ estiver.
 - **A landing tinha `Header` e `Logo` sincronizados antes**, de quando o design
   system eram os componentes do site. Foram apagados neste sync. Se alguem
   sentir falta, o lugar deles e outro projeto, nao este.
+
+## Terceira rodada, 24/08/2026, com a skill instalada
+
+O catalogo chegou a 55 componentes mais os subcaminhos `/form` e `/chart`. O
+sync rodou de verdade desta vez: 160 componentes descobertos, `ok: true`,
+ancora ok. **O upload ainda nao foi feito** — parou na etapa de dar nota nas 57
+folhas de revisao. Ver `docs/ESTADO.md`, secao "Sync em andamento", para o
+passo a passo de retomada.
+
+### O que custou tempo desta vez
+
+- **Componente de subcaminho nao e descoberto.** O conversor lista componentes
+  pelo `.d.ts` da **entrada principal**. `extraEntries` coloca `/form` e
+  `/chart` no `window.RivoCodeUI` (o agente consegue importar), mas eles nao
+  ganham contrato, doc nem cartao. O log diz `stale preview: <Nome> — component
+  no longer exported`, que parece erro de preview e e outra coisa. A correcao e
+  `componentSrcMap`, que **adiciona** alem de fixar caminho:
+  `{"ChartContainer": "src/chart/chart.tsx"}`.
+
+- **`ChartContainer` sozinho e uma moldura vazia.** As marcas e os eixos vivem
+  na Recharts, e o bundle so exporta o que a nossa entrada exporta. Sem
+  reexportar `LineChart`, `Line`, `XAxis` e companhia por `@rivocode/ui/chart`,
+  o agente de design recebe o contentor e nao tem o que por dentro. Corrigido
+  no proprio pacote, com lista curada.
+
+- **Classe utilitaria que nenhum componente usa nao existe na folha.** O
+  `conventions.md` ia citar `bg-chart-1`; o Tailwind so gera o que encontra ao
+  varrer, entao essa classe nao esta na CSS compilada e o agente escreveria algo
+  que nao resolve, em silencio. Trocado por `var(--rc-chart-1)`, que sempre
+  resolve. **Toda classe citada no conventions foi conferida contra
+  `ds-bundle/*.css`** — 36 classes e 2 tokens, todas presentes.
+
+- **Componente que devolve `null` sem props falha o render check.**
+  `ChartTooltipContent` e `ChartLegendContent` so desenham com `payload`. O
+  cartao de piso os renderiza sem nada e o root sai vazio. A saida boa e autorar
+  preview com `payload` de mentira, e nao mandar para `overrides.skip`.
+
+- **A ancora foi salva sem os `sourceHashes` por arquivo.** Consequencia: a
+  particao de upload trata tudo como faltando e sobe o conjunto inteiro, que e
+  exatamente o padrao recomendado (`writes` sempre completo). O que se perde e a
+  derivacao automatica de `deletePaths` — **confira a lista remota com
+  `list_files` antes do `finalize_plan`** e ponha no plano o que o build nao
+  produz mais. Nesta rodada o diff acusou `deletePaths: 0` e nenhum componente
+  removido.
+
+- **O tsconfig dos previews precisa mapear cada subcaminho.** Faltava
+  `@rivocode/ui/chart`, entao o `check:previews` resolvia pelo `dist` velho e
+  acusava export inexistente que existia no fonte. Um mapeamento por subcaminho
+  novo.
+
+### Riscos para o proximo sync
+
+- **O `--force-prefers-reduced-motion` da vitrine nao vale aqui.** O render
+  check do sync usa o playwright dele, sem esse sinal, entao grafico com
+  animacao ligada pode ser fotografado antes do primeiro quadro. Os previews de
+  grafico passam `isAnimationActive={false}` de proposito — nao tire.
+
+- **A paleta de grafico tem guarda propria** (3:1 contra a superficie, em
+  `check:contrast`). Tema de cliente novo precisa definir `--rc-chart-1` a
+  `--rc-chart-8`, senao o grafico sai sem cor de serie.
+
+- **Playwright nao estava mais no cache** desta maquina e foi reinstalado
+  (chromium 1234, em `~/Library/Caches/ms-playwright`, nao em `~/.cache`).
+
+- **O `docsMap` tem 92 entradas e cresce a cada componente.** Ele so deveria
+  guardar excecoes; hoje ele enumera. Vale trocar por `docsDir` apontando para
+  `.design-sync/docs/` e deixar a descoberta ligar sozinha, guardando no mapa so
+  o que nao casar.

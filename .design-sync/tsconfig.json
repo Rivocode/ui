@@ -7,7 +7,8 @@
     // sem depender de build nem de `bun link`.
     "paths": {
       "@rivocode/ui": ["../src/index.ts"],
-      "@rivocode/ui/form": ["../src/form/index.ts"]
+      "@rivocode/ui/form": ["../src/form/index.ts"],
+      "@rivocode/ui/chart": ["../src/chart/index.ts"]
     }
   },
   "include": ["previews"]

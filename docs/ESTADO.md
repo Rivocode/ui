@@ -1,6 +1,8 @@
 # Onde paramos
 
-Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
+Atualizado em 24/08/2026, no meio de um sync com o claude.ai/design. **Leia a
+secao "Sync em andamento" antes de qualquer coisa**: ha trabalho na arvore que
+nao esta commitado e um processo que talvez ainda esteja rodando.
 
 ## O que existe hoje
 
@@ -31,6 +33,85 @@ Mais os utilitarios: `useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`,
 **Fundacao:** tokens em tres camadas, temas `rivocode-dark` e `rivocode-light`,
 densidade confortavel e compacta, guarda de cor literal e guarda de contraste
 com 40 pares medidos.
+
+## Sync em andamento, 24/08/2026
+
+O upload **nao aconteceu**. O material esta pronto e o repo esta verde (213
+testes), mas a ultima etapa nao rodou.
+
+### Onde exatamente parou
+
+A terceira rodada do driver (`resync.mjs`) **terminou limpa**: 160 componentes,
+`ok: true`, ancora ok, nenhum learnings pendente. Ela deixou 57 folhas de
+revisao em `ds-bundle/_screenshots/review/` e 57 componentes esperando nota.
+
+Duas falhas ficaram, e ja tem conserto na arvore: `ChartTooltipContent` e
+`ChartLegendContent` devolvem `null` sem props, entao o cartao de piso deles
+saia vazio. Os previews dos dois foram autorados **depois** que essa rodada
+comecou, entao a proxima rodada e que vai fotografa-los. Sao 59 previews
+autorados agora, todos compilando por `bun run check:previews`.
+
+### O que falta, em ordem
+
+```sh
+# 1. rodada final do driver (build, diff, validate, captura)
+node .ds-sync/resync.mjs --config .design-sync/config.json \
+  --node-modules ./node_modules --entry ./dist/index.js \
+  --out ./ds-bundle --remote .design-sync/.cache/remote-sync.json
+```
+
+2. **Dar nota nas 59 folhas** em `ds-bundle/_screenshots/review/`, na regua
+   absoluta (estilizado, completo, plausivel). Verdicts vao em
+   `.design-sync/.cache/review/<Nome>.grade.json`, no formato
+   `{"cells": {"<Celula>": {"verdict": "good", "note": "…"}}}`. Os nomes de
+   celula estao no proprio `<Nome>.json` da mesma pasta.
+
+3. **Subir**, caminho atomico: `finalize_plan` com `localDir: "./ds-bundle"` →
+   sentinela `_ds_needs_recompile` → todos os arquivos → deletes → sentinela de
+   novo → `_ds_sync.json` **por ultimo, sozinho**.
+
+4. **Commitar** o duravel: `config.json`, `conventions.md`, `previews/`,
+   `docs/`, mais as mudancas de `src/chart`, README e demo.
+
+### Se algo dessa etapa ja tiver rodado
+
+Um projeto sem `_ds_sync.json` atualizado apenas re-verifica tudo no proximo
+sync. Nada apodrece em silencio. O que **nao** pode acontecer e a ancora subir
+antes dos arquivos: ela promete o que ainda nao chegou.
+
+## O que este sync mudou no proprio pacote
+
+Tres coisas sairam do sync e viraram codigo, porque eram furos de verdade:
+
+- **`@rivocode/ui/chart` reexporta as pecas da Recharts** que a biblioteca
+  veste. Sem isso, quem recebia o `ChartContainer` tinha a moldura e nada para
+  por dentro: as marcas e os eixos vivem na Recharts. `Tooltip` e `Legend` dela
+  ficam de fora, porque os nossos ja embrulham os dois e o nome colidiria.
+
+- **Os dois subcaminhos entram no bundle do design**, por `extraEntries`. Sem
+  isso o agente de design nao enxergava `Form`, `FormField` nem nada de
+  grafico.
+
+- **Componente de subcaminho precisa de `componentSrcMap`.** O conversor
+  descobre componentes pelo `.d.ts` da entrada principal; `ChartContainer` e
+  `Form` estavam no global mas sem contrato, sem doc e sem cartao. Cinco
+  entradas resolvem, e cada um ganhou documento.
+
+## Pergunta aberta: site de documentacao guiado por IA
+
+Ideia do Emanuel, ainda **nao decidida**: `https://ds.rivocode.com.br/<nome>.md`
+entrega markdown cru para qualquer IA, mais `/llms.txt` de indice, mais uma
+skill enviada dentro do pacote.
+
+O padrao e comprovado: a propria Base UI envia a documentacao inteira dentro do
+pacote, em `node_modules/@base-ui/react/docs/react/components/*.md`, e foi assim
+que o `Sheet` foi construido nesta sessao sem chutar API.
+
+Metade do material ja existe: 92 documentos em `.design-sync/docs/`, os
+`.prompt.md` gerados, 59 previews que sao exemplos reais, e o `conventions.md`.
+O trabalho e de montagem e de gerador unico, nao de escrita. **Recomendacao:
+neste repo**, como `apps/docs`, porque doc em repo separado mente na primeira
+prop renomeada e nenhum teste quebra.
 
 ## Regra que vale para todo componente novo
 

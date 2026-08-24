@@ -309,13 +309,22 @@ opcional: quem não faz gráfico não carrega os 200 kB dela.
 bun add recharts
 ```
 
+As peças da Recharts que a biblioteca veste saem pelo mesmo import — sem isso
+você teria a moldura e nada para pôr dentro, e teria que acertar a versão da
+Recharts na mão. `Tooltip` e `Legend` dela ficam de fora de propósito: os nossos
+já embrulham os dois, e o nome colidiria com o `Tooltip` do catálogo.
+
 ```tsx
-import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
+  CartesianGrid,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  Line,
+  LineChart,
   useChartMotion,
+  XAxis,
+  YAxis,
   type ChartConfig,
 } from "@rivocode/ui/chart";
 

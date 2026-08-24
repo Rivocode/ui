@@ -8,6 +8,17 @@
   "tsconfig": "tsconfig.json",
   "cssEntry": ".design-sync/.cache/styles.css",
   "readmeHeader": ".design-sync/conventions.md",
+  "extraEntries": [
+    "./dist/form/index.js",
+    "./dist/chart/index.js"
+  ],
+  "componentSrcMap": {
+    "ChartContainer": "src/chart/chart.tsx",
+    "ChartTooltipContent": "src/chart/chart-tooltip.tsx",
+    "ChartLegendContent": "src/chart/chart-legend.tsx",
+    "Form": "src/form/form.tsx",
+    "FormField": "src/form/form-field.tsx"
+  },
   "docsMap": {
     "Accordion": ".design-sync/docs/Accordion.md",
     "Alert": ".design-sync/docs/Alert.md",
@@ -25,6 +36,9 @@
     "CardFooter": ".design-sync/docs/CardFooter.md",
     "CardHeader": ".design-sync/docs/CardHeader.md",
     "CardTitle": ".design-sync/docs/CardTitle.md",
+    "ChartContainer": ".design-sync/docs/ChartContainer.md",
+    "ChartLegendContent": ".design-sync/docs/ChartLegendContent.md",
+    "ChartTooltipContent": ".design-sync/docs/ChartTooltipContent.md",
     "Checkbox": ".design-sync/docs/Checkbox.md",
     "Combobox": ".design-sync/docs/Combobox.md",
     "ComboboxContent": ".design-sync/docs/ComboboxContent.md",
@@ -46,6 +60,8 @@
     "FieldDescription": ".design-sync/docs/FieldDescription.md",
     "FieldError": ".design-sync/docs/FieldError.md",
     "FieldLabel": ".design-sync/docs/FieldLabel.md",
+    "Form": ".design-sync/docs/Form.md",
+    "FormField": ".design-sync/docs/FormField.md",
     "Input": ".design-sync/docs/Input.md",
     "InputAction": ".design-sync/docs/InputAction.md",
     "InputGroup": ".design-sync/docs/InputGroup.md",

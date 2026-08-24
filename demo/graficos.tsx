@@ -1,20 +1,5 @@
 import { createRoot } from "react-dom/client";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  XAxis,
-  YAxis,
-} from "recharts";
-
-import {
   Card,
   CardContent,
   CardHeader,
@@ -23,12 +8,24 @@ import {
   type RivoTheme,
 } from "../src/index";
 import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
   useChartMotion,
+  XAxis,
+  YAxis,
   type ChartConfig,
 } from "../src/chart";
 
