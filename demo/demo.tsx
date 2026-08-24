@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 
 import {
   Badge,
@@ -17,7 +17,7 @@ import {
   RivoProvider,
   type RivoDensity,
   type RivoTheme,
-} from '../src/index'
+} from "../src/index";
 
 function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   return (
@@ -54,7 +54,9 @@ function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity })
           <CardContent>Doze notas processadas, tres pendentes de aprovacao.</CardContent>
           <CardFooter>
             <Button size="sm">Ver detalhes</Button>
-            <Button size="sm" variant="ghost">Exportar</Button>
+            <Button size="sm" variant="ghost">
+              Exportar
+            </Button>
           </CardFooter>
         </Card>
 
@@ -78,14 +80,14 @@ function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity })
         </Card>
       </div>
     </RivoProvider>
-  )
+  );
 }
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <div>
     <Amostra theme="rivocode-dark" density="comfortable" />
     <Amostra theme="rivocode-dark" density="compact" />
     <Amostra theme="rivocode-light" density="comfortable" />
     <Amostra theme="rivocode-light" density="compact" />
   </div>,
-)
+);

@@ -1,6 +1,6 @@
 /* Camada 3: o tema escuro da RivoCode, o padrao. */
 
-[data-rc-theme='rivocode-dark'] {
+[data-rc-theme="rivocode-dark"] {
   --rc-bg: var(--rc-p-graphite-900);
   --rc-surface: var(--rc-p-graphite-800);
   --rc-surface-raised: var(--rc-p-graphite-700);
@@ -51,9 +51,9 @@
   --rc-text-display: clamp(32px, 4.2vw, 54px);
   --rc-text-hero: clamp(44px, 6.6vw, 88px);
 
-  --rc-shadow-1: 0 1px 2px rgb(0 0 0 / 0.40);
+  --rc-shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
   --rc-shadow-2: 0 6px 18px rgb(0 0 0 / 0.44);
-  --rc-shadow-3: 0 14px 36px rgb(0 0 0 / 0.50);
+  --rc-shadow-3: 0 14px 36px rgb(0 0 0 / 0.5);
 
   color-scheme: dark;
 }

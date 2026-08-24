@@ -178,15 +178,15 @@ bun add -d --peer react react-dom lucide-react
 `tsdown.config.ts`:
 
 ```ts
-import { defineConfig } from 'tsdown'
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: 'esm',
+  entry: ["src/index.ts"],
+  format: "esm",
   dts: true,
   clean: true,
-  external: ['react', 'react-dom', 'lucide-react'],
-})
+  external: ["react", "react-dom", "lucide-react"],
+});
 ```
 
 `bunfig.toml`:
@@ -200,9 +200,9 @@ preload = ["./test/setup.ts"]
 
 ```ts
 // Registra um DOM no bun test, que roda sem navegador por padrao.
-import { GlobalRegistrator } from '@happy-dom/global-registrator'
+import { GlobalRegistrator } from "@happy-dom/global-registrator";
 
-GlobalRegistrator.register()
+GlobalRegistrator.register();
 ```
 
 `.gitignore`:
@@ -249,7 +249,7 @@ Esperado: FALHA, com erro de módulo não encontrado em `../src/index`.
 `src/index.ts`:
 
 ```ts
-export const version = '0.1.0'
+export const version = "0.1.0";
 ```
 
 - [ ] **Step 10: Rodar o teste e confirmar que passa**
@@ -302,33 +302,33 @@ Entrega: dois scripts que falham quando a regra é quebrada, mais um CI que os r
 `test/guards.test.ts`:
 
 ```ts
-import { expect, test } from 'bun:test'
+import { expect, test } from "bun:test";
 
-import { contrastRatio, readTokens } from '../scripts/check-contrast'
+import { contrastRatio, readTokens } from "../scripts/check-contrast";
 
-test('branco sobre preto da o maximo de 21 para 1', () => {
-  expect(contrastRatio('#ffffff', '#000000')).toBeCloseTo(21, 1)
-})
+test("branco sobre preto da o maximo de 21 para 1", () => {
+  expect(contrastRatio("#ffffff", "#000000")).toBeCloseTo(21, 1);
+});
 
-test('a lima sobre o fundo escuro da 15,06 para 1', () => {
-  expect(contrastRatio('#d4f34a', '#0f1113')).toBeCloseTo(15.06, 1)
-})
+test("a lima sobre o fundo escuro da 15,06 para 1", () => {
+  expect(contrastRatio("#d4f34a", "#0f1113")).toBeCloseTo(15.06, 1);
+});
 
-test('a cor de texto desabilitado fica abaixo do minimo', () => {
-  expect(contrastRatio('#6c737b', '#0f1113')).toBeLessThan(4.5)
-})
+test("a cor de texto desabilitado fica abaixo do minimo", () => {
+  expect(contrastRatio("#6c737b", "#0f1113")).toBeLessThan(4.5);
+});
 
-test('resolve um token de tema que aponta para a paleta', () => {
+test("resolve um token de tema que aponta para a paleta", () => {
   const tokens = readTokens(
-    ':root { --rc-p-lima-500: #d4f34a; }\n' +
+    ":root { --rc-p-lima-500: #d4f34a; }\n" +
       "[data-rc-theme='x'] { --rc-accent: var(--rc-p-lima-500); }",
-  )
-  expect(tokens['--rc-accent']).toBe('#d4f34a')
-})
+  );
+  expect(tokens["--rc-accent"]).toBe("#d4f34a");
+});
 
-test('a ordem das cores nao muda a razao', () => {
-  expect(contrastRatio('#d4f34a', '#0f1113')).toBeCloseTo(contrastRatio('#0f1113', '#d4f34a'), 5)
-})
+test("a ordem das cores nao muda a razao", () => {
+  expect(contrastRatio("#d4f34a", "#0f1113")).toBeCloseTo(contrastRatio("#0f1113", "#d4f34a"), 5);
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -348,23 +348,23 @@ Esperado: FALHA, módulo `../scripts/check-contrast` não encontrado.
  * Guarda de contraste: le os arquivos de tema, resolve os tokens e falha se
  * algum par que carrega texto ficar abaixo do minimo da norma.
  */
-const MIN_TEXT = 4.5
-const MIN_BODY = 7
+const MIN_TEXT = 4.5;
+const MIN_BODY = 7;
 
 function channel(value: number): number {
-  const c = value / 255
-  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  const c = value / 255;
+  return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 }
 
 function luminance(hex: string): number {
-  const h = hex.replace('#', '')
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16))
-  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b)
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 }
 
 export function contrastRatio(a: string, b: string): number {
-  const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x)
-  return (high + 0.05) / (low + 0.05)
+  const [high, low] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (high + 0.05) / (low + 0.05);
 }
 
 /**
@@ -372,77 +372,77 @@ export function contrastRatio(a: string, b: string): number {
  * com o tema, porque o tema aponta para a paleta e ela vive em outro arquivo.
  */
 export function readTokens(css: string): Record<string, string> {
-  const raw: Record<string, string> = {}
+  const raw: Record<string, string> = {};
   for (const [, name, value] of css.matchAll(/(--rc-[\w-]+)\s*:\s*([^;]+);/g)) {
-    raw[name] = value.trim()
+    raw[name] = value.trim();
   }
-  const resolved: Record<string, string> = {}
+  const resolved: Record<string, string> = {};
   for (const [name, value] of Object.entries(raw)) {
-    const ref = value.match(/^var\((--rc-[\w-]+)\)$/)
-    resolved[name] = ref ? (raw[ref[1]] ?? value) : value
+    const ref = value.match(/^var\((--rc-[\w-]+)\)$/);
+    resolved[name] = ref ? (raw[ref[1]] ?? value) : value;
   }
-  return resolved
+  return resolved;
 }
 
 /** Os pares que carregam texto e portanto precisam passar. */
 const PAIRS: Array<[string, string, number]> = [
-  ['--rc-fg', '--rc-bg', MIN_BODY],
-  ['--rc-fg', '--rc-surface', MIN_BODY],
-  ['--rc-fg-muted', '--rc-bg', MIN_TEXT],
-  ['--rc-fg-muted', '--rc-surface', MIN_TEXT],
-  ['--rc-fg-subtle', '--rc-bg', MIN_TEXT],
-  ['--rc-fg-subtle', '--rc-surface', MIN_TEXT],
-  ['--rc-accent-text', '--rc-bg', MIN_TEXT],
-  ['--rc-accent-fg', '--rc-accent', MIN_TEXT],
-  ['--rc-success', '--rc-bg', MIN_TEXT],
-  ['--rc-warning', '--rc-bg', MIN_TEXT],
-  ['--rc-danger', '--rc-bg', MIN_TEXT],
-  ['--rc-info', '--rc-bg', MIN_TEXT],
-  ['--rc-success-fg', '--rc-success', MIN_TEXT],
-  ['--rc-warning-fg', '--rc-warning', MIN_TEXT],
-  ['--rc-danger-fg', '--rc-danger', MIN_TEXT],
-  ['--rc-info-fg', '--rc-info', MIN_TEXT],
-]
+  ["--rc-fg", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-surface", MIN_BODY],
+  ["--rc-fg-muted", "--rc-bg", MIN_TEXT],
+  ["--rc-fg-muted", "--rc-surface", MIN_TEXT],
+  ["--rc-fg-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-fg-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-accent-text", "--rc-bg", MIN_TEXT],
+  ["--rc-accent-fg", "--rc-accent", MIN_TEXT],
+  ["--rc-success", "--rc-bg", MIN_TEXT],
+  ["--rc-warning", "--rc-bg", MIN_TEXT],
+  ["--rc-danger", "--rc-bg", MIN_TEXT],
+  ["--rc-info", "--rc-bg", MIN_TEXT],
+  ["--rc-success-fg", "--rc-success", MIN_TEXT],
+  ["--rc-warning-fg", "--rc-warning", MIN_TEXT],
+  ["--rc-danger-fg", "--rc-danger", MIN_TEXT],
+  ["--rc-info-fg", "--rc-info", MIN_TEXT],
+];
 
 /** `--rc-fg-disabled` e isento: texto desabilitado nao entra na norma. */
 if (import.meta.main) {
-  const { Glob } = await import('bun')
-  const palette = await Bun.file('src/tokens/palette.css').text()
-  const files = await Array.fromAsync(new Glob('src/tokens/themes/*.css').scan('.'))
-  let failed = 0
+  const { Glob } = await import("bun");
+  const palette = await Bun.file("src/tokens/palette.css").text();
+  const files = await Array.fromAsync(new Glob("src/tokens/themes/*.css").scan("."));
+  let failed = 0;
 
   for (const file of files.sort()) {
-    const tokens = readTokens(palette + '\n' + (await Bun.file(file).text()))
-    console.log(`\n${file}`)
+    const tokens = readTokens(palette + "\n" + (await Bun.file(file).text()));
+    console.log(`\n${file}`);
     for (const [fg, bg, min] of PAIRS) {
-      const a = tokens[fg]
-      const b = tokens[bg]
+      const a = tokens[fg];
+      const b = tokens[bg];
       if (!a || !b) {
-        console.log(`  FALTA  ${fg} sobre ${bg}`)
-        failed++
-        continue
+        console.log(`  FALTA  ${fg} sobre ${bg}`);
+        failed++;
+        continue;
       }
       // Todo token de PAIRS carrega texto, entao precisa virar hexadecimal.
       // Nao resolver e defeito da paleta ou do tema, nunca motivo para pular.
-      if (!a.startsWith('#') || !b.startsWith('#')) {
-        console.log(`  FALHA  ${fg} ou ${bg} nao resolveu para hexadecimal`)
-        failed++
-        continue
+      if (!a.startsWith("#") || !b.startsWith("#")) {
+        console.log(`  FALHA  ${fg} ou ${bg} nao resolveu para hexadecimal`);
+        failed++;
+        continue;
       }
-      const ratio = contrastRatio(a, b)
-      const ok = ratio >= min
-      if (!ok) failed++
+      const ratio = contrastRatio(a, b);
+      const ok = ratio >= min;
+      if (!ok) failed++;
       console.log(
-        `  ${ok ? 'ok   ' : 'FALHA'} ${fg} sobre ${bg}  ${ratio.toFixed(2)}:1 (min ${min})`,
-      )
+        `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${bg}  ${ratio.toFixed(2)}:1 (min ${min})`,
+      );
     }
   }
 
   if (failed > 0) {
-    console.error(`\n${failed} par(es) abaixo do minimo.`)
-    process.exit(1)
+    console.error(`\n${failed} par(es) abaixo do minimo.`);
+    process.exit(1);
   }
-  console.log('\nContraste ok em todos os temas.')
+  console.log("\nContraste ok em todos os temas.");
 }
 ```
 
@@ -464,37 +464,37 @@ Esperado: 5 passes.
  * dentro de um componente amarra a biblioteca a uma marca, e e a coisa mais
  * facil de fazer sem perceber.
  */
-import { Glob } from 'bun'
+import { Glob } from "bun";
 
-const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/
-const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/
+const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/;
+const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/;
 
 const files = await Array.fromAsync(
-  new Glob('src/{primitives,provider,lib}/**/*.{ts,tsx,css}').scan('.'),
-)
+  new Glob("src/{primitives,provider,lib}/**/*.{ts,tsx,css}").scan("."),
+);
 
-let failed = 0
+let failed = 0;
 for (const file of files.sort()) {
-  const lines = (await Bun.file(file).text()).split('\n')
+  const lines = (await Bun.file(file).text()).split("\n");
   lines.forEach((line, i) => {
     if (COLOR.test(line)) {
-      console.error(`${file}:${i + 1}  cor literal: ${line.trim()}`)
-      failed++
+      console.error(`${file}:${i + 1}  cor literal: ${line.trim()}`);
+      failed++;
     }
     if (Z_INDEX.test(line)) {
-      console.error(`${file}:${i + 1}  empilhamento literal: ${line.trim()}`)
-      failed++
+      console.error(`${file}:${i + 1}  empilhamento literal: ${line.trim()}`);
+      failed++;
     }
-  })
+  });
 }
 
 if (failed > 0) {
   console.error(
     `\n${failed} violacao(oes). Cor vive em src/tokens, empilhamento usa var(--rc-z-*).`,
-  )
-  process.exit(1)
+  );
+  process.exit(1);
 }
-console.log(`Guarda de cor literal ok em ${files.length} arquivo(s).`)
+console.log(`Guarda de cor literal ok em ${files.length} arquivo(s).`);
 ```
 
 - [ ] **Step 6: Provar que a guarda pega uma violação de verdade**
@@ -583,47 +583,49 @@ Este teste é a rede que pega o erro mais comum de design system com dois temas:
 `test/tokens.test.ts`:
 
 ```ts
-import { expect, test } from 'bun:test'
+import { expect, test } from "bun:test";
 
-import { contrastRatio, readTokens } from '../scripts/check-contrast'
+import { contrastRatio, readTokens } from "../scripts/check-contrast";
 
-const read = (p: string) => Bun.file(p).text()
+const read = (p: string) => Bun.file(p).text();
 
 const base = async () =>
-  (await read('src/tokens/palette.css')) + '\n' + (await read('src/tokens/scales.css'))
+  (await read("src/tokens/palette.css")) + "\n" + (await read("src/tokens/scales.css"));
 
-test('todo token que o contrato referencia existe nos dois temas', async () => {
-  const contract = await read('src/tokens/contract.css')
-  const referenced = [...contract.matchAll(/var\((--rc-[\w-]+)\)/g)].map((m) => m[1])
-  expect(referenced.length).toBeGreaterThan(20)
+test("todo token que o contrato referencia existe nos dois temas", async () => {
+  const contract = await read("src/tokens/contract.css");
+  const referenced = [...contract.matchAll(/var\((--rc-[\w-]+)\)/g)].map((m) => m[1]);
+  expect(referenced.length).toBeGreaterThan(20);
 
-  const shared = await base()
-  const dark = readTokens(shared + (await read('src/tokens/themes/rivocode-dark.css')))
-  const light = readTokens(shared + (await read('src/tokens/themes/rivocode-light.css')))
+  const shared = await base();
+  const dark = readTokens(shared + (await read("src/tokens/themes/rivocode-dark.css")));
+  const light = readTokens(shared + (await read("src/tokens/themes/rivocode-light.css")));
 
-  const faltando = referenced.filter((t) => !dark[t] || !light[t])
-  expect(faltando).toEqual([])
-})
+  const faltando = referenced.filter((t) => !dark[t] || !light[t]);
+  expect(faltando).toEqual([]);
+});
 
-test('nenhum componente le da paleta crua', async () => {
-  const { Glob } = await import('bun')
-  const files = await Array.fromAsync(new Glob('src/{primitives,provider}/**/*.{ts,tsx}').scan('.'))
+test("nenhum componente le da paleta crua", async () => {
+  const { Glob } = await import("bun");
+  const files = await Array.fromAsync(
+    new Glob("src/{primitives,provider}/**/*.{ts,tsx}").scan("."),
+  );
   for (const file of files) {
-    expect(await Bun.file(file).text()).not.toContain('--rc-p-')
+    expect(await Bun.file(file).text()).not.toContain("--rc-p-");
   }
-})
+});
 
-test('a densidade compacta encolhe todo controle', async () => {
-  const scales = readTokens(await read('src/tokens/scales.css'))
-  expect(scales['--rc-control-md']).toBeDefined()
-})
+test("a densidade compacta encolhe todo controle", async () => {
+  const scales = readTokens(await read("src/tokens/scales.css"));
+  expect(scales["--rc-control-md"]).toBeDefined();
+});
 
-test('o acento do tema claro passa como texto, e a lima crua nao passaria', async () => {
-  const shared = await base()
-  const light = readTokens(shared + (await read('src/tokens/themes/rivocode-light.css')))
-  expect(contrastRatio(light['--rc-accent-text'], light['--rc-bg'])).toBeGreaterThan(4.5)
-  expect(contrastRatio('#d4f34a', light['--rc-bg'])).toBeLessThan(2)
-})
+test("o acento do tema claro passa como texto, e a lima crua nao passaria", async () => {
+  const shared = await base();
+  const light = readTokens(shared + (await read("src/tokens/themes/rivocode-light.css")));
+  expect(contrastRatio(light["--rc-accent-text"], light["--rc-bg"])).toBeGreaterThan(4.5);
+  expect(contrastRatio("#d4f34a", light["--rc-bg"])).toBeLessThan(2);
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -711,9 +713,9 @@ Esperado: FALHA, arquivo `src/tokens/palette.css` não existe.
   --rc-leading-normal: 1.5;
   --rc-leading-relaxed: 1.7;
 
-  --rc-font-sans: 'Manrope Variable', system-ui, sans-serif;
-  --rc-font-display: 'Poppins', 'Manrope Variable', sans-serif;
-  --rc-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
+  --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
+  --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* Empilhamento. Definir isto agora e o que evita o z-index 9999 depois. */
   --rc-z-base: 0;
@@ -738,7 +740,7 @@ Esperado: FALHA, arquivo `src/tokens/palette.css` não existe.
 
 /* Densidade confortavel, o padrao. */
 :root,
-[data-rc-density='comfortable'] {
+[data-rc-density="comfortable"] {
   --rc-control-sm: 32px;
   --rc-control-md: 40px;
   --rc-control-lg: 48px;
@@ -748,7 +750,7 @@ Esperado: FALHA, arquivo `src/tokens/palette.css` não existe.
 }
 
 /* Densidade compacta, para tela de operacao. */
-[data-rc-density='compact'] {
+[data-rc-density="compact"] {
   --rc-control-sm: 28px;
   --rc-control-md: 32px;
   --rc-control-lg: 38px;
@@ -854,7 +856,7 @@ Todo valor abaixo foi medido. As razões estão no spec e são reconferidas pela
 ```css
 /* Camada 3: o tema escuro da RivoCode, o padrao. */
 
-[data-rc-theme='rivocode-dark'] {
+[data-rc-theme="rivocode-dark"] {
   --rc-bg: var(--rc-p-graphite-900);
   --rc-surface: var(--rc-p-graphite-800);
   --rc-surface-raised: var(--rc-p-graphite-700);
@@ -911,7 +913,7 @@ A lima continua preenchendo, mas quem carrega texto é `--rc-accent-text`. Essa 
 ```css
 /* Camada 3: o tema claro da RivoCode. */
 
-[data-rc-theme='rivocode-light'] {
+[data-rc-theme="rivocode-light"] {
   --rc-bg: var(--rc-p-paper);
   --rc-surface: var(--rc-p-white);
   --rc-surface-raised: var(--rc-p-white);
@@ -965,23 +967,23 @@ A lima continua preenchendo, mas quem carrega texto é `--rc-accent-text`. Essa 
 
 ```css
 /* O vocabulario da RivoCode para o Tailwind do projeto consumidor. */
-@import './tokens/palette.css';
-@import './tokens/scales.css';
-@import './tokens/contract.css';
-@import './tokens/themes/rivocode-dark.css';
-@import './tokens/themes/rivocode-light.css';
+@import "./tokens/palette.css";
+@import "./tokens/scales.css";
+@import "./tokens/contract.css";
+@import "./tokens/themes/rivocode-dark.css";
+@import "./tokens/themes/rivocode-light.css";
 ```
 
 `src/styles.css`, a folha completa da biblioteca:
 
 ```css
-@import 'tailwindcss';
+@import "tailwindcss";
 
 /* O Tailwind precisa varrer os componentes para gerar as classes que eles usam. */
 @source './primitives';
 @source './provider';
 
-@import './preset.css';
+@import "./preset.css";
 ```
 
 - [ ] **Step 9: Escrever o gerador do preset achatado**
@@ -997,20 +999,20 @@ O consumidor recebe um arquivo só, sem `@import` relativo que possa não resolv
  * relativo dentro de node_modules.
  */
 const ORDER = [
-  'src/tokens/palette.css',
-  'src/tokens/scales.css',
-  'src/tokens/contract.css',
-  'src/tokens/themes/rivocode-dark.css',
-  'src/tokens/themes/rivocode-light.css',
-]
+  "src/tokens/palette.css",
+  "src/tokens/scales.css",
+  "src/tokens/contract.css",
+  "src/tokens/themes/rivocode-dark.css",
+  "src/tokens/themes/rivocode-light.css",
+];
 
-const parts: string[] = ['/* @rivocode/ui: tokens e temas. Gerado, nao editar. */']
+const parts: string[] = ["/* @rivocode/ui: tokens e temas. Gerado, nao editar. */"];
 for (const file of ORDER) {
-  parts.push(`\n/* ${file} */\n${await Bun.file(file).text()}`)
+  parts.push(`\n/* ${file} */\n${await Bun.file(file).text()}`);
 }
 
-await Bun.write('dist/preset.css', parts.join('\n'))
-console.log(`dist/preset.css gerado a partir de ${ORDER.length} arquivos.`)
+await Bun.write("dist/preset.css", parts.join("\n"));
+console.log(`dist/preset.css gerado a partir de ${ORDER.length} arquivos.`);
 ```
 
 Atualizar o script no `package.json`:
@@ -1073,68 +1075,68 @@ Entrega: o Provider aplica tema e densidade em modo global ou escopado, e expõe
 `test/provider.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
-import { RivoProvider, useRivoContext } from '../src/provider/rivo-provider'
+import { RivoProvider, useRivoContext } from "../src/provider/rivo-provider";
 
 function Espia() {
-  const { theme, density, portalContainer } = useRivoContext()
+  const { theme, density, portalContainer } = useRivoContext();
   return (
-    <span data-testid="espia" data-portal={portalContainer ? 'sim' : 'nao'}>
+    <span data-testid="espia" data-portal={portalContainer ? "sim" : "nao"}>
       {theme}/{density}
     </span>
-  )
+  );
 }
 
-test('o modo global marca o tema no elemento raiz do documento', () => {
+test("o modo global marca o tema no elemento raiz do documento", () => {
   render(
     <RivoProvider scope="global" theme="rivocode-dark">
       <p>ola</p>
     </RivoProvider>,
-  )
-  expect(document.documentElement.dataset.rcTheme).toBe('rivocode-dark')
-  expect(document.documentElement.dataset.rcDensity).toBe('comfortable')
-})
+  );
+  expect(document.documentElement.dataset.rcTheme).toBe("rivocode-dark");
+  expect(document.documentElement.dataset.rcDensity).toBe("comfortable");
+});
 
-test('o modo escopado marca o proprio elemento e nao toca no documento', () => {
-  document.documentElement.removeAttribute('data-rc-theme')
+test("o modo escopado marca o proprio elemento e nao toca no documento", () => {
+  document.documentElement.removeAttribute("data-rc-theme");
   render(
     <RivoProvider scope="local" theme="rivocode-light" density="compact">
       <p>ola</p>
     </RivoProvider>,
-  )
-  const escopo = document.querySelector('[data-rc-theme="rivocode-light"]')
-  expect(escopo).not.toBeNull()
-  expect(escopo?.getAttribute('data-rc-density')).toBe('compact')
-  expect(document.documentElement.dataset.rcTheme).toBeUndefined()
-})
+  );
+  const escopo = document.querySelector('[data-rc-theme="rivocode-light"]');
+  expect(escopo).not.toBeNull();
+  expect(escopo?.getAttribute("data-rc-density")).toBe("compact");
+  expect(document.documentElement.dataset.rcTheme).toBeUndefined();
+});
 
-test('o contexto entrega tema, densidade e container de portal', () => {
+test("o contexto entrega tema, densidade e container de portal", () => {
   render(
     <RivoProvider theme="rivocode-dark" density="compact">
       <Espia />
     </RivoProvider>,
-  )
-  expect(screen.getByTestId('espia').textContent).toBe('rivocode-dark/compact')
-  expect(screen.getByTestId('espia').dataset.portal).toBe('sim')
-})
+  );
+  expect(screen.getByTestId("espia").textContent).toBe("rivocode-dark/compact");
+  expect(screen.getByTestId("espia").dataset.portal).toBe("sim");
+});
 
-test('o container de portal carrega o tema, senao o dialogo sai sem estilo', () => {
+test("o container de portal carrega o tema, senao o dialogo sai sem estilo", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <p>ola</p>
     </RivoProvider>,
-  )
+  );
   const portais = document.body.querySelectorAll(
     ':scope > [data-rc-portal][data-rc-theme="rivocode-light"]',
-  )
-  expect(portais.length).toBe(1)
-})
+  );
+  expect(portais.length).toBe(1);
+});
 
-test('usar o contexto fora do Provider da um erro que explica o que fazer', () => {
-  expect(() => render(<Espia />)).toThrow(/RivoProvider/)
-})
+test("usar o contexto fora do Provider da um erro que explica o que fazer", () => {
+  expect(() => render(<Espia />)).toThrow(/RivoProvider/);
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -1150,12 +1152,12 @@ Esperado: FALHA, módulo `../src/provider/rivo-provider` não encontrado.
 `src/lib/cn.ts`:
 
 ```ts
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 /** Junta classes condicionais resolvendo conflitos do Tailwind. */
 export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 ```
 
@@ -1164,115 +1166,115 @@ export function cn(...inputs: ClassValue[]): string {
 `src/provider/rivo-provider.tsx`:
 
 ```tsx
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-import { cn } from '../lib/cn'
+import { cn } from "../lib/cn";
 
-export type RivoTheme = 'rivocode-dark' | 'rivocode-light'
-export type RivoDensity = 'comfortable' | 'compact'
+export type RivoTheme = "rivocode-dark" | "rivocode-light";
+export type RivoDensity = "comfortable" | "compact";
 
 type RivoContextValue = {
-  theme: RivoTheme
-  density: RivoDensity
+  theme: RivoTheme;
+  density: RivoDensity;
   /**
    * Onde dialogo, menu e dica renderizam. No modo escopado os tokens vivem num
    * elemento nosso, e um portal no fim do body sairia sem tema. Este container
    * carrega os mesmos atributos, entao o portal continua vestido.
    */
-  portalContainer: HTMLElement | null
-}
+  portalContainer: HTMLElement | null;
+};
 
-const RivoContext = createContext<RivoContextValue | null>(null)
+const RivoContext = createContext<RivoContextValue | null>(null);
 
 export function useRivoContext(): RivoContextValue {
-  const value = useContext(RivoContext)
+  const value = useContext(RivoContext);
   if (!value) {
     throw new Error(
-      'Componente do @rivocode/ui usado fora do RivoProvider. Envolva a arvore com <RivoProvider>.',
-    )
+      "Componente do @rivocode/ui usado fora do RivoProvider. Envolva a arvore com <RivoProvider>.",
+    );
   }
-  return value
+  return value;
 }
 
 export type RivoProviderProps = {
-  children: ReactNode
+  children: ReactNode;
   /** `system` segue a preferencia do sistema operacional. */
-  theme?: RivoTheme | 'system'
-  density?: RivoDensity
+  theme?: RivoTheme | "system";
+  density?: RivoDensity;
   /**
    * `global` veste a pagina inteira, para projeto novo. `local` veste apenas
    * esta arvore, para quando o DS entra num projeto herdado do cliente e nao
    * pode vazar para o resto.
    */
-  scope?: 'global' | 'local'
-  className?: string
-}
+  scope?: "global" | "local";
+  className?: string;
+};
 
 function resolveSystemTheme(): RivoTheme {
-  if (typeof window === 'undefined' || !window.matchMedia) return 'rivocode-dark'
-  return window.matchMedia('(prefers-color-scheme: light)').matches
-    ? 'rivocode-light'
-    : 'rivocode-dark'
+  if (typeof window === "undefined" || !window.matchMedia) return "rivocode-dark";
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "rivocode-light"
+    : "rivocode-dark";
 }
 
 export function RivoProvider({
   children,
-  theme = 'rivocode-dark',
-  density = 'comfortable',
-  scope = 'global',
+  theme = "rivocode-dark",
+  density = "comfortable",
+  scope = "global",
   className,
 }: RivoProviderProps) {
-  const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme)
-  const resolved: RivoTheme = theme === 'system' ? systemTheme : theme
+  const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme);
+  const resolved: RivoTheme = theme === "system" ? systemTheme : theme;
 
   useEffect(() => {
-    if (theme !== 'system' || typeof window === 'undefined') return
-    const query = window.matchMedia('(prefers-color-scheme: light)')
-    const update = () => setSystemTheme(query.matches ? 'rivocode-light' : 'rivocode-dark')
-    update()
-    query.addEventListener('change', update)
-    return () => query.removeEventListener('change', update)
-  }, [theme])
+    if (theme !== "system" || typeof window === "undefined") return;
+    const query = window.matchMedia("(prefers-color-scheme: light)");
+    const update = () => setSystemTheme(query.matches ? "rivocode-light" : "rivocode-dark");
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, [theme]);
 
   useEffect(() => {
-    if (scope !== 'global') return
-    const root = document.documentElement
-    root.dataset.rcTheme = resolved
-    root.dataset.rcDensity = density
-  }, [scope, resolved, density])
+    if (scope !== "global") return;
+    const root = document.documentElement;
+    root.dataset.rcTheme = resolved;
+    root.dataset.rcDensity = density;
+  }, [scope, resolved, density]);
 
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null)
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const node = document.createElement('div')
-    node.dataset.rcPortal = ''
-    document.body.appendChild(node)
-    setPortalContainer(node)
+    const node = document.createElement("div");
+    node.dataset.rcPortal = "";
+    document.body.appendChild(node);
+    setPortalContainer(node);
     return () => {
-      node.remove()
-    }
-  }, [])
+      node.remove();
+    };
+  }, []);
 
   useEffect(() => {
-    if (!portalContainer) return
-    portalContainer.dataset.rcTheme = resolved
-    portalContainer.dataset.rcDensity = density
-  }, [portalContainer, resolved, density])
+    if (!portalContainer) return;
+    portalContainer.dataset.rcTheme = resolved;
+    portalContainer.dataset.rcDensity = density;
+  }, [portalContainer, resolved, density]);
 
   const value = useMemo<RivoContextValue>(
     () => ({ theme: resolved, density, portalContainer }),
     [resolved, density, portalContainer],
-  )
+  );
 
   return (
     <RivoContext.Provider value={value}>
-      {scope === 'local' ? (
+      {scope === "local" ? (
         <div
           data-rc-theme={resolved}
           data-rc-density={density}
-          className={cn('bg-bg font-sans text-fg', className)}
+          className={cn("bg-bg font-sans text-fg", className)}
         >
           {children}
         </div>
@@ -1280,7 +1282,7 @@ export function RivoProvider({
         children
       )}
     </RivoContext.Provider>
-  )
+  );
 }
 ```
 
@@ -1289,16 +1291,16 @@ export function RivoProvider({
 `src/index.ts`:
 
 ```ts
-export const version = '0.1.0'
+export const version = "0.1.0";
 
-export { cn } from './lib/cn'
+export { cn } from "./lib/cn";
 export {
   RivoProvider,
   useRivoContext,
   type RivoDensity,
   type RivoProviderProps,
   type RivoTheme,
-} from './provider/rivo-provider'
+} from "./provider/rivo-provider";
 ```
 
 - [ ] **Step 6: Rodar os testes e confirmar que passam**
@@ -1350,71 +1352,71 @@ Entrega: o primeiro componente visível, com quatro variantes, três tamanhos, a
 `test/button.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { createRef } from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { createRef } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
-import { Button } from '../src/primitives/button'
+import { Button } from "../src/primitives/button";
 
-test('renderiza o rotulo', () => {
-  render(<Button>Falar no WhatsApp</Button>)
-  expect(screen.getByRole('button', { name: 'Falar no WhatsApp' })).toBeDefined()
-})
+test("renderiza o rotulo", () => {
+  render(<Button>Falar no WhatsApp</Button>);
+  expect(screen.getByRole("button", { name: "Falar no WhatsApp" })).toBeDefined();
+});
 
-test('a variante padrao e a primaria', () => {
-  render(<Button>Enviar</Button>)
-  expect(screen.getByRole('button').className).toContain('bg-accent')
-})
+test("a variante padrao e a primaria", () => {
+  render(<Button>Enviar</Button>);
+  expect(screen.getByRole("button").className).toContain("bg-accent");
+});
 
-test('a variante destrutiva usa o token de perigo, nunca um vermelho literal', () => {
-  render(<Button variant="destructive">Excluir</Button>)
-  const classes = screen.getByRole('button').className
-  expect(classes).toContain('bg-danger')
-  expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i)
-})
+test("a variante destrutiva usa o token de perigo, nunca um vermelho literal", () => {
+  render(<Button variant="destructive">Excluir</Button>);
+  const classes = screen.getByRole("button").className;
+  expect(classes).toContain("bg-danger");
+  expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i);
+});
 
-test('a forma pilula troca o raio, e o padrao do produto nao e pilula', () => {
-  const { rerender } = render(<Button>Padrao</Button>)
-  expect(screen.getByRole('button').className).toContain('rounded-md')
+test("a forma pilula troca o raio, e o padrao do produto nao e pilula", () => {
+  const { rerender } = render(<Button>Padrao</Button>);
+  expect(screen.getByRole("button").className).toContain("rounded-md");
 
-  rerender(<Button shape="pill">Marketing</Button>)
-  expect(screen.getByRole('button').className).toContain('rounded-pill')
-})
+  rerender(<Button shape="pill">Marketing</Button>);
+  expect(screen.getByRole("button").className).toContain("rounded-pill");
+});
 
-test('o tamanho vem do token de densidade, nao de uma altura cravada', () => {
-  render(<Button size="lg">Grande</Button>)
-  expect(screen.getByRole('button').className).toContain('--rc-control-lg')
-})
+test("o tamanho vem do token de densidade, nao de uma altura cravada", () => {
+  render(<Button size="lg">Grande</Button>);
+  expect(screen.getByRole("button").className).toContain("--rc-control-lg");
+});
 
-test('encaminha a ref para o elemento nativo', () => {
-  const ref = createRef<HTMLButtonElement>()
-  render(<Button ref={ref}>Ok</Button>)
-  expect(ref.current?.tagName).toBe('BUTTON')
-})
+test("encaminha a ref para o elemento nativo", () => {
+  const ref = createRef<HTMLButtonElement>();
+  render(<Button ref={ref}>Ok</Button>);
+  expect(ref.current?.tagName).toBe("BUTTON");
+});
 
-test('desabilitado nao dispara clique', () => {
-  let cliques = 0
+test("desabilitado nao dispara clique", () => {
+  let cliques = 0;
   render(
     <Button
       disabled
       onClick={() => {
-        cliques++
+        cliques++;
       }}
     >
       Ok
     </Button>,
-  )
-  fireEvent.click(screen.getByRole('button'))
-  expect(cliques).toBe(0)
-})
+  );
+  fireEvent.click(screen.getByRole("button"));
+  expect(cliques).toBe(0);
+});
 
-test('carregando desabilita, anuncia ocupado e esconde o giro do leitor de tela', () => {
-  render(<Button loading>Salvando</Button>)
-  const botao = screen.getByRole('button')
-  expect(botao.getAttribute('aria-busy')).toBe('true')
-  expect((botao as HTMLButtonElement).disabled).toBe(true)
-  expect(botao.querySelector('[aria-hidden="true"]')).not.toBeNull()
-})
+test("carregando desabilita, anuncia ocupado e esconde o giro do leitor de tela", () => {
+  render(<Button loading>Salvando</Button>);
+  const botao = screen.getByRole("button");
+  expect(botao.getAttribute("aria-busy")).toBe("true");
+  expect((botao as HTMLButtonElement).disabled).toBe(true);
+  expect(botao.querySelector('[aria-hidden="true"]')).not.toBeNull();
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -1432,48 +1434,48 @@ Nota de projeto: este componente não usa a Base UI. Um botão nativo já tem to
 `src/primitives/button.tsx`:
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority'
-import type { ComponentPropsWithoutRef, Ref } from 'react'
+import { cva, type VariantProps } from "class-variance-authority";
+import type { ComponentPropsWithoutRef, Ref } from "react";
 
-import { cn } from '../lib/cn'
+import { cn } from "../lib/cn";
 
 export const buttonVariants = cva(
   cn(
-    'inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap',
-    'font-sans font-medium',
-    'transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]',
-    'outline-none focus-visible:ring-2 focus-visible:ring-ring',
-    'focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
-    'disabled:pointer-events-none disabled:opacity-60',
+    "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
+    "font-sans font-medium",
+    "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
+    "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+    "disabled:pointer-events-none disabled:opacity-60",
   ),
   {
     variants: {
       variant: {
-        primary: 'bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active',
-        secondary: 'border border-border-strong bg-surface text-fg hover:bg-surface-raised',
-        ghost: 'text-fg-muted hover:bg-accent-subtle hover:text-fg',
-        destructive: 'bg-danger text-danger-fg hover:opacity-90',
+        primary: "bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
+        secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-raised",
+        ghost: "text-fg-muted hover:bg-accent-subtle hover:text-fg",
+        destructive: "bg-danger text-danger-fg hover:opacity-90",
       },
       size: {
-        sm: 'h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm',
-        md: 'h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base',
-        lg: 'h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md',
+        sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
+        md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
+        lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
       },
       shape: {
-        default: 'rounded-md',
-        pill: 'rounded-pill',
+        default: "rounded-md",
+        pill: "rounded-pill",
       },
     },
-    defaultVariants: { variant: 'primary', size: 'md', shape: 'default' },
+    defaultVariants: { variant: "primary", size: "md", shape: "default" },
   },
-)
+);
 
-export type ButtonProps = ComponentPropsWithoutRef<'button'> &
+export type ButtonProps = ComponentPropsWithoutRef<"button"> &
   VariantProps<typeof buttonVariants> & {
     /** Desabilita e anuncia ocupado enquanto uma acao esta em andamento. */
-    loading?: boolean
-    ref?: Ref<HTMLButtonElement>
-  }
+    loading?: boolean;
+    ref?: Ref<HTMLButtonElement>;
+  };
 
 export function Button({
   className,
@@ -1496,14 +1498,14 @@ export function Button({
         <span
           aria-hidden="true"
           className={cn(
-            'size-4 animate-spin rounded-pill border-2 border-current',
-            'border-t-transparent',
+            "size-4 animate-spin rounded-pill border-2 border-current",
+            "border-t-transparent",
           )}
         />
       )}
       {children}
     </button>
-  )
+  );
 }
 ```
 
@@ -1512,7 +1514,7 @@ export function Button({
 Acrescentar em `src/index.ts`:
 
 ```ts
-export { Button, buttonVariants, type ButtonProps } from './primitives/button'
+export { Button, buttonVariants, type ButtonProps } from "./primitives/button";
 ```
 
 - [ ] **Step 5: Rodar os testes e confirmar que passam**
@@ -1568,8 +1570,8 @@ Entrega: a peça que prova as superfícies. É onde a diferença entre `bg`, `su
 `test/card.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
 import {
   Card,
@@ -1578,28 +1580,28 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../src/primitives/card'
+} from "../src/primitives/card";
 
-test('o cartao usa a superficie e a borda do tema', () => {
-  render(<Card data-testid="cartao">conteudo</Card>)
-  const classes = screen.getByTestId('cartao').className
-  expect(classes).toContain('bg-surface')
-  expect(classes).toContain('border-border')
-  expect(classes).toContain('rounded-lg')
-})
+test("o cartao usa a superficie e a borda do tema", () => {
+  render(<Card data-testid="cartao">conteudo</Card>);
+  const classes = screen.getByTestId("cartao").className;
+  expect(classes).toContain("bg-surface");
+  expect(classes).toContain("border-border");
+  expect(classes).toContain("rounded-lg");
+});
 
-test('a elevacao levantada troca a superficie e ganha sombra', () => {
+test("a elevacao levantada troca a superficie e ganha sombra", () => {
   render(
     <Card data-testid="cartao" elevation="raised">
       conteudo
     </Card>,
-  )
-  const classes = screen.getByTestId('cartao').className
-  expect(classes).toContain('bg-surface-raised')
-  expect(classes).toContain('shadow-2')
-})
+  );
+  const classes = screen.getByTestId("cartao").className;
+  expect(classes).toContain("bg-surface-raised");
+  expect(classes).toContain("shadow-2");
+});
 
-test('o titulo sai como cabecalho de verdade, nao como div estilizada', () => {
+test("o titulo sai como cabecalho de verdade, nao como div estilizada", () => {
   render(
     <Card>
       <CardHeader>
@@ -1609,17 +1611,17 @@ test('o titulo sai como cabecalho de verdade, nao como div estilizada', () => {
       <CardContent>corpo</CardContent>
       <CardFooter>rodape</CardFooter>
     </Card>,
-  )
-  expect(screen.getByRole('heading', { name: 'Resumo do mes' }).tagName).toBe('H3')
-  expect(screen.getByText('Agosto de 2026').className).toContain('text-fg-muted')
-})
+  );
+  expect(screen.getByRole("heading", { name: "Resumo do mes" }).tagName).toBe("H3");
+  expect(screen.getByText("Agosto de 2026").className).toContain("text-fg-muted");
+});
 
-test('a classe passada por quem usa sobrescreve a do componente', () => {
-  render(<Card data-testid="cartao" className="rounded-xl" />)
-  const classes = screen.getByTestId('cartao').className
-  expect(classes).toContain('rounded-xl')
-  expect(classes).not.toContain('rounded-lg')
-})
+test("a classe passada por quem usa sobrescreve a do componente", () => {
+  render(<Card data-testid="cartao" className="rounded-xl" />);
+  const classes = screen.getByTestId("cartao").className;
+  expect(classes).toContain("rounded-xl");
+  expect(classes).not.toContain("rounded-lg");
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -1635,55 +1637,55 @@ Esperado: FALHA, módulo não encontrado.
 `src/primitives/card.tsx`:
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority'
-import type { ComponentPropsWithoutRef } from 'react'
+import { cva, type VariantProps } from "class-variance-authority";
+import type { ComponentPropsWithoutRef } from "react";
 
-import { cn } from '../lib/cn'
+import { cn } from "../lib/cn";
 
-export const cardVariants = cva('rounded-lg border border-border', {
+export const cardVariants = cva("rounded-lg border border-border", {
   variants: {
     elevation: {
-      flat: 'bg-surface',
-      raised: 'bg-surface-raised shadow-2',
+      flat: "bg-surface",
+      raised: "bg-surface-raised shadow-2",
     },
   },
-  defaultVariants: { elevation: 'flat' },
-})
+  defaultVariants: { elevation: "flat" },
+});
 
-export type CardProps = ComponentPropsWithoutRef<'div'> & VariantProps<typeof cardVariants>
+export type CardProps = ComponentPropsWithoutRef<"div"> & VariantProps<typeof cardVariants>;
 
 export function Card({ className, elevation, ...props }: CardProps) {
-  return <div {...props} className={cn(cardVariants({ elevation }), className)} />
+  return <div {...props} className={cn(cardVariants({ elevation }), className)} />;
 }
 
-export function CardHeader({ className, ...props }: ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} className={cn('flex flex-col gap-1 p-5 pb-3', className)} />
+export function CardHeader({ className, ...props }: ComponentPropsWithoutRef<"div">) {
+  return <div {...props} className={cn("flex flex-col gap-1 p-5 pb-3", className)} />;
 }
 
-export function CardTitle({ className, ...props }: ComponentPropsWithoutRef<'h3'>) {
+export function CardTitle({ className, ...props }: ComponentPropsWithoutRef<"h3">) {
   return (
     <h3
       {...props}
-      className={cn('font-display text-xl leading-[var(--rc-leading-tight)] text-fg', className)}
+      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] text-fg", className)}
     />
-  )
+  );
 }
 
-export function CardDescription({ className, ...props }: ComponentPropsWithoutRef<'p'>) {
-  return <p {...props} className={cn('text-sm text-fg-muted', className)} />
+export function CardDescription({ className, ...props }: ComponentPropsWithoutRef<"p">) {
+  return <p {...props} className={cn("text-sm text-fg-muted", className)} />;
 }
 
-export function CardContent({ className, ...props }: ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} className={cn('px-5 py-3 text-base text-fg', className)} />
+export function CardContent({ className, ...props }: ComponentPropsWithoutRef<"div">) {
+  return <div {...props} className={cn("px-5 py-3 text-base text-fg", className)} />;
 }
 
-export function CardFooter({ className, ...props }: ComponentPropsWithoutRef<'div'>) {
+export function CardFooter({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
     <div
       {...props}
-      className={cn('flex items-center gap-3 border-t border-border p-5 pt-3', className)}
+      className={cn("flex items-center gap-3 border-t border-border p-5 pt-3", className)}
     />
-  )
+  );
 }
 ```
 
@@ -1701,7 +1703,7 @@ export {
   CardTitle,
   cardVariants,
   type CardProps,
-} from './primitives/card'
+} from "./primitives/card";
 ```
 
 - [ ] **Step 5: Rodar e confirmar que passa**
@@ -1742,39 +1744,39 @@ Entrega: a peça que estreia as cores de estado. É o teste mais direto de que a
 `test/badge.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
-import { Badge } from '../src/primitives/badge'
+import { Badge } from "../src/primitives/badge";
 
-test('o tom padrao e neutro', () => {
-  render(<Badge>Rascunho</Badge>)
-  expect(screen.getByText('Rascunho').className).toContain('text-fg-muted')
-})
+test("o tom padrao e neutro", () => {
+  render(<Badge>Rascunho</Badge>);
+  expect(screen.getByText("Rascunho").className).toContain("text-fg-muted");
+});
 
 const TONS = [
-  ['success', 'text-success'],
-  ['warning', 'text-warning'],
-  ['danger', 'text-danger'],
-  ['info', 'text-info'],
-] as const
+  ["success", "text-success"],
+  ["warning", "text-warning"],
+  ["danger", "text-danger"],
+  ["info", "text-info"],
+] as const;
 
 for (const [tom, esperado] of TONS) {
   test(`o tom ${tom} usa o token de estado`, () => {
-    render(<Badge tone={tom}>{tom}</Badge>)
-    expect(screen.getByText(tom).className).toContain(esperado)
-  })
+    render(<Badge tone={tom}>{tom}</Badge>);
+    expect(screen.getByText(tom).className).toContain(esperado);
+  });
 }
 
-test('nenhum tom carrega cor literal', () => {
-  render(<Badge tone="danger">Erro</Badge>)
-  expect(screen.getByText('Erro').className).not.toMatch(/#[0-9a-f]{3,6}|rgb\(/i)
-})
+test("nenhum tom carrega cor literal", () => {
+  render(<Badge tone="danger">Erro</Badge>);
+  expect(screen.getByText("Erro").className).not.toMatch(/#[0-9a-f]{3,6}|rgb\(/i);
+});
 
-test('o selo e sempre pilula, porque selo nao e botao', () => {
-  render(<Badge>Ativo</Badge>)
-  expect(screen.getByText('Ativo').className).toContain('rounded-pill')
-})
+test("o selo e sempre pilula, porque selo nao e botao", () => {
+  render(<Badge>Ativo</Badge>);
+  expect(screen.getByText("Ativo").className).toContain("rounded-pill");
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -1792,39 +1794,39 @@ Decisão de projeto: o selo é a única peça que fica em pílula por padrão. P
 `src/primitives/badge.tsx`:
 
 ```tsx
-import { cva, type VariantProps } from 'class-variance-authority'
-import type { ComponentPropsWithoutRef } from 'react'
+import { cva, type VariantProps } from "class-variance-authority";
+import type { ComponentPropsWithoutRef } from "react";
 
-import { cn } from '../lib/cn'
+import { cn } from "../lib/cn";
 
 export const badgeVariants = cva(
   cn(
-    'inline-flex items-center gap-1.5 rounded-pill border font-sans font-medium',
-    'whitespace-nowrap',
+    "inline-flex items-center gap-1.5 rounded-pill border font-sans font-medium",
+    "whitespace-nowrap",
   ),
   {
     variants: {
       tone: {
-        neutral: 'border-border bg-surface-raised text-fg-muted',
-        accent: 'border-border-strong bg-accent-subtle text-accent-text',
-        success: 'border-border bg-success-subtle text-success',
-        warning: 'border-border bg-warning-subtle text-warning',
-        danger: 'border-border bg-danger-subtle text-danger',
-        info: 'border-border bg-info-subtle text-info',
+        neutral: "border-border bg-surface-raised text-fg-muted",
+        accent: "border-border-strong bg-accent-subtle text-accent-text",
+        success: "border-border bg-success-subtle text-success",
+        warning: "border-border bg-warning-subtle text-warning",
+        danger: "border-border bg-danger-subtle text-danger",
+        info: "border-border bg-info-subtle text-info",
       },
       size: {
-        sm: 'h-5 px-2 text-xs',
-        md: 'h-6 px-2.5 text-sm',
+        sm: "h-5 px-2 text-xs",
+        md: "h-6 px-2.5 text-sm",
       },
     },
-    defaultVariants: { tone: 'neutral', size: 'md' },
+    defaultVariants: { tone: "neutral", size: "md" },
   },
-)
+);
 
-export type BadgeProps = ComponentPropsWithoutRef<'span'> & VariantProps<typeof badgeVariants>
+export type BadgeProps = ComponentPropsWithoutRef<"span"> & VariantProps<typeof badgeVariants>;
 
 export function Badge({ className, tone, size, ...props }: BadgeProps) {
-  return <span {...props} className={cn(badgeVariants({ tone, size }), className)} />
+  return <span {...props} className={cn(badgeVariants({ tone, size }), className)} />;
 }
 ```
 
@@ -1833,7 +1835,7 @@ export function Badge({ className, tone, size, ...props }: BadgeProps) {
 Acrescentar em `src/index.ts`:
 
 ```ts
-export { Badge, badgeVariants, type BadgeProps } from './primitives/badge'
+export { Badge, badgeVariants, type BadgeProps } from "./primitives/badge";
 ```
 
 - [ ] **Step 5: Rodar e confirmar que passa**
@@ -1875,78 +1877,80 @@ Entrega: o campo de formulário com rótulo, ajuda e erro ligados por acessibili
 `test/field.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from '../src/primitives/field'
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "../src/primitives/field";
 
-test('o rotulo fica ligado ao controle, entao a busca por rotulo acha o campo', () => {
+test("o rotulo fica ligado ao controle, entao a busca por rotulo acha o campo", () => {
   render(
     <Field name="email">
       <FieldLabel>Email</FieldLabel>
       <Input placeholder="voce@empresa.com" />
     </Field>,
-  )
-  const campo = screen.getByLabelText('Email')
-  expect(campo.tagName).toBe('INPUT')
-})
+  );
+  const campo = screen.getByLabelText("Email");
+  expect(campo.tagName).toBe("INPUT");
+});
 
-test('a descricao acompanha o campo para o leitor de tela', () => {
+test("a descricao acompanha o campo para o leitor de tela", () => {
   render(
     <Field name="cnpj">
       <FieldLabel>CNPJ</FieldLabel>
       <Input />
       <FieldDescription>Somente numeros</FieldDescription>
     </Field>,
-  )
-  const campo = screen.getByLabelText('CNPJ')
-  const descrito = campo.getAttribute('aria-describedby')
-  expect(descrito).toBeTruthy()
-  expect(document.getElementById(descrito!.split(' ')[0])?.textContent).toContain('Somente numeros')
-})
+  );
+  const campo = screen.getByLabelText("CNPJ");
+  const descrito = campo.getAttribute("aria-describedby");
+  expect(descrito).toBeTruthy();
+  expect(document.getElementById(descrito!.split(" ")[0])?.textContent).toContain(
+    "Somente numeros",
+  );
+});
 
-test('campo invalido anuncia o erro e mostra a mensagem', () => {
+test("campo invalido anuncia o erro e mostra a mensagem", () => {
   render(
     <Field name="email" invalid>
       <FieldLabel>Email</FieldLabel>
       <Input />
       <FieldError match>Email obrigatorio</FieldError>
     </Field>,
-  )
-  expect(screen.getByLabelText('Email').getAttribute('aria-invalid')).toBe('true')
-  expect(screen.getByText('Email obrigatorio')).toBeDefined()
-})
+  );
+  expect(screen.getByLabelText("Email").getAttribute("aria-invalid")).toBe("true");
+  expect(screen.getByText("Email obrigatorio")).toBeDefined();
+});
 
-test('a mensagem de erro usa o token de perigo', () => {
+test("a mensagem de erro usa o token de perigo", () => {
   render(
     <Field name="email" invalid>
       <FieldLabel>Email</FieldLabel>
       <Input />
       <FieldError match>Email obrigatorio</FieldError>
     </Field>,
-  )
-  expect(screen.getByText('Email obrigatorio').className).toContain('text-danger')
-})
+  );
+  expect(screen.getByText("Email obrigatorio").className).toContain("text-danger");
+});
 
-test('a altura do campo vem do token de densidade', () => {
+test("a altura do campo vem do token de densidade", () => {
   render(
     <Field name="x">
       <FieldLabel>X</FieldLabel>
       <Input size="sm" />
     </Field>,
-  )
-  expect(screen.getByLabelText('X').className).toContain('--rc-control-sm')
-})
+  );
+  expect(screen.getByLabelText("X").className).toContain("--rc-control-sm");
+});
 
-test('o campo tem anel de foco declarado, porque teclado nao e opcional', () => {
+test("o campo tem anel de foco declarado, porque teclado nao e opcional", () => {
   render(
     <Field name="x">
       <FieldLabel>X</FieldLabel>
       <Input />
     </Field>,
-  )
-  expect(screen.getByLabelText('X').className).toContain('focus-visible:ring-ring')
-})
+  );
+  expect(screen.getByLabelText("X").className).toContain("focus-visible:ring-ring");
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -1962,49 +1966,49 @@ Esperado: FALHA, módulo não encontrado.
 `src/primitives/field.tsx`:
 
 ```tsx
-'use client'
+"use client";
 
-import { Field as BaseField } from '@base-ui/react/field'
-import { cva, type VariantProps } from 'class-variance-authority'
-import type { ComponentProps } from 'react'
+import { Field as BaseField } from "@base-ui/react/field";
+import { cva, type VariantProps } from "class-variance-authority";
+import type { ComponentProps } from "react";
 
-import { cn } from '../lib/cn'
+import { cn } from "../lib/cn";
 
 export const inputVariants = cva(
   cn(
-    'w-full rounded-md border border-border bg-surface text-fg',
-    'placeholder:text-fg-subtle',
-    'transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]',
-    'outline-none focus-visible:ring-2 focus-visible:ring-ring',
-    'focus-visible:ring-offset-2 focus-visible:ring-offset-bg',
-    'disabled:cursor-not-allowed disabled:text-fg-disabled',
-    'data-[invalid]:border-danger',
+    "w-full rounded-md border border-border bg-surface text-fg",
+    "placeholder:text-fg-subtle",
+    "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
+    "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+    "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+    "disabled:cursor-not-allowed disabled:text-fg-disabled",
+    "data-[invalid]:border-danger",
   ),
   {
     variants: {
       size: {
-        sm: 'h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm',
-        md: 'h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base',
-        lg: 'h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md',
+        sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
+        md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
+        lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
       },
     },
-    defaultVariants: { size: 'md' },
+    defaultVariants: { size: "md" },
   },
-)
+);
 
-export type FieldProps = ComponentProps<typeof BaseField.Root>
+export type FieldProps = ComponentProps<typeof BaseField.Root>;
 
 export function Field({ className, ...props }: FieldProps) {
-  return <BaseField.Root {...props} className={cn('flex flex-col gap-1.5', className)} />
+  return <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />;
 }
 
 export function FieldLabel({ className, ...props }: ComponentProps<typeof BaseField.Label>) {
   return (
     <BaseField.Label
       {...props}
-      className={cn('font-sans text-sm font-medium text-fg', className)}
+      className={cn("font-sans text-sm font-medium text-fg", className)}
     />
-  )
+  );
 }
 
 /**
@@ -2012,22 +2016,22 @@ export function FieldLabel({ className, ...props }: ComponentProps<typeof BaseFi
  * variante de tamanho. O nativo sai, porque ninguem usa e a variante e a que
  * carrega o significado aqui.
  */
-export type InputProps = Omit<ComponentProps<typeof BaseField.Control>, 'size'> &
-  VariantProps<typeof inputVariants>
+export type InputProps = Omit<ComponentProps<typeof BaseField.Control>, "size"> &
+  VariantProps<typeof inputVariants>;
 
 export function Input({ className, size, ...props }: InputProps) {
-  return <BaseField.Control {...props} className={cn(inputVariants({ size }), className)} />
+  return <BaseField.Control {...props} className={cn(inputVariants({ size }), className)} />;
 }
 
 export function FieldDescription({
   className,
   ...props
 }: ComponentProps<typeof BaseField.Description>) {
-  return <BaseField.Description {...props} className={cn('text-xs text-fg-subtle', className)} />
+  return <BaseField.Description {...props} className={cn("text-xs text-fg-subtle", className)} />;
 }
 
 export function FieldError({ className, ...props }: ComponentProps<typeof BaseField.Error>) {
-  return <BaseField.Error {...props} className={cn('text-xs text-danger', className)} />
+  return <BaseField.Error {...props} className={cn("text-xs text-danger", className)} />;
 }
 ```
 
@@ -2045,7 +2049,7 @@ export {
   inputVariants,
   type FieldProps,
   type InputProps,
-} from './primitives/field'
+} from "./primitives/field";
 ```
 
 - [ ] **Step 5: Rodar e confirmar que passa**
@@ -2089,11 +2093,11 @@ Entrega: o componente que fecha o buraco da fundação. Ele renderiza em portal,
 `test/dialog.test.tsx`:
 
 ```tsx
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../src/primitives/dialog'
-import { RivoProvider } from '../src/provider/rivo-provider'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../src/primitives/dialog";
+import { RivoProvider } from "../src/provider/rivo-provider";
 
 function Exemplo() {
   return (
@@ -2103,44 +2107,44 @@ function Exemplo() {
         <DialogDescription>Esta acao nao pode ser desfeita.</DialogDescription>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
-test('o dialogo aberto mostra titulo e descricao', () => {
+test("o dialogo aberto mostra titulo e descricao", () => {
   render(
     <RivoProvider>
       <Exemplo />
     </RivoProvider>,
-  )
-  expect(screen.getByText('Excluir projeto')).toBeDefined()
-  expect(screen.getByText('Esta acao nao pode ser desfeita.')).toBeDefined()
-})
+  );
+  expect(screen.getByText("Excluir projeto")).toBeDefined();
+  expect(screen.getByText("Esta acao nao pode ser desfeita.")).toBeDefined();
+});
 
-test('no modo escopado o dialogo renderiza dentro do container que carrega o tema', () => {
+test("no modo escopado o dialogo renderiza dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
       <Exemplo />
     </RivoProvider>,
-  )
-  const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]')
-  expect(container).not.toBeNull()
-  expect(container!.contains(screen.getByText('Excluir projeto'))).toBe(true)
-})
+  );
+  const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');
+  expect(container).not.toBeNull();
+  expect(container!.contains(screen.getByText("Excluir projeto"))).toBe(true);
+});
 
-test('o empilhamento vem da escala, nunca de um numero cravado', () => {
+test("o empilhamento vem da escala, nunca de um numero cravado", () => {
   render(
     <RivoProvider>
       <Exemplo />
     </RivoProvider>,
-  )
-  const popup = screen.getByRole('dialog')
-  expect(popup.className).toContain('--rc-z-dialog')
-  expect(popup.className).not.toMatch(/z-\d+/)
-})
+  );
+  const popup = screen.getByRole("dialog");
+  expect(popup.className).toContain("--rc-z-dialog");
+  expect(popup.className).not.toMatch(/z-\d+/);
+});
 
-test('o dialogo exige o Provider e diz isso claramente', () => {
-  expect(() => render(<Exemplo />)).toThrow(/RivoProvider/)
-})
+test("o dialogo exige o Provider e diz isso claramente", () => {
+  expect(() => render(<Exemplo />)).toThrow(/RivoProvider/);
+});
 ```
 
 - [ ] **Step 2: Rodar e confirmar que falha**
@@ -2158,56 +2162,56 @@ Detalhe que decide se isto funciona ou não: a `Portal` da Base UI trata `contai
 `src/primitives/dialog.tsx`:
 
 ```tsx
-'use client'
+"use client";
 
-import { Dialog as BaseDialog } from '@base-ui/react/dialog'
-import type { ComponentProps, ReactNode } from 'react'
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import type { ComponentProps, ReactNode } from "react";
 
-import { cn } from '../lib/cn'
-import { useRivoContext } from '../provider/rivo-provider'
+import { cn } from "../lib/cn";
+import { useRivoContext } from "../provider/rivo-provider";
 
-export const Dialog = BaseDialog.Root
-export const DialogTrigger = BaseDialog.Trigger
-export const DialogClose = BaseDialog.Close
+export const Dialog = BaseDialog.Root;
+export const DialogTrigger = BaseDialog.Trigger;
+export const DialogClose = BaseDialog.Close;
 
 export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export function DialogContent({ className, children, ...props }: DialogContentProps) {
-  const { portalContainer } = useRivoContext()
+  const { portalContainer } = useRivoContext();
 
   return (
     <BaseDialog.Portal container={portalContainer ?? undefined}>
       <BaseDialog.Backdrop
         className={cn(
-          'fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay',
-          'transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]',
+          "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
+          "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
         )}
       />
       <BaseDialog.Popup
         {...props}
         className={cn(
-          'fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]',
-          '-translate-x-1/2 -translate-y-1/2',
-          'rounded-xl border border-border bg-surface p-6 shadow-3',
-          'font-sans text-fg outline-none',
+          "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]",
+          "-translate-x-1/2 -translate-y-1/2",
+          "rounded-xl border border-border bg-surface p-6 shadow-3",
+          "font-sans text-fg outline-none",
           className,
         )}
       >
         {children}
       </BaseDialog.Popup>
     </BaseDialog.Portal>
-  )
+  );
 }
 
 export function DialogTitle({ className, ...props }: ComponentProps<typeof BaseDialog.Title>) {
   return (
     <BaseDialog.Title
       {...props}
-      className={cn('font-display text-xl leading-[var(--rc-leading-tight)] text-fg', className)}
+      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] text-fg", className)}
     />
-  )
+  );
 }
 
 export function DialogDescription({
@@ -2215,12 +2219,12 @@ export function DialogDescription({
   ...props
 }: ComponentProps<typeof BaseDialog.Description>) {
   return (
-    <BaseDialog.Description {...props} className={cn('mt-2 text-base text-fg-muted', className)} />
-  )
+    <BaseDialog.Description {...props} className={cn("mt-2 text-base text-fg-muted", className)} />
+  );
 }
 
-export function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
-  return <div {...props} className={cn('mt-6 flex items-center justify-end gap-3', className)} />
+export function DialogFooter({ className, ...props }: ComponentProps<"div">) {
+  return <div {...props} className={cn("mt-6 flex items-center justify-end gap-3", className)} />;
 }
 ```
 
@@ -2238,7 +2242,7 @@ export {
   DialogTitle,
   DialogTrigger,
   type DialogContentProps,
-} from './primitives/dialog'
+} from "./primitives/dialog";
 ```
 
 - [ ] **Step 5: Rodar e confirmar que passa**
@@ -2291,7 +2295,7 @@ Entrega: uma página que mostra as cinco peças nos dois temas e nas duas densid
 `demo/demo.tsx`:
 
 ```tsx
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 
 import {
   Badge,
@@ -2310,7 +2314,7 @@ import {
   RivoProvider,
   type RivoDensity,
   type RivoTheme,
-} from '../src/index'
+} from "../src/index";
 
 function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   return (
@@ -2373,29 +2377,29 @@ function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity })
         </Card>
       </div>
     </RivoProvider>
-  )
+  );
 }
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <div>
     <Amostra theme="rivocode-dark" density="comfortable" />
     <Amostra theme="rivocode-dark" density="compact" />
     <Amostra theme="rivocode-light" density="comfortable" />
     <Amostra theme="rivocode-light" density="compact" />
   </div>,
-)
+);
 ```
 
 `demo/demo.css`:
 
 ```css
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../src/primitives';
 @source '../src/provider';
 @source '.';
 
-@import '../src/preset.css';
+@import "../src/preset.css";
 ```
 
 `demo/index.html`:
@@ -2433,22 +2437,22 @@ E no `.gitignore`, acrescentar `demo/dist`.
 
 ```ts
 /** Fotografa a vitrine, para revisao visual sem abrir navegador na mao. */
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-const alvo = new URL('../demo/index.html', import.meta.url).pathname
+const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const alvo = new URL("../demo/index.html", import.meta.url).pathname;
 
 const proc = Bun.spawn([
   CHROME,
-  '--headless',
-  '--disable-gpu',
-  '--hide-scrollbars',
-  '--force-device-scale-factor=2',
-  '--screenshot=demo/dist/vitrine.png',
-  '--window-size=1200,2400',
+  "--headless",
+  "--disable-gpu",
+  "--hide-scrollbars",
+  "--force-device-scale-factor=2",
+  "--screenshot=demo/dist/vitrine.png",
+  "--window-size=1200,2400",
   alvo,
-])
+]);
 
-await proc.exited
-console.log(proc.exitCode === 0 ? 'demo/dist/vitrine.png' : 'falhou ao fotografar')
+await proc.exited;
+console.log(proc.exitCode === 0 ? "demo/dist/vitrine.png" : "falhou ao fotografar");
 ```
 
 - [ ] **Step 4: Gerar e olhar**
@@ -2527,8 +2531,8 @@ bun link @rivocode/ui
 `~/.cache/rc-ui-consumer/src/app.css`:
 
 ```css
-@import 'tailwindcss';
-@import '@rivocode/ui/preset';
+@import "tailwindcss";
+@import "@rivocode/ui/preset";
 
 @source '../node_modules/@rivocode/ui/dist';
 ```
@@ -2536,10 +2540,10 @@ bun link @rivocode/ui
 `~/.cache/rc-ui-consumer/src/app.tsx`:
 
 ```tsx
-import { createRoot } from 'react-dom/client'
-import { Badge, Button, RivoProvider } from '@rivocode/ui'
+import { createRoot } from "react-dom/client";
+import { Badge, Button, RivoProvider } from "@rivocode/ui";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <RivoProvider scope="global" theme="rivocode-dark">
     {/* Layout escrito pelo projeto consumidor, com o vocabulario do preset. */}
     <main className="min-h-screen bg-bg p-10 font-sans text-fg">
@@ -2550,7 +2554,7 @@ createRoot(document.getElementById('root')!).render(
       </div>
     </main>
   </RivoProvider>,
-)
+);
 ```
 
 - [ ] **Step 4: Provar que o consumo funciona**

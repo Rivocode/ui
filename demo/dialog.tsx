@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client'
+import { createRoot } from "react-dom/client";
 
 import {
   Button,
@@ -9,9 +9,9 @@ import {
   DialogFooter,
   DialogTitle,
   RivoProvider,
-} from '../src/index'
+} from "../src/index";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <RivoProvider scope="local" theme="rivocode-dark" className="min-h-screen p-8">
     <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">
       dialogo no modo escopado
@@ -29,4 +29,4 @@ createRoot(document.getElementById('root')!).render(
       </DialogContent>
     </Dialog>
   </RivoProvider>,
-)
+);

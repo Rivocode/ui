@@ -1,5 +1,5 @@
-import { expect, test } from 'bun:test'
-import { render, screen } from '@testing-library/react'
+import { expect, test } from "bun:test";
+import { render, screen } from "@testing-library/react";
 
 import {
   Table,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../src/primitives/table'
+} from "../src/primitives/table";
 
 function Exemplo() {
   return (
@@ -30,31 +30,31 @@ function Exemplo() {
         </TableRow>
       </TableBody>
     </Table>
-  )
+  );
 }
 
-test('sai como tabela de verdade, nao como grade de divs', () => {
-  render(<Exemplo />)
-  expect(screen.getByRole('table')).toBeDefined()
-  expect(screen.getAllByRole('columnheader')).toHaveLength(2)
-  expect(screen.getAllByRole('row')).toHaveLength(3)
-})
+test("sai como tabela de verdade, nao como grade de divs", () => {
+  render(<Exemplo />);
+  expect(screen.getByRole("table")).toBeDefined();
+  expect(screen.getAllByRole("columnheader")).toHaveLength(2);
+  expect(screen.getAllByRole("row")).toHaveLength(3);
+});
 
-test('a linha selecionada se marca para o leitor de tela, nao so com cor', () => {
-  render(<Exemplo />)
-  const linhas = screen.getAllByRole('row')
-  const selecionada = linhas.find(l => l.getAttribute('aria-selected') === 'true')
-  expect(selecionada).toBeDefined()
-  expect(selecionada!.className).toContain('bg-selected')
-})
+test("a linha selecionada se marca para o leitor de tela, nao so com cor", () => {
+  render(<Exemplo />);
+  const linhas = screen.getAllByRole("row");
+  const selecionada = linhas.find((l) => l.getAttribute("aria-selected") === "true");
+  expect(selecionada).toBeDefined();
+  expect(selecionada!.className).toContain("bg-selected");
+});
 
-test('a tabela rola de lado sem empurrar a pagina', () => {
-  render(<Exemplo />)
-  const moldura = screen.getByRole('table').parentElement
-  expect(moldura?.className).toContain('overflow-x-auto')
-})
+test("a tabela rola de lado sem empurrar a pagina", () => {
+  render(<Exemplo />);
+  const moldura = screen.getByRole("table").parentElement;
+  expect(moldura?.className).toContain("overflow-x-auto");
+});
 
-test('o espacamento da celula segue a densidade', () => {
-  render(<Exemplo />)
-  expect(screen.getAllByRole('cell')[0]!.className).toContain('--rc-control-pad')
-})
+test("o espacamento da celula segue a densidade", () => {
+  render(<Exemplo />);
+  expect(screen.getAllByRole("cell")[0]!.className).toContain("--rc-control-pad");
+});

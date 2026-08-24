@@ -25,9 +25,9 @@
   --rc-leading-normal: 1.5;
   --rc-leading-relaxed: 1.7;
 
-  --rc-font-sans: 'Manrope Variable', system-ui, sans-serif;
-  --rc-font-display: 'Poppins', 'Manrope Variable', sans-serif;
-  --rc-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
+  --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
+  --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* Empilhamento. Definir isto agora e o que evita o z-index 9999 depois. */
   --rc-z-base: 0;
@@ -52,7 +52,7 @@
 
 /* Densidade confortavel, o padrao. */
 :root,
-[data-rc-density='comfortable'] {
+[data-rc-density="comfortable"] {
   --rc-control-sm: 32px;
   --rc-control-md: 40px;
   --rc-control-lg: 48px;
@@ -62,7 +62,7 @@
 }
 
 /* Densidade compacta, para tela de operacao. */
-[data-rc-density='compact'] {
+[data-rc-density="compact"] {
   --rc-control-sm: 28px;
   --rc-control-md: 32px;
   --rc-control-lg: 38px;

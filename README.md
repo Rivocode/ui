@@ -32,8 +32,8 @@ na versão é o projeto consumidor.
 No arquivo de CSS do projeto:
 
 ```css
-@import 'tailwindcss';
-@import '@rivocode/ui/preset';
+@import "tailwindcss";
+@import "@rivocode/ui/preset";
 
 @source '../node_modules/@rivocode/ui/dist';
 ```
@@ -50,22 +50,22 @@ tema, como descrito em "Tema de cliente".
 ## O Provider
 
 ```tsx
-import { RivoProvider, Button } from '@rivocode/ui'
+import { RivoProvider, Button } from "@rivocode/ui";
 
 export function App() {
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
       <Button>Acao primaria</Button>
     </RivoProvider>
-  )
+  );
 }
 ```
 
-| Prop | Valores | Para que serve |
-|---|---|---|
-| `theme` | `rivocode-dark`, `rivocode-light`, `system` | `system` segue a preferência do sistema operacional |
-| `density` | `comfortable`, `compact` | `compact` encolhe a altura de todo controle, para tela de operação |
-| `scope` | `global`, `local` | `global` veste a página inteira. `local` veste só esta árvore |
+| Prop      | Valores                                     | Para que serve                                                     |
+| --------- | ------------------------------------------- | ------------------------------------------------------------------ |
+| `theme`   | `rivocode-dark`, `rivocode-light`, `system` | `system` segue a preferência do sistema operacional                |
+| `density` | `comfortable`, `compact`                    | `compact` encolhe a altura de todo controle, para tela de operação |
+| `scope`   | `global`, `local`                           | `global` veste a página inteira. `local` veste só esta árvore      |
 
 Use `scope="local"` quando o design system entra num projeto que já existe e não
 pode vazar estilo para o resto da página. Nesse modo o Provider também cria um
@@ -77,15 +77,15 @@ sairiam sem tema se ficassem soltos no fim do documento.
 O preset expõe os tokens como utilitários do Tailwind, então o layout que você
 escreve fala a mesma língua dos componentes:
 
-| Família | Utilitários |
-|---|---|
-| Superfícies | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay` |
-| Texto | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled` |
-| Acento | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle` |
-| Linhas e foco | `border-border`, `border-border-strong`, `ring-ring` |
-| Estados | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
-| Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
-| Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
+| Família       | Utilitários                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------- |
+| Superfícies   | `bg-bg`, `bg-surface`, `bg-surface-raised`, `bg-overlay`                                 |
+| Texto         | `text-fg`, `text-fg-muted`, `text-fg-subtle`, `text-fg-disabled`                         |
+| Acento        | `bg-accent`, `text-accent-fg`, `text-accent-text`, `bg-accent-subtle`                    |
+| Linhas e foco | `border-border`, `border-border-strong`, `ring-ring`                                     |
+| Estados       | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
+| Forma         | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill`                   |
+| Tipografia    | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono`                         |
 
 **Preenchimento e texto são tokens diferentes de propósito.** `bg-danger` é o
 vermelho que preenche um botão e recebe `text-danger-fg` por cima.
@@ -127,8 +127,8 @@ No `vite.config.ts` do projeto consumidor:
 ```ts
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: { dedupe: ['react', 'react-dom'] },
-})
+  resolve: { dedupe: ["react", "react-dom"] },
+});
 ```
 
 ## Notas

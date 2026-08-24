@@ -1,21 +1,21 @@
-'use client'
+"use client";
 
-import { Dialog as BaseDialog } from '@base-ui/react/dialog'
-import type { ComponentProps, ReactNode } from 'react'
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import type { ComponentProps, ReactNode } from "react";
 
-import { cn } from '../lib/cn'
-import { useRivoContext } from '../provider/rivo-provider'
+import { cn } from "../lib/cn";
+import { useRivoContext } from "../provider/rivo-provider";
 
-export const Dialog = BaseDialog.Root
-export const DialogTrigger = BaseDialog.Trigger
-export const DialogClose = BaseDialog.Close
+export const Dialog = BaseDialog.Root;
+export const DialogTrigger = BaseDialog.Trigger;
+export const DialogClose = BaseDialog.Close;
 
 export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
-  children: ReactNode
-}
+  children: ReactNode;
+};
 
 export function DialogContent({ className, children, ...props }: DialogContentProps) {
-  const { portalContainer } = useRivoContext()
+  const { portalContainer } = useRivoContext();
 
   return (
     // A Portal da Base UI trata `container={null}` como "nao renderize nada" e
@@ -25,33 +25,33 @@ export function DialogContent({ className, children, ...props }: DialogContentPr
     <BaseDialog.Portal container={portalContainer ?? undefined}>
       <BaseDialog.Backdrop
         className={cn(
-          'fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay',
-          'transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]',
+          "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
+          "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
         )}
       />
       <BaseDialog.Popup
         {...props}
         className={cn(
-          'fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]',
-          '-translate-x-1/2 -translate-y-1/2',
-          'rounded-xl border border-border bg-surface p-6 shadow-3',
-          'font-sans text-fg outline-none',
+          "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]",
+          "-translate-x-1/2 -translate-y-1/2",
+          "rounded-xl border border-border bg-surface p-6 shadow-3",
+          "font-sans text-fg outline-none",
           className,
         )}
       >
         {children}
       </BaseDialog.Popup>
     </BaseDialog.Portal>
-  )
+  );
 }
 
 export function DialogTitle({ className, ...props }: ComponentProps<typeof BaseDialog.Title>) {
   return (
     <BaseDialog.Title
       {...props}
-      className={cn('font-display text-xl leading-[var(--rc-leading-tight)] text-fg', className)}
+      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] text-fg", className)}
     />
-  )
+  );
 }
 
 export function DialogDescription({
@@ -59,10 +59,10 @@ export function DialogDescription({
   ...props
 }: ComponentProps<typeof BaseDialog.Description>) {
   return (
-    <BaseDialog.Description {...props} className={cn('mt-2 text-base text-fg-muted', className)} />
-  )
+    <BaseDialog.Description {...props} className={cn("mt-2 text-base text-fg-muted", className)} />
+  );
 }
 
-export function DialogFooter({ className, ...props }: ComponentProps<'div'>) {
-  return <div {...props} className={cn('mt-6 flex items-center justify-end gap-3', className)} />
+export function DialogFooter({ className, ...props }: ComponentProps<"div">) {
+  return <div {...props} className={cn("mt-6 flex items-center justify-end gap-3", className)} />;
 }
