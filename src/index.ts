@@ -179,6 +179,21 @@ export {
 } from "./components/alert";
 export { Skeleton } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxContent,
+  ComboboxGroup,
+  ComboboxGroupLabel,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  type ComboboxContentProps,
+  type ComboboxInputProps,
+} from "./components/combobox";
+export { Tree, folhasDe, type No, type TreeProps } from "./components/tree";
+export { TreeSelect, type TreeSelectProps } from "./components/tree-select";
 export { DataTable, type Coluna, type DataTableProps } from "./components/data-table";
 export {
   Steps,

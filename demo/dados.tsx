@@ -1,6 +1,7 @@
 import { FileText, Search } from "lucide-react";
-import { useState } from "react";
 import { createRoot } from "react-dom/client";
+
+import { useState } from "react";
 
 import {
   Avatar,
@@ -22,12 +23,46 @@ import {
   MaskedInput,
   Pagination,
   RivoProvider,
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
   Tab,
   TabList,
   TabPanel,
   Tabs,
+  TreeSelect,
+  type No,
   type RivoTheme,
 } from "../src/index";
+
+const CLIENTES = [
+  { value: "clinica", label: "Clinica Sao Lucas" },
+  { value: "transportes", label: "Transportes Cabo Branco" },
+  { value: "supermercado", label: "Supermercado Tambau" },
+  { value: "construtora", label: "Construtora Litoral" },
+  { value: "escola", label: "Escola Monteiro" },
+];
+
+const SETORES: No[] = [
+  {
+    id: "financeiro",
+    label: "Financeiro",
+    children: [
+      { id: "contas-pagar", label: "Contas a pagar" },
+      { id: "contas-receber", label: "Contas a receber" },
+    ],
+  },
+  {
+    id: "operacao",
+    label: "Operacao",
+    children: [
+      { id: "expedicao", label: "Expedicao" },
+      { id: "estoque", label: "Estoque" },
+    ],
+  },
+];
 
 const NOTAS = [
   { numero: "4813", cliente: "Clinica Sao Lucas", valor: "R$ 2.480,00", situacao: "Paga" },
@@ -46,6 +81,7 @@ function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode
 
 function Amostra({ theme }: { theme: RivoTheme }) {
   const [pagina, setPagina] = useState(3);
+  const [setores, setSetores] = useState<string[]>(["contas-pagar", "contas-receber"]);
 
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[860px] p-8">
@@ -146,6 +182,30 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </Button>
               </ItemActions>
             </Item>
+          </Bloco>
+
+          <Bloco titulo="Busca em lista longa">
+            <Combobox items={CLIENTES}>
+              <ComboboxInput placeholder="Buscar cliente" />
+              <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
+                <ComboboxList>
+                  {(item: (typeof CLIENTES)[number]) => (
+                    <ComboboxItem key={item.value} value={item}>
+                      {item.label}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
+          </Bloco>
+
+          <Bloco titulo="Escolha em arvore">
+            <TreeSelect
+              items={SETORES}
+              value={setores}
+              onValueChange={setSetores}
+              placeholder="Escolha os setores"
+            />
           </Bloco>
 
           <Bloco titulo="Paginacao">
