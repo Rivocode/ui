@@ -87,7 +87,9 @@ export function ChartRadial({
       </ResponsiveContainer>
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-display text-3xl leading-tight text-fg">
+        {/* Preso a largura do miolo, como na rosca: um total longo escapando
+            por cima do arco e o defeito classico desta peca. */}
+        <span className="max-w-[62%] text-center font-display text-2xl leading-tight text-balance text-fg">
           {centerValue ?? `${porcento}%`}
         </span>
         {centerLabel && (

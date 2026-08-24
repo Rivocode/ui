@@ -240,21 +240,25 @@ export function AsRadar() {
     <div className="w-full max-w-sm">
       <ChartContainer config={NOTAS} className="h-64">
         <RadarChart data={MESES}>
-          <PolarGrid className="stroke-chart-grid" />
-          <PolarAngleAxis dataKey="mes" className="fill-fg-subtle text-xs" />
+          {/* `fill="none"` nao e detalhe: sem ele a grade sai como um poligono
+              cinza chapado, e as duas series desaparecem atras dela. */}
+          <PolarGrid stroke="var(--rc-chart-grid)" fill="none" />
+          <PolarAngleAxis dataKey="mes" tick={{ fill: 'var(--rc-fg-subtle)', fontSize: 12 }} />
           <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
           <Radar
             dataKey="emitidas"
             stroke="var(--color-emitidas)"
             fill="var(--color-emitidas)"
-            fillOpacity={0.2}
+            fillOpacity={0.25}
+            strokeWidth={2}
             isAnimationActive={false}
           />
           <Radar
             dataKey="pagas"
             stroke="var(--color-pagas)"
             fill="var(--color-pagas)"
-            fillOpacity={0.2}
+            fillOpacity={0.25}
+            strokeWidth={2}
             isAnimationActive={false}
           />
         </RadarChart>

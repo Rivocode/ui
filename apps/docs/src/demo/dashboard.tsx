@@ -57,13 +57,6 @@ const BILLING: ChartConfig = {
   received: { label: 'Recebido' },
 }
 
-const NATURE: ChartConfig = {
-  Serviço: { label: 'Serviço' },
-  Produto: { label: 'Produto' },
-  Locação: { label: 'Locação' },
-  Frete: { label: 'Frete' },
-}
-
 const TOP: ChartConfig = { total: { label: 'Faturado' } }
 
 const WEEKLY: ChartConfig = {
@@ -236,25 +229,11 @@ export function Dashboard() {
               data={BY_KIND}
               valueKey="total"
               nameKey="kind"
-              config={NATURE}
+              format={currencyShort}
               centerValue={compact(BY_KIND.reduce((sum, row) => sum + row.total, 0))}
               centerLabel="no mês"
               className="h-52"
             />
-
-            <ul className="mt-3 space-y-1.5">
-              {BY_KIND.map((row, index) => (
-                <li key={row.kind} className="flex items-center gap-2 text-sm">
-                  <span
-                    aria-hidden="true"
-                    className="size-2 shrink-0 rounded-sm"
-                    style={{ background: `var(--rc-chart-${index + 1})` }}
-                  />
-                  <span className="flex-1 text-fg-muted">{row.kind}</span>
-                  <span className="font-mono text-fg">{currencyShort(row.total)}</span>
-                </li>
-              ))}
-            </ul>
 
             <Separator className="my-4" />
 

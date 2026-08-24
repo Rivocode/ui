@@ -31,3 +31,25 @@ base aberta, e é ali que o rótulo de baixo respira. Em `360` fecha.
 Por dentro há um `PolarAngleAxis` com `domain={[0, max]}` que não desenha nada.
 Ele existe porque a Recharts normaliza pelo maior valor da série, e com um único
 ponto isso significa que **qualquer valor daria a volta inteira**.
+
+## O miolo é pequeno
+
+O buraco de um arco cabe uma palavra curta. `R$ 246.700,00` quebra em duas
+linhas ali dentro e fica apertado.
+
+A hierarquia que funciona é a porcentagem como número grande, e o valor por
+extenso como a linha de baixo:
+
+```tsx
+<ChartRadial
+  value={246_700}
+  max={300_000}
+  centerLabel="R$ 246,7 mil de R$ 300 mil"
+/>
+```
+
+## A legenda da rosca
+
+`ChartDonut` tem lista embaixo com nome e valor de cada fatia, ligada por
+padrão. O arco não tem: ele mostra uma medida só, e a legenda de um item é o
+próprio rótulo.

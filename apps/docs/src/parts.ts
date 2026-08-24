@@ -83,19 +83,19 @@ export function findParent(name: string, names: Iterable<string>) {
 }
 
 const FORM_SUBPATH = new Set(['Form', 'FormField'])
-const CHART_SUBPATH = new Set([
-  'ChartContainer',
-  'ChartTooltip',
-  'ChartTooltipContent',
-  'ChartLegend',
-  'ChartLegendContent',
-  'ChartXAxis',
-  'ChartYAxis',
-])
+
+/**
+ * O que vem de `@rivocode/ui/chart`.
+ *
+ * Por prefixo, e nao por lista escrita a mao: a lista existia, e cada peca nova
+ * de grafico nascia com a linha de importacao errada na propria pagina dela,
+ * apontando para o pacote principal. Ninguem lembra de voltar aqui.
+ */
+const isChart = (name: string) => name.startsWith('Chart') || name === 'Sparkline'
 
 /** Which entry point a piece comes from, the subpaths are opt-in on purpose. */
 export function importPathOf(name: string) {
   if (FORM_SUBPATH.has(name)) return '@rivocode/ui/form'
-  if (CHART_SUBPATH.has(name)) return '@rivocode/ui/chart'
+  if (isChart(name)) return '@rivocode/ui/chart'
   return '@rivocode/ui'
 }
