@@ -73,6 +73,10 @@
   --rc-item-y: 6px;
   --rc-box: 18px;
   --rc-day: 36px;
+
+  /* Barra lateral: aberta e encolhida ate a coluna de icones. */
+  --rc-sidebar: 16rem;
+  --rc-sidebar-icone: 3.5rem;
 }
 
 /* Densidade compacta, para tela de operacao. */

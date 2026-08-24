@@ -146,7 +146,29 @@ export {
 } from "./components/item";
 export { Breadcrumb, type BreadcrumbProps, type Migalha } from "./components/breadcrumb";
 export { Pagination, type PaginationProps } from "./components/pagination";
-export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  type TooltipContentProps,
+} from "./components/tooltip";
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+  type SidebarGroupProps,
+  type SidebarMenuItemProps,
+  type SidebarProps,
+  type SidebarProviderProps,
+} from "./components/sidebar";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {
   Alert,

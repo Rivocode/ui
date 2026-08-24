@@ -3,17 +3,18 @@ import { createRoot } from "react-dom/client";
 
 import {
   Badge,
-  Button,
   RivoProvider,
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHandle,
-  SheetTitle,
-  SheetTrigger,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
   type RivoTheme,
-  type SheetSide,
 } from "../src/index";
 
 const ITENS = [
@@ -23,67 +24,59 @@ const ITENS = [
   { icone: Settings, rotulo: "Ajustes" },
 ];
 
-function MenuLateral() {
+function TelaComBarra({ theme, aberta }: { theme: RivoTheme; aberta: boolean }) {
   return (
-    <Sheet side="left" defaultOpen>
-      <SheetTrigger render={<Button variant="secondary" />}>Abrir menu</SheetTrigger>
-      <SheetContent className="p-4">
-        <SheetTitle className="px-2 text-lg">RivoCode</SheetTitle>
-        <nav className="mt-4 flex flex-col gap-1">
-          {ITENS.map(({ icone: Icone, rotulo, ativo, contagem }) => (
-            <a
-              key={rotulo}
-              href="#"
-              aria-current={ativo ? "page" : undefined}
-              className={
-                "flex items-center gap-3 rounded-md px-2 py-2 text-base transition-colors " +
-                "duration-[var(--rc-duration-fast)] ease-rc hover:bg-accent-subtle " +
-                (ativo ? "bg-accent-subtle text-fg" : "text-fg-muted")
-              }
-            >
-              <Icone size={16} aria-hidden="true" />
-              <span className="flex-1">{rotulo}</span>
-              {contagem && <Badge>{contagem}</Badge>}
-            </a>
-          ))}
-        </nav>
-      </SheetContent>
-    </Sheet>
-  );
-}
+    <RivoProvider scope="local" theme={theme}>
+      <SidebarProvider defaultOpen={aberta}>
+        <Sidebar>
+          <SidebarHeader>
+            <span className="font-display text-lg text-fg">RivoCode</span>
+          </SidebarHeader>
 
-function FolhaDeBaixo() {
-  return (
-    <Sheet side="bottom" defaultOpen>
-      <SheetTrigger render={<Button variant="secondary" />}>Acoes da nota</SheetTrigger>
-      <SheetContent>
-        <SheetHandle />
-        <SheetTitle>Nota 4813</SheetTitle>
-        <SheetDescription>Clinica Sao Lucas, vencimento em 05/08.</SheetDescription>
-        <div className="mt-6 flex flex-col gap-2">
-          <Button variant="secondary">Baixar PDF</Button>
-          <Button variant="secondary">Duplicar</Button>
-          <SheetClose render={<Button variant="ghost" />}>Cancelar</SheetClose>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-}
+          <SidebarContent>
+            <SidebarGroup label="Operacao">
+              <SidebarMenu>
+                {ITENS.map(({ icone: Icone, rotulo, ativo, contagem }) => (
+                  <SidebarMenuItem
+                    key={rotulo}
+                    href="#"
+                    active={ativo}
+                    icon={<Icone size={16} aria-hidden="true" />}
+                    badge={contagem ? <Badge>{contagem}</Badge> : undefined}
+                  >
+                    {rotulo}
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          </SidebarContent>
 
-function Amostra({ theme, lado }: { theme: RivoTheme; lado: SheetSide }) {
-  return (
-    <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
-      <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / folha {lado === "left" ? "lateral" : "de baixo"}
-      </p>
-      {lado === "left" ? <MenuLateral /> : <FolhaDeBaixo />}
+          <SidebarFooter>
+            <SidebarMenuItem href="#" icon={<Settings size={16} aria-hidden="true" />}>
+              Ajustes
+            </SidebarMenuItem>
+          </SidebarFooter>
+        </Sidebar>
+
+        <SidebarInset>
+          <header className="flex items-center gap-3 border-b border-border px-4 py-3">
+            <SidebarTrigger />
+            <p className="font-display text-lg text-fg">Notas fiscais</p>
+          </header>
+          <div className="p-6">
+            <p className="text-base text-fg-muted">
+              {aberta ? "Barra aberta" : "Barra encolhida ate a coluna de icones"}
+            </p>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
     </RivoProvider>
   );
 }
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" lado="left" />
-    <Amostra theme="rivocode-light" lado="bottom" />
+    <TelaComBarra theme="rivocode-dark" aberta />
+    <TelaComBarra theme="rivocode-light" aberta={false} />
   </div>,
 );

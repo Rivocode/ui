@@ -9,17 +9,19 @@ import { useRivoContext } from "../provider/rivo-provider";
 export const Tooltip = BaseTooltip.Root;
 export const TooltipTrigger = BaseTooltip.Trigger;
 
-export function TooltipContent({
-  className,
-  children,
-  ...props
-}: ComponentProps<typeof BaseTooltip.Popup>) {
+export type TooltipContentProps = ComponentProps<typeof BaseTooltip.Popup> & {
+  /** Lado preferido. A Base UI vira sozinha quando nao cabe. */
+  side?: ComponentProps<typeof BaseTooltip.Positioner>["side"];
+};
+
+export function TooltipContent({ className, children, side, ...props }: TooltipContentProps) {
   const { portalContainer } = useRivoContext();
 
   return (
     <BaseTooltip.Portal container={portalContainer ?? undefined}>
       <BaseTooltip.Positioner
         sideOffset={6}
+        side={side}
         collisionPadding={8}
         className="z-[var(--rc-z-tooltip)] outline-none"
       >
