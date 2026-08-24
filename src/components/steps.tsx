@@ -95,7 +95,10 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
               </button>
 
               {indice < steps.length - 1 && (
-                <span aria-hidden="true" className="mt-4 h-px flex-1 bg-border" />
+                /* Largura fixa: com `flex-1` o fio dividia a linha com o
+                   rotulo e comia metade dela, cortando "Cliente" em "Clie…"
+                   antes de o desenho ficar apertado de verdade. */
+                <span aria-hidden="true" className="mt-4 h-px w-8 shrink-0 bg-border" />
               )}
             </li>
           );
