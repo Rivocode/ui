@@ -9,6 +9,7 @@ const PAGINAS = [
   { rota: "/listagem.html", saida: "demo/dist/listagem.png", janela: "1240,1900" },
   { rota: "/flutuantes.html", saida: "demo/dist/flutuantes.png", janela: "1240,1120" },
   { rota: "/datas.html", saida: "demo/dist/datas.png", janela: "1240,1240" },
+  { rota: "/formulario.html", saida: "demo/dist/formulario.png", janela: "1240,1280" },
 ];
 
 const servidor = servir();

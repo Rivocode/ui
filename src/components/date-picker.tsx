@@ -6,7 +6,7 @@ import { useState, type ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { formatarData, lerData, mascararData } from "../lib/data";
 import { Calendar } from "./calendar";
-import { inputVariants } from "./field";
+import { Input } from "./field";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 type CalendarPassthrough = Pick<
@@ -15,8 +15,8 @@ type CalendarPassthrough = Pick<
 >;
 
 export type DatePickerProps = Omit<
-  ComponentProps<"input">,
-  "value" | "defaultValue" | "onChange" | "size"
+  ComponentProps<typeof Input>,
+  "value" | "defaultValue" | "onChange" | "onValueChange" | "size"
 > &
   CalendarPassthrough & {
     /** A data escolhida, quando quem usa controla o estado. */
@@ -85,8 +85,9 @@ export function DatePicker({
 
   return (
     <div className={cn("relative", className)}>
-      <input
+      <Input
         {...props}
+        size={size}
         type="text"
         inputMode="numeric"
         autoComplete="off"
@@ -107,7 +108,7 @@ export function DatePicker({
           setTextoSujo(false);
           onBlur?.(evento);
         }}
-        className={cn(inputVariants({ size }), "pr-10")}
+        className="pr-10"
       />
 
       <Popover

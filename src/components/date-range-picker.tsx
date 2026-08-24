@@ -12,7 +12,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export type { DateRange };
 
-export type DateRangePickerProps = Omit<ComponentProps<"button">, "value" | "onChange"> & {
+export type DateRangePickerProps = Omit<
+  ComponentProps<"button">,
+  "value" | "defaultValue" | "onChange"
+> & {
   /** O intervalo escolhido, quando quem usa controla o estado. */
   value?: DateRange;
   /** O intervalo inicial, quando o componente controla o proprio estado. */

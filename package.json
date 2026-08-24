@@ -15,7 +15,11 @@
       "default": "./dist/index.js"
     },
     "./styles.css": "./dist/styles.css",
-    "./preset": "./dist/preset.css"
+    "./preset": "./dist/preset.css",
+    "./form": {
+      "types": "./dist/form/index.d.ts",
+      "default": "./dist/form/index.js"
+    }
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -26,12 +30,13 @@
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",
-    "check": "bun run lint && bun run check:colors && bun run check:contrast && bun test",
+    "check": "bun run lint && bun run check:types && bun run check:colors && bun run check:contrast && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
-    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
+    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
     "shot": "bun run demo && bun run scripts/shot.ts",
-    "serve": "bun run scripts/serve.ts"
+    "serve": "bun run scripts/serve.ts",
+    "check:types": "tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -45,6 +50,7 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^20.11.6",
+    "@hookform/resolvers": "^5.9.1",
     "@tailwindcss/cli": "^4.3.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
@@ -53,13 +59,32 @@
     "@types/react-dom": "^19.2.5",
     "oxfmt": "^0.64.0",
     "oxlint": "^1.79.0",
+    "react-hook-form": "^7.86.0",
     "tsdown": "^0.22.14",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "zod": "^4.4.3"
   },
   "peerDependencies": {
+    "@hookform/resolvers": "^5",
     "lucide-react": "^1",
     "react": "^19",
     "react-dom": "^19",
-    "tailwindcss": "^4"
+    "react-hook-form": "^7",
+    "tailwindcss": "^4",
+    "zod": "^4"
+  },
+  "peerDependenciesMeta": {
+    "@hookform/resolvers": {
+      "optional": true
+    },
+    "lucide-react": {
+      "optional": false
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   }
 }

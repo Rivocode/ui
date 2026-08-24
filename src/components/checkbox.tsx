@@ -46,6 +46,7 @@ export function Checkbox({ className, ...props }: CheckboxProps) {
       className={cn(
         "inline-flex size-[18px] shrink-0 items-center justify-center",
         "rounded-sm border border-border-strong bg-surface",
+        "data-[invalid]:border-danger",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",

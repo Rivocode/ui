@@ -32,6 +32,7 @@ export function SelectTrigger({
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "focus-visible:ring-offset-bg",
         "data-[disabled]:cursor-not-allowed data-[disabled]:text-fg-disabled",
+        "data-[invalid]:border-danger",
         className,
       )}
     >

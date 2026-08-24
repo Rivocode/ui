@@ -19,3 +19,5 @@ for (const file of ORDER) {
 
 await Bun.write("dist/preset.css", parts.join("\n"));
 console.log(`dist/preset.css gerado a partir de ${ORDER.length} arquivos.`);
+
+export {};

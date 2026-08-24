@@ -6,7 +6,7 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 
 | Peca | Onde | Estado |
 |---|---|---|
-| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 19 componentes, 108 testes, tudo verde |
+| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 19 componentes + subcaminho `/form`, 115 testes, tudo verde |
 | Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras dos 4 novos** |
 | Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
 | Site de documentacao | nao existe | Pendente |
@@ -69,18 +69,24 @@ na API publica.
 descricao e erro nao se ligam sozinhos. Isso entra junto com a onda de
 formularios, que e onde o assunto vive.
 
-### Formularios com Zod e React Hook Form — **nao comecado**
+### Formularios com Zod e React Hook Form — **feito**
 
-Recomendacao: **nao embutir nos primitivos**. Sai como subcaminho
-`@rivocode/ui/form`, com `react-hook-form` e `zod` como dependencias de par.
-Projeto que nao usa RHF nao deve ser obrigado a carrega-lo.
+Saiu em `@rivocode/ui/form`, subcaminho separado, com `react-hook-form`, `zod`
+e `@hookform/resolvers` como dependencias de par opcionais. Projeto que nao usa
+RHF nao carrega nada disso.
 
-Pecas: `Form` (contexto), `FormField` (liga o `Controller` do RHF ao nosso
-`Field`), e a mensagem de erro lendo o estado do RHF em vez de ser passada a
-mao. O `Field` da Base UI ja aceita `invalid`, `touched` e `dirty`, entao a
-ponte e curta.
+Pecas: `Form` (o `<form>` e o contexto numa coisa so, com `noValidate`),
+`FormField` (rotulo, controle, ajuda e erro numa linha), `useZodForm` (o
+`useForm` ja ligado ao Zod) e tres adaptadores, `paraDatePicker`, `paraSelect`
+e `paraCheckbox`.
 
-O resolver de Zod vem de `@hookform/resolvers/zod`.
+A ponte com o `Field` saiu mais barata do que o esperado: a Base UI ja liga
+rotulo, `aria-describedby` e `aria-invalid` a qualquer controle dela que esteja
+dentro do `Field.Root`. Bastou o `DatePicker` passar a renderizar pelo
+`Field.Control` em vez de um input cru, e o fio se ligou sozinho. O `FormField`
+nao inventa id nenhum.
+
+O `Select` e o `Checkbox` ganharam a borda de invalido, que faltava.
 
 ### React Query — **nao comecado**
 
@@ -128,6 +134,6 @@ claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
 1. Publicar o pacote e destravar a landing (depende do token)
 2. ~~`Popover`~~ feito
 3. ~~`Calendar`, `DatePicker` e `DateRangePicker`~~ feito
-4. `@rivocode/ui/form` com RHF e Zod, e a ponte do `DatePicker` com o `Field`
+4. ~~`@rivocode/ui/form` com RHF e Zod, e a ponte do `DatePicker` com o `Field`~~ feito
 5. `DataTable` com os estados de consulta
 6. Site de documentacao
