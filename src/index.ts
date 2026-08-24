@@ -179,3 +179,12 @@ export {
 } from "./components/alert";
 export { Skeleton } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export { DataTable, type Coluna, type DataTableProps } from "./components/data-table";
+export {
+  Steps,
+  useWizard,
+  WizardFooter,
+  type EstadoDoAssistente,
+  type Passo,
+  type StepsProps,
+} from "./components/steps";
