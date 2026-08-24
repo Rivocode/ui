@@ -46,7 +46,8 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
     <BaseTabs.Tab
       {...props}
       className={cn(
-        "relative shrink-0 px-3 py-2.5 font-sans text-base font-medium text-fg-muted",
+        "relative flex shrink-0 items-center px-3 font-sans text-base font-medium",
+        "h-[var(--rc-control-lg)] text-fg-muted",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none hover:text-fg",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",

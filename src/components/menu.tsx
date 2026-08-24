@@ -50,7 +50,8 @@ export function MenuContent({
 
 export const menuItemVariants = cva(
   cn(
-    "flex cursor-default items-center gap-2 rounded-sm px-2.5 py-1.5 text-base",
+    "flex cursor-default items-center gap-2 rounded-sm px-2.5 text-base",
+    "py-[var(--rc-item-y)]",
     "outline-none select-none",
     "data-[highlighted]:bg-accent-subtle",
     "data-[disabled]:text-fg-disabled data-[disabled]:data-[highlighted]:bg-transparent",

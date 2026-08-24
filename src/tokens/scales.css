@@ -63,6 +63,16 @@
   --rc-control-pad-sm: 10px;
   --rc-control-pad-md: 14px;
   --rc-control-pad-lg: 18px;
+
+  /* Medidas que nao sao altura de controle mas encolhem junto com ele:
+     respiro de painel, altura de item de lista, lado da caixa de marcar e
+     lado do dia no calendario. Sem elas a densidade compacta parava nos
+     quatro componentes que usam --rc-control-*, e a tela saia meio compacta. */
+  --rc-pad-panel: 24px;
+  --rc-pad-panel-sm: 16px;
+  --rc-item-y: 6px;
+  --rc-box: 18px;
+  --rc-day: 36px;
 }
 
 /* Densidade compacta, para tela de operacao. */
@@ -73,6 +83,12 @@
   --rc-control-pad-sm: 8px;
   --rc-control-pad-md: 10px;
   --rc-control-pad-lg: 14px;
+
+  --rc-pad-panel: 16px;
+  --rc-pad-panel-sm: 12px;
+  --rc-item-y: 4px;
+  --rc-box: 16px;
+  --rc-day: 32px;
 }
 
 @media (prefers-reduced-motion: reduce) {

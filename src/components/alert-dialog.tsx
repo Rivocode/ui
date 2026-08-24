@@ -39,7 +39,7 @@ export function AlertDialogContent({ className, children, ...props }: AlertDialo
         className={cn(
           "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(28rem,calc(100vw-2rem))]",
           "-translate-x-1/2 -translate-y-1/2",
-          "rounded-xl border border-border bg-surface p-6 shadow-3",
+          "rounded-xl border border-border bg-surface p-[var(--rc-pad-panel)] shadow-3",
           "font-sans text-fg outline-none",
           "max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:w-full",
           "max-sm:translate-x-0 max-sm:translate-y-0",

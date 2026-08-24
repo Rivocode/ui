@@ -49,7 +49,9 @@ test("o painel abre dentro do container que carrega o tema", () => {
 test("o painel troca o respiro de lista pelo de leitura", () => {
   render(<Exemplo />);
   const painel = screen.getByText("Periodo").closest("[data-open]");
-  expect(painel!.className).toContain("p-4");
+  // O respiro vem do token de painel, que encolhe junto com a densidade, e
+  // nao do `p-1` de item de menu que a casca compartilhada traz.
+  expect(painel!.className).toContain("p-[var(--rc-pad-panel-sm)]");
   expect(painel!.className).not.toContain("p-1 ");
 });
 
@@ -66,5 +68,5 @@ test("o className de quem usa vence o padrao", () => {
   );
   const painel = screen.getByText("Sem respiro").closest("[data-open]");
   expect(painel!.className).toContain("p-0");
-  expect(painel!.className).not.toContain("p-4");
+  expect(painel!.className).not.toContain("p-[var(--rc-pad-panel-sm)]");
 });

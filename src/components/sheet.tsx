@@ -97,7 +97,8 @@ export function SheetContent({ className, children, ...props }: SheetContentProp
         <BaseDrawer.Popup
           {...props}
           className={cn(
-            "overflow-y-auto overscroll-contain border-border bg-surface p-6 shadow-3",
+            "overflow-y-auto overscroll-contain border-border bg-surface shadow-3",
+            "p-[var(--rc-pad-panel)]",
             "font-sans text-fg outline-none",
             "transition-transform duration-[var(--rc-duration-folha)] ease-rc-folha",
             // Enquanto o dedo esta na tela o painel segue o dedo sem transicao,

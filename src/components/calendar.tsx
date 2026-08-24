@@ -113,15 +113,15 @@ export function Calendar({
 
         month_grid: "w-full border-collapse",
         weekdays: "flex",
-        weekday: "w-11 text-xs font-normal text-fg-subtle sm:w-9",
+        weekday: "w-11 text-xs font-normal text-fg-subtle sm:w-[var(--rc-day)]",
         weeks: "",
         week: "mt-1 flex w-full",
 
         // 44px no celular e 36 na mesa: alvo de dedo tem medida propria, e no
         // toque a diferenca entre acertar o dia e o vizinho e essa.
-        day: "relative size-11 p-0 text-center sm:size-9",
+        day: "relative size-11 p-0 text-center sm:size-[var(--rc-day)]",
         day_button: cn(
-          "size-11 rounded-md text-base text-fg sm:size-9",
+          "size-11 rounded-md text-base text-fg sm:size-[var(--rc-day)]",
           "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
           "hover:bg-accent-subtle",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",

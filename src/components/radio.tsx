@@ -28,7 +28,7 @@ export function Radio({ className, ...props }: RadioProps) {
     <BaseRadio.Root
       {...props}
       className={cn(
-        "flex size-[18px] shrink-0 items-center justify-center rounded-pill",
+        "flex size-[var(--rc-box)] shrink-0 items-center justify-center rounded-pill",
         "border border-border-strong bg-surface",
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",

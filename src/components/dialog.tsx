@@ -34,7 +34,7 @@ export function DialogContent({ className, children, ...props }: DialogContentPr
         className={cn(
           "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]",
           "-translate-x-1/2 -translate-y-1/2",
-          "rounded-xl border border-border bg-surface p-6 shadow-3",
+          "rounded-xl border border-border bg-surface p-[var(--rc-pad-panel)] shadow-3",
           "font-sans text-fg outline-none",
           // No celular ele encosta embaixo e ocupa a largura toda, que e onde
           // o polegar alcanca. Centralizado, sobra tarja de fundo dos dois
