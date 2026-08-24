@@ -9,18 +9,15 @@ cliente X em outro, sem editar componente nenhum.
 
 ## Instalação
 
-O pacote é privado, no GitHub Packages. Todo projeto consumidor precisa de um
-`.npmrc` na raiz, com um token que tenha permissão de leitura de pacotes:
-
-```
-@rivocode:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-Depois:
-
-```sh
+```bash
 bun add @rivocode/ui
+```
+
+Público no npm, sob licença MIT. Não precisa de token nem de `.npmrc`.
+
+O Tailwind entra como dependência de desenvolvimento:
+
+```bash
 bun add -d tailwindcss @tailwindcss/vite
 ```
 
@@ -456,3 +453,15 @@ export default defineConfig({
 - O retrato de celular sai de dentro de um iframe, em `demo/celular.html`, e não
   do tamanho da janela: o Chrome no macOS não abre janela abaixo de 500px, e
   pedir 390 devolvia uma foto cortada em 390 **com layout de 500**.
+
+## Documentação
+
+<https://ds.rivocode.com.br>
+
+Cada peça tem também o endereço cru em markdown, para quem lê com agent em vez
+de olho: `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`. O índice
+fica em `/llms.txt`, e há uma skill pronta em `/skill`.
+
+## Licença
+
+MIT. Veja [LICENSE](LICENSE).

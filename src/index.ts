@@ -1,4 +1,4 @@
-export const version = "0.1.0";
+export const version = "0.2.0";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useTelaEstreita } from "./lib/tela";

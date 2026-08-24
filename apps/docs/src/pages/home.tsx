@@ -210,7 +210,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <Logo className="h-7 w-auto text-accent" />
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Badge tone="accent">v0.1.0 no GitHub Packages</Badge>
+          <Badge tone="accent">v0.2.0 no npm</Badge>
           <span className="font-mono text-xs text-fg-subtle">Base UI · Tailwind 4 · React 19</span>
         </div>
 
