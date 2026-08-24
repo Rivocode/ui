@@ -1,5 +1,6 @@
 "use client";
 
+import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { ToastProvider, ToastViewport } from "../components/toast";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
@@ -43,6 +44,13 @@ export type RivoProviderProps = {
    * pode vazar para o resto.
    */
   scope?: "global" | "local";
+  /**
+   * Sentido da escrita. Em `rtl` a Base UI espelha o que depende de lado:
+   * qual seta abre o submenu, para onde o Select alinha, de onde a folha
+   * lateral entra. Layout continua com voce, pelas classes logicas do Tailwind
+   * (`ps-*`, `pe-*`, `text-start`).
+   */
+  dir?: "ltr" | "rtl";
   className?: string;
 };
 
@@ -58,6 +66,7 @@ export function RivoProvider({
   theme = "rivocode-dark",
   density = "comfortable",
   scope = "global",
+  dir = "ltr",
   className,
 }: RivoProviderProps) {
   const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme);
@@ -77,7 +86,8 @@ export function RivoProvider({
     const root = document.documentElement;
     root.dataset.rcTheme = resolved;
     root.dataset.rcDensity = density;
-  }, [scope, resolved, density]);
+    root.dir = dir;
+  }, [scope, resolved, density, dir]);
 
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
@@ -95,7 +105,8 @@ export function RivoProvider({
     if (!portalContainer) return;
     portalContainer.dataset.rcTheme = resolved;
     portalContainer.dataset.rcDensity = density;
-  }, [portalContainer, resolved, density]);
+    portalContainer.dir = dir;
+  }, [portalContainer, resolved, density, dir]);
 
   const value = useMemo<RivoContextValue>(
     () => ({ theme: resolved, density, portalContainer }),
@@ -106,22 +117,25 @@ export function RivoProvider({
   // deveria precisar montar provedor so para uma dica aparecer.
   return (
     <RivoContext.Provider value={value}>
-      <BaseTooltip.Provider delay={300}>
-        <ToastProvider>
-          {scope === "local" ? (
-            <div
-              data-rc-theme={resolved}
-              data-rc-density={density}
-              className={cn("bg-bg font-sans text-fg", className)}
-            >
-              {children}
-            </div>
-          ) : (
-            children
-          )}
-          <ToastViewport container={portalContainer} />
-        </ToastProvider>
-      </BaseTooltip.Provider>
+      <DirectionProvider direction={dir}>
+        <BaseTooltip.Provider delay={300}>
+          <ToastProvider>
+            {scope === "local" ? (
+              <div
+                data-rc-theme={resolved}
+                data-rc-density={density}
+                dir={dir}
+                className={cn("bg-bg font-sans text-fg", className)}
+              >
+                {children}
+              </div>
+            ) : (
+              children
+            )}
+            <ToastViewport container={portalContainer} />
+          </ToastProvider>
+        </BaseTooltip.Provider>
+      </DirectionProvider>
     </RivoContext.Provider>
   );
 }

@@ -172,7 +172,10 @@ export function SidebarContent({ className, ...props }: ComponentProps<"div">) {
 
 export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
   return (
-    <div {...props} className={cn("mt-auto flex flex-col gap-1 border-t border-border pt-2", className)} />
+    <div
+      {...props}
+      className={cn("mt-auto flex flex-col gap-1 border-t border-border pt-2", className)}
+    />
   );
 }
 

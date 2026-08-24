@@ -53,7 +53,11 @@ export function TreeSelect({
   // lista crua: id que sobrou de uma arvore antiga contaria como escolha e o
   // gatilho mentiria o numero.
   const rotulo =
-    nomes.length === 0 ? placeholder : nomes.length <= 3 ? nomes.join(", ") : `${nomes.length} escolhidos`;
+    nomes.length === 0
+      ? placeholder
+      : nomes.length <= 3
+        ? nomes.join(", ")
+        : `${nomes.length} escolhidos`;
 
   return (
     <Popover onOpenChange={(aberto) => !aberto && setBusca("")}>

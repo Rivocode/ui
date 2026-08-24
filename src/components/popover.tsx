@@ -58,7 +58,11 @@ export function PopoverContent({
       >
         <BasePopover.Popup
           {...props}
-          className={cn(floatingPanel, "min-w-[14rem] max-w-[calc(100vw-2rem)] p-[var(--rc-pad-panel-sm)]", className)}
+          className={cn(
+            floatingPanel,
+            "min-w-[14rem] max-w-[calc(100vw-2rem)] p-[var(--rc-pad-panel-sm)]",
+            className,
+          )}
         >
           {children}
         </BasePopover.Popup>

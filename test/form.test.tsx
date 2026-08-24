@@ -34,9 +34,7 @@ function Exemplo({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
           {(campo) => <DatePicker {...paraDatePicker(campo)} />}
         </FormField>
 
-        <FormField name="aceite">
-          {(campo) => <Checkbox {...paraCheckbox(campo)} />}
-        </FormField>
+        <FormField name="aceite">{(campo) => <Checkbox {...paraCheckbox(campo)} />}</FormField>
 
         <Button type="submit">Emitir</Button>
       </Form>

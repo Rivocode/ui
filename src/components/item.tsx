@@ -51,9 +51,7 @@ export function Item({ className, variant, interactive, ...props }: ItemProps) {
 
 /** O canto de imagem, icone ou avatar. */
 export function ItemMedia({ className, ...props }: ComponentProps<"div">) {
-  return (
-    <div {...props} className={cn("flex shrink-0 items-center text-fg-muted", className)} />
-  );
+  return <div {...props} className={cn("flex shrink-0 items-center text-fg-muted", className)} />;
 }
 
 /** O miolo de texto. Encolhe antes dos cantos, para o titulo cortar com "..." */

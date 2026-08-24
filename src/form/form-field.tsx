@@ -34,10 +34,7 @@ export type FormFieldProps<Valores extends FieldValues, Nome extends FieldPath<V
   control?: Control<Valores>;
   className?: string;
   /** Recebe o campo pronto para espalhar no controle. */
-  children: (
-    campo: CampoDoFormulario<Valores, Nome>,
-    estado: ControllerFieldState,
-  ) => ReactElement;
+  children: (campo: CampoDoFormulario<Valores, Nome>, estado: ControllerFieldState) => ReactElement;
 };
 
 /**

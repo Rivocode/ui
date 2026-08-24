@@ -18,6 +18,7 @@ const PAGINAS = [
   { rota: "/navegacao.html", nome: "navegacao", altura: 1000, alturaCelular: 1200 },
   { rota: "/folhas.html", nome: "folhas", altura: 1120, alturaCelular: 1200 },
   { rota: "/consulta.html", nome: "consulta", altura: 2000, alturaCelular: 3200 },
+  { rota: "/completos.html", nome: "completos", altura: 1900, alturaCelular: 3400 },
   { rota: "/controles.html", nome: "controles", altura: 2000, alturaCelular: 3400 },
   { rota: "/dados.html", nome: "dados", altura: 1800, alturaCelular: 3000 },
 ];

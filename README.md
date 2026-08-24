@@ -100,59 +100,59 @@ as que se parecem.
 
 ### Ação
 
-| Peça                    | Para que serve                                                      |
-| ----------------------- | ------------------------------------------------------------------- |
-| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone  |
-| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro      |
+| Peça                    | Para que serve                                                     |
+| ----------------------- | ------------------------------------------------------------------ |
+| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone |
+| `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro     |
 
 ### Campo
 
-| Peça                             | Para que serve                                                             |
-| -------------------------------- | -------------------------------------------------------------------------- |
-| `Field`, `Input`                 | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
-| `Textarea`                       | várias linhas; altura em número de linhas, sem variante de tamanho         |
-| `MaskedInput`                    | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, dinheiro, molde à mão |
-| `InputGroup`                     | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
-| `Checkbox`                       | caixa de marcar, com o estado misto do "selecionar todos"                  |
-| `Radio`, `RadioGroup`            | escolha única quando as opções cabem na tela                               |
-| `Switch`                         | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
-| `Select`                         | escolha única em lista curta e fixa                                        |
-| `Combobox`                       | escolha em lista longa ou vinda do servidor, com busca e fichas            |
-| `TreeSelect`, `Tree`             | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
-| `DatePicker`, `DateRangePicker`  | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
-| `Calendar`                       | o mês cru, para quem quer o calendário na própria tela                     |
+| Peça                            | Para que serve                                                             |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
+| `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
+| `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, dinheiro, molde à mão |
+| `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
+| `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
+| `Radio`, `RadioGroup`           | escolha única quando as opções cabem na tela                               |
+| `Switch`                        | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
+| `Select`                        | escolha única em lista curta e fixa                                        |
+| `Combobox`                      | escolha em lista longa ou vinda do servidor, com busca e fichas            |
+| `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
+| `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
+| `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
 
 ### Flutuante
 
-| Peça          | Para que serve                                                                |
-| ------------- | ----------------------------------------------------------------------------- |
-| `Dialog`      | janela modal; no celular encosta embaixo                                      |
-| `AlertDialog` | confirmação sem volta: não fecha com Esc nem com clique fora                  |
-| `Sheet`       | folha que desliza da borda, com gesto de arrastar; é o menu do celular        |
-| `Popover`     | painel ancorado de conteúdo livre                                             |
-| `Tooltip`     | dica, para botão que só tem ícone                                             |
-| `Menu`        | menu de ações, com grupos e item destrutivo                                   |
-| `Toast`       | aviso que passa, via `useToast()`                                             |
+| Peça          | Para que serve                                                         |
+| ------------- | ---------------------------------------------------------------------- |
+| `Dialog`      | janela modal; no celular encosta embaixo                               |
+| `AlertDialog` | confirmação sem volta: não fecha com Esc nem com clique fora           |
+| `Sheet`       | folha que desliza da borda, com gesto de arrastar; é o menu do celular |
+| `Popover`     | painel ancorado de conteúdo livre                                      |
+| `Tooltip`     | dica, para botão que só tem ícone                                      |
+| `Menu`        | menu de ações, com grupos e item destrutivo                            |
+| `Toast`       | aviso que passa, via `useToast()`                                      |
 
 ### Navegação
 
-| Peça         | Para que serve                                                          |
-| ------------ | ----------------------------------------------------------------------- |
+| Peça         | Para que serve                                                           |
+| ------------ | ------------------------------------------------------------------------ |
 | `Sidebar`    | barra lateral que encolhe até a coluna de ícones e vira folha no celular |
-| `Tabs`       | abas com risco deslizante; rolam de lado quando não cabem               |
-| `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo             |
-| `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas         |
-| `Steps`      | a régua de um formulário em etapas, com `useWizard()`                   |
+| `Tabs`       | abas com risco deslizante; rolam de lado quando não cabem                |
+| `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo              |
+| `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas          |
+| `Steps`      | a régua de um formulário em etapas, com `useWizard()`                    |
 
 ### Dado
 
-| Peça        | Para que serve                                                       |
-| ----------- | -------------------------------------------------------------------- |
-| `Table`     | tabela semântica, com seleção de linha                               |
-| `DataTable` | tabela com os três estados de consulta: carregando, erro e vazio     |
-| `Item`      | a linha de lista: ícone, texto e ação                                |
-| `Badge`     | selo de estado, seis tons                                            |
-| `Avatar`    | foto de pessoa, com a inicial por trás                               |
+| Peça        | Para que serve                                                   |
+| ----------- | ---------------------------------------------------------------- |
+| `Table`     | tabela semântica, com seleção de linha                           |
+| `DataTable` | tabela com os três estados de consulta: carregando, erro e vazio |
+| `Item`      | a linha de lista: ícone, texto e ação                            |
+| `Badge`     | selo de estado, seis tons                                        |
+| `Avatar`    | foto de pessoa, com a inicial por trás                           |
 
 ### Estado
 

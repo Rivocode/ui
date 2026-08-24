@@ -40,13 +40,12 @@ export function Pagination({
     <nav
       {...props}
       aria-label="Paginacao"
-      className={cn("flex items-center justify-between gap-2 font-sans sm:justify-start", className)}
+      className={cn(
+        "flex items-center justify-between gap-2 font-sans sm:justify-start",
+        className,
+      )}
     >
-      <Passo
-        rotulo="Pagina anterior"
-        disabled={page <= 1}
-        onClick={() => onPageChange(page - 1)}
-      >
+      <Passo rotulo="Pagina anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
         <ChevronLeft size={16} aria-hidden="true" />
       </Passo>
 
@@ -95,11 +94,7 @@ export function Pagination({
   );
 }
 
-function Passo({
-  rotulo,
-  children,
-  ...props
-}: ComponentProps<"button"> & { rotulo: string }) {
+function Passo({ rotulo, children, ...props }: ComponentProps<"button"> & { rotulo: string }) {
   return (
     <button
       type="button"
@@ -123,11 +118,7 @@ function Passo({
  * Primeira, ultima, a atual e os vizinhos. A reticencia so entra quando pula
  * mais de uma pagina, senao ela ocuparia o lugar de um numero que caberia.
  */
-function montarPaginas(
-  atual: number,
-  total: number,
-  vizinhos: number,
-): (number | "reticencia")[] {
+function montarPaginas(atual: number, total: number, vizinhos: number): (number | "reticencia")[] {
   if (total <= 1) return total === 1 ? [1] : [];
 
   const inicio = Math.max(2, atual - vizinhos);

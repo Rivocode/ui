@@ -180,6 +180,46 @@ export {
 export { Skeleton } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "./components/collapsible";
+export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";
+export { Slider, type SliderProps } from "./components/slider";
+export { Meter, type MeterProps } from "./components/meter";
+export { NumberField, type NumberFieldProps } from "./components/number-field";
+export { OTPField, type OTPFieldProps } from "./components/otp-field";
+export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
+export { Menubar, type MenubarProps } from "./components/menubar";
+export {
+  ToolbarButton,
+  ToolbarGroup,
+  ToolbarRoot as Toolbar,
+  ToolbarSeparator,
+  type ToolbarProps,
+} from "./components/toolbar";
+export {
+  PreviewCard,
+  PreviewCardContent,
+  PreviewCardTrigger,
+} from "./components/preview-card";
+export { CheckboxGroup, type CheckboxGroupProps } from "./components/checkbox-group";
+export { FieldsetLegend, FieldsetRoot as Fieldset } from "./components/fieldset";
+export {
+  Autocomplete,
+  AutocompleteInput,
+  type AutocompleteInputProps,
+} from "./components/autocomplete";
+export {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "./components/navigation-menu";
+export {
   Combobox,
   ComboboxChip,
   ComboboxChips,

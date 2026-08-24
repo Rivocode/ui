@@ -67,7 +67,5 @@ export function CalendarPanelFooter({
   className,
   ...props
 }: { className?: string } & { children: ReactNode }) {
-  return (
-    <div {...props} className={cn("flex items-center justify-between gap-3", className)} />
-  );
+  return <div {...props} className={cn("flex items-center justify-between gap-3", className)} />;
 }

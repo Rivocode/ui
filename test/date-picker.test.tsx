@@ -114,9 +114,7 @@ test("o calendario fala portugues por padrao", () => {
 test("o gatilho do intervalo mostra o periodo escolhido", () => {
   render(
     <RivoProvider scope="local">
-      <DateRangePicker
-        defaultValue={{ from: new Date(2026, 2, 3), to: new Date(2026, 2, 10) }}
-      />
+      <DateRangePicker defaultValue={{ from: new Date(2026, 2, 3), to: new Date(2026, 2, 10) }} />
     </RivoProvider>,
   );
   expect(screen.getByText("03/03/2026 – 10/03/2026")).toBeDefined();
