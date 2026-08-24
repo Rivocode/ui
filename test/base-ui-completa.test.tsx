@@ -54,6 +54,21 @@ test("o controle de faixa conta o valor", () => {
   expect(screen.getByText("Desconto")).toBeDefined();
 });
 
+test("a faixa poe um pino por limite, cada um com o proprio nome", () => {
+  comTema(
+    <Slider
+      defaultValue={[20, 60]}
+      label="Faixa de valor"
+      thumbLabel={["Valor minimo", "Valor maximo"]}
+    />,
+  );
+  const pinos = screen.getAllByRole("slider");
+  expect(pinos.length).toBe(2);
+  expect(pinos[0]?.getAttribute("aria-valuenow")).toBe("20");
+  expect(pinos[1]?.getAttribute("aria-valuenow")).toBe("60");
+  expect(screen.getByLabelText("Valor maximo")).toBeDefined();
+});
+
 test("a medida de capacidade nao se anuncia como progresso", () => {
   comTema(<Meter value={24} max={100} label="Espaco usado" showValue />);
   const medida = screen.getByRole("meter");

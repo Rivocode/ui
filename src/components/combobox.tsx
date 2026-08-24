@@ -89,8 +89,12 @@ export function ComboboxContent({
             className,
           )}
         >
-          <BaseCombobox.Empty className="px-2.5 py-6 text-center text-sm text-fg-subtle">
-            {emptyMessage}
+          {/* O Empty fica montado sempre, para anunciar a mudanca ao leitor de
+              tela. O recheio e que aparece so na lista vazia, entao o espaco
+              mora no filho: no proprio Empty ele viraria uma faixa morta no
+              topo de todo painel. */}
+          <BaseCombobox.Empty>
+            <div className="px-2.5 py-6 text-center text-sm text-fg-subtle">{emptyMessage}</div>
           </BaseCombobox.Empty>
           {children}
         </BaseCombobox.Popup>

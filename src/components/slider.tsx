@@ -10,8 +10,11 @@ export type SliderProps = ComponentProps<typeof BaseSlider.Root> & {
   label?: ReactNode;
   /** Mostra o valor ao lado do rotulo. */
   showValue?: boolean;
-  /** O que o leitor de tela chama o pino. */
-  thumbLabel?: string;
+  /**
+   * O que o leitor de tela chama o pino. Numa faixa, passe um por pino: os
+   * dois precisam de nomes diferentes para o leitor saber qual e qual.
+   */
+  thumbLabel?: string | string[];
 };
 
 /**
@@ -23,6 +26,14 @@ export type SliderProps = ComponentProps<typeof BaseSlider.Root> & {
  * Com dois valores no `defaultValue`, vira faixa de dois pinos.
  */
 export function Slider({ className, label, showValue, thumbLabel, ...props }: SliderProps) {
+  // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
+  // uma faixa com um pino so nao deixa mover o outro limite.
+  const valores = props.value ?? props.defaultValue;
+  const quantos = Array.isArray(valores) ? valores.length : 1;
+  const rotulos = Array.from({ length: quantos }, (_, indice) =>
+    Array.isArray(thumbLabel) ? thumbLabel[indice] : thumbLabel,
+  );
+
   return (
     <BaseSlider.Root {...props} className={cn("flex flex-col gap-2", className)}>
       {(label || showValue) && (
@@ -37,14 +48,18 @@ export function Slider({ className, label, showValue, thumbLabel, ...props }: Sl
       <BaseSlider.Control className="flex touch-none items-center py-2 select-none">
         <BaseSlider.Track className="h-1.5 w-full rounded-pill bg-skeleton select-none">
           <BaseSlider.Indicator className="rounded-pill bg-accent select-none" />
-          <BaseSlider.Thumb
-            aria-label={thumbLabel}
-            className={cn(
-              "size-4 rounded-pill border border-accent bg-surface select-none",
-              "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
-              "has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",
-            )}
-          />
+          {rotulos.map((rotulo, indice) => (
+            <BaseSlider.Thumb
+              key={indice}
+              index={indice}
+              aria-label={rotulo}
+              className={cn(
+                "size-4 rounded-pill border border-accent bg-surface select-none",
+                "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
+                "has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",
+              )}
+            />
+          ))}
         </BaseSlider.Track>
       </BaseSlider.Control>
     </BaseSlider.Root>
