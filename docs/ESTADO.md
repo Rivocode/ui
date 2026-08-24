@@ -7,7 +7,7 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 | Peca | Onde | Estado |
 |---|---|---|
 | Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 41 componentes + subcaminho `/form`, 192 testes, tudo verde |
-| Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras dos 4 novos** |
+| Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras de 26 novos** |
 | Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
 | Site de documentacao | nao existe | Pendente |
 
@@ -171,4 +171,4 @@ claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
 4. ~~`@rivocode/ui/form` com RHF e Zod, e a ponte do `DatePicker` com o `Field`~~ feito
 5. ~~`DataTable` com os estados de consulta~~ feito
 6. Site de documentacao
-7. Sync com o claude.ai/design, que esta atras de vinte e dois componentes
+7. Sync com o claude.ai/design, que esta atras de vinte e seis componentes
