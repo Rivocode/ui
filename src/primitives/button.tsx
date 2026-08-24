@@ -42,7 +42,7 @@ export const buttonVariants = cva(
         // propria em vez de altura de controle. Botao de landing e botao de
         // formulario tem trabalhos diferentes, e forcar um no outro estraga
         // os dois.
-        cta: "px-6.5 py-3.75 text-[15.5px] font-bold",
+        cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-bold",
         iconSm: "size-[var(--rc-control-sm)] p-0",
       },
       shape: {
