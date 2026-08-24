@@ -10,6 +10,12 @@ import {
   MenuGroup,
   MenuSeparator,
   MenuTrigger,
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
   RivoProvider,
   Select,
   SelectContent,
@@ -98,6 +104,24 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             </TooltipTrigger>
             <TooltipContent>Excluir nota</TooltipContent>
           </Tooltip>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm text-fg-muted">Painel</p>
+          <Popover defaultOpen>
+            <PopoverTrigger render={<Button variant="outline" />}>Periodo</PopoverTrigger>
+            <PopoverContent>
+              <PopoverTitle>Periodo do relatorio</PopoverTitle>
+              <PopoverDescription>
+                O intervalo vale para o total e para a lista de notas.
+              </PopoverDescription>
+              <div className="mt-4 flex justify-end">
+                <PopoverClose render={<Button variant="secondary" size="sm" />}>
+                  Aplicar
+                </PopoverClose>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </RivoProvider>

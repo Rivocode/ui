@@ -64,6 +64,15 @@ export {
   type MenuItemProps,
 } from "./components/menu";
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/select";
+export {
+  Popover,
+  PopoverClose,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTitle,
+  PopoverTrigger,
+  type PopoverContentProps,
+} from "./components/popover";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {
