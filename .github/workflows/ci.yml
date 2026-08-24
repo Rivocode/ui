@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
+      - run: bun run check:colors
+      - run: bun test
+      # O contraste so tem tema para conferir a partir da Task 3.
+      - run: bun run check:contrast
+        if: hashFiles('src/tokens/themes/*.css') != ''
