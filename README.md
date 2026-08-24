@@ -291,6 +291,73 @@ Erro vence carregando, e vazio só vale depois que a consulta voltou. Sem essa
 ordem, uma nova busca sobre um erro pisca "nenhum resultado" antes de mostrar o
 problema.
 
+## Gráficos
+
+Recharts vive no subcaminho `@rivocode/ui/chart`, com dependência de par
+opcional: quem não faz gráfico não carrega os 200 kB dela.
+
+```sh
+bun add recharts
+```
+
+```tsx
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  useChartMotion,
+  type ChartConfig,
+} from "@rivocode/ui/chart";
+
+const config = {
+  emitidas: { label: "Emitidas" },
+  pagas: { label: "Pagas" },
+} satisfies ChartConfig;
+
+export function NotasPorMes({ dados }) {
+  const movimento = useChartMotion();
+
+  return (
+    <ChartContainer config={config} className="h-64">
+      <LineChart data={dados}>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="mes" tickLine={false} axisLine={false} />
+        <YAxis tickLine={false} axisLine={false} />
+        <ChartTooltip content={<ChartTooltipContent config={config} />} />
+        <Line dataKey="emitidas" stroke="var(--color-emitidas)" {...movimento} />
+        <Line dataKey="pagas" stroke="var(--color-pagas)" {...movimento} />
+      </LineChart>
+    </ChartContainer>
+  );
+}
+```
+
+Três coisas que o `ChartContainer` resolve:
+
+- **A cor da série vira variável com o nome da série.** `emitidas` no `config`
+  publica `var(--color-emitidas)`, então a linha, a barra e a dica falam do
+  mesmo jeito, e trocar a cor é mexer num lugar só. Sem cor declarada, entra a
+  próxima da paleta na ordem do `config`. A Recharts não lê classe do Tailwind:
+  a ponte tem que ser por variável de CSS.
+- **Eixo, grade e rastro vêm do tema.** A Recharts pinta esses três com cor
+  própria, e no tema escuro eles somem.
+- **A dica é substituída inteira.** A da Recharts sai com fundo branco escrito
+  em estilo embutido, e não há classe que corrija estilo embutido.
+
+A paleta são oito cores por tema (`--rc-chart-1` a `--rc-chart-8`), e elas
+passam pela guarda de contraste com um mínimo próprio: **3:1 contra a
+superfície**, que é a regra de objeto gráfico. Cor de série não carrega texto, e
+exigir 4,5:1 dela deixaria a paleta inteira escura demais para distinguir.
+
+O `useChartMotion()` liga a animação à preferência do sistema. O resto do
+catálogo resolve isso por token, mas a Recharts interpola em JS e nenhum token a
+alcança — sem ele, o único movimento que sobra numa tela com "reduzir
+movimento" ligado é justamente o maior deles.
+
+A altura fica com você, por classe: gráfico sem altura definida some, porque o
+contêiner mede o pai.
+
 ## Tela de aplicação
 
 ```tsx

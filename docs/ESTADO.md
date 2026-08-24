@@ -6,7 +6,7 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 
 | Peca | Onde | Estado |
 |---|---|---|
-| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 41 componentes + subcaminho `/form`, 192 testes, tudo verde |
+| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 55 componentes + subcaminhos `/form` e `/chart`, 213 testes, tudo verde |
 | Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras de 26 novos** |
 | Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
 | Site de documentacao | nao existe | Pendente |
@@ -20,7 +20,10 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 - **Navegacao:** Sidebar, Tabs, Breadcrumb, Pagination, Steps
 - **Dado:** Table, DataTable, Item, Tree, Badge, Avatar
 - **Estado:** Alert, Skeleton, Spinner, Progress, EmptyState
-- **Estrutura:** Card, Separator, Accordion, RivoProvider
+- **Estrutura:** Card, Separator, Accordion, Collapsible, Fieldset, ScrollArea,
+  RivoProvider
+- **Grafico:** subcaminho `/chart`, com ChartContainer, ChartTooltip,
+  ChartLegend e a paleta de oito series
 
 Mais os utilitarios: `useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`,
 `formatarData`, `aplicarMascara` e os adaptadores de formulario.
@@ -158,8 +161,7 @@ claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
 - **Receitas de tela inteira** (login, painel, listagem pronta). E o que mais
   aproxima de "redondo", e depende de decidir se elas moram aqui ou num pacote
   separado, porque receita nao versiona igual a componente.
-- **Graficos.** Fora do escopo por ora; entra junto com a decisao de dependencia
-  de biblioteca de grafico.
+- ~~**Graficos**~~ feito, sobre a Recharts, em `@rivocode/ui/chart`.
 - **Site de documentacao.** Continua pendente, e a vitrine em `demo/` faz as
   vezes.
 

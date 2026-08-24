@@ -19,6 +19,7 @@ const PAGINAS = [
   { rota: "/folhas.html", nome: "folhas", altura: 1120, alturaCelular: 1200 },
   { rota: "/consulta.html", nome: "consulta", altura: 2000, alturaCelular: 3200 },
   { rota: "/completos.html", nome: "completos", altura: 1900, alturaCelular: 3400 },
+  { rota: "/graficos.html", nome: "graficos", altura: 1700, alturaCelular: 2600 },
   { rota: "/controles.html", nome: "controles", altura: 2000, alturaCelular: 3400 },
   { rota: "/dados.html", nome: "dados", altura: 1800, alturaCelular: 3000 },
 ];
@@ -54,6 +55,9 @@ for (const { rota, saida, janela } of RETRATOS) {
       `--screenshot=${saida}`,
       `--window-size=${janela}`,
       "--virtual-time-budget=4000",
+      // Sem isto, grafico com animacao sai sem as marcas: a Recharts interpola
+      // em JS e o retrato acontece antes de o primeiro quadro chegar.
+      "--force-prefers-reduced-motion",
       `http://127.0.0.1:${servidor.port}${rota}`,
     ],
     { stderr: "ignore", stdout: "ignore" },

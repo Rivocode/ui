@@ -36,4 +36,14 @@
   --rc-p-red-700: #c0261f;
   --rc-p-blue-400: #6aa9ff;
   --rc-p-blue-700: #1d4ed8;
+
+  /* Serie de grafico. Nao carregam texto, entao a regra e outra: cada uma
+     precisa de 3:1 contra a superficie e ser distinguivel das vizinhas. */
+  --rc-p-violet-400: #b78cff;
+  --rc-p-violet-700: #6d3fc4;
+  --rc-p-cyan-400: #4fd8e8;
+  --rc-p-cyan-700: #0e7490;
+  --rc-p-pink-400: #ff8ac4;
+  --rc-p-pink-700: #b32a72;
+  --rc-p-lima-800: #5f8a00;
 }

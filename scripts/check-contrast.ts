@@ -62,6 +62,15 @@ const PAIRS: Array<[string, string, number]> = [
   ["--rc-info-fg", "--rc-info", MIN_TEXT],
 ];
 
+/**
+ * Cor de serie de grafico nao carrega texto, entao ela nao entra na regra de
+ * 4,5:1. A norma pede 3:1 para objeto grafico que precisa ser percebido, e e
+ * essa que vale aqui: uma linha de grafico que some no fundo nao e legivel de
+ * outro jeito.
+ */
+const MIN_GRAFICO = 3;
+const SERIES = Array.from({ length: 8 }, (_, indice) => `--rc-chart-${indice + 1}`);
+
 /** `--rc-fg-disabled` e isento: texto desabilitado nao entra na norma. */
 if (import.meta.main) {
   const { Glob } = await import("bun");
@@ -75,7 +84,16 @@ if (import.meta.main) {
     // so traz @import. Um tema de verdade sempre declara o fundo.
     if (!tokens["--rc-bg"]) continue;
     console.log(`\n${file}`);
-    for (const [fg, bg, min] of PAIRS) {
+    for (const [fg, bg, min] of [
+      ...PAIRS,
+      ...SERIES.flatMap(
+        (serie) =>
+          [
+            [serie, "--rc-bg", MIN_GRAFICO],
+            [serie, "--rc-surface", MIN_GRAFICO],
+          ] as Array<[string, string, number]>,
+      ),
+    ]) {
       const a = tokens[fg];
       const b = tokens[bg];
       if (!a || !b) {

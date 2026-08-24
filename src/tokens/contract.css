@@ -27,6 +27,16 @@
   --color-selected: var(--rc-selected);
   --color-skeleton: var(--rc-skeleton);
 
+  --color-chart-1: var(--rc-chart-1);
+  --color-chart-2: var(--rc-chart-2);
+  --color-chart-3: var(--rc-chart-3);
+  --color-chart-4: var(--rc-chart-4);
+  --color-chart-5: var(--rc-chart-5);
+  --color-chart-6: var(--rc-chart-6);
+  --color-chart-7: var(--rc-chart-7);
+  --color-chart-8: var(--rc-chart-8);
+  --color-chart-grid: var(--rc-chart-grid);
+
   --color-border: var(--rc-border);
   --color-border-strong: var(--rc-border-strong);
   --color-line-hover: var(--rc-line-hover);

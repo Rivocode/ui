@@ -61,4 +61,15 @@
   --rc-shadow-3: 0 14px 36px rgb(0 0 0 / 0.5);
 
   color-scheme: dark;
+
+  /* Serie de grafico, na ordem em que devem ser usadas. */
+  --rc-chart-1: var(--rc-p-lima-500);
+  --rc-chart-2: var(--rc-p-teal-400);
+  --rc-chart-3: var(--rc-p-blue-400);
+  --rc-chart-4: var(--rc-p-amber-400);
+  --rc-chart-5: var(--rc-p-red-400);
+  --rc-chart-6: var(--rc-p-violet-400);
+  --rc-chart-7: var(--rc-p-cyan-400);
+  --rc-chart-8: var(--rc-p-pink-400);
+  --rc-chart-grid: var(--rc-border);
 }
