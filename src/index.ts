@@ -54,7 +54,14 @@ export {
   type TableRowProps,
 } from "./components/table";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
-export { Tab, TabList, TabPanel, Tabs, type TabListProps } from "./components/tabs";
+export {
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  type TabListProps,
+  type TabVariant,
+} from "./components/tabs";
 export {
   Menu,
   MenuContent,
@@ -154,18 +161,29 @@ export {
 } from "./components/tooltip";
 export {
   Sidebar,
+  SidebarBrand,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarInput,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuItem,
+  SidebarMenuRow,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
   SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  type SidebarBrandProps,
   type SidebarGroupProps,
+  type SidebarInputProps,
   type SidebarMenuItemProps,
+  type SidebarMenuSubProps,
   type SidebarProps,
   type SidebarProviderProps,
 } from "./components/sidebar";
@@ -178,6 +196,15 @@ export {
   type AlertProps,
 } from "./components/alert";
 export { Skeleton } from "./components/skeleton";
+export { Kbd, kbdVariants, nomeDeTecla, type KbdProps } from "./components/kbd";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
+export { AspectRatio, type AspectRatioProps } from "./components/aspect-ratio";
+export {
+  Command,
+  type CommandGroup,
+  type CommandItem,
+  type CommandProps,
+} from "./components/command";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/collapsible";
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";

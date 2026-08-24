@@ -1,10 +1,13 @@
 import { expect, test } from "bun:test";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { ChartContainer, type ChartConfig } from "../src/chart/chart";
 import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 import { ChartLegendContent } from "../src/chart/chart-legend";
+import { Line, LineChart } from "recharts";
+
+const comTema = (no: React.ReactNode) => render(<RivoProvider scope="local">{no}</RivoProvider>);
 
 const CONFIG: ChartConfig = {
   emitidas: { label: "Emitidas" },
@@ -138,4 +141,50 @@ test("a dica da pizza tambem usa o nome da fatia", () => {
     </RivoProvider>,
   );
   expect(screen.getByText("Canceladas")).toBeDefined();
+});
+
+test("o grafico carregando mostra esqueleto, e nao a moldura vazia", () => {
+  comTema(
+    <ChartContainer config={{ pagas: { label: "Pagas" } }} isLoading className="h-40">
+      <LineChart data={[]}>
+        <Line dataKey="pagas" />
+      </LineChart>
+    </ChartContainer>,
+  );
+  expect(document.querySelector(".animate-pulse")).not.toBeNull();
+});
+
+test("o erro oferece nova tentativa quando ha para onde tentar", () => {
+  let tentou = 0;
+  comTema(
+    <ChartContainer
+      config={{ pagas: { label: "Pagas" } }}
+      isError
+      onRetry={() => tentou++}
+      className="h-40"
+    >
+      <LineChart data={[]}>
+        <Line dataKey="pagas" />
+      </LineChart>
+    </ChartContainer>,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: /Tentar de novo/ }));
+  expect(tentou).toBe(1);
+});
+
+test("consulta vazia mostra o convite, e nao um grafico sem ponto", () => {
+  comTema(
+    <ChartContainer
+      config={{ pagas: { label: "Pagas" } }}
+      data={[]}
+      empty={{ title: "Sem notas no periodo", description: "Escolha outro intervalo." }}
+      className="h-40"
+    >
+      <LineChart data={[]}>
+        <Line dataKey="pagas" />
+      </LineChart>
+    </ChartContainer>,
+  );
+  expect(screen.getByText("Sem notas no periodo")).toBeDefined();
 });

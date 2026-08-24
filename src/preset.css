@@ -5,3 +5,21 @@
 @import "./tokens/contract.css";
 @import "./tokens/themes/rivocode-dark.css";
 @import "./tokens/themes/rivocode-light.css";
+
+/* ---------------------------------------------------------------------------
+ * Quem pinta o fundo.
+ *
+ * O tema define os tokens, mas ate aqui ninguem os aplicava na pagina: o
+ * `RivoProvider` com `scope="global"` marcava o `data-rc-theme` no `<html>` e
+ * parava ai. O resultado e que o fundo continuava sendo o padrao do navegador,
+ * um cinza que nao e o nosso, e qualquer `bg-bg` desenhado por cima aparecia
+ * como um retangulo mais claro. Foi assim que a barra lateral da documentacao
+ * ficou com uma faixa atras de cada titulo.
+ *
+ * Vale para o escopo global e para o local, porque nos dois casos o atributo
+ * marca o elemento que carrega o tema.
+ * ------------------------------------------------------------------------- */
+[data-rc-theme] {
+  background-color: var(--rc-bg);
+  color: var(--rc-fg);
+}

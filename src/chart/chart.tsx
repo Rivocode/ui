@@ -1,8 +1,12 @@
 "use client";
 
-import { useId, type ComponentProps, type ReactElement } from "react";
+import { useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
 import { ResponsiveContainer } from "recharts";
 
+import { Alert, AlertDescription, AlertTitle } from "../components/alert";
+import { Button } from "../components/button";
+import { EmptyState } from "../components/empty-state";
+import { Skeleton } from "../components/skeleton";
 import { cn } from "../lib/cn";
 
 export type ChartConfig = Record<
@@ -22,10 +26,24 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   config: ChartConfig;
   /** Um unico grafico da Recharts: `LineChart`, `BarChart`, `AreaChart`. */
   children: ReactElement;
+
+  /* Os estados de uma consulta, como no `DataTable`. Um grafico que so sabe
+   * desenhar dado pronto empurra para cada tela o mesmo `if` de tres galhos, e
+   * cada tela resolve de um jeito. */
+  isLoading?: boolean;
+  isError?: boolean;
+  /** Sem isto, o erro nao oferece nova tentativa. */
+  onRetry?: () => void;
+  errorMessage?: ReactNode;
+  /** O que aparece quando a consulta volta sem nenhum ponto. */
+  empty?: { title: string; description: string; icon?: ReactNode };
+  /** Considera vazio tambem quando a serie existe mas nao tem ponto. */
+  data?: readonly unknown[];
 };
 
 /** As oito cores de serie do tema, na ordem de uso. */
-const PALETA = Array.from({ length: 8 }, (_, indice) => `var(--rc-chart-${indice + 1})`);
+/** As oito cores de serie do tema, na ordem em que devem ser usadas. */
+export const PALETA = Array.from({ length: 8 }, (_, indice) => `var(--rc-chart-${indice + 1})`);
 
 /**
  * A moldura de todo grafico: tamanho que acompanha o pai, cor de eixo e de
@@ -45,7 +63,18 @@ const PALETA = Array.from({ length: 8 }, (_, indice) => `var(--rc-chart-${indice
  * A altura fica com quem usa, por classe: grafico sem altura definida some,
  * porque o `ResponsiveContainer` mede o pai e o pai mede o filho.
  */
-export function ChartContainer({ config, className, children, ...props }: ChartContainerProps) {
+export function ChartContainer({
+  config,
+  className,
+  children,
+  isLoading,
+  isError,
+  onRetry,
+  errorMessage,
+  empty,
+  data,
+  ...props
+}: ChartContainerProps) {
   const id = useId().replace(/:/g, "");
 
   const cores = Object.entries(config)
@@ -80,9 +109,45 @@ export function ChartContainer({ config, className, children, ...props }: ChartC
       )}
     >
       <style dangerouslySetInnerHTML={{ __html: `[data-rc-chart="${id}"] {\n  ${cores}\n}` }} />
-      <ResponsiveContainer width="100%" height="100%">
-        {children}
-      </ResponsiveContainer>
+
+      {isLoading ? (
+        <MolduraDeEstado>
+          {/* Barras de altura desigual: um esqueleto retangular nao parece
+           * grafico, e a espera fica sem forma. */}
+          <div className="flex h-full w-full items-end gap-3 px-2 pb-6">
+            {[0.45, 0.7, 0.35, 0.85, 0.6, 0.75].map((altura, indice) => (
+              <Skeleton key={indice} className="w-full" style={{ height: `${altura * 100}%` }} />
+            ))}
+          </div>
+        </MolduraDeEstado>
+      ) : isError ? (
+        <MolduraDeEstado>
+          <Alert tone="danger" className="w-full">
+            <AlertTitle>Nao foi possivel carregar o grafico</AlertTitle>
+            <AlertDescription>
+              {errorMessage ?? "Tente de novo em alguns minutos."}
+            </AlertDescription>
+            {onRetry && (
+              <Button size="sm" variant="secondary" onClick={onRetry} className="mt-3">
+                Tentar de novo
+              </Button>
+            )}
+          </Alert>
+        </MolduraDeEstado>
+      ) : empty && data && data.length === 0 ? (
+        <MolduraDeEstado>
+          <EmptyState title={empty.title} description={empty.description} icon={empty.icon} />
+        </MolduraDeEstado>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          {children}
+        </ResponsiveContainer>
+      )}
     </div>
   );
+}
+
+/** Ocupa a altura que o grafico ocuparia, para a tela nao pular entre estados. */
+function MolduraDeEstado({ children }: { children: ReactNode }) {
+  return <div className="flex h-full w-full items-center justify-center">{children}</div>;
 }

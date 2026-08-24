@@ -126,7 +126,7 @@ test("sem intervalo, o gatilho mostra o convite", () => {
       <DateRangePicker />
     </RivoProvider>,
   );
-  expect(screen.getByText("Escolha o periodo")).toBeDefined();
+  expect(screen.getByText("Escolha o período")).toBeDefined();
 });
 
 test("no celular o calendario mostra um mes so, mesmo pedindo dois", () => {
@@ -198,7 +198,7 @@ test("o Aplicar do intervalo so libera com o periodo fechado", () => {
       <DateRangePicker />
     </RivoProvider>,
   );
-  fireEvent.click(screen.getByText("Escolha o periodo"));
+  fireEvent.click(screen.getByText("Escolha o período"));
 
   const aplicar = screen.getByText("Aplicar").closest("button")!;
   expect(aplicar.disabled).toBe(true);

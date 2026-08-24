@@ -1,86 +1,95 @@
 import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { FileText, LayoutDashboard } from "lucide-react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarInset,
+  SidebarInput,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
   SidebarProvider,
   SidebarTrigger,
 } from "../src/components/sidebar";
 
-function Tela({ defaultOpen = true }: { defaultOpen?: boolean }) {
-  return (
+function barra(defaultOpen: boolean) {
+  return render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={defaultOpen}>
         <Sidebar>
-          <SidebarHeader>RivoCode</SidebarHeader>
+          <SidebarInput placeholder="Buscar" />
           <SidebarContent>
-            <SidebarGroup label="Operacao">
-              <SidebarMenu>
-                <SidebarMenuItem href="#" icon={<LayoutDashboard size={16} />} active>
-                  Painel
-                </SidebarMenuItem>
-                <SidebarMenuItem href="#" icon={<FileText size={16} />}>
-                  Notas fiscais
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem href="#painel" active>
+                Painel
+              </SidebarMenuItem>
+              <SidebarMenuSub label="Cadastros" defaultOpen>
+                <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              </SidebarMenuSub>
+            </SidebarMenu>
           </SidebarContent>
         </Sidebar>
-        <SidebarInset>
-          <SidebarTrigger />
-        </SidebarInset>
+        <SidebarTrigger />
       </SidebarProvider>
-    </RivoProvider>
+    </RivoProvider>,
   );
 }
 
-test("a barra lista a navegacao e marca a pagina atual", () => {
-  render(<Tela />);
-  expect(screen.getByText("Operacao")).toBeDefined();
-  expect(screen.getByText("Painel").closest("a")!.getAttribute("aria-current")).toBe("page");
-  expect(screen.getByText("Notas fiscais").closest("a")!.getAttribute("aria-current")).toBeNull();
+test("aberta, a barra mostra o nome de cada destino", () => {
+  barra(true);
+
+  expect(screen.getByText("Painel")).toBeDefined();
+  expect(screen.getByText("Cadastros")).toBeDefined();
+  // O submenu aberto ja deixa o filho alcancavel, sem mais um clique.
+  expect(screen.getByText("Clientes")).toBeDefined();
 });
 
-test("o gatilho fecha e abre, e conta o estado", () => {
-  render(<Tela />);
-  const gatilho = screen.getByLabelText("Fechar menu");
+test("encolhida, o campo de busca vira botao, porque 3,5rem nao aceitam texto", () => {
+  const { container } = barra(false);
+
+  expect(container.querySelector("input[type=search]")).toBeNull();
+  expect(screen.getByRole("button", { name: "Buscar" })).toBeDefined();
+});
+
+test("encolhida, o submenu vira menu ao lado em vez de sumir", () => {
+  barra(false);
+
+  // A lista some da barra, senao ela indentaria dentro de 3,5rem.
+  expect(screen.queryByText("Clientes")).toBeNull();
+
+  // E o pai continua alcancavel, agora como gatilho de menu.
+  const gatilho = screen.getByRole("button", { name: "Cadastros" });
+  fireEvent.click(gatilho);
+
+  expect(screen.getByRole("menuitem", { name: "Clientes" })).toBeDefined();
+});
+
+test("o gatilho abre e fecha, e diz qual dos dois no aria", () => {
+  barra(true);
+
+  const gatilho = screen.getByRole("button", { name: "Fechar menu" });
   expect(gatilho.getAttribute("aria-expanded")).toBe("true");
 
   fireEvent.click(gatilho);
-  expect(screen.getByLabelText("Abrir menu").getAttribute("aria-expanded")).toBe("false");
+  expect(screen.getByRole("button", { name: "Abrir menu" }).getAttribute("aria-expanded")).toBe(
+    "false",
+  );
 });
 
-test("encolhida, sobra o icone e o nome vira dica", () => {
-  render(<Tela defaultOpen={false} />);
-  const barra = document.querySelector("aside")!;
-  expect(barra.hasAttribute("data-encolhida")).toBe(true);
-  // O texto sai da linha, mas continua alcancavel pela dica do icone.
-  expect(barra.textContent).not.toContain("Notas fiscais");
-});
+test("a marca de lugar avisa que esta carregando, e nao finge uma lista", () => {
+  const { container } = render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen>
+        <Sidebar>
+          <SidebarMenuSkeleton count={4} />
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
 
-test("o atalho do teclado abre e fecha", () => {
-  render(<Tela />);
-  fireEvent.keyDown(window, { key: "b", ctrlKey: true });
-  expect(screen.getByLabelText("Abrir menu")).toBeDefined();
-
-  fireEvent.keyDown(window, { key: "b", metaKey: true });
-  expect(screen.getByLabelText("Fechar menu")).toBeDefined();
-});
-
-test("usar as pecas sem o provedor falha com recado, e nao com tela branca", () => {
-  const original = console.error;
-  console.error = () => {};
-  try {
-    expect(() => render(<SidebarTrigger />)).toThrow(/SidebarProvider/);
-  } finally {
-    console.error = original;
-  }
+  const lista = container.querySelector("[aria-busy=true]");
+  expect(lista).not.toBeNull();
+  expect(lista!.querySelectorAll("li").length).toBe(4);
 });

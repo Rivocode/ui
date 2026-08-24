@@ -2,7 +2,7 @@
 
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -16,15 +16,24 @@ export function RadioGroup({ className, ...props }: RadioGroupProps) {
   return <BaseRadioGroup {...props} className={cn("flex flex-col gap-2", className)} />;
 }
 
-export type RadioProps = ComponentProps<typeof BaseRadio.Root>;
+export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children"> & {
+  /**
+   * O texto ao lado. Com ele, o circulo sai dentro de um `<label>`, entao
+   * clicar no texto tambem marca.
+   *
+   * Sem ele, sai so o circulo, e o arranjo fica com quem monta a tela.
+   */
+  children?: ReactNode;
+  /** Classe do `<label>` de fora, quando ha texto. */
+  labelClassName?: string;
+};
 
 /**
- * O circulo, sem rotulo. O texto fica por fora, num `<label>` que envolve os
- * dois, igual ao Checkbox: assim o clique no texto tambem marca, e quem monta
- * a tela decide o arranjo.
+ * Uma opcao de escolha unica. Sempre dentro de um `RadioGroup`, que e quem
+ * guarda o valor e liga a navegacao por seta.
  */
-export function Radio({ className, ...props }: RadioProps) {
-  return (
+export function Radio({ className, children, labelClassName, ...props }: RadioProps) {
+  const circulo = (
     <BaseRadio.Root
       {...props}
       className={cn(
@@ -41,5 +50,24 @@ export function Radio({ className, ...props }: RadioProps) {
     >
       <BaseRadio.Indicator className="size-2 rounded-pill bg-accent-fg" />
     </BaseRadio.Root>
+  );
+
+  if (children === undefined) return circulo;
+
+  return (
+    <label
+      className={cn(
+        // `flex` e nao `inline-flex`: tres opcoes empilhadas num `space-y`
+        // caiam todas na mesma linha, porque elemento inline nao ocupa a
+        // linha. `w-fit` impede o outro extremo, que e o rotulo esticar ate a
+        // borda e fazer o clique valer a dez centimetros do texto.
+        "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
+        "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        labelClassName,
+      )}
+    >
+      {circulo}
+      {children}
+    </label>
   );
 }

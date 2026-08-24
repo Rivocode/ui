@@ -135,27 +135,27 @@ test("a paginacao anda e trava nas pontas", () => {
   }
   comTema(<Lista />);
 
-  const anterior = screen.getByLabelText("Pagina anterior") as HTMLButtonElement;
-  const proxima = screen.getByLabelText("Proxima pagina") as HTMLButtonElement;
+  const anterior = screen.getByLabelText("Página anterior") as HTMLButtonElement;
+  const proxima = screen.getByLabelText("Próxima página") as HTMLButtonElement;
   expect(anterior.disabled).toBe(true);
 
   fireEvent.click(proxima);
-  expect(screen.getByLabelText("Pagina 2").getAttribute("aria-current")).toBe("page");
+  expect(screen.getByLabelText("Página 2").getAttribute("aria-current")).toBe("page");
 
   fireEvent.click(proxima);
-  expect((screen.getByLabelText("Proxima pagina") as HTMLButtonElement).disabled).toBe(true);
+  expect((screen.getByLabelText("Próxima página") as HTMLButtonElement).disabled).toBe(true);
 });
 
 test("muitas paginas cabem na mesma largura, com reticencia", () => {
   comTema(<Pagination page={50} pageCount={100} onPageChange={() => {}} />);
   expect(screen.getAllByText("...")).toHaveLength(2);
-  expect(screen.getByLabelText("Pagina 1")).toBeDefined();
-  expect(screen.getByLabelText("Pagina 100")).toBeDefined();
-  expect(screen.getByLabelText("Pagina 49")).toBeDefined();
+  expect(screen.getByLabelText("Página 1")).toBeDefined();
+  expect(screen.getByLabelText("Página 100")).toBeDefined();
+  expect(screen.getByLabelText("Página 49")).toBeDefined();
 });
 
 test("a paginacao nao mostra reticencia quando so um numero foi pulado", () => {
   comTema(<Pagination page={4} pageCount={6} onPageChange={() => {}} />);
   expect(screen.queryByText("...")).toBeNull();
-  expect(screen.getByLabelText("Pagina 2")).toBeDefined();
+  expect(screen.getByLabelText("Página 2")).toBeDefined();
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -37,10 +37,22 @@ function Visto() {
   );
 }
 
-export type CheckboxProps = ComponentProps<typeof BaseCheckbox.Root>;
+export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "children"> & {
+  /**
+   * O texto ao lado. Com ele, a caixa sai dentro de um `<label>`, entao clicar
+   * no texto tambem marca.
+   *
+   * Sem ele, sai so a caixa, e o arranjo fica com quem monta a tela. Use assim
+   * quando o rotulo tiver estrutura: um `<strong>` com descricao embaixo, um
+   * link no meio da frase.
+   */
+  children?: ReactNode;
+  /** Classe do `<label>` de fora, quando ha texto. */
+  labelClassName?: string;
+};
 
-export function Checkbox({ className, ...props }: CheckboxProps) {
-  return (
+export function Checkbox({ className, children, labelClassName, ...props }: CheckboxProps) {
+  const caixa = (
     <BaseCheckbox.Root
       {...props}
       className={cn(
@@ -70,5 +82,24 @@ export function Checkbox({ className, ...props }: CheckboxProps) {
         )}
       />
     </BaseCheckbox.Root>
+  );
+
+  if (children === undefined) return caixa;
+
+  return (
+    <label
+      className={cn(
+        // `flex` e nao `inline-flex`: tres opcoes empilhadas num `space-y`
+        // caiam todas na mesma linha, porque elemento inline nao ocupa a
+        // linha. `w-fit` impede o outro extremo, que e o rotulo esticar ate a
+        // borda e fazer o clique valer a dez centimetros do texto.
+        "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
+        "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        labelClassName,
+      )}
+    >
+      {caixa}
+      {children}
+    </label>
   );
 }

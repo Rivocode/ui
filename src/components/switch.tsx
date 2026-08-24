@@ -1,11 +1,19 @@
 "use client";
 
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 
-export type SwitchProps = ComponentProps<typeof BaseSwitch.Root>;
+export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children"> & {
+  /**
+   * O texto ao lado. Com ele, a chave sai dentro de um `<label>`, entao clicar
+   * no texto tambem liga e desliga.
+   */
+  children?: ReactNode;
+  /** Classe do `<label>` de fora, quando ha texto. */
+  labelClassName?: string;
+};
 
 /**
  * Chave de liga e desliga. Vale para o que muda na hora, sem confirmar.
@@ -17,8 +25,8 @@ export type SwitchProps = ComponentProps<typeof BaseSwitch.Root>;
  * O alvo tem 44px de altura mesmo com o trilho de 24, pelo respiro invisivel:
  * e a medida do dedo, e sem ela a chave so funciona bem no mouse.
  */
-export function Switch({ className, ...props }: SwitchProps) {
-  return (
+export function Switch({ className, children, labelClassName, ...props }: SwitchProps) {
+  const chave = (
     <BaseSwitch.Root
       {...props}
       className={cn(
@@ -42,5 +50,24 @@ export function Switch({ className, ...props }: SwitchProps) {
         )}
       />
     </BaseSwitch.Root>
+  );
+
+  if (children === undefined) return chave;
+
+  return (
+    <label
+      className={cn(
+        // `flex` e nao `inline-flex`: tres opcoes empilhadas num `space-y`
+        // caiam todas na mesma linha, porque elemento inline nao ocupa a
+        // linha. `w-fit` impede o outro extremo, que e o rotulo esticar ate a
+        // borda e fazer o clique valer a dez centimetros do texto.
+        "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
+        "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        labelClassName,
+      )}
+    >
+      {chave}
+      {children}
+    </label>
   );
 }

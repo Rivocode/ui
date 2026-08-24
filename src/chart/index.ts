@@ -1,6 +1,26 @@
 export { ChartContainer, type ChartConfig, type ChartContainerProps } from "./chart";
+export { ChartXAxis, ChartYAxis, type ChartXAxisProps, type ChartYAxisProps } from "./chart-axis";
+export {
+  formatters,
+  currency,
+  currencyShort,
+  compact,
+  integer,
+  percent,
+  monthShort,
+  dayMonth,
+  type Format,
+  type FormatName,
+} from "./format";
 export { ChartTooltip, ChartTooltipContent, type ChartTooltipContentProps } from "./chart-tooltip";
-export { ChartLegend, ChartLegendContent, type ChartLegendContentProps } from "./chart-legend";
+export {
+  ChartLegend,
+  ChartLegendContent,
+  useSeriesToggle,
+  type ChartLegendContentProps,
+} from "./chart-legend";
+export { ChartDonut, type ChartDonutProps } from "./chart-donut";
+export { Sparkline, type SparklineProps } from "./sparkline";
 export { useChartMotion, type MovimentoDoGrafico } from "./use-chart-motion";
 
 /**
@@ -27,6 +47,10 @@ export {
   LineChart,
   Pie,
   PieChart,
+  RadialBar,
+  RadialBarChart,
+  Scatter,
+  ScatterChart,
   ReferenceLine,
   XAxis,
   YAxis,

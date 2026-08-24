@@ -58,7 +58,7 @@ export function DateRangePicker({
   value,
   defaultValue,
   onValueChange,
-  placeholder = "Escolha o periodo",
+  placeholder = "Escolha o período",
   size,
   className,
   disabled,
@@ -110,7 +110,7 @@ export function DateRangePicker({
         if (abrir) setRascunho(intervalo);
       }}
       trigger={gatilho}
-      title="Escolher periodo"
+      title="Escolher período"
       align="start"
       footer={
         confirmar && (

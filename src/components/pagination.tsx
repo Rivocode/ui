@@ -39,13 +39,13 @@ export function Pagination({
   return (
     <nav
       {...props}
-      aria-label="Paginacao"
+      aria-label="Paginação"
       className={cn(
         "flex items-center justify-between gap-2 font-sans sm:justify-start",
         className,
       )}
     >
-      <Passo rotulo="Pagina anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+      <Passo rotulo="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
         <ChevronLeft size={16} aria-hidden="true" />
       </Passo>
 
@@ -63,7 +63,7 @@ export function Pagination({
             <li key={numero}>
               <button
                 type="button"
-                aria-label={`Pagina ${numero}`}
+                aria-label={`Página ${numero}`}
                 aria-current={numero === page ? "page" : undefined}
                 onClick={() => onPageChange(numero)}
                 className={cn(
@@ -84,7 +84,7 @@ export function Pagination({
       </ol>
 
       <Passo
-        rotulo="Proxima pagina"
+        rotulo="Próxima página"
         disabled={page >= pageCount}
         onClick={() => onPageChange(page + 1)}
       >
