@@ -10,3 +10,13 @@ export {
 } from './provider/rivo-provider'
 
 export { Button, buttonVariants, type ButtonProps } from './primitives/button'
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  cardVariants,
+  type CardProps,
+} from './primitives/card'
