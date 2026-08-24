@@ -45,7 +45,7 @@
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",
-    "check": "bun run lint && bun run check:types && bun run check:previews && bun run check:colors && bun run check:contrast && bun run check:temas && bun test",
+    "check": "bun run lint && bun run check:types && bun run check:previews && bun run check:colors && bun run check:contrast && bun run check:temas && bun run check:contrato && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
     "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
@@ -54,7 +54,8 @@
     "check:types": "tsc --noEmit",
     "check:previews": "tsc --noEmit -p .design-sync/tsconfig.json",
     "check:temas": "bun run scripts/check-temas-documentados.ts",
-    "prepublishOnly": "bun run check && bun run build"
+    "prepublishOnly": "bun run check && bun run build",
+    "check:contrato": "bun run scripts/check-contrato-documentado.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

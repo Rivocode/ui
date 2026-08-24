@@ -67,25 +67,48 @@ mesmo global:
   </FormField>
   ```
 
-- **`@rivocode/ui/chart`**, `ChartContainer`, `ChartTooltip`,
-  `ChartTooltipContent`, `ChartLegend`, `ChartLegendContent`, `useChartMotion`,
-  mais as pecas da Recharts que a biblioteca veste (`LineChart`, `Line`,
-  `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`, `Cell`, `XAxis`,
-  `YAxis`, `CartesianGrid`, `ReferenceLine`). O `Tooltip` e o `Legend` da
-  Recharts nao saem por aqui: os nossos ja embrulham os dois.
+- **`@rivocode/ui/chart`**, a Recharts vestida pelo tema.
+
+  A moldura e o `ChartContainer`, que recebe tambem os quatro finais de uma
+  consulta: `isLoading`, `isError`, `onRetry` e `empty`. **A altura e sua, por
+  classe: grafico sem altura definida some.**
 
   A cor de cada serie vem do `config` e vira variavel com o nome da serie:
 
   ```tsx
   const config = { pagas: { label: "Pagas" } }
+
   <ChartContainer config={config} className="h-64">
     <LineChart data={dados}>
+      <ChartXAxis dataKey="mes" />
+      <ChartYAxis format="currencyShort" />
+      <ChartTooltip content={<ChartTooltipContent config={config} />} />
       <Line dataKey="pagas" stroke="var(--color-pagas)" />
     </LineChart>
   </ChartContainer>
   ```
 
-  A altura e sua, por classe: grafico sem altura definida some.
+  | Peca | Para que |
+  |---|---|
+  | `ChartXAxis`, `ChartYAxis` | Eixos com o padrao ja certo, e `format` para o numero |
+  | `ChartTooltip`, `ChartTooltipContent` | A dica, com o nome do `config` |
+  | `ChartLegend`, `ChartLegendContent` | A legenda. Com `useSeriesToggle` ela vira filtro |
+  | `ChartAreaGradient`, `areaGradient(id, serie)` | Gradiente de area. O `id` e seu, e precisa ser unico na pagina |
+  | `ChartDonut` | Rosca com o total no buraco, e lista de fatias embaixo |
+  | `ChartRadial` | O arco de uma medida so: meta, cota, conversao |
+  | `Sparkline` | A linha miuda que cabe dentro de um indicador |
+
+  Os formatadores: `currency`, `currencyShort`, `compact`, `integer`,
+  `percent`, `monthShort`, `dayMonth`. O `format` dos eixos aceita o nome de um
+  deles, ou uma funcao sua.
+
+  As pecas da Recharts que saem por aqui: `Area`, `AreaChart`, `Bar`,
+  `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`, `Cell`, `Scatter`,
+  `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`, `RadialBarChart`,
+  `PolarGrid`, `PolarAngleAxis`, `PolarRadiusAxis`, `CartesianGrid`, `XAxis`,
+  `YAxis`, `ZAxis`, `LabelList`, `Rectangle`, `ReferenceLine` e
+  `ReferenceArea`. O `Tooltip` e o `Legend` dela **nao**: os nossos ja embrulham
+  os dois, e o nome colidiria com o `Tooltip` do catalogo.
 
 **Paleta de serie:** oito cores por tema, em `var(--rc-chart-1)` a
 `var(--rc-chart-8)`, mais `var(--rc-chart-grid)` para a grade. Aqui a variavel
@@ -95,9 +118,35 @@ sempre resolve.
 
 ### Onde esta a verdade
 
-- `_ds/<pasta>/styles.css` e o que ele importa: todos os tokens e os dois temas.
-- `components/<Grupo>/<Nome>/<Nome>.d.ts`: o contrato de props de cada peca.
-- `components/<Grupo>/<Nome>/<Nome>.prompt.md`: como compor cada peca.
+| O que | Onde |
+|---|---|
+| Indice de tudo | <https://ds.rivocode.com.br/llms.txt> |
+| Uma peca, com props e exemplos | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
+| Os cinquenta papeis de um tema | <https://ds.rivocode.com.br/temas.md> |
+| Um sistema inteiro, montado | <https://ds.rivocode.com.br/demonstracao> |
+
+**Nunca invente prop.** Se o `.md` da peca nao a lista, ela nao existe.
+
+### Rotulo de controle vem como filho
+
+`Checkbox`, `Radio` e `Switch` aceitam o texto como filho e se embrulham num
+`<label>`, entao clicar no texto tambem marca:
+
+```tsx
+<Checkbox defaultChecked>ISS retido na fonte</Checkbox>
+<Radio value="pix">Pix</Radio>
+<Switch>Enviar o XML junto com o PDF</Switch>
+```
+
+Sem filho sai so o controle, para quando o rotulo tiver estrutura propria. Ai o
+`<label>` em volta e seu.
+
+### As duas formas de aba
+
+`TabList` tem `variant`. O risco embaixo, que e o padrao, diz "esta parte da
+pagina". A caixinha, `variant="segmented"`, diz "a mesma coisa, de outro jeito":
+largura de tela, preview e codigo, escuro e claro. Trocar uma pela outra faz o
+controle prometer o que ele nao faz.
 
 ### Um exemplo do idioma
 

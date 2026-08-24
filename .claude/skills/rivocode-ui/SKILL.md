@@ -97,6 +97,11 @@ densidade compacta.
 | Liga agora, sem confirmar | `Switch` | O `Checkbox` só vale quando o formulário for enviado |
 | Marcar uma opção entre várias | `ToggleGroup` | Guarda estado e diz isso no aria |
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
+| Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
+| Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
+| Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
+| Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
+| Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
 | Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
 | Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |
@@ -171,6 +176,16 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 
+Controle que não fala a língua do React Hook Form entra por um adaptador:
+`paraDatePicker`, `paraSelect` e `paraCheckbox`. Eles traduzem o `onChange` do
+campo para o que a peça espera.
+
+```tsx
+<FormField name="vencimento" label="Vencimento" render={(field) => (
+  <DatePicker {...paraDatePicker(field)} />
+)} />
+```
+
 ### `@rivocode/ui/chart`
 
 Recharts vestida pelo tema. A cor de cada série vem do `config` e vira variável
@@ -199,9 +214,20 @@ const config: ChartConfig = { billed: { label: 'Faturado' } }
 O `format` aceita `currency`, `currencyShort`, `compact`, `integer`, `percent`,
 `monthShort`, `dayMonth`, ou uma função sua.
 
-Também há `ChartDonut`, com o total no buraco, e `Sparkline`, a linha miúda que
-cabe dentro de um indicador. O `Tooltip` e o `Legend` da Recharts **não** saem
-por aqui: os nossos já embrulham os dois.
+| Peça | Para que |
+|---|---|
+| `ChartAreaGradient` + `areaGradient(id, série)` | Gradiente de área. **O `id` é seu, e precisa ser único na página** |
+| `ChartDonut` | Rosca com o total no buraco e a lista de fatias embaixo |
+| `ChartRadial` | O arco de uma medida só: meta, cota, conversão |
+| `Sparkline` | A linha miúda que cabe dentro de um indicador |
+| `useSeriesToggle` | A legenda vira filtro: clicar esconde a série |
+
+Também saem daqui radar, dispersão, polar e `LabelList`. O `Tooltip` e o
+`Legend` da Recharts **não**: os nossos já embrulham os dois.
+
+`areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
+contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto
+ainda não existe — quem escrevia o óbvio levava erro em tempo de execução.
 
 ## Mobile primeiro
 
@@ -222,6 +248,10 @@ contrário.
 - Usar `Toast` para o que precisa continuar visível, ou `Dialog` para o que não
   pode ser dispensado clicando fora.
 - Inventar prop sem conferir o `.md` da peça.
+- Escrever o rótulo de `Checkbox`, `Radio` ou `Switch` num `<span>` ao lado.
+  Passe como filho e eles se embrulham num `<label>` sozinhos.
+- Repetir o mesmo `id` de `ChartAreaGradient` em dois gráficos da mesma página:
+  `id` de SVG é global, e um pinta com o gradiente do outro.
 - Texto de interface em inglês. **Código em inglês, conteúdo em PT-BR.** Termo
   do ecossistema não se traduz: é "agents", não "agentes".
 

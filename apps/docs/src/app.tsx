@@ -57,24 +57,27 @@ function Nav({
   /*
    * The row, once.
    *
-   * The accent bar on the left is what carries "you are here" down a list of
-   * sixty-five names: a filled pill alone reads as hover on the second glance,
-   * and hover is the one thing it must not be confused with.
+   * Every group hangs off one vertical rule, and the active row replaces its
+   * segment of that rule with the accent. That is what carries "you are here"
+   * down a list of sixty-six names: a filled pill alone reads as hover on the
+   * second glance, and hover is the one thing it must not be confused with.
    */
   const rowClass = (active: boolean) =>
     [
-      'relative block rounded-md py-1.5 pr-3 pl-3 text-sm transition-colors',
-      'before:absolute before:top-1/2 before:left-0 before:h-4 before:w-0.5',
-      'before:-translate-y-1/2 before:rounded-pill before:transition-colors',
+      'relative block rounded-r-md py-1.5 pr-3 pl-4 text-sm',
+      'transition-[color,background-color] duration-[var(--rc-duration-fast)] ease-rc',
+      // The segment of rule this row owns. Transparent by default, so the
+      // group's own line shows through and the list reads as one column.
+      'before:absolute before:inset-y-0 before:-left-px before:w-px before:transition-colors',
       active
-        ? 'bg-accent-subtle text-accent-text before:bg-accent'
-        : 'text-fg-muted before:bg-transparent hover:bg-surface hover:text-fg',
+        ? 'bg-accent-subtle text-accent-text before:bg-accent before:w-0.5'
+        : 'text-fg-muted before:bg-transparent hover:bg-surface/70 hover:text-fg',
     ].join(' ')
 
   /* Sticky, so the family a name belongs to is still on screen after
    * scrolling past its heading. */
   const headingClass =
-    'sticky top-0 z-[1] bg-bg px-3 pt-1 pb-2 font-mono text-[0.7rem] tracking-widest text-fg-subtle uppercase'
+    'sticky top-0 z-[1] -mx-1 bg-bg px-4 pt-2 pb-2 font-mono text-[0.68rem] font-medium tracking-[0.14em] text-fg-subtle uppercase'
 
   return (
     <nav className="flex h-full flex-col gap-4">
@@ -88,14 +91,14 @@ function Nav({
           onChange={(event) => setQuery(event.target.value)}
           placeholder={`Buscar entre ${ENTRIES.length} peças`}
           aria-label="Buscar peça"
-          className="pl-8"
+          className="border-transparent bg-surface pl-8 focus-visible:border-border"
         />
       </div>
 
       <div className="rc-scroll min-h-0 flex-1 overflow-y-auto pr-2">
         <div className="mb-6">
           <h2 className={headingClass}>Começar</h2>
-          <ul>
+          <ul className="border-l border-border">
             {GUIDES.map((guide) => {
               const link = linkTo({ kind: 'guide', slug: guide.slug }, navigate)
               const active = route.kind === 'guide' && route.slug === guide.slug
@@ -137,7 +140,7 @@ function Nav({
         {families.map(({ family, entries }) => (
           <div key={family} className="mb-6">
             <h2 className={headingClass}>{family}</h2>
-            <ul>
+            <ul className="border-l border-border">
               {entries.map((entry) => {
                 const active = route.kind === 'component' && route.slug === entry.slug
                 const link = linkTo({ kind: 'component', slug: entry.slug }, navigate)
