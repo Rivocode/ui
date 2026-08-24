@@ -42,11 +42,36 @@ Cinco componentes tem `cardMode` fixado porque flutuam e nao cabem na grade:
 `Checkbox` (column), `Dialog`, `Menu`, `Select`, `Tooltip` e `ToastViewport`
 (single). Isso e apresentacao, nao defeito.
 
+## Segunda rodada, 24/08/2026
+
+O catalogo foi de 15 para 41 componentes e o sync ficou 26 atras. Foram
+autorados 26 previews e 35 documentos novos, e o `docsMap` passou de 52 para 87
+entradas.
+
+Uma porta de erro silencioso foi fechada: os previews nao eram checados por
+tipo, entao um `variant` inexistente ou uma prop renomeada so aparecia como
+cartao incompleto no sync. Agora `bun run check:previews` compila a pasta
+contra o **fonte**, por `paths` no `.design-sync/tsconfig.json`, sem depender de
+build nem de `bun link`. Entrou no `bun run check`.
+
+A `sync.css` passou a varrer tambem `src/form`.
+
+**O upload ainda nao foi feito**: ele depende da skill `/design-sync`, que nao
+esta instalada nesta maquina. O material local esta pronto para quando ela
+estiver.
+
 ## Riscos para o proximo sync
 
-- **36 componentes ainda estao no cartao de piso**, todos partes de compostos
-  (`CardHeader`, `TableCell`, `MenuItem` e afins). Eles importam e funcionam,
-  so nao tem preview proprio. Autorar e opcional e incremental.
+- **Os compostos continuam no cartao de piso** (`CardHeader`, `TableCell`,
+  `MenuItem`, `ComboboxList` e afins). Eles importam e funcionam, so nao tem
+  preview proprio. Autorar e opcional e incremental.
+
+- **Os previews de peca flutuante usam `defaultOpen` e uma altura minima**
+  (`min-h-72`), senao o cartao sai vazio. Vale para `AlertDialog`, `Sheet`,
+  `Popover` e `Combobox`.
+
+- **O `Sidebar` tem altura fixa no preview** e nao `min-h-dvh`, senao o cartao
+  cresce ate o tamanho da janela de captura.
 
 - **A folha `.design-sync/.cache/styles.css` e gerada e gitignorada.** Se ela
   nao for recompilada antes do build, o sync usa a versao velha e classes novas

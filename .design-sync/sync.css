@@ -8,6 +8,7 @@
 @import 'tailwindcss';
 
 @source '../src/components';
+@source '../src/form';
 @source '../src/provider';
 @source './previews';
 
