@@ -1,0 +1,98 @@
+{
+  "pkg": "@rivocode/ui",
+  "globalName": "RivoCodeUI",
+  "shape": "package",
+  "projectId": "ee82ac5d-bfc0-4f2f-959a-5e371dddee8b",
+  "buildCmd": "bun run build",
+  "srcDir": "src",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/.cache/styles.css",
+  "readmeHeader": ".design-sync/conventions.md",
+  "docsMap": {
+    "Alert": ".design-sync/docs/Alert.md",
+    "AlertDescription": ".design-sync/docs/AlertDescription.md",
+    "AlertTitle": ".design-sync/docs/AlertTitle.md",
+    "Badge": ".design-sync/docs/Badge.md",
+    "Button": ".design-sync/docs/Button.md",
+    "Card": ".design-sync/docs/Card.md",
+    "CardContent": ".design-sync/docs/CardContent.md",
+    "CardDescription": ".design-sync/docs/CardDescription.md",
+    "CardFooter": ".design-sync/docs/CardFooter.md",
+    "CardHeader": ".design-sync/docs/CardHeader.md",
+    "CardTitle": ".design-sync/docs/CardTitle.md",
+    "Checkbox": ".design-sync/docs/Checkbox.md",
+    "Dialog": ".design-sync/docs/Dialog.md",
+    "DialogClose": ".design-sync/docs/DialogClose.md",
+    "DialogContent": ".design-sync/docs/DialogContent.md",
+    "DialogDescription": ".design-sync/docs/DialogDescription.md",
+    "DialogFooter": ".design-sync/docs/DialogFooter.md",
+    "DialogTitle": ".design-sync/docs/DialogTitle.md",
+    "DialogTrigger": ".design-sync/docs/DialogTrigger.md",
+    "EmptyState": ".design-sync/docs/EmptyState.md",
+    "Field": ".design-sync/docs/Field.md",
+    "FieldDescription": ".design-sync/docs/FieldDescription.md",
+    "FieldError": ".design-sync/docs/FieldError.md",
+    "FieldLabel": ".design-sync/docs/FieldLabel.md",
+    "Input": ".design-sync/docs/Input.md",
+    "Menu": ".design-sync/docs/Menu.md",
+    "MenuContent": ".design-sync/docs/MenuContent.md",
+    "MenuGroup": ".design-sync/docs/MenuGroup.md",
+    "MenuItem": ".design-sync/docs/MenuItem.md",
+    "MenuSeparator": ".design-sync/docs/MenuSeparator.md",
+    "MenuTrigger": ".design-sync/docs/MenuTrigger.md",
+    "RivoProvider": ".design-sync/docs/RivoProvider.md",
+    "Select": ".design-sync/docs/Select.md",
+    "SelectContent": ".design-sync/docs/SelectContent.md",
+    "SelectItem": ".design-sync/docs/SelectItem.md",
+    "SelectTrigger": ".design-sync/docs/SelectTrigger.md",
+    "SelectValue": ".design-sync/docs/SelectValue.md",
+    "Skeleton": ".design-sync/docs/Skeleton.md",
+    "Tab": ".design-sync/docs/Tab.md",
+    "TabList": ".design-sync/docs/TabList.md",
+    "TabPanel": ".design-sync/docs/TabPanel.md",
+    "Table": ".design-sync/docs/Table.md",
+    "TableBody": ".design-sync/docs/TableBody.md",
+    "TableCell": ".design-sync/docs/TableCell.md",
+    "TableHead": ".design-sync/docs/TableHead.md",
+    "TableHeader": ".design-sync/docs/TableHeader.md",
+    "TableRow": ".design-sync/docs/TableRow.md",
+    "Tabs": ".design-sync/docs/Tabs.md",
+    "ToastViewport": ".design-sync/docs/ToastViewport.md",
+    "Tooltip": ".design-sync/docs/Tooltip.md",
+    "TooltipContent": ".design-sync/docs/TooltipContent.md",
+    "TooltipTrigger": ".design-sync/docs/TooltipTrigger.md"
+  },
+  "provider": {
+    "component": "RivoProvider",
+    "props": {
+      "theme": "rivocode-dark",
+      "scope": "local",
+      "className": "min-h-full p-6"
+    }
+  },
+  "overrides": {
+    "Checkbox": {
+      "cardMode": "column"
+    },
+    "Dialog": {
+      "cardMode": "single",
+      "primaryStory": "Confirmacao"
+    },
+    "Menu": {
+      "cardMode": "single",
+      "primaryStory": "AcoesDaLinha"
+    },
+    "Select": {
+      "cardMode": "single",
+      "primaryStory": "Aberto"
+    },
+    "Tooltip": {
+      "cardMode": "single",
+      "primaryStory": "EmBotaoDeIcone"
+    },
+    "ToastViewport": {
+      "cardMode": "single",
+      "primaryStory": "AvisoDeSucesso"
+    }
+  }
+}

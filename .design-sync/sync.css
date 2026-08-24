@@ -1,0 +1,14 @@
+/* ---------------------------------------------------------------------------
+ * Folha usada apenas pelo sync com o claude.ai/design.
+ *
+ * Ela varre tambem a pasta de previews, porque uma classe que so aparece num
+ * preview nao existe na CSS de producao e o cartao renderiza incompleto sem
+ * ninguem avisar. A folha de producao continua enxuta, varrendo so src/.
+ * ------------------------------------------------------------------------- */
+@import 'tailwindcss';
+
+@source '../src/components';
+@source '../src/provider';
+@source './previews';
+
+@import '../src/preset.css';

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@source '../src/primitives';
+@source '../src/components';
 @source '../src/provider';
 @source '.';
 

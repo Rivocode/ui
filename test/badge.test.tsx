@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { Badge } from "../src/primitives/badge";
+import { Badge } from "../src/components/badge";
 
 test("o tom padrao e neutro", () => {
   render(<Badge>Rascunho</Badge>);

@@ -23,7 +23,7 @@ test("todo token que o contrato referencia existe nos dois temas", async () => {
 test("nenhum componente le da paleta crua", async () => {
   const { Glob } = await import("bun");
   const files = await Array.fromAsync(
-    new Glob("src/{primitives,provider}/**/*.{ts,tsx}").scan("."),
+    new Glob("src/{components,provider}/**/*.{ts,tsx}").scan("."),
   );
   for (const file of files) {
     expect(await Bun.file(file).text()).not.toContain("--rc-p-");

@@ -8,7 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../src/primitives/select";
+} from "../src/components/select";
 
 const OPCOES = [
   { label: "Abertas", value: "abertas" },

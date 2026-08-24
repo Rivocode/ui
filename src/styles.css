@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* O Tailwind precisa varrer os componentes para gerar as classes que eles usam. */
-@source './primitives';
+@source './components';
 @source './provider';
 
 @import "./preset.css";

@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { TabPanel, Tab, TabList, Tabs } from "../src/primitives/tabs";
+import { TabPanel, Tab, TabList, Tabs } from "../src/components/tabs";
 
 function Exemplo() {
   return (

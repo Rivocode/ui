@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../src/primitives/card";
+} from "../src/components/card";
 
 test("o cartao usa a superficie e a borda do tema", () => {
   render(<Card data-testid="cartao">conteudo</Card>);

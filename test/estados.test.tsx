@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { Alert, AlertDescription, AlertTitle } from "../src/primitives/alert";
-import { EmptyState } from "../src/primitives/empty-state";
-import { Skeleton } from "../src/primitives/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "../src/components/alert";
+import { EmptyState } from "../src/components/empty-state";
+import { Skeleton } from "../src/components/skeleton";
 
 test("o aviso de erro se anuncia ao leitor de tela sem esperar foco", () => {
   render(

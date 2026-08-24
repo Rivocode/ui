@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { Checkbox } from "../src/primitives/checkbox";
+import { Checkbox } from "../src/components/checkbox";
 
 test("sai com papel de caixa de marcar", () => {
   render(<Checkbox aria-label="Selecionar linha" />);

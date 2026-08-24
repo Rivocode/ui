@@ -9,7 +9,7 @@ import {
   MenuItem,
   MenuSeparator,
   MenuTrigger,
-} from "../src/primitives/menu";
+} from "../src/components/menu";
 
 function Exemplo() {
   return (

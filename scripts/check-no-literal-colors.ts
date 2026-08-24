@@ -9,7 +9,7 @@ const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/;
 const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/;
 
 const files = await Array.fromAsync(
-  new Glob("src/{primitives,provider,lib}/**/*.{ts,tsx,css}").scan("."),
+  new Glob("src/{components,provider,lib}/**/*.{ts,tsx,css}").scan("."),
 );
 
 let failed = 0;

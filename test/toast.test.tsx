@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { Button } from "../src/primitives/button";
-import { useToast } from "../src/primitives/toast";
+import { Button } from "../src/components/button";
+import { useToast } from "../src/components/toast";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 function Disparo() {

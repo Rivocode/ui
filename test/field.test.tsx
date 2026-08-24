@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { Field, FieldDescription, FieldError, FieldLabel, Input } from "../src/primitives/field";
+import { Field, FieldDescription, FieldError, FieldLabel, Input } from "../src/components/field";
 
 test("o rotulo fica ligado ao controle, entao a busca por rotulo acha o campo", () => {
   render(

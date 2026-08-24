@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../src/primitives/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../src/components/dialog";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 function Exemplo() {

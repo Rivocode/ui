@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { createRef } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { Button } from "../src/primitives/button";
+import { Button } from "../src/components/button";
 
 test("renderiza o rotulo", () => {
   render(<Button>Falar no WhatsApp</Button>);

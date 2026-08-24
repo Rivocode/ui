@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../src/primitives/table";
+} from "../src/components/table";
 
 function Exemplo() {
   return (

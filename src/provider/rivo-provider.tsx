@@ -1,7 +1,7 @@
 "use client";
 
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
-import { ToastProvider, ToastViewport } from "../primitives/toast";
+import { ToastProvider, ToastViewport } from "../components/toast";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
