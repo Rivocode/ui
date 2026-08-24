@@ -6,8 +6,8 @@
  * anything that looks like an identifier keep their exact bytes, because
  * `nao` inside a prop name is not a typo.
  *
- * The `e` → `é` case cannot be settled by a dictionary — one is a conjunction,
- * the other the verb — so it goes through context rules only, and whatever the
+ * The `e` → `é` case cannot be settled by a dictionary, one is a conjunction,
+ * the other the verb, so it goes through context rules only, and whatever the
  * rules do not recognise is left alone and reported for a human to read.
  */
 
@@ -297,7 +297,7 @@ const PALAVRAS: Record<string, string> = {
 
 /* Onde `e` é o verbo, e não a conjunção. Cada regra descreve um contorno em que
  * a leitura não é ambígua: depois de ponto, antes de artigo, e assim por
- * diante. O que não casar fica como está — errar para menos é recuperável. */
+ * diante. O que não casar fica como está, errar para menos é recuperável. */
 const VERBO: Array<[RegExp, string]> = [
   [/\bnao e\b/g, "não é"],
   [/\bque e\b/g, "que é"],

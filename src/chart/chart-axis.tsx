@@ -70,10 +70,11 @@ export function ChartYAxis({ format, ...props }: ChartYAxisProps) {
       tickLine={false}
       axisLine={false}
       tickMargin={8}
-      // Wide enough for `R$ 246,7 mil`, which is what `currencyShort` writes
-      // at the top of a dashboard axis. At 48 the label wrapped onto three
-      // lines and the axis turned into a paragraph.
-      width={64}
+      // Wide enough for `R$ 246,7K`, which is what `currencyShort` writes at
+      // the top of a dashboard axis. At 48 the label wrapped onto three lines
+      // and the axis turned into a paragraph. With `currencyShortWords`, which
+      // spells `mil` out, pass a larger `width`.
+      width={56}
       tickFormatter={resolveFormat(format)}
       {...props}
     />

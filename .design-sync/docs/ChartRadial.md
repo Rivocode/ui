@@ -20,7 +20,7 @@ número **é o assunto** do cartão, não um detalhe dentro dele.
 
 O progresso anda para o fim e termina; esta medida sobe e desce enquanto o mês
 corre. Por isso ela sai como `role="img"` com rótulo, e não como barra de
-carregamento — trocar um pelo outro faz o leitor de tela anunciar "carregando"
+carregamento, trocar um pelo outro faz o leitor de tela anunciar "carregando"
 para algo que não carrega.
 
 ## O eixo escondido
@@ -41,11 +41,7 @@ A hierarquia que funciona é a porcentagem como número grande, e o valor por
 extenso como a linha de baixo:
 
 ```tsx
-<ChartRadial
-  value={246_700}
-  max={300_000}
-  centerLabel="R$ 246,7 mil de R$ 300 mil"
-/>
+<ChartRadial value={246_700} max={300_000} centerLabel="R$ 246,7K de R$ 300K" />
 ```
 
 ## A legenda da rosca

@@ -1,5 +1,5 @@
 import { Badge, Button } from '@rivocode/ui'
-import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler } from 'lucide-react'
+import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { CodeRiver } from '@/components/code-river'
 import { Showcase } from '@/components/showcase'
@@ -18,6 +18,22 @@ import { linkTo, type Route } from '@/routes'
  * ------------------------------------------------------------------------- */
 
 const INSTALL = 'bun add @rivocode/ui'
+
+const SKILL_CMD = 'bunx rivocode-ui skill'
+
+const SKILL_PEEK = `| Situação                    | Peça certa    |
+| --------------------------- | ------------- |
+| Aviso que fica na tela      | Alert         |
+| Confirmação destrutiva      | AlertDialog   |
+| Poucas opções fixas         | Select        |
+| Lista longa, ou do servidor | Combobox      |
+| Liga agora, sem confirmar   | Switch        |
+
+## O que nunca fazer
+
+- Cor literal em className ou style. Sempre token.
+- z-index numérico. Sempre z-[var(--rc-z-*)].
+- Altura cravada em controle.`
 
 const BOOTSTRAP = `import '@rivocode/ui/styles.css'
 import { RivoProvider } from '@rivocode/ui'
@@ -46,7 +62,7 @@ import { DataTable } from '@rivocode/ui'
 | --------- | -------- | ----------- |
 | data      | Linha[]  | sim         |
 | columns   | Coluna[] | sim         |
-| isLoading | boolean  | —           |`
+| isLoading | boolean  |, |`
 
 function CopyLine({ text }: { text: string }) {
   const [copied, setCopied] = useState(false)
@@ -306,6 +322,31 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
               /llms.txt
             </a>
             .
+          </p>
+        </Argument>
+
+        <Argument
+          icon={<Sparkles size={14} />}
+          eyebrow="Skill"
+          title="Um comando, e o agente aprende a biblioteca"
+          figure={
+            <div className="space-y-3">
+              <CopyLine text={SKILL_CMD} />
+              <CodeCard label=".claude/skills/rivocode-ui/SKILL.md">{SKILL_PEEK}</CodeCard>
+            </div>
+          }
+        >
+          <p>
+            Colar o contrato no prompt funciona uma vez. Na segunda conversa ele não está lá, e o
+            agent volta a adivinhar a API pelo nome.
+          </p>
+          <p>
+            A skill fica instalada, e leva junto a tabela de escolha entre as peças parecidas:{' '}
+            <code className="font-mono text-accent-text">Alert</code> contra{' '}
+            <code className="font-mono text-accent-text">Toast</code>,{' '}
+            <code className="font-mono text-accent-text">Select</code> contra{' '}
+            <code className="font-mono text-accent-text">Combobox</code>, com o porquê de cada
+            linha.
           </p>
         </Argument>
 

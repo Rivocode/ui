@@ -34,20 +34,56 @@ export function currency(value: number) {
   return numberFormat({ style: "currency", currency: "BRL" }).format(value);
 }
 
-/** `R$ 2,5 mil`, `R$ 1,2 mi`. What fits on an axis. */
+/**
+ * As duas maneiras de abreviar uma grandeza.
+ *
+ * `K` e a convencao de painel, e cabe em menos pixel, que num eixo e o que
+ * decide. `mil` e o que a lingua escreve, e le melhor num paragrafo. Nenhuma
+ * das duas e errada; misturar as duas na mesma tela e.
+ */
+const SUFIXOS = {
+  simbolo: { bilhao: "B", milhao: "M", milhar: "K", junto: true },
+  palavra: { bilhao: "bi", milhao: "mi", milhar: "mil", junto: false },
+} as const;
+
+function abreviar(value: number, forma: keyof typeof SUFIXOS) {
+  const { bilhao, milhao, milhar, junto } = SUFIXOS[forma];
+  const size = Math.abs(value);
+  const espaco = junto ? "" : " ";
+
+  const escrever = (dividido: number, sufixo: string) =>
+    `${numberFormat({ maximumFractionDigits: 1 }).format(dividido)}${espaco}${sufixo}`;
+
+  if (size >= 1_000_000_000) return escrever(value / 1_000_000_000, bilhao);
+  if (size >= 1_000_000) return escrever(value / 1_000_000, milhao);
+  if (size >= 1_000) return escrever(value / 1_000, milhar);
+
+  return numberFormat({ maximumFractionDigits: 0 }).format(value);
+}
+
+/** `12,4K`, `1,2M`, `340`. */
+export function compact(value: number) {
+  return abreviar(value, "simbolo");
+}
+
+/**
+ * `12,4 mil`, `1,2 mi`, `340`.
+ *
+ * A forma por extenso. Prefira em texto corrido, onde ela le melhor; num eixo
+ * ela custa o dobro da largura, e largura de eixo e espaco tirado do grafico.
+ */
+export function compactWords(value: number) {
+  return abreviar(value, "palavra");
+}
+
+/** `R$ 2,5K`, `R$ 1,2M`. O que cabe num eixo. */
 export function currencyShort(value: number) {
   return `R$ ${compact(value)}`;
 }
 
-/** `12,4 mil`, `1,2 mi`, `340`. */
-export function compact(value: number) {
-  const size = Math.abs(value);
-
-  if (size >= 1_000_000_000) return `${numberFormat({ maximumFractionDigits: 1 }).format(value / 1_000_000_000)} bi`;
-  if (size >= 1_000_000) return `${numberFormat({ maximumFractionDigits: 1 }).format(value / 1_000_000)} mi`;
-  if (size >= 1_000) return `${numberFormat({ maximumFractionDigits: 1 }).format(value / 1_000)} mil`;
-
-  return numberFormat({ maximumFractionDigits: 0 }).format(value);
+/** `R$ 2,5 mil`, `R$ 1,2 mi`. A mesma coisa, por extenso. */
+export function currencyShortWords(value: number) {
+  return `R$ ${compactWords(value)}`;
 }
 
 /** `1.240`, thousands separator, no decimal. */
@@ -80,7 +116,9 @@ export function dayMonth(date: Date | string | number) {
 export const formatters = {
   currency,
   currencyShort,
+  currencyShortWords,
   compact,
+  compactWords,
   integer,
   percent,
   monthShort,

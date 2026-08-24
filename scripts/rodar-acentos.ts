@@ -2,7 +2,7 @@ import { acentuar, pendencias } from "./acentuar";
 
 import { readdirSync } from "node:fs";
 
-// O Glob do Bun ignora pasta oculta, e a dos documentos comeca com ponto — na
+// O Glob do Bun ignora pasta oculta, e a dos documentos comeca com ponto, na
 // primeira tentativa os 106 arquivos passaram batido e o script disse "5 de 5".
 const alvos = [
   ...readdirSync(".design-sync/docs")

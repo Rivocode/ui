@@ -11,6 +11,7 @@
   },
   "files": [
     "dist",
+    "skill",
     "LICENSE",
     "README.md"
   ],
@@ -40,7 +41,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "build": "tsdown && bun run build:css",
+    "build": "tsdown && bun run build:css && bun run build:skill",
     "build:css": "tailwindcss -i src/styles.css -o dist/styles.css && bun run scripts/copy-fonts.ts dist/styles.css && bun run scripts/build-preset.ts",
     "test": "bun test",
     "lint": "oxlint",
@@ -55,7 +56,8 @@
     "check:previews": "tsc --noEmit -p .design-sync/tsconfig.json",
     "check:temas": "bun run scripts/check-temas-documentados.ts",
     "prepublishOnly": "bun run check && bun run build",
-    "check:contrato": "bun run scripts/check-contrato-documentado.ts"
+    "check:contrato": "bun run scripts/check-contrato-documentado.ts",
+    "build:skill": "mkdir -p skill && cp .claude/skills/rivocode-ui/SKILL.md skill/SKILL.md"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -124,5 +126,8 @@
     "components",
     "ui",
     "rivocode"
-  ]
+  ],
+  "bin": {
+    "rivocode-ui": "./dist/cli.js"
+  }
 }

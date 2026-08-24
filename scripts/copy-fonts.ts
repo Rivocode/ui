@@ -27,7 +27,7 @@ if (wanted.size === 0) {
 
 /*
  * A varredura precisa alcancar tambem `node_modules/.bun`, onde o bun guarda o
- * pacote de verdade — o que fica em `node_modules/@fontsource*` e um link, e o
+ * pacote de verdade, o que fica em `node_modules/@fontsource*` e um link, e o
  * Glob nao atravessa link. Enquanto o repo tinha um pacote so isso nao
  * aparecia; virou workspace, a instalacao mudou de forma, e o build passou a
  * terminar dizendo que dezesseis fontes nao existem.

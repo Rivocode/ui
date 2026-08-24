@@ -102,6 +102,10 @@ mesmo global:
   `percent`, `monthShort`, `dayMonth`. O `format` dos eixos aceita o nome de um
   deles, ou uma funcao sua.
 
+  `compact` abrevia com simbolo, `12,4K`, que e a convencao de painel e cabe em
+  menos pixel. `compactWords` e `currencyShortWords` escrevem `12,4 mil`, que
+  le melhor em texto corrido. **Nao misture as duas na mesma tela.**
+
   As pecas da Recharts que saem por aqui: `Area`, `AreaChart`, `Bar`,
   `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`, `Cell`, `Scatter`,
   `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`, `RadialBarChart`,

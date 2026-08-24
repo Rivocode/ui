@@ -78,8 +78,8 @@ isolada no meio do azul do cliente.
 | Token | Classe | O que veste |
 |---|---|---|
 | `--rc-accent` | `bg-accent` | Preenchimento da marca: botão primário, marca de escolha |
-| `--rc-accent-hover` | — | O mesmo com o ponteiro em cima |
-| `--rc-accent-active` | — | O mesmo no instante do clique |
+| `--rc-accent-hover` |, | O mesmo com o ponteiro em cima |
+| `--rc-accent-active` |, | O mesmo no instante do clique |
 | `--rc-accent-fg` | `text-accent-fg` | O que se lê **sobre** o acento |
 | `--rc-accent-text` | `text-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo |
 | `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
@@ -90,7 +90,7 @@ isolada no meio do azul do cliente.
 |---|---|---|
 | `--rc-border` | `border-border` | A linha comum |
 | `--rc-border-strong` | `border-border-strong` | A borda de um controle, que precisa se ver |
-| `--rc-line-hover` | — | A borda com o ponteiro em cima |
+| `--rc-line-hover` |, | A borda com o ponteiro em cima |
 | `--rc-ring` | `ring-ring` | O anel de foco do teclado |
 | `--rc-selected` | `bg-selected` | Linha escolhida numa tabela. Área grande pede alfa baixo |
 | `--rc-skeleton` | `bg-skeleton` | Marca de lugar do carregamento |
@@ -143,7 +143,7 @@ operação nunca os usa, e um site de marca quer os seus.
 
 Altura de controle, respiro, raio de canto, duração de animação e empilhamento
 vivem em `src/tokens/scales.css` e valem para todos os temas. Um tema que
-redefine `--rc-control-md` está resolvendo densidade no lugar errado — para
+redefine `--rc-control-md` está resolvendo densidade no lugar errado, para
 isso existe `density="compact"`, e ele muda a escala inteira de uma vez.
 
 ## Um tema de cliente, do começo ao fim

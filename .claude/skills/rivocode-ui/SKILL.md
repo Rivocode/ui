@@ -214,6 +214,11 @@ const config: ChartConfig = { billed: { label: 'Faturado' } }
 O `format` aceita `currency`, `currencyShort`, `compact`, `integer`, `percent`,
 `monthShort`, `dayMonth`, ou uma função sua.
 
+`compact` abrevia com símbolo, `12,4K`, `1,2M`, que é a convenção de painel e
+cabe em menos pixel, e num eixo largura é espaço tirado do gráfico.
+`compactWords` e `currencyShortWords` escrevem `12,4 mil`, que lê melhor em
+texto corrido. **Não misture as duas na mesma tela.**
+
 | Peça | Para que |
 |---|---|
 | `ChartAreaGradient` + `areaGradient(id, série)` | Gradiente de área. **O `id` é seu, e precisa ser único na página** |
@@ -227,7 +232,7 @@ Também saem daqui radar, dispersão, polar e `LabelList`. O `Tooltip` e o
 
 `areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
 contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto
-ainda não existe — quem escrevia o óbvio levava erro em tempo de execução.
+ainda não existe, quem escrevia o óbvio levava erro em tempo de execução.
 
 ## Mobile primeiro
 

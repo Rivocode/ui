@@ -1,6 +1,15 @@
 import { expect, test } from "bun:test";
 
-import { compact, dayMonth, integer, monthShort, currency, currencyShort, percent } from "../src/chart/format";
+import {
+  compact,
+  compactWords,
+  currency,
+  currencyShort,
+  dayMonth,
+  integer,
+  monthShort,
+  percent,
+} from "../src/chart/format";
 
 test("o real sai no formato do pais, com centavo", () => {
   // O separador do Intl e um espaco estreito, e nao o espaco comum.
@@ -9,14 +18,21 @@ test("o real sai no formato do pais, com centavo", () => {
 
 test("o eixo abrevia a grandeza, porque tick nao tem largura para centavo", () => {
   expect(compact(340)).toBe("340");
-  expect(compact(12_400)).toBe("12,4 mil");
-  expect(compact(1_200_000)).toBe("1,2 mi");
-  expect(compact(3_000_000_000)).toBe("3 bi");
-  expect(currencyShort(12_400)).toBe("R$ 12,4 mil");
+  expect(compact(12_400)).toBe("12,4K");
+  expect(compact(1_200_000)).toBe("1,2M");
+  expect(compact(3_000_000_000)).toBe("3B");
+  expect(currencyShort(12_400)).toBe("R$ 12,4K");
+});
+
+test("a forma por extenso existe para texto corrido, onde ela le melhor", () => {
+  expect(compactWords(12_400)).toBe("12,4 mil");
+  expect(compactWords(1_200_000)).toBe("1,2 mi");
+  expect(compactWords(3_000_000_000)).toBe("3 bi");
 });
 
 test("o negativo abrevia pelo tamanho, e nao pelo sinal", () => {
-  expect(compact(-12_400)).toBe("-12,4 mil");
+  expect(compact(-12_400)).toBe("-12,4K");
+  expect(compactWords(-12_400)).toBe("-12,4 mil");
 });
 
 test("o integer separa milhar e nao inventa decimal", () => {

@@ -53,6 +53,19 @@ function useActive(items: Item[]) {
     if (!items.length) return
 
     const onScroll = () => {
+      /*
+       * No fim da pagina nao ha mais rolagem, entao os ultimos titulos nunca
+       * chegam aos 96px do topo e nunca ficariam ativos: a marca parava no
+       * penultimo e tres itens da lista viravam enfeite. Chegando ao fim, o
+       * ativo e o ultimo, que e onde a pessoa esta de fato.
+       */
+      const fim = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+
+      if (fim) {
+        setActive(items[items.length - 1].id)
+        return
+      }
+
       let current: string | null = items[0].id
 
       for (const item of items) {
