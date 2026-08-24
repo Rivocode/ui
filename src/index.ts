@@ -54,7 +54,7 @@ export {
   type TableRowProps,
 } from "./components/table";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
-export { Tab, TabList, TabPanel, Tabs } from "./components/tabs";
+export { Tab, TabList, TabPanel, Tabs, type TabListProps } from "./components/tabs";
 export {
   Menu,
   MenuContent,
@@ -114,6 +114,37 @@ export {
   type AlertDialogContentProps,
 } from "./components/alert-dialog";
 export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
+export { MaskedInput, type MaskedInputProps } from "./components/masked-input";
+export {
+  aplicarMascara,
+  aplicarMoeda,
+  aplicarMolde,
+  emCentavos,
+  moldeDeTelefone,
+  semMascara,
+  MOLDES,
+  type Mascara,
+  type NomeDeMolde,
+} from "./lib/mascara";
+export {
+  InputAction,
+  InputGroup,
+  InputPrefix,
+  InputSuffix,
+  type InputGroupProps,
+} from "./components/input-group";
+export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
+  itemVariants,
+  type ItemProps,
+} from "./components/item";
+export { Breadcrumb, type BreadcrumbProps, type Migalha } from "./components/breadcrumb";
+export { Pagination, type PaginationProps } from "./components/pagination";
 export { Tooltip, TooltipContent, TooltipTrigger } from "./components/tooltip";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {

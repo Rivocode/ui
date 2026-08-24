@@ -7,11 +7,25 @@ import { cn } from "../lib/cn";
 
 export const Tabs = BaseTabs.Root;
 
-export function TabList({ className, ...props }: ComponentProps<typeof BaseTabs.List>) {
+export type TabListProps = ComponentProps<typeof BaseTabs.List>;
+
+/**
+ * A fila de abas. Rola de lado quando nao cabe, em vez de espremer ou quebrar
+ * linha: aba em duas linhas vira menu disfarcado, e no celular quase nenhuma
+ * fila de aba cabe inteira.
+ *
+ * A barra de rolagem fica escondida de proposito. O gesto continua valendo, e
+ * no desktop a aba ativa se traz para a vista sozinha pelo foco do teclado.
+ */
+export function TabList({ className, ...props }: TabListProps) {
   return (
     <BaseTabs.List
       {...props}
-      className={cn("relative flex items-center gap-1 border-b border-border", className)}
+      className={cn(
+        "relative flex items-center gap-1 border-b border-border",
+        "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        className,
+      )}
     >
       {props.children}
       {/* O risco que corre ate a aba ativa. A Base UI entrega a posicao em
@@ -32,7 +46,7 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
     <BaseTabs.Tab
       {...props}
       className={cn(
-        "relative px-3 py-2.5 font-sans text-base font-medium text-fg-muted",
+        "relative shrink-0 px-3 py-2.5 font-sans text-base font-medium text-fg-muted",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none hover:text-fg",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
