@@ -1,0 +1,38 @@
+/* ---------------------------------------------------------------------------
+ * Camada 1: valores crus. Nenhum componente le daqui, so os arquivos de tema.
+ * Um cliente com marca propria traz a paleta dele e ignora esta.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* Lima, a marca */
+  --rc-p-lima-300: #e6ff7a;
+  --rc-p-lima-500: #d4f34a;
+  --rc-p-lima-600: #bfdd3a;
+  --rc-p-lima-700: #4a7100;
+
+  /* Grafite, as superficies escuras */
+  --rc-p-graphite-900: #0f1113;
+  --rc-p-graphite-800: #14171a;
+  --rc-p-graphite-700: #171a1d;
+
+  /* Papel, as superficies claras */
+  --rc-p-white: #ffffff;
+  --rc-p-paper: #fbfbfa;
+
+  /* Cinzas de texto */
+  --rc-p-gray-100: #f2f3f0;
+  --rc-p-gray-300: #b9bfc6;
+  --rc-p-gray-500: #8b9199;
+  --rc-p-gray-600: #6c737b;
+  --rc-p-gray-700: #5b6169;
+
+  /* Estados. O sucesso puxa para o teal para nao competir com a lima. */
+  --rc-p-teal-400: #3ddc97;
+  --rc-p-teal-700: #0f766e;
+  --rc-p-amber-400: #f2b21c;
+  --rc-p-amber-700: #a15c00;
+  --rc-p-red-400: #ff6b6b;
+  --rc-p-red-700: #c0261f;
+  --rc-p-blue-400: #6aa9ff;
+  --rc-p-blue-700: #1d4ed8;
+}

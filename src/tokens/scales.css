@@ -1,0 +1,80 @@
+/* ---------------------------------------------------------------------------
+ * Escalas: forma, tipografia, empilhamento, movimento e densidade. Sao iguais
+ * em todo tema, porque descrevem estrutura e nao marca.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* Forma. O padrao do produto e o canto sobrio, a pilula e variante. */
+  --rc-radius-sm: 6px;
+  --rc-radius-md: 8px;
+  --rc-radius-lg: 12px;
+  --rc-radius-xl: 16px;
+  --rc-radius-pill: 999px;
+
+  /* Tipografia de produto, densa e previsivel. */
+  --rc-text-xs: 12px;
+  --rc-text-sm: 13px;
+  --rc-text-base: 14px;
+  --rc-text-md: 16px;
+  --rc-text-lg: 18px;
+  --rc-text-xl: 20px;
+  --rc-text-2xl: 24px;
+  --rc-text-3xl: 30px;
+
+  --rc-leading-tight: 1.25;
+  --rc-leading-normal: 1.5;
+  --rc-leading-relaxed: 1.7;
+
+  --rc-font-sans: 'Manrope Variable', system-ui, sans-serif;
+  --rc-font-display: 'Poppins', 'Manrope Variable', sans-serif;
+  --rc-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  /* Empilhamento. Definir isto agora e o que evita o z-index 9999 depois. */
+  --rc-z-base: 0;
+  --rc-z-sticky: 100;
+  --rc-z-dropdown: 200;
+  --rc-z-overlay: 300;
+  --rc-z-dialog: 400;
+  --rc-z-popover: 500;
+  --rc-z-toast: 600;
+  --rc-z-tooltip: 700;
+
+  /* Movimento */
+  --rc-duration-fast: 120ms;
+  --rc-duration-base: 200ms;
+  --rc-duration-slow: 320ms;
+  --rc-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Foco */
+  --rc-ring-width: 2px;
+  --rc-ring-offset: 2px;
+}
+
+/* Densidade confortavel, o padrao. */
+:root,
+[data-rc-density='comfortable'] {
+  --rc-control-sm: 32px;
+  --rc-control-md: 40px;
+  --rc-control-lg: 48px;
+  --rc-control-pad-sm: 10px;
+  --rc-control-pad-md: 14px;
+  --rc-control-pad-lg: 18px;
+}
+
+/* Densidade compacta, para tela de operacao. */
+[data-rc-density='compact'] {
+  --rc-control-sm: 28px;
+  --rc-control-md: 32px;
+  --rc-control-lg: 38px;
+  --rc-control-pad-sm: 8px;
+  --rc-control-pad-md: 10px;
+  --rc-control-pad-lg: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --rc-duration-fast: 0ms;
+    --rc-duration-base: 0ms;
+    --rc-duration-slow: 0ms;
+  }
+}

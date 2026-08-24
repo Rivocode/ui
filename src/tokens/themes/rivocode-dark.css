@@ -1,0 +1,48 @@
+/* Camada 3: o tema escuro da RivoCode, o padrao. */
+
+[data-rc-theme='rivocode-dark'] {
+  --rc-bg: var(--rc-p-graphite-900);
+  --rc-surface: var(--rc-p-graphite-800);
+  --rc-surface-raised: var(--rc-p-graphite-700);
+  --rc-overlay: rgb(0 0 0 / 0.62);
+
+  --rc-fg: var(--rc-p-gray-100);
+  --rc-fg-muted: var(--rc-p-gray-300);
+  --rc-fg-subtle: var(--rc-p-gray-500);
+  --rc-fg-disabled: var(--rc-p-gray-600);
+
+  --rc-accent: var(--rc-p-lima-500);
+  --rc-accent-hover: var(--rc-p-lima-300);
+  --rc-accent-active: var(--rc-p-lima-600);
+  --rc-accent-fg: var(--rc-p-graphite-900);
+  --rc-accent-text: var(--rc-p-lima-500);
+  --rc-accent-subtle: rgb(212 243 74 / 0.14);
+
+  --rc-border: rgb(255 255 255 / 0.09);
+  --rc-border-strong: rgb(255 255 255 / 0.14);
+  --rc-ring: var(--rc-p-lima-500);
+
+  --rc-success: var(--rc-p-teal-400);
+  --rc-success-fg: var(--rc-p-graphite-900);
+  --rc-success-subtle: rgb(61 220 151 / 0.14);
+  --rc-warning: var(--rc-p-amber-400);
+  --rc-warning-fg: var(--rc-p-graphite-900);
+  --rc-warning-subtle: rgb(242 178 28 / 0.14);
+  --rc-danger: var(--rc-p-red-400);
+  --rc-danger-fg: var(--rc-p-graphite-900);
+  --rc-danger-subtle: rgb(255 107 107 / 0.14);
+  --rc-info: var(--rc-p-blue-400);
+  --rc-info-fg: var(--rc-p-graphite-900);
+  --rc-info-subtle: rgb(106 169 255 / 0.14);
+
+  /* Passos de marketing. Vivem no tema da marca, nao no nucleo: um sistema de
+   * gestao nao deveria nem enxergar um titulo de 88 pixels. */
+  --rc-text-display: clamp(32px, 4.2vw, 54px);
+  --rc-text-hero: clamp(44px, 6.6vw, 88px);
+
+  --rc-shadow-1: 0 1px 2px rgb(0 0 0 / 0.40);
+  --rc-shadow-2: 0 6px 18px rgb(0 0 0 / 0.44);
+  --rc-shadow-3: 0 14px 36px rgb(0 0 0 / 0.50);
+
+  color-scheme: dark;
+}
