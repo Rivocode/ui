@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
@@ -82,6 +82,23 @@ export function DataTable<Row>({
   className,
   caption,
 }: DataTableProps<Row>) {
+  /**
+   * Abre a linha, a nao ser que o clique tenha sido em algo dentro dela.
+   *
+   * Uma coluna de acoes e o caso normal de uma listagem: menu, botao de baixar,
+   * caixa de selecao. Sem esta guarda o clique acerta o botao e sobe ate a
+   * linha, e a pessoa que abriu o menu ganha junto a folha de detalhes por
+   * cima dele. Vale para o que o `closest` alcanca, entao o gatilho de menu
+   * do Base UI, que e um `button`, ja entra.
+   */
+  function openRow(event: MouseEvent<HTMLTableRowElement>, row: Row) {
+    const target = event.target as HTMLElement;
+    if (target.closest("a,button,input,select,textarea,label,[role='menuitem'],[data-rc-keep-row]")) {
+      return;
+    }
+    onRowClick?.(row);
+  }
+
   if (isError) {
     return (
       <Alert tone="danger" className={className}>
@@ -150,7 +167,7 @@ export function DataTable<Row>({
           : data.map((linha, indice) => (
               <TableRow
                 key={rowKey(linha, indice)}
-                onClick={onRowClick ? () => onRowClick(linha) : undefined}
+                onClick={onRowClick ? (event) => openRow(event, linha) : undefined}
                 className={cn(onRowClick && "cursor-pointer")}
               >
                 {columns.map((coluna) => (

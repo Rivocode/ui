@@ -14,9 +14,13 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
-      - run: bun run lint
-      - run: bun run check:colors
-      - run: bun test
-      # O contraste so tem tema para conferir a partir da Task 3.
-      - run: bun run check:contrast
-        if: hashFiles('src/tokens/themes/*.css') != ''
+
+      # O mesmo `check` que roda na maquina e o mesmo que a publicacao exige.
+      # Antes daqui saiam lint, cores, contraste e testes soltos, e faltavam
+      # tipos, previews e as duas guardas de documentacao: main podia ficar
+      # verde com um tipo quebrado, e o erro so aparecia na hora de publicar.
+      - run: bun run check
+
+      # O build nao entra no `check`, e e onde aparece o que so quebra ao
+      # empacotar: entrada faltando, CSS que nao compila, skill nao copiada.
+      - run: bun run build

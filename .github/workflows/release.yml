@@ -1,0 +1,88 @@
+name: release
+
+# Publica no npm quando uma tag `v*` sobe.
+#
+# A tag e o gatilho, e nao um clique: assim o que foi publicado tem sempre um
+# ponto no historico com o mesmo nome, e da para voltar e ver exatamente que
+# codigo virou aquela versao.
+on:
+  push:
+    tags: ["v*"]
+  # Permite repetir uma publicacao que falhou no meio, sem criar outra tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag ja existente para publicar, como v0.4.0"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Exigido pelo `--provenance`: e o que deixa o npm assinar de onde o
+      # pacote saiu. Sem isto o publish falha, e nao apenas perde o selo.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # O Node entra so para o `npm publish`: e ele que sabe assinar a
+      # procedencia, e é ele que escreve o .npmrc a partir do segredo.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - run: bun install --frozen-lockfile
+
+      # A tag e a versao do package.json precisam contar a mesma historia. Sem
+      # esta conferencia, `git tag v0.4.0` sobre um package.json em 0.3.0
+      # republica silenciosamente a versao velha, ou falha la na frente com um
+      # erro que nao explica nada.
+      - name: Conferir se a tag bate com a versao
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          pkg="v$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "A tag $tag nao bate com a versao do package.json ($pkg)."
+            exit 1
+          fi
+          echo "Publicando $pkg"
+
+      - run: bun run check
+      - run: bun run build
+
+      # O tarball precisa levar o CLI: `bin` sem o arquivo publicado passa como
+      # aviso, e nao como erro, entao a versao sobe quebrada e so descobrimos
+      # quando alguem roda o comando. Ja aconteceu aqui uma vez.
+      - name: Conferir o que vai no pacote
+        run: |
+          npm pack --dry-run --json > /tmp/pack.json
+          node -e "
+            const [meta] = require('/tmp/pack.json');
+            const files = meta.files.map((file) => file.path);
+            const bin = require('./package.json').bin ?? {};
+            for (const target of Object.values(bin)) {
+              const path = target.replace(/^\.\//, '');
+              if (!files.includes(path)) {
+                console.error('Falta no tarball o bin ' + path);
+                process.exit(1);
+              }
+            }
+            console.log('bin ok:', Object.keys(bin).join(', ') || 'nenhum');
+          "
+
+      # `--ignore-scripts` porque o `prepublishOnly` roda check e build de novo,
+      # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
+      # tempo repetindo o que acabou de ser feito.
+      - name: Publicar
+        run: npm publish --provenance --access public --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

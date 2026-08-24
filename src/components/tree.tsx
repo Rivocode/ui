@@ -222,7 +222,7 @@ function Ramo({
           />
         )}
 
-        <span className="flex-1 truncate">{no.label}</span>
+        <span className="min-w-0 flex-1 truncate">{no.label}</span>
       </div>
 
       {temFilhos && aberto && (

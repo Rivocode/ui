@@ -77,15 +77,23 @@ export function SidebarProvider({
 }: SidebarProviderProps) {
   const narrow = useNarrowScreen();
   const controlled = open !== undefined;
-  const [internal, setInternal] = useState(defaultOpen);
-  const isOpen = controlled ? open : internal;
+  // Duas memorias, e nao uma. `defaultOpen` fala da coluna da mesa, onde
+  // aberta e o estado util e a pagina continua inteira ao lado. No celular a
+  // mesma barra e uma folha por cima de tudo: comecar aberta tapa justamente a
+  // tela que a pessoa veio ver, e obriga a fechar antes de comecar.
+  const [deskOpen, setDeskOpen] = useState(defaultOpen);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const isOpen = controlled ? open : narrow ? sheetOpen : deskOpen;
 
   const change = useCallback(
     (next: boolean) => {
-      if (!controlled) setInternal(next);
+      if (!controlled) {
+        if (narrow) setSheetOpen(next);
+        else setDeskOpen(next);
+      }
       onOpenChange?.(next);
     },
-    [controlled, onOpenChange],
+    [controlled, narrow, onOpenChange],
   );
 
   const toggle = useCallback(() => change(!isOpen), [isOpen, change]);
@@ -374,21 +382,30 @@ export function SidebarMenuItem({
   active,
   badge,
   children,
+  onClick,
   ...props
 }: SidebarMenuItemProps) {
-  const { collapsed } = useSidebar();
+  const { collapsed, narrow, close } = useSidebar();
   const inFlyout = use(FlyoutContext);
+
+  // No celular a barra e uma folha por cima da pagina, entao escolher para
+  // onde ir e a hora de sair da frente. Na mesa ela nao cobre nada e fechar
+  // sozinha so faria a pessoa reabrir a cada passo.
+  function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
+    onClick?.(event);
+    if (narrow) close();
+  }
 
   // Dentro do menu que salta da barra encolhida, a linha e um item de menu:
   // teclado, foco e fechamento ao escolher ja vem prontos de la.
   if (inFlyout) {
     return (
       <MenuItem
-        render={<a {...props} aria-current={active ? "page" : undefined} />}
+        render={<a {...props} onClick={handleClick} aria-current={active ? "page" : undefined} />}
         className={active ? "text-fg" : undefined}
       >
         {icon && <span className="flex shrink-0 items-center">{icon}</span>}
-        <span className="flex-1 truncate">{children}</span>
+        <span className="min-w-0 flex-1 truncate">{children}</span>
         {badge}
       </MenuItem>
     );
@@ -397,11 +414,12 @@ export function SidebarMenuItem({
   const row = (
     <a
       {...props}
+      onClick={handleClick}
       aria-current={active ? "page" : undefined}
       className={cn(rowClass, collapsed && "justify-center px-0", className)}
     >
       {icon && <span className="flex shrink-0 items-center">{icon}</span>}
-      {!collapsed && <span className="flex-1 truncate">{children}</span>}
+      {!collapsed && <span className="min-w-0 flex-1 truncate">{children}</span>}
       {!collapsed && badge}
     </a>
   );
@@ -515,7 +533,7 @@ export function SidebarMenuSub({
         className={cn(rowClass, active && "text-fg", className)}
       >
         {icon && <span className="flex shrink-0 items-center">{icon}</span>}
-        <span className="flex-1 truncate text-left">{label}</span>
+        <span className="min-w-0 flex-1 truncate text-left">{label}</span>
         <ChevronRight
           size={14}
           aria-hidden="true"

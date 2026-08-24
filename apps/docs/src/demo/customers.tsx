@@ -274,7 +274,11 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
+    // `[&>*]:min-w-0` nao e enfeite: numa trilha automatica, a largura da
+    // coluna vira o maior min-content entre os itens, e a listagem larga
+    // arrasta o cartao de segmentos junto para fora da tela. Deixando o item
+    // encolher, a tabela volta a rolar dentro da propria caixa.
+    <div className="grid gap-4 lg:grid-cols-[16rem_1fr] [&>*]:min-w-0">
       <Card className="max-lg:order-2">
         <CardHeader>
           <CardTitle>Segmentos</CardTitle>
