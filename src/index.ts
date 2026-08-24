@@ -31,3 +31,13 @@ export {
   type FieldProps,
   type InputProps,
 } from './primitives/field'
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+  type DialogContentProps,
+} from './primitives/dialog'
