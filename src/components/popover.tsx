@@ -53,6 +53,7 @@ export function PopoverContent({
         sideOffset={sideOffset}
         side={side}
         align={align}
+        collisionPadding={8}
         className="z-[var(--rc-z-popover)] outline-none"
       >
         <BasePopover.Popup

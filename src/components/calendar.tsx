@@ -6,6 +6,7 @@ import { ptBR } from "react-day-picker/locale";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { useTelaEstreita } from "../lib/tela";
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
@@ -28,11 +29,24 @@ const CHEVRONS = {
  *
  * O locale padrao e `pt-BR`, e nao o `en-US` da biblioteca, porque toda tela
  * que essa biblioteca serve hoje e em portugues. Passe `locale` para trocar.
+ *
+ * Em largura de celular ele mostra um mes so, mesmo quando pedem mais.
  */
-export function Calendar({ className, classNames, locale = ptBR, ...props }: CalendarProps) {
+export function Calendar({
+  className,
+  classNames,
+  locale = ptBR,
+  numberOfMonths,
+  ...props
+}: CalendarProps) {
+  // Dois meses no celular viram uma coluna de 700px de altura e o segundo fica
+  // fora da tela. Um mes so, e a navegacao cobre o resto.
+  const estreita = useTelaEstreita();
+
   return (
     <DayPicker
       locale={locale}
+      numberOfMonths={estreita ? 1 : numberOfMonths}
       {...props}
       className={cn("font-sans text-fg", className)}
       classNames={{

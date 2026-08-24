@@ -44,7 +44,7 @@ function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?:
   }, [comErro, form]);
 
   return (
-    <Form form={form} onSubmit={() => {}} className="w-72">
+    <Form form={form} onSubmit={() => {}} className="w-full max-w-72">
       <FormField name="email" label="E-mail" description="Para onde vai a nota">
         {(campo) => <Input {...campo} placeholder="voce@empresa.com" />}
       </FormField>
@@ -91,7 +91,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
     <RivoProvider scope="local" theme={theme} className="min-h-[640px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
-      <div className="flex items-start gap-16">
+      <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div>
           <p className="mb-4 text-sm text-fg-muted">Preenchido</p>
           <Formulario

@@ -18,11 +18,16 @@ export function TooltipContent({
 
   return (
     <BaseTooltip.Portal container={portalContainer ?? undefined}>
-      <BaseTooltip.Positioner sideOffset={6} className="z-[var(--rc-z-tooltip)] outline-none">
+      <BaseTooltip.Positioner
+        sideOffset={6}
+        collisionPadding={8}
+        className="z-[var(--rc-z-tooltip)] outline-none"
+      >
         <BaseTooltip.Popup
           {...props}
           className={cn(
-            "rounded-md border border-border bg-surface-raised px-2.5 py-1.5 shadow-2",
+            "max-w-[calc(100vw-1rem)] rounded-md border border-border bg-surface-raised",
+            "px-2.5 py-1.5 shadow-2",
             "font-sans text-sm text-fg",
             "origin-[var(--transform-origin)] transition-[opacity,transform]",
             "duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",

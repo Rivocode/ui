@@ -6,7 +6,7 @@ Atualizado em 24/08/2026. Leia isto antes de continuar o design system.
 
 | Peca | Onde | Estado |
 |---|---|---|
-| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 19 componentes + subcaminho `/form`, 115 testes, tudo verde |
+| Biblioteca `@rivocode/ui` | `Rivocode/ui` (este repo), privado | 19 componentes + subcaminho `/form`, 117 testes, tudo verde |
 | Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b` | 52 componentes, **atras dos 4 novos** |
 | Migracao da landing | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada** |
 | Site de documentacao | nao existe | Pendente |
@@ -18,6 +18,18 @@ DatePicker, DateRangePicker, mais o `RivoProvider` e o `useToast()`.
 **Fundacao:** tokens em tres camadas, temas `rivocode-dark` e `rivocode-light`,
 densidade confortavel e compacta, guarda de cor literal e guarda de contraste
 com 40 pares medidos.
+
+## Regra que vale para todo componente novo
+
+**Mobile primeiro.** Decidir o que acontece em 390px antes de desenhar o
+desktop. Painel flutuante nao encosta na borda, calendario cai para um mes,
+dialogo vira folha de baixo, tabela rola dentro da propria moldura.
+
+O `bun run shot` tira dois retratos de cada pagina, um de mesa e um de celular.
+O de celular sai de dentro de um iframe em `demo/celular.html`, e nao do
+tamanho da janela: o Chrome no macOS nao abre janela abaixo de 500px, e pedir
+390 devolvia um retrato cortado em 390 com layout de 500. Parecia certo e
+escondia o que quebrou.
 
 ## O que esta travado, e em quem
 

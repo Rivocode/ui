@@ -130,3 +130,36 @@ test("sem intervalo, o gatilho mostra o convite", () => {
   );
   expect(screen.getByText("Escolha o periodo")).toBeDefined();
 });
+
+test("no celular o calendario mostra um mes so, mesmo pedindo dois", () => {
+  // O happy-dom nao implementa matchMedia com resposta verdadeira, entao o
+  // teste troca a resposta para simular a tela estreita.
+  const original = window.matchMedia;
+  window.matchMedia = ((consulta: string) =>
+    ({
+      matches: consulta.includes("max-width"),
+      media: consulta,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+
+  try {
+    render(
+      <RivoProvider scope="local">
+        <Calendar mode="range" numberOfMonths={2} month={new Date(2026, 2, 1)} />
+      </RivoProvider>,
+    );
+    expect(screen.getAllByRole("grid")).toHaveLength(1);
+  } finally {
+    window.matchMedia = original;
+  }
+});
+
+test("na largura de mesa os dois meses aparecem", () => {
+  render(
+    <RivoProvider scope="local">
+      <Calendar mode="range" numberOfMonths={2} month={new Date(2026, 2, 1)} />
+    </RivoProvider>,
+  );
+  expect(screen.getAllByRole("grid")).toHaveLength(2);
+});

@@ -18,7 +18,7 @@ export function MenuTrigger({ className, ...props }: ComponentProps<typeof BaseM
  * o painel. Menu, Select e Tooltip usam a mesma linguagem visual de proposito.
  */
 export const floatingPanel = cn(
-  "min-w-[8rem] rounded-lg border border-border bg-surface-raised p-1 shadow-3",
+  "min-w-[8rem] max-w-[calc(100vw-1rem)] rounded-lg border border-border bg-surface-raised p-1 shadow-3",
   "font-sans text-fg outline-none",
   "origin-[var(--transform-origin)] transition-[opacity,transform]",
   "duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
@@ -35,7 +35,11 @@ export function MenuContent({
 
   return (
     <BaseMenu.Portal container={portalContainer ?? undefined}>
-      <BaseMenu.Positioner sideOffset={6} className="z-[var(--rc-z-dropdown)] outline-none">
+      <BaseMenu.Positioner
+        sideOffset={6}
+        collisionPadding={8}
+        className="z-[var(--rc-z-dropdown)] outline-none"
+      >
         <BaseMenu.Popup {...props} className={cn(floatingPanel, className)}>
           {children}
         </BaseMenu.Popup>

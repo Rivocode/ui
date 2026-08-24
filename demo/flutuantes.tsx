@@ -54,7 +54,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
       <AvisoDeEntrada />
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
-      <div className="flex items-start gap-16">
+      <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div>
           <p className="mb-2 text-sm text-fg-muted">Filtro</p>
           <Select items={STATUS} defaultValue="abertas" defaultOpen>

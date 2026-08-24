@@ -55,7 +55,11 @@ export function SelectContent({
 
   return (
     <BaseSelect.Portal container={portalContainer ?? undefined}>
-      <BaseSelect.Positioner sideOffset={6} className="z-[var(--rc-z-dropdown)] outline-none">
+      <BaseSelect.Positioner
+        sideOffset={6}
+        collisionPadding={8}
+        className="z-[var(--rc-z-dropdown)] outline-none"
+      >
         <BaseSelect.Popup
           {...props}
           className={cn(floatingPanel, "min-w-[var(--anchor-width)]", className)}

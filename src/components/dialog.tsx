@@ -36,6 +36,12 @@ export function DialogContent({ className, children, ...props }: DialogContentPr
           "-translate-x-1/2 -translate-y-1/2",
           "rounded-xl border border-border bg-surface p-6 shadow-3",
           "font-sans text-fg outline-none",
+          // No celular ele encosta embaixo e ocupa a largura toda, que e onde
+          // o polegar alcanca. Centralizado, sobra tarja de fundo dos dois
+          // lados e o conteudo fica espremido no meio da tela.
+          "max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:w-full",
+          "max-sm:translate-x-0 max-sm:translate-y-0",
+          "max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0",
           className,
         )}
       >

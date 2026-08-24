@@ -21,21 +21,21 @@ function Amostra({ theme }: { theme: RivoTheme }) {
     <RivoProvider scope="local" theme={theme} className="min-h-[620px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
-      <div className="flex items-start gap-12">
-        <div className="w-64">
+      <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-12">
+        <div className="w-full max-w-64">
           <label htmlFor="vencimento" className="mb-1.5 block text-sm font-medium text-fg">
             Vencimento
           </label>
           <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} />
         </div>
 
-        <div className="w-72">
+        <div className="w-full max-w-72">
           <p className="mb-1.5 text-sm font-medium text-fg">Periodo do relatorio</p>
           <DateRangePicker value={periodo} onValueChange={setPeriodo} />
         </div>
       </div>
 
-      <div className="mt-10 flex items-start gap-12">
+      <div className="mt-10 flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-12">
         <div>
           <p className="mb-3 text-sm text-fg-muted">Calendario, data unica</p>
           <Calendar mode="single" selected={vencimento} month={new Date(2026, 2, 1)} />

@@ -26,7 +26,7 @@ export type DateRangePickerProps = Omit<
   placeholder?: string;
   /** Tamanho do gatilho, o mesmo vocabulario do Input. */
   size?: "sm" | "md" | "lg";
-  /** Quantos meses o calendario mostra lado a lado. */
+  /** Quantos meses o calendario mostra lado a lado. No celular e sempre um. */
   numberOfMonths?: number;
   /** Dias que nao podem ser escolhidos. */
   disabledDays?: ComponentProps<typeof Calendar>["disabled"];
