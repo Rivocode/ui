@@ -128,6 +128,6 @@
     "rivocode"
   ],
   "bin": {
-    "rivocode-ui": "./dist/cli.js"
+    "rivocode-ui": "dist/cli.js"
   }
 }
