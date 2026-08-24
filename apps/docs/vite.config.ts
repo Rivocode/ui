@@ -21,6 +21,7 @@ const CONVENTIONS = here('../../.design-sync/conventions.md')
  * e justamente a que precisa estar certa.
  */
 const SKILL = here('../../.claude/skills/rivocode-ui/SKILL.md')
+const GUIDES_DIR = here('./src/content')
 
 type Doc = { name: string; slug: string; family: string; body: string }
 
@@ -39,6 +40,38 @@ function readDocs(): Doc[] {
         body: front ? raw.slice(front[0].length) : raw,
       }
     })
+}
+
+/**
+ * The prose guides, by slug, with their title.
+ *
+ * They are served raw like the component docs are. A guide is where the
+ * reasoning lives - how a theme is written, why density is one attribute - and
+ * that is exactly what an agent needs before it writes the first line. Leaving
+ * them HTML-only meant the only way to hand someone the theme contract was to
+ * paste it.
+ */
+const GUIDE_TITLES: Record<string, string> = {
+  instalacao: 'Instalação',
+  'inicio-rapido': 'Início rápido',
+  temas: 'Temas e personalização',
+  densidade: 'Densidade',
+  'para-agents': 'Para agents',
+  skill: 'Skill',
+}
+
+function readGuides() {
+  const guides = new Map<string, { title: string; body: string }>()
+
+  for (const [slug, title] of Object.entries(GUIDE_TITLES)) {
+    try {
+      guides.set(slug, { title, body: readFileSync(`${GUIDES_DIR}/${slug}.md`, 'utf8') })
+    } catch {
+      // A guide listed here but not written yet simply does not get served.
+    }
+  }
+
+  return guides
 }
 
 /** The preview file of each piece, by component name. */
@@ -144,8 +177,8 @@ function indexForAgents(docs: Doc[]) {
 
   return `# @rivocode/ui
 
-Design system da RivoCode: ${docs.length} documentos de componente, tokens em tres
-camadas e dois temas. Cada endereco abaixo entrega markdown cru, sem HTML em
+Design system da RivoCode: ${docs.length} documentos, tokens em tres camadas,
+dois temas e duas densidades. Cada endereco abaixo entrega markdown cru, sem HTML em
 volta, para leitura por agent.
 
 Comece por [/convencoes.md](/convencoes.md): e o contrato de uso da biblioteca,
@@ -153,6 +186,12 @@ com o RivoProvider, o vocabulario de classes e as regras que valem para todo
 componente.
 
 Se voce roda como agente com skills, ha uma pronta em [/skill/SKILL.md](/skill/SKILL.md).
+
+## Guias
+
+${[...readGuides()]
+  .map(([slug, guide]) => `- [${guide.title}](/${slug}.md)`)
+  .join('\n')}
 
 ${sections}
 `
@@ -183,6 +222,16 @@ function rawDocs(): Plugin {
           res.setHeader('content-type', 'text/markdown; charset=utf-8')
           res.end(readFileSync(CONVENTIONS, 'utf8'))
           return
+        }
+
+        const guide = /^\/([a-z0-9-]+)\.md$/.exec(path)
+        if (guide) {
+          const found = readGuides().get(guide[1])
+          if (found) {
+            res.setHeader('content-type', 'text/markdown; charset=utf-8')
+            res.end(`# ${found.title}\n\n${found.body.trimStart()}`)
+            return
+          }
         }
 
         // A skill, servida crua no endereço que o comando de instalação usa.
@@ -221,6 +270,14 @@ function rawDocs(): Plugin {
         fileName: 'skill/SKILL.md',
         source: readFileSync(SKILL, 'utf8'),
       })
+
+      for (const [slug, guide] of readGuides()) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `${slug}.md`,
+          source: `# ${guide.title}\n\n${guide.body.trimStart()}`,
+        })
+      }
 
       const sources = readAll(docs)
 

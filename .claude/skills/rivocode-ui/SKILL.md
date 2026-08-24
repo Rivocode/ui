@@ -225,11 +225,22 @@ contrário.
 - Texto de interface em inglês. **Código em inglês, conteúdo em PT-BR.** Termo
   do ecossistema não se traduz: é "agents", não "agentes".
 
+## Vestir com a cor de outro cliente
+
+Um tema é a camada 3, e são **cinquenta papéis**. Escrever só os dez óbvios
+deixa gráfico e estados sem cor, e a falha é silenciosa: o componente cai no
+valor do tema anterior, e aparece uma cor da RivoCode isolada no meio da marca
+do cliente.
+
+Antes de escrever um tema, leia <https://ds.rivocode.com.br/temas.md>. Ele traz
+a lista completa dos papéis, o que cada um veste, e o esqueleto pronto.
+
 ## Endereços
 
 | O quê | Onde |
 |---|---|
-| Índice de todas as peças | <https://ds.rivocode.com.br/llms.txt> |
+| Índice de tudo | <https://ds.rivocode.com.br/llms.txt> |
 | Contrato completo | <https://ds.rivocode.com.br/convencoes.md> |
 | Uma peça | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
+| Um guia | `https://ds.rivocode.com.br/<slug>.md`, como `/temas.md` |
 | Um sistema inteiro, montado | <https://ds.rivocode.com.br/demonstracao> |

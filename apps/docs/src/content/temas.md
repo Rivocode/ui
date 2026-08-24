@@ -6,7 +6,7 @@ em componente.
 ## As três camadas
 
 ```
-Camada 1  paleta      --rc-p-lima-500: oklch(...)     a cor crua, sem opinião
+Camada 1  paleta      --rc-p-lima-500: oklch(...)       a cor crua, sem opinião
 Camada 2  contrato    --color-accent: var(--rc-accent)  vira bg-accent no Tailwind
 Camada 3  tema        --rc-accent: var(--rc-p-lima-500) quem faz o papel, aqui
 ```
@@ -30,6 +30,10 @@ Trocar de cliente é reescrever a camada 3. Nada mais.
 Com `system`, o Provider lê `prefers-color-scheme` e acompanha a troca enquanto
 a página está aberta, não é só a leitura inicial.
 
+O `data-rc-theme` que o Provider escreve também **pinta o fundo e a cor de
+texto** do elemento que o carrega. Com `scope="global"` isso é a página; com
+`scope="local"`, só aquela árvore.
+
 ## Preenchimento e texto são tokens diferentes
 
 Esta é a distinção que mais economiza tempo depois:
@@ -45,6 +49,103 @@ bem para as duas coisas: a que tem contraste como texto não aguenta texto branc
 por cima, e a que aguenta é clara demais para ler. Vale igual para o acento,
 para `success`, `warning` e `info`.
 
+## Todos os papéis
+
+São cinquenta. Um tema completo declara todos; faltando um, o componente que o
+usa cai no valor do tema anterior, e o sintoma costuma ser uma cor da RivoCode
+isolada no meio do azul do cliente.
+
+### Superfície
+
+| Token | Classe | O que veste |
+|---|---|---|
+| `--rc-bg` | `bg-bg` | O fundo da página |
+| `--rc-surface` | `bg-surface` | Cartão, painel, campo |
+| `--rc-surface-raised` | `bg-surface-raised` | O que salta do resto: menu, dica, cabeçalho de tabela |
+| `--rc-overlay` | `bg-overlay` | A tarja escura atrás de diálogo e folha |
+
+### Texto
+
+| Token | Classe | O que veste |
+|---|---|---|
+| `--rc-fg` | `text-fg` | Texto principal |
+| `--rc-fg-muted` | `text-fg-muted` | Texto de apoio, parágrafo secundário |
+| `--rc-fg-subtle` | `text-fg-subtle` | Rótulo, legenda, cabeçalho de coluna |
+| `--rc-fg-disabled` | `text-fg-disabled` | Controle desativado |
+
+### Acento
+
+| Token | Classe | O que veste |
+|---|---|---|
+| `--rc-accent` | `bg-accent` | Preenchimento da marca: botão primário, marca de escolha |
+| `--rc-accent-hover` | — | O mesmo com o ponteiro em cima |
+| `--rc-accent-active` | — | O mesmo no instante do clique |
+| `--rc-accent-fg` | `text-accent-fg` | O que se lê **sobre** o acento |
+| `--rc-accent-text` | `text-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo |
+| `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
+
+### Linha, foco e estado de linha
+
+| Token | Classe | O que veste |
+|---|---|---|
+| `--rc-border` | `border-border` | A linha comum |
+| `--rc-border-strong` | `border-border-strong` | A borda de um controle, que precisa se ver |
+| `--rc-line-hover` | — | A borda com o ponteiro em cima |
+| `--rc-ring` | `ring-ring` | O anel de foco do teclado |
+| `--rc-selected` | `bg-selected` | Linha escolhida numa tabela. Área grande pede alfa baixo |
+| `--rc-skeleton` | `bg-skeleton` | Marca de lugar do carregamento |
+
+### Estados
+
+Quatro famílias com quatro papéis cada, sempre no mesmo formato:
+
+| Padrão | Classe | O que veste |
+|---|---|---|
+| `--rc-<estado>` | `bg-<estado>` | Preenche |
+| `--rc-<estado>-fg` | `text-<estado>-fg` | O que se lê sobre o preenchimento |
+| `--rc-<estado>-text` | `text-<estado>-text` | A cor que se lê sobre o fundo da página |
+| `--rc-<estado>-subtle` | `bg-<estado>-subtle` | Fundo tênue de aviso |
+
+Onde `<estado>` é `success`, `warning`, `danger` ou `info`. São dezesseis
+tokens, e nenhum deles é opcional: um `Alert tone="warning"` sem
+`--rc-warning-subtle` sai sem fundo.
+
+O perigo é o único estado que também vira botão sólido, então
+`--rc-danger` e `--rc-danger-fg` precisam de contraste de botão, não só de
+etiqueta.
+
+### Gráfico
+
+| Token | O que veste |
+|---|---|
+| `--rc-chart-1` a `--rc-chart-8` | As oito séries, **na ordem em que devem ser usadas** |
+| `--rc-chart-grid` | A grade de fundo |
+
+Elas têm guarda própria de 3:1 contra a superfície. **Tema de cliente que não as
+declara desenha gráfico sem cor de série.**
+
+No CSS use sempre `var(--rc-chart-1)`, e nunca a classe `bg-chart-1`: essa
+classe não existe na folha compilada, porque o Tailwind só gera o que encontra
+ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
+
+### Sombra e tipografia de marca
+
+| Token | O que veste |
+|---|---|
+| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição |
+| `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
+| `--rc-text-hero` | Tamanho de herói, em `clamp()` |
+
+Os dois últimos vivem no tema e não no núcleo de propósito: um sistema de
+operação nunca os usa, e um site de marca quer os seus.
+
+## O que **não** entra no tema
+
+Altura de controle, respiro, raio de canto, duração de animação e empilhamento
+vivem em `src/tokens/scales.css` e valem para todos os temas. Um tema que
+redefine `--rc-control-md` está resolvendo densidade no lugar errado — para
+isso existe `density="compact"`, e ele muda a escala inteira de uma vez.
+
 ## Um tema de cliente, do começo ao fim
 
 Digamos que o cliente é azul.
@@ -55,23 +156,34 @@ sua ou a nossa:
 ```css
 /* tema-acme.css */
 [data-rc-theme="acme"] {
+  color-scheme: dark;
+
   --rc-bg: oklch(21% 0.02 250);
   --rc-surface: oklch(26% 0.02 250);
   --rc-surface-raised: oklch(31% 0.02 250);
+  --rc-overlay: oklch(0% 0 0 / 0.62);
 
   --rc-fg: oklch(97% 0.01 250);
   --rc-fg-muted: oklch(82% 0.01 250);
   --rc-fg-subtle: oklch(64% 0.01 250);
+  --rc-fg-disabled: oklch(50% 0.01 250);
 
   --rc-accent: oklch(62% 0.19 250);
-  --rc-accent-fg: oklch(99% 0 0);        /* o que se lê sobre o acento */
-  --rc-accent-text: oklch(74% 0.16 250); /* o acento que se lê sobre o fundo */
+  --rc-accent-hover: oklch(66% 0.19 250);
+  --rc-accent-active: oklch(58% 0.19 250);
+  --rc-accent-fg: oklch(99% 0 0);
+  --rc-accent-text: oklch(74% 0.16 250);
   --rc-accent-subtle: oklch(62% 0.19 250 / 0.14);
 
   --rc-border: oklch(100% 0 0 / 0.1);
+  --rc-border-strong: oklch(100% 0 0 / 0.14);
+  --rc-line-hover: oklch(100% 0 0 / 0.26);
   --rc-ring: oklch(62% 0.19 250);
+  --rc-selected: oklch(62% 0.19 250 / 0.08);
+  --rc-skeleton: oklch(100% 0 0 / 0.08);
 
-  /* …e os demais papéis: success, warning, danger, info, selected, skeleton */
+  /* …e as quatro famílias de estado, as oito séries de gráfico,
+     as três sombras e os dois tamanhos de marca. */
 }
 ```
 
@@ -91,14 +203,30 @@ sua ou a nossa:
 <RivoProvider theme="acme">
 ```
 
-Se o seu tema esquecer um papel, o componente que o usa cai no valor do tema
-anterior, o que costuma aparecer como uma cor da RivoCode isolada no meio do
-azul. Rode a guarda de contraste antes de acreditar no resultado.
+O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
+barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
+alcança essas peças.
+
+## Como pedir isto a um agente
+
+O endereço cru deste guia é
+[`/temas.md`](https://ds.rivocode.com.br/temas.md). Um prompt que costuma
+funcionar:
+
+```
+Leia https://ds.rivocode.com.br/temas.md e escreva o tema "acme" completo,
+com todos os cinquenta papéis. A marca é azul (#2563eb), fundo escuro.
+Depois confira o contraste de texto contra fundo em cada par.
+```
+
+Pedir "todos os cinquenta papéis" importa: sem isso o agente escreve os dez
+óbvios e deixa gráfico e estados sem cor, que é exatamente a falha silenciosa
+que a lista acima existe para evitar.
 
 ## As duas guardas
 
-O repositório tem duas travas que rodam em `bun run check`, e existem porque as
-duas falhas são silenciosas:
+O repositório da biblioteca tem duas travas que rodam em `bun run check`, e
+existem porque as duas falhas são silenciosas:
 
 **Cor literal.** Nenhum componente pode escrever `#d4f34a`, `bg-lime-400` ou
 `rgb(...)` direto. Se pudesse, o tema do cliente não alcançaria aquela peça, e o
@@ -107,22 +235,3 @@ erro só apareceria na tela dele.
 **Contraste.** Quarenta pares medidos, texto contra o fundo em que ele de fato
 aparece, nos dois temas. Um tema novo deve passar pela mesma medida, é a
 diferença entre "parece bom no meu monitor" e "dá para ler".
-
-## Gráfico pede série própria
-
-O subcaminho `/chart` usa oito tokens de série, `--rc-chart-1` a `--rc-chart-8`,
-com guarda própria de 3:1 contra a superfície. **Tema de cliente que não os
-declara desenha gráfico sem cor de série.** Eles são papéis como os outros:
-
-```css
-[data-rc-theme="acme"] {
-  --rc-chart-1: oklch(62% 0.19 250);
-  --rc-chart-2: oklch(70% 0.15 190);
-  /* … até 8 */
-}
-```
-
-Um detalhe de bastidor que vale saber: no CSS use sempre `var(--rc-chart-1)`, e
-não a classe `bg-chart-1`. Essa classe não existe na folha compilada, porque o
-Tailwind só gera o que encontra ao varrer, e o resultado seria uma cor que
-nunca resolve, em silêncio.

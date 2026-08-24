@@ -1,5 +1,5 @@
 import { Button, EmptyState, RivoProvider } from '@rivocode/ui'
-import { FileText } from 'lucide-react'
+import { FileCode2, FileText } from 'lucide-react'
 import { useState } from 'react'
 import { Markdown } from '@/components/markdown'
 import { findGuide } from '@/guides'
@@ -29,6 +29,18 @@ export function GuidePage({ slug }: { slug: string }) {
       <header className="mb-8">
         <h1 className="font-display text-4xl text-fg">{guide.title}</h1>
         <p className="mt-3 text-lg text-fg-muted">{guide.summary}</p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <a
+            href={`/${guide.slug}.md`}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
+          >
+            <FileCode2 size={13} />/{guide.slug}.md
+          </a>
+          <span className="text-fg-subtle">
+            markdown cru, para quem lê com agent em vez de olho
+          </span>
+        </div>
       </header>
 
       <Markdown source={guide.body} />
