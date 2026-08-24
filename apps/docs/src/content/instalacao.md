@@ -1,46 +1,7 @@
-O `@rivocode/ui` é um pacote privado, publicado no GitHub Packages. Isso muda o
-primeiro passo: antes de instalar, o seu computador precisa provar ao GitHub que
-pode baixar da organização.
+O `@rivocode/ui` é público no npm, sob licença MIT. Não precisa de token, nem
+de `.npmrc`, nem de acesso à organização.
 
-## 1. Um token de leitura
-
-Em `github.com/settings/tokens`, crie um token **classic** com o escopo
-`read:packages`. Se o repositório for privado, marque `repo` junto, sem ele o
-registry recusa mesmo com o escopo de pacote.
-
-Quem só instala precisa de `read:packages`. `write:packages` é para quem publica.
-
-## 2. O arquivo `.npmrc`
-
-Duas linhas. A primeira diz onde procurar o escopo `@rivocode`; a segunda é a
-credencial:
-
-```
-@rivocode:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=SEU_TOKEN
-```
-
-**Onde colocar.** No `~/.npmrc` da sua máquina, e não no `.npmrc` do projeto: o
-do projeto vai para o Git, e o token vaza junto. Se preferir manter no projeto
-por causa da equipe, use a forma com variável e deixe o valor fora do
-repositório:
-
-```
-@rivocode:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-**Em CI, não use token pessoal.** Dentro de uma GitHub Action o `GITHUB_TOKEN`
-nativo já lê pacotes da própria organização, não expira e não precisa de
-rotação:
-
-```yaml
-- run: bun install
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-```
-
-## 3. Instalar
+## 1. Instalar
 
 ```sh
 bun add @rivocode/ui
@@ -59,7 +20,7 @@ Recursos opcionais pedem os pares deles, e só quem usa carrega o peso:
 | `@rivocode/ui/chart`    | `recharts`                                        |
 | Ícones nos exemplos     | `lucide-react`                                    |
 
-## 4. As duas linhas de CSS
+## 2. As duas linhas de CSS
 
 No arquivo de CSS do projeto:
 
@@ -80,7 +41,7 @@ O `preset` traz as três camadas de token, os dois temas e as fontes da marca. S
 o seu projeto já tem tipografia própria, veja
 [Temas e personalização](/temas) para importar só os tokens.
 
-## 5. O Provider, uma vez
+## 3. O Provider, uma vez
 
 ```tsx
 import { RivoProvider } from '@rivocode/ui'
@@ -116,12 +77,26 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
+## Vindo do GitHub Packages
+
+Até a versão `0.1.0` o pacote era privado, e todo projeto consumidor tinha um
+`.npmrc` com esta linha:
+
+```
+@rivocode:registry=https://npm.pkg.github.com
+```
+
+**Remova.** Mapeamento de escopo tem precedência sobre o registro padrão, então
+enquanto ela existir o `bun add @rivocode/ui` continua buscando no GitHub
+Packages, e não encontra as versões novas. O token também deixa de ser
+necessário.
+
 ## Quando algo não aparece
 
 | Sintoma                                   | Causa quase certa                                                        |
 | ----------------------------------------- | ------------------------------------------------------------------------ |
 | Tela sem estilo nenhum                    | falta a linha `@source`, ou o caminho relativo dela está errado          |
-| `401` ou `403` no install                 | `.npmrc` sem token, token vencido, ou faltando `repo` em pacote privado  |
+| `404` ao instalar o escopo `@rivocode`    | um `.npmrc` antigo ainda aponta o escopo para o GitHub Packages          |
 | Erro de contexto ao abrir diálogo ou menu | árvore fora do `RivoProvider`                                            |
 | Dois Reacts na página                     | React como dependência direta da biblioteca em vez de par, verifique o lockfile |
 | Flutuante sem tema, solto no fim da página | `scope="local"` sem o container de portal do Provider                    |

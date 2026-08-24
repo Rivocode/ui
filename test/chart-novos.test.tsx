@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { ChartDonut } from "../src/chart/chart-donut";
 import { ChartLegendContent, useSeriesToggle } from "../src/chart/chart-legend";
+import { ChartRadial } from "../src/chart/chart-radial";
 import { Sparkline } from "../src/chart/sparkline";
 import type { ChartConfig } from "../src/chart/chart";
 
@@ -76,4 +77,18 @@ test("com `onToggle` cada serie vira botao que diz no aria se esta ligada", () =
 
   // A outra serie nao foi junto.
   expect(screen.getByRole("button", { name: /Pagas/ }).getAttribute("aria-pressed")).toBe("true");
+});
+
+test("o arco prende a escala, e um valor sozinho nao da a volta inteira", () => {
+  const { container } = comTema(<ChartRadial value={30} label="30% da meta" />);
+
+  // O eixo escondido e quem segura isso; sem ele a Recharts normaliza pelo
+  // maior valor da serie, que com um ponto so e o proprio ponto.
+  expect(screen.getByRole("img", { name: "30% da meta" })).toBeDefined();
+  expect(container.textContent).toContain("30%");
+});
+
+test("sem valor escrito, o meio mostra a porcentagem", () => {
+  const { container } = comTema(<ChartRadial value={41} max={50} />);
+  expect(container.textContent).toContain("82%");
 });

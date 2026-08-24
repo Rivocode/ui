@@ -1,6 +1,13 @@
 "use client";
 
-import { useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
+import {
+  createContext,
+  use,
+  useId,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { ResponsiveContainer } from "recharts";
 
 import { Alert, AlertDescription, AlertTitle } from "../components/alert";
@@ -41,7 +48,6 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   data?: readonly unknown[];
 };
 
-/** As oito cores de serie do tema, na ordem de uso. */
 /** As oito cores de serie do tema, na ordem em que devem ser usadas. */
 export const PALETA = Array.from({ length: 8 }, (_, indice) => `var(--rc-chart-${indice + 1})`);
 

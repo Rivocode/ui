@@ -24,7 +24,7 @@ const ORDER: Array<{ slug: string; title: string; summary: string }> = [
   {
     slug: 'instalacao',
     title: 'Instalação',
-    summary: 'Registry privado, token, as duas linhas de CSS e o Provider.',
+    summary: 'Um comando, as duas linhas de CSS e o Provider.',
   },
   {
     slug: 'inicio-rapido',

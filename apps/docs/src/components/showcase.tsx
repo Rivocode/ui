@@ -31,8 +31,10 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  ChartAreaGradient,
   ChartXAxis,
   ChartYAxis,
+  areaGradient,
   type ChartConfig,
 } from '@rivocode/ui/chart'
 import { useState } from 'react'
@@ -110,6 +112,28 @@ function Switcher<T extends string>({
         </button>
       ))}
     </div>
+  )
+}
+
+function BillingChart() {
+  return (
+    <ChartContainer config={CHART} className="h-64">
+      <AreaChart data={MONTHS} margin={{ left: 4, right: 8, top: 8 }}>
+        <ChartAreaGradient id="vitrine" series={['total']} />
+        <CartesianGrid vertical={false} />
+        <ChartXAxis dataKey="month" />
+        <ChartYAxis format="currencyShort" />
+        <ChartTooltip content={<ChartTooltipContent config={CHART} />} />
+        <Area
+          dataKey="total"
+          stroke="var(--color-total)"
+          fill={areaGradient('vitrine', 'total')}
+          strokeWidth={2}
+          activeDot={{ r: 4 }}
+          isAnimationActive={false}
+        />
+      </AreaChart>
+    </ChartContainer>
   )
 }
 
@@ -236,22 +260,7 @@ export function Showcase() {
             </TabPanel>
 
             <TabPanel value="chart">
-              <ChartContainer config={CHART} className="h-64">
-                <AreaChart data={MONTHS} margin={{ left: 4, right: 8, top: 8 }}>
-                  <CartesianGrid vertical={false} />
-                  <ChartXAxis dataKey="month" />
-                  <ChartYAxis format="currencyShort" />
-                  <ChartTooltip content={<ChartTooltipContent config={CHART} />} />
-                  <Area
-                    dataKey="total"
-                    stroke="var(--color-total)"
-                    fill="var(--color-total)"
-                    fillOpacity={0.15}
-                    strokeWidth={2}
-                    isAnimationActive={false}
-                  />
-                </AreaChart>
-              </ChartContainer>
+              <BillingChart />
 
               <p className="mt-2 text-sm text-fg-subtle">
                 O eixo abrevia sozinho: R$ 246 mil, e não 246000.

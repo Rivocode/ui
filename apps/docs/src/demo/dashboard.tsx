@@ -6,7 +6,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  Meter,
   Separator,
   Table,
   TableBody,
@@ -29,13 +28,16 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
+  ChartAreaGradient,
   ChartDonut,
+  ChartRadial,
   ChartXAxis,
   ChartYAxis,
   Sparkline,
   compact,
   currency,
   currencyShort,
+  areaGradient,
   useSeriesToggle,
   type ChartConfig,
 } from '@rivocode/ui/chart'
@@ -193,6 +195,7 @@ export function Dashboard() {
           <CardContent>
             <ChartContainer config={BILLING} className="h-80">
               <AreaChart data={MONTHLY} margin={{ left: 4, right: 8, top: 8 }}>
+                <ChartAreaGradient id="faturamento" series={['billed', 'received']} />
                 <CartesianGrid vertical={false} />
                 <ChartXAxis dataKey="month" />
                 <ChartYAxis format="compact" />
@@ -202,9 +205,9 @@ export function Dashboard() {
                   <Area
                     dataKey="billed"
                     stroke="var(--color-billed)"
-                    fill="var(--color-billed)"
-                    fillOpacity={0.14}
+                    fill={areaGradient('faturamento', 'billed')}
                     strokeWidth={2}
+                    activeDot={{ r: 4 }}
                     isAnimationActive={false}
                   />
                 )}
@@ -212,9 +215,9 @@ export function Dashboard() {
                   <Area
                     dataKey="received"
                     stroke="var(--color-received)"
-                    fill="var(--color-received)"
-                    fillOpacity={0.14}
+                    fill={areaGradient('faturamento', 'received')}
                     strokeWidth={2}
+                    activeDot={{ r: 4 }}
                     isAnimationActive={false}
                   />
                 )}
@@ -255,8 +258,14 @@ export function Dashboard() {
 
             <Separator className="my-4" />
 
-            <p className="mb-2 text-sm text-fg-muted">Meta do mês</p>
-            <Meter value={82} label="R$ 246,7 mil de R$ 300 mil" showValue />
+            <ChartRadial
+              value={246_700}
+              max={300_000}
+              centerValue="82%"
+              centerLabel="da meta do mês"
+              label="82% da meta do mês"
+              className="h-36"
+            />
           </CardContent>
         </Card>
       </div>

@@ -53,7 +53,8 @@
     "serve": "bun run scripts/serve.ts",
     "check:types": "tsc --noEmit",
     "check:previews": "tsc --noEmit -p .design-sync/tsconfig.json",
-    "check:temas": "bun run scripts/check-temas-documentados.ts"
+    "check:temas": "bun run scripts/check-temas-documentados.ts",
+    "prepublishOnly": "bun run check && bun run build"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

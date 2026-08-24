@@ -367,7 +367,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <div className="rounded-xl border border-border bg-surface/70 p-8 text-center backdrop-blur-sm sm:p-12">
           <h2 className="font-display text-3xl text-fg">Comece pela instalação</h2>
           <p className="mx-auto mt-3 max-w-xl text-fg-muted">
-            Registry privado, as duas linhas de CSS e o Provider. Depois disso é escrever tela.
+            Um comando, as duas linhas de CSS e o Provider. Depois disso é escrever tela.
           </p>
 
           <div className="mt-7 flex flex-wrap justify-center gap-3">

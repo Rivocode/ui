@@ -21,3 +21,40 @@ porque o contentor mede o pai.
 As peças da Recharts que a biblioteca veste saem pelo mesmo import:
 `LineChart`, `Line`, `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`,
 `Cell`, `XAxis`, `YAxis`, `CartesianGrid` e `ReferenceLine`.
+
+## Gradiente de área
+
+Área chapada compete com a linha que a delimita: a cor cheia embaixo pesa tanto
+quanto o traço em cima, e num gráfico de duas séries a de trás some atrás da da
+frente.
+
+```tsx
+function Faturamento() {
+  const faturado = useAreaGradient('faturado')
+
+  return (
+    <ChartContainer config={config} className="h-64">
+      <AreaChart data={meses}>
+        <ChartAreaGradient series={['faturado']} />
+        <Area dataKey="faturado" stroke="var(--color-faturado)" fill={faturado} />
+      </AreaChart>
+    </ChartContainer>
+  )
+}
+```
+
+O `id` do gradiente sai do `id` deste gráfico. Sem isso, dois gráficos na mesma
+página com o mesmo nome de série pintariam um com o gradiente do outro, porque
+`id` de SVG é global no documento.
+
+## As peças da Recharts que saem daqui
+
+`Area`, `AreaChart`, `Bar`, `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`,
+`Cell`, `Scatter`, `ScatterChart`, `Radar`, `RadarChart`, `RadialBar`,
+`RadialBarChart`, `PolarGrid`, `PolarAngleAxis`, `PolarRadiusAxis`,
+`CartesianGrid`, `XAxis`, `YAxis`, `ZAxis`, `LabelList`, `Rectangle`,
+`ReferenceLine` e `ReferenceArea`.
+
+A lista é curada, e não um `export *`. O `Tooltip` e o `Legend` da Recharts
+**não** saem por aqui: os nossos já embrulham os dois, e o nome colidiria com o
+`Tooltip` do catálogo.
