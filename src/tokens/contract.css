@@ -29,6 +29,7 @@
 
   --color-border: var(--rc-border);
   --color-border-strong: var(--rc-border-strong);
+  --color-line-hover: var(--rc-line-hover);
   --color-ring: var(--rc-ring);
 
   --color-success: var(--rc-success);

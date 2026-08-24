@@ -22,6 +22,13 @@ export const buttonVariants = cva(
         primary: "bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
         secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-raised",
         ghost: "text-fg-muted hover:bg-accent-subtle hover:text-fg",
+        // Contorno grosso, sem preenchimento. E a chamada secundaria de pagina
+        // de marketing, que precisa pesar ao lado da primaria sem competir com
+        // ela.
+        outline: cn(
+          "border-2 border-border-strong bg-transparent text-fg",
+          "hover:border-line-hover hover:bg-accent-subtle",
+        ),
         destructive: "bg-danger text-danger-fg hover:opacity-90",
       },
       size: {

@@ -24,6 +24,7 @@
 
   --rc-border: rgb(15 17 19 / 0.1);
   --rc-border-strong: rgb(15 17 19 / 0.18);
+  --rc-line-hover: rgb(15 17 19 / 0.3);
   --rc-ring: var(--rc-p-lima-700);
 
   --rc-success: var(--rc-p-teal-700);

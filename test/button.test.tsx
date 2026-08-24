@@ -93,3 +93,10 @@ test("o tamanho de chamada tem o peso de marketing, nao o de formulario", () => 
   expect(classes).toContain("font-bold");
   expect(classes).not.toContain("--rc-control-md");
 });
+
+test("a variante de contorno nao preenche, e engrossa a borda", () => {
+  render(<Button variant="outline">Quero um diagnostico</Button>);
+  const classes = screen.getByRole("button").className;
+  expect(classes).toContain("border-2");
+  expect(classes).toContain("bg-transparent");
+});
