@@ -1,6 +1,6 @@
 import { Button, RivoProvider, Tab, TabList, TabPanel, Tabs, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
 import { Check, Code2, Copy, Eye, Monitor, Smartphone, Tablet } from 'lucide-react'
-import { useEffect, useState, type ComponentType } from 'react'
+import { useEffect, useRef, useState, type ComponentType } from 'react'
 import { anchor } from '@/anchor'
 import { ExampleFrame } from '@/components/example-frame'
 import { titleOf } from '@/example-source'
@@ -121,6 +121,22 @@ export function ExampleStage({
   const [viewport, setViewport] = useState<ViewportId>('desktop')
   const width = VIEWPORTS.find((option) => option.id === viewport)?.width ?? null
 
+  // Measured at the moment of the switch, so the frame that replaces the
+  // inline example starts at the height the reader was already looking at,
+  // instead of collapsing to a guess and popping back up.
+  const preview = useRef<HTMLDivElement>(null)
+  const heldHeight = useRef<number | undefined>(undefined)
+
+  const switchViewport = (id: ViewportId) => {
+    const node = preview.current
+    if (node) {
+      const style = getComputedStyle(node)
+      const padding = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)
+      heldHeight.current = Math.max(160, node.getBoundingClientRect().height - padding)
+    }
+    setViewport(id)
+  }
+
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-surface">
       <Tabs defaultValue="preview">
@@ -134,7 +150,7 @@ export function ExampleStage({
           </h2>
 
           <div className="flex items-center gap-2">
-            <ViewportSwitch value={viewport} onChange={setViewport} />
+            <ViewportSwitch value={viewport} onChange={switchViewport} />
 
             {/* Icon and word together: the eye alone is a guess, and the word
                 alone is one more thing to read on a page full of examples. */}
@@ -154,9 +170,9 @@ export function ExampleStage({
         </header>
 
         <TabPanel value="preview" className="p-0">
-          <div className="flex justify-center overflow-x-auto bg-bg/40 p-4">
+          <div ref={preview} className="flex justify-center overflow-x-auto bg-bg/40 p-4">
             {width ? (
-              <ExampleFrame width={width}>
+              <ExampleFrame width={width} initialHeight={heldHeight.current}>
                 <Example />
               </ExampleFrame>
             ) : (

@@ -56,13 +56,16 @@ function useClonedStyles(doc: Document | null) {
  * the hook also reports whether the number has stopped moving, and the frame
  * stays hidden until it has.
  */
-function useMeasuredHeight(doc: Document | null) {
+function useMeasuredHeight(doc: Document | null, width: number) {
   const [height, setHeight] = useState(220)
   const [settled, setSettled] = useState(false)
 
   useEffect(() => {
     if (!doc?.body) return
     const body = doc.body
+    // Width is a dependency on purpose: switching tablet to mobile reuses the
+    // frame, and without the reset the reader watched the content reflow live.
+    // The hide-until-quiet guard only worked on the first mount.
     setSettled(false)
 
     let timer: ReturnType<typeof setTimeout>
@@ -82,7 +85,7 @@ function useMeasuredHeight(doc: Document | null) {
       clearTimeout(timer)
       observer.disconnect()
     }
-  }, [doc])
+  }, [doc, width])
 
   return { height, settled }
 }
@@ -117,7 +120,16 @@ function useFitScale(width: number) {
   return { box, scale }
 }
 
-export function ExampleFrame({ width, children }: { width: number; children: ReactNode }) {
+export function ExampleFrame({
+  width,
+  initialHeight,
+  children,
+}: {
+  width: number
+  /** Height of whatever the frame replaced, so the box never collapses. */
+  initialHeight?: number
+  children: ReactNode
+}) {
   const frame = useRef<HTMLIFrameElement>(null)
   const [doc, setDoc] = useState<Document | null>(null)
   const { box, scale } = useFitScale(width)
@@ -145,20 +157,23 @@ export function ExampleFrame({ width, children }: { width: number; children: Rea
   }, [])
 
   useClonedStyles(doc)
-  const { height, settled } = useMeasuredHeight(doc)
+  const { height, settled } = useMeasuredHeight(doc, width)
+
+  // While the new width is being measured the box holds the height it was
+  // showing, never a fixed placeholder: collapsing to 160 and popping back up
+  // was the blink the reader saw on every switch. The first mount starts from
+  // the height of whatever the frame replaced.
+  const heldHeight = useRef(initialHeight ?? 160)
+  if (settled) heldHeight.current = height * scale
 
   return (
     // The outer box carries the scaled height, so a shrunken frame does not
     // leave dead space under it, and centres the frame so scaling about its
     // own centre keeps it in the middle of the column.
-    //
-    // Until the height settles the box keeps a calm placeholder height instead
-    // of following each step down, so the switch reads as one change and not
-    // as a box deflating.
     <div
       ref={box}
       className="flex w-full justify-center overflow-hidden transition-[height] duration-200 ease-rc"
-      style={{ height: settled ? height * scale : 160 }}
+      style={{ height: settled ? height * scale : heldHeight.current }}
     >
       <iframe
         ref={frame}
