@@ -13,9 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
+  Stat,
 } from '@rivocode/ui'
 import {
   Area,
@@ -40,7 +38,6 @@ import {
   useSeriesToggle,
   type ChartConfig,
 } from '@rivocode/ui/chart'
-import { ArrowDownRight, ArrowUpRight, Info } from 'lucide-react'
 import {
   BY_KIND,
   INVOICES,
@@ -78,80 +75,15 @@ const TRENDS: Record<string, number[]> = {
   overdue: [2, 3, 3, 5, 4, 6],
 }
 
-function Kpi({
-  label,
-  value,
-  delta,
-  hint,
-  trend,
-  invert,
-}: {
-  label: string
-  value: string
-  delta?: number
-  hint?: string
-  trend?: number[]
-  /** Subir é ruim aqui: vencidas, custo, inadimplência. */
-  invert?: boolean
-}) {
-  const rose = (delta ?? 0) >= 0
-  // Subir nem sempre é bom: em nota vencida, a seta para cima é o alarme.
-  const good = invert ? !rose : rose
-
-  return (
-    <Card>
-      <CardContent className="py-4">
-        <div className="flex items-center gap-1.5">
-          <p className="text-sm text-fg-muted">{label}</p>
-          {hint && (
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <button
-                    type="button"
-                    aria-label={`Sobre ${label}`}
-                    // The icon is 13px, but the target has to be 24. The
-                    // negative margin gives back the room the bigger button
-                    // would take, so the label row does not grow with it.
-                    className="-my-1 flex size-6 items-center justify-center rounded-sm text-fg-subtle"
-                  />
-                }
-              >
-                <Info size={13} />
-              </TooltipTrigger>
-              <TooltipContent>{hint}</TooltipContent>
-            </Tooltip>
-          )}
-        </div>
-
-        <p className="mt-1 font-display text-2xl text-fg">{value}</p>
-
-        {delta !== undefined && (
-          <p
-            className={`mt-1 flex items-center gap-1 text-xs ${
-              good ? 'text-success-text' : 'text-danger-text'
-            }`}
-          >
-            {rose ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-            {Math.abs(delta)}% sobre julho
-          </p>
-        )}
-
-        {/* Below the number and edge to edge, not beside it: side by side the
-            card had to choose between showing the trend and showing the value
-            whole, and the value is what the card is for. */}
-        {trend && (
-          <Sparkline
-            data={invert ? trend.map((point) => -point) : trend}
-            variant="area"
-            tone="auto"
-            className="mt-3 h-8 w-full"
-          />
-        )}
-      </CardContent>
-    </Card>
-  )
-}
+/** A tendência que entra no slot do Stat. Invertida, desce o que subiu. */
+const trendChart = (data: number[], invert = false) => (
+  <Sparkline
+    data={invert ? data.map((point) => -point) : data}
+    variant="area"
+    tone="auto"
+    className="h-8 w-full"
+  />
+)
 
 export function Dashboard() {
   // Clicking a name in the legend hides that series. The state lives here and
@@ -163,26 +95,35 @@ export function Dashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi
+        <Stat
           label="Faturado em agosto"
           value={currencyShort(246_700)}
           delta={20}
-          trend={TRENDS.billed}
+          deltaLabel="sobre julho"
+          chart={trendChart(TRENDS.billed)}
         />
-        <Kpi
+        <Stat
           label="Recebido"
           value={currencyShort(198_300)}
           delta={3}
-          trend={TRENDS.received}
+          deltaLabel="sobre julho"
+          chart={trendChart(TRENDS.received)}
           hint="Só o que já caiu na conta. O que está em compensação entra no dia seguinte."
         />
-        <Kpi label="Em aberto" value={currencyShort(total('open'))} delta={-8} trend={TRENDS.open} />
-        <Kpi
+        <Stat
+          label="Em aberto"
+          value={currencyShort(total('open'))}
+          delta={-8}
+          deltaLabel="sobre julho"
+          chart={trendChart(TRENDS.open)}
+        />
+        <Stat
           label="Vencidas"
           value={String(overdue)}
           delta={50}
-          trend={TRENDS.overdue}
+          deltaLabel="sobre julho"
           invert
+          chart={trendChart(TRENDS.overdue, true)}
           hint="Notas com vencimento passado e sem baixa."
         />
       </div>

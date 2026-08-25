@@ -212,6 +212,7 @@ export {
   type CommandProps,
 } from "./components/command";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export { Stat, type StatProps } from "./components/stat";
 export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/collapsible";
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";
 export { Slider, type SliderProps } from "./components/slider";
