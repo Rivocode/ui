@@ -274,11 +274,58 @@ export function App() {
             sistema, e um rodape de site embaixo dele quebra a ilusao que a
             pagina inteira existe para sustentar. */}
         {route.kind !== 'demo' && (
-        <footer className="border-t border-border px-6 py-8">
-          <p className="mx-auto max-w-7xl text-sm text-fg-subtle">
-            @rivocode/ui, {ENTRIES.length} peças no catálogo. Esta página é gerada dos mesmos
-            arquivos que alimentam o design system, então ela não envelhece sozinha.
-          </p>
+        <footer className="border-t border-border px-6 py-10">
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-xl text-sm text-fg-subtle">
+              @rivocode/ui, {ENTRIES.length} peças no catálogo. Esta página é gerada dos mesmos
+              arquivos que alimentam o design system, então ela não envelhece sozinha.
+            </p>
+
+            {/* O credito fica no rodape de todas as paginas, e nao so na capa:
+                quem chega por um link de componente nunca passa pela capa, e e
+                justamente essa pessoa que vai querer saber de quem e a
+                biblioteca antes de instalar. */}
+            <div className="text-sm text-fg-subtle sm:text-right">
+              <p>
+                Feito por{' '}
+                <a
+                  href="https://rivocode.com.br"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-fg-muted underline decoration-border underline-offset-4 transition-colors hover:text-fg hover:decoration-accent"
+                >
+                  Emanuel Bacalhau
+                </a>{' '}
+                na RivoCode.
+              </p>
+              <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 sm:justify-end">
+                <a
+                  href="https://github.com/Rivocode/ui"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-fg"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://www.npmjs.com/package/@rivocode/ui"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-fg"
+                >
+                  npm
+                </a>
+                <a
+                  href="https://github.com/Rivocode/ui/blob/main/LICENSE"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="transition-colors hover:text-fg"
+                >
+                  MIT
+                </a>
+              </p>
+            </div>
+          </div>
         </footer>
         )}
       </div>
