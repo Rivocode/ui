@@ -2,11 +2,14 @@ import { useState } from "react";
 import { Pressable, TextInput, View, type TextInputProps } from "react-native";
 
 import { tokens } from "../tokens";
+import { cn } from "./cn";
 import { useRivo } from "./provider";
 
 export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText"> & {
   value: string;
   onValueChange: (value: string) => void;
+  /** Veste a moldura (a caixa com lupa e limpar), nao o campo interno. */
+  className?: string;
 };
 
 /**
@@ -14,15 +17,24 @@ export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText"> & 
  * Os dois icones sao desenhados com borda, nunca glyph de fonte - fonte
  * muda de corpo entre iOS e Android, o traco nao.
  */
-export function SearchInput({ value, onValueChange, onFocus, onBlur, ...props }: SearchInputProps) {
+export function SearchInput({
+  value,
+  onValueChange,
+  onFocus,
+  onBlur,
+  className,
+  ...props
+}: SearchInputProps) {
   const [focused, setFocused] = useState(false);
   const { theme } = useRivo();
 
   return (
     <View
-      className={`h-12 flex-row items-center gap-2.5 rounded-md border bg-surface px-3.5 ${
-        focused ? "border-accent" : "border-border-strong"
-      }`}
+      className={cn(
+        "h-12 flex-row items-center gap-2.5 rounded-md border bg-surface px-3.5",
+        focused ? "border-accent" : "border-border-strong",
+        className,
+      )}
     >
       {/* A lupa: um circulo e um cabo a 45 graus. */}
       <View className="size-4 items-center justify-center" accessibilityElementsHidden>

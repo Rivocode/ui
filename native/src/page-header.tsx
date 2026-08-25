@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type PageHeaderProps = {
   title: string;
   /** A frase de contexto embaixo do titulo, nao um subtitulo decorativo. */
@@ -9,12 +11,13 @@ export type PageHeaderProps = {
   badge?: ReactNode;
   /** As acoes da tela: um Button primario, no maximo dois. */
   actions?: ReactNode;
+  className?: string;
 };
 
 /** O topo de toda tela: titulo, contexto e a acao principal no mesmo lugar. */
-export function PageHeader({ title, description, badge, actions }: PageHeaderProps) {
+export function PageHeader({ title, description, badge, actions, className }: PageHeaderProps) {
   return (
-    <View className="flex-row items-start justify-between gap-3">
+    <View className={cn("flex-row items-start justify-between gap-3", className)}>
       <View className="min-w-0 flex-1">
         <View className="flex-row items-center gap-2.5">
           <Text className="text-2xl font-semibold text-fg" numberOfLines={1}>

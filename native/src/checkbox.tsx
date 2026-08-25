@@ -1,26 +1,35 @@
 import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type CheckboxProps = {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   /** O rotulo. Como no web, clicar no texto tambem marca. */
   children?: ReactNode;
   disabled?: boolean;
+  className?: string;
 };
 
 /**
  * Caixa de marcar controlada. O visto e desenhado com borda, nao com fonte:
  * glyph de texto muda de corpo entre iOS e Android, e o traco nao.
  */
-export function Checkbox({ checked, onCheckedChange, children, disabled }: CheckboxProps) {
+export function Checkbox({
+  checked,
+  onCheckedChange,
+  children,
+  disabled,
+  className,
+}: CheckboxProps) {
   return (
     <Pressable
       accessibilityRole="checkbox"
       accessibilityState={{ checked, disabled }}
       disabled={disabled}
       onPress={() => onCheckedChange(!checked)}
-      className={`flex-row items-center gap-2.5 ${disabled ? "opacity-50" : ""}`}
+      className={cn("flex-row items-center gap-2.5", disabled && "opacity-50", className)}
     >
       <View
         className={`size-5 items-center justify-center rounded-sm border ${

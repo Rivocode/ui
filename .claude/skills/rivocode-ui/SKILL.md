@@ -104,6 +104,12 @@ responder ao tema do cliente.
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
 | Empilhamento | `z-[var(--rc-z-dialog)]`, e os pares `dropdown`, `overlay`, `popover`, `toast`, `tooltip` |
 
+**Toda peça aceita `className` na raiz, e a classe de quem usa vence a da
+peça** (merge por grupo: `h-14` derruba o `h-10` do Button). É o caminho para
+o wrapper de cliente — um arquivo no projeto dele, com token e nunca cor
+literal — em vez de fork. Nas peças em camadas, a documentação da prop diz o
+que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
+
 **Preencher e escrever texto são tokens diferentes.** `bg-danger` preenche e
 recebe `text-danger-fg` por cima; `text-danger-text` é o vermelho que se lê
 sobre o fundo da página. Nenhuma cor serve para as duas funções.

@@ -31,5 +31,8 @@
     "nativewind": ">=5.0.0-preview.1",
     "react": ">=19",
     "react-native": ">=0.76"
+  },
+  "dependencies": {
+    "tailwind-merge": "^3"
   }
 }

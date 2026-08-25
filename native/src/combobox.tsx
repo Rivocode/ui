@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 
+import { cn } from "./cn";
 import { SearchInput } from "./search-input";
 import { Sheet } from "./sheet";
 
@@ -16,6 +17,8 @@ export type ComboboxProps = {
   /** O que dizer quando a busca nao acha nada - com o porque, como sempre. */
   emptyMessage?: string;
   disabled?: boolean;
+  /** Veste o gatilho; a folha de busca e da plataforma. */
+  className?: string;
 };
 
 /* Busca sem acento: "clinica" acha "Clínica", como no DataTable do web. */
@@ -38,6 +41,7 @@ export function Combobox({
   searchPlaceholder = "Buscar",
   emptyMessage = "Nada com esse nome. Confira a grafia ou tente outro termo.",
   disabled,
+  className,
 }: ComboboxProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -57,9 +61,11 @@ export function Combobox({
         accessibilityValue={{ text: selected?.label ?? placeholder }}
         disabled={disabled}
         onPress={() => setOpen(true)}
-        className={`h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5 ${
-          disabled ? "opacity-50" : ""
-        }`}
+        className={cn(
+          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          disabled && "opacity-50",
+          className,
+        )}
       >
         <Text className={`text-base ${selected ? "text-fg" : "text-fg-subtle"}`}>
           {selected?.label ?? placeholder ?? "Selecione"}

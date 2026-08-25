@@ -1,6 +1,7 @@
 import { Pressable, Text, TextInput, View } from "react-native";
 
 import { tokens } from "../tokens";
+import { cn } from "./cn";
 import { useRivo } from "./provider";
 
 export type NumberFieldProps = {
@@ -12,6 +13,7 @@ export type NumberFieldProps = {
   /** O nome que o leitor de tela anuncia: "Quantidade de parcelas". */
   label: string;
   disabled?: boolean;
+  className?: string;
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -29,6 +31,7 @@ export function NumberField({
   step = 1,
   label,
   disabled,
+  className,
 }: NumberFieldProps) {
   const { theme } = useRivo();
   const nudge = (delta: number) => onValueChange(clamp(value + delta, min, max));
@@ -49,9 +52,11 @@ export function NumberField({
     <View
       accessibilityLabel={label}
       accessibilityValue={{ text: String(value) }}
-      className={`flex-row items-center overflow-hidden rounded-md border border-border-strong bg-surface ${
-        disabled ? "opacity-50" : ""
-      }`}
+      className={cn(
+        "flex-row items-center overflow-hidden rounded-md border border-border-strong bg-surface",
+        disabled && "opacity-50",
+        className,
+      )}
     >
       {stepper(-step, "−", `Diminuir ${label}`, value <= min)}
       <TextInput

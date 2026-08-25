@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
+import { cn } from "./cn";
+
 export type SliderProps = {
   value: number;
   onValueChange: (value: number) => void;
@@ -10,6 +12,7 @@ export type SliderProps = {
   /** O nome que o leitor de tela anuncia: "Volume do alerta". */
   label: string;
   disabled?: boolean;
+  className?: string;
 };
 
 const snap = (raw: number, min: number, max: number, step: number) => {
@@ -29,6 +32,7 @@ export function Slider({
   step = 1,
   label,
   disabled,
+  className,
 }: SliderProps) {
   const [width, setWidth] = useState(0);
   const widthRef = useRef(0);
@@ -68,7 +72,7 @@ export function Slider({
       }}
       // A area de toque e mais alta que o trilho: 44 pontos de alvo, como
       // manda a tela de dedo.
-      className={`h-11 justify-center ${disabled ? "opacity-50" : ""}`}
+      className={cn("h-11 justify-center", disabled && "opacity-50", className)}
       {...(disabled ? {} : pan.panHandlers)}
     >
       <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">

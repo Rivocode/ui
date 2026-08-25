@@ -1,5 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type RadioItem = { label: string; value: string; description?: string };
 
 export type RadioGroupProps = {
@@ -7,6 +9,7 @@ export type RadioGroupProps = {
   value: string | null;
   onValueChange: (value: string) => void;
   disabled?: boolean;
+  className?: string;
 };
 
 /**
@@ -14,9 +17,9 @@ export type RadioGroupProps = {
  * meia duzia de opcoes, a peca certa e o Select. O ponto marcado e um circulo
  * preenchido, nunca glyph de fonte.
  */
-export function RadioGroup({ items, value, onValueChange, disabled }: RadioGroupProps) {
+export function RadioGroup({ items, value, onValueChange, disabled, className }: RadioGroupProps) {
   return (
-    <View accessibilityRole="radiogroup" className="gap-3">
+    <View accessibilityRole="radiogroup" className={cn("gap-3", className)}>
       {items.map((item) => {
         const active = item.value === value;
         return (

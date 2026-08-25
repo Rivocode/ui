@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
 import { Sheet } from "./sheet";
 
 export type SelectItem = { label: string; value: string };
@@ -13,6 +14,8 @@ export type SelectProps = {
   placeholder?: string;
   label: string;
   disabled?: boolean;
+  /** Veste o gatilho; a folha de opcoes e da plataforma. */
+  className?: string;
 };
 
 /**
@@ -20,7 +23,15 @@ export type SelectProps = {
  * baixo, que e o idioma da plataforma para escolher. Lista longa ou vinda do
  * servidor continua sendo outro problema (busca), ainda sem peca nativa.
  */
-export function Select({ items, value, onValueChange, placeholder, label, disabled }: SelectProps) {
+export function Select({
+  items,
+  value,
+  onValueChange,
+  placeholder,
+  label,
+  disabled,
+  className,
+}: SelectProps) {
   const [open, setOpen] = useState(false);
   const selected = items.find((item) => item.value === value);
 
@@ -32,9 +43,11 @@ export function Select({ items, value, onValueChange, placeholder, label, disabl
         accessibilityValue={{ text: selected?.label ?? placeholder }}
         disabled={disabled}
         onPress={() => setOpen(true)}
-        className={`h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5 ${
-          disabled ? "opacity-50" : ""
-        }`}
+        className={cn(
+          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          disabled && "opacity-50",
+          className,
+        )}
       >
         <Text className={`text-base ${selected ? "text-fg" : "text-fg-subtle"}`}>
           {selected?.label ?? placeholder ?? "Selecione"}

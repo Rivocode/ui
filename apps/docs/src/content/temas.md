@@ -238,3 +238,37 @@ erro só apareceria na tela dele.
 **Contraste.** Quarenta pares medidos, texto contra o fundo em que ele de fato
 aparece, nos dois temas. Um tema novo deve passar pela mesma medida, é a
 diferença entre "parece bom no meu monitor" e "dá para ler".
+
+## Ajuste fino com className
+
+Toda peça — no web e no React Native — aceita `className` na raiz, e **a classe
+de quem usa vence a da peça**: o merge é por grupo do Tailwind, então um
+`h-14` derruba o `h-10` do Button e um `rounded-pill` derruba o `rounded-md`,
+em vez de conviver com ele.
+
+```tsx
+<Button className="h-14 rounded-pill">Assinar agora</Button>
+```
+
+É isto que torna o wrapper de cliente um arquivo pequeno no projeto dele, em
+vez de um fork:
+
+```tsx
+// o botão da Acme, no repositório da Acme
+import { Button, type ButtonProps } from '@rivocode/ui'
+import { cn } from './cn'
+
+export function AcmeButton({ className, ...props }: ButtonProps) {
+  return <Button className={cn('rounded-pill uppercase tracking-widest', className)} {...props} />
+}
+```
+
+Duas regras mantêm o gesto saudável:
+
+- **Token, nunca cor literal.** O `className` do wrapper obedece às mesmas
+  regras da peça: `bg-accent` responde ao tema do cliente, `bg-[#2563eb]` não
+  responde a ninguém.
+- **A raiz, não as partes.** O `className` veste o elemento externo da peça.
+  Nas peças com camadas (Sheet, Dialog, Select), a documentação da prop diz o
+  que ela veste — o painel, o gatilho — e o que é da plataforma continua da
+  plataforma.

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 const TONE: Record<string, { box: string; label: string }> = {
   neutral: { box: "bg-surface-raised border border-border", label: "text-fg-muted" },
   accent: { box: "bg-accent-subtle", label: "text-accent-text" },
@@ -13,13 +15,14 @@ const TONE: Record<string, { box: string; label: string }> = {
 export type BadgeProps = {
   children: ReactNode;
   tone?: keyof typeof TONE;
+  className?: string;
 };
 
 /** A etiqueta de situacao, nos mesmos tons do web: fundo sutil, texto que le. */
-export function Badge({ children, tone = "neutral" }: BadgeProps) {
+export function Badge({ children, tone = "neutral", className }: BadgeProps) {
   const styles = TONE[tone];
   return (
-    <View className={`self-start rounded-pill px-2.5 py-0.5 ${styles.box}`}>
+    <View className={cn("self-start rounded-pill px-2.5 py-0.5", styles.box, className)}>
       <Text className={`text-xs font-medium ${styles.label}`}>{children}</Text>
     </View>
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
 import { Sheet } from "./sheet";
 
 /* ---------------------------------------------------------------------------
@@ -157,6 +158,8 @@ export type DatePickerProps = {
   min?: string;
   max?: string;
   disabled?: boolean;
+  /** Veste o gatilho; o calendario na folha e o mesmo para todos. */
+  className?: string;
 };
 
 /** O campo de data: gatilho como o Select, calendario numa folha de baixo. */
@@ -168,6 +171,7 @@ export function DatePicker({
   min,
   max,
   disabled,
+  className,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
@@ -179,9 +183,11 @@ export function DatePicker({
         accessibilityValue={{ text: value ? formatDate(value) : placeholder }}
         disabled={disabled}
         onPress={() => setOpen(true)}
-        className={`h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5 ${
-          disabled ? "opacity-50" : ""
-        }`}
+        className={cn(
+          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          disabled && "opacity-50",
+          className,
+        )}
       >
         <Text className={`text-base ${value ? "text-fg" : "text-fg-subtle"}`}>
           {value ? formatDate(value) : placeholder}

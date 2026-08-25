@@ -1,27 +1,33 @@
 import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type ToggleProps = {
   pressed: boolean;
   onPressedChange: (pressed: boolean) => void;
   children: ReactNode;
   disabled?: boolean;
+  className?: string;
 };
 
 /**
  * O botao que fica apertado: negrito ligado, filtro ativo. Liga uma
  * preferencia com efeito imediato? E Switch. Confirma uma acao? E Button.
  */
-export function Toggle({ pressed, onPressedChange, children, disabled }: ToggleProps) {
+export function Toggle({ pressed, onPressedChange, children, disabled, className }: ToggleProps) {
   return (
     <Pressable
       accessibilityRole="togglebutton"
       accessibilityState={{ selected: pressed, disabled }}
       disabled={disabled}
       onPress={() => onPressedChange(!pressed)}
-      className={`h-10 flex-row items-center justify-center rounded-md border px-3.5 ${
-        pressed ? "border-accent bg-accent-subtle" : "border-border-strong bg-surface"
-      } ${disabled ? "opacity-50" : ""}`}
+      className={cn(
+        "h-10 flex-row items-center justify-center rounded-md border px-3.5",
+        pressed ? "border-accent bg-accent-subtle" : "border-border-strong bg-surface",
+        disabled && "opacity-50",
+        className,
+      )}
     >
       <Text className={`text-sm font-medium ${pressed ? "text-accent-text" : "text-fg-muted"}`}>
         {children}
@@ -40,10 +46,18 @@ export type ToggleGroupProps = {
   /** `single` desaperta o anterior; o padrao aceita varios ao mesmo tempo. */
   single?: boolean;
   disabled?: boolean;
+  className?: string;
 };
 
 /** Filtros lado a lado. Ver a mesma coisa de OUTRO jeito e Tabs, nao isto. */
-export function ToggleGroup({ items, value, onValueChange, single, disabled }: ToggleGroupProps) {
+export function ToggleGroup({
+  items,
+  value,
+  onValueChange,
+  single,
+  disabled,
+  className,
+}: ToggleGroupProps) {
   const toggle = (item: string, pressed: boolean) => {
     if (single) {
       onValueChange(pressed ? [item] : []);
@@ -53,7 +67,7 @@ export function ToggleGroup({ items, value, onValueChange, single, disabled }: T
   };
 
   return (
-    <View className="flex-row flex-wrap gap-2">
+    <View className={cn("flex-row flex-wrap gap-2", className)}>
       {items.map((item) => (
         <Toggle
           key={item.value}

@@ -1,20 +1,23 @@
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type TabItem = { label: string; value: string };
 
 export type TabsProps = {
   items: TabItem[];
   value: string;
   onValueChange: (value: string) => void;
+  className?: string;
 };
 
 /**
  * A caixinha segmentada: ver a mesma coisa de outro jeito. Secao de pagina
  * e trabalho do router nativo, nao desta peca - a mesma divisao do web.
  */
-export function Tabs({ items, value, onValueChange }: TabsProps) {
+export function Tabs({ items, value, onValueChange, className }: TabsProps) {
   return (
-    <View className="flex-row rounded-md border border-border bg-bg p-0.5">
+    <View className={cn("flex-row rounded-md border border-border bg-bg p-0.5", className)}>
       {items.map((item) => {
         const active = item.value === value;
         return (

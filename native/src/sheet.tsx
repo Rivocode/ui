@@ -1,12 +1,16 @@
 import type { ReactNode } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type SheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
   children?: ReactNode;
+  /** Veste o painel da folha, nao o fundo escurecido. */
+  className?: string;
 };
 
 /**
@@ -14,7 +18,7 @@ export type SheetProps = {
  * que existe aqui. Modal nativo por baixo: foco, back do Android e o gesto
  * de fechar vem da plataforma.
  */
-export function Sheet({ open, onOpenChange, title, description, children }: SheetProps) {
+export function Sheet({ open, onOpenChange, title, description, children, className }: SheetProps) {
   return (
     <Modal visible={open} transparent animationType="slide" onRequestClose={() => onOpenChange(false)}>
       {/* O fundo escurece e fecha no toque, como o overlay do web. */}
@@ -24,7 +28,7 @@ export function Sheet({ open, onOpenChange, title, description, children }: Shee
         onPress={() => onOpenChange(false)}
       >
         <Pressable onPress={(event) => event.stopPropagation()}>
-          <View className="rounded-t-xl border-t border-border bg-surface px-5 pt-3 pb-8">
+          <View className={cn("rounded-t-xl border-t border-border bg-surface px-5 pt-3 pb-8", className)}>
             <View className="mb-4 h-1 w-10 self-center rounded-pill bg-border-strong" />
             <Text className="text-xl font-semibold text-fg">{title}</Text>
             {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}

@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 
+import { cn } from "./cn";
 import { Sheet } from "./sheet";
 
 export type MenuAction = {
@@ -16,6 +17,8 @@ export type MenuProps = {
   /** O sujeito das acoes: "Nota 4813". */
   title: string;
   actions: MenuAction[];
+  /** Veste a lista de acoes dentro da folha. */
+  className?: string;
 };
 
 /**
@@ -23,10 +26,10 @@ export type MenuProps = {
  * nao um popup ancorado - o idioma da plataforma para "o que dá para
  * fazer com isto". Escolher um VALOR continua sendo Select.
  */
-export function Menu({ open, onOpenChange, title, actions }: MenuProps) {
+export function Menu({ open, onOpenChange, title, actions, className }: MenuProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>
-      <View className="gap-1">
+      <View className={cn("gap-1", className)}>
         {actions.map((action) => (
           <Pressable
             key={action.label}

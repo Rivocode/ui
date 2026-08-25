@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Modal, Pressable, Text, View } from "react-native";
 
 import { Button } from "./button";
+import { cn } from "./cn";
 
 export type DialogProps = {
   open: boolean;
@@ -9,13 +10,15 @@ export type DialogProps = {
   title: string;
   description?: string;
   children?: ReactNode;
+  /** Veste o cartao central, nao o fundo escurecido. */
+  className?: string;
 };
 
 /**
  * O modal centrado. Fecha no toque fora e no back do Android; o que NAO pode
  * ser dispensado assim e AlertDialog.
  */
-export function Dialog({ open, onOpenChange, title, description, children }: DialogProps) {
+export function Dialog({ open, onOpenChange, title, description, children, className }: DialogProps) {
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={() => onOpenChange(false)}>
       <Pressable
@@ -24,7 +27,7 @@ export function Dialog({ open, onOpenChange, title, description, children }: Dia
         onPress={() => onOpenChange(false)}
       >
         <Pressable onPress={(event) => event.stopPropagation()} className="w-full">
-          <View className="rounded-xl border border-border bg-surface p-6">
+          <View className={cn("rounded-xl border border-border bg-surface p-6", className)}>
             <Text className="text-xl font-semibold text-fg">{title}</Text>
             {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}
             {children && <View className="mt-4">{children}</View>}

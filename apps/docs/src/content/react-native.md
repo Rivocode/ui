@@ -103,6 +103,16 @@ export default function App() {
   alvo de toque não encolhe em tela de dedo.
 - O `useToast` já vem ligado, como no web: nenhum provedor extra para montar.
 
+## Ajuste fino com className
+
+Como no web, toda peça aceita `className` na raiz e a classe de quem usa vence
+a da peça — `h-14` derruba o `h-12` do Button, `rounded-pill` derruba o
+`rounded-md`. É o que permite um wrapper de cliente num arquivo do app, sem
+fork. Nas peças com folha (Select, Combobox, DatePicker, Sheet, Dialog, Menu),
+a documentação da prop diz o que ela veste — o gatilho ou o painel. Lembre da
+regra do pré-compilador: classe nova usada no app pede `npx
+rivocode-ui-native-css` de novo.
+
 ## O que nunca fazer
 
 - Classe com var arbitrária (`h-[--rc-control-md]`) ou `translate-*`: o

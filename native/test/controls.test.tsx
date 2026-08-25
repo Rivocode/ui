@@ -21,6 +21,15 @@ describe("Button", () => {
     expect(byRole(screen, "button")[0].props.disabled).toBe(true);
   });
 
+  test("a classe de quem usa vence a da peca, para o wrapper de cliente", () => {
+    const screen = render(<Button className="h-14 rounded-pill">x</Button>);
+    const root = byRole(screen, "button")[0].props.className as string;
+    expect(root).toContain("h-14");
+    expect(root).not.toContain("h-10");
+    expect(root).toContain("rounded-pill");
+    expect(root).not.toContain("rounded-md");
+  });
+
   test("cada variante veste o papel certo, nunca cor literal", () => {
     for (const [variant, expected] of [
       ["primary", "bg-accent"],

@@ -1,6 +1,8 @@
 import { Children, type ReactNode } from "react";
 import { Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type DescriptionItemProps = {
   label: string;
   children: ReactNode;
@@ -29,9 +31,15 @@ export function DescriptionItem({ label, children }: DescriptionItemProps) {
  * as vars internas dela derrubam o compilador nativo por cima. (E o nome
  * dela nao pode nem aparecer neste comentario: o scanner le fonte crua.)
  */
-export function DescriptionList({ children }: { children: ReactNode }) {
+export function DescriptionList({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <View>
+    <View className={cn(className)}>
       {Children.toArray(children).map((row, index) => (
         <View key={index} className={index > 0 ? "border-t border-border" : ""}>
           {row}

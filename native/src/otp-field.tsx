@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
 import { Pressable, TextInput, Text, View } from "react-native";
 
+import { cn } from "./cn";
+
 export type OTPFieldProps = {
   /** Quantos digitos o codigo tem. */
   length?: number;
@@ -8,6 +10,7 @@ export type OTPFieldProps = {
   onValueChange: (value: string) => void;
   /** Chamado uma vez, quando o ultimo digito entra. */
   onComplete?: (value: string) => void;
+  className?: string;
 };
 
 /**
@@ -15,7 +18,7 @@ export type OTPFieldProps = {
  * por tras. E o unico jeito de o teclado, o autofill de SMS e o leitor de
  * tela enxergarem um campo so, enquanto o olho ve um digito por caixa.
  */
-export function OTPField({ length = 6, value, onValueChange, onComplete }: OTPFieldProps) {
+export function OTPField({ length = 6, value, onValueChange, onComplete, className }: OTPFieldProps) {
   const input = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
 
@@ -29,7 +32,7 @@ export function OTPField({ length = 6, value, onValueChange, onComplete }: OTPFi
     <Pressable
       accessibilityRole="none"
       onPress={() => input.current?.focus()}
-      className="flex-row justify-between gap-2"
+      className={cn("flex-row justify-between gap-2", className)}
     >
       {Array.from({ length }, (_, index) => {
         const filled = index < value.length;

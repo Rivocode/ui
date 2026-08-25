@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 
 import { Card, CardContent } from "./card";
+import { cn } from "./cn";
 
 export type StatProps = {
   label: string;
@@ -13,15 +14,16 @@ export type StatProps = {
   invert?: boolean;
   /** O slot de tendencia, quando houver um grafico nativo para por. */
   chart?: ReactNode;
+  className?: string;
 };
 
 /** O numero de painel, na mesma hierarquia do web: rotulo, valor, variacao. */
-export function Stat({ label, value, delta, deltaLabel, invert, chart }: StatProps) {
+export function Stat({ label, value, delta, deltaLabel, invert, chart, className }: StatProps) {
   const rose = (delta ?? 0) >= 0;
   const good = invert ? !rose : rose;
 
   return (
-    <Card className="flex-1">
+    <Card className={cn("flex-1", className)}>
       <CardContent className="gap-1">
         <Text className="text-sm text-fg-muted">{label}</Text>
         <Text className="text-2xl font-semibold text-fg">{value}</Text>

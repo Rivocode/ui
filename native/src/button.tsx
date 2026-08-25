@@ -1,10 +1,7 @@
 import type { ReactNode } from "react";
 import { Pressable, Text, type PressableProps } from "react-native";
 
-/* O cn do web e tailwind-merge; aqui um join basta, porque as variantes nao
-   colidem entre si. */
-const cn = (...parts: Array<string | false | null | undefined>) =>
-  parts.filter(Boolean).join(" ");
+import { cn } from "./cn";
 
 const CONTAINER: Record<string, string> = {
   primary: "bg-accent active:bg-accent-active",
@@ -30,7 +27,13 @@ export type ButtonProps = Omit<PressableProps, "children"> & {
  * O botao nativo: Pressable com os mesmos papeis do web, em tres tamanhos
  * de altura fixa - em tela de toque a densidade nao aperta os controles.
  */
-export function Button({ children, variant = "primary", size = "md", ...props }: ButtonProps) {
+export function Button({
+  children,
+  variant = "primary",
+  size = "md",
+  className,
+  ...props
+}: ButtonProps & { className?: string }) {
   // Altura fixa por tamanho, por decisao: alvo de toque nao encolhe em tela
   // de dedo, entao a densidade compacta do web nao porta.
   const height = { sm: "h-8", md: "h-10", lg: "h-12" }[size];
@@ -47,6 +50,8 @@ export function Button({ children, variant = "primary", size = "md", ...props }:
         pad,
         CONTAINER[variant],
         props.disabled && "opacity-50",
+        // A classe de quem usa vence a da peca, como no web.
+        className,
       )}
     >
       <Text className={cn("font-medium", text, LABEL[variant])}>{children}</Text>

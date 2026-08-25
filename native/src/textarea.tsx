@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TextInput, type TextInputProps } from "react-native";
 
 import { tokens } from "../tokens";
+import { cn } from "./cn";
 import { useRivo } from "./provider";
 
 export type TextareaProps = TextInputProps & {
@@ -14,7 +15,15 @@ export type TextareaProps = TextInputProps & {
  * O campo de texto longo: o mesmo Input, mais alto e multilinha. A borda
  * acende no foco pela mesma razao - e o anel de foco de uma tela de toque.
  */
-export function Textarea({ invalid, rows = 4, onFocus, onBlur, style, ...props }: TextareaProps) {
+export function Textarea({
+  invalid,
+  rows = 4,
+  onFocus,
+  onBlur,
+  style,
+  className,
+  ...props
+}: TextareaProps) {
   const [focused, setFocused] = useState(false);
   const { theme } = useRivo();
 
@@ -33,10 +42,11 @@ export function Textarea({ invalid, rows = 4, onFocus, onBlur, style, ...props }
       }}
       placeholderTextColor={tokens.themes[theme]["fg-subtle"]}
       style={[{ minHeight: rows * 24 }, style]}
-      className={[
+      className={cn(
         "rounded-md border bg-surface px-3.5 py-3 text-base text-fg",
         invalid ? "border-danger" : focused ? "border-accent" : "border-border-strong",
-      ].join(" ")}
+        className,
+      )}
     />
   );
 }

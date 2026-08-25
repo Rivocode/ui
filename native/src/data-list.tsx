@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { Button } from "./button";
+import { cn } from "./cn";
 import { EmptyState } from "./empty-state";
 import { Skeleton } from "./skeleton";
 
@@ -18,6 +19,7 @@ export type DataListProps<Row> = {
 
   onRowPress?: (row: Row) => void;
   skeletonRows?: number;
+  className?: string;
 };
 
 /**
@@ -37,6 +39,7 @@ export function DataList<Row>({
   empty,
   onRowPress,
   skeletonRows = 4,
+  className,
 }: DataListProps<Row>) {
   if (isError) {
     return (
@@ -71,7 +74,7 @@ export function DataList<Row>({
   }
 
   return (
-    <View className="gap-1">
+    <View className={cn("gap-1", className)}>
       {data.map((row, index) =>
         onRowPress ? (
           <Pressable
