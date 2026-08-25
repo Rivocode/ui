@@ -1,6 +1,7 @@
 import { Button, EmptyState, RivoProvider } from '@rivocode/ui'
 import { FileCode2, FileText } from 'lucide-react'
 import { useState } from 'react'
+import { IconGallery } from '@/components/icon-gallery'
 import { Markdown } from '@/components/markdown'
 import { findGuide } from '@/guides'
 import { ThemePlayground } from '@/components/theme-playground'
@@ -47,6 +48,7 @@ export function GuidePage({ slug }: { slug: string }) {
 
       {slug === 'temas' && <ThemePlayground />}
       {slug === 'densidade' && <DensityDemo />}
+      {slug === 'icones' && <IconGallery />}
     </article>
   )
 }

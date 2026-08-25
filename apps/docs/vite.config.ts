@@ -325,8 +325,41 @@ function previewsClosed(): Plugin {
   }
 }
 
+/**
+ * O acervo da galeria de icones, como modulo virtual: os dados vetoriais de
+ * cada icone saem dos proprios modulos do lucide-react no build, e viram um
+ * chunk proprio que so a pagina /icones importa - importar o objeto `icons`
+ * do pacote poria as ~1500 formas no bundle de toda pagina.
+ */
+function iconGallery(): Plugin {
+  const VIRTUAL = 'virtual:icon-gallery'
+  const ICONS_DIR = here('./node_modules/lucide-react/dist/esm/icons')
+
+  return {
+    name: 'rivocode-galeria-de-icones',
+    resolveId(id) {
+      return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
+    },
+    load(id) {
+      if (id !== `\0${VIRTUAL}`) return undefined
+
+      const icons: Record<string, unknown> = {}
+      for (const file of readdirSync(ICONS_DIR)) {
+        if (!file.endsWith('.mjs')) continue
+        const source = readFileSync(`${ICONS_DIR}/${file}`, 'utf8')
+        // So os arquivos com o desenho: os de alias reexportam outro modulo.
+        const match = /const __iconNode = (\[[\s\S]*?\]);\n/.exec(source)
+        if (!match) continue
+        // Confiavel porque e o node_modules deste build, nao entrada externa.
+        icons[file.replace(/\.mjs$/, '')] = new Function(`return ${match[1]}`)()
+      }
+      return `export default ${JSON.stringify(icons)}`
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed()],
+  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), iconGallery()],
   resolve: {
     // The library resolves to source, not to `dist`: the docs then reflect
     // what is written right now, with no build step first, and HMR reaches the
