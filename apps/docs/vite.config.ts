@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
+import { GUIDE_LIST } from './src/guide-list'
 import { findParent, importPathOf } from './src/parts'
 import { parseProps, parsesRootProps } from './src/props-parse'
 import { renderDoc, type Part } from './src/render-md'
@@ -61,14 +62,9 @@ function readDocs(): Doc[] {
  * them HTML-only meant the only way to hand someone the theme contract was to
  * paste it.
  */
-const GUIDE_TITLES: Record<string, string> = {
-  instalacao: 'Instalação',
-  'inicio-rapido': 'Início rápido',
-  temas: 'Temas e personalização',
-  densidade: 'Densidade',
-  'para-agents': 'Para agents',
-  skill: 'Skill',
-}
+const GUIDE_TITLES: Record<string, string> = Object.fromEntries(
+  GUIDE_LIST.map((guide) => [guide.slug, guide.title]),
+)
 
 function readGuides() {
   const guides = new Map<string, { title: string; body: string }>()
