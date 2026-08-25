@@ -53,9 +53,9 @@ const RECEITA = {
 } satisfies ChartConfig;
 
 const SITUACAO = [
-  { nome: "pagas", valor: 47 },
-  { nome: "abertas", valor: 12 },
-  { nome: "vencidas", valor: 4 },
+  { name: "pagas", value: 47 },
+  { name: "abertas", value: 12 },
+  { name: "vencidas", value: 4 },
 ];
 
 const SITUACOES = {
@@ -64,8 +64,8 @@ const SITUACOES = {
   vencidas: { label: "Vencidas", color: "var(--rc-danger)" },
 } satisfies ChartConfig;
 
-function dinheiro(valor: number) {
-  return `R$ ${(valor / 1000).toLocaleString("pt-BR")}k`;
+function dinheiro(value: number) {
+  return `R$ ${(value / 1000).toLocaleString("pt-BR")}k`;
 }
 
 function Amostra({ theme }: { theme: RivoTheme }) {
@@ -121,7 +121,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                   content={
                     <ChartTooltipContent
                       config={RECEITA}
-                      formatValue={(valor) => `R$ ${valor.toLocaleString("pt-BR")}`}
+                      formatValue={(value) => `R$ ${value.toLocaleString("pt-BR")}`}
                     />
                   }
                 />
@@ -188,7 +188,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                   {...movimento}
                 >
                   {SITUACAO.map((fatia) => (
-                    <Cell key={fatia.nome} fill={`var(--color-${fatia.nome})`} />
+                    <Cell key={fatia.name} fill={`var(--color-${fatia.name})`} />
                   ))}
                 </Pie>
                 <ChartLegend content={<ChartLegendContent config={SITUACOES} />} />

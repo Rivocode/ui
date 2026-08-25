@@ -14,7 +14,7 @@ export type Column<Row> = {
   key: string;
   header: ReactNode;
   /** O que a celula mostra. Sem isto, o valor cru da chave. */
-  cell?: (linha: Row) => ReactNode;
+  cell?: (row: Row) => ReactNode;
   align?: "left" | "right";
   /** Some no celular. Use para o que da para descobrir de outro jeito. */
   hideOnMobile?: boolean;
@@ -24,7 +24,7 @@ export type DataTableProps<Row> = {
   data: Row[] | undefined;
   columns: Column<Row>[];
   /** Identidade da linha. Indice serve, mas quebra quando a lista reordena. */
-  rowKey: (linha: Row, indice: number) => string;
+  rowKey: (row: Row, index: number) => string;
 
   isLoading?: boolean;
   isError?: boolean;
@@ -39,7 +39,7 @@ export type DataTableProps<Row> = {
    */
   empty?: { title: string; description: string; action?: ReactNode; icon?: ReactNode };
 
-  onRowClick?: (linha: Row) => void;
+  onRowClick?: (row: Row) => void;
   /** Quantas linhas falsas o carregando mostra. */
   skeletonRows?: number;
   className?: string;
@@ -113,9 +113,9 @@ export function DataTable<Row>({
     );
   }
 
-  const carregando = isLoading || data === undefined;
+  const loading = isLoading || data === undefined;
 
-  if (!carregando && data.length === 0 && empty) {
+  if (!loading && data.length === 0 && empty) {
     return (
       <EmptyState
         className={className}
@@ -133,28 +133,28 @@ export function DataTable<Row>({
 
       <TableHeader>
         <TableRow>
-          {columns.map((coluna) => (
+          {columns.map((column) => (
             <TableHead
-              key={coluna.key}
+              key={column.key}
               className={cn(
-                coluna.align === "right" && "text-right",
-                coluna.hideOnMobile && "max-sm:hidden",
+                column.align === "right" && "text-right",
+                column.hideOnMobile && "max-sm:hidden",
               )}
             >
-              {coluna.header}
+              {column.header}
             </TableHead>
           ))}
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {carregando
-          ? Array.from({ length: skeletonRows }, (_, linha) => (
-              <TableRow key={`carregando-${linha}`}>
-                {columns.map((coluna) => (
+        {loading
+          ? Array.from({ length: skeletonRows }, (_, row) => (
+              <TableRow key={`carregando-${row}`}>
+                {columns.map((column) => (
                   <TableCell
-                    key={coluna.key}
-                    className={cn(coluna.hideOnMobile && "max-sm:hidden")}
+                    key={column.key}
+                    className={cn(column.hideOnMobile && "max-sm:hidden")}
                   >
                     {/* A falsa linha tem a largura da coluna, e nao a do texto
                         que vier: assim a tabela nao pula quando os dados
@@ -164,23 +164,23 @@ export function DataTable<Row>({
                 ))}
               </TableRow>
             ))
-          : data.map((linha, indice) => (
+          : data.map((row, index) => (
               <TableRow
-                key={rowKey(linha, indice)}
-                onClick={onRowClick ? (event) => openRow(event, linha) : undefined}
+                key={rowKey(row, index)}
+                onClick={onRowClick ? (event) => openRow(event, row) : undefined}
                 className={cn(onRowClick && "cursor-pointer")}
               >
-                {columns.map((coluna) => (
+                {columns.map((column) => (
                   <TableCell
-                    key={coluna.key}
+                    key={column.key}
                     className={cn(
-                      coluna.align === "right" && "text-right",
-                      coluna.hideOnMobile && "max-sm:hidden",
+                      column.align === "right" && "text-right",
+                      column.hideOnMobile && "max-sm:hidden",
                     )}
                   >
-                    {coluna.cell
-                      ? coluna.cell(linha)
-                      : String((linha as Record<string, unknown>)[coluna.key] ?? "")}
+                    {column.cell
+                      ? column.cell(row)
+                      : String((row as Record<string, unknown>)[column.key] ?? "")}
                   </TableCell>
                 ))}
               </TableRow>

@@ -105,17 +105,17 @@ for (const arquivo of readdirSync(PASTA)) {
     [...antes.matchAll(/import\s*\{([^}]*)\}/g)].flatMap((achado) =>
       achado[1]
         .split(",")
-        .map((parte) => parte.replace("type ", "").split(" as ").pop()!.trim())
+        .map((part) => part.replace("type ", "").split(" as ").pop()!.trim())
         .filter(Boolean),
     ),
   );
 
-  const depois = antes.replace(/export function (\w+)\(/g, (inteiro, nome: string) => {
-    const novo = NOMES[nome];
-    if (!novo) return inteiro;
+  const depois = antes.replace(/export function (\w+)\(/g, (whole, name: string) => {
+    const novo = NOMES[name];
+    if (!novo) return whole;
     if (importados.has(novo)) {
-      console.warn(`  ${arquivo}: ${novo} colide com um import, mantido ${nome}`);
-      return inteiro;
+      console.warn(`  ${arquivo}: ${novo} colide com um import, mantido ${name}`);
+      return whole;
     }
     trocas++;
     return `export function ${novo}(`;

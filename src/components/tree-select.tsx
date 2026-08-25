@@ -42,25 +42,25 @@ export function TreeSelect({
   disabled,
   ...props
 }: TreeSelectProps) {
-  const controlado = value !== undefined;
-  const [interno, setInterno] = useState<string[]>(defaultValue);
-  const escolhidos = controlado ? value : interno;
+  const controlled = value !== undefined;
+  const [internal, setInternal] = useState<string[]>(defaultValue);
+  const selected = controlled ? value : internal;
 
   const [busca, setBusca] = useState("");
 
-  const nomes = useMemo(() => nomesDe(items, escolhidos), [items, escolhidos]);
+  const names = useMemo(() => namesOf(items, selected), [items, selected]);
   // A conta e sempre sobre as folhas que existem na arvore, e nunca sobre a
   // lista crua: id que sobrou de uma arvore antiga contaria como escolha e o
   // gatilho mentiria o numero.
-  const rotulo =
-    nomes.length === 0
+  const label =
+    names.length === 0
       ? placeholder
-      : nomes.length <= 3
-        ? nomes.join(", ")
-        : `${nomes.length} escolhidos`;
+      : names.length <= 3
+        ? names.join(", ")
+        : `${names.length} escolhidos`;
 
   return (
-    <Popover onOpenChange={(aberto) => !aberto && setBusca("")}>
+    <Popover onOpenChange={(isOpen) => !isOpen && setBusca("")}>
       <PopoverTrigger
         render={
           <button
@@ -70,13 +70,13 @@ export function TreeSelect({
             className={cn(
               inputVariants({ size }),
               "flex items-center justify-between gap-2 text-left",
-              nomes.length === 0 && "text-fg-subtle",
+              names.length === 0 && "text-fg-subtle",
               className,
             )}
           />
         }
       >
-        <span className="truncate">{rotulo}</span>
+        <span className="truncate">{label}</span>
         <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-fg-subtle" />
       </PopoverTrigger>
 
@@ -90,7 +90,7 @@ export function TreeSelect({
             />
             <input
               value={busca}
-              onChange={(evento) => setBusca(evento.target.value)}
+              onChange={(event) => setBusca(event.target.value)}
               placeholder="Buscar"
               aria-label="Buscar na arvore"
               className={cn(inputVariants({ size: "sm" }), "pl-8")}
@@ -101,11 +101,11 @@ export function TreeSelect({
         <div className="max-h-72 overflow-y-auto">
           <Tree
             items={items}
-            selected={escolhidos}
+            selected={selected}
             multiple={multiple}
             filter={busca}
             onSelectedChange={(ids) => {
-              if (!controlado) setInterno(ids);
+              if (!controlled) setInternal(ids);
               onValueChange?.(ids);
             }}
           />
@@ -116,20 +116,20 @@ export function TreeSelect({
 }
 
 /** Os nomes das folhas marcadas, na ordem em que aparecem na arvore. */
-function nomesDe(items: TreeNode[], ids: string[]): string[] {
-  const saida: string[] = [];
+function namesOf(items: TreeNode[], ids: string[]): string[] {
+  const output: string[] = [];
 
-  function andar(nos: TreeNode[]) {
-    for (const no of nos) {
-      if (!no.children?.length && ids.includes(no.id)) {
-        saida.push(typeof no.label === "string" ? no.label : no.id);
+  function andar(nodes: TreeNode[]) {
+    for (const node of nodes) {
+      if (!node.children?.length && ids.includes(node.id)) {
+        output.push(typeof node.label === "string" ? node.label : node.id);
       }
-      if (no.children) andar(no.children);
+      if (node.children) andar(node.children);
     }
   }
 
   andar(items);
-  return saida;
+  return output;
 }
 
 export { leavesOf };

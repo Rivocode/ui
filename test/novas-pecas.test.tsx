@@ -8,8 +8,8 @@ import { ButtonGroup } from "../src/components/button-group";
 import { Command, type CommandGroup } from "../src/components/command";
 import { Kbd } from "../src/components/kbd";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", () => {
@@ -17,8 +17,8 @@ test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", (
 
   // O rotulo diz a combinacao inteira; as teclas em si ficam escondidas, senao
   // o leitor soletraria "comando" e "K" como dois textos soltos.
-  const grupo = screen.getByLabelText("mod mais k");
-  expect(grupo.querySelectorAll("kbd").length).toBe(2);
+  const group = screen.getByLabelText("mod mais k");
+  expect(group.querySelectorAll("kbd").length).toBe(2);
 });
 
 test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
@@ -29,9 +29,9 @@ test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
     </ButtonGroup>,
   );
 
-  const grupo = container.querySelector("[role=group]");
-  expect(grupo).not.toBeNull();
-  expect(grupo!.querySelectorAll("button").length).toBe(2);
+  const group = container.querySelector("[role=group]");
+  expect(group).not.toBeNull();
+  expect(group!.querySelectorAll("button").length).toBe(2);
   // Nenhuma classe de canto foi escrita nos filhos.
   expect(screen.getByText("Salvar").className).not.toContain("rounded-r-none");
 });
@@ -43,9 +43,9 @@ test("a proporcao vira estilo, e nao mais uma classe escrita a mao", () => {
     </AspectRatio>,
   );
 
-  const caixa = container.querySelector<HTMLElement>("[data-testid=moldura]")!;
-  expect(caixa.getAttribute("style")).toContain("aspect-ratio");
-  expect(caixa.getAttribute("style")).toContain("1.333");
+  const box = container.querySelector<HTMLElement>("[data-testid=moldura]")!;
+  expect(box.getAttribute("style")).toContain("aspect-ratio");
+  expect(box.getAttribute("style")).toContain("1.333");
 });
 
 const GRUPOS: CommandGroup[] = [
@@ -68,43 +68,43 @@ test("a paleta acha pelo apelido, e nao so pelo rotulo exato", () => {
 });
 
 test("a paleta ignora acento, porque ninguem digita acento com pressa", () => {
-  const grupos: CommandGroup[] = [
+  const groups: CommandGroup[] = [
     { items: [{ id: "sao", label: "São Paulo", onSelect: () => {} }] },
   ];
 
-  comTema(<Command open onOpenChange={() => {}} groups={grupos} />);
+  comTema(<Command open onOpenChange={() => {}} groups={groups} />);
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "sao" } });
 
   expect(screen.getByRole("option", { name: /São Paulo/ })).toBeDefined();
 });
 
 test("Enter escolhe o item marcado, e fecha", () => {
-  let escolhido = "";
-  let aberta = true;
+  let picked = "";
+  let isOpen = true;
 
   comTema(
     <Command
       open
       onOpenChange={(proxima) => {
-        aberta = proxima;
+        isOpen = proxima;
       }}
       groups={[
         {
           items: [
-            { id: "a", label: "Primeira", onSelect: () => (escolhido = "a") },
-            { id: "b", label: "Segunda", onSelect: () => (escolhido = "b") },
+            { id: "a", label: "Primeira", onSelect: () => (picked = "a") },
+            { id: "b", label: "Segunda", onSelect: () => (picked = "b") },
           ],
         },
       ]}
     />,
   );
 
-  const campo = screen.getByRole("combobox");
-  fireEvent.keyDown(campo, { key: "ArrowDown" });
-  fireEvent.keyDown(campo, { key: "Enter" });
+  const field = screen.getByRole("combobox");
+  fireEvent.keyDown(field, { key: "ArrowDown" });
+  fireEvent.keyDown(field, { key: "Enter" });
 
-  expect(escolhido).toBe("b");
-  expect(aberta).toBe(false);
+  expect(picked).toBe("b");
+  expect(isOpen).toBe(false);
 });
 
 test("sem resultado ela diz isso, em vez de mostrar lista vazia", () => {

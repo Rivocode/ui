@@ -1,7 +1,7 @@
-export const version = "0.3.0";
+export const version = "0.4.0";
 
 export { cn } from "./lib/cn";
-export { useMediaQuery, useNarrowScreen } from "./lib/tela";
+export { useMediaQuery, useNarrowScreen } from "./lib/screen";
 export {
   RivoProvider,
   useRivoContext,
@@ -91,7 +91,7 @@ export {
   type DateRange,
   type DateRangePickerProps,
 } from "./components/date-range-picker";
-export { formatDate, parseDate, maskDate } from "./lib/data";
+export { formatDate, parseDate, maskDate } from "./lib/date";
 export {
   Sheet,
   SheetClose,
@@ -133,7 +133,7 @@ export {
   MASKS,
   type Mask,
   type MaskName,
-} from "./lib/mascara";
+} from "./lib/mask";
 export {
   InputAction,
   InputGroup,

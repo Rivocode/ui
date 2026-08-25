@@ -3,13 +3,13 @@
 import { useSyncExternalStore } from "react";
 
 /** O mesmo corte do `sm` do Tailwind, para o CSS e o JS concordarem. */
-const CELULAR = "(max-width: 639px)";
+const PHONE = "(max-width: 639px)";
 
-function assinar(consulta: string) {
-  return (avisar: () => void) => {
-    const media = window.matchMedia(consulta);
-    media.addEventListener("change", avisar);
-    return () => media.removeEventListener("change", avisar);
+function subscribe(query: string) {
+  return (notify: () => void) => {
+    const media = window.matchMedia(query);
+    media.addEventListener("change", notify);
+    return () => media.removeEventListener("change", notify);
   };
 }
 
@@ -24,15 +24,15 @@ function assinar(consulta: string) {
  * a do desktop e se corrige no primeiro efeito, o que e melhor do que o
  * contrario, porque erro para o lado estreito quebra o layout largo.
  */
-export function useMediaQuery(consulta: string): boolean {
+export function useMediaQuery(query: string): boolean {
   return useSyncExternalStore(
-    assinar(consulta),
-    () => window.matchMedia(consulta).matches,
+    subscribe(query),
+    () => window.matchMedia(query).matches,
     () => false,
   );
 }
 
 /** Verdadeiro em largura de celular, abaixo do `sm` do Tailwind. */
 export function useNarrowScreen(): boolean {
-  return useMediaQuery(CELULAR);
+  return useMediaQuery(PHONE);
 }

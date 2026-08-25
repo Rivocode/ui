@@ -28,10 +28,10 @@ export type SliderProps = ComponentProps<typeof BaseSlider.Root> & {
 export function Slider({ className, label, showValue, thumbLabel, ...props }: SliderProps) {
   // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
   // uma faixa com um pino so nao deixa mover o outro limite.
-  const valores = props.value ?? props.defaultValue;
-  const quantos = Array.isArray(valores) ? valores.length : 1;
-  const rotulos = Array.from({ length: quantos }, (_, indice) =>
-    Array.isArray(thumbLabel) ? thumbLabel[indice] : thumbLabel,
+  const values = props.value ?? props.defaultValue;
+  const quantos = Array.isArray(values) ? values.length : 1;
+  const labels = Array.from({ length: quantos }, (_, index) =>
+    Array.isArray(thumbLabel) ? thumbLabel[index] : thumbLabel,
   );
 
   return (
@@ -48,11 +48,11 @@ export function Slider({ className, label, showValue, thumbLabel, ...props }: Sl
       <BaseSlider.Control className="flex touch-none items-center py-2 select-none">
         <BaseSlider.Track className="h-1.5 w-full rounded-pill bg-skeleton select-none">
           <BaseSlider.Indicator className="rounded-pill bg-accent select-none" />
-          {rotulos.map((rotulo, indice) => (
+          {labels.map((label, index) => (
             <BaseSlider.Thumb
-              key={indice}
-              index={indice}
-              aria-label={rotulo}
+              key={index}
+              index={index}
+              aria-label={label}
               className={cn(
                 "size-4 rounded-pill border border-accent bg-surface select-none",
                 "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",

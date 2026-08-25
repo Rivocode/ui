@@ -12,7 +12,7 @@ export type NumberFieldProps = ComponentProps<typeof BaseNumberField.Root> & {
   size?: "sm" | "md" | "lg";
 };
 
-const PASSO = cn(
+const STEP = cn(
   "flex w-9 shrink-0 items-center justify-center text-fg-muted",
   "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
   "hover:bg-accent-subtle hover:text-fg",
@@ -46,7 +46,7 @@ export function NumberField({ className, placeholder, size, ...props }: NumberFi
       >
         <BaseNumberField.Decrement
           aria-label="Diminuir"
-          className={cn(PASSO, "border-r border-border")}
+          className={cn(STEP, "border-r border-border")}
         >
           <Minus size={14} aria-hidden="true" />
         </BaseNumberField.Decrement>
@@ -62,7 +62,7 @@ export function NumberField({ className, placeholder, size, ...props }: NumberFi
 
         <BaseNumberField.Increment
           aria-label="Aumentar"
-          className={cn(PASSO, "border-l border-border")}
+          className={cn(STEP, "border-l border-border")}
         >
           <Plus size={14} aria-hidden="true" />
         </BaseNumberField.Increment>

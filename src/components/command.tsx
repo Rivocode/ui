@@ -49,8 +49,8 @@ export type CommandProps = {
 };
 
 /** Tira acento e caixa, para "Notas" achar "notas" e "Sao" achar "são". */
-function normalizar(texto: string) {
-  return texto
+function normalize(text: string) {
+  return text
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
@@ -92,14 +92,14 @@ export function Command({
 
   useEffect(() => {
     if (!shortcut) return;
-    function aoTeclar(evento: KeyboardEvent) {
-      if (evento.key.toLowerCase() === shortcut && (evento.metaKey || evento.ctrlKey)) {
-        evento.preventDefault();
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key.toLowerCase() === shortcut && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
         onOpenChange(!open);
       }
     }
-    window.addEventListener("keydown", aoTeclar);
-    return () => window.removeEventListener("keydown", aoTeclar);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [shortcut, open, onOpenChange]);
 
   // Cada abertura comeca limpa. Uma paleta que guarda a busca da vez passada
@@ -111,69 +111,69 @@ export function Command({
     }
   }, [open]);
 
-  const encontrados = useMemo(() => {
-    const termo = normalizar(query.trim());
+  const matches = useMemo(() => {
+    const termo = normalize(query.trim());
     if (!termo) return groups;
 
     return groups
-      .map((grupo) => ({
-        ...grupo,
-        items: grupo.items.filter((item) =>
-          normalizar(`${item.label} ${item.description ?? ""} ${item.keywords ?? ""}`).includes(
+      .map((group) => ({
+        ...group,
+        items: group.items.filter((item) =>
+          normalize(`${item.label} ${item.description ?? ""} ${item.keywords ?? ""}`).includes(
             termo,
           ),
         ),
       }))
-      .filter((grupo) => grupo.items.length > 0);
+      .filter((group) => group.items.length > 0);
   }, [groups, query]);
 
   /** A lista achatada, que e a ordem em que a seta anda. */
-  const andaveis = useMemo(
-    () => encontrados.flatMap((grupo) => grupo.items).filter((item) => !item.disabled),
-    [encontrados],
+  const reachable = useMemo(
+    () => matches.flatMap((group) => group.items).filter((item) => !item.disabled),
+    [matches],
   );
 
   useEffect(() => {
-    setActive((atual) => Math.min(atual, Math.max(0, andaveis.length - 1)));
-  }, [andaveis.length]);
+    setActive((current) => Math.min(current, Math.max(0, reachable.length - 1)));
+  }, [reachable.length]);
 
   // Traz o item escolhido para a vista quando a seta passa dele.
   useEffect(() => {
-    const escolhido = andaveis[active];
-    if (!escolhido || !list.current) return;
+    const picked = reachable[active];
+    if (!picked || !list.current) return;
     list.current
-      .querySelector(`[data-id="${CSS.escape(escolhido.id)}"]`)
+      .querySelector(`[data-id="${CSS.escape(picked.id)}"]`)
       ?.scrollIntoView({ block: "nearest" });
-  }, [active, andaveis]);
+  }, [active, reachable]);
 
-  function escolher(item: CommandItem) {
+  function pick(item: CommandItem) {
     onOpenChange(false);
     item.onSelect();
   }
 
-  function aoTeclarNoCampo(evento: React.KeyboardEvent) {
-    if (evento.key === "ArrowDown") {
-      evento.preventDefault();
-      setActive((atual) => (andaveis.length ? (atual + 1) % andaveis.length : 0));
+  function onFieldKeyDown(event: React.KeyboardEvent) {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((current) => (reachable.length ? (current + 1) % reachable.length : 0));
       return;
     }
 
-    if (evento.key === "ArrowUp") {
-      evento.preventDefault();
-      setActive((atual) => (andaveis.length ? (atual - 1 + andaveis.length) % andaveis.length : 0));
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((current) => (reachable.length ? (current - 1 + reachable.length) % reachable.length : 0));
       return;
     }
 
-    if (evento.key === "Enter") {
-      const escolhido = andaveis[active];
-      if (escolhido) {
-        evento.preventDefault();
-        escolher(escolhido);
+    if (event.key === "Enter") {
+      const picked = reachable[active];
+      if (picked) {
+        event.preventDefault();
+        pick(picked);
       }
     }
   }
 
-  const idDoAtivo = andaveis[active]?.id;
+  const idDoAtivo = reachable[active]?.id;
 
   return (
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -202,8 +202,8 @@ export function Command({
             <input
               autoFocus
               value={query}
-              onChange={(evento) => setQuery(evento.target.value)}
-              onKeyDown={aoTeclarNoCampo}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={onFieldKeyDown}
               placeholder={placeholder}
               role="combobox"
               aria-expanded="true"
@@ -223,20 +223,20 @@ export function Command({
             aria-label={title}
             className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5"
           >
-            {andaveis.length === 0 && (
+            {reachable.length === 0 && (
               <p className="px-2.5 py-8 text-center text-sm text-fg-subtle">{emptyMessage}</p>
             )}
 
-            {encontrados.map((grupo, indice) => (
-              <div key={grupo.label ?? indice} role="group" aria-label={grupo.label}>
-                {grupo.label && (
+            {matches.map((group, index) => (
+              <div key={group.label ?? index} role="group" aria-label={group.label}>
+                {group.label && (
                   <p className="px-2.5 pt-2 pb-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase">
-                    {grupo.label}
+                    {group.label}
                   </p>
                 )}
 
-                {grupo.items.map((item) => {
-                  const escolhido = item.id === idDoAtivo;
+                {group.items.map((item) => {
+                  const picked = item.id === idDoAtivo;
 
                   return (
                     <div
@@ -244,17 +244,17 @@ export function Command({
                       id={`${listId}-${item.id}`}
                       data-id={item.id}
                       role="option"
-                      aria-selected={escolhido}
+                      aria-selected={picked}
                       aria-disabled={item.disabled || undefined}
-                      onClick={() => !item.disabled && escolher(item)}
+                      onClick={() => !item.disabled && pick(item)}
                       onMouseMove={() => {
-                        const posicao = andaveis.indexOf(item);
-                        if (posicao !== -1) setActive(posicao);
+                        const position = reachable.indexOf(item);
+                        if (position !== -1) setActive(position);
                       }}
                       className={cn(
                         "flex cursor-default items-center gap-2.5 rounded-md px-2.5",
                         "py-[var(--rc-item-y)] text-base",
-                        escolhido ? "bg-accent-subtle text-fg" : "text-fg-muted",
+                        picked ? "bg-accent-subtle text-fg" : "text-fg-muted",
                         item.disabled && "text-fg-disabled",
                       )}
                     >

@@ -90,13 +90,13 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <Bloco titulo="Grupo de caixas">
             <CheckboxGroup defaultValue={["pix"]} aria-label="Formas aceitas">
               {[
-                { valor: "pix", rotulo: "Pix" },
-                { valor: "boleto", rotulo: "Boleto" },
-                { valor: "cartao", rotulo: "Cartao" },
+                { value: "pix", label: "Pix" },
+                { value: "boleto", label: "Boleto" },
+                { value: "cartao", label: "Cartao" },
               ].map((o) => (
-                <label key={o.valor} className="flex items-center gap-3 text-base text-fg">
-                  <Checkbox name="forma" value={o.valor} />
-                  {o.rotulo}
+                <label key={o.value} className="flex items-center gap-3 text-base text-fg">
+                  <Checkbox name="forma" value={o.value} />
+                  {o.label}
                 </label>
               ))}
             </CheckboxGroup>
@@ -161,8 +161,8 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <Bloco titulo="Area de rolagem">
             <ScrollArea className="h-32 rounded-md border border-border p-3">
               <div className="flex flex-col gap-2 text-base text-fg-muted">
-                {Array.from({ length: 12 }, (_, indice) => (
-                  <p key={indice}>Nota {4800 + indice}, emitida e enviada por email.</p>
+                {Array.from({ length: 12 }, (_, index) => (
+                  <p key={index}>Nota {4800 + index}, emitida e enviada por email.</p>
                 ))}
               </div>
             </ScrollArea>

@@ -13,7 +13,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
-import { useNarrowScreen } from "../lib/tela";
+import { useNarrowScreen } from "../lib/screen";
 import { Menu, MenuContent, MenuGroup, MenuItem, MenuTrigger } from "./menu";
 import { Sheet, SheetContent, SheetTitle } from "./sheet";
 import { Skeleton } from "./skeleton";
@@ -125,7 +125,7 @@ export function SidebarProvider({
     <SidebarContext value={value}>
       <div
         {...props}
-        data-rc-sidebar={isOpen ? "aberta" : "fechada"}
+        data-rc-sidebar={isOpen ? "open" : "closed"}
         className={cn("flex min-h-dvh w-full bg-bg", className)}
       >
         {children}
@@ -168,14 +168,14 @@ export function Sidebar({
   return (
     <aside
       {...props}
-      data-encolhida={collapsed || undefined}
-      data-lado={side}
+      data-collapsed={collapsed || undefined}
+      data-side={side}
       className={cn(
-        "group/barra sticky top-0 flex h-dvh shrink-0 flex-col gap-2 overflow-hidden",
+        "group/sidebar sticky top-0 flex h-dvh shrink-0 flex-col gap-2 overflow-hidden",
         "border-border bg-surface p-3",
         side === "right" ? "order-last border-l" : "border-r",
         "w-[var(--rc-sidebar)] transition-[width] duration-[var(--rc-duration-base)] ease-rc",
-        "data-[encolhida]:w-[var(--rc-sidebar-icone)] data-[encolhida]:px-2",
+        "data-[collapsed]:w-[var(--rc-sidebar-icon)] data-[collapsed]:px-2",
         className,
       )}
     >
@@ -336,7 +336,7 @@ export function SidebarGroup({ className, label, children, ...props }: SidebarGr
             "px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase",
             // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz
             // menos, mas mentir sobre o nome do grupo diz errado.
-            "group-data-[encolhida]/barra:hidden",
+            "group-data-[collapsed]/barra:hidden",
           )}
         >
           {label}

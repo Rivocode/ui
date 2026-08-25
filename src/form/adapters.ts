@@ -1,6 +1,6 @@
 import type { FieldPath, FieldValues, Noop, RefCallBack } from "react-hook-form";
 
-import type { CampoDoFormulario } from "./form-field";
+import type { FormFieldRow } from "./form-field";
 
 /**
  * So o `Input` aceita o campo espalhado como esta. O `DatePicker` e o `Select`
@@ -12,30 +12,30 @@ import type { CampoDoFormulario } from "./form-field";
  * controle, sem uma segunda camada de props para atravessar.
  */
 
-type Campo<V extends FieldValues, N extends FieldPath<V>> = CampoDoFormulario<V, N>;
+type Field<V extends FieldValues, N extends FieldPath<V>> = FormFieldRow<V, N>;
 
 /** O que todo controle recebe. O resto do fio vem do contexto do `Field`. */
-type Identidade = {
+type Identity = {
   name: string;
   disabled?: boolean;
 };
 
-export type PropsDeDatePicker = Identidade & {
+export type PropsDeDatePicker = Identity & {
   ref: RefCallBack;
   onBlur: Noop;
   value: Date | undefined;
   onValueChange: (data: Date | undefined) => void;
 };
 
-export type PropsDeSelect = Identidade & {
+export type PropsDeSelect = Identity & {
   value: unknown;
-  onValueChange: (valor: unknown) => void;
+  onValueChange: (value: unknown) => void;
 };
 
-export type PropsDeCheckbox = Identidade & {
+export type PropsDeCheckbox = Identity & {
   ref: RefCallBack;
   checked: boolean;
-  onCheckedChange: (marcado: boolean) => void;
+  onCheckedChange: (checked: boolean) => void;
 };
 
 /**
@@ -47,9 +47,9 @@ export type PropsDeCheckbox = Identidade & {
  * primeiro erro.
  */
 export function forDatePicker<V extends FieldValues, N extends FieldPath<V>>(
-  campo: Campo<V, N>,
+  field: Field<V, N>,
 ): PropsDeDatePicker {
-  const { onChange, value, name, ...resto } = campo;
+  const { onChange, value, name, ...resto } = field;
   return {
     ...resto,
     name,
@@ -66,13 +66,13 @@ export function forDatePicker<V extends FieldValues, N extends FieldPath<V>>(
  * precisa saber que o campo foi tocado le a propria escolha.
  */
 export function forSelect<V extends FieldValues, N extends FieldPath<V>>(
-  campo: Campo<V, N>,
+  field: Field<V, N>,
 ): PropsDeSelect {
-  const { onChange, ref: _ref, onBlur: _onBlur, name, ...resto } = campo;
+  const { onChange, ref: _ref, onBlur: _onBlur, name, ...resto } = field;
   return {
     ...resto,
     name,
-    onValueChange: (valor) => onChange(valor),
+    onValueChange: (value) => onChange(value),
   };
 }
 
@@ -84,13 +84,13 @@ export function forSelect<V extends FieldValues, N extends FieldPath<V>>(
  * a propria marcacao ja diz.
  */
 export function forCheckbox<V extends FieldValues, N extends FieldPath<V>>(
-  campo: Campo<V, N>,
+  field: Field<V, N>,
 ): PropsDeCheckbox {
-  const { onChange, value, onBlur: _onBlur, name, ...resto } = campo;
+  const { onChange, value, onBlur: _onBlur, name, ...resto } = field;
   return {
     ...resto,
     name,
     checked: Boolean(value),
-    onCheckedChange: (marcado) => onChange(marcado),
+    onCheckedChange: (checked) => onChange(checked),
   };
 }

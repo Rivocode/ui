@@ -71,10 +71,10 @@ const NO_MAC =
   typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 /** Traduz o nome de uma tecla para a escrita da plataforma. */
-export function keyName(tecla: string) {
-  const chave = tecla.toLowerCase();
-  const tabela = NO_MAC ? MAC : OUTROS;
-  return tabela[chave] ?? (tecla.length === 1 ? tecla.toUpperCase() : tecla);
+export function keyName(key: string) {
+  const token = key.toLowerCase();
+  const table = NO_MAC ? MAC : OUTROS;
+  return table[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 
 export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
@@ -100,18 +100,18 @@ export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
  */
 export function Kbd({ className, size, keys, children, ...props }: KbdProps) {
   if (keys) {
-    const partes = keys.split("+").map((parte) => parte.trim());
+    const parts = keys.split("+").map((part) => part.trim());
 
     return (
-      <span className="inline-flex items-center gap-1" aria-label={partes.join(" mais ")}>
-        {partes.map((parte, indice) => (
+      <span className="inline-flex items-center gap-1" aria-label={parts.join(" mais ")}>
+        {parts.map((part, index) => (
           <kbd
-            key={`${parte}-${indice}`}
+            key={`${part}-${index}`}
             {...props}
             aria-hidden="true"
             className={cn(kbdVariants({ size }), className)}
           >
-            {keyName(parte)}
+            {keyName(part)}
           </kbd>
         ))}
       </span>

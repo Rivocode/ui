@@ -54,12 +54,12 @@ export function Tree({
 }: TreeProps) {
   const [abertosInternos, setAbertosInternos] = useState<string[]>([]);
   const abertos = expanded ?? abertosInternos;
-  const raiz = useRef<HTMLUListElement>(null);
+  const root = useRef<HTMLUListElement>(null);
 
   const visiveis = useMemo(() => filtrar(items, filter.trim().toLowerCase()), [items, filter]);
 
   // Buscando, tudo abre: fechar o caminho ate o resultado esconde o resultado.
-  const buscando = filter.trim().length > 0;
+  const searching = filter.trim().length > 0;
 
   function alternarAberto(id: string) {
     const novo = abertos.includes(id) ? abertos.filter((x) => x !== id) : [...abertos, id];
@@ -67,74 +67,74 @@ export function Tree({
     onExpandedChange?.(novo);
   }
 
-  function alternarEscolha(no: TreeNode) {
-    const folhas = leavesOf(no);
+  function toggleSelect(node: TreeNode) {
+    const leaves = leavesOf(node);
 
     if (!multiple) {
       // Sem multipla, so folha escolhe, e a escolha troca em vez de somar.
-      if (no.children?.length) return;
-      onSelectedChange(selected.includes(no.id) ? [] : [no.id]);
+      if (node.children?.length) return;
+      onSelectedChange(selected.includes(node.id) ? [] : [node.id]);
       return;
     }
 
-    const todasMarcadas = folhas.every((folha) => selected.includes(folha));
-    const semAsFolhas = selected.filter((id) => !folhas.includes(id));
-    onSelectedChange(todasMarcadas ? semAsFolhas : [...semAsFolhas, ...folhas]);
+    const allChecked = leaves.every((leaf) => selected.includes(leaf));
+    const withoutLeaves = selected.filter((id) => !leaves.includes(id));
+    onSelectedChange(allChecked ? withoutLeaves : [...withoutLeaves, ...leaves]);
   }
 
   /**
    * Setas andam pelas linhas que estao na tela, e nao pela arvore inteira: a
    * navegacao segue o que o olho ve.
    */
-  function aoTeclar(evento: KeyboardEvent<HTMLUListElement>) {
-    const linhas = [...(raiz.current?.querySelectorAll<HTMLElement>("[role=treeitem]") ?? [])];
-    const atual = document.activeElement as HTMLElement | null;
-    const indice = linhas.findIndex((linha) => linha === atual);
-    if (indice < 0) return;
+  function onKeyDown(event: KeyboardEvent<HTMLUListElement>) {
+    const rows = [...(root.current?.querySelectorAll<HTMLElement>("[role=treeitem]") ?? [])];
+    const current = document.activeElement as HTMLElement | null;
+    const index = rows.findIndex((row) => row === current);
+    if (index < 0) return;
 
-    const id = linhas[indice]!.dataset.id!;
-    const no = achar(visiveis, id);
+    const id = rows[index]!.dataset.id!;
+    const node = achar(visiveis, id);
 
-    if (evento.key === "ArrowDown" || evento.key === "ArrowUp") {
-      evento.preventDefault();
-      const proximo = linhas[indice + (evento.key === "ArrowDown" ? 1 : -1)];
-      proximo?.focus();
-    } else if (evento.key === "ArrowRight" && no?.children?.length) {
-      evento.preventDefault();
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const next = rows[index + (event.key === "ArrowDown" ? 1 : -1)];
+      next?.focus();
+    } else if (event.key === "ArrowRight" && node?.children?.length) {
+      event.preventDefault();
       if (!abertos.includes(id)) alternarAberto(id);
-      else linhas[indice + 1]?.focus();
-    } else if (evento.key === "ArrowLeft") {
-      evento.preventDefault();
-      if (no?.children?.length && abertos.includes(id)) alternarAberto(id);
+      else rows[index + 1]?.focus();
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      if (node?.children?.length && abertos.includes(id)) alternarAberto(id);
       else {
-        const pai = paiDe(visiveis, id);
-        if (pai) raiz.current?.querySelector<HTMLElement>(`[data-id="${pai.id}"]`)?.focus();
+        const parent = paiDe(visiveis, id);
+        if (parent) root.current?.querySelector<HTMLElement>(`[data-id="${parent.id}"]`)?.focus();
       }
-    } else if (evento.key === " " || evento.key === "Enter") {
-      evento.preventDefault();
-      if (no) alternarEscolha(no);
+    } else if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      if (node) toggleSelect(node);
     }
   }
 
   return (
     <ul
-      ref={raiz}
+      ref={root}
       role="tree"
       aria-multiselectable={multiple || undefined}
-      onKeyDown={aoTeclar}
+      onKeyDown={onKeyDown}
       className={cn("flex flex-col", className)}
     >
-      {visiveis.map((no, indice) => (
+      {visiveis.map((node, index) => (
         <Ramo
-          key={no.id}
-          no={no}
-          nivel={0}
-          primeiro={indice === 0}
-          abertos={buscando ? null : abertos}
+          key={node.id}
+          node={node}
+          level={0}
+          isFirst={index === 0}
+          abertos={searching ? null : abertos}
           selected={selected}
           multiple={multiple}
           onAlternarAberto={alternarAberto}
-          onAlternarEscolha={alternarEscolha}
+          onToggleSelect={toggleSelect}
         />
       ))}
     </ul>
@@ -142,58 +142,58 @@ export function Tree({
 }
 
 function Ramo({
-  no,
-  nivel,
-  primeiro,
+  node,
+  level,
+  isFirst,
   abertos,
   selected,
   multiple,
   onAlternarAberto,
-  onAlternarEscolha,
+  onToggleSelect,
 }: {
-  no: TreeNode;
-  nivel: number;
-  primeiro: boolean;
+  node: TreeNode;
+  level: number;
+  isFirst: boolean;
   /** `null` quer dizer tudo aberto, que e o estado da busca. */
   abertos: string[] | null;
   selected: string[];
   multiple?: boolean;
   onAlternarAberto: (id: string) => void;
-  onAlternarEscolha: (no: TreeNode) => void;
+  onToggleSelect: (node: TreeNode) => void;
 }) {
-  const temFilhos = Boolean(no.children?.length);
-  const aberto = abertos === null || abertos.includes(no.id);
-  const folhas = leavesOf(no);
-  const marcadas = folhas.filter((folha) => selected.includes(folha)).length;
-  const cheio = marcadas > 0 && marcadas === folhas.length;
-  const misto = marcadas > 0 && !cheio;
+  const temFilhos = Boolean(node.children?.length);
+  const isOpen = abertos === null || abertos.includes(node.id);
+  const leaves = leavesOf(node);
+  const checkedLeaves = leaves.filter((leaf) => selected.includes(leaf)).length;
+  const cheio = checkedLeaves > 0 && checkedLeaves === leaves.length;
+  const misto = checkedLeaves > 0 && !cheio;
 
   return (
     <li>
       <div
         role="treeitem"
-        data-id={no.id}
-        aria-expanded={temFilhos ? aberto : undefined}
+        data-id={node.id}
+        aria-expanded={temFilhos ? isOpen : undefined}
         aria-selected={cheio}
-        aria-disabled={no.disabled || undefined}
-        tabIndex={primeiro && nivel === 0 ? 0 : -1}
-        onClick={() => !no.disabled && onAlternarEscolha(no)}
-        style={{ paddingLeft: `${nivel * 1.25 + 0.25}rem` }}
+        aria-disabled={node.disabled || undefined}
+        tabIndex={isFirst && level === 0 ? 0 : -1}
+        onClick={() => !node.disabled && onToggleSelect(node)}
+        style={{ paddingLeft: `${level * 1.25 + 0.25}rem` }}
         className={cn(
           "flex cursor-default items-center gap-2 rounded-sm py-[var(--rc-item-y)] pr-2",
           "text-base text-fg outline-none select-none",
           "hover:bg-accent-subtle focus-visible:ring-2 focus-visible:ring-ring",
-          no.disabled && "cursor-not-allowed text-fg-disabled hover:bg-transparent",
+          node.disabled && "cursor-not-allowed text-fg-disabled hover:bg-transparent",
         )}
       >
         {temFilhos ? (
           <button
             type="button"
             tabIndex={-1}
-            aria-label={aberto ? "Fechar" : "Abrir"}
-            onClick={(evento) => {
-              evento.stopPropagation();
-              onAlternarAberto(no.id);
+            aria-label={isOpen ? "Fechar" : "Abrir"}
+            onClick={(event) => {
+              event.stopPropagation();
+              onAlternarAberto(node.id);
             }}
             className="flex size-4 shrink-0 items-center justify-center text-fg-subtle"
           >
@@ -202,7 +202,7 @@ function Ramo({
               aria-hidden="true"
               className={cn(
                 "transition-transform duration-[var(--rc-duration-fast)] ease-rc",
-                aberto && "rotate-90",
+                isOpen && "rotate-90",
               )}
             />
           </button>
@@ -214,30 +214,30 @@ function Ramo({
           <Checkbox
             checked={cheio}
             indeterminate={misto}
-            disabled={no.disabled}
+            disabled={node.disabled}
             tabIndex={-1}
             aria-hidden="true"
-            onClick={(evento) => evento.stopPropagation()}
-            onCheckedChange={() => onAlternarEscolha(no)}
+            onClick={(event) => event.stopPropagation()}
+            onCheckedChange={() => onToggleSelect(node)}
           />
         )}
 
-        <span className="min-w-0 flex-1 truncate">{no.label}</span>
+        <span className="min-w-0 flex-1 truncate">{node.label}</span>
       </div>
 
-      {temFilhos && aberto && (
+      {temFilhos && isOpen && (
         <ul role="group" className="flex flex-col">
-          {no.children!.map((filho) => (
+          {node.children!.map((filho) => (
             <Ramo
               key={filho.id}
-              no={filho}
-              nivel={nivel + 1}
-              primeiro={false}
+              node={filho}
+              level={level + 1}
+              isFirst={false}
               abertos={abertos}
               selected={selected}
               multiple={multiple}
               onAlternarAberto={onAlternarAberto}
-              onAlternarEscolha={onAlternarEscolha}
+              onToggleSelect={onToggleSelect}
             />
           ))}
         </ul>
@@ -247,40 +247,40 @@ function Ramo({
 }
 
 /** Todas as folhas debaixo de um no. Um no sem filhos e a propria folha. */
-export function leavesOf(no: TreeNode): string[] {
-  if (!no.children?.length) return [no.id];
-  return no.children.flatMap(leavesOf);
+export function leavesOf(node: TreeNode): string[] {
+  if (!node.children?.length) return [node.id];
+  return node.children.flatMap(leavesOf);
 }
 
-function texto(no: TreeNode): string {
-  return (no.search ?? (typeof no.label === "string" ? no.label : "")).toLowerCase();
+function text(node: TreeNode): string {
+  return (node.search ?? (typeof node.label === "string" ? node.label : "")).toLowerCase();
 }
 
 /** Mantem quem casou e o caminho ate ele. */
 function filtrar(items: TreeNode[], busca: string): TreeNode[] {
   if (!busca) return items;
 
-  return items.flatMap((no) => {
-    const filhos = no.children ? filtrar(no.children, busca) : [];
-    if (texto(no).includes(busca)) return [no];
-    if (filhos.length) return [{ ...no, children: filhos }];
+  return items.flatMap((node) => {
+    const children = node.children ? filtrar(node.children, busca) : [];
+    if (text(node).includes(busca)) return [node];
+    if (children.length) return [{ ...node, children: children }];
     return [];
   });
 }
 
 function achar(items: TreeNode[], id: string): TreeNode | undefined {
-  for (const no of items) {
-    if (no.id === id) return no;
-    const dentro = no.children ? achar(no.children, id) : undefined;
+  for (const node of items) {
+    if (node.id === id) return node;
+    const dentro = node.children ? achar(node.children, id) : undefined;
     if (dentro) return dentro;
   }
   return undefined;
 }
 
-function paiDe(items: TreeNode[], id: string, pai?: TreeNode): TreeNode | undefined {
-  for (const no of items) {
-    if (no.id === id) return pai;
-    const dentro = no.children ? paiDe(no.children, id, no) : undefined;
+function paiDe(items: TreeNode[], id: string, parent?: TreeNode): TreeNode | undefined {
+  for (const node of items) {
+    if (node.id === id) return parent;
+    const dentro = node.children ? paiDe(node.children, id, node) : undefined;
     if (dentro) return dentro;
   }
   return undefined;

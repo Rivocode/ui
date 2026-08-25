@@ -9,26 +9,26 @@ import { Item, ItemActions, ItemContent, ItemTitle } from "../src/components/ite
 import { Breadcrumb } from "../src/components/breadcrumb";
 import { Pagination } from "../src/components/pagination";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o campo com mascara pontua enquanto se digita", () => {
   comTema(<MaskedInput mask="cpf" placeholder="CPF" />);
-  const campo = screen.getByPlaceholderText("CPF") as HTMLInputElement;
-  fireEvent.change(campo, { target: { value: "12345678901" } });
-  expect(campo.value).toBe("123.456.789-01");
+  const field = screen.getByPlaceholderText("CPF") as HTMLInputElement;
+  fireEvent.change(field, { target: { value: "12345678901" } });
+  expect(field.value).toBe("123.456.789-01");
 });
 
 test("quem escuta recebe o texto pontuado e o cru", () => {
-  let mascarado = "";
+  let masked = "";
   let cru = "";
   comTema(
     <MaskedInput
       mask="cnpj"
       placeholder="CNPJ"
       onValueChange={(m, c) => {
-        mascarado = m;
+        masked = m;
         cru = c;
       }}
     />,
@@ -36,26 +36,26 @@ test("quem escuta recebe o texto pontuado e o cru", () => {
   fireEvent.change(screen.getByPlaceholderText("CNPJ"), {
     target: { value: "12345678000199" },
   });
-  expect(mascarado).toBe("12.345.678/0001-99");
+  expect(masked).toBe("12.345.678/0001-99");
   expect(cru).toBe("12345678000199");
 });
 
 test("o telefone troca de molde entre o fixo e o celular", () => {
   comTema(<MaskedInput mask="telefone" placeholder="Telefone" />);
-  const campo = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
+  const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 
-  fireEvent.change(campo, { target: { value: "8332211234" } });
-  expect(campo.value).toBe("(83) 3221-1234");
+  fireEvent.change(field, { target: { value: "8332211234" } });
+  expect(field.value).toBe("(83) 3221-1234");
 
-  fireEvent.change(campo, { target: { value: "83988112233" } });
-  expect(campo.value).toBe("(83) 98811-2233");
+  fireEvent.change(field, { target: { value: "83988112233" } });
+  expect(field.value).toBe("(83) 98811-2233");
 });
 
 test("o campo de dinheiro enche da direita para a esquerda", () => {
   comTema(<MaskedInput mask="moeda" placeholder="Valor" />);
-  const campo = screen.getByPlaceholderText("Valor") as HTMLInputElement;
-  fireEvent.change(campo, { target: { value: "123456" } });
-  expect(campo.value).toBe("1.234,56");
+  const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
+  fireEvent.change(field, { target: { value: "123456" } });
+  expect(field.value).toBe("1.234,56");
 });
 
 test("o campo com mascara abre o teclado de numeros no celular", () => {
@@ -104,9 +104,9 @@ test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
       ]}
     />,
   );
-  const atual = screen.getByText("4813");
-  expect(atual.getAttribute("aria-current")).toBe("page");
-  expect(atual.tagName).not.toBe("A");
+  const current = screen.getByText("4813");
+  expect(current.getAttribute("aria-current")).toBe("page");
+  expect(current.tagName).not.toBe("A");
   expect(screen.getByText("Inicio").tagName).toBe("A");
 });
 

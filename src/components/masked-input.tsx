@@ -2,7 +2,7 @@
 
 import { useState, type ComponentProps } from "react";
 
-import { applyMask, phoneMask, unmask, type Mask } from "../lib/mascara";
+import { applyMask, phoneMask, unmask, type Mask } from "../lib/mask";
 import { Input } from "./field";
 
 export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value"> & {
@@ -16,7 +16,7 @@ export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange
    * Chamado a cada tecla, com o texto mascarado e o cru. Guarde o cru: e ele
    * que o servidor entende, e a pontuacao e assunto de tela.
    */
-  onValueChange?: (mascarado: string, cru: string) => void;
+  onValueChange?: (masked: string, raw: string) => void;
 };
 
 /**
@@ -40,32 +40,32 @@ export function MaskedInput({
   inputMode,
   ...props
 }: MaskedInputProps) {
-  const controlado = value !== undefined;
-  const [interno, setInterno] = useState(() => applyMask(defaultValue, mask));
-  const texto = controlado ? value : interno;
+  const controlled = value !== undefined;
+  const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
+  const text = controlled ? value : internal;
 
-  const soNumero = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in MOLDES_NUMERICOS;
+  const soNumero = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
 
   return (
     <Input
       {...props}
-      value={texto}
+      value={text}
       inputMode={inputMode ?? (soNumero ? "numeric" : undefined)}
-      onChange={(evento) => {
-        const cru = evento.target.value;
-        const molde = mask === "telefone" ? phoneMask(cru) : mask;
-        const mascarado = applyMask(cru, molde);
+      onChange={(event) => {
+        const raw = event.target.value;
+        const pattern = mask === "telefone" ? phoneMask(raw) : mask;
+        const masked = applyMask(raw, pattern);
 
-        if (!controlado) setInterno(mascarado);
-        onValueChange?.(mascarado, unmask(mascarado));
-        onChange?.(evento);
+        if (!controlled) setInternal(masked);
+        onValueChange?.(masked, unmask(masked));
+        onChange?.(event);
       }}
     />
   );
 }
 
 /** Moldes que so aceitam digito, para o teclado do celular abrir em numeros. */
-const MOLDES_NUMERICOS = {
+const NUMERIC_PATTERNS = {
   cpf: true,
   cnpj: true,
   cep: true,

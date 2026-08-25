@@ -53,11 +53,11 @@ export function NewInvoice() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Steps steps={STEPS} current={wizard.passo} onStepClick={wizard.irPara} />
+      <Steps steps={STEPS} current={wizard.step} onStepClick={wizard.goTo} />
 
       <Card>
         <CardContent className="py-6">
-          {wizard.passo === 0 && (
+          {wizard.step === 0 && (
             <div className="grid gap-4 sm:grid-cols-2">
               <Field className="sm:col-span-2">
                 <FieldLabel>Razão social</FieldLabel>
@@ -82,7 +82,7 @@ export function NewInvoice() {
             </div>
           )}
 
-          {wizard.passo === 1 && (
+          {wizard.step === 1 && (
             <div className="space-y-5">
               <Field>
                 <FieldLabel>Natureza</FieldLabel>
@@ -119,7 +119,7 @@ export function NewInvoice() {
             </div>
           )}
 
-          {wizard.passo === 2 && (
+          {wizard.step === 2 && (
             <div className="space-y-5">
               <Field>
                 <FieldLabel>Regime</FieldLabel>
@@ -155,7 +155,7 @@ export function NewInvoice() {
             </div>
           )}
 
-          {wizard.passo === 3 && (
+          {wizard.step === 3 && (
             <div className="space-y-4">
               <p className="font-display text-lg text-fg">Confira antes de emitir</p>
 
@@ -182,14 +182,14 @@ export function NewInvoice() {
           )}
 
           <WizardFooter>
-            <Button variant="ghost" onClick={wizard.voltar} disabled={wizard.primeiro}>
+            <Button variant="ghost" onClick={wizard.back} disabled={wizard.isFirst}>
               Voltar
             </Button>
 
-            {wizard.ultimo ? (
+            {wizard.isLast ? (
               <Button onClick={() => setConfirming(true)}>Emitir nota</Button>
             ) : (
-              <Button onClick={() => wizard.avancar()}>Continuar</Button>
+              <Button onClick={() => wizard.next()}>Continuar</Button>
             )}
           </WizardFooter>
         </CardContent>

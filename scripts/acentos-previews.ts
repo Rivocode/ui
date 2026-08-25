@@ -71,7 +71,7 @@ const DICIONARIO: Record<string, string> = {
   movel: "móvel",
   nao: "não",
   navegacao: "navegação",
-  nivel: "nível",
+  level: "nível",
   numero: "número",
   observacao: "observação",
   obrigatorio: "obrigatório",
@@ -81,7 +81,7 @@ const DICIONARIO: Record<string, string> = {
   pais: "país",
   periodo: "período",
   possivel: "possível",
-  proximo: "próximo",
+  next: "próximo",
   publico: "público",
   rapido: "rápido",
   razao: "razão",
@@ -89,7 +89,7 @@ const DICIONARIO: Record<string, string> = {
   responsavel: "responsável",
   revisao: "revisão",
   sao: "São",
-  saida: "saída",
+  output: "saída",
   sensivel: "sensível",
   serie: "série",
   servico: "serviço",
@@ -101,7 +101,7 @@ const DICIONARIO: Record<string, string> = {
   tecnico: "técnico",
   titulo: "título",
   tres: "três",
-  ultimo: "último",
+  isLast: "último",
   unica: "única",
   unico: "único",
   usuario: "usuário",
@@ -135,8 +135,8 @@ const CHAVES_DE_TEXTO = new Set([
   "emptyMessage",
 ]);
 
-function acentuar(texto: string) {
-  return texto.replace(/\p{L}+/gu, (palavra) => {
+function acentuar(text: string) {
+  return text.replace(/\p{L}+/gu, (palavra) => {
     const alvo = DICIONARIO[palavra.toLowerCase()];
     if (!alvo) return palavra;
 
@@ -166,20 +166,20 @@ const FAIXAS: RegExp[] = [
 ];
 
 function processar(fonte: string) {
-  let saida = fonte;
+  let output = fonte;
 
   for (const faixa of FAIXAS) {
-    saida = saida.replace(faixa, (inteiro, dentro: string) => {
+    output = output.replace(faixa, (whole, dentro: string) => {
       const trocado = acentuar(dentro);
-      if (trocado === dentro) return inteiro;
+      if (trocado === dentro) return whole;
       // Reconstroi trocando so a parte capturada, para nao mexer nas aspas
       // nem nos sinais em volta.
-      const at = inteiro.indexOf(dentro);
-      return inteiro.slice(0, at) + trocado + inteiro.slice(at + dentro.length);
+      const at = whole.indexOf(dentro);
+      return whole.slice(0, at) + trocado + whole.slice(at + dentro.length);
     });
   }
 
-  return saida;
+  return output;
 }
 
 const PASTA = ".design-sync/previews";

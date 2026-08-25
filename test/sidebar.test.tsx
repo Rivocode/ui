@@ -89,7 +89,7 @@ test("a marca de lugar avisa que esta carregando, e nao finge uma lista", () => 
     </RivoProvider>,
   );
 
-  const lista = container.querySelector("[aria-busy=true]");
-  expect(lista).not.toBeNull();
-  expect(lista!.querySelectorAll("li").length).toBe(4);
+  const list = container.querySelector("[aria-busy=true]");
+  expect(list).not.toBeNull();
+  expect(list!.querySelectorAll("li").length).toBe(4);
 });

@@ -29,36 +29,36 @@ export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
  * teclado.
  */
 export function Breadcrumb({ className, items, maxItems = 4, ...props }: BreadcrumbProps) {
-  const dobrado = items.length > maxItems;
-  const visiveis: (Crumb | "reticencia")[] = dobrado
+  const folded = items.length > maxItems;
+  const visiveis: (Crumb | "reticencia")[] = folded
     ? [items[0]!, "reticencia", ...items.slice(-2)]
     : items;
 
   return (
     <nav {...props} aria-label="Caminho" className={cn("font-sans text-sm", className)}>
       <ol className="flex items-center gap-1.5">
-        {visiveis.map((migalha, indice) => {
-          const ultima = indice === visiveis.length - 1;
+        {visiveis.map((crumb, index) => {
+          const isLast = index === visiveis.length - 1;
           // No celular so as duas ultimas ficam. A penultima e a que da
           // contexto; o resto e caminho que ninguem le no aperto.
-          const somenteNoLargo = indice < visiveis.length - 2;
+          const wideOnly = index < visiveis.length - 2;
 
           return (
-            <Fragment key={indice}>
-              {indice > 0 && (
-                <li aria-hidden="true" className={cn(somenteNoLargo && "max-sm:hidden")}>
+            <Fragment key={index}>
+              {index > 0 && (
+                <li aria-hidden="true" className={cn(wideOnly && "max-sm:hidden")}>
                   <ChevronRight size={14} className="text-fg-subtle" />
                 </li>
               )}
 
-              <li className={cn("min-w-0", somenteNoLargo && "max-sm:hidden")}>
-                {migalha === "reticencia" ? (
+              <li className={cn("min-w-0", wideOnly && "max-sm:hidden")}>
+                {crumb === "reticencia" ? (
                   <span className="px-0.5 text-fg-subtle" aria-hidden="true">
                     ...
                   </span>
-                ) : migalha.href && !ultima ? (
+                ) : crumb.href && !isLast ? (
                   <a
-                    href={migalha.href}
+                    href={crumb.href}
                     className={cn(
                       "truncate rounded-sm text-fg-muted",
                       "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
@@ -66,11 +66,11 @@ export function Breadcrumb({ className, items, maxItems = 4, ...props }: Breadcr
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     )}
                   >
-                    {migalha.label}
+                    {crumb.label}
                   </a>
                 ) : (
-                  <span aria-current={ultima ? "page" : undefined} className="truncate text-fg">
-                    {migalha.label}
+                  <span aria-current={isLast ? "page" : undefined} className="truncate text-fg">
+                    {crumb.label}
                   </span>
                 )}
               </li>

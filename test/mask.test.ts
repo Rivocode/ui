@@ -7,7 +7,7 @@ import {
   toCents,
   phoneMask,
   unmask,
-} from "../src/lib/mascara";
+} from "../src/lib/mask";
 
 test("o molde poe a pontuacao sozinho", () => {
   expect(applyMask("12345678901", "cpf")).toBe("123.456.789-01");

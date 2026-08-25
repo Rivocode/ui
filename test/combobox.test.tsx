@@ -12,7 +12,7 @@ import {
 
 const CLIENTES = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
 
-function lista(props: { items?: string[] } = {}) {
+function list(props: { items?: string[] } = {}) {
   return render(
     <RivoProvider scope="local">
       <Combobox items={props.items ?? CLIENTES} defaultOpen>
@@ -32,7 +32,7 @@ function lista(props: { items?: string[] } = {}) {
 }
 
 test("com lista cheia, o aviso de vazio nao ocupa lugar no painel", () => {
-  lista();
+  list();
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
   // O Empty fica montado para o leitor de tela, mas o recheio — e o espaco
   // que ele ocupa — so aparece na lista vazia.
@@ -40,7 +40,7 @@ test("com lista cheia, o aviso de vazio nao ocupa lugar no painel", () => {
 });
 
 test("sem nada na lista, o aviso aparece", () => {
-  lista({ items: [] });
+  list({ items: [] });
   // A Base UI cola um juntador de palavras no fim do aviso, para o leitor de
   // tela reanunciar; por isso a busca e por trecho, e nao por texto exato.
   expect(screen.getByText(/Nenhum cliente com esse nome/)).toBeDefined();

@@ -1,5 +1,5 @@
 export { Form, type FormProps } from "./form";
-export { FormField, type CampoDoFormulario, type FormFieldProps } from "./form-field";
+export { FormField, type FormFieldRow, type FormFieldProps } from "./form-field";
 export {
   forCheckbox,
   forDatePicker,
@@ -7,5 +7,5 @@ export {
   type PropsDeCheckbox,
   type PropsDeDatePicker,
   type PropsDeSelect,
-} from "./adaptadores";
+} from "./adapters";
 export { useZodForm } from "./use-zod-form";

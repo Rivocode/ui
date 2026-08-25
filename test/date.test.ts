@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { formatDate, parseDate, maskDate } from "../src/lib/data";
+import { formatDate, parseDate, maskDate } from "../src/lib/date";
 
 test("formata a data no padrao brasileiro, com zero a esquerda", () => {
   expect(formatDate(new Date(2026, 2, 3))).toBe("03/03/2026");

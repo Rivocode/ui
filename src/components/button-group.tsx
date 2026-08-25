@@ -27,7 +27,7 @@ export function ButtonGroup({
     <div
       {...props}
       role="group"
-      data-orientacao={orientation}
+      data-orientation={orientation}
       className={cn(
         "inline-flex",
         orientation === "vertical" ? "flex-col" : "flex-row",

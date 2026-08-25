@@ -16,7 +16,7 @@ export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
   /** Indice do passo atual, contando de zero. */
   current: number;
   /** Deixa voltar clicando num passo ja concluido. */
-  onStepClick?: (indice: number) => void;
+  onStepClick?: (index: number) => void;
 };
 
 /**
@@ -31,7 +31,7 @@ export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
  * uma tela que nao sabe se preencher.
  */
 export function Steps({ className, steps, current, onStepClick, ...props }: StepsProps) {
-  const atual = steps[current];
+  const step = steps[current];
 
   return (
     <>
@@ -39,7 +39,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
         <p className="font-sans text-sm text-fg-muted">
           Step {current + 1} de {steps.length}
         </p>
-        <p className="font-display text-lg text-fg">{atual?.title}</p>
+        <p className="font-display text-lg text-fg">{step?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
           <div
             className="h-full rounded-pill bg-accent transition-[width] duration-[var(--rc-duration-base)] ease-rc"
@@ -49,17 +49,17 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
       </div>
 
       <ol {...props} className={cn("hidden items-start gap-2 sm:flex", className)}>
-        {steps.map((passo, indice) => {
-          const concluido = indice < current;
-          const agora = indice === current;
+        {steps.map((step, index) => {
+          const concluido = index < current;
+          const agora = index === current;
           const podeVoltar = Boolean(onStepClick) && concluido;
 
           return (
-            <li key={passo.id} className="flex min-w-0 flex-1 items-start gap-3">
+            <li key={step.id} className="flex min-w-0 flex-1 items-start gap-3">
               <button
                 type="button"
                 disabled={!podeVoltar}
-                onClick={podeVoltar ? () => onStepClick!(indice) : undefined}
+                onClick={podeVoltar ? () => onStepClick!(index) : undefined}
                 aria-current={agora ? "step" : undefined}
                 className={cn(
                   "flex min-w-0 flex-1 items-start gap-3 rounded-md p-1 text-left",
@@ -76,7 +76,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                     !concluido && !agora && "border border-border text-fg-subtle",
                   )}
                 >
-                  {concluido ? <Check size={13} aria-hidden="true" /> : indice + 1}
+                  {concluido ? <Check size={13} aria-hidden="true" /> : index + 1}
                 </span>
 
                 <span className="flex min-w-0 flex-col">
@@ -86,15 +86,15 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                       agora ? "font-medium text-fg" : "text-fg-muted",
                     )}
                   >
-                    {passo.title}
+                    {step.title}
                   </span>
-                  {passo.description && (
-                    <span className="truncate text-xs text-fg-subtle">{passo.description}</span>
+                  {step.description && (
+                    <span className="truncate text-xs text-fg-subtle">{step.description}</span>
                   )}
                 </span>
               </button>
 
-              {indice < steps.length - 1 && (
+              {index < steps.length - 1 && (
                 /* Largura fixa: com `flex-1` o fio dividia a linha com o
                    rotulo e comia metade dela, cortando "Cliente" em "Clie…"
                    antes de o desenho ficar apertado de verdade. */
@@ -109,51 +109,51 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
 }
 
 export type WizardState = {
-  passo: number;
-  atual: Step | undefined;
-  primeiro: boolean;
-  ultimo: boolean;
+  step: number;
+  current: Step | undefined;
+  isFirst: boolean;
+  isLast: boolean;
   /**
    * Avanca. Recebe uma checagem opcional que pode ser assincrona: devolva
    * `false` e o passo nao anda. E por aqui que entra o `trigger` do React Hook
    * Form, sem o assistente conhecer o React Hook Form.
    */
-  avancar: (checar?: () => boolean | Promise<boolean>) => Promise<boolean>;
-  voltar: () => void;
-  irPara: (indice: number) => void;
+  next: (validate?: () => boolean | Promise<boolean>) => Promise<boolean>;
+  back: () => void;
+  goTo: (index: number) => void;
 };
 
 /**
  * O estado de um formulario em etapas. So conta e valida a passagem; o
  * desenho fica com o `Steps` e o conteudo com quem usa.
  */
-export function useWizard(steps: Step[], inicial = 0): WizardState {
-  const [passo, setPasso] = useState(inicial);
+export function useWizard(steps: Step[], initial = 0): WizardState {
+  const [step, setStep] = useState(initial);
 
-  const avancar = useCallback(
-    async (checar?: () => boolean | Promise<boolean>) => {
-      if (checar && !(await checar())) return false;
-      setPasso((atual) => Math.min(atual + 1, steps.length - 1));
+  const next = useCallback(
+    async (validate?: () => boolean | Promise<boolean>) => {
+      if (validate && !(await validate())) return false;
+      setStep((current) => Math.min(current + 1, steps.length - 1));
       return true;
     },
     [steps.length],
   );
 
-  const voltar = useCallback(() => setPasso((atual) => Math.max(atual - 1, 0)), []);
+  const back = useCallback(() => setStep((current) => Math.max(current - 1, 0)), []);
 
-  const irPara = useCallback(
-    (indice: number) => setPasso(Math.min(Math.max(indice, 0), steps.length - 1)),
+  const goTo = useCallback(
+    (index: number) => setStep(Math.min(Math.max(index, 0), steps.length - 1)),
     [steps.length],
   );
 
   return {
-    passo,
-    atual: steps[passo],
-    primeiro: passo === 0,
-    ultimo: passo === steps.length - 1,
-    avancar,
-    voltar,
-    irPara,
+    step,
+    current: steps[step],
+    isFirst: step === 0,
+    isLast: step === steps.length - 1,
+    next,
+    back,
+    goTo,
   };
 }
 

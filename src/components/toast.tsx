@@ -25,15 +25,15 @@ export type ToastApi = {
  */
 export function useToast(): ToastApi {
   const gerenciador = BaseToast.useToastManager();
-  const atual = useRef(gerenciador);
-  atual.current = gerenciador;
+  const current = useRef(gerenciador);
+  current.current = gerenciador;
 
   return useMemo<ToastApi>(
     () => ({
-      add: (options) => atual.current.add(options),
-      update: (id, options) => atual.current.update(id, options),
-      close: (id) => atual.current.close(id),
-      promise: (promessa, estados) => atual.current.promise(promessa, estados),
+      add: (options) => current.current.add(options),
+      update: (id, options) => current.current.update(id, options),
+      close: (id) => current.current.close(id),
+      promise: (promessa, estados) => current.current.promise(promessa, estados),
     }),
     [],
   );
@@ -55,7 +55,7 @@ function XisIcon() {
   );
 }
 
-function Lista() {
+function List() {
   const { toasts } = BaseToast.useToastManager();
 
   return toasts.map((toast) => (
@@ -103,7 +103,7 @@ export function ToastViewport({ container }: ToastViewportProps) {
           "flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none",
         )}
       >
-        <Lista />
+        <List />
       </BaseToast.Viewport>
     </BaseToast.Portal>
   );

@@ -9,19 +9,19 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
  * calendario de dois meses que nao cabe.
  */
 const PAGINAS = [
-  { rota: "/index.html", nome: "vitrine", altura: 2600, alturaCelular: 4200 },
-  { rota: "/dialog.html", nome: "dialogo", altura: 760, alturaCelular: 900 },
-  { rota: "/listagem.html", nome: "listagem", altura: 1900, alturaCelular: 2000 },
-  { rota: "/flutuantes.html", nome: "flutuantes", altura: 1120, alturaCelular: 1500 },
-  { rota: "/datas.html", nome: "datas", altura: 1240, alturaCelular: 1800 },
-  { rota: "/formulario.html", nome: "formulario", altura: 1280, alturaCelular: 2100 },
-  { rota: "/navegacao.html", nome: "navegacao", altura: 1000, alturaCelular: 1200 },
-  { rota: "/folhas.html", nome: "folhas", altura: 1120, alturaCelular: 1200 },
-  { rota: "/consulta.html", nome: "consulta", altura: 2000, alturaCelular: 3200 },
-  { rota: "/completos.html", nome: "completos", altura: 1900, alturaCelular: 3400 },
-  { rota: "/graficos.html", nome: "graficos", altura: 1700, alturaCelular: 2600 },
-  { rota: "/controles.html", nome: "controles", altura: 2000, alturaCelular: 3400 },
-  { rota: "/dados.html", nome: "dados", altura: 1800, alturaCelular: 3000 },
+  { rota: "/index.html", name: "vitrine", height: 2600, alturaCelular: 4200 },
+  { rota: "/dialog.html", name: "dialogo", height: 760, alturaCelular: 900 },
+  { rota: "/listagem.html", name: "listagem", height: 1900, alturaCelular: 2000 },
+  { rota: "/flutuantes.html", name: "flutuantes", height: 1120, alturaCelular: 1500 },
+  { rota: "/datas.html", name: "datas", height: 1240, alturaCelular: 1800 },
+  { rota: "/formulario.html", name: "formulario", height: 1280, alturaCelular: 2100 },
+  { rota: "/navegacao.html", name: "navegacao", height: 1000, alturaCelular: 1200 },
+  { rota: "/folhas.html", name: "folhas", height: 1120, alturaCelular: 1200 },
+  { rota: "/consulta.html", name: "consulta", height: 2000, alturaCelular: 3200 },
+  { rota: "/completos.html", name: "completos", height: 1900, alturaCelular: 3400 },
+  { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 2600 },
+  { rota: "/controles.html", name: "controles", height: 2000, alturaCelular: 3400 },
+  { rota: "/dados.html", name: "dados", height: 1800, alturaCelular: 3000 },
 ];
 
 /** O piso de largura de janela do Chrome no macOS. */
@@ -35,16 +35,16 @@ const servidor = servir();
  * ter retrato: parece certo e esconde o que quebrou. Por isso a largura de
  * celular vem de um iframe dentro de `celular.html`.
  */
-const RETRATOS = PAGINAS.flatMap(({ rota, nome, altura, alturaCelular }) => [
-  { rota, saida: `demo/dist/${nome}.png`, janela: `1240,${altura}` },
+const RETRATOS = PAGINAS.flatMap(({ rota, name, height, alturaCelular }) => [
+  { rota, output: `demo/dist/${name}.png`, janela: `1240,${height}` },
   {
     rota: `/celular.html#.${rota}`,
-    saida: `demo/dist/${nome}-celular.png`,
+    output: `demo/dist/${name}-celular.png`,
     janela: `${LARGURA_JANELA_MINIMA},${alturaCelular}`,
   },
 ]);
 
-for (const { rota, saida, janela } of RETRATOS) {
+for (const { rota, output, janela } of RETRATOS) {
   const proc = Bun.spawn(
     [
       CHROME,
@@ -52,7 +52,7 @@ for (const { rota, saida, janela } of RETRATOS) {
       "--disable-gpu",
       "--hide-scrollbars",
       "--force-device-scale-factor=2",
-      `--screenshot=${saida}`,
+      `--screenshot=${output}`,
       `--window-size=${janela}`,
       "--virtual-time-budget=4000",
       // Sem isto, grafico com animacao sai sem as marcas: a Recharts interpola
@@ -63,8 +63,8 @@ for (const { rota, saida, janela } of RETRATOS) {
     { stderr: "ignore", stdout: "ignore" },
   );
   await proc.exited;
-  const bytes = await Bun.file(saida).size;
-  console.log(`${saida}  ${(bytes / 1024).toFixed(0)} KB`);
+  const bytes = await Bun.file(output).size;
+  console.log(`${output}  ${(bytes / 1024).toFixed(0)} KB`);
 }
 
 await servidor.stop(true);

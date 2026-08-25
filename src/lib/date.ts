@@ -20,13 +20,13 @@ export function formatDate(data: Date | undefined): string {
  * nao existe: `31/02/2026` vira `undefined`, e nao 3 de marco, que e o que o
  * `new Date` faria sozinho.
  */
-export function parseDate(texto: string): Date | undefined {
-  const partes = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(texto.trim());
-  if (!partes) return undefined;
+export function parseDate(text: string): Date | undefined {
+  const parts = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text.trim());
+  if (!parts) return undefined;
 
-  const dia = Number(partes[1]);
-  const mes = Number(partes[2]);
-  const ano = Number(partes[3]);
+  const dia = Number(parts[1]);
+  const mes = Number(parts[2]);
+  const ano = Number(parts[3]);
 
   const data = new Date(ano, mes - 1, dia);
   const existe =
@@ -39,8 +39,8 @@ export function parseDate(texto: string): Date | undefined {
  * em oito digitos, entao o campo nunca fica num formato que o `parseDate` nao
  * entende.
  */
-export function maskDate(texto: string): string {
-  const digitos = texto.replace(/\D/g, "").slice(0, 8);
+export function maskDate(text: string): string {
+  const digitos = text.replace(/\D/g, "").slice(0, 8);
   if (digitos.length <= 2) return digitos;
   if (digitos.length <= 4) return `${digitos.slice(0, 2)}/${digitos.slice(2)}`;
   return `${digitos.slice(0, 2)}/${digitos.slice(2, 4)}/${digitos.slice(4)}`;

@@ -31,14 +31,14 @@ parecidas, e os enderecos da documentacao crua.
 `;
 
 function instalar(global: boolean) {
-  const raiz = global ? process.env.HOME : process.cwd();
+  const root = global ? process.env.HOME : process.cwd();
 
-  if (!raiz) {
+  if (!root) {
     console.error("Nao consegui descobrir a sua pasta pessoal. Rode sem --global.");
     process.exit(1);
   }
 
-  const destino = join(raiz, ".claude", "skills", "rivocode-ui");
+  const destino = join(root, ".claude", "skills", "rivocode-ui");
 
   try {
     mkdirSync(destino, { recursive: true });
@@ -54,14 +54,14 @@ function instalar(global: boolean) {
   console.log("O agente carrega sozinho quando voce pedir uma tela.");
 }
 
-const [comando, ...resto] = process.argv.slice(2);
+const [command, ...resto] = process.argv.slice(2);
 
-if (comando === "skill") {
+if (command === "skill") {
   instalar(resto.includes("--global") || resto.includes("-g"));
-} else if (comando === "--help" || comando === "-h" || comando === undefined) {
+} else if (command === "--help" || command === "-h" || command === undefined) {
   console.log(AJUDA.trim());
 } else {
-  console.error(`Nao conheco "${comando}".`);
+  console.error(`Nao conheco "${command}".`);
   console.log(AJUDA.trim());
   process.exit(1);
 }

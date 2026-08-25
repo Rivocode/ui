@@ -21,8 +21,8 @@ test("a descricao acompanha o campo para o leitor de tela", () => {
       <FieldDescription>Somente numeros</FieldDescription>
     </Field>,
   );
-  const campo = screen.getByLabelText("CNPJ");
-  const descrito = campo.getAttribute("aria-describedby");
+  const field = screen.getByLabelText("CNPJ");
+  const descrito = field.getAttribute("aria-describedby");
   expect(descrito).toBeTruthy();
   expect(document.getElementById(descrito!.split(" ")[0]!)?.textContent).toContain(
     "Somente numeros",

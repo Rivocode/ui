@@ -45,7 +45,7 @@ export function Pagination({
         className,
       )}
     >
-      <Step rotulo="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+      <Step label="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
         <ChevronLeft size={16} aria-hidden="true" />
       </Step>
 
@@ -54,9 +54,9 @@ export function Pagination({
       </span>
 
       <ol className="hidden items-center gap-1 sm:flex">
-        {paginas.map((numero, indice) =>
+        {paginas.map((numero, index) =>
           numero === "reticencia" ? (
-            <li key={`corte-${indice}`} aria-hidden="true" className="px-1 text-fg-subtle">
+            <li key={`corte-${index}`} aria-hidden="true" className="px-1 text-fg-subtle">
               ...
             </li>
           ) : (
@@ -84,7 +84,7 @@ export function Pagination({
       </ol>
 
       <Step
-        rotulo="Próxima página"
+        label="Próxima página"
         disabled={page >= pageCount}
         onClick={() => onPageChange(page + 1)}
       >
@@ -94,11 +94,11 @@ export function Pagination({
   );
 }
 
-function Step({ rotulo, children, ...props }: ComponentProps<"button"> & { rotulo: string }) {
+function Step({ label, children, ...props }: ComponentProps<"button"> & { label: string }) {
   return (
     <button
       type="button"
-      aria-label={rotulo}
+      aria-label={label}
       {...props}
       className={cn(
         "inline-flex size-[var(--rc-control-sm)] items-center justify-center rounded-md",
@@ -118,17 +118,17 @@ function Step({ rotulo, children, ...props }: ComponentProps<"button"> & { rotul
  * Primeira, ultima, a atual e os vizinhos. A reticencia so entra quando pula
  * mais de uma pagina, senao ela ocuparia o lugar de um numero que caberia.
  */
-function montarPaginas(atual: number, total: number, vizinhos: number): (number | "reticencia")[] {
+function montarPaginas(current: number, total: number, vizinhos: number): (number | "reticencia")[] {
   if (total <= 1) return total === 1 ? [1] : [];
 
-  const inicio = Math.max(2, atual - vizinhos);
-  const fim = Math.min(total - 1, atual + vizinhos);
-  const saida: (number | "reticencia")[] = [1];
+  const inicio = Math.max(2, current - vizinhos);
+  const fim = Math.min(total - 1, current + vizinhos);
+  const output: (number | "reticencia")[] = [1];
 
-  if (inicio > 2) saida.push(inicio === 3 ? 2 : "reticencia");
-  for (let numero = inicio; numero <= fim; numero += 1) saida.push(numero);
-  if (fim < total - 1) saida.push(fim === total - 2 ? total - 1 : "reticencia");
-  if (total > 1) saida.push(total);
+  if (inicio > 2) output.push(inicio === 3 ? 2 : "reticencia");
+  for (let numero = inicio; numero <= fim; numero += 1) output.push(numero);
+  if (fim < total - 1) output.push(fim === total - 2 ? total - 1 : "reticencia");
+  if (total > 1) output.push(total);
 
-  return saida;
+  return output;
 }

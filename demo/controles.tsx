@@ -57,13 +57,13 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <Bloco titulo="Escolha unica">
             <RadioGroup defaultValue="pix">
               {[
-                { valor: "pix", rotulo: "Pix" },
-                { valor: "boleto", rotulo: "Boleto" },
-                { valor: "cartao", rotulo: "Cartao" },
+                { value: "pix", label: "Pix" },
+                { value: "boleto", label: "Boleto" },
+                { value: "cartao", label: "Cartao" },
               ].map((o) => (
-                <label key={o.valor} className="flex items-center gap-3 text-base text-fg">
-                  <Radio value={o.valor} />
-                  {o.rotulo}
+                <label key={o.value} className="flex items-center gap-3 text-base text-fg">
+                  <Radio value={o.value} />
+                  {o.label}
                 </label>
               ))}
             </RadioGroup>

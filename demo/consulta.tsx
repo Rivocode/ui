@@ -17,22 +17,22 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-type Nota = { id: string; numero: string; cliente: string; valor: string; situacao: string };
+type Nota = { id: string; numero: string; cliente: string; value: string; situacao: string };
 
 const NOTAS: Nota[] = [
-  { id: "1", numero: "4813", cliente: "Clinica Sao Lucas", valor: "R$ 2.480,00", situacao: "Paga" },
+  { id: "1", numero: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", situacao: "Paga" },
   {
     id: "2",
     numero: "4814",
     cliente: "Transportes Cabo Branco",
-    valor: "R$ 940,00",
+    value: "R$ 940,00",
     situacao: "Aberta",
   },
   {
     id: "3",
     numero: "4815",
     cliente: "Supermercado Tambau",
-    valor: "R$ 12.300,00",
+    value: "R$ 12.300,00",
     situacao: "Aberta",
   },
 ];
@@ -71,22 +71,22 @@ function Assistente() {
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
-      <Steps steps={PASSOS} current={assistente.passo} onStepClick={assistente.irPara} />
+      <Steps steps={PASSOS} current={assistente.step} onStepClick={assistente.goTo} />
 
       <div className="mt-6 flex flex-col gap-4">
-        {assistente.passo === 0 && (
+        {assistente.step === 0 && (
           <Field>
             <FieldLabel>Cliente</FieldLabel>
             <Input defaultValue="Clinica Sao Lucas" />
           </Field>
         )}
-        {assistente.passo === 1 && (
+        {assistente.step === 1 && (
           <Field>
             <FieldLabel>Descricao do servico</FieldLabel>
             <Input placeholder="Consultoria de agosto" />
           </Field>
         )}
-        {assistente.passo === 2 && (
+        {assistente.step === 2 && (
           <p className="text-base text-fg-muted">
             Nota para Clinica Sao Lucas, no valor de R$ 2.480,00.
           </p>
@@ -94,13 +94,13 @@ function Assistente() {
       </div>
 
       <WizardFooter>
-        <Button variant="ghost" disabled={assistente.primeiro} onClick={assistente.voltar}>
+        <Button variant="ghost" disabled={assistente.isFirst} onClick={assistente.back}>
           Voltar
         </Button>
-        {assistente.ultimo ? (
+        {assistente.isLast ? (
           <Button>Emitir nota</Button>
         ) : (
-          <Button onClick={() => assistente.avancar()}>Avancar</Button>
+          <Button onClick={() => assistente.next()}>Avancar</Button>
         )}
       </WizardFooter>
     </div>

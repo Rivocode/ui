@@ -27,14 +27,14 @@ const schema = z.object({
   email: z.email("Escreva um email valido"),
   vencimento: z.date("Escolha a data"),
   forma: z.string().min(1, "Escolha a forma de pagamento"),
-  aceite: z.boolean().refine((marcado) => marcado, "Aceite para continuar"),
+  aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
-type Entrada = z.input<typeof schema>;
+type Entry = z.input<typeof schema>;
 
-function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?: boolean }) {
+function Formulario({ values, comErro }: { values: Partial<Entry>; comErro?: boolean }) {
   const form = useZodForm(schema, {
-    defaultValues: { email: "", vencimento: undefined, forma: "", aceite: false, ...valores },
+    defaultValues: { email: "", vencimento: undefined, forma: "", aceite: false, ...values },
   });
 
   // A vitrine e uma foto: sem disparar a validacao, o estado de erro nunca
@@ -46,16 +46,16 @@ function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?:
   return (
     <Form form={form} onSubmit={() => {}} className="w-full max-w-72">
       <FormField name="email" label="E-mail" description="Para onde vai a nota">
-        {(campo) => <Input {...campo} placeholder="voce@empresa.com" />}
+        {(field) => <Input {...field} placeholder="voce@empresa.com" />}
       </FormField>
 
       <FormField name="vencimento" label="Vencimento">
-        {(campo) => <DatePicker {...forDatePicker(campo)} />}
+        {(field) => <DatePicker {...forDatePicker(field)} />}
       </FormField>
 
       <FormField name="forma" label="Forma de pagamento">
-        {(campo) => (
-          <Select {...forSelect(campo)} items={FORMAS}>
+        {(field) => (
+          <Select {...forSelect(field)} items={FORMAS}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
@@ -71,9 +71,9 @@ function Formulario({ valores, comErro }: { valores: Partial<Entrada>; comErro?:
       </FormField>
 
       <FormField name="aceite">
-        {(campo) => (
+        {(field) => (
           <label className="flex items-center gap-2 text-base text-fg">
-            <Checkbox {...forCheckbox(campo)} />
+            <Checkbox {...forCheckbox(field)} />
             Aceito emitir em nome do cliente
           </label>
         )}
@@ -95,7 +95,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
         <div>
           <p className="mb-4 text-sm text-fg-muted">Preenchido</p>
           <Formulario
-            valores={{
+            values={{
               email: "financeiro@rivocode.com",
               vencimento: new Date(2026, 2, 3),
               forma: "pix",
@@ -106,7 +106,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-4 text-sm text-fg-muted">Com erro do schema</p>
-          <Formulario valores={{ email: "financeiro@" }} comErro />
+          <Formulario values={{ email: "financeiro@" }} comErro />
         </div>
       </div>
     </RivoProvider>

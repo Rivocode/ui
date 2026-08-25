@@ -8,8 +8,8 @@ import { ChartRadial } from "../src/chart/chart-radial";
 import { Sparkline } from "../src/chart/sparkline";
 import type { ChartConfig } from "../src/chart/chart";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 const FATIAS = [
@@ -34,10 +34,10 @@ test("a rosca usa o buraco para o total, que e o numero que a pessoa veio buscar
 
 test("a linha miuda se esconde do leitor de tela, porque nao ha o que ler nela", () => {
   const { container } = comTema(<Sparkline data={[1, 4, 3, 9]} />);
-  const caixa = container.querySelector("[aria-hidden=true]");
+  const box = container.querySelector("[aria-hidden=true]");
 
-  expect(caixa).not.toBeNull();
-  expect(caixa!.getAttribute("role")).toBeNull();
+  expect(box).not.toBeNull();
+  expect(box!.getAttribute("role")).toBeNull();
 });
 
 test("com rotulo ela vira imagem, e o leitor de tela passa a ter o que dizer", () => {

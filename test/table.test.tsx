@@ -42,8 +42,8 @@ test("sai como tabela de verdade, nao como grade de divs", () => {
 
 test("a linha selecionada se marca para o leitor de tela, nao so com cor", () => {
   render(<Exemplo />);
-  const linhas = screen.getAllByRole("row");
-  const selecionada = linhas.find((l) => l.getAttribute("aria-selected") === "true");
+  const rows = screen.getAllByRole("row");
+  const selecionada = rows.find((l) => l.getAttribute("aria-selected") === "true");
   expect(selecionada).toBeDefined();
   expect(selecionada!.className).toContain("bg-selected");
 });

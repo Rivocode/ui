@@ -7,7 +7,7 @@ import { DatePicker } from "../src/components/date-picker";
 import { DateRangePicker } from "../src/components/date-range-picker";
 import { Calendar } from "../src/components/calendar";
 
-function campo() {
+function field() {
   return screen.getByPlaceholderText("dd/mm/aaaa") as HTMLInputElement;
 }
 
@@ -17,8 +17,8 @@ test("digitar poe as barras sozinho", () => {
       <DatePicker />
     </RivoProvider>,
   );
-  fireEvent.change(campo(), { target: { value: "03032026" } });
-  expect(campo().value).toBe("03/03/2026");
+  fireEvent.change(field(), { target: { value: "03032026" } });
+  expect(field().value).toBe("03/03/2026");
 });
 
 test("a data digitada chega em quem escuta", () => {
@@ -28,7 +28,7 @@ test("a data digitada chega em quem escuta", () => {
       <DatePicker onValueChange={(d) => (recebida = d)} />
     </RivoProvider>,
   );
-  fireEvent.change(campo(), { target: { value: "25/12/2026" } });
+  fireEvent.change(field(), { target: { value: "25/12/2026" } });
   expect(recebida?.getFullYear()).toBe(2026);
   expect(recebida?.getMonth()).toBe(11);
   expect(recebida?.getDate()).toBe(25);
@@ -41,7 +41,7 @@ test("data pela metade nao avisa ninguem ainda", () => {
       <DatePicker onValueChange={() => avisos++} />
     </RivoProvider>,
   );
-  fireEvent.change(campo(), { target: { value: "0303" } });
+  fireEvent.change(field(), { target: { value: "0303" } });
   expect(avisos).toBe(0);
 });
 
@@ -52,7 +52,7 @@ test("apagar o campo limpa a data", () => {
       <DatePicker defaultValue={recebida} onValueChange={(d) => (recebida = d)} />
     </RivoProvider>,
   );
-  fireEvent.change(campo(), { target: { value: "" } });
+  fireEvent.change(field(), { target: { value: "" } });
   expect(recebida).toBeUndefined();
 });
 
@@ -62,9 +62,9 @@ test("texto que nao virou data volta para a ultima data ao sair do campo", () =>
       <DatePicker defaultValue={new Date(2026, 2, 3)} />
     </RivoProvider>,
   );
-  fireEvent.change(campo(), { target: { value: "31/02" } });
-  fireEvent.blur(campo());
-  expect(campo().value).toBe("03/03/2026");
+  fireEvent.change(field(), { target: { value: "31/02" } });
+  fireEvent.blur(field());
+  expect(field().value).toBe("03/03/2026");
 });
 
 test("o campo espelha a data que muda de fora", () => {
@@ -79,7 +79,7 @@ test("o campo espelha a data que muda de fora", () => {
   }
   render(<Controlado />);
   fireEvent.click(screen.getByText("Natal"));
-  expect(campo().value).toBe("25/12/2026");
+  expect(field().value).toBe("25/12/2026");
 });
 
 test("com name, o formulario nativo recebe aaaa-mm-dd", () => {
@@ -133,10 +133,10 @@ test("no celular o calendario mostra um mes so, mesmo pedindo dois", () => {
   // O happy-dom nao implementa matchMedia com resposta verdadeira, entao o
   // teste troca a resposta para simular a tela estreita.
   const original = window.matchMedia;
-  window.matchMedia = ((consulta: string) =>
+  window.matchMedia = ((query: string) =>
     ({
-      matches: consulta.includes("max-width"),
-      media: consulta,
+      matches: query.includes("max-width"),
+      media: query,
       addEventListener: () => {},
       removeEventListener: () => {},
     }) as unknown as MediaQueryList) as typeof window.matchMedia;
@@ -219,8 +219,8 @@ test("o calendario mostra a inicial do dia numa letra so", () => {
       <Calendar mode="single" month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
-  const colunas = [...document.querySelectorAll("th")].map((c) => c.textContent);
-  expect(colunas).toEqual(["D", "S", "T", "Q", "Q", "S", "S"]);
+  const columns = [...document.querySelectorAll("th")].map((c) => c.textContent);
+  expect(columns).toEqual(["D", "S", "T", "Q", "Q", "S", "S"]);
 });
 
 test("a legenda do mes vira lista de mes e ano", () => {

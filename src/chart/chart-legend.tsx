@@ -21,7 +21,7 @@ export type ChartLegendContentProps = {
    * Chamado com a chave da serie clicada. Com ele a legenda vira botao; sem
    * ele ela continua sendo so texto, e nao finge ser clicavel.
    */
-  onToggle?: (chave: string) => void;
+  onToggle?: (key: string) => void;
 };
 
 /**
@@ -31,9 +31,9 @@ export type ChartLegendContentProps = {
  * fatias dividem o mesmo `dataKey` (`valor`), e quem separa uma da outra e o
  * `name`. Olhar so o `dataKey` faz a pizza inteira cair no mesmo nome.
  */
-function chaveDaSerie(dataKey: unknown, value: unknown, config: ChartConfig | undefined): string {
-  const candidatos = [dataKey, value].filter((x) => x != null).map(String);
-  return candidatos.find((candidato) => config?.[candidato]) ?? candidatos[0] ?? "";
+function seriesKey(dataKey: unknown, value: unknown, config: ChartConfig | undefined): string {
+  const candidates = [dataKey, value].filter((x) => x != null).map(String);
+  return candidates.find((candidate) => config?.[candidate]) ?? candidates[0] ?? "";
 }
 
 /**
@@ -53,12 +53,12 @@ export function ChartLegendContent({
 
   return (
     <ul className={cn("flex flex-wrap items-center justify-center gap-4 pt-3", className)}>
-      {payload.map((serie) => {
-        const chave = chaveDaSerie(serie.dataKey, serie.value, config);
-        const nome = config?.[chave]?.label ?? serie.value ?? chave;
-        const escondida = hidden?.includes(chave) ?? false;
+      {payload.map((series) => {
+        const key = seriesKey(series.dataKey, series.value, config);
+        const name = config?.[key]?.label ?? series.value ?? key;
+        const escondida = hidden?.includes(key) ?? false;
 
-        const conteudo = (
+        const content = (
           <>
             <span
               aria-hidden="true"
@@ -66,25 +66,25 @@ export function ChartLegendContent({
                 "size-2 shrink-0 rounded-sm transition-opacity",
                 escondida && "opacity-30",
               )}
-              style={{ background: serie.color ?? `var(--color-${chave})` }}
+              style={{ background: series.color ?? `var(--color-${key})` }}
             />
-            <span className={cn(escondida && "line-through opacity-60")}>{String(nome)}</span>
+            <span className={cn(escondida && "line-through opacity-60")}>{String(name)}</span>
           </>
         );
 
         if (!onToggle) {
           return (
-            <li key={chave} className="flex items-center gap-2 font-sans text-sm text-fg-muted">
-              {conteudo}
+            <li key={key} className="flex items-center gap-2 font-sans text-sm text-fg-muted">
+              {content}
             </li>
           );
         }
 
         return (
-          <li key={chave}>
+          <li key={key}>
             <button
               type="button"
-              onClick={() => onToggle(chave)}
+              onClick={() => onToggle(key)}
               aria-pressed={!escondida}
               className={cn(
                 "flex items-center gap-2 rounded-sm px-1 py-0.5",
@@ -93,7 +93,7 @@ export function ChartLegendContent({
                 "hover:text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             >
-              {conteudo}
+              {content}
             </button>
           </li>
         );
@@ -114,16 +114,16 @@ export function ChartLegendContent({
  * {!series.isHidden('pagas') && <Line dataKey="pagas" />}
  * ```
  */
-export function useSeriesToggle(inicial: readonly string[] = []) {
-  const [hidden, setHidden] = useState<readonly string[]>(inicial);
+export function useSeriesToggle(initial: readonly string[] = []) {
+  const [hidden, setHidden] = useState<readonly string[]>(initial);
 
-  const onToggle = useCallback((chave: string) => {
-    setHidden((atual) =>
-      atual.includes(chave) ? atual.filter((outra) => outra !== chave) : [...atual, chave],
+  const onToggle = useCallback((key: string) => {
+    setHidden((current) =>
+      current.includes(key) ? current.filter((outra) => outra !== key) : [...current, key],
     );
   }, []);
 
-  const isHidden = useCallback((chave: string) => hidden.includes(chave), [hidden]);
+  const isHidden = useCallback((key: string) => hidden.includes(key), [hidden]);
 
   return { hidden, onToggle, isHidden };
 }

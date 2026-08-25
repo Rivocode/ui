@@ -26,16 +26,16 @@ const ACENTOS: Record<string, string> = {
   inicio: "início", integracao: "integração", invalido: "inválido",
   italico: "itálico", ja: "já", joao: "João", maximo: "máximo", medio: "médio",
   mes: "mês", meses: "meses", minimo: "mínimo", movel: "móvel", nao: "não",
-  navegacao: "navegação", nivel: "nível", numero: "número", numerico: "numérico",
+  navegacao: "navegação", level: "nível", numero: "número", numerico: "numérico",
   observacao: "observação", obrigatorio: "obrigatório", operacao: "operação",
   padrao: "padrão", pagina: "página", pais: "país", periodo: "período",
-  possivel: "possível", proximo: "próximo", publico: "público", rapido: "rápido",
+  possivel: "possível", next: "próximo", publico: "público", rapido: "rápido",
   razao: "razão", relatorio: "relatório", responsavel: "responsável",
-  reticencia: "reticência", rotulo: "rótulo", icone: "ícone", series: "séries", revisao: "revisão", sao: "São", saida: "saída",
+  reticencia: "reticência", label: "rótulo", icone: "ícone", series: "séries", revisao: "revisão", sao: "São", output: "saída",
   selecao: "seleção", sensivel: "sensível", serie: "série", servico: "serviço",
   servicos: "serviços", situacao: "situação", situacoes: "situações",
   substituicao: "substituição", tambem: "também", tecnico: "técnico",
-  titulo: "título", tres: "três", ultimo: "último", unica: "única", unico: "único",
+  titulo: "título", tres: "três", isLast: "último", unica: "única", unico: "único",
   usuario: "usuário", util: "útil", valido: "válido", visivel: "visível",
   voce: "você",
 };
@@ -47,21 +47,21 @@ const LIGACOES = new Set([
 ]);
 
 function titulo(nomeDoExport: string) {
-  const partes = nomeDoExport
+  const parts = nomeDoExport
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
     .split(" ")
     .filter(Boolean);
 
-  const palavras = partes.map((parte, indice) => {
-    const baixa = parte.toLowerCase();
+  const palavras = parts.map((part, index) => {
+    const baixa = part.toLowerCase();
     const acentuada = ACENTOS[baixa] ?? baixa;
 
     // Sigla escrita toda em caixa alta continua como esta: OTP, PDF, CNPJ.
-    if (parte.length > 1 && parte === parte.toUpperCase()) return parte;
+    if (part.length > 1 && part === part.toUpperCase()) return part;
 
-    if (indice > 0 && LIGACOES.has(baixa)) return acentuada;
-    if (indice === 0) return acentuada[0].toUpperCase() + acentuada.slice(1);
+    if (index > 0 && LIGACOES.has(baixa)) return acentuada;
+    if (index === 0) return acentuada[0].toUpperCase() + acentuada.slice(1);
     return acentuada;
   });
 
@@ -80,13 +80,13 @@ for (const arquivo of readdirSync(PASTA)) {
 
   const depois = antes.replace(
     /(^|\n)(export function (\w+)\()/g,
-    (inteiro, quebra: string, declaracao: string, nome: string, at: number) => {
+    (whole, quebra: string, declaracao: string, name: string, at: number) => {
       // Ja tem comentario de documentacao logo acima? Entao ele manda.
       const anterior = antes.slice(0, at + quebra.length).trimEnd();
-      if (anterior.endsWith("*/")) return inteiro;
+      if (anterior.endsWith("*/")) return whole;
 
       titulos++;
-      return `${quebra}/** ${titulo(nome)} */\n${declaracao}`;
+      return `${quebra}/** ${titulo(name)} */\n${declaracao}`;
     },
   );
 

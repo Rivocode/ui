@@ -54,8 +54,8 @@ test("o empilhamento vem da escala", () => {
       <Exemplo />
     </RivoProvider>,
   );
-  const lista = screen.getByRole("listbox");
-  expect(lista.closest('[class*="--rc-z-dropdown"]')).not.toBeNull();
+  const list = screen.getByRole("listbox");
+  expect(list.closest('[class*="--rc-z-dropdown"]')).not.toBeNull();
 });
 
 test("sem a lista de opcoes o gatilho mostraria o valor cru, e isso e contrato da Base UI", () => {

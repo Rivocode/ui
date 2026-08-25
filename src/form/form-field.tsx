@@ -20,21 +20,21 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "../components/f
  * controle dela que esteja dentro, e calcular esses tres na mao so criaria um
  * segundo dono para o mesmo atributo.
  */
-export type CampoDoFormulario<
-  Valores extends FieldValues = FieldValues,
-  Nome extends FieldPath<Valores> = FieldPath<Valores>,
-> = ControllerRenderProps<Valores, Nome>;
+export type FormFieldRow<
+  Values extends FieldValues = FieldValues,
+  Name extends FieldPath<Values> = FieldPath<Values>,
+> = ControllerRenderProps<Values, Name>;
 
-export type FormFieldProps<Valores extends FieldValues, Nome extends FieldPath<Valores>> = {
+export type FormFieldProps<Values extends FieldValues, Name extends FieldPath<Values>> = {
   /** O caminho do campo no schema. */
-  name: Nome;
+  name: Name;
   label?: ReactNode;
   description?: ReactNode;
   /** So quando o campo vive fora de um `<Form>`. */
-  control?: Control<Valores>;
+  control?: Control<Values>;
   className?: string;
   /** Recebe o campo pronto para espalhar no controle. */
-  children: (campo: CampoDoFormulario<Valores, Nome>, estado: ControllerFieldState) => ReactElement;
+  children: (field: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement;
 };
 
 /**
@@ -53,14 +53,14 @@ export type FormFieldProps<Valores extends FieldValues, Nome extends FieldPath<V
  * A mensagem de erro e a do schema. O `match` diz a Base UI para nao consultar
  * a validacao nativa do navegador e deixar o React Hook Form mandar.
  */
-export function FormField<Valores extends FieldValues, Nome extends FieldPath<Valores>>({
+export function FormField<Values extends FieldValues, Name extends FieldPath<Values>>({
   name,
   label,
   description,
   control,
   className,
   children,
-}: FormFieldProps<Valores, Nome>) {
+}: FormFieldProps<Values, Name>) {
   return (
     <Controller
       name={name}

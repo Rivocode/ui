@@ -6,7 +6,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartTooltipContent } from "./chart-tooltip";
 
 import { cn } from "../lib/cn";
-import { PALETA, type ChartConfig } from "./chart";
+import { PALETTE, type ChartConfig } from "./chart";
 
 export type ChartDonutProps<Slice> = {
   data: Slice[];
@@ -31,7 +31,7 @@ export type ChartDonutProps<Slice> = {
    */
   legend?: boolean;
   /** Como escrever o valor, na legenda e na dica. */
-  format?: (valor: number) => string;
+  format?: (value: number) => string;
   className?: string;
 };
 
@@ -72,10 +72,10 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   // Em fracao do raio disponivel, e nao em pixel: assim a rosca acompanha a
   // altura que a classe deu ao contentor.
   const externo = "88%";
-  const interno = `${Math.round(88 * (1 - thickness))}%`;
+  const internal = `${Math.round(88 * (1 - thickness))}%`;
 
-  const corDe = (fatia: Slice, indice: number) =>
-    config?.[String(fatia[nameKey])]?.color ?? PALETA[indice % PALETA.length];
+  const corDe = (slice: Slice, index: number) =>
+    config?.[String(slice[nameKey])]?.color ?? PALETTE[index % PALETTE.length];
 
   return (
     <div className={cn("w-full", className)}>
@@ -86,7 +86,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               data={data}
               dataKey={valueKey}
               nameKey={nameKey}
-              innerRadius={interno}
+              innerRadius={internal}
               outerRadius={externo}
               paddingAngle={2}
               isAnimationActive={false}
@@ -94,17 +94,17 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               // clara que compete com a propria cor da fatia.
               stroke="none"
             >
-              {data.map((fatia, indice) => {
-                const nome = String(fatia[nameKey]);
+              {data.map((slice, index) => {
+                const name = String(slice[nameKey]);
 
                 return (
                   <Cell
-                    key={nome}
+                    key={name}
                     // A cor escrita no `config`, ou a paleta na ordem. O que nao
                     // da e cair em `var(--color-<nome>)`: essas variaveis sao
                     // escritas pelo `ChartContainer`, e a rosca desenha sozinha,
                     // fora dele. Foi assim que ela saiu inteira preta.
-                    fill={corDe(fatia, indice)}
+                    fill={corDe(slice, index)}
                   />
                 );
               })}
@@ -139,21 +139,21 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
 
       {legend && (
         <ul className="mt-3 space-y-1.5">
-          {data.map((fatia, indice) => {
-            const nome = String(fatia[nameKey]);
-            const valor = Number(fatia[valueKey]);
+          {data.map((slice, index) => {
+            const name = String(slice[nameKey]);
+            const value = Number(slice[valueKey]);
 
             return (
-              <li key={nome} className="flex items-center gap-2 text-sm">
+              <li key={name} className="flex items-center gap-2 text-sm">
                 <span
                   aria-hidden="true"
                   className="size-2 shrink-0 rounded-sm"
-                  style={{ background: corDe(fatia, indice) }}
+                  style={{ background: corDe(slice, index) }}
                 />
                 <span className="min-w-0 flex-1 truncate text-fg-muted">
-                  {config?.[nome]?.label ?? nome}
+                  {config?.[name]?.label ?? name}
                 </span>
-                <span className="shrink-0 font-mono text-fg">{format ? format(valor) : valor}</span>
+                <span className="shrink-0 font-mono text-fg">{format ? format(value) : value}</span>
               </li>
             );
           })}

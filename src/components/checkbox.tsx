@@ -52,7 +52,7 @@ export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "chil
 };
 
 export function Checkbox({ className, children, labelClassName, ...props }: CheckboxProps) {
-  const caixa = (
+  const box = (
     <BaseCheckbox.Root
       {...props}
       className={cn(
@@ -84,7 +84,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
     </BaseCheckbox.Root>
   );
 
-  if (children === undefined) return caixa;
+  if (children === undefined) return box;
 
   return (
     <label
@@ -98,7 +98,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
         labelClassName,
       )}
     >
-      {caixa}
+      {box}
       {children}
     </label>
   );

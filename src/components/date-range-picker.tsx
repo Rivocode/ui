@@ -6,7 +6,7 @@ import type { DateRange } from "react-day-picker";
 import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { formatDate } from "../lib/data";
+import { formatDate } from "../lib/date";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
@@ -68,19 +68,19 @@ export function DateRangePicker({
   confirmar = true,
   ...props
 }: DateRangePickerProps) {
-  const controlado = value !== undefined;
+  const controlled = value !== undefined;
   const [intervaloInterno, setIntervaloInterno] = useState<DateRange | undefined>(defaultValue);
-  const intervalo = controlado ? value : intervaloInterno;
+  const intervalo = controlled ? value : intervaloInterno;
 
-  const [aberto, setAberto] = useState(false);
+  const [isOpen, setAberto] = useState(false);
   const [rascunho, setRascunho] = useState<DateRange | undefined>(intervalo);
-  const escolhido = confirmar && aberto ? rascunho : intervalo;
+  const picked = confirmar && isOpen ? rascunho : intervalo;
 
-  const rotulo = descrever(intervalo) ?? placeholder;
+  const label = descrever(intervalo) ?? placeholder;
   const vazio = descrever(intervalo) === undefined;
 
   function mudar(novo: DateRange | undefined) {
-    if (!controlado) setIntervaloInterno(novo);
+    if (!controlled) setIntervaloInterno(novo);
     setRascunho(novo);
     onValueChange?.(novo);
   }
@@ -97,14 +97,14 @@ export function DateRangePicker({
         className,
       )}
     >
-      <span className="truncate">{rotulo}</span>
+      <span className="truncate">{label}</span>
       <CalendarDays size={16} aria-hidden="true" className="shrink-0 text-fg-muted" />
     </button>
   );
 
   return (
     <CalendarPanel
-      open={aberto}
+      open={isOpen}
       onOpenChange={(abrir) => {
         setAberto(abrir);
         if (abrir) setRascunho(intervalo);
@@ -143,8 +143,8 @@ export function DateRangePicker({
     >
       <Calendar
         mode="range"
-        selected={escolhido}
-        defaultMonth={escolhido?.from}
+        selected={picked}
+        defaultMonth={picked?.from}
         numberOfMonths={numberOfMonths}
         disabled={disabledDays}
         locale={locale}

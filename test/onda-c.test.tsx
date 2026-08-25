@@ -5,26 +5,26 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import { DataTable, type Column } from "../src/components/data-table";
 import { Steps, useWizard, type Step } from "../src/components/steps";
 
-type Nota = { id: string; numero: string; cliente: string; valor: string };
+type Nota = { id: string; number: string; customer: string; amount: string };
 
 const NOTAS: Nota[] = [
-  { id: "1", numero: "4813", cliente: "Clinica Sao Lucas", valor: "R$ 2.480,00" },
-  { id: "2", numero: "4814", cliente: "Transportes Cabo Branco", valor: "R$ 940,00" },
+  { id: "1", number: "4813", customer: "Clinica Sao Lucas", amount: "R$ 2.480,00" },
+  { id: "2", number: "4814", customer: "Transportes Cabo Branco", amount: "R$ 940,00" },
 ];
 
 const COLUNAS: Column<Nota>[] = [
-  { key: "numero", header: "Numero" },
-  { key: "cliente", header: "Cliente" },
-  { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
+  { key: "number", header: "Numero" },
+  { key: "customer", header: "Cliente" },
+  { key: "amount", header: "Valor", align: "right", hideOnMobile: true },
 ];
 
-function tabela(props: Partial<React.ComponentProps<typeof DataTable<Nota>>> = {}) {
+function table(props: Partial<React.ComponentProps<typeof DataTable<Nota>>> = {}) {
   return render(
     <RivoProvider scope="local">
       <DataTable
         data={NOTAS}
         columns={COLUNAS}
-        rowKey={(nota) => nota.id}
+        rowKey={(invoice) => invoice.id}
         empty={{ title: "Nenhuma nota", description: "Emita a primeira para ela aparecer." }}
         {...props}
       />
@@ -33,25 +33,25 @@ function tabela(props: Partial<React.ComponentProps<typeof DataTable<Nota>>> = {
 }
 
 test("a tabela mostra os dados quando eles chegam", () => {
-  tabela();
+  table();
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
   expect(screen.getByText("R$ 940,00")).toBeDefined();
 });
 
 test("carregando, ela mostra o formato do que vem, e nao os dados velhos", () => {
-  const { container } = tabela({ isLoading: true, skeletonRows: 3 });
+  const { container } = table({ isLoading: true, skeletonRows: 3 });
   expect(screen.queryByText("Clinica Sao Lucas")).toBeNull();
   expect(container.querySelectorAll(".animate-pulse").length).toBe(9);
 });
 
 test("sem dados nenhum, ela ja entra carregando", () => {
-  const { container } = tabela({ data: undefined });
+  const { container } = table({ data: undefined });
   expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
 });
 
 test("o erro vence o carregando, e oferece nova tentativa", () => {
   let tentativas = 0;
-  tabela({ isError: true, isLoading: true, onRetry: () => (tentativas += 1) });
+  table({ isError: true, isLoading: true, onRetry: () => (tentativas += 1) });
 
   expect(screen.getByRole("alert")).toBeDefined();
   fireEvent.click(screen.getByText("Tentar de novo"));
@@ -59,21 +59,21 @@ test("o erro vence o carregando, e oferece nova tentativa", () => {
 });
 
 test("a lista vazia explica o vazio e oferece saida", () => {
-  tabela({ data: [] });
+  table({ data: [] });
   expect(screen.getByText("Nenhuma nota")).toBeDefined();
   expect(screen.getByText("Emita a primeira para ela aparecer.")).toBeDefined();
 });
 
 test("o vazio nao aparece enquanto a consulta esta em pe", () => {
-  tabela({ data: [], isLoading: true });
+  table({ data: [], isLoading: true });
   expect(screen.queryByText("Nenhuma nota")).toBeNull();
 });
 
 test("a linha avisa quem clicou nela", () => {
   let clicada: Nota | undefined;
-  tabela({ onRowClick: (nota) => (clicada = nota) });
+  table({ onRowClick: (nota) => (clicada = nota) });
   fireEvent.click(screen.getByText("Clinica Sao Lucas"));
-  expect(clicada?.numero).toBe("4813");
+  expect(clicada?.number).toBe("4813");
 });
 
 const PASSOS: Step[] = [
@@ -86,11 +86,11 @@ function Assistente() {
   const assistente = useWizard(PASSOS);
   return (
     <RivoProvider scope="local">
-      <Steps steps={PASSOS} current={assistente.passo} onStepClick={assistente.irPara} />
-      <p>Agora: {assistente.atual?.title}</p>
-      <button onClick={() => assistente.avancar()}>Avancar</button>
-      <button onClick={() => assistente.avancar(() => false)}>Avancar travado</button>
-      <button onClick={assistente.voltar}>Voltar</button>
+      <Steps steps={PASSOS} current={assistente.step} onStepClick={assistente.goTo} />
+      <p>Agora: {assistente.current?.title}</p>
+      <button onClick={() => assistente.next()}>Avancar</button>
+      <button onClick={() => assistente.next(() => false)}>Avancar travado</button>
+      <button onClick={assistente.back}>Voltar</button>
     </RivoProvider>
   );
 }

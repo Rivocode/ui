@@ -21,8 +21,8 @@ import {
 import { Toggle, ToggleGroup } from "../src/components/toggle";
 import { Field, FieldLabel, Textarea } from "../src/components/field";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("a chave liga e desliga, e conta o estado", () => {
@@ -30,10 +30,10 @@ test("a chave liga e desliga, e conta o estado", () => {
   // que devolve outro clique para o mesmo controle e a chave volta ao inicio.
   // No navegador isso nao acontece, e o padrao com rotulo esta na vitrine.
   comTema(<Switch defaultChecked={false} aria-label="Avisos por email" />);
-  const chave = screen.getByRole("switch");
-  expect(chave.getAttribute("aria-checked")).toBe("false");
-  fireEvent.click(chave);
-  expect(chave.getAttribute("aria-checked")).toBe("true");
+  const key = screen.getByRole("switch");
+  expect(key.getAttribute("aria-checked")).toBe("false");
+  fireEvent.click(key);
+  expect(key.getAttribute("aria-checked")).toBe("true");
 });
 
 test("a chave marca invalido junto com o Field", () => {
@@ -58,11 +58,11 @@ test("o grupo de radio deixa so um marcado", () => {
       </label>
     </RadioGroup>,
   );
-  const opcoes = screen.getAllByRole("radio");
-  expect(opcoes[0]!.getAttribute("aria-checked")).toBe("true");
-  fireEvent.click(opcoes[1]!);
-  expect(opcoes[0]!.getAttribute("aria-checked")).toBe("false");
-  expect(opcoes[1]!.getAttribute("aria-checked")).toBe("true");
+  const options = screen.getAllByRole("radio");
+  expect(options[0]!.getAttribute("aria-checked")).toBe("true");
+  fireEvent.click(options[1]!);
+  expect(options[0]!.getAttribute("aria-checked")).toBe("false");
+  expect(options[1]!.getAttribute("aria-checked")).toBe("true");
 });
 
 test("a linha que separa se anuncia como separador", () => {
@@ -72,9 +72,9 @@ test("a linha que separa se anuncia como separador", () => {
 
 test("a linha vertical troca a espessura de eixo", () => {
   comTema(<Separator orientation="vertical" />);
-  const linha = screen.getByRole("separator");
-  expect(linha.className).toContain("w-px");
-  expect(linha.className).not.toContain("h-px");
+  const row = screen.getByRole("separator");
+  expect(row.className).toContain("w-px");
+  expect(row.className).not.toContain("h-px");
 });
 
 test("o avatar mostra a inicial quando nao ha foto", () => {
@@ -137,12 +137,12 @@ test("o botao que fica apertado conta que esta apertado", () => {
       <Toggle value="grade">Grade</Toggle>
     </ToggleGroup>,
   );
-  const lista = screen.getByRole("button", { name: "Lista" });
+  const list = screen.getByRole("button", { name: "Lista" });
   const grade = screen.getByRole("button", { name: "Grade" });
-  expect(lista.getAttribute("aria-pressed")).toBe("true");
+  expect(list.getAttribute("aria-pressed")).toBe("true");
   fireEvent.click(grade);
   expect(grade.getAttribute("aria-pressed")).toBe("true");
-  expect(lista.getAttribute("aria-pressed")).toBe("false");
+  expect(list.getAttribute("aria-pressed")).toBe("false");
 });
 
 test("o campo de varias linhas se liga ao rotulo como o Input", () => {
@@ -152,8 +152,8 @@ test("o campo de varias linhas se liga ao rotulo como o Input", () => {
       <Textarea placeholder="O que o cliente pediu" />
     </Field>,
   );
-  const rotulo = screen.getByText("Observacao") as HTMLLabelElement;
-  const campo = screen.getByPlaceholderText("O que o cliente pediu");
-  expect(campo.tagName).toBe("TEXTAREA");
-  expect(rotulo.htmlFor).toBe(campo.id);
+  const label = screen.getByText("Observacao") as HTMLLabelElement;
+  const field = screen.getByPlaceholderText("O que o cliente pediu");
+  expect(field.tagName).toBe("TEXTAREA");
+  expect(label.htmlFor).toBe(field.id);
 });

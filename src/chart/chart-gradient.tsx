@@ -46,20 +46,20 @@ export type ChartAreaGradientProps = {
  * </AreaChart>
  * ```
  */
-export function areaGradient(id: string, serie: string) {
-  return `url(#rc-grad-${id}-${serie})`;
+export function areaGradient(id: string, name: string) {
+  return `url(#rc-grad-${id}-${name})`;
 }
 
 /** Os gradientes de area, declarados de uma vez. */
 export function ChartAreaGradient({ id, series, from = 0.3, to = 0.02 }: ChartAreaGradientProps) {
   return (
     <defs>
-      {series.map((serie) => (
-        <linearGradient key={serie} id={`rc-grad-${id}-${serie}`} x1="0" y1="0" x2="0" y2="1">
+      {series.map((name) => (
+        <linearGradient key={name} id={`rc-grad-${id}-${name}`} x1="0" y1="0" x2="0" y2="1">
           {/* A cor sai da propria variavel da serie, entao o gradiente
            * acompanha o tema sem saber qual e. */}
-          <stop offset="0%" stopColor={`var(--color-${serie})`} stopOpacity={from} />
-          <stop offset="100%" stopColor={`var(--color-${serie})`} stopOpacity={to} />
+          <stop offset="0%" stopColor={`var(--color-${name})`} stopOpacity={from} />
+          <stop offset="100%" stopColor={`var(--color-${name})`} stopOpacity={to} />
         </linearGradient>
       ))}
     </defs>

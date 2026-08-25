@@ -3,13 +3,13 @@
 import type { ReactElement, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { useNarrowScreen } from "../lib/tela";
+import { useNarrowScreen } from "../lib/screen";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Sheet, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 
 export type CalendarPanelProps = {
   open: boolean;
-  onOpenChange: (aberto: boolean) => void;
+  onOpenChange: (isOpen: boolean) => void;
   /** O elemento que abre. O mesmo nos dois formatos. */
   trigger: ReactElement;
   /** Titulo lido no celular, onde o painel vira folha e perde o contexto. */
@@ -36,9 +36,9 @@ export function CalendarPanel({
   footer,
   align = "start",
 }: CalendarPanelProps) {
-  const estreita = useNarrowScreen();
+  const narrow = useNarrowScreen();
 
-  if (estreita) {
+  if (narrow) {
     return (
       <Sheet side="bottom" open={open} onOpenChange={onOpenChange}>
         <SheetTrigger render={trigger} />

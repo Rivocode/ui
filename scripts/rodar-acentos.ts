@@ -23,7 +23,7 @@ for (const arquivo of alvos) {
     await Bun.write(arquivo, depois);
     mudados++;
   }
-  for (const linha of pendencias(depois)) restantes.push(`${arquivo}: ${linha}`);
+  for (const row of pendencias(depois)) restantes.push(`${arquivo}: ${row}`);
 }
 
 console.log(`arquivos alterados: ${mudados} de ${alvos.length}`);

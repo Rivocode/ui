@@ -83,7 +83,7 @@ export function Button({
   render,
   ...props
 }: ButtonProps) {
-  const conteudo = (
+  const content = (
     <>
       {loading && (
         <span
@@ -105,7 +105,7 @@ export function Button({
       ...(render ? {} : { disabled: disabled || loading }),
       "aria-busy": loading || undefined,
       className: cn(buttonVariants({ variant, size, shape }), className),
-      children: conteudo,
+      children: content,
     },
   });
 }

@@ -49,7 +49,7 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
 };
 
 /** As oito cores de serie do tema, na ordem em que devem ser usadas. */
-export const PALETA = Array.from({ length: 8 }, (_, indice) => `var(--rc-chart-${indice + 1})`);
+export const PALETTE = Array.from({ length: 8 }, (_, index) => `var(--rc-chart-${index + 1})`);
 
 /**
  * A moldura de todo grafico: tamanho que acompanha o pai, cor de eixo e de
@@ -83,10 +83,10 @@ export function ChartContainer({
 }: ChartContainerProps) {
   const id = useId().replace(/:/g, "");
 
-  const cores = Object.entries(config)
-    .map(([chave, serie], indice) => {
-      const cor = serie.color ?? PALETA[indice % PALETA.length];
-      return `--color-${chave}: ${cor};`;
+  const colors = Object.entries(config)
+    .map(([key, series], index) => {
+      const color = series.color ?? PALETTE[index % PALETTE.length];
+      return `--color-${key}: ${color};`;
     })
     .join("\n  ");
 
@@ -114,20 +114,20 @@ export function ChartContainer({
         className,
       )}
     >
-      <style dangerouslySetInnerHTML={{ __html: `[data-rc-chart="${id}"] {\n  ${cores}\n}` }} />
+      <style dangerouslySetInnerHTML={{ __html: `[data-rc-chart="${id}"] {\n  ${colors}\n}` }} />
 
       {isLoading ? (
-        <MolduraDeEstado>
+        <StateFrame>
           {/* Barras de altura desigual: um esqueleto retangular nao parece
            * grafico, e a espera fica sem forma. */}
           <div className="flex h-full w-full items-end gap-3 px-2 pb-6">
-            {[0.45, 0.7, 0.35, 0.85, 0.6, 0.75].map((altura, indice) => (
-              <Skeleton key={indice} className="w-full" style={{ height: `${altura * 100}%` }} />
+            {[0.45, 0.7, 0.35, 0.85, 0.6, 0.75].map((height, index) => (
+              <Skeleton key={index} className="w-full" style={{ height: `${height * 100}%` }} />
             ))}
           </div>
-        </MolduraDeEstado>
+        </StateFrame>
       ) : isError ? (
-        <MolduraDeEstado>
+        <StateFrame>
           <Alert tone="danger" className="w-full">
             <AlertTitle>Nao foi possivel carregar o grafico</AlertTitle>
             <AlertDescription>
@@ -139,11 +139,11 @@ export function ChartContainer({
               </Button>
             )}
           </Alert>
-        </MolduraDeEstado>
+        </StateFrame>
       ) : empty && data && data.length === 0 ? (
-        <MolduraDeEstado>
+        <StateFrame>
           <EmptyState title={empty.title} description={empty.description} icon={empty.icon} />
-        </MolduraDeEstado>
+        </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
           {children}
@@ -154,6 +154,6 @@ export function ChartContainer({
 }
 
 /** Ocupa a altura que o grafico ocuparia, para a tela nao pular entre estados. */
-function MolduraDeEstado({ children }: { children: ReactNode }) {
+function StateFrame({ children }: { children: ReactNode }) {
   return <div className="flex h-full w-full items-center justify-center">{children}</div>;
 }

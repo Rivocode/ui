@@ -46,13 +46,13 @@ const SUFIXOS = {
   palavra: { bilhao: "bi", milhao: "mi", milhar: "mil", junto: false },
 } as const;
 
-function abreviar(value: number, forma: keyof typeof SUFIXOS) {
+function abbreviate(value: number, forma: keyof typeof SUFIXOS) {
   const { bilhao, milhao, milhar, junto } = SUFIXOS[forma];
   const size = Math.abs(value);
-  const espaco = junto ? "" : " ";
+  const space = junto ? "" : " ";
 
-  const escrever = (dividido: number, sufixo: string) =>
-    `${numberFormat({ maximumFractionDigits: 1 }).format(dividido)}${espaco}${sufixo}`;
+  const escrever = (dividido: number, suffix: string) =>
+    `${numberFormat({ maximumFractionDigits: 1 }).format(dividido)}${space}${suffix}`;
 
   if (size >= 1_000_000_000) return escrever(value / 1_000_000_000, bilhao);
   if (size >= 1_000_000) return escrever(value / 1_000_000, milhao);
@@ -63,7 +63,7 @@ function abreviar(value: number, forma: keyof typeof SUFIXOS) {
 
 /** `12,4K`, `1,2M`, `340`. */
 export function compact(value: number) {
-  return abreviar(value, "simbolo");
+  return abbreviate(value, "simbolo");
 }
 
 /**
@@ -73,7 +73,7 @@ export function compact(value: number) {
  * ela custa o dobro da largura, e largura de eixo e espaco tirado do grafico.
  */
 export function compactWords(value: number) {
-  return abreviar(value, "palavra");
+  return abbreviate(value, "palavra");
 }
 
 /** `R$ 2,5K`, `R$ 1,2M`. O que cabe num eixo. */

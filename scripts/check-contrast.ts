@@ -69,7 +69,7 @@ const PAIRS: Array<[string, string, number]> = [
  * outro jeito.
  */
 const MIN_GRAFICO = 3;
-const SERIES = Array.from({ length: 8 }, (_, indice) => `--rc-chart-${indice + 1}`);
+const SERIES = Array.from({ length: 8 }, (_, index) => `--rc-chart-${index + 1}`);
 
 /** `--rc-fg-disabled` e isento: texto desabilitado nao entra na norma. */
 if (import.meta.main) {

@@ -75,7 +75,7 @@ export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup>;
 
 export function SheetContent({ className, children, ...props }: SheetContentProps) {
   const { portalContainer } = useRivoContext();
-  const lado = use(LadoContext);
+  const side = use(LadoContext);
 
   return (
     <BaseDrawer.Portal container={portalContainer ?? undefined}>
@@ -85,14 +85,14 @@ export function SheetContent({ className, children, ...props }: SheetContentProp
           // A tarja clareia junto com o dedo: puxar a folha pela metade mostra
           // metade do que esta atras, e o gesto deixa de ser um salto.
           "opacity-[calc(1-var(--drawer-swipe-progress))]",
-          "transition-opacity duration-[var(--rc-duration-folha)] ease-rc-folha",
+          "transition-opacity duration-[var(--rc-duration-sheet)] ease-rc-sheet",
           "data-[swiping]:duration-0",
           "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
         )}
       />
 
       <BaseDrawer.Viewport
-        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", MOLDURA[lado])}
+        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", MOLDURA[side])}
       >
         <BaseDrawer.Popup
           {...props}
@@ -100,11 +100,11 @@ export function SheetContent({ className, children, ...props }: SheetContentProp
             "overflow-y-auto overscroll-contain border-border bg-surface shadow-3",
             "p-[var(--rc-pad-panel)]",
             "font-sans text-fg outline-none",
-            "transition-transform duration-[var(--rc-duration-folha)] ease-rc-folha",
+            "transition-transform duration-[var(--rc-duration-sheet)] ease-rc-sheet",
             // Enquanto o dedo esta na tela o painel segue o dedo sem transicao,
             // senao ele chega atrasado e parece emperrado.
             "data-[swiping]:select-none data-[swiping]:duration-0",
-            PAINEL[lado],
+            PAINEL[side],
             className,
           )}
         >

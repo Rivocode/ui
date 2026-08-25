@@ -17,10 +17,10 @@ import {
 } from "../src/index";
 
 const ITENS = [
-  { icone: LayoutDashboard, rotulo: "Painel", ativo: true },
-  { icone: FileText, rotulo: "Notas fiscais", contagem: 4 },
-  { icone: Users, rotulo: "Clientes" },
-  { icone: Settings, rotulo: "Ajustes" },
+  { icone: LayoutDashboard, label: "Painel", ativo: true },
+  { icone: FileText, label: "Notas fiscais", contagem: 4 },
+  { icone: Users, label: "Clientes" },
+  { icone: Settings, label: "Ajustes" },
 ];
 
 function MenuLateral() {
@@ -30,9 +30,9 @@ function MenuLateral() {
       <SheetContent className="p-4">
         <SheetTitle className="px-2 text-lg">RivoCode</SheetTitle>
         <nav className="mt-4 flex flex-col gap-1">
-          {ITENS.map(({ icone: Icone, rotulo, ativo, contagem }) => (
+          {ITENS.map(({ icone: Icone, label, ativo, contagem }) => (
             <a
-              key={rotulo}
+              key={label}
               href="#"
               aria-current={ativo ? "page" : undefined}
               className={
@@ -42,7 +42,7 @@ function MenuLateral() {
               }
             >
               <Icone size={16} aria-hidden="true" />
-              <span className="flex-1">{rotulo}</span>
+              <span className="flex-1">{label}</span>
               {contagem && <Badge>{contagem}</Badge>}
             </a>
           ))}
@@ -70,20 +70,20 @@ function FolhaDeBaixo() {
   );
 }
 
-function Amostra({ theme, lado }: { theme: RivoTheme; lado: SheetSide }) {
+function Amostra({ theme, side }: { theme: RivoTheme; side: SheetSide }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / folha {lado === "left" ? "lateral" : "de baixo"}
+        {theme} / folha {side === "left" ? "lateral" : "de baixo"}
       </p>
-      {lado === "left" ? <MenuLateral /> : <FolhaDeBaixo />}
+      {side === "left" ? <MenuLateral /> : <FolhaDeBaixo />}
     </RivoProvider>
   );
 }
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" lado="left" />
-    <Amostra theme="rivocode-light" lado="bottom" />
+    <Amostra theme="rivocode-dark" side="left" />
+    <Amostra theme="rivocode-light" side="bottom" />
   </div>,
 );

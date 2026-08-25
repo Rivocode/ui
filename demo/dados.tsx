@@ -65,9 +65,9 @@ const SETORES: TreeNode[] = [
 ];
 
 const NOTAS = [
-  { numero: "4813", cliente: "Clinica Sao Lucas", valor: "R$ 2.480,00", situacao: "Paga" },
-  { numero: "4814", cliente: "Transportes Cabo Branco", valor: "R$ 940,00", situacao: "Aberta" },
-  { numero: "4815", cliente: "Supermercado Tambau", valor: "R$ 12.300,00", situacao: "Aberta" },
+  { numero: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", situacao: "Paga" },
+  { numero: "4814", cliente: "Transportes Cabo Branco", value: "R$ 940,00", situacao: "Aberta" },
+  { numero: "4815", cliente: "Supermercado Tambau", value: "R$ 12.300,00", situacao: "Aberta" },
 ];
 
 function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {

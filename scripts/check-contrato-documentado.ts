@@ -16,8 +16,8 @@ const CONTRATO = ".design-sync/conventions.md";
 const SKILL = ".claude/skills/rivocode-ui/SKILL.md";
 
 const ALVOS = [
-  { arquivo: "src/chart/index.ts", nome: "@rivocode/ui/chart" },
-  { arquivo: "src/form/index.ts", nome: "@rivocode/ui/form" },
+  { arquivo: "src/chart/index.ts", name: "@rivocode/ui/chart" },
+  { arquivo: "src/form/index.ts", name: "@rivocode/ui/form" },
 ];
 
 const contrato = readFileSync(CONTRATO, "utf8");
@@ -38,11 +38,11 @@ function exportado(arquivo: string) {
 
   for (const bloco of semRecharts.matchAll(/export \{([\s\S]*?)\} from/g)) {
     for (const bruto of bloco[1].split(",")) {
-      const parte = bruto.trim();
+      const part = bruto.trim();
       // Tipo nao precisa aparecer em texto de contrato: quem escreve tela usa a
       // peca, e o tipo chega pelo editor.
-      if (!parte || parte.startsWith("type ")) continue;
-      nomes.add(parte);
+      if (!part || part.startsWith("type ")) continue;
+      nomes.add(part);
     }
   }
 
@@ -53,15 +53,15 @@ let faltas = 0;
 
 for (const alvo of ALVOS) {
   const nomes = exportado(alvo.arquivo);
-  const foraDoContrato = nomes.filter((nome) => !contrato.includes(nome));
-  const foraDaSkill = nomes.filter((nome) => !skill.includes(nome));
+  const foraDoContrato = nomes.filter((name) => !contrato.includes(name));
+  const foraDaSkill = nomes.filter((name) => !skill.includes(name));
 
   if (foraDoContrato.length > 0) {
-    console.error(`${CONTRATO} nao cita, de ${alvo.nome}: ${foraDoContrato.join(", ")}`);
+    console.error(`${CONTRATO} nao cita, de ${alvo.name}: ${foraDoContrato.join(", ")}`);
     faltas += foraDoContrato.length;
   }
   if (foraDaSkill.length > 0) {
-    console.error(`a skill nao cita, de ${alvo.nome}: ${foraDaSkill.join(", ")}`);
+    console.error(`a skill nao cita, de ${alvo.name}: ${foraDaSkill.join(", ")}`);
     faltas += foraDaSkill.length;
   }
 }

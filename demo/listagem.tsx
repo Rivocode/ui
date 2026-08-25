@@ -45,7 +45,7 @@ type Nota = {
   id: string;
   cliente: string;
   emissao: string;
-  valor: string;
+  value: string;
   status: "paga" | "aberta" | "vencida";
 };
 
@@ -54,28 +54,28 @@ const NOTAS: Nota[] = [
     id: "4812",
     cliente: "Prefeitura de Joao Pessoa",
     emissao: "02/08",
-    valor: "R$ 12.400,00",
+    value: "R$ 12.400,00",
     status: "paga",
   },
   {
     id: "4813",
     cliente: "Clinica Sao Lucas",
     emissao: "05/08",
-    valor: "R$ 3.280,00",
+    value: "R$ 3.280,00",
     status: "aberta",
   },
   {
     id: "4814",
     cliente: "Transportes Cabo Branco",
     emissao: "11/08",
-    valor: "R$ 8.750,00",
+    value: "R$ 8.750,00",
     status: "vencida",
   },
   {
     id: "4815",
     cliente: "Supermercado Tambau",
     emissao: "18/08",
-    valor: "R$ 1.940,00",
+    value: "R$ 1.940,00",
     status: "aberta",
   },
 ];
@@ -112,7 +112,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   const algumas = marcadas.length > 0 && !todas;
 
   function alternar(id: string) {
-    setMarcadas((atual) => (atual.includes(id) ? atual.filter((x) => x !== id) : [...atual, id]));
+    setMarcadas((current) => (current.includes(id) ? current.filter((x) => x !== id) : [...current, id]));
   }
 
   return (
@@ -191,7 +191,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                         {ROTULO[nota.status]}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right font-mono">{nota.valor}</TableCell>
+                    <TableCell className="text-right font-mono">{nota.value}</TableCell>
                     <TableCell className="text-right">
                       <Menu>
                         <MenuTrigger

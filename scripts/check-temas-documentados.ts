@@ -27,8 +27,8 @@ const papeis = [...tema.matchAll(/^\s+(--rc-[a-z0-9-]+):/gm)].map((achado) => ac
 function citado(papel: string) {
   if (guia.includes(papel)) return true;
 
-  const estado = /^--rc-(success|warning|danger|info)(-fg|-text|-subtle)?$/.exec(papel);
-  if (estado) return guia.includes(`--rc-<estado>${estado[2] ?? ""}`);
+  const state = /^--rc-(success|warning|danger|info)(-fg|-text|-subtle)?$/.exec(papel);
+  if (state) return guia.includes(`--rc-<estado>${state[2] ?? ""}`);
 
   const serie = /^--rc-chart-([1-8])$/.exec(papel);
   if (serie) return guia.includes("--rc-chart-1` a `--rc-chart-8");

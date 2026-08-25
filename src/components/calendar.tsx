@@ -6,7 +6,7 @@ import { ptBR } from "react-day-picker/locale";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { useNarrowScreen } from "../lib/tela";
+import { useNarrowScreen } from "../lib/screen";
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
@@ -45,12 +45,12 @@ export function Calendar({
 }: CalendarProps) {
   // Dois meses no celular viram uma coluna de 700px de altura e o segundo fica
   // fora da tela. Um mes so, e a navegacao cobre o resto.
-  const estreita = useNarrowScreen();
+  const narrow = useNarrowScreen();
 
   return (
     <DayPicker
       locale={locale}
-      numberOfMonths={estreita ? 1 : numberOfMonths}
+      numberOfMonths={narrow ? 1 : numberOfMonths}
       captionLayout={captionLayout}
       startMonth={startMonth}
       endMonth={endMonth}
@@ -59,9 +59,9 @@ export function Calendar({
         // comecam igual, e o cabecalho vira leitura em vez de referencia; a
         // coluna ja diz qual dia e, e o leitor de tela recebe o nome inteiro
         // pelo `aria-label` da celula.
-        formatWeekdayName: (dia, opcoes, lib) =>
+        formatWeekdayName: (dia, options, lib) =>
           lib
-            ? lib.format(dia, "EEEEE", opcoes).toUpperCase()
+            ? lib.format(dia, "EEEEE", options).toUpperCase()
             : dia.toLocaleDateString("pt-BR", { weekday: "narrow" }).toUpperCase(),
         ...formatters,
       }}

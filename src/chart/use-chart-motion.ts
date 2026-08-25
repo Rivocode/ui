@@ -1,6 +1,6 @@
 "use client";
 
-import { useMediaQuery } from "../lib/tela";
+import { useMediaQuery } from "../lib/screen";
 
 export type ChartMotion = {
   /** Espalhe em `Line`, `Bar`, `Area` e `Pie`. */
@@ -19,6 +19,6 @@ export type ChartMotion = {
  *     <Line dataKey="pagas" {...movimento} />
  */
 export function useChartMotion(): ChartMotion {
-  const menosMovimento = useMediaQuery("(prefers-reduced-motion: reduce)");
-  return { isAnimationActive: !menosMovimento };
+  const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  return { isAnimationActive: !reducedMotion };
 }

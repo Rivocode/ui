@@ -4,7 +4,7 @@ import { CalendarDays } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { formatDate, parseDate, maskDate } from "../lib/data";
+import { formatDate, parseDate, maskDate } from "../lib/date";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
@@ -71,26 +71,26 @@ export function DatePicker({
   onBlur,
   ...props
 }: DatePickerProps) {
-  const controlado = value !== undefined;
+  const controlled = value !== undefined;
   const [dataInterna, setDataInterna] = useState<Date | undefined>(defaultValue);
-  const data = controlado ? value : dataInterna;
+  const data = controlled ? value : dataInterna;
 
-  const [texto, setTexto] = useState(() => formatDate(data));
-  const [textoSujo, setTextoSujo] = useState(false);
-  const [aberto, setAberto] = useState(false);
+  const [text, setText] = useState(() => formatDate(data));
+  const [rawText, setRawText] = useState(false);
+  const [isOpen, setAberto] = useState(false);
 
   // O rascunho so existe com rodape. Sem ele, o clique no dia ja e a escolha.
   const [rascunho, setRascunho] = useState<Date | undefined>(data);
-  const escolhida = confirmar && aberto ? rascunho : data;
+  const picked = confirmar && isOpen ? rascunho : data;
 
   const [mes, setMes] = useState<Date>(() => data ?? new Date());
 
   // Enquanto ninguem digita, o campo espelha a data. Isso mantem o campo certo
   // quando a data muda de fora, sem apagar o que esta sendo digitado agora.
-  const textoNaTela = textoSujo ? texto : formatDate(data);
+  const displayText = rawText ? text : formatDate(data);
 
   function mudarData(nova: Date | undefined) {
-    if (!controlado) setDataInterna(nova);
+    if (!controlled) setDataInterna(nova);
     setRascunho(nova);
     if (nova) setMes(nova);
     onValueChange?.(nova);
@@ -124,26 +124,26 @@ export function DatePicker({
         autoComplete="off"
         disabled={disabled}
         placeholder={placeholder}
-        value={textoNaTela}
-        onChange={(evento) => {
-          const mascarado = maskDate(evento.target.value);
-          setTexto(mascarado);
-          setTextoSujo(true);
+        value={displayText}
+        onChange={(event) => {
+          const masked = maskDate(event.target.value);
+          setText(masked);
+          setRawText(true);
 
-          const lida = parseDate(mascarado);
+          const lida = parseDate(masked);
           // Campo esvaziado limpa a data; texto pela metade ainda nao diz nada,
           // entao a data anterior fica de pe ate o campo perder o foco.
-          if (lida || mascarado === "") mudarData(lida);
+          if (lida || masked === "") mudarData(lida);
         }}
-        onBlur={(evento) => {
-          setTextoSujo(false);
-          onBlur?.(evento);
+        onBlur={(event) => {
+          setRawText(false);
+          onBlur?.(event);
         }}
         className="pr-10"
       />
 
       <CalendarPanel
-        open={aberto}
+        open={isOpen}
         onOpenChange={(abrir) => {
           setAberto(abrir);
           // Abrir sempre parte da data escolhida, e nao do mes que sobrou de
@@ -185,11 +185,11 @@ export function DatePicker({
       >
         <Calendar
           mode="single"
-          selected={escolhida}
+          selected={picked}
           month={mes}
           onMonthChange={setMes}
           onSelect={(nova) => {
-            setTextoSujo(false);
+            setRawText(false);
             if (confirmar) {
               setRascunho(nova);
               return;

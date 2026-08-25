@@ -21,8 +21,8 @@ import {
   NavigationMenuTrigger,
 } from "../src/components/navigation-menu";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o bloco que esconde abre e fecha", () => {
@@ -78,14 +78,14 @@ test("a medida de capacidade nao se anuncia como progresso", () => {
 
 test("o campo de numero anda de passo em passo, dentro do limite", () => {
   comTema(<NumberField defaultValue={2} min={0} max={3} />);
-  const campo = screen.getByRole("textbox") as HTMLInputElement;
-  expect(campo.value).toBe("2");
+  const field = screen.getByRole("textbox") as HTMLInputElement;
+  expect(field.value).toBe("2");
 
   fireEvent.click(screen.getByLabelText("Aumentar"));
-  expect(campo.value).toBe("3");
+  expect(field.value).toBe("3");
 
   fireEvent.click(screen.getByLabelText("Aumentar"));
-  expect(campo.value).toBe("3");
+  expect(field.value).toBe("3");
 });
 
 test("o codigo de verificacao abre uma casa por digito", () => {
@@ -143,8 +143,8 @@ test("a legenda entra na leitura do campo dentro dela", () => {
       </Field>
     </FieldsetRoot>,
   );
-  const grupo = screen.getByRole("group");
-  expect(grupo.textContent).toContain("Endereco");
+  const group = screen.getByRole("group");
+  expect(group.textContent).toContain("Endereco");
   expect(screen.getByPlaceholderText("123")).toBeDefined();
 });
 

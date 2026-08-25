@@ -13,7 +13,7 @@ export type ChartTooltipContentProps = Partial<TooltipContentProps<number, strin
   /** Esconde a bolinha de cor de cada linha. */
   hideIndicator?: boolean;
   /** Formata o valor. Use para dinheiro e para porcentagem. */
-  formatValue?: (valor: number, chave: string) => ReactNode;
+  formatValue?: (value: number, key: string) => ReactNode;
   className?: string;
 };
 
@@ -47,26 +47,26 @@ export function ChartTooltipContent({
       {label !== undefined && <p className="mb-1.5 font-medium text-fg">{label}</p>}
 
       <ul className="flex flex-col gap-1">
-        {payload.map((linha) => {
+        {payload.map((entry) => {
           // Na pizza todas as fatias tem o mesmo `dataKey`, e quem separa e o
           // `name`. Ver `chaveDaSerie` na legenda: mesma armadilha.
-          const candidatos = [linha.dataKey, linha.name].filter((x) => x != null).map(String);
-          const chave = candidatos.find((candidato) => config?.[candidato]) ?? candidatos[0] ?? "";
-          const nome = config?.[chave]?.label ?? linha.name ?? chave;
-          const valor = typeof linha.value === "number" ? linha.value : Number(linha.value ?? 0);
+          const candidates = [entry.dataKey, entry.name].filter((x) => x != null).map(String);
+          const key = candidates.find((candidate) => config?.[candidate]) ?? candidates[0] ?? "";
+          const name = config?.[key]?.label ?? entry.name ?? key;
+          const value = typeof entry.value === "number" ? entry.value : Number(entry.value ?? 0);
 
           return (
-            <li key={chave} className="flex items-center gap-2">
+            <li key={key} className="flex items-center gap-2">
               {!hideIndicator && (
                 <span
                   aria-hidden="true"
                   className="size-2 shrink-0 rounded-sm"
-                  style={{ background: linha.color ?? `var(--color-${chave})` }}
+                  style={{ background: entry.color ?? `var(--color-${key})` }}
                 />
               )}
-              <span className="flex-1 text-fg-muted">{nome}</span>
+              <span className="flex-1 text-fg-muted">{name}</span>
               <span className="font-mono tabular-nums text-fg">
-                {formatValue ? formatValue(valor, chave) : valor.toLocaleString("pt-BR")}
+                {formatValue ? formatValue(value, key) : value.toLocaleString("pt-BR")}
               </span>
             </li>
           );

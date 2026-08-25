@@ -26,7 +26,7 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
  * e a medida do dedo, e sem ela a chave so funciona bem no mouse.
  */
 export function Switch({ className, children, labelClassName, ...props }: SwitchProps) {
-  const chave = (
+  const key = (
     <BaseSwitch.Root
       {...props}
       className={cn(
@@ -52,7 +52,7 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
     </BaseSwitch.Root>
   );
 
-  if (children === undefined) return chave;
+  if (children === undefined) return key;
 
   return (
     <label
@@ -66,7 +66,7 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
         labelClassName,
       )}
     >
-      {chave}
+      {key}
       {children}
     </label>
   );

@@ -37,8 +37,8 @@ const pastas = ["node_modules/@fontsource*/**/files/*", "node_modules/.bun/**/fi
 
 for (const padrao of pastas) {
   for await (const file of new Glob(padrao).scan({ cwd: ".", followSymlinks: true })) {
-    const nome = file.split("/").pop()!;
-    if (!disponivel.has(nome)) disponivel.set(nome, file);
+    const name = file.split("/").pop()!;
+    if (!disponivel.has(name)) disponivel.set(name, file);
   }
 }
 
@@ -46,13 +46,13 @@ const destino = join(dirname(cssPath), "files");
 let copiados = 0;
 const faltando: string[] = [];
 
-for (const nome of wanted) {
-  const origem = disponivel.get(nome);
+for (const name of wanted) {
+  const origem = disponivel.get(name);
   if (!origem) {
-    faltando.push(nome);
+    faltando.push(name);
     continue;
   }
-  await Bun.write(join(destino, nome), Bun.file(origem));
+  await Bun.write(join(destino, name), Bun.file(origem));
   copiados++;
 }
 

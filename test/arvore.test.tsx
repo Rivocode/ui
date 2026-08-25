@@ -49,9 +49,9 @@ test("o pai com parte das filhas fica em estado misto", () => {
   render(<ArvoreControlada />);
   fireEvent.click(screen.getByText("Contas a pagar"));
 
-  const pai = screen.getByText("Financeiro").closest("[role=treeitem]")!;
-  expect(pai.getAttribute("aria-selected")).toBe("false");
-  expect(pai.querySelector('[data-rc-check="indeterminate"]')).not.toBeNull();
+  const parent = screen.getByText("Financeiro").closest("[role=treeitem]")!;
+  expect(parent.getAttribute("aria-selected")).toBe("false");
+  expect(parent.querySelector('[data-rc-check="indeterminate"]')).not.toBeNull();
 });
 
 test("desmarcar o pai limpa so as folhas dele", () => {
@@ -89,14 +89,14 @@ test("a arvore se anuncia com os papeis certos", () => {
 
 test("as setas andam pelas linhas que estao na tela", () => {
   render(<ArvoreControlada />);
-  const linhas = screen.getAllByRole("treeitem");
-  linhas[0]!.focus();
+  const rows = screen.getAllByRole("treeitem");
+  rows[0]!.focus();
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowDown" });
-  expect(document.activeElement).toBe(linhas[1]!);
+  expect(document.activeElement).toBe(rows[1]!);
 
   fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
-  expect(document.activeElement).toBe(linhas[0]!);
+  expect(document.activeElement).toBe(rows[0]!);
 });
 
 test("espaco escolhe pelo teclado", () => {
@@ -120,16 +120,16 @@ test("passando de tres, o gatilho conta em vez de listar", () => {
     {
       id: "todos",
       label: "Todos",
-      children: Array.from({ length: 5 }, (_, indice) => ({
-        id: `setor-${indice}`,
-        label: `Setor ${indice}`,
+      children: Array.from({ length: 5 }, (_, index) => ({
+        id: `setor-${index}`,
+        label: `Setor ${index}`,
       })),
     },
   ];
 
   render(
     <RivoProvider scope="local">
-      <TreeSelect items={grande} defaultValue={grande[0]!.children!.map((no) => no.id)} />
+      <TreeSelect items={grande} defaultValue={grande[0]!.children!.map((node) => node.id)} />
     </RivoProvider>,
   );
   expect(screen.getByText("5 escolhidos")).toBeDefined();

@@ -7,7 +7,7 @@ import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 import { ChartLegendContent } from "../src/chart/chart-legend";
 import { Line, LineChart } from "recharts";
 
-const comTema = (no: React.ReactNode) => render(<RivoProvider scope="local">{no}</RivoProvider>);
+const comTema = (node: React.ReactNode) => render(<RivoProvider scope="local">{node}</RivoProvider>);
 
 const CONFIG: ChartConfig = {
   emitidas: { label: "Emitidas" },
@@ -55,7 +55,7 @@ test("dois graficos na mesma pagina nao misturam as cores", () => {
   );
 
   const molduras = [...container.querySelectorAll("[data-rc-chart]")];
-  const ids = molduras.map((no) => no.getAttribute("data-rc-chart"));
+  const ids = molduras.map((node) => node.getAttribute("data-rc-chart"));
   expect(new Set(ids).size).toBe(2);
 });
 
@@ -81,7 +81,7 @@ test("a dica formata o valor quando pedem", () => {
       <ChartTooltipContent
         active
         config={CONFIG}
-        formatValue={(valor) => `R$ ${valor.toLocaleString("pt-BR")}`}
+        formatValue={(value) => `R$ ${value.toLocaleString("pt-BR")}`}
         payload={[{ dataKey: "pagas", value: 2480 }] as never}
       />
     </RivoProvider>,

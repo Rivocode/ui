@@ -1,5 +1,60 @@
 # Mudancas
 
+## 0.4.0
+
+O 0.3.0 traduziu os nomes publicos e deixou uma sobra: o tipo virou
+`WizardState`, mas os campos dele continuaram em portugues. Quem chamava
+`useWizard()` escrevia `wizard.passo` e `wizard.avancar()` dentro de um tipo
+com nome ingles. Fechado agora, pelo mesmo motivo de antes, e de novo sem
+alias.
+
+### `useWizard()`
+
+| Antes | Agora |
+|---|---|
+| `passo` | `step` |
+| `atual` | `current` |
+| `primeiro` | `isFirst` |
+| `ultimo` | `isLast` |
+| `avancar` | `next` |
+| `voltar` | `back` |
+| `irPara` | `goTo` |
+
+### Tokens e atributos
+
+| Antes | Agora |
+|---|---|
+| `--rc-ease-folha` | `--rc-ease-sheet` |
+| `--rc-duration-folha` | `--rc-duration-sheet` |
+| `--rc-sidebar-icone` | `--rc-sidebar-icon` |
+| `data-encolhida` | `data-collapsed` |
+| `data-lado` | `data-side` |
+| `data-orientacao` | `data-orientation` |
+| `data-rc-sidebar="aberta\|fechada"` | `"open"\|"closed"` |
+
+Quem estilizava a barra por `data-[encolhida]` precisa trocar o seletor.
+
+### Correcoes
+
+A barra lateral guardava um estado so para dois contextos diferentes, e no
+celular abria sozinha ao carregar, tapando a tela. Agora a folha comeca
+fechada e se fecha ao escolher um item.
+
+Na `DataTable`, clicar num botao dentro da linha subia ate a linha: abrir o
+menu de acoes trazia junto a folha de detalhes. A linha passa a ignorar
+cliques que nasceram em algo interativo.
+
+Cinco componentes prometiam `truncate` sem `min-w-0`, o que impede o item flex
+de encolher: em vez de cortar o texto, ele empurrava o container para fora da
+tela.
+
+### Por dentro
+
+Os nomes internos passaram para ingles tambem, e quatro modulos foram
+renomeados (`lib/mascara`, `lib/tela`, `lib/data`, `form/adaptadores`). Nada
+disso e importado direto por quem usa o pacote: as entradas publicas continuam
+`@rivocode/ui`, `/form` e `/chart`.
+
 ## 0.3.0
 
 Todo nome publico passa a ser ingles. E quebra, e vale a pena agora: o pacote

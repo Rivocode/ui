@@ -6,8 +6,8 @@ import { Checkbox } from "../src/components/checkbox";
 import { Radio, RadioGroup } from "../src/components/radio";
 import { Switch } from "../src/components/switch";
 
-function comTema(no: React.ReactNode) {
-  return render(<RivoProvider scope="local">{no}</RivoProvider>);
+function comTema(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 /*
@@ -20,8 +20,8 @@ function comTema(no: React.ReactNode) {
 test("a caixa com texto sai dentro de um label, e o clique no texto marca", () => {
   comTema(<Checkbox>ISS retido na fonte</Checkbox>);
 
-  const caixa = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
-  expect(caixa.getAttribute("data-checked")).toBeNull();
+  const box = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
+  expect(box.getAttribute("data-checked")).toBeNull();
 
   fireEvent.click(screen.getByText("ISS retido na fonte"));
   expect(screen.getByRole("checkbox").getAttribute("data-checked")).not.toBeNull();

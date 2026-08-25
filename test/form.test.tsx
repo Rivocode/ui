@@ -9,13 +9,13 @@ import { DatePicker } from "../src/components/date-picker";
 import { Input } from "../src/components/field";
 import { Form } from "../src/form/form";
 import { FormField } from "../src/form/form-field";
-import { forCheckbox, forDatePicker } from "../src/form/adaptadores";
+import { forCheckbox, forDatePicker } from "../src/form/adapters";
 import { useZodForm } from "../src/form/use-zod-form";
 
 const schema = z.object({
   email: z.email("Escreva um email valido"),
   vencimento: z.date("Escolha a data"),
-  aceite: z.boolean().refine((marcado) => marcado, "Aceite para continuar"),
+  aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
 function Exemplo({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schema>) => void }) {
@@ -27,14 +27,14 @@ function Exemplo({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
     <RivoProvider scope="local">
       <Form form={form} onSubmit={aoEnviar}>
         <FormField name="email" label="E-mail" description="Para onde vai a nota">
-          {(campo) => <Input {...campo} placeholder="voce@empresa.com" />}
+          {(field) => <Input {...field} placeholder="voce@empresa.com" />}
         </FormField>
 
         <FormField name="vencimento" label="Vencimento">
-          {(campo) => <DatePicker {...forDatePicker(campo)} />}
+          {(field) => <DatePicker {...forDatePicker(field)} />}
         </FormField>
 
-        <FormField name="aceite">{(campo) => <Checkbox {...forCheckbox(campo)} />}</FormField>
+        <FormField name="aceite">{(field) => <Checkbox {...forCheckbox(field)} />}</FormField>
 
         <Button type="submit">Emitir</Button>
       </Form>

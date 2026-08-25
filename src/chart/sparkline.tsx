@@ -47,11 +47,11 @@ export function Sparkline({
   className,
   label,
 }: SparklineProps) {
-  const pontos = data.map((valor, indice) => ({ i: indice, v: valor }));
+  const pontos = data.map((value, index) => ({ i: index, v: value }));
 
   const subiu = data.length > 1 && data[data.length - 1] >= data[0];
-  const corAutomatica = subiu ? "var(--rc-success)" : "var(--rc-danger)";
-  const traco = color ?? (tone === "auto" ? corAutomatica : "var(--rc-accent)");
+  const autoColor = subiu ? "var(--rc-success)" : "var(--rc-danger)";
+  const traco = color ?? (tone === "auto" ? autoColor : "var(--rc-accent)");
 
   const comum = {
     data: pontos,

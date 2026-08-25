@@ -18,16 +18,16 @@ import {
 } from "../src/index";
 
 const ITENS = [
-  { icone: LayoutDashboard, rotulo: "Painel", ativo: true },
-  { icone: FileText, rotulo: "Notas fiscais", contagem: 4 },
-  { icone: Users, rotulo: "Clientes" },
-  { icone: Settings, rotulo: "Ajustes" },
+  { icone: LayoutDashboard, label: "Painel", ativo: true },
+  { icone: FileText, label: "Notas fiscais", contagem: 4 },
+  { icone: Users, label: "Clientes" },
+  { icone: Settings, label: "Ajustes" },
 ];
 
-function TelaComBarra({ theme, aberta }: { theme: RivoTheme; aberta: boolean }) {
+function TelaComBarra({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) {
   return (
     <RivoProvider scope="local" theme={theme}>
-      <SidebarProvider defaultOpen={aberta}>
+      <SidebarProvider defaultOpen={isOpen}>
         <Sidebar>
           <SidebarHeader>
             <span className="font-display text-lg text-fg">RivoCode</span>
@@ -36,15 +36,15 @@ function TelaComBarra({ theme, aberta }: { theme: RivoTheme; aberta: boolean }) 
           <SidebarContent>
             <SidebarGroup label="Operacao">
               <SidebarMenu>
-                {ITENS.map(({ icone: Icone, rotulo, ativo, contagem }) => (
+                {ITENS.map(({ icone: Icone, label, ativo, contagem }) => (
                   <SidebarMenuItem
-                    key={rotulo}
+                    key={label}
                     href="#"
                     active={ativo}
                     icon={<Icone size={16} aria-hidden="true" />}
                     badge={contagem ? <Badge>{contagem}</Badge> : undefined}
                   >
-                    {rotulo}
+                    {label}
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -65,7 +65,7 @@ function TelaComBarra({ theme, aberta }: { theme: RivoTheme; aberta: boolean }) 
           </header>
           <div className="p-6">
             <p className="text-base text-fg-muted">
-              {aberta ? "Barra aberta" : "Barra encolhida ate a coluna de icones"}
+              {isOpen ? "Barra aberta" : "Barra encolhida ate a coluna de icones"}
             </p>
           </div>
         </SidebarInset>
@@ -76,7 +76,7 @@ function TelaComBarra({ theme, aberta }: { theme: RivoTheme; aberta: boolean }) 
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <TelaComBarra theme="rivocode-dark" aberta />
-    <TelaComBarra theme="rivocode-light" aberta={false} />
+    <TelaComBarra theme="rivocode-dark" isOpen />
+    <TelaComBarra theme="rivocode-light" isOpen={false} />
   </div>,
 );
