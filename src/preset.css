@@ -23,3 +23,16 @@
   background-color: var(--rc-bg);
   color: var(--rc-fg);
 }
+
+/* ---------------------------------------------------------------------------
+ * O cursor de mao que o Tailwind 4 tirou.
+ *
+ * Desde o v4 o botao nativo sai com `cursor: default`, e toda a biblioteca
+ * passou a apontar seta para o que e clicavel. A regra devolve a mao no
+ * habilitado e mantem a seta no desabilitado, que e o unico caso em que a
+ * seta informa algo.
+ * ------------------------------------------------------------------------- */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
