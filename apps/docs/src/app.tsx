@@ -294,9 +294,9 @@ export function App() {
                   rel="noreferrer"
                   className="text-fg-muted underline decoration-border underline-offset-4 transition-colors hover:text-fg hover:decoration-accent"
                 >
-                  Emanuel Bacalhau
-                </a>{' '}
-                na RivoCode.
+                  RivoCode
+                </a>
+                .
               </p>
               <p className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 sm:justify-end">
                 <a

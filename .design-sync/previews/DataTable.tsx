@@ -1,21 +1,36 @@
 import { Badge, Button, DataTable, type Column } from '@rivocode/ui'
+import { currencyShort } from '@rivocode/ui/chart'
 
-type Nota = { id: string; numero: string; cliente: string; valor: string; situacao: string }
+type Invoice = {
+  id: string
+  number: string
+  customer: string
+  /** Em número, e não em texto pronto: é o formatador que abrevia. */
+  amount: number
+  status: 'Paga' | 'Aberta'
+}
 
-const NOTAS: Nota[] = [
-  { id: '1', numero: '4813', cliente: 'Clinica Sao Lucas', valor: 'R$ 2,5K', situacao: 'Paga' },
-  { id: '2', numero: '4814', cliente: 'Transportes Cabo Branco', valor: 'R$ 940', situacao: 'Aberta' },
+const INVOICES: Invoice[] = [
+  { id: '1', number: '4813', customer: 'Clinica Sao Lucas', amount: 2480, status: 'Paga' },
+  { id: '2', number: '4814', customer: 'Transportes Cabo Branco', amount: 940, status: 'Aberta' },
 ]
 
-const COLUNAS: Column<Nota>[] = [
-  { key: 'numero', header: 'Número' },
-  { key: 'cliente', header: 'Cliente' },
-  { key: 'valor', header: 'Valor', align: 'right' },
+const COLUMNS: Column<Invoice>[] = [
+  { key: 'number', header: 'Número' },
+  { key: 'customer', header: 'Cliente' },
   {
-    key: 'situacao',
+    key: 'amount',
+    header: 'Valor',
+    align: 'right',
+    cell: (invoice) => <span className="font-mono">{currencyShort(invoice.amount)}</span>,
+  },
+  {
+    key: 'status',
     header: 'Situação',
     align: 'right',
-    cell: (nota) => <Badge tone={nota.situacao === 'Paga' ? 'success' : 'neutral'}>{nota.situacao}</Badge>,
+    cell: (invoice) => (
+      <Badge tone={invoice.status === 'Paga' ? 'success' : 'neutral'}>{invoice.status}</Badge>
+    ),
   },
 ]
 
@@ -23,9 +38,9 @@ const COLUNAS: Column<Nota>[] = [
 export function WithData() {
   return (
     <DataTable
-      data={NOTAS}
-      columns={COLUNAS}
-      rowKey={(nota) => nota.id}
+      data={INVOICES}
+      columns={COLUMNS}
+      rowKey={(invoice) => invoice.id}
       empty={{ title: 'Nenhuma nota', description: 'Emita a primeira para ela aparecer.' }}
     />
   )
@@ -33,19 +48,26 @@ export function WithData() {
 
 /** Carregando */
 export function Loading() {
-  return <DataTable<Nota> data={undefined} columns={COLUNAS} rowKey={(nota) => nota.id} skeletonRows={3} />
+  return (
+    <DataTable<Invoice>
+      data={undefined}
+      columns={COLUMNS}
+      rowKey={(invoice) => invoice.id}
+      skeletonRows={3}
+    />
+  )
 }
 
 /** Erro */
 export function Error() {
   return (
-    <DataTable<Nota>
+    <DataTable<Invoice>
       data={undefined}
       isError
       onRetry={() => {}}
       errorMessage="A prefeitura não respondeu. Tente de novo em alguns minutos."
-      columns={COLUNAS}
-      rowKey={(nota) => nota.id}
+      columns={COLUMNS}
+      rowKey={(invoice) => invoice.id}
     />
   )
 }
@@ -53,10 +75,10 @@ export function Error() {
 /** Vazio */
 export function Empty() {
   return (
-    <DataTable<Nota>
+    <DataTable<Invoice>
       data={[]}
-      columns={COLUNAS}
-      rowKey={(nota) => nota.id}
+      columns={COLUMNS}
+      rowKey={(invoice) => invoice.id}
       empty={{
         title: 'Nenhuma nota por aqui',
         description: 'Quando você emitir a primeira, ela aparece nesta lista.',

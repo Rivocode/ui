@@ -188,7 +188,12 @@ export {
   type SidebarProviderProps,
   type SidebarState,
 } from "./components/sidebar";
-export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
+export {
+  ToastViewport,
+  useToast,
+  type ToastPosition,
+  type ToastViewportProps,
+} from "./components/toast";
 export {
   Alert,
   AlertDescription,

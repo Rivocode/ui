@@ -34,7 +34,7 @@ const MESES = [
   { mes: 'Ago', emitidas: 63, pagas: 47 },
 ]
 
-const NOTAS: ChartConfig = {
+const INVOICES: ChartConfig = {
   emitidas: { label: 'Emitidas' },
   pagas: { label: 'Pagas' },
 }
@@ -45,13 +45,13 @@ const UMA: ChartConfig = { emitidas: { label: 'Emitidas' } }
 export function AsLine() {
   return (
     <div className="w-full max-w-lg">
-      <ChartContainer config={NOTAS} className="h-64">
+      <ChartContainer config={INVOICES} className="h-64">
         <LineChart data={MESES} margin={{ left: 4, right: 8, top: 8 }}>
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
           <ChartYAxis format="integer" width={40} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
-          <ChartLegend content={<ChartLegendContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
+          <ChartLegend content={<ChartLegendContent config={INVOICES} />} />
           <Line
             dataKey="emitidas"
             stroke="var(--color-emitidas)"
@@ -102,14 +102,14 @@ export function StepLine() {
 export function GradientArea() {
   return (
     <div className="w-full max-w-lg">
-      <ChartContainer config={NOTAS} className="h-64">
+      <ChartContainer config={INVOICES} className="h-64">
         <AreaChart data={MESES} margin={{ left: 4, right: 8, top: 8 }}>
           <ChartAreaGradient id="area" series={['emitidas', 'pagas']} />
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
           <ChartYAxis format="integer" width={40} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
-          <ChartLegend content={<ChartLegendContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
+          <ChartLegend content={<ChartLegendContent config={INVOICES} />} />
           <Area
             dataKey="emitidas"
             stroke="var(--color-emitidas)"
@@ -134,13 +134,13 @@ export function GradientArea() {
 export function StackedArea() {
   return (
     <div className="w-full max-w-lg">
-      <ChartContainer config={NOTAS} className="h-56">
+      <ChartContainer config={INVOICES} className="h-56">
         <AreaChart data={MESES} margin={{ left: 4, right: 8, top: 8 }}>
           <ChartAreaGradient id="empilhada" series={['emitidas', 'pagas']} from={0.5} to={0.1} />
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
           <ChartYAxis format="integer" width={40} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
           <Area
             dataKey="pagas"
             stackId="notas"
@@ -165,13 +165,13 @@ export function StackedArea() {
 export function Bars() {
   return (
     <div className="w-full max-w-lg">
-      <ChartContainer config={NOTAS} className="h-64">
+      <ChartContainer config={INVOICES} className="h-64">
         <BarChart data={MESES} margin={{ left: 4, right: 8, top: 8 }}>
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
           <ChartYAxis format="integer" width={40} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
-          <ChartLegend content={<ChartLegendContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
+          <ChartLegend content={<ChartLegendContent config={INVOICES} />} />
           <Bar dataKey="emitidas" fill="var(--color-emitidas)" radius={4} isAnimationActive={false} />
           <Bar dataKey="pagas" fill="var(--color-pagas)" radius={4} isAnimationActive={false} />
         </BarChart>
@@ -184,12 +184,12 @@ export function Bars() {
 export function StackedBars() {
   return (
     <div className="w-full max-w-lg">
-      <ChartContainer config={NOTAS} className="h-56">
+      <ChartContainer config={INVOICES} className="h-56">
         <BarChart data={MESES} margin={{ left: 4, right: 8, top: 8 }}>
           <CartesianGrid vertical={false} />
           <ChartXAxis dataKey="mes" />
           <ChartYAxis format="integer" width={40} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
           <Bar dataKey="pagas" stackId="a" fill="var(--color-pagas)" isAnimationActive={false} />
           <Bar
             dataKey="emitidas"
@@ -238,13 +238,13 @@ export function HorizontalBars() {
 export function AsRadar() {
   return (
     <div className="w-full max-w-sm">
-      <ChartContainer config={NOTAS} className="h-64">
+      <ChartContainer config={INVOICES} className="h-64">
         <RadarChart data={MESES}>
           {/* `fill="none"` nao e detalhe: sem ele a grade sai como um poligono
               cinza chapado, e as duas series desaparecem atras dela. */}
           <PolarGrid stroke="var(--rc-chart-grid)" fill="none" />
           <PolarAngleAxis dataKey="mes" tick={{ fill: 'var(--rc-fg-subtle)', fontSize: 12 }} />
-          <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
+          <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
           <Radar
             dataKey="emitidas"
             stroke="var(--color-emitidas)"

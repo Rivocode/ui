@@ -128,7 +128,14 @@ export function Calendar({
           "disabled:pointer-events-none",
         ),
 
-        today: "[&>button]:font-medium [&>button]:text-accent-text",
+        // A cor de hoje so vale enquanto o dia nao esta selecionado. As duas
+        // regras pintavam o texto com a mesma especificidade, entao o vencedor
+        // era a ordem do CSS, e dava acento sobre acento: o numero de hoje
+        // sumia dentro do proprio destaque ao ser escolhido.
+        today: cn(
+          "[&>button]:font-medium",
+          "[&:not(.rc-day-selected)>button]:text-accent-text",
+        ),
         outside: "[&>button]:text-fg-subtle",
         disabled: "[&>button]:text-fg-disabled",
         hidden: "invisible",
@@ -137,6 +144,8 @@ export function Calendar({
         // acompanhar o dia. O intervalo e a excecao: ali a celula pinta o miolo
         // para a faixa nao ter buraco entre um dia e o outro.
         selected: cn(
+          // Marca sem estilo proprio, so para o `today` acima saber se calar.
+          "rc-day-selected",
           "[&>button]:bg-accent [&>button]:text-accent-fg",
           "[&>button]:hover:bg-accent-hover",
         ),

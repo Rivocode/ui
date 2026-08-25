@@ -1,6 +1,6 @@
 import { ChartTooltipContent, currencyShort, type ChartConfig } from '@rivocode/ui/chart'
 
-const NOTAS: ChartConfig = {
+const INVOICES: ChartConfig = {
   emitidas: { label: 'Emitidas' },
   pagas: { label: 'Pagas' },
 }
@@ -11,7 +11,7 @@ export function TwoSeries() {
     <ChartTooltipContent
       active
       label="Agosto"
-      config={NOTAS}
+      config={INVOICES}
       payload={
         [
           { dataKey: 'emitidas', value: 63, color: 'var(--rc-chart-1)' },

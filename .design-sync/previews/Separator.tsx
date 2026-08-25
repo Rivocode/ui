@@ -1,4 +1,5 @@
 import { Separator } from '@rivocode/ui'
+import { currencyShort } from '@rivocode/ui/chart'
 
 /** Horizontal */
 export function Horizontal() {
@@ -19,7 +20,7 @@ export function Vertical() {
       <Separator orientation="vertical" />
       <span>Clínica São Lucas</span>
       <Separator orientation="vertical" />
-      <span>R$ 2,5K</span>
+      <span>{currencyShort(2_480)}</span>
     </div>
   )
 }

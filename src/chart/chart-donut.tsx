@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import { ChartTooltipContent } from "./chart-tooltip";
@@ -69,6 +69,9 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
 }: ChartDonutProps<Slice>) {
+  /** Verdadeiro enquanto o ponteiro esta sobre alguma fatia. */
+  const [reading, setReading] = useState(false);
+
   // Em fracao do raio disponivel, e nao em pixel: assim a rosca acompanha a
   // altura que a classe deu ao contentor.
   const externo = "88%";
@@ -89,7 +92,13 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               innerRadius={internal}
               outerRadius={externo}
               paddingAngle={2}
+              // A ponta reta e o que faz a rosca parecer recortada a tesoura,
+              // ainda mais com a folga do `paddingAngle` mostrando o corte. O
+              // raio acompanha a curva do resto da biblioteca.
+              cornerRadius={4}
               isAnimationActive={false}
+              onMouseEnter={() => setReading(true)}
+              onMouseLeave={() => setReading(false)}
               // Sem traco entre as fatias: no tema escuro ele vira uma linha
               // clara que compete com a propria cor da fatia.
               stroke="none"
@@ -120,7 +129,17 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
         {(centerValue || centerLabel) && (
           // `pointer-events-none` para o miolo nao roubar a dica das fatias de
           // dentro do anel.
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+          <div
+            className={cn(
+              "pointer-events-none absolute inset-0 flex flex-col items-center justify-center",
+              "transition-opacity duration-[var(--rc-duration-fast)] ease-rc",
+              // A dica nasce colada no cursor, e com o cursor no anel ela cai
+              // justamente sobre o meio: dois numeros um por cima do outro, e
+              // nenhum dos dois legivel. Enquanto se le uma fatia, o total sai
+              // de cena e volta sozinho.
+              reading && "opacity-0",
+            )}
+          >
             {/* Preso a largura do buraco: um total longo escapando por cima do
               anel e o defeito classico da rosca com numero no meio. */}
             {centerValue && (

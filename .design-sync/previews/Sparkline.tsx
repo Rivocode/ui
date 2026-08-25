@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@rivocode/ui'
-import { Sparkline } from '@rivocode/ui/chart'
+import { Sparkline, currencyShort } from '@rivocode/ui/chart'
 
 const BILLED = [128, 155, 142, 189, 205, 247]
 const OVERDUE = [9, 8, 8, 6, 5, 3]
@@ -12,7 +12,7 @@ export function InsideAKpi() {
         <CardContent className="py-4">
           <p className="text-sm text-fg-muted">Faturado</p>
           <div className="mt-1 flex items-end justify-between gap-3">
-            <p className="font-display text-2xl text-fg">R$ 246,7K</p>
+            <p className="font-display text-2xl text-fg">{currencyShort(246_700)}</p>
             <Sparkline data={BILLED} variant="area" tone="auto" className="h-8 w-20 shrink-0" />
           </div>
         </CardContent>

@@ -5,7 +5,7 @@
     "apps/*"
   ],
   "license": "MIT",
-  "author": "Emanuel Bacalhau (https://rivocode.com.br)",
+  "author": "RivoCode (https://rivocode.com.br)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Rivocode/ui.git"
