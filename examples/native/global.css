@@ -1,0 +1,9 @@
+/* Fonte do build de CSS. O app importa o generated.css, pré-compilado pelo
+   scripts/build-css.mjs: o pipeline do metro tropeça em @import dentro do
+   compilador nativo, então entregamos a ele um arquivo já resolvido. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "../../native/theme.css";
+@import "tailwindcss/utilities.css";
+
+@source "./App.tsx";
+@source "../../native/src";

@@ -1,0 +1,8 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";
+
+/* Os tokens da RivoCode, gerados dos mesmos CSS que vestem o web. */
+@import "../../native/theme.css";

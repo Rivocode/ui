@@ -139,6 +139,43 @@ const tokens = {
 
 const json = `${JSON.stringify(tokens, null, 2)}\n`;
 
+/**
+ * O tema para o NativeWind v5, que fala Tailwind 4 como o web: o @theme
+ * gera exatamente as mesmas classes - bg-bg, text-fg-muted, rounded-md - e
+ * o provider nativo troca para o claro em runtime com vars(). O escuro e o
+ * padrao aqui pelo mesmo motivo que no web. Fontes ficam de fora ate o app
+ * carrega-las com expo-font; sem a fonte instalada, o nome vira erro.
+ */
+const dark = tokens.themes["rivocode-dark"];
+const themeLines = [
+  ...Object.entries(dark).map(([role, color]) => `  --color-${role}: ${color};`),
+  ...Object.entries(scales)
+    .filter(([name]) => name.startsWith("radius-"))
+    .map(([name, value]) => `  --${name}: ${value}px;`),
+  ...Object.entries(scales)
+    .filter(([name]) => name.startsWith("text-"))
+    .flatMap(([name, value]) => {
+      // O par --text-X--line-height e a sintaxe que o Tailwind 4 le para dar
+      // altura de linha a cada tamanho. Titulo aperta, corpo respira - os
+      // mesmos leading-tight e leading-normal do web.
+      const leading = value >= 20 ? scales["leading-tight"] : scales["leading-normal"];
+      return [
+        `  --${name}: ${value}px;`,
+        `  --${name}--line-height: ${Math.round(value * leading)}px;`,
+      ];
+    }),
+];
+
+const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
+
+/* So o @theme: o build do Tailwind ja o materializa em :root sozinho, e uma
+   segunda declaracao da mesma variavel derruba o inliner do compilador
+   nativo. O provider troca para o claro sobrescrevendo via vars(). */
+@theme {
+${themeLines.join("\n")}
+}
+`;
+
 const ts = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
 
 export const tokens = ${JSON.stringify(tokens, null, 2)} as const;
@@ -150,17 +187,19 @@ export type RivoNativeColorRole = keyof (typeof tokens.themes)["rivocode-dark"];
 // No modo check nada e escrito: compara o comitado com o que os CSS pedem
 // agora, e falha ANTES de esconder a diferenca.
 if (process.argv.includes("--check")) {
-  const committed = await read("native/tokens.json").catch(() => "");
-  if (committed !== json) {
-    console.error("native/tokens.json divergiu dos CSS. Rode: bun run gen:native");
+  const committedJson = await read("native/tokens.json").catch(() => "");
+  const committedTheme = await read("native/theme.css").catch(() => "");
+  if (committedJson !== json || committedTheme !== themeCss) {
+    console.error("native/ divergiu dos CSS. Rode: bun run gen:native");
     process.exit(1);
   }
-  console.log("native/tokens.json em dia com os CSS.");
+  console.log("native/ em dia com os CSS.");
   process.exit(0);
 }
 
 await Bun.write("native/tokens.json", json);
 await Bun.write("native/tokens.ts", ts);
+await Bun.write("native/theme.css", themeCss);
 
 console.log(
   `native/tokens.json e tokens.ts: ${palette.size} cores cruas, ${

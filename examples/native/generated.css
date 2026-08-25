@@ -1,0 +1,307 @@
+/* Gerado por scripts/build-css.mjs a partir de global.css. Nao editar. */
+:root {
+  --tw-border-style: solid;
+  --tw-drop-shadow-alpha: 100%;
+}
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer theme {
+  :root, :host {
+    --spacing: 0.25rem;
+    --text-xs: 12px;
+    --text-xs--line-height: 18px;
+    --text-sm: 13px;
+    --text-sm--line-height: 20px;
+    --text-base: 14px;
+    --text-base--line-height: 21px;
+    --text-lg: 18px;
+    --text-lg--line-height: 27px;
+    --text-xl: 20px;
+    --text-xl--line-height: 25px;
+    --text-2xl: 24px;
+    --text-2xl--line-height: 30px;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --color-bg: #0b0d0f;
+    --color-surface: #14171a;
+    --color-surface-raised: #171a1d;
+    --color-fg: #f2f3f0;
+    --color-fg-muted: #b9bfc6;
+    --color-fg-subtle: #8b9199;
+    --color-accent: #d4f34a;
+    --color-accent-active: #bfdd3a;
+    --color-accent-fg: #0f1113;
+    --color-accent-text: #d4f34a;
+    --color-accent-subtle: rgba(212,243,74,0.14);
+    --color-skeleton: rgba(255,255,255,0.08);
+    --color-border: rgba(255,255,255,0.09);
+    --color-border-strong: rgba(255,255,255,0.14);
+    --color-success-text: #3ddc97;
+    --color-success-subtle: rgba(61,220,151,0.14);
+    --color-warning-text: #f2b21c;
+    --color-warning-subtle: rgba(242,178,28,0.14);
+    --color-danger: #dc2626;
+    --color-danger-fg: #ffffff;
+    --color-danger-text: #ff6b6b;
+    --color-danger-subtle: rgba(255,107,107,0.14);
+    --color-info-text: #6aa9ff;
+    --color-info-subtle: rgba(106,169,255,0.14);
+    --radius-pill: 999px;
+    --text-md: 16px;
+    --text-md--line-height: 24px;
+  }
+}
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+.h-4 {
+  height: calc(var(--spacing) * 4);
+}
+.h-\[--rc-control-lg\] {
+  height: --rc-control-lg;
+}
+.h-\[--rc-control-md\] {
+  height: --rc-control-md;
+}
+.h-\[--rc-control-sm\] {
+  height: --rc-control-sm;
+}
+.w-1\/2 {
+  width: calc(1 / 2 * 100%);
+}
+.w-2\/3 {
+  width: calc(2 / 3 * 100%);
+}
+.w-3\/4 {
+  width: calc(3 / 4 * 100%);
+}
+.min-w-0 {
+  min-width: 0px;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-row {
+  flex-direction: row;
+}
+.items-center {
+  align-items: center;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.justify-center {
+  justify-content: center;
+}
+.gap-1 {
+  gap: var(--spacing);
+}
+.gap-2 {
+  gap: calc(var(--spacing) * 2);
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
+}
+.gap-4 {
+  gap: calc(var(--spacing) * 4);
+}
+.self-start {
+  align-self: flex-start;
+}
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+.rounded-pill {
+  border-radius: var(--radius-pill);
+}
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+.border {
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+}
+.border-border {
+  border-color: var(--color-border);
+}
+.border-border-strong {
+  border-color: var(--color-border-strong);
+}
+.bg-accent {
+  background-color: var(--color-accent);
+}
+.bg-accent-subtle {
+  background-color: var(--color-accent-subtle);
+}
+.bg-bg {
+  background-color: var(--color-bg);
+}
+.bg-danger {
+  background-color: var(--color-danger);
+}
+.bg-danger-subtle {
+  background-color: var(--color-danger-subtle);
+}
+.bg-info-subtle {
+  background-color: var(--color-info-subtle);
+}
+.bg-skeleton {
+  background-color: var(--color-skeleton);
+}
+.bg-success-subtle {
+  background-color: var(--color-success-subtle);
+}
+.bg-surface {
+  background-color: var(--color-surface);
+}
+.bg-surface-raised {
+  background-color: var(--color-surface-raised);
+}
+.bg-warning-subtle {
+  background-color: var(--color-warning-subtle);
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
+}
+.px-2\.5 {
+  padding-inline: calc(var(--spacing) * 2.5);
+}
+.px-4 {
+  padding-inline: calc(var(--spacing) * 4);
+}
+.px-6 {
+  padding-inline: calc(var(--spacing) * 6);
+}
+.px-\[--rc-control-pad-lg\] {
+  padding-inline: --rc-control-pad-lg;
+}
+.px-\[--rc-control-pad-md\] {
+  padding-inline: --rc-control-pad-md;
+}
+.px-\[--rc-control-pad-sm\] {
+  padding-inline: --rc-control-pad-sm;
+}
+.py-0\.5 {
+  padding-block: calc(var(--spacing) * 0.5);
+}
+.py-4 {
+  padding-block: calc(var(--spacing) * 4);
+}
+.py-10 {
+  padding-block: calc(var(--spacing) * 10);
+}
+.pt-4 {
+  padding-top: calc(var(--spacing) * 4);
+}
+.text-center {
+  text-align: center;
+}
+.text-2xl {
+  font-size: var(--text-2xl);
+  line-height: var(--text-2xl--line-height);
+}
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+}
+.text-lg {
+  font-size: var(--text-lg);
+  line-height: var(--text-lg--line-height);
+}
+.text-md {
+  font-size: var(--text-md);
+  line-height: var(--text-md--line-height);
+}
+.text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+.text-xl {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+}
+.text-xs {
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+}
+.font-medium {
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+}
+.font-semibold {
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.text-accent-fg {
+  color: var(--color-accent-fg);
+}
+.text-accent-text {
+  color: var(--color-accent-text);
+}
+.text-danger-fg {
+  color: var(--color-danger-fg);
+}
+.text-danger-text {
+  color: var(--color-danger-text);
+}
+.text-fg {
+  color: var(--color-fg);
+}
+.text-fg-muted {
+  color: var(--color-fg-muted);
+}
+.text-fg-subtle {
+  color: var(--color-fg-subtle);
+}
+.text-info-text {
+  color: var(--color-info-text);
+}
+.text-success-text {
+  color: var(--color-success-text);
+}
+.text-warning-text {
+  color: var(--color-warning-text);
+}
+.opacity-50 {
+  opacity: 50%;
+}
+.invert {
+  --tw-invert: invert(100%);
+  filter:      var(--tw-invert,)   ;
+}
+.filter {
+  filter:      var(--tw-invert,)   ;
+}
+.active\:bg-accent-active:active {
+  background-color: var(--color-accent-active);
+}
+.active\:bg-accent-subtle:active {
+  background-color: var(--color-accent-subtle);
+}
+.active\:bg-surface-raised:active {
+  background-color: var(--color-surface-raised);
+}
+.active\:opacity-90:active {
+  opacity: 90%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
