@@ -14,12 +14,19 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
+  Alert,
+  AlertDialog,
+  Avatar,
   DataList,
   Field,
   Input,
+  Progress,
   RivoProvider,
+  Select,
+  Separator,
   Sheet,
   Stat,
+  Tabs,
   Switch,
   useToast,
 } from "../../native/src";
@@ -46,6 +53,9 @@ function Painel() {
   const [open, setOpen] = useState<Invoice | null>(null);
   const [sendEmail, setSendEmail] = useState(true);
   const [monthly, setMonthly] = useState(false);
+  const [period, setPeriod] = useState<string | null>("30");
+  const [tab, setTab] = useState("mes");
+  const [confirming, setConfirming] = useState(false);
 
   return (
     <SafeAreaView className="flex-1">
@@ -122,6 +132,52 @@ function Painel() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Controles</CardTitle>
+            <CardDescription>As peças pequenas, nos papéis de sempre.</CardDescription>
+          </CardHeader>
+          <CardContent className="gap-4">
+            <Tabs
+              items={[
+                { label: "Mês", value: "mes" },
+                { label: "Trimestre", value: "tri" },
+                { label: "Ano", value: "ano" },
+              ]}
+              value={tab}
+              onValueChange={setTab}
+            />
+            <Select
+              label="Período do relatório"
+              items={[
+                { label: "Últimos 30 dias", value: "30" },
+                { label: "Últimos 90 dias", value: "90" },
+                { label: "Este ano", value: "ano" },
+              ]}
+              value={period}
+              onValueChange={setPeriod}
+            />
+            <View className="gap-1.5">
+              <Text className="text-sm text-fg-muted">82% da meta do mês</Text>
+              <Progress value={82} label="82% da meta do mês" />
+            </View>
+            <View className="flex-row items-center gap-3">
+              <Avatar initials="EB" />
+              <View className="min-w-0 flex-1">
+                <Text className="text-base text-fg">Emanuel Bacalhau</Text>
+                <Text className="text-xs text-fg-subtle">emissor</Text>
+              </View>
+              <Button size="sm" variant="destructive" onPress={() => setConfirming(true)}>
+                Cancelar nota
+              </Button>
+            </View>
+            <Separator />
+            <Alert tone="warning" title="A prefeitura instável">
+              Emissões podem demorar mais que o normal hoje.
+            </Alert>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <CardTitle>Carregando</CardTitle>
             <CardDescription>Os quatro finais de uma consulta, aqui também.</CardDescription>
           </CardHeader>
@@ -159,6 +215,15 @@ function Painel() {
           </View>
         )}
       </Sheet>
+
+      <AlertDialog
+        open={confirming}
+        onOpenChange={setConfirming}
+        title="Cancelar a nota 4813?"
+        description="Isto avisa a prefeitura e não dá para desfazer."
+        actionLabel="Cancelar nota"
+        onAction={() => toast.add({ title: "Nota 4813 cancelada" })}
+      />
     </SafeAreaView>
   );
 }

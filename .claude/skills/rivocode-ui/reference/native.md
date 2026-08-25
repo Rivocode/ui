@@ -13,10 +13,13 @@ Os componentes vivem em `native/src` e o app de exemplo em `examples/native`
 
 | Web | Native | O que muda |
 |---|---|---|
-| `Button`, `Badge`, `Card`, `Stat`, `EmptyState`, `Skeleton` | mesmos nomes | traduzem direto |
+| `Button`, `Badge`, `Card`, `Stat`, `EmptyState`, `Skeleton`, `Avatar`, `Separator`, `Spinner`, `Progress`, `Alert` | mesmos nomes | traduzem direto |
 | `Field` + `Input`, `Checkbox`, `Switch` | mesmos nomes | o Input acende a borda no foco (não há focus-visible em tela de toque); o rótulo de Checkbox/Switch já é clicável |
 | `DataTable` | `DataList` | tabela não existe no celular; os quatro finais da consulta (carregando, erro, vazio, dados) e a ordem deles são os mesmos |
 | `Sheet` | `Sheet` | só o comportamento de baixo, que já era o modo estreito do web |
+| `Dialog` / `AlertDialog` | mesmos nomes | o AlertDialog não fecha no toque fora, como no web |
+| `Select` | `Select` | poucas opções fixas; a lista abre numa folha de baixo, o idioma da plataforma |
+| `TabList variant="segmented"` | `Tabs` | só a caixinha; seção de página é do router nativo |
 | `useToast` | `useToast` | o RivoProvider monta a fiação, igual |
 | `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip` | **não portam** | são idiomas de desktop; navegação nativa é tab bar e drawer do router |
 
