@@ -27,6 +27,11 @@ export const Switch = host("Switch");
 export const Modal = (props: AnyProps & { visible?: boolean }) =>
   props.visible === false ? null : createElement("Modal", props);
 
+/** O Slider so precisa que os handlers existam; gesto nao se testa aqui. */
+export const PanResponder = {
+  create: () => ({ panHandlers: {} }),
+};
+
 /* O Appearance de verdade e a ponte com o sistema; aqui e uma variavel, para
    o teste do provider poder afirmar qual esquema foi pedido. */
 let scheme: "light" | "dark" | null = "dark";

@@ -1,0 +1,42 @@
+import { Children, type ReactNode } from "react";
+import { Text, View } from "react-native";
+
+export type DescriptionItemProps = {
+  label: string;
+  children: ReactNode;
+};
+
+/** Uma linha rotulo-valor. Valor que nao e texto simples entra como no. */
+export function DescriptionItem({ label, children }: DescriptionItemProps) {
+  return (
+    <View className="flex-row items-start justify-between gap-4 py-2.5">
+      <Text className="text-sm text-fg-muted">{label}</Text>
+      {typeof children === "string" || typeof children === "number" ? (
+        <Text className="flex-1 text-right text-sm text-fg">{children}</Text>
+      ) : (
+        <View className="flex-1 items-end">{children}</View>
+      )}
+    </View>
+  );
+}
+
+/**
+ * Pares rotulo-valor de UM sujeito: a tela de detalhe da nota, o resumo
+ * antes de confirmar. Varios sujeitos lado a lado e DataList.
+ *
+ * A linha entre pares e interposta aqui, nunca pela utility de dividir do
+ * Tailwind: o seletor de filho que ela gera nao existe no React Native, e
+ * as vars internas dela derrubam o compilador nativo por cima. (E o nome
+ * dela nao pode nem aparecer neste comentario: o scanner le fonte crua.)
+ */
+export function DescriptionList({ children }: { children: ReactNode }) {
+  return (
+    <View>
+      {Children.toArray(children).map((row, index) => (
+        <View key={index} className={index > 0 ? "border-t border-border" : ""}>
+          {row}
+        </View>
+      ))}
+    </View>
+  );
+}

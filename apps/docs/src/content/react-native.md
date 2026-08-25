@@ -16,7 +16,14 @@ idioma da plataforma antes de atravessar.
 | `Select` | `Select` | poucas opções fixas; a lista abre numa folha de baixo, o idioma da plataforma |
 | `TabList variant="segmented"` | `Tabs` | só a caixinha; seção de página é do router nativo |
 | `useToast` | `useToast` | o RivoProvider monta a fiação, igual |
+| `RadioGroup`, `CheckboxGroup`, `Textarea`, `Fieldset`, `SearchInput`, `MaskedInput`, `Toggle`, `ToggleGroup`, `Accordion`, `Collapsible`, `PageHeader`, `DescriptionList`, `AspectRatio`, `Slider` | mesmos nomes | traduzem direto; o Slider anda por gesto e responde às ações do leitor de tela |
+| `NumberField` | `NumberField` | vira stepper — menos, valor, mais — que é o idioma do toque |
+| `OTPField` | `OTPField` | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor de tela veem um só |
+| `Combobox`, `Autocomplete` | `Combobox` | a lista longa abre numa folha com busca sem acento |
+| `DatePicker`, `Calendar` | mesmos nomes | mês desenhado à mão, valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa` |
+| `Menu` | `Menu` | ações numa folha de baixo (action sheet), nunca popup ancorado |
 | `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip` | **não portam** | são idiomas de desktop; navegação nativa é tab bar e drawer do router |
+| `FileUpload` | **ainda não** | precisa do expo-document-picker; entra quando houver app dono da dependência |
 
 ## Instalação
 

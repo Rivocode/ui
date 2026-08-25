@@ -32,7 +32,8 @@ export function textOf(renderer: ReactTestRenderer): string {
     }
   };
   walk(renderer.toJSON());
-  return chunks.join(" ");
+  // JSX fragmenta {mes} de {ano} em tres filhos; um espaco so entre eles.
+  return chunks.join(" ").replace(/\s+/g, " ");
 }
 
 /* So os host elements: o findAll visita o componente E o host que ele

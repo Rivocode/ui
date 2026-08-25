@@ -1,7 +1,15 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    // Os fontes de native/ moram fora deste app e nao tem node_modules
+    // proprio (o metro resolve via nodeModulesPaths); este par ensina o
+    // MESMO caminho ao tsc. Mapear "react" aqui seria desastre - o Expo
+    // aplica paths no runtime - mas react-native aponta para o proprio
+    // pacote, entao runtime e tipos concordam.
+    "paths": {
+      "react-native": ["./node_modules/react-native"]
+    }
   },
   "include": [
     "**/*.ts",

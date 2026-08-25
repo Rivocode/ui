@@ -267,7 +267,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
-          <Stat value="325" label="testes, todos verdes" />
+          <Stat value="348" label="testes, todos verdes" />
           <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>

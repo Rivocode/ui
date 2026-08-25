@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-import postcss from "postcss";
-import tailwind from "@tailwindcss/postcss";
 import { readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+
+// O postcss e o tailwind sao os DO APP que roda o comando, nao os vizinhos
+// deste script: e o CSS do app que esta sendo compilado, com a versao de
+// Tailwind que ele declarou.
+const requireFromApp = createRequire(`${process.cwd()}/`);
+const postcss = requireFromApp("postcss");
+const tailwind = requireFromApp("@tailwindcss/postcss");
 
 /**
  * Pré-compila o CSS que o app importa. Roda na raiz do app, onde vivem o

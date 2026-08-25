@@ -1,0 +1,123 @@
+import { describe, expect, mock, test } from "bun:test";
+
+import { Calendar, Combobox, DatePicker, Menu, Slider, formatDate } from "../src";
+import { act, byLabel, byRole, render, textOf } from "./helpers";
+
+describe("Combobox", () => {
+  const items = [
+    { label: "Clínica São Lucas", value: "1" },
+    { label: "Transportes Cabo Branco", value: "2" },
+  ];
+
+  test("abre com busca, filtra sem acento, e escolher fecha", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <Combobox items={items} value={null} onValueChange={onValueChange} label="Cliente" />,
+    );
+
+    act(() => byLabel(screen, "Cliente")[0].props.onPress());
+    expect(textOf(screen)).toContain("Transportes Cabo Branco");
+
+    const search = screen.root.findByType("TextInput" as never);
+    act(() => search.props.onChangeText("clinica"));
+    expect(textOf(screen)).toContain("Clínica São Lucas");
+    expect(textOf(screen)).not.toContain("Transportes Cabo Branco");
+
+    const option = byRole(screen, "button").find(
+      (node) => node.props.accessibilityState?.selected === false,
+    );
+    act(() => option!.props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith("1");
+  });
+
+  test("busca sem resultado explica, em vez de sumir em silencio", () => {
+    const screen = render(
+      <Combobox items={items} value={null} onValueChange={() => {}} label="Cliente" />,
+    );
+    act(() => byLabel(screen, "Cliente")[0].props.onPress());
+    const search = screen.root.findByType("TextInput" as never);
+    act(() => search.props.onChangeText("zzz"));
+    expect(textOf(screen)).toContain("Confira a grafia");
+  });
+});
+
+describe("Calendar e DatePicker", () => {
+  test("formatDate fala o formato daqui", () => {
+    expect(formatDate("2026-08-25")).toBe("25/08/2026");
+  });
+
+  test("escolher um dia entrega o ISO daquele dia", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(<Calendar value="2026-08-10" onValueChange={onValueChange} />);
+    expect(textOf(screen)).toContain("Agosto de 2026");
+
+    act(() => byLabel(screen, "25/08/2026")[0].props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith("2026-08-25");
+  });
+
+  test("fora dos limites o dia desliga", () => {
+    const screen = render(
+      <Calendar value="2026-08-10" onValueChange={() => {}} min="2026-08-05" max="2026-08-20" />,
+    );
+    expect(byLabel(screen, "04/08/2026")[0].props.accessibilityState.disabled).toBe(true);
+    expect(byLabel(screen, "12/08/2026")[0].props.accessibilityState.disabled).toBe(false);
+  });
+
+  test("o DatePicker mostra a data formatada e fecha ao escolher", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <DatePicker value="2026-08-10" onValueChange={onValueChange} label="Vencimento" />,
+    );
+    expect(textOf(screen)).toContain("10/08/2026");
+
+    act(() => byLabel(screen, "Vencimento")[0].props.onPress());
+    act(() => byLabel(screen, "15/08/2026")[0].props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith("2026-08-15");
+    // Fechou: o calendario nao esta mais montado.
+    expect(byLabel(screen, "15/08/2026").length).toBe(0);
+  });
+});
+
+describe("Slider", () => {
+  test("anuncia papel, valor e responde as acoes do leitor de tela", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <Slider value={40} onValueChange={onValueChange} min={0} max={100} step={10} label="Meta" />,
+    );
+
+    const [slider] = byRole(screen, "adjustable");
+    expect(slider.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 40 });
+
+    act(() => slider.props.onAccessibilityAction({ nativeEvent: { actionName: "increment" } }));
+    expect(onValueChange).toHaveBeenCalledWith(50);
+    act(() => slider.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
+    expect(onValueChange).toHaveBeenCalledWith(30);
+  });
+});
+
+describe("Menu", () => {
+  test("agir fecha antes de agir, e o tom danger veste vermelho", () => {
+    const calls: string[] = [];
+    const screen = render(
+      <Menu
+        open
+        onOpenChange={(next) => calls.push(`open:${next}`)}
+        title="Nota 4813"
+        actions={[
+          { label: "Baixar o PDF", onSelect: () => calls.push("pdf") },
+          { label: "Cancelar nota", tone: "danger", onSelect: () => calls.push("cancelar") },
+        ]}
+      />,
+    );
+
+    expect(textOf(screen)).toContain("Baixar o PDF");
+    const danger = byRole(screen, "button").find((node) =>
+      /text-danger-text/.test(String(node.children?.[0]?.props?.className ?? "")),
+    );
+
+    const [first] = byRole(screen, "button").filter((node) => node.props.onPress);
+    act(() => first.props.onPress());
+    expect(calls[0]).toBe("open:false");
+    expect(danger).toBeDefined();
+  });
+});

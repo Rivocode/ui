@@ -21,7 +21,14 @@ Os componentes vivem em `native/src` e o app de exemplo em `examples/native`
 | `Select` | `Select` | poucas opções fixas; a lista abre numa folha de baixo, o idioma da plataforma |
 | `TabList variant="segmented"` | `Tabs` | só a caixinha; seção de página é do router nativo |
 | `useToast` | `useToast` | o RivoProvider monta a fiação, igual |
+| `RadioGroup`, `CheckboxGroup`, `Textarea`, `Fieldset`, `SearchInput`, `MaskedInput`, `Toggle`, `ToggleGroup`, `Accordion`, `Collapsible`, `PageHeader`, `DescriptionList`, `AspectRatio`, `Slider` | mesmos nomes | traduzem direto; o Slider anda por gesto e responde às ações do leitor de tela |
+| `NumberField` | `NumberField` | vira stepper (menos, valor, mais) — o idioma do toque |
+| `OTPField` | `OTPField` | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só |
+| `Combobox`, `Autocomplete` | `Combobox` | a lista longa abre numa folha com busca sem acento |
+| `DatePicker`, `Calendar` | mesmos nomes | mês desenhado à mão, valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa` |
+| `Menu` | `Menu` | ações numa folha de baixo (action sheet), nunca popup ancorado |
 | `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip` | **não portam** | são idiomas de desktop; navegação nativa é tab bar e drawer do router |
+| `FileUpload` | **ainda não** | precisa do expo-document-picker; entra quando houver app dono da dependência |
 
 ## O que nunca fazer no native
 
@@ -39,3 +46,11 @@ Os componentes vivem em `native/src` e o app de exemplo em `examples/native`
 - Glyph de texto como ícone de estado (o visto do Checkbox é borda
   rotacionada, porque fonte muda de corpo entre iOS e Android).
 - Esquecer `accessibilityRole`/`accessibilityState` em controle custom.
+- `text-center` como classe em `TextInput`: esse estilo vira prop no runtime
+  e a aplicação quebra — use a prop `textAlign`. O mesmo vale para atalhos
+  lógicos (`border-x` gera `border-inline`, que não existe lá): escreva
+  `border-l border-r`.
+- A utility de divisória do Tailwind (a de bordas entre filhos): o seletor de
+  filho não existe no RN. O `DescriptionList` interpõe bordas via `Children`.
+- Escrever nome de classe em comentário: o scanner do Tailwind lê fonte crua
+  e gera a classe — foi assim que uma palavra num comentário derrubou o build.

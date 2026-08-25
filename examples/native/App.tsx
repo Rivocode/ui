@@ -29,6 +29,25 @@ import {
   Tabs,
   Switch,
   useToast,
+  Accordion,
+  AccordionItem,
+  AspectRatio,
+  Collapsible,
+  Combobox,
+  DatePicker,
+  DescriptionItem,
+  DescriptionList,
+  Fieldset,
+  MaskedInput,
+  Menu,
+  NumberField,
+  OTPField,
+  PageHeader,
+  RadioGroup,
+  SearchInput,
+  Slider,
+  Textarea,
+  ToggleGroup,
 } from "../../native/src";
 import type { RivoNativeTheme } from "../../native/tokens";
 
@@ -62,17 +81,25 @@ function Painel({
   const [period, setPeriod] = useState<string | null>("30");
   const [tab, setTab] = useState("mes");
   const [confirming, setConfirming] = useState(false);
+  const [cnpj, setCnpj] = useState("12345678000190");
+  const [dueDate, setDueDate] = useState<string | null>(null);
+  const [payment, setPayment] = useState<string | null>("pix");
+  const [installments, setInstallments] = useState(1);
+  const [query, setQuery] = useState("");
+  const [customer, setCustomer] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string[]>(["paga"]);
+  const [goal, setGoal] = useState(80);
+  const [otp, setOtp] = useState("");
+  const [rowMenu, setRowMenu] = useState(false);
 
   return (
     <SafeAreaView className="flex-1">
       <ScrollView contentContainerClassName="gap-4 p-4">
-        <View className="flex-row items-center justify-between">
-          <View>
-            <Text className="text-2xl font-semibold text-fg">Painel</Text>
-            <Text className="text-sm text-fg-muted">Agosto, até agora.</Text>
-          </View>
-          <Badge tone="accent">v0 do ui-native</Badge>
-        </View>
+        <PageHeader
+          title="Painel"
+          description="Agosto, até agora."
+          badge={<Badge tone="accent">ui-native</Badge>}
+        />
 
         <View className="flex-row gap-3">
           <Stat label="Faturado" value="R$ 246,7K" delta={20} deltaLabel="sobre julho" />
@@ -118,7 +145,42 @@ function Painel({
               <Input placeholder="Quem recebe a nota" defaultValue="Clínica São Lucas" />
             </Field>
             <Field label="CNPJ" description="A máscara é do campo; o valor vai limpo.">
-              <Input placeholder="00.000.000/0000-00" keyboardType="numbers-and-punctuation" />
+              <MaskedInput
+                mask="##.###.###/####-##"
+                value={cnpj}
+                onValueChange={setCnpj}
+                placeholder="00.000.000/0000-00"
+              />
+            </Field>
+            <Field label="Vencimento">
+              <DatePicker
+                label="Vencimento"
+                value={dueDate}
+                onValueChange={setDueDate}
+                placeholder="Selecione a data"
+              />
+            </Field>
+            <Fieldset legend="Cobrança" description="Como e em quantas vezes o cliente paga.">
+              <RadioGroup
+                items={[
+                  { label: "Pix", value: "pix", description: "Cai na hora" },
+                  { label: "Boleto", value: "boleto", description: "Compensa em 2 dias úteis" },
+                ]}
+                value={payment}
+                onValueChange={setPayment}
+              />
+              <Field label="Parcelas">
+                <NumberField
+                  label="Parcelas"
+                  value={installments}
+                  onValueChange={setInstallments}
+                  min={1}
+                  max={12}
+                />
+              </Field>
+            </Fieldset>
+            <Field label="Observações">
+              <Textarea placeholder="Aparece no rodapé da nota." rows={3} />
             </Field>
             <Checkbox checked={sendEmail} onCheckedChange={setSendEmail}>
               Enviar o PDF por e-mail
@@ -133,6 +195,74 @@ function Painel({
             >
               Emitir nota
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Busca e filtros</CardTitle>
+            <CardDescription>Quem opera acha; quem filtra combina.</CardDescription>
+          </CardHeader>
+          <CardContent className="gap-4">
+            <SearchInput value={query} onValueChange={setQuery} placeholder="Buscar nota" />
+            <Combobox
+              label="Cliente"
+              items={[
+                { label: "Clínica São Lucas", value: "1" },
+                { label: "Transportes Cabo Branco", value: "2" },
+                { label: "Supermercado Tambaú", value: "3" },
+                { label: "Construtora Manaíra", value: "4" },
+                { label: "Hotel Ponta do Seixas", value: "5" },
+              ]}
+              value={customer}
+              onValueChange={setCustomer}
+              placeholder="Todos os clientes"
+              searchPlaceholder="Buscar cliente"
+            />
+            <ToggleGroup
+              items={[
+                { label: "Paga", value: "paga" },
+                { label: "Aberta", value: "aberta" },
+                { label: "Vencida", value: "vencida" },
+              ]}
+              value={statusFilter}
+              onValueChange={setStatusFilter}
+            />
+            <View className="gap-1.5">
+              <Text className="text-sm text-fg-muted">Meta do mês: {goal}%</Text>
+              <Slider label="Meta do mês" value={goal} onValueChange={setGoal} step={5} />
+            </View>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Ajuda e verificação</CardTitle>
+            <CardDescription>Acordeão, código de confirmação e a caixa de proporção.</CardDescription>
+          </CardHeader>
+          <CardContent className="gap-4">
+            <Accordion>
+              <AccordionItem title="Quando a nota é enviada?">
+                <Text className="text-sm text-fg-muted">
+                  No momento da emissão, direto para a prefeitura.
+                </Text>
+              </AccordionItem>
+              <AccordionItem title="Dá para cancelar depois?">
+                <Text className="text-sm text-fg-muted">
+                  Dá, em até 24 horas — e a prefeitura é avisada.
+                </Text>
+              </AccordionItem>
+            </Accordion>
+            <Field label="Código enviado por SMS">
+              <OTPField length={6} value={otp} onValueChange={setOtp} />
+            </Field>
+            <Collapsible label="Ver a área de cobertura">
+              <AspectRatio ratio={16 / 9}>
+                <View className="flex-1 items-center justify-center bg-skeleton">
+                  <Text className="text-sm text-fg-subtle">O mapa entra aqui</Text>
+                </View>
+              </AspectRatio>
+            </Collapsible>
           </CardContent>
         </Card>
 
@@ -209,10 +339,13 @@ function Painel({
       >
         {open && (
           <View className="gap-4">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-sm text-fg-muted">Situação</Text>
-              <Badge tone={open.tone}>{open.status}</Badge>
-            </View>
+            <DescriptionList>
+              <DescriptionItem label="Número">{open.number}</DescriptionItem>
+              <DescriptionItem label="Cliente">{open.customer}</DescriptionItem>
+              <DescriptionItem label="Situação">
+                <Badge tone={open.tone}>{open.status}</Badge>
+              </DescriptionItem>
+            </DescriptionList>
             <Button
               onPress={() => {
                 setOpen(null);
@@ -221,9 +354,30 @@ function Painel({
             >
               Baixar PDF
             </Button>
+            <Button variant="ghost" onPress={() => setRowMenu(true)}>
+              Mais ações
+            </Button>
           </View>
         )}
       </Sheet>
+
+      <Menu
+        open={rowMenu}
+        onOpenChange={setRowMenu}
+        title={open ? `Nota ${open.number}` : "Nota"}
+        actions={[
+          { label: "Reenviar por e-mail", onSelect: () => toast.add({ title: "Nota reenviada" }) },
+          { label: "Duplicar nota", onSelect: () => toast.add({ title: "Rascunho criado" }) },
+          {
+            label: "Cancelar nota",
+            tone: "danger",
+            onSelect: () => {
+              setOpen(null);
+              setConfirming(true);
+            },
+          },
+        ]}
+      />
 
       <AlertDialog
         open={confirming}
