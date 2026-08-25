@@ -113,6 +113,21 @@ a documentação da prop diz o que ela veste — o gatilho ou o painel. Lembre d
 regra do pré-compilador: classe nova usada no app pede `npx
 rivocode-ui-native-css` de novo.
 
+## Ícones
+
+O mesmo Lucide do web, pelo pacote irmão:
+
+```sh
+npx expo install lucide-react-native react-native-svg
+```
+
+Os nomes são os mesmos — `Receipt` lá é `Receipt` aqui — então o vocabulário
+canônico do [guia de ícones](/icones) vale nos dois mundos, e a
+[galeria com busca](/icones) serve aos dois. Dentro das peças da biblioteca os
+ícones de estado continuam desenhados com borda (o visto do Checkbox, os
+chevrons do Calendar): peça não carrega dependência de ícone, app carrega se
+quiser.
+
 ## O que nunca fazer
 
 - Classe com var arbitrária (`h-[--rc-control-md]`) ou `translate-*`: o
