@@ -1,6 +1,8 @@
-/* Fonte do build de CSS. O app importa o generated.css, pré-compilado pelo
-   scripts/build-css.mjs: o pipeline do metro tropeça em @import dentro do
-   compilador nativo, então entregamos a ele um arquivo já resolvido. */
+/* Fonte do build de CSS. O app importa o generated.css, pré-compilado por
+   `bun run build:css` (o rivocode-ui-native-css do pacote): o pipeline do
+   metro tropeça em @import dentro do compilador nativo, então entregamos a
+   ele um arquivo já resolvido. Fora do monorepo os dois caminhos relativos
+   viram "@rivocode/ui-native/...". */
 @import "tailwindcss/theme.css" layer(theme);
 @import "../../native/theme.css";
 @import "tailwindcss/utilities.css";

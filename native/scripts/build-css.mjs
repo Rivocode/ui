@@ -1,9 +1,15 @@
+#!/usr/bin/env node
 import postcss from "postcss";
 import tailwind from "@tailwindcss/postcss";
 import { readFileSync, writeFileSync } from "node:fs";
 
 /**
- * Pré-compila o CSS que o app importa. Dois motivos, os dois medidos:
+ * Pré-compila o CSS que o app importa. Roda na raiz do app, onde vivem o
+ * global.css e o postcss/tailwind dele: `npx rivocode-ui-native-css`, ou com
+ * entrada e saída explícitas: `rivocode-ui-native-css meu.css saida.css`.
+ * Mudou classe nova no código, roda de novo.
+ *
+ * Dois motivos para existir, os dois medidos:
  *
  * 1. O pipeline do metro roda o Tailwind com outra base e deixa @import para
  *    trás, e o compilador nativo explode neles.
@@ -13,9 +19,12 @@ import { readFileSync, writeFileSync } from "node:fs";
  *    object-like struct named Specifier". Aqui cada @property vira uma
  *    declaração em :root, que o inliner dele entende.
  */
-const css = readFileSync("global.css", "utf8");
+const input = process.argv[2] ?? "global.css";
+const output = process.argv[3] ?? "generated.css";
+
+const css = readFileSync(input, "utf8");
 const out = await postcss([tailwind({ base: process.cwd() })]).process(css, {
-  from: "global.css",
+  from: input,
 });
 
 let flat = out.css;
@@ -86,7 +95,7 @@ if (orphans.length > 0) {
 }
 
 writeFileSync(
-  "generated.css",
-  `/* Gerado por scripts/build-css.mjs a partir de global.css. Nao editar. */\n${flat}`,
+  output,
+  `/* Gerado por rivocode-ui-native-css a partir de ${input}. Nao editar. */\n${flat}`,
 );
-console.log(`generated.css: ${flat.length} bytes, ${initials.length} @property viraram :root`);
+console.log(`${output}: ${flat.length} bytes, ${initials.length} @property viraram :root`);

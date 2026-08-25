@@ -1,4 +1,4 @@
-/* Gerado por scripts/build-css.mjs a partir de global.css. Nao editar. */
+/* Gerado por rivocode-ui-native-css a partir de global.css. Nao editar. */
 :root {
   --tw-border-style: solid;
   --tw-drop-shadow-alpha: 100%;
@@ -94,9 +94,6 @@
 }
 .mb-4 {
   margin-bottom: calc(var(--spacing) * 4);
-}
-.inline {
-  display: inline;
 }
 .size-5 {
   width: calc(var(--spacing) * 5);
@@ -448,9 +445,6 @@
 }
 .invert {
   --tw-invert: invert(100%);
-  filter:      var(--tw-invert,)   ;
-}
-.filter {
   filter:      var(--tw-invert,)   ;
 }
 .active\:bg-accent-active:active {
