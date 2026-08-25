@@ -34,6 +34,11 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     summary: 'Um conjunto, um conceito por ícone, e o tamanho de cada contexto.',
   },
   {
+    slug: 'react-native',
+    title: 'React Native',
+    summary: 'O mesmo vocabulário no celular, com tema que troca em runtime.',
+  },
+  {
     slug: 'para-agents',
     title: 'Para agents',
     summary: 'Markdown cru, llms.txt e como pedir no prompt.',
