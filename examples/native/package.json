@@ -28,5 +28,10 @@
   "private": true,
   "patchedDependencies": {
     "react-native-css@3.0.7": "patches/react-native-css@3.0.7.patch"
-  }
+  },
+  "browserslist": [
+    "chrome 130",
+    "safari 18",
+    "firefox 130"
+  ]
 }

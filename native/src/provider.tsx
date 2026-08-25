@@ -1,13 +1,13 @@
-import { createContext, useContext, useMemo, type ReactNode } from "react";
-import { View } from "react-native";
-import { vars } from "nativewind";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
+import { Appearance, View, useColorScheme } from "react-native";
 
-import { tokens, type RivoNativeTheme } from "../tokens";
+import { type RivoNativeTheme } from "../tokens";
 import { ToastProvider } from "./toast";
 
 export type RivoDensity = "comfortable" | "compact";
 
 type RivoContextValue = {
+  /** Sempre resolvido: com `theme="system"`, aqui chega o que o aparelho pediu. */
   theme: RivoNativeTheme;
   density: RivoDensity;
 };
@@ -22,8 +22,8 @@ export function useRivo() {
 
 export type RivoProviderProps = {
   children: ReactNode;
-  /** `rivocode-dark` e o padrao, como no web. */
-  theme?: RivoNativeTheme;
+  /** `rivocode-dark` e o padrao, como no web; `system` segue o aparelho. */
+  theme?: RivoNativeTheme | "system";
   density?: RivoDensity;
 };
 
@@ -31,31 +31,39 @@ export type RivoProviderProps = {
  * O mesmo contrato do web, no mundo nativo: nenhum componente conhece a cor
  * da marca; ele pede um papel e o tema responde.
  *
- * O escuro ja vive no CSS gerado (`native/theme.css`). Aqui o provider
- * sobrescreve as mesmas variaveis em runtime quando o tema e outro, e injeta
- * as medidas da densidade - e o `vars()` do NativeWind leva tudo para os
- * descendentes, como o atributo `data-rc-theme` leva no DOM.
+ * Cada token de cor foi compilado como light-dark(claro, escuro), que o
+ * react-native-css avalia em runtime pelo esquema de cor do Appearance. Trocar
+ * a prop `theme` e um Appearance.setColorScheme(), e toda classe bg-*, text-*
+ * e border-* da arvore responde no mesmo frame - nenhum componente re-renderiza
+ * por cima disso. `system` devolve o controle ao aparelho.
  */
 export function RivoProvider({
   children,
   theme = "rivocode-dark",
   density = "comfortable",
 }: RivoProviderProps) {
-  const style = useMemo(() => {
-    const colors = Object.fromEntries(
-      Object.entries(tokens.themes[theme]).map(([role, color]) => [`--color-${role}`, color]),
+  useEffect(() => {
+    // "unspecified" devolve a decisao ao aparelho, como o overrideUserInterfaceStyle do iOS.
+    Appearance.setColorScheme(
+      theme === "system" ? "unspecified" : theme === "rivocode-light" ? "light" : "dark",
     );
-    const sizes = Object.fromEntries(
-      Object.entries(tokens.densities[density]).map(([name, value]) => [`--rc-${name}`, value]),
-    );
-    return vars({ ...colors, ...sizes });
-  }, [theme, density]);
+  }, [theme]);
 
-  const value = useMemo(() => ({ theme, density }), [theme, density]);
+  // O esquema resolvido, para quem le cor por fora das classes - o Switch
+  // pinta o trilho nativo com trackColor, e precisa saber qual tema vale.
+  const scheme = useColorScheme();
+  const resolved: RivoNativeTheme =
+    theme === "system"
+      ? scheme === "light"
+        ? "rivocode-light"
+        : "rivocode-dark"
+      : theme;
+
+  const value = useMemo(() => ({ theme: resolved, density }), [resolved, density]);
 
   return (
     <RivoContext.Provider value={value}>
-      <View style={style} className="flex-1 bg-bg">
+      <View className="flex-1 bg-bg">
         {/* A fiacao de aviso ja vem montada, como no web: quem usa a
             biblioteca nao deveria precisar montar provedor para um aviso. */}
         <ToastProvider>{children}</ToastProvider>

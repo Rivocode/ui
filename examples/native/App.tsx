@@ -48,7 +48,13 @@ const INVOICES: Invoice[] = [
 
 /* A mesma tela que a demo web abre: painel de notas. E o argumento inteiro
    do ui-native - os mesmos papeis, o mesmo vocabulario, outra plataforma. */
-function Painel() {
+function Painel({
+  lightTheme,
+  onLightThemeChange,
+}: {
+  lightTheme: boolean;
+  onLightThemeChange: (light: boolean) => void;
+}) {
   const toast = useToast();
   const [open, setOpen] = useState<Invoice | null>(null);
   const [sendEmail, setSendEmail] = useState(true);
@@ -170,6 +176,9 @@ function Painel() {
               </Button>
             </View>
             <Separator />
+            <Switch checked={lightTheme} onCheckedChange={onLightThemeChange}>
+              Tema claro
+            </Switch>
             <Alert tone="warning" title="A prefeitura instável">
               Emissões podem demorar mais que o normal hoje.
             </Alert>
@@ -229,15 +238,18 @@ function Painel() {
 }
 
 export default function App() {
-  // Tema fixo por enquanto: a troca em runtime espera o fix upstream
-  // descrito no metro.config.js. O provider ja fala a API final.
-  const theme: RivoNativeTheme = "rivocode-dark";
+  // As cores foram compiladas como light-dark(), entao trocar a prop e
+  // trocar a tela inteira em runtime - o interruptor vive no card Controles.
+  const [theme, setTheme] = useState<RivoNativeTheme>("rivocode-dark");
 
   return (
     <SafeAreaProvider>
       <RivoProvider theme={theme} density="comfortable">
-        <Painel />
-        <StatusBar style="light" />
+        <Painel
+          lightTheme={theme === "rivocode-light"}
+          onLightThemeChange={(light) => setTheme(light ? "rivocode-light" : "rivocode-dark")}
+        />
+        <StatusBar style={theme === "rivocode-light" ? "dark" : "light"} />
       </RivoProvider>
     </SafeAreaProvider>
   );

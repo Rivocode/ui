@@ -141,14 +141,27 @@ const json = `${JSON.stringify(tokens, null, 2)}\n`;
 
 /**
  * O tema para o NativeWind v5, que fala Tailwind 4 como o web: o @theme
- * gera exatamente as mesmas classes - bg-bg, text-fg-muted, rounded-md - e
- * o provider nativo troca para o claro em runtime com vars(). O escuro e o
- * padrao aqui pelo mesmo motivo que no web. Fontes ficam de fora ate o app
- * carrega-las com expo-font; sem a fonte instalada, o nome vira erro.
+ * gera exatamente as mesmas classes - bg-bg, text-fg-muted, rounded-md.
+ *
+ * Cada cor sai como light-dark(claro, escuro): o compilador do
+ * react-native-css transforma isso numa regra condicionada a
+ * prefers-color-scheme, avaliada em runtime - e Appearance.setColorScheme()
+ * troca o tema inteiro sem var() viva nenhuma, que e exatamente o que o
+ * inliner dele nao tolera. O provider faz esse set a partir da prop `theme`.
+ * Fontes ficam de fora ate o app carrega-las com expo-font; sem a fonte
+ * instalada, o nome vira erro.
  */
 const dark = tokens.themes["rivocode-dark"];
+const light = tokens.themes["rivocode-light"];
 const themeLines = [
-  ...Object.entries(dark).map(([role, color]) => `  --color-${role}: ${color};`),
+  ...Object.entries(dark).map(([role, darkColor]) => {
+    const lightColor = (light as Record<string, string>)[role];
+    const value =
+      lightColor && lightColor !== darkColor
+        ? `light-dark(${lightColor}, ${darkColor})`
+        : darkColor;
+    return `  --color-${role}: ${value};`;
+  }),
   ...Object.entries(scales)
     .filter(([name]) => name.startsWith("radius-"))
     .map(([name, value]) => `  --${name}: ${value}px;`),
@@ -170,7 +183,8 @@ const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode b
 
 /* So o @theme: o build do Tailwind ja o materializa em :root sozinho, e uma
    segunda declaracao da mesma variavel derruba o inliner do compilador
-   nativo. O provider troca para o claro sobrescrevendo via vars(). */
+   nativo. O light-dark() vira regra de prefers-color-scheme no compilador,
+   e o provider troca o tema em runtime com Appearance.setColorScheme(). */
 @theme {
 ${themeLines.join("\n")}
 }

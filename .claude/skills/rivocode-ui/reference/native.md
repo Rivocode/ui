@@ -28,8 +28,14 @@ Os componentes vivem em `native/src` e o app de exemplo em `examples/native`
 - Classe com var arbitrária (`h-[--rc-control-md]`) ou `translate-*`: o
   compilador do react-native-css atual não tolera var viva nem a shorthand
   `translate` — altura de controle é fixa por tamanho até o fix upstream.
-- Trocar tema/densidade em runtime: ainda não funciona pela mesma razão; o
-  tema entra no `RivoProvider` uma vez, por build. A API já é a final.
+- Remover o `browserslist` moderno do `package.json` do app: sem ele, o passe
+  web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars que
+  mata a compilação. É ele que sustenta a troca de tema em runtime — o
+  `RivoProvider` aceita `rivocode-dark`, `rivocode-light` e `system`, e trocar
+  a prop troca a tela inteira via `Appearance.setColorScheme()`.
+- Densidade compacta: não porta de propósito. Alvo de toque não encolhe em
+  tela de dedo; `density` existe na API por paridade, mas `comfortable` é a
+  única altura.
 - Glyph de texto como ícone de estado (o visto do Checkbox é borda
   rotacionada, porque fonte muda de corpo entre iOS e Android).
 - Esquecer `accessibilityRole`/`accessibilityState` em controle custom.

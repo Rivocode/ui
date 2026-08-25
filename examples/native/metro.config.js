@@ -8,10 +8,14 @@ const config = getDefaultConfig(__dirname);
 // pelo symlink native/node_modules -> examples/native/node_modules, então
 // existe um React só.
 //
-// Troca de tema em runtime ainda não é possível: o react-native-css 3.0.7
-// só compila quando TODA var é inlinada (excluir cores do inline derruba a
-// reserialização do lightningcss). O patch em patches/ conserta o repasse de
-// opções do transformer para quando o upstream aceitar vars vivas.
+// A troca de tema em runtime anda por light-dark(): o compilador nativo a
+// transforma em regra de prefers-color-scheme e o provider troca via
+// Appearance.setColorScheme(). Para isso o `browserslist` do package.json
+// crava navegadores modernos: sem ele, o passe web que o Expo roda antes do
+// compilador reescreve light-dark() no polyfill var(--lightningcss-*), que
+// referencia vars nunca declaradas e mata a compilação ("Specifier, found").
+// Vars vivas continuam impossíveis; o patch em patches/ segue aguardando o
+// upstream para esse caso.
 config.watchFolders = [__dirname, `${__dirname}/../../native`];
 
 module.exports = withNativewind(config);
