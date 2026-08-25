@@ -24,9 +24,12 @@ export function Switch({ checked, onCheckedChange, children, disabled }: SwitchP
       value={checked}
       onValueChange={onCheckedChange}
       disabled={disabled}
-      trackColor={{ false: colors["surface-raised"], true: colors.accent }}
-      thumbColor={colors.bg}
-      ios_backgroundColor={colors["surface-raised"]}
+      // Trilho desligado em border-strong, nunca em superficie: superficie
+      // sobre superficie sumia no escuro do Android. O polegar segue a mesma
+      // logica do botao: escuro sobre o acento, claro sobre o trilho apagado.
+      trackColor={{ false: colors["border-strong"], true: colors.accent }}
+      thumbColor={checked ? colors["accent-fg"] : colors["fg-muted"]}
+      ios_backgroundColor={colors["border-strong"]}
     />
   );
 

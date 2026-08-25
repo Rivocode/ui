@@ -78,7 +78,7 @@ describe("Switch", () => {
       theme: "rivocode-light",
     });
     const lightTrack = light.root.findByType("Switch" as never);
-    expect(lightTrack.props.trackColor.false).toBe(tokens.themes["rivocode-light"]["surface-raised"]);
+    expect(lightTrack.props.trackColor.false).toBe(tokens.themes["rivocode-light"]["border-strong"]);
   });
 });
 
