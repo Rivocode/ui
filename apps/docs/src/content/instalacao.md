@@ -93,6 +93,19 @@ lançam erro, todos leem o contexto dele. O Provider já monta por dentro o
 provedor de dica, a fiação de aviso e um container de portal que leva o tema
 junto. **Não monte nenhum deles à mão.**
 
+## 5. Ensinar o seu agente
+
+Se você programa com Claude Code, Cursor ou outro agente que leia skills, um
+comando instala a que ensina esta biblioteca — o contrato, a escolha entre
+peças parecidas e o vocabulário de ícones:
+
+```bash
+npx rivocode-ui skill
+```
+
+Ela entra em `.claude/skills/rivocode-ui` e a equipe recebe junto pelo Git.
+Detalhes e alternativas em [Skill](/skill).
+
 ## Next.js
 
 Os componentes são interativos e trazem `"use client"` na origem. O Provider
