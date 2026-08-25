@@ -10,6 +10,7 @@ import { GuidePage } from '@/pages/guide'
 import { DemoPage } from '@/pages/demo'
 import { Home } from '@/pages/home'
 import { linkTo, useRoute, type Route } from '@/routes'
+import { CatalogPage } from '@/pages/catalog'
 import { Toc } from '@/components/toc'
 
 function Brand({ navigate }: { navigate: (route: Route) => void }) {
@@ -137,6 +138,22 @@ function Nav({
           <p className="px-3 py-6 text-sm text-fg-subtle">Nada com esse nome no catálogo.</p>
         )}
 
+        {(() => {
+          const link = linkTo({ kind: 'catalog' }, navigate)
+          return (
+            <a
+              href={link.href}
+              onClick={(event) => {
+                link.onClick(event)
+                onNavigate?.()
+              }}
+              className={`${rowClass(route.kind === 'catalog')} mb-4 block border-l border-border`}
+            >
+              Todas as peças, numa tela
+            </a>
+          )
+        })()}
+
         {families.map(({ family, entries }) => (
           <div key={family} className="mb-6">
             <h2 className={headingClass}>{family}</h2>
@@ -260,6 +277,7 @@ export function App() {
 
             <div className="flex min-w-0 flex-1 justify-center">
               <main className="min-w-0 flex-1 xl:max-w-3xl">
+                {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
                 {route.kind === 'foundation' && <FoundationPage />}
                 {route.kind === 'guide' && <GuidePage slug={route.slug} />}
                 {route.kind === 'component' && <ComponentPage slug={route.slug} />}

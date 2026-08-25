@@ -12,6 +12,7 @@ export type Route =
   | { kind: 'home' }
   | { kind: 'demo' }
   | { kind: 'foundation' }
+  | { kind: 'catalog' }
   | { kind: 'guide'; slug: string }
   | { kind: 'component'; slug: string }
 
@@ -19,6 +20,8 @@ export function readRoute(path = window.location.pathname): Route {
   if (path === '/fundacao' || path === '/fundacao/') return { kind: 'foundation' }
   // Before the guide pattern below, which would otherwise swallow it.
   if (path === '/demonstracao' || path === '/demonstracao/') return { kind: 'demo' }
+
+  if (path === '/componentes' || path === '/componentes/') return { kind: 'catalog' }
 
   const component = /^\/componentes\/([^/]+)\/?$/.exec(path)
   if (component) return { kind: 'component', slug: decodeURIComponent(component[1]) }
@@ -32,6 +35,7 @@ export function readRoute(path = window.location.pathname): Route {
 export function hrefOf(route: Route) {
   if (route.kind === 'demo') return '/demonstracao'
   if (route.kind === 'foundation') return '/fundacao'
+  if (route.kind === 'catalog') return '/componentes'
   if (route.kind === 'guide') return `/${route.slug}`
   if (route.kind === 'component') return `/componentes/${route.slug}`
   return '/'
