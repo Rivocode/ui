@@ -4,6 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { ScrollView, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
+import { useState } from "react";
+
 import {
   Badge,
   Button,
@@ -12,10 +14,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  Checkbox,
   EmptyState,
+  Field,
+  Input,
   RivoProvider,
   Skeleton,
   Stat,
+  Switch,
 } from "../../native/src";
 import type { RivoNativeTheme } from "../../native/tokens";
 
@@ -26,6 +32,9 @@ export default function App() {
   // metro.config.js. O provider ja fala a API final.
   const theme: RivoNativeTheme = "rivocode-dark";
   const compact = false;
+
+  const [sendEmail, setSendEmail] = useState(true);
+  const [monthly, setMonthly] = useState(false);
 
   return (
     <SafeAreaProvider>
@@ -66,6 +75,28 @@ export default function App() {
                     <Badge tone={tone as "success"}>{status}</Badge>
                   </View>
                 ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Nova nota</CardTitle>
+                <CardDescription>O formulário, nas mesmas peças do web.</CardDescription>
+              </CardHeader>
+              <CardContent className="gap-4">
+                <Field label="Razão social">
+                  <Input placeholder="Quem recebe a nota" defaultValue="Clínica São Lucas" />
+                </Field>
+                <Field label="CNPJ" description="A máscara é do campo; o valor vai limpo.">
+                  <Input placeholder="00.000.000/0000-00" keyboardType="numbers-and-punctuation" />
+                </Field>
+                <Checkbox checked={sendEmail} onCheckedChange={setSendEmail}>
+                  Enviar o PDF por e-mail
+                </Checkbox>
+                <Switch checked={monthly} onCheckedChange={setMonthly}>
+                  Emitir todo mês, sem perguntar
+                </Switch>
+                <Button>Emitir nota</Button>
               </CardContent>
             </Card>
 
