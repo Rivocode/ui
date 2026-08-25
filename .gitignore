@@ -12,3 +12,7 @@ ds-bundle/
 .design-sync/.cache/
 .vercel
 skill/
+
+# Cache incremental do tsc. Versionado, ele faz o build local pular
+# checagem que o build limpo do CI faz, e os dois passam a discordar.
+*.tsbuildinfo

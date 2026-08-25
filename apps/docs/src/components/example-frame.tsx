@@ -46,25 +46,45 @@ function useClonedStyles(doc: Document | null) {
   }, [doc])
 }
 
-/** Grows the frame to whatever the example inside it turned out to need. */
-function useMeasuredHeight(doc: Document | null, deps: unknown[]) {
+/**
+ * Grows the frame to whatever the example inside it turned out to need.
+ *
+ * The measurement is a loop, not a reading: the example reacts to the frame's
+ * width, and the frame takes its height from the example. Switching to tablet
+ * walks the height down in steps (264, 216, 169) over more than a second, and
+ * every step is painted, so the reader watches a tall empty box collapse. So
+ * the hook also reports whether the number has stopped moving, and the frame
+ * stays hidden until it has.
+ */
+function useMeasuredHeight(doc: Document | null) {
   const [height, setHeight] = useState(220)
+  const [settled, setSettled] = useState(false)
 
   useEffect(() => {
     if (!doc?.body) return
+    const body = doc.body
+    setSettled(false)
 
-    const measure = () =>
-      setHeight(Math.max(160, doc.body.scrollHeight, doc.documentElement.scrollHeight))
+    let timer: ReturnType<typeof setTimeout>
+    const measure = () => {
+      setHeight(Math.max(160, Math.ceil(body.getBoundingClientRect().height)))
+      // Assentou quando parou de mudar. O observer so avisa em mudanca, entao
+      // e o silencio dele que conta, e nao duas leituras iguais.
+      clearTimeout(timer)
+      timer = setTimeout(() => setSettled(true), 180)
+    }
     measure()
 
     const observer = new ResizeObserver(measure)
-    observer.observe(doc.body)
+    observer.observe(body)
 
-    return () => observer.disconnect()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doc, ...deps])
+    return () => {
+      clearTimeout(timer)
+      observer.disconnect()
+    }
+  }, [doc])
 
-  return height
+  return { height, settled }
 }
 
 /**
@@ -125,21 +145,27 @@ export function ExampleFrame({ width, children }: { width: number; children: Rea
   }, [])
 
   useClonedStyles(doc)
-  const height = useMeasuredHeight(doc, [children])
+  const { height, settled } = useMeasuredHeight(doc)
 
   return (
     // The outer box carries the scaled height, so a shrunken frame does not
     // leave dead space under it, and centres the frame so scaling about its
     // own centre keeps it in the middle of the column.
+    //
+    // Until the height settles the box keeps a calm placeholder height instead
+    // of following each step down, so the switch reads as one change and not
+    // as a box deflating.
     <div
       ref={box}
-      className="flex w-full justify-center overflow-hidden"
-      style={{ height: height * scale }}
+      className="flex w-full justify-center overflow-hidden transition-[height] duration-200 ease-rc"
+      style={{ height: settled ? height * scale : 160 }}
     >
       <iframe
         ref={frame}
         title="Exemplo em outra largura"
-        className="shrink-0 rounded-md border border-border bg-bg"
+        className={`shrink-0 rounded-md border border-border bg-bg transition-opacity duration-200 ${
+          settled ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top center' }}
       >
         {/* Local, never global: the provider writes a global theme onto
