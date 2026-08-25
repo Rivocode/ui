@@ -10,7 +10,6 @@ import {
   MenuItem,
   MenuSeparator,
   MenuTrigger,
-  Pagination,
   Select,
   SelectContent,
   SelectItem,
@@ -31,8 +30,6 @@ import { Download, MoreHorizontal, Search, SlidersHorizontal } from 'lucide-reac
 import { useMemo, useState } from 'react'
 import { INVOICES, STATUS_LABEL, STATUS_TONE, type Invoice, type Status } from '@/demo/data'
 
-const PER_PAGE = 8
-
 const FILTERS: Array<{ value: Status | 'all'; label: string }> = [
   { value: 'all', label: 'Todas' },
   { value: 'open', label: 'Abertas' },
@@ -40,41 +37,35 @@ const FILTERS: Array<{ value: Status | 'all'; label: string }> = [
   { value: 'paid', label: 'Pagas' },
 ]
 
+/** "14/09/2026" ordena errado como texto; em ISO a data vira comparável. */
+const isoDate = (br: string) => br.split('/').reverse().join('-')
+
 export function Invoices() {
   const toast = useToast()
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<Status | 'all'>('all')
   const [period, setPeriod] = useState('30')
-  const [page, setPage] = useState(1)
   const [open, setOpen] = useState<Invoice | null>(null)
 
-  const found = useMemo(() => {
-    const term = query.trim().toLowerCase()
-
-    return INVOICES.filter((invoice) => {
-      if (status !== 'all' && invoice.status !== status) return false
-      if (!term) return true
-      return (
-        invoice.customer.toLowerCase().includes(term) ||
-        invoice.number.includes(term) ||
-        invoice.document.includes(term)
-      )
-    })
-  }, [query, status])
-
-  const pageCount = Math.max(1, Math.ceil(found.length / PER_PAGE))
-  const current = Math.min(page, pageCount)
-  const rows = found.slice((current - 1) * PER_PAGE, current * PER_PAGE)
+  // Só o recorte de domínio fica aqui: busca, ordem e página são da tabela.
+  const found = useMemo(
+    () => INVOICES.filter((invoice) => status === 'all' || invoice.status === status),
+    [status],
+  )
 
   const columns: Column<Invoice>[] = [
     {
       key: 'number',
       header: 'Número',
+      sortable: true,
+      value: (invoice) => Number(invoice.number),
       cell: (invoice) => <span className="font-mono text-sm text-fg-muted">{invoice.number}</span>,
     },
     {
       key: 'customer',
       header: 'Cliente',
+      sortable: true,
+      value: (invoice) => invoice.customer,
       cell: (invoice) => (
         <span className="block">
           <span className="block truncate text-fg">{invoice.customer}</span>
@@ -84,7 +75,13 @@ export function Invoices() {
         </span>
       ),
     },
-    { key: 'dueAt', header: 'Vencimento', hideOnMobile: true },
+    {
+      key: 'dueAt',
+      header: 'Vencimento',
+      hideOnMobile: true,
+      sortable: true,
+      value: (invoice) => isoDate(invoice.dueAt),
+    },
     {
       key: 'status',
       header: 'Situação',
@@ -98,6 +95,8 @@ export function Invoices() {
       key: 'amount',
       header: 'Valor',
       align: 'right',
+      sortable: true,
+      value: (invoice) => invoice.amount,
       cell: (invoice) => <span className="font-mono">{currencyShort(invoice.amount)}</span>,
     },
     {
@@ -146,10 +145,7 @@ export function Invoices() {
             />
             <Input
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value)
-                setPage(1)
-              }}
+              onChange={(event) => setQuery(event.target.value)}
               placeholder="Cliente, número ou CNPJ"
               aria-label="Buscar nota"
               className="pl-8"
@@ -194,10 +190,7 @@ export function Invoices() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <ToggleGroup
           value={[status]}
-          onValueChange={(next) => {
-            setStatus((next[0] as Status | 'all') ?? 'all')
-            setPage(1)
-          }}
+          onValueChange={(next) => setStatus((next[0] as Status | 'all') ?? 'all')}
         >
           {FILTERS.map((filter) => (
             <Toggle key={filter.value} value={filter.value}>
@@ -205,17 +198,17 @@ export function Invoices() {
             </Toggle>
           ))}
         </ToggleGroup>
-
-        <p className="text-sm text-fg-subtle">
-          {found.length} nota{found.length === 1 ? '' : 's'}
-        </p>
       </div>
 
+      {/* Busca, ordem, página e contagem são da própria tabela: o rodapé
+          "1–8 de 48" já conta o que o filtro deixou. */}
       <DataTable
-        data={rows}
+        data={found}
         columns={columns}
         rowKey={(invoice) => invoice.id}
         onRowClick={setOpen}
+        filter={query}
+        pageSize={8}
         empty={{
           title: 'Nenhuma nota com esse filtro',
           description: 'Tente outro termo, ou volte para “Todas”.',
@@ -233,12 +226,6 @@ export function Invoices() {
           ),
         }}
       />
-
-      {pageCount > 1 && (
-        <div className="flex justify-center">
-          <Pagination page={current} pageCount={pageCount} onPageChange={setPage} />
-        </div>
-      )}
 
       <Sheet side="right" open={open !== null} onOpenChange={(next) => !next && setOpen(null)}>
         <SheetContent className="w-[min(28rem,100vw)] p-6">
