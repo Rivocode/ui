@@ -20,8 +20,18 @@ const CONVENTIONS = here('../../.design-sync/conventions.md')
  * segunda copia divergiria da primeira no dia seguinte, e a que o site entrega
  * e justamente a que precisa estar certa.
  */
-const SKILL = here('../../.claude/skills/rivocode-ui/SKILL.md')
+const SKILL_DIR = here('../../.claude/skills/rivocode-ui')
+const SKILL = `${SKILL_DIR}/SKILL.md`
 const GUIDES_DIR = here('./src/content')
+
+/** Os arquivos da skill, na ordem em que o corpo dela os cita. */
+function skillFiles(): string[] {
+  const refs = readdirSync(`${SKILL_DIR}/reference`)
+    .filter((file) => file.endsWith('.md'))
+    .map((file) => `reference/${file}`)
+
+  return ['SKILL.md', ...refs]
+}
 
 type Doc = { name: string; slug: string; family: string; body: string }
 
@@ -235,9 +245,12 @@ function rawDocs(): Plugin {
         }
 
         // A skill, servida crua no endereço que o comando de instalação usa.
-        if (path === '/skill/SKILL.md') {
+        // Os arquivos de `reference/` vão junto: o corpo da skill aponta para
+        // eles, e um link que dá 404 é pior do que não ter o link.
+        const skillHit = /^\/skill\/(SKILL\.md|reference\/[a-z0-9-]+\.md)$/.exec(path)
+        if (skillHit) {
           res.setHeader('content-type', 'text/markdown; charset=utf-8')
-          res.end(readFileSync(SKILL, 'utf8'))
+          res.end(readFileSync(`${SKILL_DIR}/${skillHit[1]}`, 'utf8'))
           return
         }
 
@@ -265,11 +278,13 @@ function rawDocs(): Plugin {
         fileName: 'convencoes.md',
         source: readFileSync(CONVENTIONS, 'utf8'),
       })
-      this.emitFile({
-        type: 'asset',
-        fileName: 'skill/SKILL.md',
-        source: readFileSync(SKILL, 'utf8'),
-      })
+      for (const file of skillFiles()) {
+        this.emitFile({
+          type: 'asset',
+          fileName: `skill/${file}`,
+          source: readFileSync(`${SKILL_DIR}/${file}`, 'utf8'),
+        })
+      }
 
       for (const [slug, guide] of readGuides()) {
         this.emitFile({

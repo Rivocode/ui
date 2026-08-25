@@ -10,10 +10,10 @@
  * enumera os 66, e ele e gerado. O que precisa de vigia e o texto escrito a
  * mao, e dele so a parte que promete uma lista.
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 
 const CONTRATO = ".design-sync/conventions.md";
-const SKILL = ".claude/skills/rivocode-ui/SKILL.md";
+const SKILL_DIR = ".claude/skills/rivocode-ui";
 
 const ALVOS = [
   { arquivo: "src/chart/index.ts", name: "@rivocode/ui/chart" },
@@ -21,7 +21,19 @@ const ALVOS = [
 ];
 
 const contrato = readFileSync(CONTRATO, "utf8");
-const skill = readFileSync(SKILL, "utf8");
+/**
+ * A skill inteira, e nao so o corpo dela.
+ *
+ * O corpo virou indice, e o detalhe de formulario e de grafico mora em
+ * `reference/`. Lendo so o SKILL.md, a guarda passou a cobrar nomes que estao
+ * documentados no arquivo ao lado.
+ */
+const skill = [
+  readFileSync(`${SKILL_DIR}/SKILL.md`, "utf8"),
+  ...readdirSync(`${SKILL_DIR}/reference`)
+    .filter((file) => file.endsWith(".md"))
+    .map((file) => readFileSync(`${SKILL_DIR}/reference/${file}`, "utf8")),
+].join("\n");
 
 /**
  * O que o subcaminho exporta de proprio.

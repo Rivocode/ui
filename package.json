@@ -58,7 +58,7 @@
     "check:temas": "bun run scripts/check-temas-documentados.ts",
     "prepublishOnly": "bun run check && bun run build",
     "check:contrato": "bun run scripts/check-contrato-documentado.ts",
-    "build:skill": "mkdir -p skill && cp .claude/skills/rivocode-ui/SKILL.md skill/SKILL.md"
+    "build:skill": "rm -rf skill && mkdir -p skill && cp -R .claude/skills/rivocode-ui/. skill/"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

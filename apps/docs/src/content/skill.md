@@ -3,17 +3,27 @@ leia skills, dá para ensiná-lo a biblioteca inteira de uma vez.
 
 ## Instalar
 
+A skill é uma pasta: um `SKILL.md` que o agente lê sempre, e arquivos em
+`reference/` que ele abre só quando o trabalho pede. Layout, decisões de design,
+formulário, gráfico e tema ficam separados justamente para não ocupar contexto
+enquanto não são o assunto.
+
 O caminho que funciona em qualquer lugar, sem gerenciador de pacote e sem ter a
 biblioteca instalada:
 
 ```bash
-mkdir -p ~/.claude/skills/rivocode-ui && \
-  curl -fsSL https://ds.rivocode.com.br/skill/SKILL.md \
-  -o ~/.claude/skills/rivocode-ui/SKILL.md
+dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
+  curl -fsSL https://ds.rivocode.com.br/skill/SKILL.md -o "$dir/SKILL.md" && \
+  for f in layout design components forms charts theming; do \
+    curl -fsSL "https://ds.rivocode.com.br/skill/reference/$f.md" \
+      -o "$dir/reference/$f.md"; \
+  done
 ```
 
 Trocando `~/.claude` por `.claude` ela entra só no projeto, e a equipe recebe
 junto pelo Git.
+
+São sete arquivos, então o comando do pacote abaixo costuma sair mais fácil.
 
 ### Pelo comando do pacote
 
@@ -35,15 +45,22 @@ Acrescente `--global` para instalar em `~/.claude` em vez do projeto.
 ```bash
 bunx @rivocode/ui skill
 pnpm dlx @rivocode/ui skill
-npx -y --legacy-peer-deps @rivocode/ui skill
+npx -y @rivocode/ui skill
 ```
 
-O `--legacy-peer-deps` do npm não é enfeite: para rodar um comando ele instala o
-pacote num diretório temporário **com as dependências de par opcionais junto**, e
-a árvore do `@hookform/resolvers` entra em conflito ali. O `bunx` e o `pnpm dlx`
-não fazem isso. Se preferir evitar a flag, use o `curl`.
-
 O `yarn` clássico não tem `dlx`. Nele, instale o pacote e use a forma de cima.
+
+<details>
+<summary>Se o npm reclamar de conflito de dependência</summary>
+
+Até a versão `0.3.0`, o par `zod` era declarado como `^4`, e o
+`@hookform/resolvers` arrasta pacotes que pedem zod 3. Para rodar um comando o
+npm instala tudo num diretório temporário, inclusive os pares opcionais, e o
+conflito aparecia ali. Nessas versões, acrescente `--legacy-peer-deps`.
+
+A faixa foi alargada e o conflito deixou de existir.
+
+</details>
 
 ## O que ela ensina
 

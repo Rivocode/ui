@@ -11,14 +11,14 @@
  * do site, que fala de pecas que aquele projeto ainda nao tem.
  * ------------------------------------------------------------------------- */
 
-import { copyFileSync, mkdirSync } from "node:fs";
+import { cpSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
 /** A skill viaja no pacote, ao lado do `dist`. */
-const ORIGEM = resolve(AQUI, "../skill/SKILL.md");
+const ORIGEM = resolve(AQUI, "../skill");
 
 const AJUDA = `
 @rivocode/ui
@@ -42,7 +42,9 @@ function instalar(global: boolean) {
 
   try {
     mkdirSync(destino, { recursive: true });
-    copyFileSync(ORIGEM, join(destino, "SKILL.md"));
+    // A pasta inteira, e nao so o SKILL.md: o corpo da skill aponta para
+    // `reference/`, e sem esses arquivos os links levam a lugar nenhum.
+    cpSync(ORIGEM, destino, { recursive: true });
   } catch (erro) {
     console.error(`Nao consegui escrever em ${destino}.`);
     console.error(erro instanceof Error ? erro.message : erro);
@@ -50,7 +52,7 @@ function instalar(global: boolean) {
   }
 
   const onde = global ? "para todos os seus projetos" : "neste projeto";
-  console.log(`Skill instalada ${onde}, em ${destino}/SKILL.md`);
+  console.log(`Skill instalada ${onde}, em ${destino}`);
   console.log("O agente carrega sozinho quando voce pedir uma tela.");
 }
 
