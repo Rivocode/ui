@@ -1,6 +1,7 @@
 import {
   Badge,
   Button,
+  DataTable,
   Field,
   FieldDescription,
   FieldLabel,
@@ -13,16 +14,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
   Tab,
   TabList,
   TabPanel,
   Tabs,
+  type Column,
 } from '@rivocode/ui'
 import {
   Area,
@@ -35,6 +31,7 @@ import {
   ChartXAxis,
   ChartYAxis,
   areaGradient,
+  currencyShort,
   type ChartConfig,
 } from '@rivocode/ui/chart'
 import { useState } from 'react'
@@ -49,10 +46,18 @@ import { useState } from 'react'
  * change everything and no component knows they exist.
  * ------------------------------------------------------------------------- */
 
-const INVOICES = [
-  { id: '4812', customer: 'Prefeitura de João Pessoa', amount: 'R$ 12,4K', status: 'Paga' },
-  { id: '4813', customer: 'Clínica São Lucas', amount: 'R$ 3,3K', status: 'Aberta' },
-  { id: '4814', customer: 'Transportes Cabo Branco', amount: 'R$ 8,8K', status: 'Vencida' },
+type ShowcaseInvoice = {
+  id: string
+  customer: string
+  /* Número cru: quem abrevia é o currencyShort, nunca o dedo. */
+  amount: number
+  status: 'Paga' | 'Aberta' | 'Vencida'
+}
+
+const INVOICES: ShowcaseInvoice[] = [
+  { id: '4812', customer: 'Prefeitura de João Pessoa', amount: 12_400, status: 'Paga' },
+  { id: '4813', customer: 'Clínica São Lucas', amount: 3_300, status: 'Aberta' },
+  { id: '4814', customer: 'Transportes Cabo Branco', amount: 8_800, status: 'Vencida' },
 ]
 
 const TONE = {
@@ -60,6 +65,34 @@ const TONE = {
   Aberta: 'info',
   Vencida: 'danger',
 } as const
+
+/* Ordenar e selecionar na primeira dobra: a tabela da vitrine mostra o que o
+ * DataTable faz sozinho, nao um <table> parado fingindo. */
+const SHOWCASE_COLUMNS: Column<ShowcaseInvoice>[] = [
+  {
+    key: 'id',
+    header: 'Número',
+    cell: (invoice) => <span className="font-mono text-sm text-fg-muted">{invoice.id}</span>,
+  },
+  { key: 'customer', header: 'Cliente', sortable: true, value: (invoice) => invoice.customer },
+  {
+    key: 'status',
+    header: 'Situação',
+    cell: (invoice) => (
+      <Badge tone={TONE[invoice.status]} size="sm">
+        {invoice.status}
+      </Badge>
+    ),
+  },
+  {
+    key: 'amount',
+    header: 'Valor',
+    align: 'right',
+    sortable: true,
+    value: (invoice) => invoice.amount,
+    cell: (invoice) => <span className="font-mono">{currencyShort(invoice.amount)}</span>,
+  },
+]
 
 const MONTHS = [
   { month: 'Mar', total: 128_000 },
@@ -140,6 +173,8 @@ function BillingChart() {
 export function Showcase() {
   const [theme, setTheme] = useState<Theme>('rivocode-dark')
   const [compact, setCompact] = useState(false)
+  // Uma linha ja marcada, para a coluna de selecao se apresentar sozinha.
+  const [selected, setSelected] = useState<string[]>(['4813'])
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface/80 backdrop-blur-sm">
@@ -180,32 +215,14 @@ export function Showcase() {
 
             <TabPanel value="listing">
               <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Número</TableHead>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Situação</TableHead>
-                      <TableHead className="text-right">Valor</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {INVOICES.map((invoice, index) => (
-                      <TableRow key={invoice.id} selected={index === 1}>
-                        <TableCell className="font-mono text-sm text-fg-muted">
-                          {invoice.id}
-                        </TableCell>
-                        <TableCell>{invoice.customer}</TableCell>
-                        <TableCell>
-                          <Badge tone={TONE[invoice.status as keyof typeof TONE]} size="sm">
-                            {invoice.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">{invoice.amount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <DataTable
+                  data={INVOICES}
+                  columns={SHOWCASE_COLUMNS}
+                  rowKey={(invoice) => invoice.id}
+                  selectable
+                  selected={selected}
+                  onSelectedChange={setSelected}
+                />
               </div>
 
               <p className="mt-4 flex items-center gap-2 text-sm text-fg-subtle">

@@ -236,7 +236,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           <span className="font-mono text-xs text-fg-subtle">Base UI · Tailwind 4 · React 19</span>
         </div>
 
-        <h1 className="mt-5 max-w-4xl font-display text-4xl leading-[1.05] text-fg sm:text-6xl">
+        <h1 className="mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
           O design system da <span className="text-accent-text">RivoCode</span>, documentado por
           dentro.
         </h1>
@@ -248,7 +248,9 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button size="lg" shape="pill" {...toInstall} render={<a />}>
+          {/* O único glow da página: o CTA é o que a lanterna existe para
+              iluminar. Um segundo brilho já seria feira. */}
+          <Button size="lg" shape="pill" className="shadow-glow" {...toInstall} render={<a />}>
             Começar a usar
             <ArrowRight size={16} />
           </Button>
@@ -264,7 +266,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
-          <Stat value="237" label="testes, todos verdes" />
+          <Stat value="265" label="testes, todos verdes" />
           <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>
