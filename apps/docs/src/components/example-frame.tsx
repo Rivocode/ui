@@ -100,33 +100,42 @@ function useMeasuredHeight(doc: Document | null, width: number) {
  * media queries inside still answer as a tablet, and only the picture of it
  * gets smaller. It is what the browser's own device toolbar does.
  */
-function useFitScale(width: number) {
+function useBoxWidth() {
   const box = useRef<HTMLDivElement>(null)
-  const [scale, setScale] = useState(1)
+  const [boxWidth, setBoxWidth] = useState<number | null>(null)
 
   useEffect(() => {
     const node = box.current
     if (!node) return
 
-    const measure = () => setScale(Math.min(1, node.clientWidth / width))
+    const measure = () => setBoxWidth(node.clientWidth)
     measure()
 
     const observer = new ResizeObserver(measure)
     observer.observe(node)
 
     return () => observer.disconnect()
-  }, [width])
+  }, [])
 
-  return { box, scale }
+  return { box, boxWidth }
 }
 
 export function ExampleFrame({
   width,
+  fit = false,
   initialHeight,
   minHeight,
   children,
 }: {
   width: number
+  /**
+   * Follow the column instead of miniaturizing. A picked viewport is a
+   * picture of another device, so it scales down to fit; a keep-open story
+   * at rest is just the example, and on a phone it should stay readable:
+   * the window narrows, the layout inside answers as a phone, and nothing
+   * shrinks to half size.
+   */
+  fit?: boolean
   /** Height of whatever the frame replaced, so the box never collapses. */
   initialHeight?: number
   /**
@@ -139,7 +148,9 @@ export function ExampleFrame({
 }) {
   const frame = useRef<HTMLIFrameElement>(null)
   const [doc, setDoc] = useState<Document | null>(null)
-  const { box, scale } = useFitScale(width)
+  const { box, boxWidth } = useBoxWidth()
+  const frameWidth = fit ? Math.min(width, boxWidth ?? width) : width
+  const scale = fit || !boxWidth ? 1 : Math.min(1, boxWidth / width)
 
   useEffect(() => {
     const node = frame.current
@@ -164,7 +175,7 @@ export function ExampleFrame({
   }, [])
 
   useClonedStyles(doc)
-  const { height, settled } = useMeasuredHeight(doc, width)
+  const { height, settled } = useMeasuredHeight(doc, frameWidth)
 
   // While the new width is being measured the box holds the height it was
   // showing, never a fixed placeholder: collapsing to 160 and popping back up
@@ -188,7 +199,12 @@ export function ExampleFrame({
         className={`shrink-0 rounded-md border border-border bg-bg transition-opacity duration-200 ${
           settled ? 'opacity-100' : 'opacity-0'
         }`}
-        style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top center' }}
+        style={{
+          width: frameWidth,
+          height,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top center',
+        }}
       >
         {/* Local, never global: the provider writes a global theme onto
             `document.documentElement`, and inside a portal that document is

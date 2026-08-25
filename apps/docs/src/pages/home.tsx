@@ -7,6 +7,7 @@ import { ENTRIES, FAMILIES, WITH_EXAMPLE, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
 import { Logo } from '@/components/logo'
 import { linkTo, type Route } from '@/routes'
+import { version } from '../../../../package.json'
 
 /* ---------------------------------------------------------------------------
  * The front page
@@ -232,7 +233,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <Logo className="h-7 w-auto text-accent" />
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Badge tone="accent">v0.2.0 no npm</Badge>
+          <Badge tone="accent">v{version} no npm</Badge>
           <span className="font-mono text-xs text-fg-subtle">Base UI · Tailwind 4 · React 19</span>
         </div>
 
@@ -266,7 +267,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
-          <Stat value="282" label="testes, todos verdes" />
+          <Stat value="292" label="testes, todos verdes" />
           <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>

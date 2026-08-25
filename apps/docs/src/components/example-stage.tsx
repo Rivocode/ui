@@ -112,7 +112,9 @@ function ViewportSwitch({
  *
  * It matches the docs column, so the frame reads as inline; the point is the
  * window, not the size: inside the iframe a dialog's overlay ends at the
- * card, instead of opening over the documentation.
+ * card, instead of opening over the documentation. On a phone the column is
+ * narrower than this, and the frame follows the column (`fit`) instead of
+ * shrinking a 720px picture to half size.
  */
 const KEEP_OPEN_WIDTH = 720
 const KEEP_OPEN_MIN_HEIGHT = 360
@@ -132,8 +134,8 @@ export function ExampleStage({
   keepOpen?: boolean
 }) {
   const [viewport, setViewport] = useState<ViewportId>('desktop')
-  const width =
-    VIEWPORTS.find((option) => option.id === viewport)?.width ?? (keepOpen ? KEEP_OPEN_WIDTH : null)
+  const picked = VIEWPORTS.find((option) => option.id === viewport)?.width ?? null
+  const width = picked ?? (keepOpen ? KEEP_OPEN_WIDTH : null)
 
   // Measured at the moment of the switch, so the frame that replaces the
   // inline example starts at the height the reader was already looking at,
@@ -184,10 +186,14 @@ export function ExampleStage({
         </header>
 
         <TabPanel value="preview" className="p-0">
-          <div ref={preview} className="flex justify-center overflow-x-auto bg-bg/40 p-4">
+          {/* `safe` porque o par centro + overflow corta o comeco: um exemplo
+              mais largo que a coluna ficava com a borda esquerda inalcancavel,
+              decapitando a primeira coluna da tabela no celular. */}
+          <div ref={preview} className="flex justify-center-safe overflow-x-auto bg-bg/40 p-4">
             {width ? (
               <ExampleFrame
                 width={width}
+                fit={picked === null}
                 initialHeight={heldHeight.current}
                 minHeight={keepOpen ? KEEP_OPEN_MIN_HEIGHT : undefined}
               >
@@ -201,7 +207,7 @@ export function ExampleStage({
               // a sliver.
               <div className="w-full">
                 <RivoProvider scope="local" theme="rivocode-dark">
-                  <div className="flex min-h-32 w-full items-center justify-center overflow-x-auto rounded-md p-6">
+                  <div className="flex min-h-32 w-full items-center justify-center-safe overflow-x-auto rounded-md p-6">
                     <Example />
                   </div>
                 </RivoProvider>
