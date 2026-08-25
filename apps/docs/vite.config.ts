@@ -126,19 +126,26 @@ type Sources = ReturnType<typeof readAll>
 function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Sources) {
   const partOf = (name: string) => findParent(name, names)
 
-  const preview = previews.get(doc.name)
-  const stories = preview
-    ? storyNamesOf(preview)
-        .map((story) => ({
-          title: titleFromSource(preview, story),
-          code: sliceSource(preview, story) ?? '',
-        }))
-        .filter((story) => story.code)
-    : []
+  const partNames = [...names].filter((name) => partOf(name) === doc.name).sort()
 
-  const parts: Part[] = [...names]
-    .filter((name) => partOf(name) === doc.name)
-    .sort()
+  /*
+   * Os exemplos da peça, e os das partes dela — a mesma regra da página. Uma
+   * parte nao tem `.md` proprio, entao o preview dela so tem este endereco
+   * para chegar a quem le. Sem isto, `RadioGroup.md` saia sem um exemplo
+   * sequer, com dois escritos em `Radio.tsx`.
+   */
+  const stories = [doc.name, ...partNames].flatMap((name) => {
+    const source = previews.get(name)
+    if (!source) return []
+    return storyNamesOf(source)
+      .map((story) => ({
+        title: titleFromSource(source, story),
+        code: sliceSource(source, story) ?? '',
+      }))
+      .filter((story) => story.code)
+  })
+
+  const parts: Part[] = partNames
     .map((name) => ({
       name,
       body: (docs.find((item) => item.name === name)?.body ?? '').replace(/^\s*#\s+\S.*\n+/, ''),

@@ -3,7 +3,7 @@ import { FileCode2, FileText } from 'lucide-react'
 import { Examples } from '@/components/examples'
 import { Markdown } from '@/components/markdown'
 import { PropsTable } from '@/components/props-table'
-import { findEntry, importPathOf } from '@/catalog'
+import { findEntry, importPathOf, type Entry } from '@/catalog'
 import { anchor } from '@/anchor'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -17,6 +17,18 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <div className="mt-4">{children}</div>
     </section>
   )
+}
+
+/**
+ * Os exemplos que a página mostra: os seus, e os das partes que a compõem.
+ *
+ * Uma parte não tem página própria — o endereço dela leva a quem a monta — e
+ * até aqui o preview dela não era mostrado em lugar nenhum. `Radio` é o caso
+ * extremo: `RadioGroup` não tem preview seu, então a página abria sem um único
+ * exemplo, com dois escritos e mantidos em `Radio.tsx` que ninguém via.
+ */
+function examplesOf(entry: Entry) {
+  return [entry, ...(entry.parts ?? [])].filter((item) => item.loadExamples)
 }
 
 export function ComponentPage({ slug }: { slug: string }) {
@@ -33,6 +45,8 @@ export function ComponentPage({ slug }: { slug: string }) {
       </div>
     )
   }
+
+  const shown = examplesOf(entry)
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-10">
@@ -55,9 +69,11 @@ export function ComponentPage({ slug }: { slug: string }) {
         )}
       </header>
 
-      {entry.loadExamples && (
-        <section className="mb-10">
-          <Examples load={entry.loadExamples} source={entry.exampleSource} />
+      {shown.length > 0 && (
+        <section className="mb-10 space-y-4">
+          {shown.map((item) => (
+            <Examples key={item.name} load={item.loadExamples!} source={item.exampleSource} />
+          ))}
         </section>
       )}
 
@@ -120,7 +136,7 @@ export function ComponentPage({ slug }: { slug: string }) {
         </Section>
       )}
 
-      {!entry.loadExamples && (
+      {shown.length === 0 && (
         <p className="mt-8 rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
           Esta peça ainda não tem exemplo que roda. Ela costuma ser um pedaço de outra, o exemplo
           vive na peça principal, que a monta.
