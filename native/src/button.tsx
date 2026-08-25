@@ -32,14 +32,11 @@ export type ButtonProps = Omit<PressableProps, "children"> & {
  * densidade compacta igual quebra la.
  */
 export function Button({ children, variant = "primary", size = "md", ...props }: ButtonProps) {
-  const height = { sm: "h-[--rc-control-sm]", md: "h-[--rc-control-md]", lg: "h-[--rc-control-lg]" }[
-    size
-  ];
-  const pad = {
-    sm: "px-[--rc-control-pad-sm]",
-    md: "px-[--rc-control-pad-md]",
-    lg: "px-[--rc-control-pad-lg]",
-  }[size];
+  // Altura fixa por tamanho, por enquanto: a densidade via --rc-control-*
+  // depende de vars vivas no runtime, que o compilador nativo ainda nao
+  // aceita (a mesma limitacao do tema, anotada no metro.config do exemplo).
+  const height = { sm: "h-8", md: "h-10", lg: "h-12" }[size];
+  const pad = { sm: "px-3", md: "px-4", lg: "px-5" }[size];
   const text = { sm: "text-sm", md: "text-base", lg: "text-md" }[size];
 
   return (

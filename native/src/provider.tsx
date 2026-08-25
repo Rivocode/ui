@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { vars } from "nativewind";
 
 import { tokens, type RivoNativeTheme } from "../tokens";
+import { ToastProvider } from "./toast";
 
 export type RivoDensity = "comfortable" | "compact";
 
@@ -55,7 +56,9 @@ export function RivoProvider({
   return (
     <RivoContext.Provider value={value}>
       <View style={style} className="flex-1 bg-bg">
-        {children}
+        {/* A fiacao de aviso ja vem montada, como no web: quem usa a
+            biblioteca nao deveria precisar montar provedor para um aviso. */}
+        <ToastProvider>{children}</ToastProvider>
       </View>
     </RivoContext.Provider>
   );

@@ -24,9 +24,11 @@
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --radius-xl: 16px;
     --color-bg: #0b0d0f;
     --color-surface: #14171a;
     --color-surface-raised: #171a1d;
+    --color-overlay: rgba(0,0,0,0.62);
     --color-fg: #f2f3f0;
     --color-fg-muted: #b9bfc6;
     --color-fg-subtle: #8b9199;
@@ -35,6 +37,7 @@
     --color-accent-fg: #0f1113;
     --color-accent-text: #d4f34a;
     --color-accent-subtle: rgba(212,243,74,0.14);
+    --color-selected: rgba(212,243,74,0.05);
     --color-skeleton: rgba(255,255,255,0.08);
     --color-border: rgba(255,255,255,0.09);
     --color-border-strong: rgba(255,255,255,0.14);
@@ -53,11 +56,38 @@
     --text-md--line-height: 24px;
   }
 }
+.visible {
+  visibility: visible;
+}
+.absolute {
+  position: absolute;
+}
+.inset-x-4 {
+  inset-inline: calc(var(--spacing) * 4);
+}
+.bottom-10 {
+  bottom: calc(var(--spacing) * 10);
+}
+.-mx-2 {
+  margin-inline: calc(var(--spacing) * -2);
+}
+.mt-0\.5 {
+  margin-top: calc(var(--spacing) * 0.5);
+}
+.mt-1 {
+  margin-top: var(--spacing);
+}
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
 }
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
+}
 .mb-0\.5 {
   margin-bottom: calc(var(--spacing) * 0.5);
+}
+.mb-4 {
+  margin-bottom: calc(var(--spacing) * 4);
 }
 .inline {
   display: inline;
@@ -66,35 +96,38 @@
   width: calc(var(--spacing) * 5);
   height: calc(var(--spacing) * 5);
 }
+.h-1 {
+  height: var(--spacing);
+}
 .h-2 {
   height: calc(var(--spacing) * 2);
+}
+.h-3 {
+  height: calc(var(--spacing) * 3);
 }
 .h-4 {
   height: calc(var(--spacing) * 4);
 }
+.h-8 {
+  height: calc(var(--spacing) * 8);
+}
+.h-10 {
+  height: calc(var(--spacing) * 10);
+}
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
-.h-\[--rc-control-lg\] {
-  height: --rc-control-lg;
-}
-.h-\[--rc-control-md\] {
-  height: --rc-control-md;
-}
-.h-\[--rc-control-sm\] {
-  height: --rc-control-sm;
-}
-.w-1\/2 {
-  width: calc(1 / 2 * 100%);
-}
-.w-2\/3 {
-  width: calc(2 / 3 * 100%);
+.w-1\/3 {
+  width: calc(1 / 3 * 100%);
 }
 .w-3 {
   width: calc(var(--spacing) * 3);
 }
 .w-3\/4 {
   width: calc(3 / 4 * 100%);
+}
+.w-10 {
+  width: calc(var(--spacing) * 10);
 }
 .min-w-0 {
   min-width: 0px;
@@ -114,11 +147,17 @@
 .items-center {
   align-items: center;
 }
+.items-start {
+  align-items: flex-start;
+}
 .justify-between {
   justify-content: space-between;
 }
 .justify-center {
   justify-content: center;
+}
+.justify-end {
+  justify-content: flex-end;
 }
 .gap-1 {
   gap: var(--spacing);
@@ -138,6 +177,9 @@
 .gap-4 {
   gap: calc(var(--spacing) * 4);
 }
+.self-center {
+  align-self: center;
+}
 .self-start {
   align-self: flex-start;
 }
@@ -153,9 +195,17 @@
 .rounded-sm {
   border-radius: var(--radius-sm);
 }
+.rounded-t-xl {
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+}
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
+}
+.border-t {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
 }
 .border-b-2 {
   border-bottom-style: var(--tw-border-style);
@@ -189,6 +239,9 @@
 .bg-bg {
   background-color: var(--color-bg);
 }
+.bg-border-strong {
+  background-color: var(--color-border-strong);
+}
 .bg-danger {
   background-color: var(--color-danger);
 }
@@ -197,6 +250,9 @@
 }
 .bg-info-subtle {
   background-color: var(--color-info-subtle);
+}
+.bg-overlay {
+  background-color: var(--color-overlay);
 }
 .bg-skeleton {
   background-color: var(--color-skeleton);
@@ -216,8 +272,14 @@
 .p-4 {
   padding: calc(var(--spacing) * 4);
 }
+.px-2 {
+  padding-inline: calc(var(--spacing) * 2);
+}
 .px-2\.5 {
   padding-inline: calc(var(--spacing) * 2.5);
+}
+.px-3 {
+  padding-inline: calc(var(--spacing) * 3);
 }
 .px-3\.5 {
   padding-inline: calc(var(--spacing) * 3.5);
@@ -225,20 +287,20 @@
 .px-4 {
   padding-inline: calc(var(--spacing) * 4);
 }
+.px-5 {
+  padding-inline: calc(var(--spacing) * 5);
+}
 .px-6 {
   padding-inline: calc(var(--spacing) * 6);
 }
-.px-\[--rc-control-pad-lg\] {
-  padding-inline: --rc-control-pad-lg;
-}
-.px-\[--rc-control-pad-md\] {
-  padding-inline: --rc-control-pad-md;
-}
-.px-\[--rc-control-pad-sm\] {
-  padding-inline: --rc-control-pad-sm;
-}
 .py-0\.5 {
   padding-block: calc(var(--spacing) * 0.5);
+}
+.py-1\.5 {
+  padding-block: calc(var(--spacing) * 1.5);
+}
+.py-3 {
+  padding-block: calc(var(--spacing) * 3);
 }
 .py-4 {
   padding-block: calc(var(--spacing) * 4);
@@ -246,8 +308,14 @@
 .py-10 {
   padding-block: calc(var(--spacing) * 10);
 }
+.pt-3 {
+  padding-top: calc(var(--spacing) * 3);
+}
 .pt-4 {
   padding-top: calc(var(--spacing) * 4);
+}
+.pb-8 {
+  padding-bottom: calc(var(--spacing) * 8);
 }
 .text-center {
   text-align: center;
@@ -333,6 +401,9 @@
 }
 .active\:bg-accent-subtle:active {
   background-color: var(--color-accent-subtle);
+}
+.active\:bg-selected:active {
+  background-color: var(--color-selected);
 }
 .active\:bg-surface-raised:active {
   background-color: var(--color-surface-raised);
