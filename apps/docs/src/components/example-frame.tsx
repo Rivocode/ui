@@ -213,7 +213,10 @@ export function ExampleFrame({
           createPortal(
             <RivoProvider scope="local" theme="rivocode-dark">
               <div
-                className="flex min-h-40 items-center justify-center p-6"
+                // `safe` pelo mesmo motivo do stage: centro mais overflow torna
+                // o comeco inalcancavel, e aqui o overflow e a regra, nao a
+                // excecao — a moldura existe justamente para apertar a largura.
+                className="flex min-h-40 items-center justify-center-safe p-6"
                 style={minHeight ? { minHeight } : undefined}
               >
                 {children}

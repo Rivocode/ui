@@ -3,7 +3,7 @@ import { Checkbox, Field, FieldLabel } from '@rivocode/ui'
 /** Estados */
 export function States() {
   return (
-    <div className="flex items-center gap-6">
+    <div className="flex flex-wrap items-center gap-6">
       <label className="flex items-center gap-2 text-base text-fg">
         <Checkbox aria-label="Não marcada" />
         Não marcada
