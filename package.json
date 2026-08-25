@@ -13,6 +13,7 @@
   "files": [
     "dist",
     "skill",
+    "agent",
     "LICENSE",
     "README.md"
   ],
@@ -60,7 +61,7 @@
     "check:temas": "bun run scripts/check-temas-documentados.ts",
     "prepublishOnly": "bun run check && bun run build",
     "check:contrato": "bun run scripts/check-contrato-documentado.ts",
-    "build:skill": "rm -rf skill && mkdir -p skill && cp -R .claude/skills/rivocode-ui/. skill/"
+    "build:skill": "rm -rf skill agent && mkdir -p skill agent && cp -R .claude/skills/rivocode-ui/. skill/ && cp .claude/agents/rivocode-ui.md agent/rivocode-ui.md"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

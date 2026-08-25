@@ -23,6 +23,12 @@ Sem argumento, ela entra no projeto, em `.claude/skills/rivocode-ui`, e a
 equipe recebe junto pelo Git. Com `--global`, entra em `~/.claude` e vale para
 todos os seus projetos.
 
+O mesmo comando instala também o **agent** `rivocode-ui`, em
+`.claude/agents/`. A skill ensina; o agent é o especialista que a carrega
+sozinho: delegue "monte a tela de faturas" para ele e o método já vem junto —
+conferir o catálogo antes de inventar um `<div>`, ler o `.md` da peça antes de
+usar, e o contrato de tokens que não se negocia.
+
 ### Sem a biblioteca no projeto
 
 ```bash

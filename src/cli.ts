@@ -11,14 +11,15 @@
  * do site, que fala de pecas que aquele projeto ainda nao tem.
  * ------------------------------------------------------------------------- */
 
-import { cpSync, mkdirSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
 
-/** A skill viaja no pacote, ao lado do `dist`. */
+/** A skill viaja no pacote, ao lado do `dist`; o agent, na pasta irma. */
 const ORIGEM = resolve(AQUI, "../skill");
+const AGENT = resolve(AQUI, "../agent/rivocode-ui.md");
 
 const AJUDA = `
 @rivocode/ui
@@ -51,8 +52,17 @@ function instalar(global: boolean) {
     process.exit(1);
   }
 
+  // O agent e o especialista que carrega a skill sozinho: quem delega uma
+  // tela para ele nao precisa lembrar de pedir "use a skill".
+  if (existsSync(AGENT)) {
+    const agentes = join(root, ".claude", "agents");
+    mkdirSync(agentes, { recursive: true });
+    cpSync(AGENT, join(agentes, "rivocode-ui.md"));
+  }
+
   const onde = global ? "para todos os seus projetos" : "neste projeto";
   console.log(`Skill instalada ${onde}, em ${destino}`);
+  console.log(`Agent instalado em ${join(root, ".claude", "agents", "rivocode-ui.md")}`);
   console.log("O agente carrega sozinho quando voce pedir uma tela.");
 }
 
