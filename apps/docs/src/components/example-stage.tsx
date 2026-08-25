@@ -107,19 +107,33 @@ function ViewportSwitch({
   )
 }
 
+/**
+ * The width a keep-open story renders at while the switch says desktop.
+ *
+ * It matches the docs column, so the frame reads as inline; the point is the
+ * window, not the size: inside the iframe a dialog's overlay ends at the
+ * card, instead of opening over the documentation.
+ */
+const KEEP_OPEN_WIDTH = 720
+const KEEP_OPEN_MIN_HEIGHT = 360
+
 export function ExampleStage({
   name,
   Example,
   source,
   title,
+  keepOpen = false,
 }: {
   name: string
   Example: ComponentType
   source: string | null
   title?: string
+  /** A story that is open by design renders in the iframe at every width. */
+  keepOpen?: boolean
 }) {
   const [viewport, setViewport] = useState<ViewportId>('desktop')
-  const width = VIEWPORTS.find((option) => option.id === viewport)?.width ?? null
+  const width =
+    VIEWPORTS.find((option) => option.id === viewport)?.width ?? (keepOpen ? KEEP_OPEN_WIDTH : null)
 
   // Measured at the moment of the switch, so the frame that replaces the
   // inline example starts at the height the reader was already looking at,
@@ -172,7 +186,11 @@ export function ExampleStage({
         <TabPanel value="preview" className="p-0">
           <div ref={preview} className="flex justify-center overflow-x-auto bg-bg/40 p-4">
             {width ? (
-              <ExampleFrame width={width} initialHeight={heldHeight.current}>
+              <ExampleFrame
+                width={width}
+                initialHeight={heldHeight.current}
+                minHeight={keepOpen ? KEEP_OPEN_MIN_HEIGHT : undefined}
+              >
                 <Example />
               </ExampleFrame>
             ) : (

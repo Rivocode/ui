@@ -4,7 +4,7 @@ import { Button, Sheet, SheetClose, SheetContent, SheetDescription, SheetHandle,
 export function BottomSheet() {
   return (
     <div className="min-h-80">
-      <Sheet side="bottom" defaultOpen>
+      <Sheet side="bottom" defaultOpen /* rc-keep-open */>
         <SheetTrigger render={<Button variant="secondary" />}>Ações da nota</SheetTrigger>
         <SheetContent>
           <SheetHandle />

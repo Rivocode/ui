@@ -323,7 +323,7 @@ function previewsClosed(): Plugin {
 
     transform(code, id) {
       if (!id.includes('/.design-sync/previews/') || id.includes('?')) return null
-      const cleaned = withoutAutoOpen(code)
+      const cleaned = withoutAutoOpen(code, 'runtime')
       return cleaned === code ? null : { code: cleaned, map: null }
     },
   }

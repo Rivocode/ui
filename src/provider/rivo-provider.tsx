@@ -3,7 +3,15 @@
 import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { ToastProvider, ToastViewport, type ToastPosition } from "../components/toast";
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 
@@ -87,9 +95,19 @@ export function RivoProvider({
     return () => query.removeEventListener("change", update);
   }, [theme]);
 
+  /**
+   * O documento onde o provider de fato vive, e nao o `document` global.
+   *
+   * Sao coisas diferentes dentro de um iframe: o codigo roda no contexto da
+   * pagina, mas a arvore renderiza no documento do frame. Criar o container
+   * de portal no global fazia todo popup de um provider dentro de iframe
+   * aparecer orfao no canto da pagina de fora.
+   */
+  const probe = useRef<HTMLSpanElement>(null);
+
   useEffect(() => {
     if (scope !== "global") return;
-    const root = document.documentElement;
+    const root = (probe.current?.ownerDocument ?? document).documentElement;
     root.dataset.rcTheme = resolved;
     root.dataset.rcDensity = density;
     root.dir = dir;
@@ -98,9 +116,10 @@ export function RivoProvider({
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const node = document.createElement("div");
+    const doc = probe.current?.ownerDocument ?? document;
+    const node = doc.createElement("div");
     node.dataset.rcPortal = "";
-    document.body.appendChild(node);
+    doc.body.appendChild(node);
     setPortalContainer(node);
     return () => {
       node.remove();
@@ -138,6 +157,9 @@ export function RivoProvider({
             ) : (
               children
             )}
+            {/* Invisivel e sem caixa: existe so para responder "em qual
+                documento estou". */}
+            <span ref={probe} hidden />
             <ToastViewport container={portalContainer} position={toastPosition} />
           </ToastProvider>
         </BaseTooltip.Provider>

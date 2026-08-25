@@ -4,7 +4,7 @@ import { AlertDialog, AlertDialogClose, AlertDialogContent, AlertDialogDescripti
 export function Cancelling() {
   return (
     <div className="min-h-72">
-      <AlertDialog defaultOpen>
+      <AlertDialog defaultOpen /* rc-keep-open */>
         <AlertDialogTrigger render={<Button variant="destructive" />}>Cancelar nota</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogTitle>Cancelar a nota 4813?</AlertDialogTitle>

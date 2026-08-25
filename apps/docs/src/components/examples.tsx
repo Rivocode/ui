@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react'
 import { ExampleStage } from '@/components/example-stage'
-import { sliceSource, storyNamesOf, titleFromSource } from '@/example-source'
+import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/example-source'
 
 /* ---------------------------------------------------------------------------
  * Examples
@@ -69,6 +69,7 @@ export function Examples({
           Example={Example}
           source={source ? sliceSource(source, name) : null}
           title={source ? titleFromSource(source, name) : undefined}
+          keepOpen={source ? storyKeepsOpen(source, name) : false}
         />
       ))}
     </div>

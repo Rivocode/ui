@@ -5,7 +5,7 @@ import { Button, Menu, MenuContent, MenuGroup, MenuItem, MenuSeparator, MenuTrig
 export function RowActions() {
   return (
     <div className="min-h-64">
-      <Menu defaultOpen>
+      <Menu defaultOpen /* rc-keep-open */>
         <MenuTrigger render={<Button variant="secondary" size="icon" aria-label="Mais ações" />}>
           <MoreHorizontal size={16} aria-hidden="true" />
         </MenuTrigger>

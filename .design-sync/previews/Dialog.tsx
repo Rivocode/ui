@@ -4,7 +4,7 @@ import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFo
 export function Confirmation() {
   return (
     <div className="min-h-72">
-      <Dialog defaultOpen>
+      <Dialog defaultOpen /* rc-keep-open */>
         <DialogTrigger render={<Button variant="destructive" />}>Excluir projeto</DialogTrigger>
         <DialogContent>
           <DialogTitle>Excluir projeto</DialogTitle>

@@ -5,7 +5,7 @@ import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
 export function OnAnIconButton() {
   return (
     <div className="flex min-h-32 items-end justify-center">
-      <Tooltip defaultOpen>
+      <Tooltip defaultOpen /* rc-keep-open */>
         <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Excluir" />}>
           <Trash2 size={16} aria-hidden="true" />
         </TooltipTrigger>

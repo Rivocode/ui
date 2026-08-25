@@ -123,11 +123,18 @@ function useFitScale(width: number) {
 export function ExampleFrame({
   width,
   initialHeight,
+  minHeight,
   children,
 }: {
   width: number
   /** Height of whatever the frame replaced, so the box never collapses. */
   initialHeight?: number
+  /**
+   * Room for what floats. A dialog centres on the frame's viewport and a
+   * select needs air to open into; without this the frame hugs the trigger
+   * and the popup gets clipped at the first row.
+   */
+  minHeight?: number
   children: ReactNode
 }) {
   const frame = useRef<HTMLIFrameElement>(null)
@@ -189,7 +196,12 @@ export function ExampleFrame({
         {doc &&
           createPortal(
             <RivoProvider scope="local" theme="rivocode-dark">
-              <div className="flex min-h-40 items-center justify-center p-6">{children}</div>
+              <div
+                className="flex min-h-40 items-center justify-center p-6"
+                style={minHeight ? { minHeight } : undefined}
+              >
+                {children}
+              </div>
             </RivoProvider>,
             doc.body,
           )}

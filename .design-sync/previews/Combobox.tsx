@@ -11,7 +11,7 @@ const CLIENTES = [
 export function SearchInList() {
   return (
     <div className="min-h-72 w-80">
-      <Combobox items={CLIENTES} defaultOpen>
+      <Combobox items={CLIENTES} defaultOpen /* rc-keep-open */>
         <ComboboxInput aria-label="Buscar cliente" placeholder="Buscar cliente" />
         <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
           <ComboboxList>

@@ -6,7 +6,7 @@ export function OnALink() {
     <div className="min-h-40 w-80">
       <p className="text-base text-fg">
         A nota foi emitida para a{' '}
-        <PreviewCard defaultOpen>
+        <PreviewCard defaultOpen /* rc-keep-open */>
           <PreviewCardTrigger
             href="#"
             className="text-accent-text underline decoration-1 underline-offset-2"

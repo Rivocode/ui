@@ -4,7 +4,7 @@ import { Button, Popover, PopoverClose, PopoverContent, PopoverDescription, Popo
 export function Panel() {
   return (
     <div className="min-h-60">
-      <Popover defaultOpen>
+      <Popover defaultOpen /* rc-keep-open */>
         <PopoverTrigger render={<Button variant="outline" />}>Período</PopoverTrigger>
         <PopoverContent>
           <PopoverTitle>Período do relatório</PopoverTitle>

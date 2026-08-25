@@ -43,14 +43,19 @@ const KEEPS_OPEN = new Set([
  */
 const KEEP_OPEN_MARK = String.raw`\s*(?:\{\s*)?\/\*\s*rc-keep-open\s*\*\/(?:\s*\})?`
 
-export function withoutAutoOpen(code: string) {
+export function withoutAutoOpen(code: string, mode: 'display' | 'runtime' = 'display') {
   const pattern = new RegExp(
     String.raw`(\s+)defaultOpen(?![\w$])(?!\s*[=:])(${KEEP_OPEN_MARK})?`,
     'g',
   )
 
   return code.replace(pattern, (match, space: string, mark: string | undefined, at: number) => {
-    if (mark !== undefined) return `${space}defaultOpen`
+    // A story marked keep-open renders inside the iframe, and there
+    // `defaultOpen` is not enough: the popup cannot take focus from the outer
+    // page on mount, and the piece reads that as "focus left, close". On the
+    // page it runs controlled-open, which has no way to close; the reader
+    // still sees and copies `defaultOpen`, which is what belongs in an app.
+    if (mark !== undefined) return mode === 'runtime' ? `${space}open` : `${space}defaultOpen`
 
     // Walk back to the tag that owns the attribute: the last `<Name` before
     // it, as long as no `>` closed that tag first.
@@ -107,6 +112,23 @@ export function titleFromSource(source: string, name: string) {
 /** The exported stories of a preview file, in the order they were written. */
 export function storyNamesOf(source: string) {
   return [...source.matchAll(/^export function (\w+)\(/gm)].map((match) => match[1])
+}
+
+/**
+ * Whether this story asked to stay open on the page.
+ *
+ * A story that is open by design cannot render inline: its popup anchors on
+ * the page's own window and flies over the neighbouring cards — or, worse, a
+ * modal opens over the docs. The stage renders these inside the iframe, where
+ * the popup's world ends at the card's edge.
+ */
+export function storyKeepsOpen(source: string, name: string) {
+  const start = source.indexOf(`export function ${name}(`)
+  if (start === -1) return false
+
+  const next = source.indexOf('\nexport function ', start + 1)
+  const body = next === -1 ? source.slice(start) : source.slice(start, next)
+  return body.includes('rc-keep-open')
 }
 
 /** Cuts one export out of the example file, so only that story is shown. */
