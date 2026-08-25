@@ -10,20 +10,20 @@ import { useEffect, useState } from 'react'
  * ------------------------------------------------------------------------- */
 
 /**
- * Em que pagina quem le mexeu na rolagem.
+ * The page on which the reader last moved the scroll themselves.
  *
- * Mora no escopo do modulo porque precisa estar escutando antes do componente
- * montar: o realinhamento com a ancora acontece nos primeiros instantes, e uma
- * rolagem nesse meio tempo tem de ser respeitada.
+ * Module scope, because it has to be listening before the component mounts:
+ * the realignment below happens in the first moments, and a scroll in that
+ * window has to win.
  *
- * Guardamos o endereco, e nao o instante. Comparar horarios parecia bastar e
- * nao bastava: uma rolagem que acontece antes do modulo carregar fica com
- * carimbo anterior ao da montagem, e passava por "ninguem mexeu". O endereco
- * responde a pergunta certa, que e se foi nesta pagina, e ainda deixa uma
- * navegacao nova comecar limpa.
+ * It stores the address, not the moment. Comparing timestamps looked like
+ * enough and was not: a scroll that happens before this module loads carries a
+ * mark older than the mount, and passed for "nobody moved". The address
+ * answers the question that matters, which is whether it happened on this
+ * page, and still lets a fresh navigation start clean.
  *
- * `wheel`, toque e teclado sao intencao de quem le. O evento `scroll` nao
- * serve: ele tambem dispara pela rolagem que nos mesmos causamos.
+ * `wheel`, touch and keyboard are the reader's intent. The `scroll` event is
+ * not: it also fires for the scrolling we cause ourselves.
  */
 let readerMovedOn: string | null = null
 if (typeof window !== 'undefined') {
@@ -46,33 +46,32 @@ function useHeadings(watch: string) {
     if (!main) return
 
     /*
-     * Os exemplos montam depois que o modulo deles resolve, e a pagina cresce
-     * debaixo da ancora: o navegador ja rolou para onde o `#` apontava antes do
-     * conteudo chegar, e quem abriu `#api` aterrissa numa secao que nao pediu.
-     * Os exemplos chegam em ondas, e cada onda empurra a ancora de novo, entao
-     * esperamos as mudancas silenciarem e ajustamos uma vez so. Realinhar a
-     * cada onda funciona igual, mas a pagina pula varias vezes no caminho.
+     * Examples mount after their module resolves, and the page grows under the
+     * anchor: the browser already scrolled to where `#` pointed before the
+     * content arrived, so whoever opened `#api` lands on a section they did not
+     * ask for.
      *
-     * `wheel`, toque e teclado marcam intencao de quem le, e nao a rolagem que
-     * nos mesmos causamos: depois de qualquer um deles, ninguem mexe mais na
-     * posicao da pagina.
+     * They arrive in waves, and each wave pushes the anchor down again, so we
+     * wait for the changes to go quiet and correct once. Realigning on every
+     * wave works too, but the page hops several times on the way there.
      */
-    let aguardando: ReturnType<typeof setTimeout> | undefined
+    let pending: ReturnType<typeof setTimeout> | undefined
 
-    const irParaAncora = () => {
+    const goToAnchor = () => {
       if (!window.location.hash) return
-      clearTimeout(aguardando)
-      aguardando = setTimeout(() => {
-        // A checagem fica aqui dentro, e nao no agendamento: o que importa e se
-        // quem le mexeu ate a hora de rolar, e nao ate a hora de agendar.
+      clearTimeout(pending)
+      pending = setTimeout(() => {
+        // The check lives in here, not at scheduling time: what matters is
+        // whether the reader moved by the moment we scroll, not by the moment
+        // we queued it.
         if (readerMovedOn === window.location.pathname) return
-        const alvo = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
-        // `instant` de proposito. A pagina rola suave por padrao, e com isso a
-        // correcao virava meio segundo de animacao: o leitor que rolasse nesse
-        // meio tempo via a pagina voltando sozinha, como se disputasse com ele.
-        // Isto aqui nao e navegacao, e conserto de posicao, e conserto que se
-        // ve acontecendo parece defeito.
-        alvo?.scrollIntoView({ behavior: 'instant' })
+        const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
+        // `instant` on purpose. The sheet sets `scroll-behavior: smooth` for
+        // everyone, which turned this correction into half a second of
+        // animation: a reader who scrolled during it saw the page crawling
+        // back, as if arguing with them. This is not navigation, it is fixing
+        // a position, and a fix you can watch happen reads as a defect.
+        target?.scrollIntoView({ behavior: 'instant' })
       }, 200)
     }
 
@@ -89,7 +88,7 @@ function useHeadings(watch: string) {
           : found,
       )
 
-      if (found.length) irParaAncora()
+      if (found.length) goToAnchor()
     }
 
     read()
@@ -99,7 +98,7 @@ function useHeadings(watch: string) {
     observer.observe(main, { childList: true, subtree: true })
 
     return () => {
-      clearTimeout(aguardando)
+      clearTimeout(pending)
       observer.disconnect()
     }
   }, [watch])
@@ -116,32 +115,30 @@ function useActive(items: Item[]) {
 
     const onScroll = () => {
       /*
-       * No fim da pagina a rolagem acabou, entao os ultimos titulos nunca
-       * chegam aos 96px do topo e o rastreio por posicao para de distinguir um
-       * do outro.
+       * At the bottom the scrolling is over, so the last headings never reach
+       * the 96px line and tracking by position stops telling them apart.
        *
-       * Marcar o primeiro ainda visivel resolvia o caso de pular para uma
-       * ancora perto do fim, mas quebrava numa pagina curta: com todos os
-       * titulos na tela, o primeiro vencia sempre, e pedir `#api` acendia "A
-       * busca".
+       * Marking the first one still visible solved jumping to an anchor near
+       * the end, but broke on a short page: with every heading on screen the
+       * first one always won, and asking for `#api` lit up "A busca".
        *
-       * Ali quem manda e a ancora que a pessoa pediu, desde que ela esteja em
-       * vista. Sem ancora, ou com uma que ficou para tras, vale o ultimo
-       * titulo, que e onde a pagina de fato terminou.
+       * Down there the anchor the reader asked for decides, as long as it is
+       * in view. With no anchor, or one left behind, the last heading wins,
+       * which is where the page actually ended.
        */
-      const fim = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+      const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
 
-      if (fim) {
-        const pedido = decodeURIComponent(window.location.hash.slice(1))
-        const emVista = items.find((item) => {
-          if (item.id !== pedido) return false
+      if (atBottom) {
+        const requested = decodeURIComponent(window.location.hash.slice(1))
+        const inView = items.find((item) => {
+          if (item.id !== requested) return false
           const node = document.getElementById(item.id)
           if (!node) return false
           const rect = node.getBoundingClientRect()
           return rect.bottom > 0 && rect.top < window.innerHeight
         })
 
-        setActive((emVista ?? items[items.length - 1]).id)
+        setActive((inView ?? items[items.length - 1]).id)
         return
       }
 
@@ -160,8 +157,8 @@ function useActive(items: Item[]) {
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    // Ja no fim da pagina, clicar num item do indice nao rola nada, entao o
-    // evento de rolagem nunca vem e a marca ficaria onde estava.
+    // Already at the bottom, clicking an item in the index scrolls nothing, so
+    // the scroll event never comes and the mark would sit where it was.
     window.addEventListener('hashchange', onScroll)
 
     return () => {

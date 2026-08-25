@@ -14,10 +14,10 @@ import { parseProps, parsesRootProps, type Prop } from '@/props-parse'
 export type { Prop }
 
 /*
- * Vem de um JSON versionado, e nao mais de um glob sobre `ds-bundle/`: aquele
- * diretorio tem 14 MB e fica fora do Git, entao o site publicado saia com a
- * prosa de cada peca e nenhuma prop. `bun run scripts/tipos-do-catalogo.ts`
- * regenera este arquivo depois de um sync novo.
+ * From a committed JSON, no longer from a glob over `ds-bundle/`: that
+ * directory is 14 MB and stays out of Git, so the published site shipped every
+ * piece's prose and not one prop. `bun run scripts/tipos-do-catalogo.ts`
+ * regenerates this file after a fresh sync.
  */
 import TYPES from '@/component-types.json'
 

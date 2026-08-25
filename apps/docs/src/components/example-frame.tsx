@@ -68,8 +68,8 @@ function useMeasuredHeight(doc: Document | null) {
     let timer: ReturnType<typeof setTimeout>
     const measure = () => {
       setHeight(Math.max(160, Math.ceil(body.getBoundingClientRect().height)))
-      // Assentou quando parou de mudar. O observer so avisa em mudanca, entao
-      // e o silencio dele que conta, e nao duas leituras iguais.
+      // Settled means it stopped changing. The observer only reports changes,
+      // so it is its silence that counts, not two equal readings.
       clearTimeout(timer)
       timer = setTimeout(() => setSettled(true), 180)
     }

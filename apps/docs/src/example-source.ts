@@ -30,16 +30,16 @@ const KEEPS_OPEN = new Set([
 ])
 
 /**
- * Marcador para o exemplo cuja graça é justamente estar aberto.
+ * Opt-out for the story whose whole point is being open.
  *
- * A lista de tags acima não alcança esse caso: no mesmo arquivo, o exemplo
- * "Fechado" precisa fechar e o "Aberto" precisa abrir, e os dois usam a mesma
- * tag. Sem uma saída por exemplo, o `Select` chamado "Aberto" aparecia fechado
- * e ainda reservava a altura da lista que nunca vinha, que é um exemplo
- * mentindo sobre o próprio nome.
+ * The tag list above cannot reach this case: in one file the "Fechado" story
+ * has to stay closed and the "Aberto" one has to open, and both use the same
+ * tag. Without a per-story escape, the `Select` example titled "Aberto"
+ * rendered closed and still reserved the height of a list that never came,
+ * which is an example lying about its own name.
  *
- * O marcador some do código que o leitor copia: ele é andaime da documentação,
- * e não algo para levar embora.
+ * The marker is stripped from the code the reader copies: it is documentation
+ * scaffolding, not something to carry home.
  */
 const KEEP_OPEN_MARK = String.raw`\s*(?:\{\s*)?\/\*\s*rc-keep-open\s*\*\/(?:\s*\})?`
 

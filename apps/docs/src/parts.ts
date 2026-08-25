@@ -85,11 +85,11 @@ export function findParent(name: string, names: Iterable<string>) {
 const FORM_SUBPATH = new Set(['Form', 'FormField'])
 
 /**
- * O que vem de `@rivocode/ui/chart`.
+ * What comes from `@rivocode/ui/chart`.
  *
- * Por prefixo, e nao por lista escrita a mao: a lista existia, e cada peca nova
- * de grafico nascia com a linha de importacao errada na propria pagina dela,
- * apontando para o pacote principal. Ninguem lembra de voltar aqui.
+ * By prefix, not by a hand-written list: the list existed, and every new chart
+ * piece was born with the wrong import line on its own page, pointing at the
+ * main package. Nobody remembers to come back here.
  */
 const isChart = (name: string) => name.startsWith('Chart') || name === 'Sparkline'
 

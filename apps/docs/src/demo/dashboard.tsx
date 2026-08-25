@@ -110,9 +110,9 @@ function Kpi({
                   <button
                     type="button"
                     aria-label={`Sobre ${label}`}
-                    // O icone tem 13px, mas o alvo precisa de 24. A margem
-                    // negativa devolve o espaco que o botao maior tomaria, para
-                    // a linha do rotulo nao crescer junto.
+                    // The icon is 13px, but the target has to be 24. The
+                    // negative margin gives back the room the bigger button
+                    // would take, so the label row does not grow with it.
                     className="-my-1 flex size-6 items-center justify-center rounded-sm text-fg-subtle"
                   />
                 }
