@@ -87,7 +87,10 @@ export function ChartLegendContent({
               onClick={() => onToggle(key)}
               aria-pressed={!escondida}
               className={cn(
-                "flex items-center gap-2 rounded-sm px-1 py-0.5",
+                // `min-h-6` sao os 24px que a norma pede de alvo: com o
+                // padding sozinho o botao fechava em 23, e um pixel abaixo do
+                // minimo e reprovado igual a dez.
+                "flex min-h-6 items-center gap-2 rounded-sm px-1 py-0.5",
                 "font-sans text-sm text-fg-muted",
                 "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
                 "hover:text-fg outline-none focus-visible:ring-2 focus-visible:ring-ring",

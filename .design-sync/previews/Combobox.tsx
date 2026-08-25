@@ -12,7 +12,7 @@ export function SearchInList() {
   return (
     <div className="min-h-72 w-80">
       <Combobox items={CLIENTES} defaultOpen>
-        <ComboboxInput placeholder="Buscar cliente" />
+        <ComboboxInput aria-label="Buscar cliente" placeholder="Buscar cliente" />
         <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
           <ComboboxList>
             {(item: (typeof CLIENTES)[number]) => (

@@ -106,7 +106,16 @@ function Kpi({
           {hint && (
             <Tooltip>
               <TooltipTrigger
-                render={<button type="button" aria-label={`Sobre ${label}`} className="text-fg-subtle" />}
+                render={
+                  <button
+                    type="button"
+                    aria-label={`Sobre ${label}`}
+                    // O icone tem 13px, mas o alvo precisa de 24. A margem
+                    // negativa devolve o espaco que o botao maior tomaria, para
+                    // a linha do rotulo nao crescer junto.
+                    className="-my-1 flex size-6 items-center justify-center rounded-sm text-fg-subtle"
+                  />
+                }
               >
                 <Info size={13} />
               </TooltipTrigger>

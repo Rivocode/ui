@@ -12,5 +12,5 @@ export function WithLabel() {
 
 /** Vazio */
 export function Empty() {
-  return <DatePicker className="w-64" />
+  return <DatePicker aria-label="Data" className="w-64" />
 }

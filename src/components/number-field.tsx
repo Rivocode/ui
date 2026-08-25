@@ -32,7 +32,17 @@ const STEP = cn(
  * seta do teclado, rolagem e os botoes respeitam `min`, `max` e `step`, e o
  * campo nunca chega num valor que o formulario rejeita depois.
  */
-export function NumberField({ className, placeholder, size, ...props }: NumberFieldProps) {
+export function NumberField({
+  className,
+  placeholder,
+  size,
+  // O nome pertence ao campo, e nao a caixa em volta dele. Espalhado no
+  // `Root`, que e um `div`, o `aria-label` nao rotulava nada e o input ficava
+  // sem nome: nao dava para rotular um NumberField sem embrulhar num `Field`.
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  ...props
+}: NumberFieldProps) {
   return (
     <BaseNumberField.Root {...props} className={cn("w-full", className)}>
       <BaseNumberField.Group
@@ -53,6 +63,8 @@ export function NumberField({ className, placeholder, size, ...props }: NumberFi
 
         <BaseNumberField.Input
           placeholder={placeholder}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           className={cn(
             inputVariants({ size }),
             "h-full rounded-none border-0 text-center tabular-nums",

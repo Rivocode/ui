@@ -13,7 +13,7 @@ export function FreeTextSearch() {
   return (
     <div className="min-h-64 w-80">
       <Autocomplete items={CIDADES} defaultOpen>
-        <AutocompleteInput placeholder="Cidade" />
+        <AutocompleteInput aria-label="Cidade" placeholder="Cidade" />
         <ComboboxContent emptyMessage="Nenhuma cidade com esse nome.">
           <ComboboxList>
             {(cidade: string) => (

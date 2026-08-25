@@ -125,7 +125,9 @@ function Argument({
           {icon}
           {eyebrow}
         </p>
-        <h3 className="mt-3 font-display text-2xl text-fg sm:text-3xl">{title}</h3>
+        {/* `h2`: cada bloco e uma secao da capa, e vinha logo depois do `h1`,
+            pulando um nivel para quem navega por titulo. */}
+        <h2 className="mt-3 font-display text-2xl text-fg sm:text-3xl">{title}</h2>
         <div className="mt-4 space-y-3 text-fg-muted">{children}</div>
       </div>
 

@@ -27,9 +27,18 @@ export function OTPField({ className, length = 6, ...props }: OTPFieldProps) {
       length={length}
       className={cn("flex items-center gap-2", className)}
     >
-      {Array.from({ length }, (_, casa) => (
+      {Array.from({ length }, (_, index) => (
         <BaseOTPField.Input
-          key={casa}
+          key={index}
+          // Sem isto, um leitor de tela anuncia campos identicos, e a pessoa
+          // nao sabe em qual esta nem quantos faltam.
+          //
+          // O primeiro fica de fora: a Base UI reserva o rotulo dele para o
+          // rotulo do campo, porque e ele que recebe o codigo inteiro colado
+          // (`autocomplete="one-time-code"`). Por isso este componente pede um
+          // `Field` com `FieldLabel` em volta, e nao e so boa pratica: sem ele
+          // aquele primeiro digito fica sem nome nenhum.
+          {...(index > 0 ? { "aria-label": `Dígito ${index + 1} de ${length}` } : {})}
           className={cn(
             "size-11 rounded-md border border-border bg-surface text-center",
             "font-mono text-lg text-fg tabular-nums",

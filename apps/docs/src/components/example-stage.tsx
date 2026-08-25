@@ -125,9 +125,13 @@ export function ExampleStage({
     <section className="overflow-hidden rounded-lg border border-border bg-surface">
       <Tabs defaultValue="preview">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-3 py-2">
-          <h3 id={anchor(name)} className="scroll-mt-20 pl-1 font-sans text-sm font-medium text-fg">
+          {/* `h2` e nao `h3`: cada exemplo e uma secao da pagina, e vinha
+              logo depois do `h1` do componente, pulando um nivel em todas as
+              66 paginas. Nivel semantico e tamanho visual sao coisas
+              diferentes, entao a aparencia nao muda. */}
+          <h2 id={anchor(name)} className="scroll-mt-20 pl-1 font-sans text-sm font-medium text-fg">
             {title ?? titleOf(name)}
-          </h3>
+          </h2>
 
           <div className="flex items-center gap-2">
             <ViewportSwitch value={viewport} onChange={setViewport} />

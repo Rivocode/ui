@@ -6,16 +6,16 @@ export function Edges() {
     <div className="flex w-80 flex-col gap-3">
       <InputGroup>
         <InputPrefix>R$</InputPrefix>
-        <MaskedInput mask="moeda" defaultValue="248000" />
+        <MaskedInput aria-label="Valor" mask="moeda" defaultValue="248000" />
       </InputGroup>
 
       <InputGroup>
-        <MaskedInput mask="" placeholder="minha-empresa" />
+        <MaskedInput aria-label="Subdomínio" mask="" placeholder="minha-empresa" />
         <InputSuffix>.rivocode.com</InputSuffix>
       </InputGroup>
 
       <InputGroup>
-        <MaskedInput mask="" placeholder="Buscar nota ou cliente" />
+        <MaskedInput aria-label="Buscar nota ou cliente" mask="" placeholder="Buscar nota ou cliente" />
         <InputAction aria-label="Buscar">Ir</InputAction>
       </InputGroup>
     </div>
