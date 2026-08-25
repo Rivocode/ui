@@ -4,7 +4,8 @@ import {
   Card,
   CardContent,
   DataTable,
-  Input,
+  DescriptionItem,
+  DescriptionList,
   Menu,
   MenuContent,
   MenuItem,
@@ -15,6 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SearchInput,
   Separator,
   Sheet,
   SheetContent,
@@ -26,7 +28,7 @@ import {
   type Column,
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
-import { Download, MoreHorizontal, Search, SlidersHorizontal } from 'lucide-react'
+import { Download, MoreHorizontal, SlidersHorizontal } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { INVOICES, STATUS_LABEL, STATUS_TONE, type Invoice, type Status } from '@/demo/data'
 
@@ -137,18 +139,13 @@ export function Invoices() {
     <div className="space-y-4">
       <Card>
         <CardContent className="flex flex-wrap items-center gap-3 py-4">
-          <div className="relative min-w-56 flex-1">
-            <Search
-              size={14}
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-fg-subtle"
-            />
-            <Input
+          <div className="min-w-56 flex-1">
+            <SearchInput
               value={query}
               onChange={(event) => setQuery(event.target.value)}
+              onClear={() => setQuery('')}
               placeholder="Cliente, número ou CNPJ"
               aria-label="Buscar nota"
-              className="pl-8"
             />
           </div>
 
@@ -239,17 +236,18 @@ export function Invoices() {
                 <Badge tone={STATUS_TONE[open.status]}>{STATUS_LABEL[open.status]}</Badge>
               </div>
               <Separator />
-              {[
-                ['CNPJ', open.document],
-                ['Emissão', open.issuedAt],
-                ['Vencimento', open.dueAt],
-                ['Valor', currencyShort(open.amount)],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between">
-                  <span className="text-sm text-fg-muted">{label}</span>
-                  <span className="font-mono text-sm text-fg">{value}</span>
-                </div>
-              ))}
+              <DescriptionList>
+                {[
+                  ['CNPJ', open.document],
+                  ['Emissão', open.issuedAt],
+                  ['Vencimento', open.dueAt],
+                  ['Valor', currencyShort(open.amount)],
+                ].map(([label, value]) => (
+                  <DescriptionItem key={label} label={label}>
+                    <span className="font-mono">{value}</span>
+                  </DescriptionItem>
+                ))}
+              </DescriptionList>
 
               <div className="flex gap-2 pt-2">
                 <Button className="flex-1">Baixar PDF</Button>

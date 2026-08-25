@@ -28,6 +28,9 @@ exemplos que rodam e a tabela de props.
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
 | Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |
 | Número de painel com variação e tendência | `Stat` | O valor chega formatado; a `Sparkline` entra pelo slot `chart` |
+| Folha de detalhes com rótulo e valor | `DescriptionList` + `DescriptionItem` | Sai como `<dl>` de verdade; o valor aceita `Badge` e `font-mono` |
+| Campo de busca com lupa e atalho | `SearchInput` | `type="search"`, Esc limpa; `shortcut="mod+k"` só desenha o atalho |
+| Topo de rota com trilha, título e ações | `PageHeader` | O título é `<h1>`; trilha e ações entram por slot |
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
 | Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
 | Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |

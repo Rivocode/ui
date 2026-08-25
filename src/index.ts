@@ -213,6 +213,14 @@ export {
 } from "./components/command";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Stat, type StatProps } from "./components/stat";
+export {
+  DescriptionItem,
+  DescriptionList,
+  type DescriptionItemProps,
+  type DescriptionListProps,
+} from "./components/description-list";
+export { SearchInput, type SearchInputProps } from "./components/search-input";
+export { PageHeader, type PageHeaderProps } from "./components/page-header";
 export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/collapsible";
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";
 export { Slider, type SliderProps } from "./components/slider";

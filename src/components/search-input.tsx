@@ -1,0 +1,72 @@
+"use client";
+
+import { Search } from "lucide-react";
+import type { ComponentProps, KeyboardEvent } from "react";
+
+import { cn } from "../lib/cn";
+import { Kbd } from "./kbd";
+
+export type SearchInputProps = Omit<ComponentProps<"input">, "size" | "type"> & {
+  /**
+   * O atalho que abre ou foca a busca, mostrado num `Kbd` dentro do campo:
+   * `"mod+k"`. So o desenho - registrar o atalho e trabalho de quem monta a
+   * tela, porque e ela que sabe o que mais escuta teclado.
+   */
+  shortcut?: string;
+  /** Chamado no Esc. Sem ele, o Esc limpa so o campo nao controlado. */
+  onClear?: () => void;
+};
+
+/**
+ * O campo de busca com a lupa no lugar: o arranjo que toda listagem montava
+ * na mao com `position: absolute`.
+ *
+ * Sai como `<input type="search">`, entao o leitor de tela anuncia "busca" e
+ * o teclado ganha o Esc para limpar.
+ */
+export function SearchInput({ className, shortcut, onClear, onKeyDown, ...props }: SearchInputProps) {
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    onKeyDown?.(event);
+    if (event.key !== "Escape" || event.defaultPrevented) return;
+    if (onClear) onClear();
+    else event.currentTarget.value = "";
+  }
+
+  return (
+    <div className="relative w-full">
+      <Search
+        size={14}
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-fg-subtle"
+      />
+
+      <input
+        type="search"
+        {...props}
+        onKeyDown={handleKeyDown}
+        className={cn(
+          "h-[var(--rc-control-md)] w-full rounded-md border border-border bg-surface",
+          "pl-8 font-sans text-base text-fg placeholder:text-fg-subtle",
+          shortcut ? "pr-16" : "pr-[var(--rc-control-pad-md)]",
+          "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
+          "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+          "disabled:cursor-not-allowed disabled:opacity-60",
+          // O X nativo do WebKit sai: o Esc ja limpa, e o botaozinho cinza
+          // nao responde ao tema.
+          "[&::-webkit-search-cancel-button]:hidden",
+          className,
+        )}
+      />
+
+      {shortcut && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2"
+        >
+          <Kbd size="sm" keys={shortcut} />
+        </span>
+      )}
+    </div>
+  );
+}
