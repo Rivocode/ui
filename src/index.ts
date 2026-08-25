@@ -220,6 +220,15 @@ export {
   type DescriptionListProps,
 } from "./components/description-list";
 export { SearchInput, type SearchInputProps } from "./components/search-input";
+export {
+  FileUpload,
+  FileUploadItem,
+  FileUploadList,
+  type FileUploadItemProps,
+  type FileUploadListProps,
+  type FileUploadProps,
+  type Rejection,
+} from "./components/file-upload";
 export { PageHeader, type PageHeaderProps } from "./components/page-header";
 export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/collapsible";
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";

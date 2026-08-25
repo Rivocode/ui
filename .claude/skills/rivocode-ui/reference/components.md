@@ -30,6 +30,7 @@ exemplos que rodam e a tabela de props.
 | Número de painel com variação e tendência | `Stat` | O valor chega formatado; a `Sparkline` entra pelo slot `chart` |
 | Folha de detalhes com rótulo e valor | `DescriptionList` + `DescriptionItem` | Sai como `<dl>` de verdade; o valor aceita `Badge` e `font-mono` |
 | Campo de busca com lupa e atalho | `SearchInput` | `type="search"`, Esc limpa; `shortcut="mod+k"` só desenha o atalho |
+| Anexar arquivo, com arrastar e soltar | `FileUpload` + `FileUploadList` | Valida `accept` e `maxSize` na entrada; subir é do app, o item mostra `progress` e `error` |
 | Topo de rota com trilha, título e ações | `PageHeader` | O título é `<h1>`; trilha e ações entram por slot |
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
 | Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
