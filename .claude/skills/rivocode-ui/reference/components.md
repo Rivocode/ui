@@ -28,6 +28,7 @@ exemplos que rodam e a tabela de props.
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
 | Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
+| Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
 | Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |
 
 ## Toda consulta tem quatro finais
