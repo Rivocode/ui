@@ -16,7 +16,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Trabalho | Arquivo |
 |---|---|
 | Montar a página, decidir colunas, espaçamento, responsivo | [reference/layout.md](reference/layout.md) |
-| Escolher cor, tom de texto, tipografia, profundidade, foco | [reference/design.md](reference/design.md) |
+| Escolher cor, tom de texto, tipografia, profundidade, foco, ícone | [reference/design.md](reference/design.md) |
 | Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
 | Nome acessível, alvo, foco, teclado, ordem de títulos | [reference/a11y.md](reference/a11y.md) |
 | Formulário com validação | [reference/forms.md](reference/forms.md) |
@@ -25,7 +25,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 ## Antes de escrever a primeira linha
 
-1. **Confira se a peça já existe.** São 65, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 67, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em

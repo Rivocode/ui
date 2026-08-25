@@ -26,19 +26,24 @@ export const PASSTHROUGH = new Set(['className', 'style', 'id', 'children'])
 export function splitMembers(body: string) {
   const members: string[] = []
   let depth = 0
+  let previous = ''
   let current = ''
 
   for (const char of body) {
     if ('<{(['.includes(char)) depth++
-    if ('>})]'.includes(char)) depth--
+    // A seta de `=> tipo` nao fecha nada: sem esta guarda o `>` dela levava a
+    // profundidade a -1, e toda prop depois de uma funcao virava uma so.
+    if ('>})]'.includes(char) && !(char === '>' && previous === '=')) depth--
 
     if ((char === ';' || char === '\n') && depth === 0) {
       if (current.trim()) members.push(current.trim())
       current = ''
+      previous = char
       continue
     }
 
     current += char
+    previous = char
   }
 
   if (current.trim()) members.push(current.trim())

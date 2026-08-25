@@ -133,6 +133,25 @@ Movimento: `--rc-duration-fast` para retorno de toque (cor de hover),
 `--rc-duration-base` para o que entra e sai, `--rc-duration-sheet` para a folha.
 Animar `width` e `height` custa layout; prefira `opacity` e `transform`.
 
+## Ícones
+
+O conjunto é o **lucide-react**, peer obrigatória: mesmo traço, mesma grade,
+e o `size` numérico dispensa classe. Nunca emoji no lugar de ícone, e nunca
+um segundo conjunto misturado — dois traços diferentes na mesma tela parecem
+duas marcas.
+
+| Onde | Tamanho |
+|---|---|
+| Dentro de controle (`Button`, `Tab`, item de menu) | `size={16}` |
+| Junto de texto `sm`/`xs` (célula, meta, eyebrow) | `size={14}` |
+| Miúdo em linha apertada (hint do `Stat`, delta) | `size={13}` |
+
+Ícone decorativo — que acompanha um texto que já diz tudo — leva
+`aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
+`aria-label` no botão, nunca no ícone. E alvo de toque continua sendo 24px no
+mínimo: ícone menor cresce o botão e devolve o espaço com margem negativa,
+como o hint do `Stat` faz.
+
 ## Foco e estados
 
 Foco é `focus-visible:ring-2 focus-visible:ring-ring`, nunca `outline-none`
