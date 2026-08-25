@@ -18,6 +18,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Montar a página, decidir colunas, espaçamento, responsivo | [reference/layout.md](reference/layout.md) |
 | Escolher cor, tom de texto, tipografia, profundidade, foco | [reference/design.md](reference/design.md) |
 | Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
+| Nome acessível, alvo, foco, teclado, ordem de títulos | [reference/a11y.md](reference/a11y.md) |
 | Formulário com validação | [reference/forms.md](reference/forms.md) |
 | Gráfico e número de painel | [reference/charts.md](reference/charts.md) |
 | Vestir com a cor de outro cliente | [reference/theming.md](reference/theming.md) |
@@ -159,6 +160,9 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
   `id` de SVG é global, e um pinta com o gradiente do outro.
 - Deixar item de grid ou de flex sem `min-w-0` quando há conteúdo largo dentro.
 - `outline-none` sem repor `focus-visible:ring-2 focus-visible:ring-ring`.
+- Usar `placeholder` como se fosse rótulo. Ele some ao digitar, e vários
+  leitores de tela não o anunciam: o campo fica sem nome.
+- Botão só com ícone sem `aria-label`.
 - Texto de interface em inglês. **Código em inglês, conteúdo em PT-BR.** Termo
   do ecossistema não se traduz: é "agents", não "agentes".
 
