@@ -29,8 +29,29 @@ const KEEPS_OPEN = new Set([
   'TreeSelect',
 ])
 
+/**
+ * Marcador para o exemplo cuja graça é justamente estar aberto.
+ *
+ * A lista de tags acima não alcança esse caso: no mesmo arquivo, o exemplo
+ * "Fechado" precisa fechar e o "Aberto" precisa abrir, e os dois usam a mesma
+ * tag. Sem uma saída por exemplo, o `Select` chamado "Aberto" aparecia fechado
+ * e ainda reservava a altura da lista que nunca vinha, que é um exemplo
+ * mentindo sobre o próprio nome.
+ *
+ * O marcador some do código que o leitor copia: ele é andaime da documentação,
+ * e não algo para levar embora.
+ */
+const KEEP_OPEN_MARK = String.raw`\s*(?:\{\s*)?\/\*\s*rc-keep-open\s*\*\/(?:\s*\})?`
+
 export function withoutAutoOpen(code: string) {
-  return code.replace(/\s+defaultOpen(?![\w$])(?!\s*[=:])/g, (match, at: number) => {
+  const pattern = new RegExp(
+    String.raw`(\s+)defaultOpen(?![\w$])(?!\s*[=:])(${KEEP_OPEN_MARK})?`,
+    'g',
+  )
+
+  return code.replace(pattern, (match, space: string, mark: string | undefined, at: number) => {
+    if (mark !== undefined) return `${space}defaultOpen`
+
     // Walk back to the tag that owns the attribute: the last `<Name` before
     // it, as long as no `>` closed that tag first.
     const before = code.slice(0, at)

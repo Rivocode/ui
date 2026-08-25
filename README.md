@@ -10,10 +10,14 @@ cliente X em outro, sem editar componente nenhum.
 ## Instalação
 
 ```bash
-npm install @rivocode/ui   # ou pnpm add, yarn add, bun add
+npm install @rivocode/ui lucide-react   # ou pnpm add, yarn add, bun add
 ```
 
 Público no npm, sob licença MIT. Não precisa de token nem de `.npmrc`.
+
+O `lucide-react` vai na mesma linha porque os componentes importam ícone direto
+dele. O npm resolve esse par sozinho; o pnpm e o yarn não, e sem ele a
+`Sidebar`, a `Pagination` e o `DatePicker` quebram em tempo de execução.
 
 O Tailwind entra como dependência de desenvolvimento:
 
@@ -23,6 +27,22 @@ npm install -D tailwindcss @tailwindcss/vite
 
 React 19, React DOM 19 e Tailwind 4 são dependências de par, ou seja, quem manda
 na versão é o projeto consumidor.
+
+## Ligar o Tailwind no build
+
+Instalar o plugin não basta, ele precisa entrar na lista. Sem isso o build passa
+sem erro e gera um CSS sem uma única classe da biblioteca:
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+})
+```
 
 ## As duas linhas de CSS
 

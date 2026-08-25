@@ -3,11 +3,16 @@ de `.npmrc`, nem de acesso à organização.
 
 ## 1. Instalar
 
+O `lucide-react` vai junto na mesma linha, e não é enfeite: os componentes
+importam ícone direto dele. O npm instala esse par sozinho, mas o pnpm e o
+yarn não, e sem ele a `Sidebar`, a `Pagination` e o `DatePicker` quebram em
+tempo de execução.
+
 ```bash
-npm install @rivocode/ui
-pnpm add @rivocode/ui
-yarn add @rivocode/ui
-bun add @rivocode/ui
+npm install @rivocode/ui lucide-react
+pnpm add @rivocode/ui lucide-react
+yarn add @rivocode/ui lucide-react
+bun add @rivocode/ui lucide-react
 ```
 
 E o Tailwind, como dependência de desenvolvimento:
@@ -20,15 +25,34 @@ React 19, React DOM 19 e Tailwind 4 são **dependências de par**: quem manda na
 versão é o seu projeto, não a biblioteca. Isso evita a duplicação de React, que
 quebra contexto e hooks de formas difíceis de diagnosticar.
 
-Recursos opcionais pedem os pares deles, e só quem usa carrega o peso:
+Estes são opcionais, e só quem usa carrega o peso:
 
 | Se você for usar        | Instale junto                                    |
 | ----------------------- | ------------------------------------------------ |
 | `@rivocode/ui/form`     | `react-hook-form`, `zod`, `@hookform/resolvers`   |
 | `@rivocode/ui/chart`    | `recharts`                                        |
-| Ícones nos exemplos     | `lucide-react`                                    |
 
-## 2. As duas linhas de CSS
+## 2. Ligar o Tailwind no build
+
+Instalar o `@tailwindcss/vite` não basta: ele precisa entrar na lista de
+plugins. Sem isso o build **passa sem erro nenhum** e gera um CSS sem uma
+única classe da biblioteca, então a tela aparece crua e nada na saída explica
+por quê.
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+})
+```
+
+Em Next.js o caminho é o plugin do PostCSS, e não este.
+
+## 3. As duas linhas de CSS
 
 No arquivo de CSS do projeto:
 
@@ -49,7 +73,7 @@ O `preset` traz as três camadas de token, os dois temas e as fontes da marca. S
 o seu projeto já tem tipografia própria, veja
 [Temas e personalização](/temas) para importar só os tokens.
 
-## 3. O Provider, uma vez
+## 4. O Provider, uma vez
 
 ```tsx
 import { RivoProvider } from '@rivocode/ui'
@@ -103,7 +127,9 @@ necessário.
 
 | Sintoma                                   | Causa quase certa                                                        |
 | ----------------------------------------- | ------------------------------------------------------------------------ |
-| Tela sem estilo nenhum                    | falta a linha `@source`, ou o caminho relativo dela está errado          |
+| Tela sem estilo nenhum, nem a sua         | o plugin do Tailwind não está na lista de plugins do `vite.config.ts`   |
+| Suas classes pegam, as da biblioteca não  | falta a linha `@source`, ou o caminho relativo dela está errado          |
+| `ChevronRight is not defined` ou similar  | falta o `lucide-react`: o pnpm e o yarn não instalam par sozinhos        |
 | `404` ao instalar o escopo `@rivocode`    | um `.npmrc` antigo ainda aponta o escopo para o GitHub Packages          |
 | Erro de contexto ao abrir diálogo ou menu | árvore fora do `RivoProvider`                                            |
 | Dois Reacts na página                     | React como dependência direta da biblioteca em vez de par, verifique o lockfile |

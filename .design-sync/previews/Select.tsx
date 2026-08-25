@@ -26,7 +26,7 @@ export function ClosedState() {
 export function Open() {
   return (
     <div className="min-h-56">
-      <Select items={PERIODOS} defaultValue="90" defaultOpen>
+      <Select items={PERIODOS} defaultValue="90" defaultOpen /* rc-keep-open */>
         <SelectTrigger aria-label="Período">
           <SelectValue />
         </SelectTrigger>
