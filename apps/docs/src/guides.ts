@@ -42,6 +42,11 @@ const ORDER: Array<{ slug: string; title: string; summary: string }> = [
     summary: 'A mesma tela em duas alturas, sem dois catálogos.',
   },
   {
+    slug: 'icones',
+    title: 'Ícones',
+    summary: 'Um conjunto, um conceito por ícone, e o tamanho de cada contexto.',
+  },
+  {
     slug: 'para-agents',
     title: 'Para agents',
     summary: 'Markdown cru, llms.txt e como pedir no prompt.',

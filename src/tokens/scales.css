@@ -100,6 +100,30 @@
   --rc-day: 32px;
 }
 
+/* Entrada de pagina de marca: sobe um passo e assenta. Produto de operacao
+   nao anima entrada; landing e hero animam uma vez, e so. As duracoes zeram
+   com prefers-reduced-motion, entao quem pediu menos movimento ve o conteudo
+   ja assentado. */
+@keyframes rc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --rc-duration-fast: 0ms;

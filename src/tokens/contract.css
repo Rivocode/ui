@@ -92,4 +92,10 @@
 
   --ease-rc: var(--rc-ease);
   --ease-rc-sheet: var(--rc-ease-sheet);
+
+  /* Entrada de marca: `animate-rise` sobe e assenta, `animate-fade` so
+     aparece. Escalone irmaos com animation-delay; produto de operacao nao
+     usa nenhum dos dois. */
+  --animate-rise: rc-rise var(--rc-duration-slow) var(--rc-ease) both;
+  --animate-fade: rc-fade var(--rc-duration-slow) var(--rc-ease) both;
 }

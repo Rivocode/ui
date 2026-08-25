@@ -236,18 +236,18 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           <span className="font-mono text-xs text-fg-subtle">Base UI · Tailwind 4 · React 19</span>
         </div>
 
-        <h1 className="mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
+        <h1 className="animate-rise mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
           O design system da <span className="text-accent-text">RivoCode</span>, documentado por
           dentro.
         </h1>
 
-        <p className="mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted">
+        <p className="animate-rise mt-6 max-w-2xl text-lg leading-relaxed text-fg-muted [animation-delay:80ms]">
           {ENTRIES.length} peças sobre a Base UI, com tokens em três camadas, dois temas e duas
           densidades. Nenhum componente conhece a cor da marca: ele pede um papel, e o tema
           responde.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
+        <div className="animate-rise mt-8 flex flex-wrap items-center gap-3 [animation-delay:160ms]">
           {/* O único glow da página: o CTA é o que a lanterna existe para
               iluminar. Um segundo brilho já seria feira. */}
           <Button size="lg" shape="pill" className="shadow-glow" {...toInstall} render={<a />}>
@@ -259,14 +259,14 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           </Button>
         </div>
 
-        <div className="mt-8 max-w-md">
+        <div className="animate-rise mt-8 max-w-md [animation-delay:240ms]">
           <CopyLine text={INSTALL} />
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
-          <Stat value="265" label="testes, todos verdes" />
+          <Stat value="282" label="testes, todos verdes" />
           <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>

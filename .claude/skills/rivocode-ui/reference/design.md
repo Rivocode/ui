@@ -133,6 +133,12 @@ Movimento: `--rc-duration-fast` para retorno de toque (cor de hover),
 `--rc-duration-base` para o que entra e sai, `--rc-duration-sheet` para a folha.
 Animar `width` e `height` custa layout; prefira `opacity` e `transform`.
 
+Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
+aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240. **Produto de
+operação não anima entrada** — landing e hero animam uma vez, e só. As durações
+zeram com `prefers-reduced-motion`, então quem pediu menos movimento vê o
+conteúdo já assentado.
+
 ## Ícones
 
 O conjunto é o **lucide-react**, peer obrigatória: mesmo traço, mesma grade,
