@@ -9,6 +9,32 @@ import { useEffect, useState } from 'react'
  * catalog. A list written up front would be missing exactly those.
  * ------------------------------------------------------------------------- */
 
+/**
+ * Em que pagina quem le mexeu na rolagem.
+ *
+ * Mora no escopo do modulo porque precisa estar escutando antes do componente
+ * montar: o realinhamento com a ancora acontece nos primeiros instantes, e uma
+ * rolagem nesse meio tempo tem de ser respeitada.
+ *
+ * Guardamos o endereco, e nao o instante. Comparar horarios parecia bastar e
+ * nao bastava: uma rolagem que acontece antes do modulo carregar fica com
+ * carimbo anterior ao da montagem, e passava por "ninguem mexeu". O endereco
+ * responde a pergunta certa, que e se foi nesta pagina, e ainda deixa uma
+ * navegacao nova comecar limpa.
+ *
+ * `wheel`, toque e teclado sao intencao de quem le. O evento `scroll` nao
+ * serve: ele tambem dispara pela rolagem que nos mesmos causamos.
+ */
+let readerMovedOn: string | null = null
+if (typeof window !== 'undefined') {
+  const mark = () => {
+    readerMovedOn = window.location.pathname
+  }
+  for (const evento of ['wheel', 'touchstart', 'keydown'] as const) {
+    window.addEventListener(evento, mark, { passive: true })
+  }
+}
+
 type Item = { id: string; text: string; level: number }
 
 /** Waits for the async pieces of the page before reading its shape. */
@@ -18,6 +44,37 @@ function useHeadings(watch: string) {
   useEffect(() => {
     const main = document.querySelector('main')
     if (!main) return
+
+    /*
+     * Os exemplos montam depois que o modulo deles resolve, e a pagina cresce
+     * debaixo da ancora: o navegador ja rolou para onde o `#` apontava antes do
+     * conteudo chegar, e quem abriu `#api` aterrissa numa secao que nao pediu.
+     * Os exemplos chegam em ondas, e cada onda empurra a ancora de novo, entao
+     * esperamos as mudancas silenciarem e ajustamos uma vez so. Realinhar a
+     * cada onda funciona igual, mas a pagina pula varias vezes no caminho.
+     *
+     * `wheel`, toque e teclado marcam intencao de quem le, e nao a rolagem que
+     * nos mesmos causamos: depois de qualquer um deles, ninguem mexe mais na
+     * posicao da pagina.
+     */
+    let aguardando: ReturnType<typeof setTimeout> | undefined
+
+    const irParaAncora = () => {
+      if (!window.location.hash) return
+      clearTimeout(aguardando)
+      aguardando = setTimeout(() => {
+        // A checagem fica aqui dentro, e nao no agendamento: o que importa e se
+        // quem le mexeu ate a hora de rolar, e nao ate a hora de agendar.
+        if (readerMovedOn === window.location.pathname) return
+        const alvo = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
+        // `instant` de proposito. A pagina rola suave por padrao, e com isso a
+        // correcao virava meio segundo de animacao: o leitor que rolasse nesse
+        // meio tempo via a pagina voltando sozinha, como se disputasse com ele.
+        // Isto aqui nao e navegacao, e conserto de posicao, e conserto que se
+        // ve acontecendo parece defeito.
+        alvo?.scrollIntoView({ behavior: 'instant' })
+      }, 200)
+    }
 
     const read = () => {
       const found = [...main.querySelectorAll<HTMLElement>('h2[id], h3[id]')].map((node) => ({
@@ -31,6 +88,8 @@ function useHeadings(watch: string) {
           ? current
           : found,
       )
+
+      if (found.length) irParaAncora()
     }
 
     read()
@@ -39,7 +98,10 @@ function useHeadings(watch: string) {
     const observer = new MutationObserver(read)
     observer.observe(main, { childList: true, subtree: true })
 
-    return () => observer.disconnect()
+    return () => {
+      clearTimeout(aguardando)
+      observer.disconnect()
+    }
   }, [watch])
 
   return items
@@ -54,24 +116,32 @@ function useActive(items: Item[]) {
 
     const onScroll = () => {
       /*
-       * No fim da pagina nao ha mais rolagem, entao os ultimos titulos nunca
-       * chegam aos 96px do topo e nunca ficariam ativos: a marca parava no
-       * penultimo e o resto da lista virava enfeite.
+       * No fim da pagina a rolagem acabou, entao os ultimos titulos nunca
+       * chegam aos 96px do topo e o rastreio por posicao para de distinguir um
+       * do outro.
        *
-       * Ali o ativo passa a ser o primeiro titulo ainda visivel, e nao o
-       * ultimo. Marcar o ultimo cego quebrava o caso de pular direto para uma
-       * ancora perto do fim: a pagina rolava ate onde dava, batia no fim, e a
-       * marca ia parar num titulo que a pessoa nem pediu.
+       * Marcar o primeiro ainda visivel resolvia o caso de pular para uma
+       * ancora perto do fim, mas quebrava numa pagina curta: com todos os
+       * titulos na tela, o primeiro vencia sempre, e pedir `#api` acendia "A
+       * busca".
+       *
+       * Ali quem manda e a ancora que a pessoa pediu, desde que ela esteja em
+       * vista. Sem ancora, ou com uma que ficou para tras, vale o ultimo
+       * titulo, que e onde a pagina de fato terminou.
        */
       const fim = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
 
       if (fim) {
-        const visivel = items.find((item) => {
+        const pedido = decodeURIComponent(window.location.hash.slice(1))
+        const emVista = items.find((item) => {
+          if (item.id !== pedido) return false
           const node = document.getElementById(item.id)
-          return node ? node.getBoundingClientRect().bottom > 96 : false
+          if (!node) return false
+          const rect = node.getBoundingClientRect()
+          return rect.bottom > 0 && rect.top < window.innerHeight
         })
 
-        setActive((visivel ?? items[items.length - 1]).id)
+        setActive((emVista ?? items[items.length - 1]).id)
         return
       }
 
@@ -90,7 +160,14 @@ function useActive(items: Item[]) {
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    // Ja no fim da pagina, clicar num item do indice nao rola nada, entao o
+    // evento de rolagem nunca vem e a marca ficaria onde estava.
+    window.addEventListener('hashchange', onScroll)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('hashchange', onScroll)
+    }
   }, [items])
 
   return active
