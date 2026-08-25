@@ -237,7 +237,7 @@ export function SidebarBrand({ className, mark, children, ...props }: SidebarBra
     >
       {mark && <span className="flex shrink-0 items-center">{mark}</span>}
       {!collapsed && children && (
-        <span className="truncate font-display text-lg text-fg">{children}</span>
+        <span className="truncate font-display text-lg tracking-tight text-fg">{children}</span>
       )}
     </div>
   );

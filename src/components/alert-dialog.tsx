@@ -60,7 +60,7 @@ export function AlertDialogTitle({
   return (
     <BaseAlertDialog.Title
       {...props}
-      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] text-fg", className)}
+      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg", className)}
     />
   );
 }

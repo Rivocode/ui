@@ -10,7 +10,10 @@
   --rc-p-lima-600: #bfdd3a;
   --rc-p-lima-700: #4a7100;
 
-  /* Grafite, as superficies escuras */
+  /* Grafite, as superficies escuras. O 950 e o chao da pagina: um passo mais
+     fundo que o cartao, para a escada bg -> surface -> raised ter tres degraus
+     visiveis em vez de dois quase iguais. */
+  --rc-p-graphite-950: #0b0d0f;
   --rc-p-graphite-900: #0f1113;
   --rc-p-graphite-800: #14171a;
   --rc-p-graphite-700: #171a1d;

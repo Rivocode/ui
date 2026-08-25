@@ -75,7 +75,7 @@ export function PopoverTitle({ className, ...props }: ComponentProps<typeof Base
   return (
     <BasePopover.Title
       {...props}
-      className={cn("font-display text-base leading-[var(--rc-leading-tight)] text-fg", className)}
+      className={cn("font-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg", className)}
     />
   );
 }

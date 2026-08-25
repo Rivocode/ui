@@ -84,6 +84,11 @@
   --shadow-1: var(--rc-shadow-1);
   --shadow-2: var(--rc-shadow-2);
   --shadow-3: var(--rc-shadow-3);
+  /* Opt-in: so quem pede shadow-glow acende. */
+  --shadow-glow: var(--rc-glow-accent);
+
+  --tracking-display: var(--rc-tracking-display);
+  --tracking-tight: var(--rc-tracking-tight);
 
   --ease-rc: var(--rc-ease);
   --ease-rc-sheet: var(--rc-ease-sheet);

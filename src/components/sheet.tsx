@@ -133,7 +133,7 @@ export function SheetTitle({ className, ...props }: ComponentProps<typeof BaseDr
   return (
     <BaseDrawer.Title
       {...props}
-      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] text-fg", className)}
+      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg", className)}
     />
   );
 }

@@ -25,6 +25,11 @@
   --rc-leading-normal: 1.5;
   --rc-leading-relaxed: 1.7;
 
+  /* Titulo grande pede letra junta: e o que separa display de texto crescido.
+     O corpo fica em 0, porque texto de produto apertado cansa. */
+  --rc-tracking-display: -0.02em;
+  --rc-tracking-tight: -0.01em;
+
   --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
   --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
   --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;

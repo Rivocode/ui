@@ -118,7 +118,16 @@ interno "vaza" visualmente do externo.
 
 Sombra: `shadow-1`, `shadow-2`, `shadow-3`, em ordem de quanto a coisa flutua.
 Cartão parado não precisa de sombra: no tema escuro a sombra some e o que
-separa é a borda.
+separa é a borda. Cada sombra já carrega um fio de 1px por fora, na cor certa
+do tema: é o bisel que descola o flutuante do fundo, e convive com a
+`border` que a peça já tem — um é o traço interno, o outro o contorno externo.
+
+`shadow-glow` é a lanterna do acento, opt-in: hero de landing e CTA que merece
+cerimônia. Nenhum componente liga sozinho, e produto de operação nunca usa.
+
+Título display aperta a letra: `tracking-display` acompanha `font-display` em
+`text-xl` para cima (os títulos de Card, Dialog e Sheet já vêm com ele);
+`tracking-tight` serve para título menor. Corpo de texto fica em tracking 0.
 
 Movimento: `--rc-duration-fast` para retorno de toque (cor de hover),
 `--rc-duration-base` para o que entra e sai, `--rc-duration-sheet` para a folha.

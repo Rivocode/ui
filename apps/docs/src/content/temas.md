@@ -132,12 +132,15 @@ ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
 
 | Token | O que veste |
 |---|---|
-| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição |
+| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição — cada uma já carrega o hairline de 1px que separa o flutuante da página |
+| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho |
 | `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
 | `--rc-text-hero` | Tamanho de herói, em `clamp()` |
 
-Os dois últimos vivem no tema e não no núcleo de propósito: um sistema de
-operação nunca os usa, e um site de marca quer os seus.
+Os passos de marketing vivem no tema e não no núcleo de propósito: um sistema
+de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesma
+lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
+dela, e um tema de cliente decide o próprio brilho.
 
 ## O que **não** entra no tema
 

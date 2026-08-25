@@ -47,9 +47,13 @@
   --rc-text-display: clamp(32px, 4.2vw, 54px);
   --rc-text-hero: clamp(44px, 6.6vw, 88px);
 
-  --rc-shadow-1: 0 1px 2px rgb(15 17 19 / 0.06);
-  --rc-shadow-2: 0 6px 18px rgb(15 17 19 / 0.08);
-  --rc-shadow-3: 0 14px 36px rgb(15 17 19 / 0.12);
+  /* No claro o hairline e um fio de sombra, nao de luz. */
+  --rc-shadow-1: 0 0 0 1px rgb(15 17 19 / 0.05), 0 1px 2px rgb(15 17 19 / 0.06);
+  --rc-shadow-2: 0 0 0 1px rgb(15 17 19 / 0.06), 0 8px 24px rgb(15 17 19 / 0.09);
+  --rc-shadow-3: 0 0 0 1px rgb(15 17 19 / 0.07), 0 16px 48px rgb(15 17 19 / 0.14);
+
+  /* No claro a lima nao ilumina, mancha: o glow sai do escurecido dela. */
+  --rc-glow-accent: 0 0 32px rgb(74 113 0 / 0.18);
 
   color-scheme: light;
 

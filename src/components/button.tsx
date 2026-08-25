@@ -8,7 +8,10 @@ export const buttonVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
     "font-sans font-medium",
-    "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
+    "transition duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
+    // O afundar de meio por cento no clique e o retorno tatil do botao. Quem
+    // pediu menos movimento nao ve o botao encolher.
+    "motion-safe:active:scale-[0.985]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
     "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     // Desabilitado vira neutro de proposito. Desbotar a cor da marca produz
