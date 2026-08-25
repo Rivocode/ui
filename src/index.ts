@@ -1,7 +1,7 @@
 export const version = "0.4.0";
 
 export { cn } from "./lib/cn";
-export { useMediaQuery, useNarrowScreen } from "./lib/screen";
+export { useMediaQuery, useMobile } from "./lib/screen";
 export {
   RivoProvider,
   useRivoContext,
@@ -186,6 +186,7 @@ export {
   type SidebarMenuSubProps,
   type SidebarProps,
   type SidebarProviderProps,
+  type SidebarState,
 } from "./components/sidebar";
 export { ToastViewport, useToast, type ToastViewportProps } from "./components/toast";
 export {

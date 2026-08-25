@@ -93,3 +93,61 @@ test("a marca de lugar avisa que esta carregando, e nao finge uma lista", () => 
   expect(list).not.toBeNull();
   expect(list!.querySelectorAll("li").length).toBe(4);
 });
+
+/* ---------------------------------------------------------------------------
+ * Celular
+ *
+ * O ambiente de teste responde `false` para toda media query, entao o caminho
+ * do celular nunca era exercitado: os dois bugs que ele teve, abrir sozinha ao
+ * carregar e continuar cobrindo a pagina depois de escolher um item, passaram
+ * inteiros pela suite.
+ * ------------------------------------------------------------------------- */
+
+/** Faz o corte de celular responder verdadeiro enquanto o teste roda. */
+function comCelular<T>(run: () => T): T {
+  const real = window.matchMedia;
+  window.matchMedia = ((query: string) =>
+    ({
+      matches: query.includes("max-width: 639px"),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+      dispatchEvent: () => false,
+      onchange: null,
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+
+  try {
+    return run();
+  } finally {
+    window.matchMedia = real;
+  }
+}
+
+test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
+  comCelular(() => {
+    barra(true);
+    // `defaultOpen` fala da coluna da mesa. No celular a barra cobre a tela, e
+    // abrir sozinha tapa justamente o que a pessoa veio ver.
+    expect(screen.queryByText("Painel")).toBeNull();
+  });
+});
+
+test("no celular o gatilho abre a folha", () => {
+  comCelular(() => {
+    barra(true);
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+    expect(screen.getByText("Painel")).toBeDefined();
+  });
+});
+
+test("no celular, escolher um destino fecha a folha", () => {
+  comCelular(() => {
+    barra(true);
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+    fireEvent.click(screen.getByText("Painel"));
+    // Na mesa ela continuaria aberta: ali a barra nao cobre nada.
+    expect(screen.queryByText("Painel")).toBeNull();
+  });
+});

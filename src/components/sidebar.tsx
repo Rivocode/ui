@@ -13,19 +13,26 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
-import { useNarrowScreen } from "../lib/screen";
+import { useMobile } from "../lib/screen";
 import { Menu, MenuContent, MenuGroup, MenuItem, MenuTrigger } from "./menu";
 import { Sheet, SheetContent, SheetTitle } from "./sheet";
 import { Skeleton } from "./skeleton";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-type SidebarState = {
+export type SidebarState = {
   /** Aberta na mesa, ou visivel como folha no celular. */
   open: boolean;
   /** Encolhida ate a coluna de icones. Nunca verdadeiro no celular. */
   collapsed: boolean;
-  /** Largura de celular, onde a barra vira folha. */
-  narrow: boolean;
+  /**
+   * Largura de celular, onde a barra vira folha.
+   *
+   * Esta aqui para a aplicacao ler junto: a barra ja se vira sozinha, mas o
+   * cabecalho ao lado dela quase sempre precisa da mesma resposta, e ler o
+   * mesmo corte por conta propria e como as duas metades da tela acabam
+   * discordando sobre o que e celular.
+   */
+  isMobile: boolean;
   toggle: () => void;
   close: () => void;
 };
@@ -75,7 +82,7 @@ export function SidebarProvider({
   children,
   ...props
 }: SidebarProviderProps) {
-  const narrow = useNarrowScreen();
+  const isMobile = useMobile();
   const controlled = open !== undefined;
   // Duas memorias, e nao uma. `defaultOpen` fala da coluna da mesa, onde
   // aberta e o estado util e a pagina continua inteira ao lado. No celular a
@@ -83,17 +90,17 @@ export function SidebarProvider({
   // tela que a pessoa veio ver, e obriga a fechar antes de comecar.
   const [deskOpen, setDeskOpen] = useState(defaultOpen);
   const [sheetOpen, setSheetOpen] = useState(false);
-  const isOpen = controlled ? open : narrow ? sheetOpen : deskOpen;
+  const isOpen = controlled ? open : isMobile ? sheetOpen : deskOpen;
 
   const change = useCallback(
     (next: boolean) => {
       if (!controlled) {
-        if (narrow) setSheetOpen(next);
+        if (isMobile) setSheetOpen(next);
         else setDeskOpen(next);
       }
       onOpenChange?.(next);
     },
-    [controlled, narrow, onOpenChange],
+    [controlled, isMobile, onOpenChange],
   );
 
   const toggle = useCallback(() => change(!isOpen), [isOpen, change]);
@@ -113,12 +120,12 @@ export function SidebarProvider({
   const value = useMemo<SidebarState>(
     () => ({
       open: isOpen,
-      collapsed: !isOpen && !narrow,
-      narrow,
+      collapsed: !isOpen && !isMobile,
+      isMobile,
       toggle,
       close: () => change(false),
     }),
-    [isOpen, toggle, narrow, change],
+    [isOpen, toggle, isMobile, change],
   );
 
   return (
@@ -152,9 +159,9 @@ export function Sidebar({
   side = "left",
   ...props
 }: SidebarProps) {
-  const { open, collapsed, narrow, close } = useSidebar();
+  const { open, collapsed, isMobile, close } = useSidebar();
 
-  if (narrow) {
+  if (isMobile) {
     return (
       <Sheet side={side} open={open} onOpenChange={(next) => !next && close()}>
         <SheetContent className="w-[17rem] p-3">
@@ -385,7 +392,7 @@ export function SidebarMenuItem({
   onClick,
   ...props
 }: SidebarMenuItemProps) {
-  const { collapsed, narrow, close } = useSidebar();
+  const { collapsed, isMobile, close } = useSidebar();
   const inFlyout = use(FlyoutContext);
 
   // No celular a barra e uma folha por cima da pagina, entao escolher para
@@ -393,7 +400,7 @@ export function SidebarMenuItem({
   // sozinha so faria a pessoa reabrir a cada passo.
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     onClick?.(event);
-    if (narrow) close();
+    if (isMobile) close();
   }
 
   // Dentro do menu que salta da barra encolhida, a linha e um item de menu:
@@ -608,8 +615,8 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<"button">
  * e dois destinos para a mesma acao so alongam o `Tab`.
  */
 export function SidebarRail({ className, ...props }: ComponentProps<"button">) {
-  const { toggle, narrow } = useSidebar();
-  if (narrow) return null;
+  const { toggle, isMobile } = useSidebar();
+  if (isMobile) return null;
 
   return (
     <button

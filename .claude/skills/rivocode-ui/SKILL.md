@@ -247,6 +247,22 @@ deve fazer o mesmo. O `Sheet` encosta embaixo no celular, a coluna com
 Escreva a versão estreita e acrescente `sm:` e `lg:` por cima, nunca o
 contrário.
 
+Quando a decisão não couber em classe utilitária, leia o mesmo corte que os
+componentes leem, em vez de escrever `640` de novo:
+
+```tsx
+import { useMobile } from '@rivocode/ui'
+
+const isMobile = useMobile()
+```
+
+Dentro de um `SidebarProvider`, use `useSidebar().isMobile`, que é o mesmo
+valor sem um segundo assinante da media query. Os dois devolvem `false` no
+servidor.
+
+Não ligue o comportamento de celular da `Sidebar` na mão: abaixo de 640px ela
+já vira folha, já começa fechada e já se fecha ao escolher um item.
+
 ## O que nunca fazer
 
 - Cor literal em `className` ou em `style`. Sempre token.

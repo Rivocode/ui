@@ -48,6 +48,41 @@ teclado.
 
 `SidebarInset` é a área da página, ao lado da barra.
 
+## O celular já vem resolvido
+
+Nada disso precisa ser ligado na mão. Abaixo de 640px a barra vira folha, e a
+folha começa **fechada**: `defaultOpen` fala da coluna do desktop, onde aberta
+é o estado útil e a página continua inteira ao lado. No celular a mesma barra
+cobre tudo, e abrir sozinha ao carregar tapa justamente a tela que a pessoa
+veio ver.
+
+Escolher um item também fecha a folha, que ali é a hora de sair da frente. Na
+mesa ela não cobre nada, então continua aberta. `SidebarRail` some no celular,
+porque arrastar uma borda de 1px com o dedo não é alvo.
+
+Quando a aplicação precisa da mesma resposta, ela lê do mesmo lugar:
+
+```tsx
+const { isMobile, open, collapsed, toggle, close } = useSidebar()
+```
+
+Fora de um `SidebarProvider`, o mesmo corte vem do `useMobile()`:
+
+```tsx
+import { useMobile } from '@rivocode/ui'
+
+const isMobile = useMobile()
+```
+
+Os dois respondem pela mesma media query que a barra e o calendário usam.
+Escrever `640` de novo num canto da aplicação é como as duas metades da tela
+acabam discordando sobre o que é celular. Dentro do provider prefira
+`useSidebar().isMobile`, que evita um segundo assinante da mesma consulta.
+
+No servidor os dois devolvem `false`, e não um palpite: a primeira pintura sai
+igual à do desktop e se corrige no primeiro efeito, porque errar para o lado
+estreito quebra o layout largo, e o contrário não.
+
 ## Quando não usar
 
 Menos de cinco destinos cabem numa `Menubar` ou num `NavigationMenu` no topo, e

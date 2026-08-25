@@ -3,7 +3,7 @@
 import type { ReactElement, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { useNarrowScreen } from "../lib/screen";
+import { useMobile } from "../lib/screen";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Sheet, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 
@@ -36,9 +36,9 @@ export function CalendarPanel({
   footer,
   align = "start",
 }: CalendarPanelProps) {
-  const narrow = useNarrowScreen();
+  const isMobile = useMobile();
 
-  if (narrow) {
+  if (isMobile) {
     return (
       <Sheet side="bottom" open={open} onOpenChange={onOpenChange}>
         <SheetTrigger render={trigger} />

@@ -20,6 +20,16 @@ alias.
 | `voltar` | `back` |
 | `irPara` | `goTo` |
 
+### Telas estreitas
+
+`useNarrowScreen()` passa a se chamar `useMobile()`, e o `useSidebar()` devolve
+`isMobile` no lugar de `narrow`. O tipo `SidebarState` agora e exportado.
+
+O nome antigo descrevia a medida; o novo descreve a pergunta que se faz. E a
+barra ja resolvia o celular sozinha sem deixar a aplicacao ler a mesma
+resposta, que e como as duas metades da tela acabam discordando sobre o que e
+celular.
+
 ### Tokens e atributos
 
 | Antes | Agora |

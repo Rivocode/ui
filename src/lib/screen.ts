@@ -32,7 +32,23 @@ export function useMediaQuery(query: string): boolean {
   );
 }
 
-/** Verdadeiro em largura de celular, abaixo do `sm` do Tailwind. */
-export function useNarrowScreen(): boolean {
+/**
+ * Verdadeiro em largura de celular, abaixo do `sm` do Tailwind.
+ *
+ * E o mesmo corte que a barra lateral usa para virar folha e que o calendario
+ * usa para mostrar um mes so. Existe exportado para a aplicacao decidir junto,
+ * em vez de escrever o proprio `640` num canto: quando cada tela guarda o seu
+ * numero, uma delas muda e as duas metades passam a discordar sobre o que e
+ * celular.
+ *
+ * ```tsx
+ * const isMobile = useMobile();
+ * return isMobile ? <Sheet>{filtros}</Sheet> : <aside>{filtros}</aside>;
+ * ```
+ *
+ * Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
+ * valor, e evita um segundo assinante da mesma media query.
+ */
+export function useMobile(): boolean {
   return useMediaQuery(PHONE);
 }
