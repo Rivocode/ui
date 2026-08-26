@@ -101,16 +101,37 @@ export function percent(value: number, digits = 0) {
   return `${numberFormat({ maximumFractionDigits: digits }).format(value)}%`;
 }
 
+/**
+ * `2026-08-05` e `2026-08` sao dia do calendario, e nao instante.
+ *
+ * O `new Date` le a string sem hora como meia-noite em UTC e depois o `Intl`
+ * imprime no fuso da tela: em fuso negativo, que e o do pais inteiro, isso
+ * volta um dia - e quando o dia e o primeiro do mes, volta o mes junto.
+ * Entao a data sem hora e montada como data local, do mesmo jeito que o
+ * `parseDate` do nucleo faz. Quem passa hora, ou um `Date`, esta falando de
+ * instante, e instante continua sendo lido no fuso local.
+ */
+const DIA_DE_CALENDARIO = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/;
+
+function toDate(date: Date | string | number) {
+  if (date instanceof Date) return date;
+  if (typeof date === "string") {
+    const parts = DIA_DE_CALENDARIO.exec(date.trim());
+    if (parts) {
+      return new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3] ?? "1"));
+    }
+  }
+  return new Date(date);
+}
+
 /** `mar`, `abr`. The most common time axis on a monthly dashboard. */
 export function monthShort(date: Date | string | number) {
-  const when = date instanceof Date ? date : new Date(date);
-  return new Intl.DateTimeFormat(LOCALE, { month: "short" }).format(when).replace(".", "");
+  return new Intl.DateTimeFormat(LOCALE, { month: "short" }).format(toDate(date)).replace(".", "");
 }
 
 /** `12/03`. For a daily series, where the year is the same throughout. */
 export function dayMonth(date: Date | string | number) {
-  const when = date instanceof Date ? date : new Date(date);
-  return new Intl.DateTimeFormat(LOCALE, { day: "2-digit", month: "2-digit" }).format(when);
+  return new Intl.DateTimeFormat(LOCALE, { day: "2-digit", month: "2-digit" }).format(toDate(date));
 }
 
 export const formatters = {
