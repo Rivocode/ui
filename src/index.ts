@@ -94,6 +94,26 @@ export {
   type DateRangePickerProps,
 } from "./components/date-range-picker";
 export { formatDate, parseDate, maskDate } from "./lib/date";
+/*
+ * Os formatadores nasceram no subcaminho do grafico, e ali era o lugar errado:
+ * formatar dinheiro numa celula de tabela nao e assunto de grafico. Saem
+ * tambem pela raiz, e sao o mesmo vocabulario que `format` aceita no Meter, no
+ * Progress, no Slider e no eixo.
+ */
+export {
+  compact,
+  compactWords,
+  currency,
+  currencyShort,
+  currencyShortWords,
+  dayMonth,
+  formatters,
+  integer,
+  monthShort,
+  percent,
+  type Format,
+  type FormatName,
+} from "./lib/format";
 export {
   Sheet,
   SheetClose,

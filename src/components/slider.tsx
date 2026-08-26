@@ -4,13 +4,22 @@ import { Slider as BaseSlider } from "@base-ui/react/slider";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { resolveFormat, type Format } from "../lib/format";
 import type { Slots } from "../lib/slots";
 
-export type SliderProps = ComponentProps<typeof BaseSlider.Root> & {
+export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format"> & {
   /** Texto acima do controle. Sem ele, passe `aria-label` no `thumbLabel`. */
   label?: ReactNode;
   /** Mostra o valor ao lado do rotulo. */
   showValue?: boolean;
+  /**
+   * Como o numero e escrito: nome de formatador da casa ou funcao propria, o
+   * mesmo vocabulario do eixo do grafico. Numa faixa de dois valores, ele
+   * escreve cada ponta.
+   */
+  format?: Format;
+  /** As opcoes do `Intl.NumberFormat`, para quem precisa delas. */
+  numberFormat?: Intl.NumberFormatOptions;
   /**
    * O que o leitor de tela chama o pino. Numa faixa, passe um por pino: os
    * dois precisam de nomes diferentes para o leitor saber qual e qual.
@@ -33,9 +42,13 @@ export function Slider({
   label,
   showValue,
   thumbLabel,
+  format,
+  numberFormat,
   classNames,
   ...props
 }: SliderProps) {
+  const escrever = resolveFormat(format) as ((valor: number) => string) | undefined;
+
   // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
   // uma faixa com um pino so nao deixa mover o outro limite.
   const values = props.value ?? props.defaultValue;
@@ -45,14 +58,20 @@ export function Slider({
   );
 
   return (
-    <BaseSlider.Root {...props} className={cn("flex flex-col gap-2", className)}>
+    <BaseSlider.Root
+      {...props}
+      format={numberFormat}
+      className={cn("flex flex-col gap-2", className)}
+    >
       {(label || showValue) && (
         <div className="flex items-baseline justify-between gap-4">
           {label && <span className={cn("font-sans text-sm text-fg", classNames?.label)}>{label}</span>}
           {showValue && (
             <BaseSlider.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
-            />
+            >
+              {escrever ? (_, valores) => valores.map(escrever).join(" – ") : null}
+            </BaseSlider.Value>
           )}
         </div>
       )}

@@ -7,6 +7,7 @@ import { ChartTooltipContent } from "./chart-tooltip";
 
 import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
+import { resolveFormat, type Format } from "../lib/format";
 
 export type ChartDonutProps<Slice> = {
   data: Slice[];
@@ -31,7 +32,12 @@ export type ChartDonutProps<Slice> = {
    */
   legend?: boolean;
   /** Como escrever o valor, na legenda e na dica. */
-  format?: (value: number) => string;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria. O mesmo vocabulario do eixo e
+   * do Meter - antes daqui so a funcao entrava, e o nome dava erro de tipo.
+   */
+  format?: Format;
   className?: string;
 };
 
@@ -69,6 +75,8 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
 }: ChartDonutProps<Slice>) {
+  const escrever = resolveFormat(format) as ((valor: number) => string) | undefined;
+
   /** Verdadeiro enquanto o ponteiro esta sobre alguma fatia. */
   const [reading, setReading] = useState(false);
 
@@ -121,7 +129,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
 
             <Tooltip
               cursor={false}
-              content={<ChartTooltipContent config={config} formatValue={format} />}
+              content={<ChartTooltipContent config={config} formatValue={escrever} />}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -172,7 +180,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 <span className="min-w-0 flex-1 truncate text-fg-muted">
                   {config?.[name]?.label ?? name}
                 </span>
-                <span className="shrink-0 font-mono text-fg">{format ? format(value) : value}</span>
+                <span className="shrink-0 font-mono text-fg">{escrever ? escrever(value) : value}</span>
               </li>
             );
           })}

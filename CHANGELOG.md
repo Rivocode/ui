@@ -1,5 +1,32 @@
 # Mudancas
 
+## 0.5.0 (nao publicado)
+
+### `format` significava tres coisas, e agora significa uma
+
+Nas pecas que escrevem numero, `format` era `Intl.NumberFormatOptions`; no
+eixo do grafico, era nome de formatador ou funcao; no `ChartDonut`, so funcao.
+O caminho que dava erro de tipo era o menos ruim - o que nao dava e pior:
+`{ style: "percent" }` num medidor de 0 a 100 imprime 8.200% ao lado de uma
+barra em 82%, e nada reclama.
+
+| Peca | Antes | Agora |
+|---|---|---|
+| `Meter`, `Progress`, `Slider` | `format={{ style: "percent" }}` | `numberFormat={{ style: "percent" }}` |
+| `Meter`, `Progress`, `Slider` | — | `format="percent"` ou `format={(v) => ...}` |
+| `NumberField` | `format={{ ... }}` | `numberFormat={{ ... }}` |
+| `ChartDonut` | so funcao | tambem nome: `format="currencyShort"` |
+
+O `NumberField` nao aceita nome de formatador, e a razao e o campo ser
+editavel: um formatador so escreve, e o que a pessoa digita precisa ser lido de
+volta.
+
+### Os formatadores saem tambem pela raiz
+
+`currencyShort`, `percent`, `integer`, `monthShort` e os demais continuam em
+`@rivocode/ui/chart` e passam a sair de `@rivocode/ui`. Formatar dinheiro numa
+celula de tabela nao e assunto de grafico.
+
 ## 0.4.0
 
 O 0.3.0 traduziu os nomes publicos e deixou uma sobra: o tipo virou

@@ -3613,9 +3613,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como escrever o valor, na legenda e na dica."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria."
       },
       {
         "name": "legend",
@@ -10045,9 +10045,9 @@
       },
       {
         "name": "format",
-        "type": "NumberFormatOptions",
+        "type": "Format",
         "required": false,
-        "note": "Options to format the value."
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria."
       },
       {
         "name": "getAriaValueText",
@@ -10077,6 +10077,12 @@
         "type": "number",
         "required": false,
         "note": "The minimum value"
+      },
+      {
+        "name": "numberFormat",
+        "type": "NumberFormatOptions",
+        "required": false,
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
       },
       {
         "name": "render",
@@ -10273,12 +10279,6 @@
         "note": "Identifies the form that owns the hidden input."
       },
       {
-        "name": "format",
-        "type": "NumberFormatOptions",
-        "required": false,
-        "note": "Options to format the input value."
-      },
-      {
         "name": "inputRef",
         "type": "Ref<HTMLInputElement>",
         "required": false,
@@ -10313,6 +10313,12 @@
         "type": "string",
         "required": false,
         "note": "Identifies the field when a form is submitted."
+      },
+      {
+        "name": "numberFormat",
+        "type": "NumberFormatOptions",
+        "required": false,
+        "note": "As opcoes do `Intl.NumberFormat`."
       },
       {
         "name": "onValueChange",
@@ -14047,9 +14053,9 @@
       },
       {
         "name": "format",
-        "type": "NumberFormatOptions",
+        "type": "Format",
         "required": false,
-        "note": "Options to format the value."
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria."
       },
       {
         "name": "getAriaValueText",
@@ -14080,6 +14086,12 @@
         "type": "number",
         "required": false,
         "note": "The minimum value."
+      },
+      {
+        "name": "numberFormat",
+        "type": "NumberFormatOptions",
+        "required": false,
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
       },
       {
         "name": "render",
@@ -17807,9 +17819,9 @@
       },
       {
         "name": "format",
-        "type": "NumberFormatOptions",
+        "type": "Format",
         "required": false,
-        "note": "Options to format the value."
+        "note": "Como o numero e escrito: nome de formatador da casa ou funcao propria, o mesmo vocabulario do eixo do grafico."
       },
       {
         "name": "label",
@@ -17852,6 +17864,12 @@
         "type": "string",
         "required": false,
         "note": "Identifies the field when a form is submitted."
+      },
+      {
+        "name": "numberFormat",
+        "type": "NumberFormatOptions",
+        "required": false,
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
       },
       {
         "name": "onValueChange",
