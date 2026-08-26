@@ -15,7 +15,8 @@
     "skill",
     "agent",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "type": "module",
   "types": "./dist/index.d.ts",
