@@ -1,10 +1,11 @@
 import { Badge, Button } from '@rivocode/ui'
-import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler, Sparkles } from 'lucide-react'
+import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler, Smartphone, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { CodeRiver } from '@/components/code-river'
 import { Showcase } from '@/components/showcase'
 import { ENTRIES, FAMILIES, WITH_EXAMPLE, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
+import { NATIVE_PIECES } from '@/native-parity'
 import { Logo } from '@/components/logo'
 import { linkTo, type Route } from '@/routes'
 import { version } from '../../../../package.json'
@@ -198,6 +199,67 @@ function CodeCard({ label, children }: { label: string; children: string }) {
   )
 }
 
+/**
+ * A mesma escolha nos dois mundos, lado a lado.
+ *
+ * A figura existe para dizer, num golpe de vista, o que a prosa promete e o
+ * que ela nao promete. O `Select` e o exemplo mais honesto que o catalogo tem:
+ * as props de dado sao as mesmas nos dois - `items`, `value`, `onValueChange`
+ * -, e a composicao inteira desaparece, porque no celular a lista abre numa
+ * folha de baixo e nao ha gatilho para vestir. Quem le so a coluna da esquerda
+ * imagina que a tela atravessa; e ela nao atravessa.
+ */
+function BothWorlds() {
+  const worlds = [
+    {
+      pkg: '@rivocode/ui',
+      code: `<Select items={UFS} value={uf} onValueChange={setUf}>
+  <SelectTrigger>
+    <SelectValue />
+  </SelectTrigger>
+  <SelectContent>
+    {UFS.map((item) => (
+      <SelectItem key={item.value} value={item.value}>
+        {item.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>`,
+    },
+    {
+      pkg: '@rivocode/ui-native',
+      code: `<Select
+  items={UFS}
+  value={uf}
+  onValueChange={setUf}
+  label="UF"
+/>`,
+    },
+  ]
+
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {worlds.map((world) => (
+        <div
+          key={world.pkg}
+          className="min-w-0 overflow-hidden rounded-lg border border-border bg-surface/70 backdrop-blur-sm"
+        >
+          <div className="border-b border-border px-4 py-2.5">
+            <code className="font-mono text-xs text-fg-subtle">{world.pkg}</code>
+          </div>
+          {/* `overflow-x-auto` com `min-w-0` na coluna: sem os dois o bloco
+              mais largo estica o grid e a capa inteira ganha rolagem lateral
+              no celular, que e o defeito que esta secao estaria justamente
+              dizendo que sabemos evitar. */}
+          <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-fg-muted">
+            <code>{world.code}</code>
+          </pre>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /** Both densities at once, driven by the token and not by a hard-coded height. */
 function DensityFigure() {
   return (
@@ -252,7 +314,9 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Badge tone="accent">v{version} no npm</Badge>
-          <span className="font-mono text-xs text-fg-subtle">Base UI · Tailwind 4 · React 19</span>
+          <span className="font-mono text-xs text-fg-subtle">
+            Base UI · Tailwind 4 · React 19 · React Native
+          </span>
         </div>
 
         <h1 className="animate-rise mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">
@@ -327,6 +391,36 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           <p>
             É um atributo no Provider, e a altura de todo controle acompanha. Não existe um segundo
             catálogo de peças compactas para manter em dia.
+          </p>
+        </Argument>
+
+        <Argument
+          icon={<Smartphone size={14} />}
+          eyebrow="React Native"
+          title="A mesma peça no celular, sem um segundo catálogo"
+          figure={<BothWorlds />}
+        >
+          <p>
+            O <code className="font-mono text-accent-text">@rivocode/ui-native</code> traz{' '}
+            {NATIVE_PIECES} das {ENTRIES.length} peças para o React Native, com os mesmos tokens,
+            os mesmos dois temas e o mesmo vocabulário de classes — o NativeWind lê as classes que
+            você já escreve aqui.
+          </p>
+          <p>
+            O que atravessa é o vocabulário, o token e a escolha da peça.{' '}
+            <strong className="font-medium text-fg">O JSX se reescreve</strong>: no toque tudo é
+            controlado, a lista vem por <code className="font-mono text-accent-text">items</code> em
+            vez de composição, e as peças que não portam não portam por decisão — barra lateral,
+            tabela e dica de ponteiro são idioma de mesa, e o celular tem o dele.
+          </p>
+          <p>
+            <a
+              {...linkTo({ kind: 'guide', slug: 'react-native' }, navigate)}
+              className="text-accent-text underline decoration-border underline-offset-4 transition-colors hover:decoration-accent"
+            >
+              O guia do React Native
+            </a>{' '}
+            traz a tabela peça a peça: o que traduz, o que está na fila e o que nunca vai portar.
           </p>
         </Argument>
 
