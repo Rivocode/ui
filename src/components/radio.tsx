@@ -30,8 +30,8 @@ export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children">
    * `classNames.label`, e continua valendo.
    */
   labelClassName?: string;
-  /** Classe por parte: `indicator`, `label`. */
-  classNames?: Slots<"indicator" | "label">;
+  /** Classe por parte: `circle`, `indicator`, `label`. */
+  classNames?: Slots<"circle" | "indicator" | "label">;
 };
 
 /**
@@ -65,13 +65,30 @@ export function Radio({
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "data-[checked]:border-accent data-[checked]:bg-accent",
-        "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60",
+        // `not-data-disabled` no acento, e nao a ordem das classes: o Tailwind
+        // emite as variantes `data-[...]` em ordem alfabetica, entao quem vence
+        // quem depende de que letra vem antes. Aqui os dois seletores se
+        // excluem, e a ordem deixa de decidir - o mesmo do Checkbox.
+        "data-[checked]:not-data-disabled:border-accent data-[checked]:not-data-disabled:bg-accent",
+        // Desabilitado se pinta com token, e nao com `opacity-60`, que era o
+        // que estava aqui: o `check:contrast` nao mede opacidade, entao a peca
+        // saia da guarda sem ninguem conferir o que o olho ve. A receita e a do
+        // Checkbox, borda inclusive - ela nao muda com o estado, porque
+        // `--rc-border` nao identifica controle e a 1,30:1 o circulo sumiria.
+        "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[invalid]:border-danger",
+        classNames?.circle,
         className,
       )}
     >
-      <BaseRadio.Indicator className={cn("size-2 rounded-pill bg-accent-fg", classNames?.indicator)} />
+      <BaseRadio.Indicator
+        className={cn(
+          "size-2 rounded-pill bg-accent-fg",
+          // A marca some sobre a superficie apagada se continuar branca.
+          "data-[disabled]:bg-fg-disabled",
+          classNames?.indicator,
+        )}
+      />
     </BaseRadio.Root>
   );
 
@@ -84,7 +101,10 @@ export function Radio({
         // caiam todas na mesma linha, porque elemento inline nao ocupa a
         // linha. `w-fit` impede o outro extremo, que e o rotulo esticar ate a
         // borda e fazer o clique valer a dez centimetros do texto.
-        "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
+        // `gap-2` e nao `gap-3`: o RadioGroup empilha as opcoes com `gap-2`, e
+        // um respiro maior aqui poria o rotulo mais perto da opcao de baixo do
+        // que do proprio circulo.
+        "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
         labelClassName,

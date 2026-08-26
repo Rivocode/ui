@@ -25,6 +25,18 @@ quando o rótulo tiver estrutura própria: um título com descrição embaixo, u
 link no meio da frase. Nesse caso, o `<label>` em volta é seu, e é ele que faz
 o clique no texto valer.
 
+## Desabilitado
+
+Desabilitado se pinta com token, e não com opacidade: o fundo passa a
+`surface-raised` e o visto vai para `fg-disabled`. Vale marcada, desmarcada e no
+estado misto — antes o `indeterminate` vencia o desabilitado, e a caixa de
+selecionar-todas saía pintada de acento cheio.
+
+A borda não muda com o estado, de propósito. `border-strong` é a fronteira de
+controle nos 3:1 da WCAG 1.4.11, e `border` diz de si mesmo que separa área e
+não identifica controle: medida, ela dá 1,3:1 contra o próprio preenchimento nos
+dois temas, e a caixa travada sumiria em vez de parecer travada.
+
 ## Quando não usar
 
 Para o ajuste que vale na hora — notificação que liga, modo escuro, recurso que

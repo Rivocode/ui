@@ -14,8 +14,15 @@ vezes, porque marcar duas vezes a mesma coisa nunca é o que se quis. Sair do
 campo também fecha o que estava escrito: texto digitado e não fechado some ao
 enviar o formulário, e ninguém entende por quê.
 
-É controlada de propósito: quem guarda a lista é o app, porque é ele que a
-envia.
+Guarda a própria lista quando recebe só `defaultValue`, e obedece à de fora
+quando recebe `value` — o mesmo par das outras peças de formulário. Num
+formulário que envia, controle: quem guarda a lista é o app, porque é ele que a
+manda. Num filtro de tela, que não envia nada, `defaultValue` poupa o
+`useState`.
+
+```tsx
+<TagsInput defaultValue={['nf-e']} aria-label="Palavras do filtro" />
+```
 
 ## O rótulo
 
@@ -38,6 +45,24 @@ vários leitores de tela não o anunciam. Fora de um `Field`, dê `aria-label`.
 
 O anel de foco é do campo de escrever, e não da moldura. O xis de cada ficha
 tem anel próprio, e os dois nunca acendem juntos.
+
+## O nome do xis
+
+Cada ficha diz o que se remove: `labels.remove` recebe o texto dela e devolve o
+nome que o leitor de tela ouve. Sem isso, uma fila de fichas se anuncia
+"Remover, Remover, Remover", e quem depende do leitor não sabe qual botão é
+qual.
+
+```tsx
+<TagsInput
+  defaultValue={['nf-e']}
+  aria-label="Marcadores"
+  labels={{ remove: (tag) => `Tirar o marcador ${tag}` }}
+/>
+```
+
+O nome antigo `removeLabel` continua valendo e vence o objeto quando os dois
+vierem.
 
 ## Quando não usar
 

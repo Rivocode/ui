@@ -21,6 +21,17 @@ texto também liga:
 Sem filho, sai só a chave. Vale para linha de ajuste onde o texto tem descrição
 embaixo e a chave fica na ponta direita.
 
+## Desabilitado
+
+Desabilitado se pinta com token, e não com opacidade, como no `Checkbox` e no
+`Radio`. O trilho já é a superfície apagada quando a chave está desligada, então
+aqui quem diz travado é o pino: ele vai de `fg-muted` para `fg-disabled`, e o
+trilho perde o acento quando ligado.
+
+Não vale devolver um acento lavado ao trilho ligado-e-travado para o "ligado"
+continuar óbvio: medido, o pino cai para 2,5:1 sobre ele no tema escuro, abaixo
+dos 3:1 da WCAG 1.4.11 — e o pino é o único lugar onde se lê a chave.
+
 ## Quando não usar
 
 Dentro de um formulário que tem botão de salvar, use `Checkbox`. **Não é o mesmo

@@ -14,7 +14,7 @@ export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy"> & {
   /** Quanto tempo a confirmacao fica na tela, em ms. */
   timeout?: number;
   /** O que o leitor de tela chama o botao antes e depois de copiar. */
-  labels?: { copy: string; copied: string };
+  labels?: { copy?: string; copied?: string };
   /** Chamado depois de copiar, para quem quer disparar um aviso proprio. */
   onCopy?: (value: string) => void;
 };
@@ -36,13 +36,18 @@ export function Clipboard({
   value,
   children,
   timeout = 2000,
-  labels = { copy: "Copiar", copied: "Copiado" },
+  labels = {},
   onCopy,
   variant = "secondary",
   size,
   className,
   ...props
 }: ClipboardProps) {
+  // Cada nome tem o proprio padrao, e nao o objeto inteiro: trocar so o verbo
+  // obrigava a reescrever a confirmacao junto, e quem esquecia perdia o
+  // "Copiado" sem o TypeScript acusar.
+  const { copy: copyLabel = "Copiar", copied: copiedLabel = "Copiado" } = labels;
+
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
@@ -73,7 +78,7 @@ export function Clipboard({
       variant={variant}
       size={size ?? (children ? "sm" : "iconSm")}
       onClick={copy}
-      aria-label={children ? undefined : copied ? labels.copied : labels.copy}
+      aria-label={children ? undefined : copied ? copiedLabel : copyLabel}
       className={cn("gap-1.5", className)}
     >
       {copied ? (
@@ -81,7 +86,7 @@ export function Clipboard({
       ) : (
         <Copy size={14} aria-hidden="true" />
       )}
-      {children ? (copied ? labels.copied : labels.copy) : null}
+      {children ? (copied ? copiedLabel : copyLabel) : null}
     </Button>
   );
 }

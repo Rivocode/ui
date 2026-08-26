@@ -21,6 +21,20 @@ adiante, e exigir um Enter depois disso perde o que foi escrito sem avisar.
 Fechado, o texto é um `button`. Quem navega pelo teclado precisa saber que
 aquilo abre alguma coisa, e um `div` com `onClick` não diz isso a ninguém.
 
+## Quem guarda o valor
+
+Guarda o próprio quando recebe só `defaultValue`, e obedece ao de fora quando
+recebe `value` — o mesmo par das outras peças de formulário. Controle quando o
+valor precisa voltar do servidor depois de salvo; deixe solto quando a correção
+só vale nesta tela.
+
+```tsx
+<Editable defaultValue="Clínica São Lucas" label="Cliente" onValueChange={save} />
+```
+
+O `label` continua obrigatório: aberto, a peça é um `<input>` sem rótulo
+visível, e sem ele o campo fica sem nome.
+
 ## Quando não usar
 
 Quando a mudança precisa de confirmação explícita — valor, alíquota, qualquer

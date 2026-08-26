@@ -57,8 +57,23 @@ export function Switch({
         "transition-colors duration-[var(--rc-duration-base)] ease-rc",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "data-[checked]:border-accent data-[checked]:bg-accent",
-        "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-60",
+        // `not-data-disabled` no acento, e nao a ordem das classes: o Tailwind
+        // emite as variantes `data-[...]` em ordem alfabetica, entao quem vence
+        // quem depende de que letra vem antes. Aqui os dois seletores se
+        // excluem, e a ordem deixa de decidir - o mesmo do Checkbox.
+        "data-[checked]:not-data-disabled:border-accent data-[checked]:not-data-disabled:bg-accent",
+        // Desabilitado se pinta com token, e nao com `opacity-60`, que era o
+        // que estava aqui: o `check:contrast` nao mede opacidade, entao a peca
+        // saia da guarda sem ninguem conferir o que o olho ve.
+        //
+        // O trilho ja e o `surface-raised` que as irmas assumem ao travar, e a
+        // borda nao muda com o estado pelo mesmo motivo delas. Entao aqui quem
+        // diz travado e o pino: `fg-muted` -> `fg-disabled` desligado, e o
+        // trilho perdendo o acento ligado. Nao vale devolver um `accent-subtle`
+        // ao trilho ligado-e-travado para o "ligado" continuar obvio: medido, o
+        // pino cai para 2,54:1 sobre ele no tema escuro, abaixo dos 3:1 da WCAG
+        // 1.4.11 - e o pino e o unico lugar onde se le a chave.
+        "data-[disabled]:cursor-not-allowed",
         "data-[invalid]:border-danger",
         "before:absolute before:-inset-y-2.5 before:inset-x-0 before:content-['']",
         className,
@@ -68,7 +83,11 @@ export function Switch({
         className={cn(
           "size-4 rounded-pill bg-fg-muted",
           "transition-[transform,background-color] duration-[var(--rc-duration-base)] ease-rc",
-          "data-[checked]:translate-x-5 data-[checked]:bg-accent-fg",
+          "data-[checked]:translate-x-5",
+          "data-[checked]:not-data-disabled:bg-accent-fg",
+          // O pino some sobre o trilho apagado se continuar branco, e ele e o
+          // unico lugar onde se le se a chave esta ligada ou desligada.
+          "data-[disabled]:bg-fg-disabled",
           classNames?.thumb,
         )}
       />
@@ -84,7 +103,10 @@ export function Switch({
         // caiam todas na mesma linha, porque elemento inline nao ocupa a
         // linha. `w-fit` impede o outro extremo, que e o rotulo esticar ate a
         // borda e fazer o clique valer a dez centimetros do texto.
-        "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
+        // `gap-2` e nao `gap-3`: e a mesma medida do Checkbox e do Radio, que
+        // aparecem na mesma lista de formulario - com dois respiros diferentes
+        // os rotulos nao alinham entre si.
+        "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
         labelClassName,

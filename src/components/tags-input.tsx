@@ -12,14 +12,19 @@ export type TagsInputProps = Omit<
   ComponentProps<"input">,
   "value" | "defaultValue" | "onChange"
 > & {
-  /** As fichas de agora. A peca e controlada: quem guarda a lista e o app. */
-  value: string[];
-  onValueChange: (value: string[]) => void;
+  /** As fichas de agora, quando quem usa guarda a lista. */
+  value?: string[];
+  /** As fichas do primeiro desenho, quando a peca guarda a propria lista. */
+  defaultValue?: string[];
+  /** Avisado com a lista inteira a cada ficha que entra ou sai. */
+  onValueChange?: (value: string[]) => void;
   /** O que fecha uma ficha alem do Enter. Virgula por padrao. */
   separators?: string[];
   /** Teto de fichas. Alcancado, o campo para de aceitar. */
   max?: number;
-  /** O que o leitor de tela ouve no botao de cada ficha. */
+  /** O que o leitor de tela ouve nos botoes da peca. `remove` recebe a ficha. */
+  labels?: { remove?: (tag: string) => string };
+  /** @deprecated Use `labels.remove`. */
   removeLabel?: (tag: string) => string;
   /** Classe por parte: `field`, `tag`, `remove`, `input`. */
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
@@ -39,6 +44,11 @@ export type TagsInputProps = Omit<
  * a ultima - e o gesto que todo mundo tenta primeiro - e a repetida nao entra
  * duas vezes, porque marcar duas vezes a mesma coisa nunca e o que se quis.
  *
+ * Guarda a propria lista quando so recebe `defaultValue`, e obedece a de fora
+ * quando recebe `value` - o mesmo par das cinco irmas de formulario. Ate aqui
+ * ela era a unica que exigia estado do lado de fora, e um filtro de tela, que
+ * nao envia nada e nao guarda nada, pagava um `useState` para existir.
+ *
  * O campo de escrever passa pelo `Field.Control`, como o `Input` e o
  * `Textarea`: e ele, e nao a moldura em volta, que recebe o `id` do rotulo, o
  * `aria-describedby` da ajuda e do erro, e o `aria-invalid`. Sem isso o
@@ -47,10 +57,12 @@ export type TagsInputProps = Omit<
  */
 export function TagsInput({
   value,
+  defaultValue = [],
   onValueChange,
   separators = [","],
   max,
-  removeLabel = (tag) => `Remover ${tag}`,
+  labels = {},
+  removeLabel,
   className,
   classNames,
   disabled,
@@ -58,15 +70,28 @@ export function TagsInput({
   ...props
 }: TagsInputProps) {
   const [draft, setDraft] = useState("");
-  const full = max !== undefined && value.length >= max;
+  const controlled = value !== undefined;
+  const [internal, setInternal] = useState<string[]>(defaultValue);
+  const tags = controlled ? value : internal;
+  const full = max !== undefined && tags.length >= max;
+
+  // O nome antigo vence o objeto quando os dois vierem: quem ainda passa
+  // `removeLabel` passou de proposito, e a peca nao pode escolher o padrao por
+  // ele so porque `labels` existe agora.
+  const remove = removeLabel ?? labels.remove ?? ((tag: string) => `Remover ${tag}`);
+
+  function change(next: string[]) {
+    if (!controlled) setInternal(next);
+    onValueChange?.(next);
+  }
 
   function add(raw: string) {
     const tag = raw.trim();
-    if (!tag || full || value.includes(tag)) {
+    if (!tag || full || tags.includes(tag)) {
       setDraft("");
       return;
     }
-    onValueChange([...value, tag]);
+    change([...tags, tag]);
     setDraft("");
   }
 
@@ -82,8 +107,8 @@ export function TagsInput({
       return;
     }
 
-    if (event.key === "Backspace" && draft === "" && value.length > 0) {
-      onValueChange(value.slice(0, -1));
+    if (event.key === "Backspace" && draft === "" && tags.length > 0) {
+      change(tags.slice(0, -1));
     }
   }
 
@@ -108,7 +133,7 @@ export function TagsInput({
         className,
       )}
     >
-      {value.map((tag) => (
+      {tags.map((tag) => (
         <span
           key={tag}
           className={cn(
@@ -120,9 +145,9 @@ export function TagsInput({
           {tag}
           <button
             type="button"
-            aria-label={removeLabel(tag)}
+            aria-label={remove(tag)}
             disabled={disabled}
-            onClick={() => onValueChange(value.filter((current) => current !== tag))}
+            onClick={() => change(tags.filter((current) => current !== tag))}
             className={cn(
               "relative text-fg-subtle transition-colors hover:text-fg",
               // O alvo de toque cresce sem o desenho crescer, como no chip do

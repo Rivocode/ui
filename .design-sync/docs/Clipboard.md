@@ -20,6 +20,13 @@ Quando a área de transferência não está disponível — sem permissão, ou f
 contexto seguro — nada é confirmado. Mentir que copiou é pior do que não
 confirmar: a pessoa cola o que tinha antes e só descobre no destino.
 
+Os dois nomes entram por `labels`, e cada um tem o próprio padrão: trocar o
+verbo não obriga a reescrever a confirmação junto.
+
+```tsx
+<Clipboard value="35240612345678000199" labels={{ copy: 'Copiar a chave' }} />
+```
+
 ## Quando não usar
 
 Para o bloco de código inteiro, `CodeBlock copyable` já traz este botão no

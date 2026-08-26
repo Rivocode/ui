@@ -109,7 +109,12 @@ test("o remover da ficha estica o alvo, que e o menor desenho da biblioteca", ()
     </Combobox>,
   );
 
-  hasTouchTarget(screen.getByRole("button", { name: "Remover" }), "after:-inset-1.5");
+  // O nome do xis passou a carregar a ficha: "Remover" cravado nao distinguia
+  // uma ficha da vizinha.
+  hasTouchTarget(
+    screen.getByRole("button", { name: "Remover Clinica Sao Lucas" }),
+    "after:-inset-1.5",
+  );
 });
 
 test("o link da migalha estica o alvo so na altura, para nao pegar o clique do vizinho", () => {

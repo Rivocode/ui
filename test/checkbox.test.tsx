@@ -32,6 +32,8 @@ test("o desenho de dentro muda entre marcada e mista", () => {
 test("usa o acento do tema quando marcada, sem cor literal", () => {
   render(<Checkbox aria-label="x" checked />);
   const classes = screen.getByRole("checkbox").className;
-  expect(classes).toContain("data-[checked]:bg-accent");
+  // O `not-data-disabled` entra no seletor de proposito: sem ele o
+  // `data-[indeterminate]` vencia o desabilitado, por ordem alfabetica.
+  expect(classes).toContain("data-[checked]:not-data-disabled:bg-accent");
   expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i);
 });

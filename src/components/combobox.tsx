@@ -166,6 +166,15 @@ export function ComboboxGroup({ className, ...props }: ComponentProps<typeof Bas
  */
 export const ComboboxValue = BaseCombobox.Value;
 
+export type ComboboxChipProps = ComponentProps<typeof BaseCombobox.Chip> & {
+  /**
+   * O que o leitor de tela ouve no xis. `remove` recebe o texto da ficha, que
+   * a peca tira do proprio conteudo quando ele e texto, e do `aria-label`
+   * quando nao e.
+   */
+  labels?: { remove?: (label: string) => string };
+};
+
 /** As fichas da escolha multipla, dentro do proprio campo. */
 export function ComboboxChips({ className, ...props }: ComponentProps<typeof BaseCombobox.Chips>) {
   return (
@@ -173,11 +182,23 @@ export function ComboboxChips({ className, ...props }: ComponentProps<typeof Bas
   );
 }
 
-export function ComboboxChip({
-  className,
-  children,
-  ...props
-}: ComponentProps<typeof BaseCombobox.Chip>) {
+export function ComboboxChip({ className, children, labels = {}, ...props }: ComboboxChipProps) {
+  const { remove = (label: string) => (label ? `Remover ${label}` : "Remover") } = labels;
+
+  /*
+   * O xis dizia "Remover" e nada mais, cravado: nao havia como traduzir nem
+   * como dizer o que se remove, e uma fila de tres fichas se anunciava
+   * "Remover, Remover, Remover" - a WCAG 2.4.6 pede que o nome distinga.
+   *
+   * O conteudo da ficha e o proprio nome dela no caso comum, entao o padrao sai
+   * pronto sem pedir nada a quem monta a tela; o `aria-label` cobre a ficha que
+   * nao e texto - um `Avatar` com o nome ao lado, um `Badge` de situacao.
+   */
+  const text =
+    typeof children === "string" || typeof children === "number"
+      ? String(children)
+      : (props["aria-label"] ?? "");
+
   return (
     <BaseCombobox.Chip
       {...props}
@@ -188,7 +209,7 @@ export function ComboboxChip({
     >
       {children}
       <BaseCombobox.ChipRemove
-        aria-label="Remover"
+        aria-label={remove(text)}
         className={cn(
           "text-fg-subtle transition-colors hover:text-fg",
           // O menor alvo da biblioteca: 12x12, o tamanho do proprio icone,

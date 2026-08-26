@@ -15,6 +15,28 @@ Revelar é um gesto momentâneo: sair do campo esconde de novo. Deixar a senha n
 tela depois que a pessoa foi para outro lugar é o que faz alguém ser lido por
 cima do ombro numa mesa compartilhada.
 
+## Vestir por parte
+
+O `className` veste o **campo**, e não a moldura — é a única peça do catálogo em
+que a raiz não é o alvo dele, e mudar isso agora trocaria em silêncio a largura
+de toda tela de login que já existe. Então a moldura ganhou nome próprio:
+
+```tsx
+<PasswordInput
+  aria-label="Senha"
+  classNames={{ wrapper: 'w-72', input: 'font-mono', action: 'text-fg-muted' }}
+/>
+```
+
+`wrapperClassName` é o nome antigo de `classNames.wrapper` e continua valendo.
+
+Os dois nomes que o leitor de tela ouve no botão entram por `labels`, e cada um
+tem o próprio padrão — trocar só um não apaga o outro:
+
+```tsx
+<PasswordInput aria-label="Senha" labels={{ show: 'Revelar a senha' }} />
+```
+
 ## Quando não usar
 
 Para código de verificação de seis dígitos, use `OTPField` — ele separa as

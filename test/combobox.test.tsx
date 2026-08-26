@@ -75,6 +75,8 @@ test("a escolha multipla monta as fichas sem sair da biblioteca", () => {
 
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
   expect(screen.getByText("Transportes Cabo Branco")).toBeDefined();
-  // Cada ficha traz o proprio botao de remover, ja pronto no componente.
-  expect(screen.getAllByRole("button", { name: "Remover" }).length).toBe(2);
+  // Cada ficha traz o proprio botao de remover, ja pronto no componente - e
+  // com o nome dela dentro, senao a fila se anuncia "Remover, Remover".
+  expect(screen.getByRole("button", { name: "Remover Clinica Sao Lucas" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Remover Transportes Cabo Branco" })).toBeDefined();
 });
