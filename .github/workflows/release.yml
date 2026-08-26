@@ -20,9 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # Exigido pelo `--provenance`: e o que deixa o npm assinar de onde o
-      # pacote saiu. Sem isto o publish falha, e nao apenas perde o selo.
-      id-token: write
+      # Sem `id-token`, porque sem `--provenance`: o registro recusa assinatura
+      # vinda de repositorio privado, com 422 e a mensagem "Only public source
+      # repositories are supported when publishing with provenance". A checagem
+      # do CLI nao pega isso - ela olha a visibilidade do PACOTE, e e pulada
+      # quando se passa `--access public`. Quem decide e o servidor, depois de
+      # todo o trabalho feito e da assinatura ja registrada no log publico.
+      #
+      # Para reativar, o repositorio precisa ser publico. Enquanto for privado,
+      # devolver o `--provenance` so recria a falha no ultimo passo.
 
     steps:
       - uses: actions/checkout@v5
@@ -33,8 +39,8 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra so para o `npm publish`: e ele que sabe assinar a
-      # procedencia, e é ele que escreve o .npmrc a partir do segredo.
+      # O Node entra so para o `npm publish`: o bun nao escreve o .npmrc a
+      # partir do segredo, e e esse arquivo que autentica no registro.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -111,6 +117,6 @@ jobs:
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
       # tempo repetindo o que acabou de ser feito.
       - name: Publicar
-        run: npm publish --provenance --access public --ignore-scripts
+        run: npm publish --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
