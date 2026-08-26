@@ -207,6 +207,91 @@ palpite.
 Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
 valor, e evita um segundo assinante da mesma media query.
 
+### O pacote nativo, e os quatro subcaminhos dele
+
+`@rivocode/ui-native` é o mesmo catálogo em React Native, publicado como
+**fonte**: o vocabulário de classes acima é o mesmo, via NativeWind, sobre os
+mesmos tokens. O que atravessa é a classe, o token e a escolha da peça — **o
+JSX se reescreve**. No nativo tudo é controlado (sem `defaultValue`, sem
+`defaultChecked`, sem `defaultOpen`) e a lista vem por `items`, e não por
+composição: `<Select items={…} value onValueChange label />`, sem
+`SelectTrigger` nem `SelectItem`.
+
+A regra que desenha o pacote é **um subcaminho por peer, e não um por
+assunto**. Quatro peers são opcionais, e é o peer que decide onde a porta
+fica: no celular um módulo do Expo e o `react-native-svg` custam **build**, e
+não só bytes, e o metro resolve import por arquivo — então quem só quer um
+`Button` não pode encontrar nenhum deles no índice da raiz. Juntar `Clipboard`
+e `FileUpload` numa porta só, um `/expo`, cobraria o seletor de documentos de
+quem apenas copia a chave de acesso de uma NF-e; por isso são duas.
+
+| Subcaminho | O peer que ele custa | O que sai por ele |
+|---|---|---|
+| `@rivocode/ui-native/form` | `react-hook-form`, mais `zod` e `@hookform/resolvers` no `useZodForm` | `Form`, `FormField`, `useZodForm` e os adaptadores `forText`, `forValue`, `forChecked`, `forDate` |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial` e a `PALETTE` |
+| `@rivocode/ui-native/clipboard` | `expo-clipboard` | `Clipboard` |
+| `@rivocode/ui-native/file-upload` | `expo-document-picker` | `FileUpload`, `FileUploadList`, `FileUploadItem` |
+
+```sh
+npx expo install react-native-svg expo-clipboard expo-document-picker
+```
+
+**O formulário tem um adaptador a mais, o `forText`**, porque no nativo o campo
+não devolve evento: o `TextInput` entrega o texto direto, e `forValue` não
+serve. E **nada envia sozinho** — sem `<form>`, sem `type="submit"` e sem
+Enter, o `Form` entrega `{ submit, isSubmitting }` por função. O rótulo viaja
+no campo: sem `for` nem `id`, o `FormField` põe `accessibilityLabel` e
+`invalid` na linha, e o adaptador os leva ao controle.
+
+```tsx
+import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
+```
+
+**O gráfico não tem Recharts, nem variável de CSS, nem contentor que meça.** O
+`ChartContainer` faz as três coisas à mão e **entrega**: `children` como função
+recebe `{ width, height, colors }`, no lugar de `var(--color-série)` — e a
+medida chega zerada no primeiro quadro. Os quatro finais de uma consulta
+(`isLoading`, `isError`, `onRetry`, `empty`) atravessam com os mesmos nomes, e
+a altura continua sendo sua, por classe.
+
+A `PALETTE` é a lista dos oito papéis de série do tema — `chart-1` a `chart-8`
+—, na ordem em que devem ser usados: série sem `color` no `config` recebe o
+próximo da paleta, e é ela que o `ChartDonut` percorre fatia a fatia. **Cor de
+série aqui é papel de token, nunca hexadecimal.** O web aceita qualquer cor de
+CSS na mesma prop porque lá ela vira `var(--color-série)` e o tema continua no
+comando; aqui a cor que a peça recebe é o valor final que vai para o desenho, e
+um `#22c55e` escrito ali seria a única coisa da tela que não muda quando o
+cliente troca de tema.
+
+```tsx
+import { ChartContainer, ChartDonut, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
+```
+
+A `Sparkline` fica fora deste subcaminho, na raiz e desenhada com `View`: ela é
+o slot `chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o
+`react-native-svg` de quem só queria um número num cartão.
+
+**Copiar confirma duas vezes.** O `Clipboard` troca o nome do botão, como no
+web, e dispara **também** um aviso — `accessibilityLabel` trocado num
+`Pressable` que já está sob o foco não é reanunciado nem pelo VoiceOver nem
+pelo TalkBack, e o aviso do `RivoProvider` é o único canal da tela que fala
+sozinho (`toast={false}` desliga).
+
+**E a área de soltar não existe.** No celular não há arrastar: o `FileUpload`
+abre o seletor do sistema por um botão de altura de controle, com o `hint`
+dentro do nome falado, e o `accept` fala MIME, que é o que o seletor sabe
+filtrar. O que volta é um `PickedFile` com `uri` local — `size` pode faltar, e
+`maxSize` só recusa o que mediu. A lista do que já entrou é a `FileUploadList`,
+com um `FileUploadItem` por arquivo.
+
+```tsx
+import { Clipboard } from '@rivocode/ui-native/clipboard'
+import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
+```
+
+O resto da paridade — o que traduz, o que muda de nome e o que não porta por
+decisão — está em <https://ds.rivocode.com.br/react-native.md>.
+
 ### Onde esta a verdade
 
 | O que | Onde |

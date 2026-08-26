@@ -68,18 +68,22 @@ const ENGLISH =
 const DICTIONARIES = /check-comentarios-em-portugues|check-nomes-em-ingles/;
 
 /**
- * A divida que ficou para depois.
+ * A divida que ficou para depois. Hoje: nenhuma.
  *
- * Os dois arquivos onde o ingles ainda mora, escritos com endereco em vez de
- * escondidos atras de uma guarda desligada. Sao o resto da mesma divida das
- * quatro areas: `apps/docs/src/**`, `chart-axis.tsx`, `format.ts` e
- * `acentuar.ts` foram traduzidos na mesma passagem que criou este arquivo, e
- * estes dois nao porque outra mao estava dentro deles na mesma hora.
+ * Ela nasceu com dois arquivos - `apps/docs/src/pages/home.tsx` e
+ * `apps/docs/vite.config.ts` -, o resto da mesma divida das quatro areas que
+ * fizeram esta guarda existir. Os outros foram traduzidos na passagem que criou
+ * este arquivo, e estes dois nao porque outra mao estava dentro deles na mesma
+ * hora. Foram pagos depois: o que explicava decisao virou portugues, o que
+ * repetia a linha de baixo saiu.
  *
- * Ela so encolhe: entrada que nao acusa mais e erro, e a guarda manda apagar a
- * linha - senao a lista vira o lugar onde o ingles passa a morar.
+ * A lista continua aqui vazia porque o mecanismo e que importa, e nao as
+ * linhas: a proxima colisao entre a guarda e um arquivo em obra tem onde ser
+ * anotada sem que ninguem precise reinventar o acordo. O acordo e que ela SO
+ * ENCOLHE - entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
+ * E o que impede esta lista de virar o lugar onde o ingles mora.
  */
-const DEBT = new Set(["apps/docs/src/pages/home.tsx", "apps/docs/vite.config.ts"]);
+const DEBT = new Set<string>([]);
 
 /**
  * Tira do comentario o que e codigo citado.
@@ -143,4 +147,8 @@ if (stale.length > 0) {
   process.exit(1);
 }
 
-console.log(`Todo comentario em portugues, fora as ${DEBT.size} dividas ja declaradas.`);
+console.log(
+  DEBT.size === 0
+    ? "Todo comentario em portugues, e nenhuma divida declarada."
+    : `Todo comentario em portugues, fora as ${DEBT.size} dividas ja declaradas.`,
+);

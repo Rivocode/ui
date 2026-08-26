@@ -250,7 +250,7 @@ const DEBT = new Set<string>([]);
  * sao sempre os mesmos: os que traduzem, os que acentuam, e ela mesma.
  */
 const DICTIONARIES =
-  /check-nomes-em-ingles|acentuar\.ts|exports-ingles|acentos\.test|acentos-previews|titulos-previews/;
+  /check-nomes-em-ingles|acentuar\.ts|acentos\.test/;
 
 /**
  * Apaga do codigo tudo que e prosa, preservando o tamanho.

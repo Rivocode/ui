@@ -68,9 +68,11 @@ ingles por classe fechada - `the`, `this`, `which`, `because` -, e nao por
 vocabulario, que e ingles de propria vontade em metade do que se escreve aqui.
 Duas dessas palavras no mesmo comentario e o corte.
 
-Divida pendente: `apps/docs/src/pages/home.tsx` e `apps/docs/vite.config.ts`,
-os dois ultimos comentados em ingles. Eles estao escritos no `DEBT` da guarda,
-que so encolhe.
+A lista `DEBT` da guarda esta VAZIA, e o mecanismo fica: e onde a proxima
+colisao entre a guarda e um arquivo em obra se anota, sem ninguem reinventar o
+acordo. O acordo e que ela SO ENCOLHE - entrada que nao acusa mais e erro, e a
+guarda manda apagar a linha. E o que impede a lista de virar o lugar onde o
+ingles mora.
 
 ## Idioma do codigo
 

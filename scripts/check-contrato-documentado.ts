@@ -15,9 +15,23 @@ import { readdirSync, readFileSync } from "node:fs";
 const CONTRACT_FILE = ".design-sync/conventions.md";
 const SKILL_DIR = ".claude/skills/rivocode-ui";
 
+/**
+ * Os DOIS pacotes, e nao so o web.
+ *
+ * A guarda nasceu contando so `src/chart` e `src/form`, e o nativo cresceu
+ * quatro subcaminhos por fora dela - `chart`, `form`, `clipboard` e
+ * `file-upload`. Peer opcional que ninguem cita e pior que peer nenhum: quem
+ * le o contrato nao descobre que a peca existe, e quem le a skill escreve a
+ * importacao da raiz, que nao tem a peca. Tirar as quatro linhas de baixo
+ * devolve o ponto cego inteiro.
+ */
 const TARGETS = [
   { file: "src/chart/index.ts", name: "@rivocode/ui/chart" },
   { file: "src/form/index.ts", name: "@rivocode/ui/form" },
+  { file: "native/src/chart/index.ts", name: "@rivocode/ui-native/chart" },
+  { file: "native/src/form/index.ts", name: "@rivocode/ui-native/form" },
+  { file: "native/src/clipboard/index.ts", name: "@rivocode/ui-native/clipboard" },
+  { file: "native/src/file-upload/index.ts", name: "@rivocode/ui-native/file-upload" },
 ];
 
 const contract = readFileSync(CONTRACT_FILE, "utf8");

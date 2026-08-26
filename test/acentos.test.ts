@@ -106,7 +106,25 @@ async function labelsOf(file: string) {
 test("todo texto que a biblioteca escreve na tela sai acentuado", async () => {
   const misses: string[] = [];
 
-  for await (const file of new Glob("src/**/*.{ts,tsx}").scan(".")) {
+  // Os DOIS pacotes, e nao so o web. Enquanto a varredura parava em `src/`, o
+  // `DataList` nativo serviu "Nao foi possivel carregar a lista." por versoes,
+  // acentuada do lado web e crua no aparelho, sem nada acusar: e texto de tela
+  // em pacote que a guarda nao enxergava. Tirar `native/src` daqui devolve o
+  // ponto cego inteiro.
+  // Um Glob por arvore, e nao um padrao so com chaves em volta das duas: o
+  // Glob do Bun nao aninha `{}` dentro de `{}`, e `{src/**/*.{ts,tsx},...}`
+  // varre ZERO arquivo em silencio - o teste fica verde por nao olhar nada,
+  // que e pior que a falha que ele existia para pegar.
+  const trees = ["src/**/*.{ts,tsx}", "native/src/**/*.{ts,tsx}"];
+  const files: string[] = [];
+  for (const tree of trees) {
+    for await (const file of new Glob(tree).scan(".")) files.push(file);
+  }
+
+  // Sem arquivo nao ha teste: a varredura que nao acha nada passa calada.
+  expect(files.length).toBeGreaterThan(100);
+
+  for (const file of files) {
     for (const label of await labelsOf(file)) {
       // A interpolacao nao e texto: `Passo {n} de {total}` vale pelo `Passo` e
       // pelo `de`, e o que esta dentro das chaves e problema de quem passa.
