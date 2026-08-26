@@ -2,6 +2,82 @@
 
 ## 0.5.0 (nao publicado)
 
+Uma bancada externa auditou a biblioteca inteira - 258 exports instanciados,
+118 paginas lidas, contraste medido nos dois temas, 12 telas a 390px e 93
+testes de interacao em tres navegadores. Esta versao e a resposta.
+
+O padrao dos achados vale mais que a lista: **o que era verificado estava
+impecavel, e todo defeito morava numa faixa que nenhum check cobria** - fuso de
+data, callback na doc, contraste nao-textual, estado indeterminado, doc que
+promete peca ausente. Por isso metade do trabalho aqui e verificacao nova, e
+nao conserto.
+
+### As pecas que faltavam
+
+`Clipboard`, `Code` e `CodeBlock`, `RelativeTime`, `Timeline`, `Indicator`,
+`AvatarGroup`, `PasswordInput`, `TagsInput`, `Tracker`, `Splitter` e
+`Editable`. Todas com pagina, exemplo que roda, teste e linha na skill - que e
+o contrato que faltou ao `FileUpload`, publicado com a doc pronta e o
+componente ausente.
+
+### `classNames` por parte
+
+Abaixo da raiz, cada peca era no selado: a trilha do `Progress`, o pino do
+`Slider`, a marca do `Checkbox`, a linha do `DataTable`, a tarja do `Dialog`.
+O unico gancho de parte da biblioteca inteira era o `labelClassName`.
+
+```tsx
+<Slider classNames={{ track: "bg-accent-subtle", thumb: "shadow-glow" }} />
+<Dialog classNames={{ backdrop: "backdrop-blur-md" }} />
+```
+
+Os nomes das partes sao os mesmos da secao "Partes" de cada pagina.
+`labelClassName` continua valendo.
+
+### Forma e movimento entram no tema
+
+Canto, duracao, curva e espacamento de letra saem da escala global para
+`src/tokens/forma.css`, e um tema pode redefinir os nove:
+
+```css
+[data-rc-theme="acme"] {
+  --rc-radius-md: 0px;
+  --rc-duration-base: 140ms;
+}
+```
+
+### Onze consertos que a auditoria achou
+
+Fuso nos formatadores de data do grafico (todo eixo de tempo do produto estava
+deslocado um dia); barra indeterminada que parecia 100%; botao carregando que
+perdia a variante; molde de mascara desconhecido que virava o valor do campo;
+telefone fixo mal-formatado pelo `defaultValue`; caixa misturada no cabecalho
+que ordena; `ComboboxValue` exportado, que destrava as fichas; tom no `Toast`;
+`Avatar` que sumia quando `surface` e `surface-raised` sao iguais; contraste do
+aviso no tema claro; e o rotulo de grupo da `Sidebar` que nunca sumia quando a
+barra encolhia.
+
+Mais tres de acessibilidade que so aparecem no celular ou no teclado: campo de
+texto que disparava o zoom do iOS, quatro alvos abaixo de 24px, e - dentro de
+um `Field` - todo radio de um grupo herdando o rotulo do campo, com o leitor de
+tela dizendo o mesmo nome para todas as opcoes.
+
+### A fronteira dos controles passa a cumprir a WCAG 1.4.11
+
+`--rc-border-strong` sobe para 3:1 contra a superficie, e campo, moldura com
+encosto, gatilho do `Select` e busca da barra passam a veste-la. **A mudanca e
+visivel**: a borda de todo controle fica mais presente nos dois temas.
+
+### Nove guardas novas
+
+`check:props` (as tabelas saem do compilador, e 2.234 callbacks voltaram),
+`check:nomes` (idioma do codigo), `check:doc` (pagina sem codigo e peca sem
+pagina), `check:grupos` (seletor de grupo morto), `check:paridade` (a tabela do
+nativo contra o indice real), `check:native:types` (a fonte publicada do
+nativo), contraste com alfa composto, pares nao-textuais de 1.4.11, e acento em
+texto de interface. Mais o `bun run visual`, que compara os retratos por
+assinatura - ele pega o que `tsc` e teste de unidade nao pegam.
+
 ### Cada prop diz em que versao apareceu
 
 As tabelas de props - no site e nos `.md` que um agente le - ganham a coluna
