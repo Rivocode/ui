@@ -42,12 +42,20 @@ cor literal nem `z-index` numerico.**
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Texto | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
-| Empilhamento | `z-[var(--rc-z-dialog)]`, e os pares `dropdown`, `overlay`, `popover`, `toast`, `tooltip` |
+| Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 
 **Preencher e escrever texto sao tokens diferentes.** `bg-danger` preenche e
 recebe `text-danger-fg` por cima. `text-danger-text` e o vermelho que se le
 sobre o fundo da pagina. Nenhuma cor serve para as duas funcoes. Vale igual
 para o acento: `bg-accent` com `text-accent-fg`, ou `text-accent-text` solto.
+
+**Sao oito degraus de empilhamento, e os dois das pontas sao seus.** Os seis do
+meio pertencem as pecas - o `Dialog` sobe sozinho para o `dialog`, o `Menu` para
+o `dropdown` - e voce raramente os escreve. Os que a sua tela escreve sao os
+outros dois: `--rc-z-base` para trazer um elemento de volta ao plano do
+conteudo, e `--rc-z-sticky` para **cabecalho, coluna congelada e barra de acao
+que gruda ao rolar**. Cabecalho grudado com `--rc-z-dropdown` fica na frente do
+menu que ele mesmo abre; e o erro que a falta desta linha ja produziu.
 
 **Altura de controle vem da densidade**, nunca cravada:
 `h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.

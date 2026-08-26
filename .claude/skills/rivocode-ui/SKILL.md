@@ -108,7 +108,7 @@ responder ao tema do cliente.
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
-| Empilhamento | `z-[var(--rc-z-dialog)]`, e os pares `dropdown`, `overlay`, `popover`, `toast`, `tooltip` |
+| Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 
 **Toda peça aceita `className` na raiz, e a classe de quem usa vence a da
 peça** (merge por grupo: `h-14` derruba o `h-10` do Button). É o caminho para
@@ -176,7 +176,10 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 ## O que nunca fazer
 
 - Cor literal em `className` ou em `style`. Sempre token.
-- `z-index` numérico. Sempre `z-[var(--rc-z-…)]`.
+- `z-index` numérico. Sempre `z-[var(--rc-z-…)]`. São oito degraus, e os que a
+  sua tela escreve são os das pontas: `--rc-z-sticky` para cabeçalho, coluna
+  congelada e barra que gruda ao rolar, `--rc-z-base` para voltar ao plano do
+  conteúdo. Os seis do meio são das peças, que já sobem sozinhas.
 - Altura cravada em controle. Sempre `var(--rc-control-…)`.
 - Montar `TooltipProvider`, `ToastViewport` ou container de portal à mão. O
   Provider já fez.
