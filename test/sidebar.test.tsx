@@ -5,6 +5,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
   SidebarInput,
   SidebarMenu,
   SidebarMenuItem,
@@ -150,4 +151,38 @@ test("no celular, escolher um destino fecha a folha", () => {
     // Na mesa ela continuaria aberta: ali a barra nao cobre nada.
     expect(screen.queryByText("Painel")).toBeNull();
   });
+});
+
+function barraComGrupo(defaultOpen: boolean) {
+  return render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarGroup label="Catalogo">
+              <SidebarMenu>
+                <SidebarMenuItem href="#pecas">Pecas</SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+}
+
+test("encolhida, o rotulo do grupo some em vez de sair cortado", () => {
+  // Em 3,5rem "CATALOGO" viraria "CATA". Sumir diz menos; mentir sobre o nome
+  // do grupo diz errado.
+  const { container } = barraComGrupo(false);
+
+  expect(screen.queryByText("Catalogo")).toBeNull();
+  // O destino continua la: encolhida, ele e so o icone, com o nome no tooltip.
+  expect(container.querySelector('a[href="#pecas"]')).not.toBeNull();
+});
+
+test("aberta, o rotulo do grupo aparece", () => {
+  barraComGrupo(true);
+
+  expect(screen.getByText("Catalogo")).toBeDefined();
 });

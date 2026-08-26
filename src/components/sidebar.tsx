@@ -335,17 +335,15 @@ export type SidebarGroupProps = ComponentProps<"div"> & {
 };
 
 export function SidebarGroup({ className, label, children, ...props }: SidebarGroupProps) {
+  // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz menos,
+  // mas mentir sobre o nome do grupo diz errado. Quem decide e o estado, e nao
+  // um seletor de CSS, que e como o resto do arquivo resolve o colapso.
+  const { collapsed } = useSidebar();
+
   return (
     <div {...props} className={cn("flex flex-col gap-1", className)}>
-      {label && (
-        <p
-          className={cn(
-            "px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase",
-            // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz
-            // menos, mas mentir sobre o nome do grupo diz errado.
-            "group-data-[collapsed]/barra:hidden",
-          )}
-        >
+      {label && !collapsed && (
+        <p className="px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase">
           {label}
         </p>
       )}
