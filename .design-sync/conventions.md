@@ -180,8 +180,8 @@ comprovante depois.
 ```
 
 Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
-`maskDate` para `dd/mm/aaaa`, e `applyMask`, `applyPattern`,
-`applyCurrencyMask`, `unmask`, `toCents` e `phoneMask` para os moldes de
+`applyDateMask` para `dd/mm/aaaa`, e `applyMask`, `applyPattern`,
+`applyCurrencyMask`, `unmask`, `toCents` e `phonePatternFor` para os moldes de
 `MASKS`. Formatar CPF numa celula de tabela nao precisa de um campo por perto.
 
 ### O que o CSS nao alcanca

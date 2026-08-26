@@ -25,19 +25,6 @@ export type TreeProps = {
   /** Os ids iniciais, quando a arvore controla o proprio estado. */
   defaultValue?: string[];
   onValueChange?: (ids: string[]) => void;
-  /**
-   * Descontinuada: use `value`. Continua funcionando, e sai numa versao maior.
-   *
-   * @deprecated Use `value`.
-   */
-  selected?: string[];
-  /**
-   * Descontinuada: use `onValueChange`. Continua funcionando, e sai numa versao
-   * maior.
-   *
-   * @deprecated Use `onValueChange`.
-   */
-  onSelectedChange?: (ids: string[]) => void;
   /** Sem isto, so uma folha por vez. */
   multiple?: boolean;
   /** Ids abertos. Sem controle, a arvore abre e fecha sozinha. */
@@ -65,8 +52,6 @@ export function Tree({
   value,
   defaultValue,
   onValueChange,
-  selected,
-  onSelectedChange,
   multiple,
   expanded,
   onExpandedChange,
@@ -80,24 +65,20 @@ export function Tree({
   /*
    * A escolha deixou de ser obrigatoria.
    *
-   * Ela nascia exigida - `selected` e `onSelectedChange` -, e o `TreeSelect`,
-   * que embrulha esta peca, ja aceitava `value`/`defaultValue`/`onValueChange`
-   * opcionais. Quem trocava o painel pela arvore inline reescrevia o binding
-   * inteiro, e ainda tinha que inventar um `useState` para uma arvore que so
-   * queria abrir e fechar. Agora ela guarda a propria escolha quando ninguem
-   * controla, como todo o resto do catalogo.
-   *
-   * Controlada por qualquer um dos dois nomes: `selected` continua valendo
-   * para nao quebrar quem ja chamava assim.
+   * Ela nascia exigida, e o `TreeSelect`, que embrulha esta peca, ja aceitava
+   * `value`/`defaultValue`/`onValueChange` opcionais. Quem trocava o painel
+   * pela arvore inline reescrevia o binding inteiro, e ainda tinha que
+   * inventar um `useState` para uma arvore que so queria abrir e fechar. Agora
+   * ela guarda a propria escolha quando ninguem controla, como todo o resto do
+   * catalogo.
    */
-  const controlled = value !== undefined || selected !== undefined;
+  const controlled = value !== undefined;
   const [internalValue, setInternalValue] = useState<string[]>(defaultValue ?? []);
-  const picked = value ?? selected ?? internalValue;
+  const picked = value ?? internalValue;
 
   function change(ids: string[]) {
     if (!controlled) setInternalValue(ids);
     onValueChange?.(ids);
-    onSelectedChange?.(ids);
   }
 
   const visiveis = useMemo(() => filtrar(items, filter.trim().toLowerCase()), [items, filter]);

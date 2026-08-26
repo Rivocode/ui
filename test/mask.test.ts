@@ -5,7 +5,6 @@ import {
   applyCurrencyMask,
   applyPattern,
   toCents,
-  phoneMask,
   phonePatternFor,
   unmask,
 } from "../src/lib/mask";
@@ -59,10 +58,10 @@ test("o valor sai em centavos, sem passar por ponto flutuante", () => {
 });
 
 test("o telefone troca de molde entre o fixo e o celular", () => {
-  expect(phoneMask("8332211234")).toBe("(99) 9999-9999");
-  expect(phoneMask("83988112233")).toBe("(99) 99999-9999");
-  expect(applyPattern("8332211234", phoneMask("8332211234"))).toBe("(83) 3221-1234");
-  expect(applyPattern("83988112233", phoneMask("83988112233"))).toBe("(83) 98811-2233");
+  expect(phonePatternFor("8332211234")).toBe("(99) 9999-9999");
+  expect(phonePatternFor("83988112233")).toBe("(99) 99999-9999");
+  expect(applyPattern("8332211234", phonePatternFor("8332211234"))).toBe("(83) 3221-1234");
+  expect(applyPattern("83988112233", phonePatternFor("83988112233"))).toBe("(83) 98811-2233");
 });
 
 test("sem mascara sobra so o que foi digitado", () => {
@@ -86,19 +85,13 @@ test("molde escrito na mao com letra literal continua valendo", () => {
 
 test("o nome diz a natureza do que volta, e nao so o assunto", () => {
   // As tres tinham a mesma assinatura `(text: string) => string`, e uma
-  // devolvia coisa de outra natureza: molde, e nao texto pronto. Quem
-  // chamava `phoneMask` esperando o telefone formatado recebia o molde
-  // literal, e o TypeScript nao tinha como acusar - as assinaturas eram
+  // devolvia coisa de outra natureza: molde, e nao texto pronto. Quem a
+  // chamasse esperando o telefone formatado recebia o molde literal escrito no
+  // campo, e o TypeScript nao tinha como acusar - as assinaturas eram
   // identicas. `applyX` entrega texto; `patternFor` entrega molde.
   expect(phonePatternFor("11987654321")).toBe("(99) 99999-9999");
   expect(phonePatternFor("1132654321")).toBe("(99) 9999-9999");
   expect(applyCurrencyMask("123456")).toBe("1.234,56");
-});
-
-test("o nome antigo continua valendo, para quem ja instalou a 0.5.0", () => {
-  // Renomear sem deixar o apelido quebraria quem atualizou ontem, e por um
-  // motivo que nao muda comportamento nenhum.
-  expect(phoneMask("11987654321")).toBe(phonePatternFor("11987654321"));
 });
 
 test("o fixo nao ganha a pontuacao do celular quando se chama applyMask direto", () => {

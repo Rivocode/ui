@@ -28,8 +28,8 @@ function ControlledTree({ multiple = true, filter = "" }) {
     <RivoProvider scope="local">
       <Tree
         items={TREE}
-        selected={ids}
-        onSelectedChange={setIds}
+        value={ids}
+        onValueChange={setIds}
         multiple={multiple}
         filter={filter}
         expanded={["financeiro", "operacao"]}

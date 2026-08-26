@@ -25,8 +25,7 @@ export function MixedState() {
     <div className="w-72">
       <Tree
         items={SETORES}
-        selected={['contas-pagar']}
-        onSelectedChange={() => {}}
+        defaultValue={['contas-pagar']}
         expanded={['financeiro', 'operacao']}
         multiple
       />

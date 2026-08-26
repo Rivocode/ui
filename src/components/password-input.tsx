@@ -13,8 +13,6 @@ export type PasswordInputProps = Omit<InputProps, "type"> & {
   labels?: { show?: string; hide?: string };
   /** Classe por parte: `wrapper`, `input`, `action`. */
   classNames?: Slots<"wrapper" | "input" | "action">;
-  /** @deprecated Use `classNames.wrapper`. */
-  wrapperClassName?: string;
   size?: ComponentProps<typeof InputGroup>["size"];
 };
 
@@ -38,7 +36,6 @@ export type PasswordInputProps = Omit<InputProps, "type"> & {
 export function PasswordInput({
   labels = {},
   classNames,
-  wrapperClassName,
   className,
   size,
   onBlur,
@@ -51,12 +48,7 @@ export function PasswordInput({
   const [visible, setVisible] = useState(false);
 
   return (
-    <InputGroup
-      size={size}
-      // O nome antigo vem depois do novo: quem ainda passa `wrapperClassName`
-      // passou de proposito, e a classe dele tem que continuar vencendo.
-      className={cn(classNames?.wrapper, wrapperClassName)}
-    >
+    <InputGroup size={size} className={classNames?.wrapper}>
       <Input
         {...props}
         type={visible ? "text" : "password"}

@@ -26,8 +26,12 @@ export type SparklineProps = {
   /**
    * Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo
    * ponto. Use so quando subir for bom: em custo, subir e ruim.
+   *
+   * Nao se chama `tone` de proposito, e o nome acompanha o do web: `tone` e a
+   * escala semantica de cor no resto do catalogo - `Badge`, `Alert`,
+   * `Timeline` -, com outros valores.
    */
-  tone?: "auto" | "none";
+  trend?: "auto" | "none";
   /** A altura do desenho, em px. A largura vem do pai. */
   height?: number;
   className?: string;
@@ -44,7 +48,7 @@ export type SparklineProps = {
  *
  * ```tsx
  * <Stat label="Faturamento" value="R$ 82,4 mil" delta={12}
- *       chart={<Sparkline data={[12, 15, 14, 19, 22, 28]} tone="auto" />} />
+ *       chart={<Sparkline data={[12, 15, 14, 19, 22, 28]} trend="auto" />} />
  * ```
  *
  * Por padrao ela sai escondida do leitor de tela, pelo mesmo motivo do web: um
@@ -61,7 +65,7 @@ export function Sparkline({
   data,
   variant = "line",
   color,
-  tone = "none",
+  trend = "none",
   height = 32,
   className,
   label,
@@ -85,7 +89,7 @@ export function Sparkline({
    * que o tema garante legiveis contra a superficie, nos dois temas.
    */
   const role: RivoNativeColorRole =
-    color ?? (tone === "auto" ? (rose ? "success-text" : "danger-text") : "accent-text");
+    color ?? (trend === "auto" ? (rose ? "success-text" : "danger-text") : "accent-text");
   const stroke = colors[role];
 
   // Sem rotulo ela e decoracao: o leitor de tela pula a caixa E os filhos.

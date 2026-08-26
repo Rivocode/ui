@@ -220,8 +220,8 @@ export function Showcase() {
                   columns={SHOWCASE_COLUMNS}
                   rowKey={(invoice) => invoice.id}
                   selectable
-                  selected={selected}
-                  onSelectedChange={setSelected}
+                  value={selected}
+                  onValueChange={setSelected}
                 />
               </div>
 

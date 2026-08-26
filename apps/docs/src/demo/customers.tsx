@@ -288,8 +288,8 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
           <ScrollArea className="max-h-72">
             <Tree
               items={SEGMENTS}
-              selected={segment}
-              onSelectedChange={setSegment}
+              value={segment}
+              onValueChange={setSegment}
               expanded={expanded}
               onExpandedChange={setExpanded}
               multiple

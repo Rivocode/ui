@@ -126,19 +126,6 @@ export type DataTableProps<Row> = {
   /** As chaves marcadas de saida, quando a tabela controla a propria selecao. */
   defaultValue?: string[];
   onValueChange?: (keys: string[]) => void;
-  /**
-   * Descontinuada: use `value`. Continua funcionando, e sai numa versao maior.
-   *
-   * @deprecated Use `value`.
-   */
-  selected?: string[];
-  /**
-   * Descontinuada: use `onValueChange`. Continua funcionando, e sai numa versao
-   * maior.
-   *
-   * @deprecated Use `onValueChange`.
-   */
-  onSelectedChange?: (keys: string[]) => void;
 
   /**
    * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
@@ -231,29 +218,24 @@ export function DataTable<Row>({
   value,
   defaultValue,
   onValueChange,
-  selected,
-  onSelectedChange,
   classNames,
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
 
   /*
-   * A selecao fala o vocabulario do catalogo - `value`/`onValueChange` - e
-   * atende pelo nome antigo. Eram tres dialetos para o mesmo dado: a tabela
-   * pedia `selected`/`onSelectedChange` opcionais, a `Tree` pedia os mesmos
-   * dois obrigatorios e o `TreeSelect` pedia `value`/`onValueChange`. Quem
-   * escrevia uma tela com os tres reescrevia o binding a cada peca.
+   * A selecao fala o vocabulario do catalogo - `value`/`onValueChange` -, o
+   * mesmo da `Tree` e do `TreeSelect`. Eram tres dialetos para o mesmo dado, e
+   * quem escrevia uma tela com as tres pecas reescrevia o binding a cada uma.
    */
-  const picked = value ?? selected;
   const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>(() =>
     Object.fromEntries((defaultValue ?? []).map((key) => [key, true])),
   );
 
   // Controlada quando a chave veio de fora; interna quando nao. Nos dois casos
-  // o motor enxerga o mesmo formato, e os dois avisos ouvem as mudancas.
+  // o motor enxerga o mesmo formato, e o aviso ouve as mudancas.
   const selection: RowSelectionState = useMemo(
-    () => (picked ? Object.fromEntries(picked.map((key) => [key, true])) : internalSelection),
-    [picked, internalSelection],
+    () => (value ? Object.fromEntries(value.map((key) => [key, true])) : internalSelection),
+    [value, internalSelection],
   );
 
   // O motor exige `Record`, e a API publica nunca exigiu: o cast fica aqui na
@@ -293,10 +275,9 @@ export function DataTable<Row>({
     },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
       const proxima = typeof updater === "function" ? updater(selection) : updater;
-      if (!picked) setSelecaoInterna(proxima);
+      if (!value) setSelecaoInterna(proxima);
       const keys = keysOf(proxima);
       onValueChange?.(keys);
-      onSelectedChange?.(keys);
     },
     state: {
       globalFilter: filter || undefined,

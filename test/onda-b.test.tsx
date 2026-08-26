@@ -53,9 +53,10 @@ test("o telefone troca de molde entre o fixo e o celular", () => {
 
 test("o telefone fixo que chega pronto ja entra com o molde certo", () => {
   // Formulario de edicao chega preenchido do servidor, e era ai que aparecia:
-  // o onChange escolhia o molde com phoneMask, e o estado inicial nao. Saia
-  // "(83) 88112-233", com a pontuacao do celular num numero de oito casas. E
-  // se corrigia sozinho na primeira tecla, o que torna dificil reproduzir.
+  // o onChange escolhia o molde com phonePatternFor, e o estado inicial nao.
+  // Saia "(83) 88112-233", com a pontuacao do celular num numero de oito
+  // casas. E se corrigia sozinho na primeira tecla, o que torna dificil
+  // reproduzir.
   withTheme(<MaskedInput mask="telefone" defaultValue="8388112233" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 

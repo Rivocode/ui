@@ -20,9 +20,9 @@ de um painel — e o mesmo vocabulário do resto do catálogo. Os dois são
 opcionais: sem nenhum deles a árvore guarda a própria escolha, e `defaultValue`
 diz com que ela começa.
 
-Eram obrigatórios, e se chamavam `selected` e `onSelectedChange`: trocar o
-painel pela árvore inline reescrevia o binding inteiro. Os nomes antigos
-continuam funcionando e saem numa versão maior.
+Eram obrigatórios, e com outro nome: trocar o painel pela árvore inline
+reescrevia o binding inteiro, e uma árvore que só queria abrir e fechar ainda
+pagava um `useState` para existir.
 
 ## No React Native
 

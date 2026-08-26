@@ -24,19 +24,14 @@ export type SparklineProps = {
   /**
    * Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo
    * ponto. Use so quando subir for bom: em custo, subir e ruim.
+   *
+   * Nao se chama `tone` de proposito, e nao adianta "corrigir": no resto do
+   * catalogo - `Badge`, `Alert`, `Tracker`, `Timeline`, `MenuItem` - `tone` e
+   * a escala semantica de cor (`success`, `danger`, `warning`, `info`), com
+   * outros valores. Duas coisas com o mesmo nome custam mais que um nome so
+   * desta peca.
    */
   trend?: "auto" | "none";
-  /**
-   * Descontinuada: use `trend`. Continua funcionando, e sai numa versao maior.
-   *
-   * No resto do catalogo - `Badge`, `Alert`, `Tracker`, `Timeline`, `MenuItem`
-   * - `tone` e a escala semantica de cor (`success`, `danger`, `warning`,
-   * `info`), e so aqui ela queria dizer "pinte pela direcao da tendencia".
-   * Duas coisas com o mesmo nome, e nenhuma das duas com os mesmos valores.
-   *
-   * @deprecated Use `trend`.
-   */
-  tone?: "auto" | "none";
   className?: string;
   /** O que o leitor de tela ouve. Sem isto ela e escondida dele. */
   label?: string;
@@ -61,20 +56,15 @@ export function Sparkline({
   data,
   variant = "line",
   color,
-  trend,
-  tone,
+  trend = "none",
   className,
   label,
 }: SparklineProps) {
   const points = data.map((value, index) => ({ i: index, v: value }));
 
-  // O nome antigo so vale enquanto o novo calar. Quem passa os dois esta no
-  // meio da migracao, e ai o que vence e o nome que fica.
-  const direction = trend ?? tone ?? "none";
-
   const rising = data.length > 1 && data[data.length - 1] >= data[0];
   const autoColor = rising ? "var(--rc-success)" : "var(--rc-danger)";
-  const stroke = color ?? (direction === "auto" ? autoColor : "var(--rc-accent)");
+  const stroke = color ?? (trend === "auto" ? autoColor : "var(--rc-accent)");
 
   const shared = {
     data: points,

@@ -23,8 +23,8 @@ import { TagsInput } from "../src/components/tags-input";
  * para fazer a mesma coisa duas telas adiante.
  *
  * O que este arquivo guarda e o contrato, e nao o desenho: que `defaultValue`
- * funciona sem `value`, que o nome antigo continua vestindo o mesmo elemento
- * que o novo, e que o botao de remover tem nome de verdade.
+ * funciona sem `value`, que a classe de cada parte cai no no certo, e que o
+ * botao de remover tem nome de verdade.
  */
 
 function withTheme(node: React.ReactNode) {
@@ -114,21 +114,6 @@ test("a ficha do TagsInput diz o que se remove, por `labels`", () => {
   expect(screen.getByRole("button", { name: "Tirar o marcador nf-e" })).toBeDefined();
 });
 
-test("o `removeLabel` antigo continua valendo, e vence o objeto", () => {
-  // Quem ainda passa o nome antigo passou de proposito: a peca nao pode
-  // escolher o padrao por ele so porque `labels` existe agora.
-  withTheme(
-    <TagsInput
-      aria-label="Marcadores"
-      defaultValue={["nf-e"]}
-      removeLabel={(tag) => `Antigo ${tag}`}
-      labels={{ remove: (tag) => `Novo ${tag}` }}
-    />,
-  );
-
-  expect(screen.getByRole("button", { name: "Antigo nf-e" })).toBeDefined();
-});
-
 const CUSTOMERS = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
 
 function chips(chip: (customer: string) => React.ReactNode) {
@@ -189,7 +174,7 @@ test("trocar um nome do PasswordInput nao apaga o outro", () => {
   expect(screen.getByRole("button", { name: "Esconder senha" })).toBeDefined();
 });
 
-/* --- 3. o wrapperClassName disfarcado virou `classNames` ----------------- */
+/* --- 3. a moldura da senha ganhou nome de parte -------------------------- */
 
 test("a senha veste moldura, campo e botao pelo nome", () => {
   const { container } = withTheme(
@@ -203,18 +188,10 @@ test("a senha veste moldura, campo e botao pelo nome", () => {
   wears(container, "campo-p", "h-[var(--rc-control-md)]");
   expect(container.ownerDocument.querySelector(".campo-p")!.tagName).toBe("INPUT");
   expect(container.ownerDocument.querySelector(".olho-p")!.tagName).toBe("BUTTON");
-});
 
-test("wrapperClassName veste o mesmo elemento que classNames.wrapper", () => {
-  // O nome antigo era um `classNames` disfarcado de uma parte so. Quem ja o
-  // usa nao paga por termos generalizado, e a classe dele continua caindo na
-  // moldura - e nao no campo.
-  const { container } = withTheme(
-    <PasswordInput aria-label="Senha" wrapperClassName="moldura-velha" />,
-  );
-
-  wears(container, "moldura-velha", "--rc-control-md");
-  expect(screen.getByLabelText("Senha").className).not.toContain("moldura-velha");
+  // A moldura e a moldura: a classe dela nao pode escorregar para o campo, que
+  // e onde o `className` solto cai.
+  expect(screen.getByLabelText("Senha").className).not.toContain("moldura-p");
 });
 
 test("o className da senha continua vestindo o campo, e nao a moldura", () => {

@@ -1,5 +1,224 @@
 # Mudancas
 
+## 0.7.0
+
+Os dez nomes que a 0.6 manteve por apelido saem. O dono da biblioteca e hoje o
+unico consumidor, entao arrastar compatibilidade custaria mais do que limpar -
+alias e divida que ninguem cobra e ninguem remove, e o repositorio ja pagou
+essa conta uma vez na 0.3.0.
+
+Junto vai o trabalho de um dia inteiro em cima da 0.6.1: vocabulario unico para
+escolher item, posicionamento igual nos cinco paineis flutuantes, os nomes
+acessiveis reunidos num objeto, dez exports que a Base UI ja entregava e
+ninguem via, um token de contraste novo e dez pecas nativas a mais.
+
+### Quebra: os dez nomes que saem
+
+| Antes | Agora | Peca |
+|---|---|---|
+| `tone` | `trend` | `Sparkline` |
+| `selected` | `value` | `DataTable` |
+| `onSelectedChange` | `onValueChange` | `DataTable` |
+| `selected` | `value` | `Tree` |
+| `onSelectedChange` | `onValueChange` | `Tree` |
+| `maxItems` | `max` | `Breadcrumb` |
+| `wrapperClassName` | `classNames.wrapper` | `PasswordInput` |
+| `removeLabel` | `labels.remove` | `TagsInput` |
+| `maskDate` | `applyDateMask` | `@rivocode/ui` |
+| `phoneMask` | `phonePatternFor` | `@rivocode/ui` |
+
+Oito sao troca de palavra, e o `tsc` acha todos. Dois mudam de forma, e por
+isso merecem o olho:
+
+```tsx
+<PasswordInput wrapperClassName="w-72" />              // antes
+<PasswordInput classNames={{ wrapper: 'w-72' }} />     // agora
+
+<TagsInput removeLabel={(tag) => `Tirar ${tag}`} />              // antes
+<TagsInput labels={{ remove: (tag) => `Tirar ${tag}` }} />       // agora
+```
+
+O `classNames` do `PasswordInput` tem tres partes - `wrapper`, `input` e
+`action` -, entao quem vestia mais de uma parte passa a escrever um objeto so.
+O `labels` do `TagsInput` hoje tem uma chave, e nasceu objeto porque e assim
+que o resto do catalogo batiza nome acessivel configuravel.
+
+Duas armadilhas de busca e troca:
+
+- **`wrapperClassName` tambem existe no `ChartTooltip`**, que e a `Tooltip` da
+  Recharts reexportada, e la ele nao muda de nome. Troque so o do
+  `PasswordInput`.
+- **`selected` continua sendo prop do `TableRow`** - a linha marcada da
+  `Table` crua - e do `Calendar`. Troque so o do `DataTable` e o da `Tree`.
+
+O `@rivocode/ui-native` acompanha a `Sparkline`: o `tone` de la tambem virou
+`trend`, para o nome nao significar coisas diferentes nos dois lados.
+
+O resto do nativo NAO acompanha nesta versao, e isso e proposital: o
+`DataList` continua com `selected`/`onSelectedChange` e o `TagsInput` nativo
+com `removeLabel`. La esses nunca foram apelido - sao o unico nome que a peca
+tem -, e o pacote nativo tem versao e ciclo proprios. A troca de vocabulario
+deles e uma quebra do `@rivocode/ui-native`, e sai numa versao dele.
+
+### Escolher item se chama a mesma coisa nas tres pecas
+
+`Tree`, `TreeSelect` e `DataTable` falavam tres dialetos para a mesma ideia, e
+o `TreeSelect` embrulha o `Tree`: quem passava do painel para a arvore inline
+reescrevia o binding inteiro. Agora sao `value`, `defaultValue` e
+`onValueChange` nas tres.
+
+A arvore tambem deixou de exigir a escolha. Quem so queria uma arvore que abre
+e fecha inventava um estado para nada, enquanto o `TreeSelect` - a mesma peca
+dentro de um painel - ja aceitava tudo opcional.
+
+### Os cinco paineis flutuantes se posicionam do mesmo jeito
+
+`Popover`, `Tooltip`, `Menu`, `Select` e `Combobox` dividem a mesma casca e
+tinham quatro contratos para dizer onde abrir: o `Popover` expunha lado,
+alinhamento e folga; o `Tooltip` so o lado; os outros tres, nada.
+
+```tsx
+<MenuContent side="right" align="start" sideOffset={10} />
+```
+
+`side`, `align` e `sideOffset` valem nas cinco, com o tipo derivado do
+posicionador da Base UI em vez de escrito a mao. A folga vira uma so, 6 - o
+`Popover` era o unico com 8, e quem depender daquele valor escreve
+`sideOffset={8}`.
+
+No `Select` ha uma sutileza: o posicionador dele alinha o item escolhido com o
+gatilho por padrao, e nesse modo descarta lado e folga. Pedir qualquer uma das
+tres desliga esse alinhamento; quem nao pede nenhuma mantem o comportamento de
+hoje byte por byte.
+
+Da mesma familia: o `AlertDialogContent` ganha `classNames.backdrop`, o
+`ComboboxInput` ganha `classNames` - o `className` parava na moldura e nunca
+chegava ao campo -, a tarja do `Dialog` passa a animar como as das irmas e o
+`DialogFooter` empilha no celular.
+
+### Os nomes acessiveis se reunem em `labels`
+
+Cada peca batizava do seu jeito o texto que o leitor de tela ouve. Agora o
+objeto e o mesmo em todas, e cada chave tem o proprio padrao - trocar uma nao
+apaga a outra:
+
+```tsx
+<PasswordInput labels={{ show: 'Revelar a senha' }} />
+<Clipboard labels={{ copy: 'Copiar a chave' }} />
+<TagsInput labels={{ remove: (tag) => `Tirar ${tag}` }} />
+```
+
+Quem mais ganha e a ficha do `Combobox`: o xis era um `aria-label="Remover"`
+cravado, sem prop nenhuma - nao dava para traduzir nem para dizer o que se
+remove, e tres fichas se anunciavam "Remover, Remover, Remover". O padrao
+agora sai do proprio conteudo da ficha, e o `ComboboxChip` aceita
+`labels.remove` para o resto.
+
+### `defaultValue` nas que exigiam controle
+
+`TagsInput` e `Editable` exigiam `value` e `onValueChange`; `Tree` e
+`DataTable` exigiam o par equivalente. Um filtro de tela nao envia nada e nao
+guarda nada, e pagava um `useState` so para existir. As quatro seguem o padrao
+das irmas: sem controle de fora, a peca guarda a propria escolha, e
+`defaultValue` diz com o que ela comeca.
+
+### Dez exports de menu e de select
+
+Casca sobre o que a Base UI ja entregava e nunca foi exposto:
+
+`MenuCheckboxItem`, `MenuRadioGroup`, `MenuRadioItem`, `MenuLinkItem`,
+`MenuSubmenu`, `MenuSubmenuTrigger`, `SelectGroup`, `SelectGroupLabel`,
+`SelectSeparator` e `ComboboxSeparator`.
+
+O caso concreto e a listagem: "Colunas" para escolher o que aparece e
+"Ordenar por" para escolher a ordem - hoje isso so se montava com `Popover`
+mais `Checkbox` na mao, perdendo o `aria-checked` e a navegacao de menu. O
+checkbox e o radio nao fecham o menu ao escolher; o item de link fecha, ao
+contrario da Base UI, porque com roteador de uma pagina so o menu ficava
+aberto flutuando sobre a tela nova.
+
+Uma peca existente muda de aparencia: o `ComboboxGroupLabel` era reexport cru
+e o unico cabecalho de grupo sem estilo - tinha o tamanho e a cor dos itens e
+lia-se como mais uma opcao.
+
+### O grafico diz o que e, e o vazio dele aparece
+
+O `ChartContainer` ganha `label`, o nome que o leitor de tela ouve. Sem ela,
+ele monta o nome a partir dos rotulos das series; antes o nome acessivel caia
+nos rotulos de eixo colados - "MarAbrMaiJunJulAgo020406080" - porque a Recharts
+entrega o `<svg>` com `role="application"`.
+
+O `empty` do grafico tinha um defeito silencioso: so aparecia com `empty` E
+`data` juntos, entao quem passava `empty` e esquecia `data` nunca via o estado
+vazio, sem erro nenhum - o grafico desenhava eixos sobre o nada. Agora a
+moldura le os pontos do proprio filho da Recharts, `data` vira reforco para os
+casos em que eles moram mais fundo, e o `action` entra no vazio, como no
+`DataTable`. Quando nem um nem outro acha ponto, sai aviso em desenvolvimento.
+
+### `titleAs` no `PageHeader`
+
+Ele emitia `h1` sempre, e uma aplicacao que ja tem `h1` no shell ganhava o
+segundo sem aviso. `titleAs` aceita `h1`, `h2` ou `h3` e baixa o nivel sem
+mexer no desenho. O padrao continua `h1`: ninguem que ja usa muda.
+
+### O token `--rc-border-disabled`
+
+Um controle desmarcado, travado e sem rotulo - a coluna de selecao do
+`DataTable` - nao tinha sinal visual nenhum, porque `surface` e
+`surface-raised` sao a mesma branca no tema claro. `Checkbox`, `Radio` e
+`Switch` descem a borda para ele ao travar.
+
+E o unico par da casa com teto alem de piso: pelo menos 1,6:1 contra o fundo,
+porque em 1,23 a borda some, e a fronteira viva tem que pesar 1,4x mais, senao
+travado e vivo ficam iguais. Um tema de cliente que redefina os tokens precisa
+declarar este tambem.
+
+Os tres tambem alinham o respiro em `gap-2` e trocam o `opacity-60` do travado
+por token - a opacidade rebaixava borda, marca e texto de uma vez, e passava
+por fora do `check:contrast`.
+
+### O React Native chega a 56 pecas
+
+`Steps`, `DateRangePicker`, `Form`, `Tracker`, `InputGroup`, `PasswordInput`,
+`TagsInput`, `Indicator`, `Item` e `RelativeTime` saem da fila. Sao 56 pecas
+traduzidas e 11 esperando coisa que ainda nao existe, das 83 do web.
+
+Nenhuma foi transposta, e a [tabela de paridade](https://ds.rivocode.com.br/react-native)
+conta peca a peca o que muda. O `useWizard` atravessa e a regua nao; o
+`DateRangePicker` escolhe a faixa na grade de um mes so, porque dois meses lado
+a lado dao 27px de celula em 390; o `Tracker` vira um alvo unico com arraste,
+porque 365 quadrados dao 4px de alvo cada.
+
+### Onze consertos e cinco verificacoes novas
+
+Fronteira de campo abaixo de 3:1 no `NumberField`, no `OTPField` e no
+`SearchInput`; `size` do `NumberField` que mudava fonte e nao mudava altura;
+`SearchInput` sem `size` nenhum; `Item` que prometia `render` no proprio JSDoc
+e nao aceitava; quatro paradas de tabulacao com `outline-none` e nenhum foco
+reposto; a barra indeterminada ignorando "reduzir movimento" e mentindo "20%
+concluido" para quem ouve; o `TagsInput` fora do `Field.Control`, o unico
+rotulo orfao do site; a paleta de comandos que nao anunciava lista vazia; e o
+`data-[disabled]` que vencia `data-[checked]` por ordem alfabetica do Tailwind,
+pintando de acento cheio a caixa travada em estado misto.
+
+As guardas: `check:pecas` (o catalogo que o README e o npm anunciam),
+`check:testes` (a contagem que a home exibe), `check:skill` (prop citada em
+exemplo da skill tem que existir na peca), `check:chart` (a Recharts nao pode
+vazar de `src/chart/`) e `test/classe-da-raiz`, que varre as 230 pecas dos tres
+indices atras de quem nao aceita `className` na raiz ou aceita e nao repassa -
+ela ja nasceu achando `Command` e `CalendarPanel`.
+
+### Como migrar
+
+Busca e troca por palavra inteira resolve oito dos dez. Os dois de forma -
+`wrapperClassName` e `removeLabel` - viram chave dentro de objeto, e o `tsc`
+aponta cada um. Cuidado com `selected` e com `wrapperClassName`, que continuam
+existindo em outras pecas: confira a peca antes de trocar.
+
+O agent `migracao`, que viaja no pacote, faz isso com o `tsc` entre uma quebra
+e a seguinte.
+
+
 ## 0.6.1
 
 ### O molde do telefone volta para dentro do `applyMask`

@@ -24,8 +24,6 @@ export type TagsInputProps = Omit<
   max?: number;
   /** O que o leitor de tela ouve nos botoes da peca. `remove` recebe a ficha. */
   labels?: { remove?: (tag: string) => string };
-  /** @deprecated Use `labels.remove`. */
-  removeLabel?: (tag: string) => string;
   /** Classe por parte: `field`, `tag`, `remove`, `input`. */
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
 };
@@ -62,7 +60,6 @@ export function TagsInput({
   separators = [","],
   max,
   labels = {},
-  removeLabel,
   className,
   classNames,
   disabled,
@@ -75,10 +72,7 @@ export function TagsInput({
   const tags = controlled ? value : internal;
   const full = max !== undefined && tags.length >= max;
 
-  // O nome antigo vence o objeto quando os dois vierem: quem ainda passa
-  // `removeLabel` passou de proposito, e a peca nao pode escolher o padrao por
-  // ele so porque `labels` existe agora.
-  const remove = removeLabel ?? labels.remove ?? ((tag: string) => `Remover ${tag}`);
+  const remove = labels.remove ?? ((tag: string) => `Remover ${tag}`);
 
   function change(next: string[]) {
     if (!controlled) setInternal(next);

@@ -28,8 +28,6 @@ de toda tela de login que já existe. Então a moldura ganhou nome próprio:
 />
 ```
 
-`wrapperClassName` é o nome antigo de `classNames.wrapper` e continua valendo.
-
 Os dois nomes que o leitor de tela ouve no botão entram por `labels`, e cada um
 tem o próprio padrão — trocar só um não apaga o outro:
 

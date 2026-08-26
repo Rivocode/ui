@@ -140,6 +140,3 @@ export function toCents(text: string): number {
 export function phonePatternFor(text: string): Mask {
   return unmask(text).length > 10 ? "(99) 99999-9999" : "(99) 9999-9999";
 }
-
-/** @deprecated Use `phonePatternFor`: o que volta e molde, e nao texto. */
-export const phoneMask = phonePatternFor;

@@ -25,7 +25,7 @@ regras:
 |---|---|
 | `formatDate(data)` | `Date` para `dd/mm/aaaa`, e string vazia quando não há data |
 | `parseDate(texto)` | `dd/mm/aaaa` para `Date`, e `undefined` para o que não é data |
-| `maskDate(texto)` | A máscara enquanto se digita: põe as barras e para em oito dígitos |
+| `applyDateMask(texto)` | A máscara enquanto se digita: põe as barras e para em oito dígitos |
 
 `parseDate` devolve `undefined` para data que não existe. `31/02/2026` não vira
 3 de março, que é o que o `new Date` faria sozinho e é a origem de metade dos

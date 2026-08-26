@@ -13,7 +13,7 @@ export function InsideAKpi() {
           <p className="text-sm text-fg-muted">Faturado</p>
           <div className="mt-1 flex items-end justify-between gap-3">
             <p className="font-display text-2xl text-fg">{currencyShort(246_700)}</p>
-            <Sparkline data={BILLED} variant="area" tone="auto" className="h-8 w-20 shrink-0" />
+            <Sparkline data={BILLED} variant="area" trend="auto" className="h-8 w-20 shrink-0" />
           </div>
         </CardContent>
       </Card>

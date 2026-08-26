@@ -17,8 +17,8 @@ import { Tree, type TreeNode } from "../src/components/tree";
  * descobrir, peca a peca, que o mesmo dado tinha nome diferente em cada uma -
  * e, no caso do vazio do grafico, que o estado que ele pediu nunca ia aparecer.
  *
- * Cada teste daqui guarda tambem o nome antigo, porque a migracao inteira e
- * por alias: chamada que ja existia continua valendo.
+ * Os nomes divergentes responderam por alias durante a 0.6 e sairam na 0.7:
+ * cada teste daqui guarda agora o unico nome que restou para cada dado.
  */
 
 const withTheme = (node: React.ReactNode) =>
@@ -57,28 +57,6 @@ test("a arvore fala o vocabulario do catalogo: value e onValueChange", () => {
   expect(screen.getByText("Escolhidos: contas-pagar")).toBeDefined();
 });
 
-test("o nome antigo da arvore continua funcionando", () => {
-  function Screen() {
-    const [ids, setIds] = useState<string[]>([]);
-    return (
-      <>
-        <Tree
-          items={DEPARTMENTS}
-          selected={ids}
-          onSelectedChange={setIds}
-          multiple
-          expanded={["financeiro"]}
-        />
-        <p>Escolhidos: {ids.join(",") || "nenhum"}</p>
-      </>
-    );
-  }
-
-  withTheme(<Screen />);
-  fireEvent.click(screen.getByText("Contas a pagar"));
-  expect(screen.getByText("Escolhidos: contas-pagar")).toBeDefined();
-});
-
 test("sem ninguem controlando, a arvore guarda a propria escolha", () => {
   // A escolha era obrigatoria: uma arvore que so precisava abrir e fechar
   // exigia um useState de quem a montava, e o TreeSelect - que a embrulha - ja
@@ -103,9 +81,8 @@ const INVOICES: Invoice[] = [
 
 const COLUMNS: Column<Invoice>[] = [{ key: "customer", header: "Cliente" }];
 
-test("a tabela fala o mesmo vocabulario da arvore, pelos dois nomes", () => {
-  let byNewName: string[] = [];
-  let byOldName: string[] = [];
+test("a tabela fala o mesmo vocabulario da arvore", () => {
+  let chosen: string[] = [];
 
   withTheme(
     <DataTable
@@ -113,16 +90,14 @@ test("a tabela fala o mesmo vocabulario da arvore, pelos dois nomes", () => {
       columns={COLUMNS}
       rowKey={(invoice) => invoice.id}
       selectable
-      onValueChange={(keys) => (byNewName = keys)}
-      onSelectedChange={(keys) => (byOldName = keys)}
+      onValueChange={(keys) => (chosen = keys)}
     />,
   );
 
   const row = screen.getByText("Padaria Aurora").closest("tr")!;
   fireEvent.click(within(row).getByRole("checkbox"));
 
-  expect(byNewName).toEqual(["2"]);
-  expect(byOldName).toEqual(["2"]);
+  expect(chosen).toEqual(["2"]);
 });
 
 test("a selecao da tabela obedece o value, como a arvore obedece o dela", () => {
@@ -263,19 +238,18 @@ function strokeOf(node: unknown): string | undefined {
   return undefined;
 }
 
-test("a sparkline pinta pela tendencia com trend, e ainda atende por tone", () => {
+test("a sparkline pinta pela tendencia com trend", () => {
   // `tone` e a escala semantica de cor no catalogo inteiro - success, danger,
   // warning, info. So aqui ela queria dizer "pinte pela direcao", e com outros
-  // valores. O nome novo diz o que e; o antigo continua respondendo.
+  // valores; o nome desta peca diz o que ela faz.
   const descending = [9, 7, 4, 2];
 
   expect(strokeOf(Sparkline({ data: descending, trend: "auto" }))).toBe("var(--rc-danger)");
-  expect(strokeOf(Sparkline({ data: descending, tone: "auto" }))).toBe("var(--rc-danger)");
+  expect(strokeOf(Sparkline({ data: [2, 4, 7, 9], trend: "auto" }))).toBe("var(--rc-success)");
 
-  // E o novo vence quando os dois aparecem, que e o estado de quem migra.
-  expect(strokeOf(Sparkline({ data: descending, trend: "none", tone: "auto" }))).toBe(
-    "var(--rc-accent)",
-  );
+  // Sem pedir a direcao, o acento do tema: a cor nao pode virar julgamento
+  // sozinha, porque em custo subir e ruim.
+  expect(strokeOf(Sparkline({ data: descending, trend: "none" }))).toBe("var(--rc-accent)");
 });
 
 test("o estado vazio aceita no no titulo, como as irmas dele", () => {

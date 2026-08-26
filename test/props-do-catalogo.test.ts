@@ -22,7 +22,7 @@ test("a peca controlada leva os callbacks que a controlam", () => {
 });
 
 test("a peca cuja prop e a razao de existir nao aparece sem prop", () => {
-  expect(namesOf("Breadcrumb")).toEqual(expect.arrayContaining(["items", "maxItems"]));
+  expect(namesOf("Breadcrumb")).toEqual(expect.arrayContaining(["items", "max"]));
   expect(namesOf("Pagination")).toEqual(
     expect.arrayContaining(["page", "pageCount", "onPageChange", "siblings"]),
   );

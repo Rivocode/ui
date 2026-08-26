@@ -45,6 +45,3 @@ export function applyDateMask(text: string): string {
   if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
-
-/** @deprecated Use `applyDateMask`, da mesma familia de `applyCurrencyMask`. */
-export const maskDate = applyDateMask;

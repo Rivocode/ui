@@ -1,4 +1,4 @@
-export const version = "0.6.1";
+export const version = "0.7.0";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useMobile } from "./lib/screen";
@@ -116,7 +116,7 @@ export {
   type DateRange,
   type DateRangePickerProps,
 } from "./components/date-range-picker";
-export { formatDate, parseDate, applyDateMask, maskDate } from "./lib/date";
+export { formatDate, parseDate, applyDateMask } from "./lib/date";
 /*
  * Os formatadores nasceram no subcaminho do grafico, e ali era o lugar errado:
  * formatar dinheiro numa celula de tabela nao e assunto de grafico. Saem
@@ -174,7 +174,6 @@ export {
   applyPattern,
   toCents,
   phonePatternFor,
-  phoneMask,
   unmask,
   MASKS,
   type Mask,

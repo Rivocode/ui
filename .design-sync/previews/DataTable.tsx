@@ -170,8 +170,8 @@ export function Selectable() {
         columns={SORTABLE}
         rowKey={(invoice) => invoice.id}
         selectable
-        selected={selected}
-        onSelectedChange={setSelected}
+        value={selected}
+        onValueChange={setSelected}
         pageSize={4}
       />
       <p className="text-sm text-fg-muted">

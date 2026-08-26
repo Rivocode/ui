@@ -1,3 +1,4 @@
+import { Button } from '@rivocode/ui'
 import {
   Area,
   AreaChart,
@@ -68,6 +69,32 @@ export function AsLine() {
             activeDot={{ r: 4 }}
             isAnimationActive={false}
           />
+        </LineChart>
+      </ChartContainer>
+    </div>
+  )
+}
+
+/** Vazio, com saída */
+export function EmptyWithAction() {
+  return (
+    <div className="w-full max-w-lg">
+      <ChartContainer
+        config={UMA}
+        className="h-56"
+        empty={{
+          title: 'Nenhuma nota em março',
+          description: 'O gráfico começa a desenhar assim que a primeira for emitida.',
+          action: <Button size="sm">Emitir nota</Button>,
+        }}
+      >
+        {/* O `data` vazio mora no filho, e a moldura o lê de lá: não é preciso
+            repetir a mesma lista no `ChartContainer`. */}
+        <LineChart data={[]}>
+          <CartesianGrid vertical={false} />
+          <ChartXAxis dataKey="mes" />
+          <ChartYAxis format="integer" width={40} />
+          <Line dataKey="emitidas" stroke="var(--color-emitidas)" isAnimationActive={false} />
         </LineChart>
       </ChartContainer>
     </div>

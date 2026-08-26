@@ -148,7 +148,7 @@ test("filtrar volta para a primeira pagina", async () => {
 
 test("selecionar uma linha devolve a chave do rowKey", () => {
   let selecionadas: string[] = [];
-  table({ selectable: true, onSelectedChange: (keys) => (selecionadas = keys) });
+  table({ selectable: true, onValueChange: (keys) => (selecionadas = keys) });
 
   const row = screen.getByText("Padaria Aurora").closest("tr")!;
   fireEvent.click(within(row).getByRole("checkbox"));
@@ -160,7 +160,7 @@ test("o checkbox do cabecalho seleciona a pagina visivel, nao o mundo", () => {
   table({
     selectable: true,
     pageSize: 2,
-    onSelectedChange: (keys) => (selecionadas = keys),
+    onValueChange: (keys) => (selecionadas = keys),
   });
 
   fireEvent.click(screen.getByRole("checkbox", { name: /selecionar todas/i }));
@@ -168,7 +168,7 @@ test("o checkbox do cabecalho seleciona a pagina visivel, nao o mundo", () => {
 });
 
 test("selecao controlada obedece a prop", () => {
-  table({ selectable: true, selected: ["2"] });
+  table({ selectable: true, value: ["2"] });
 
   const row = screen.getByText("Transportes Cabo Branco").closest("tr")!;
   const checkbox = within(row).getByRole("checkbox");

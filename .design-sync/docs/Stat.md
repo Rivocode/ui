@@ -24,7 +24,7 @@ A tendência entra pelo slot `chart`, com a `Sparkline` de `@rivocode/ui/chart`:
   value={currencyShort(246_700)}
   delta={20}
   deltaLabel="sobre julho"
-  chart={<Sparkline data={TREND} variant="area" tone="auto" className="h-8 w-full" />}
+  chart={<Sparkline data={TREND} variant="area" trend="auto" className="h-8 w-full" />}
 />
 ```
 

@@ -52,13 +52,13 @@ recibo, o telefone que voltou cru do servidor.
 | `applyCurrencyMask(texto)` | Só o dinheiro, da direita para a esquerda |
 | `unmask(texto)` | Tira a pontuação e devolve o que a pessoa digitou |
 | `toCents(texto)` | `1.234,56` vira `123456`, sem ponto flutuante no meio |
-| `phoneMask(texto)` | Diz qual dos dois moldes de telefone o texto pede |
+| `phonePatternFor(texto)` | Diz qual dos dois moldes de telefone o texto pede |
 
 ```tsx
 <TableCell>{applyMask(cliente.document, 'cnpj')}</TableCell>
 ```
 
-`phoneMask` devolve um molde, e não um texto: o telefone brasileiro tem oito ou
+`phonePatternFor` devolve um molde, e não um texto: o telefone brasileiro tem oito ou
 nove casas depois do DDD e o molde muda no meio da digitação, então quem formata
 telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern`.
 

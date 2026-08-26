@@ -80,7 +80,7 @@ const trendChart = (data: number[], invert = false) => (
   <Sparkline
     data={invert ? data.map((point) => -point) : data}
     variant="area"
-    tone="auto"
+    trend="auto"
     className="h-8 w-full"
   />
 )

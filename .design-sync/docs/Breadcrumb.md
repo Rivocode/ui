@@ -11,9 +11,7 @@ sobram as duas ultimas migalhas, porque caminho comprido rola para fora da tela 
 ninguém le o começo.
 
 O teto se chama `max`, o mesmo nome que `Indicator`, `AvatarGroup` e `TagsInput`
-usam para a mesma ideia. `maxItems`, o nome antigo desta peça, continua sendo
-lido — quem já o escreveu não precisa reescrever nada —, e `max` vence quando as
-duas vierem juntas.
+usam para a mesma ideia.
 
 O caminho entra por `items`, uma lista de `Crumb` — `{ label, href }`, com o
 `href` de fora na última, que é onde a pessoa já está:

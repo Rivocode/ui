@@ -10,3 +10,7 @@ A posição é medida a partir daqui, então o gatilho é o elemento visível ao
 do qual o painel deve aparecer — e não um invólucro maior que o empurraria para
 longe. Com `openOnHover`, abre na passagem do mouse; use com parcimônia, porque
 painel que abre sozinho atravessa o caminho de quem só estava passando.
+
+Ele não tem pele própria — o uso comum é `render={<Button />}`, e duas fontes de
+estilo brigariam —, mas tem o anel de foco do teclado. Foco não é pele: quando o
+gatilho é escrito à mão, o anel daqui é o único que existe.

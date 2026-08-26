@@ -61,9 +61,6 @@ qual.
 />
 ```
 
-O nome antigo `removeLabel` continua valendo e vence o objeto quando os dois
-vierem.
-
 ## Quando não usar
 
 Quando as opções já existem, use `Combobox` com `multiple` e as fichas: ele
