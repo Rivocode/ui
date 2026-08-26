@@ -3464,10 +3464,16 @@
         "since": "0.4.0"
       },
       {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Quantas migalhas cabem antes de o meio virar reticencia."
+      },
+      {
         "name": "maxItems",
         "type": "number",
         "required": false,
-        "note": "Quantas migalhas cabem antes de o meio virar reticencia.",
+        "note": "O nome antigo do teto.",
         "since": "0.4.0"
       }
     ]
@@ -3945,7 +3951,7 @@
     ]
   },
   "CalendarPanel": {
-    "forwardsRoot": false,
+    "forwardsRoot": true,
     "props": [
       {
         "name": "onOpenChange",
@@ -4185,12 +4191,12 @@
         "name": "data",
         "type": "readonly unknown[]",
         "required": false,
-        "note": "Considera vazio tambem quando a serie existe mas nao tem ponto.",
+        "note": "Os pontos, para a moldura saber contar zero.",
         "since": "0.4.0"
       },
       {
         "name": "empty",
-        "type": "{ title: string; description: string; icon?: ReactNode; }",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
         "required": false,
         "note": "O que aparece quando a consulta volta sem nenhum ponto.",
         "since": "0.4.0"
@@ -8435,7 +8441,7 @@
     "props": [
       {
         "name": "labels",
-        "type": "{ copy: string; copied: string; }",
+        "type": "{ copy?: string | undefined; copied?: string | undefined; }",
         "required": false,
         "note": "O que o leitor de tela chama o botao antes e depois de copiar.",
         "since": "0.5.0"
@@ -8937,6 +8943,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "labels",
+        "type": "{ remove?: ((label: string) => string) | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve no xis."
+      },
+      {
         "name": "render",
         "type": "ComponentRenderFn<HTMLProps, ComboboxChipState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
@@ -9130,6 +9142,23 @@
       }
     ]
   },
+  "ComboboxSeparator": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "orientation",
+        "type": "Orientation",
+        "required": false,
+        "note": "The orientation of the separator."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, ComboboxSeparatorState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
   "ComboboxValue": {
     "forwardsRoot": false,
     "props": [
@@ -9143,7 +9172,7 @@
     ]
   },
   "Command": {
-    "forwardsRoot": false,
+    "forwardsRoot": true,
     "props": [
       {
         "name": "groups",
@@ -9315,8 +9344,14 @@
         "since": "0.5.0"
       },
       {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "note": "As chaves marcadas de saida, quando a tabela controla a propria selecao."
+      },
+      {
         "name": "empty",
-        "type": "{ title: string; description: string; action?: ReactNode; icon?: ReactNode; }",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
         "required": false,
         "note": "O que aparece quando a consulta volta vazia.",
         "since": "0.4.0"
@@ -9370,7 +9405,13 @@
         "name": "onSelectedChange",
         "type": "((keys: string[]) => void)",
         "required": false,
+        "note": "Descontinuada: use `onValueChange`.",
         "since": "0.4.0"
+      },
+      {
+        "name": "onValueChange",
+        "type": "((keys: string[]) => void)",
+        "required": false
       },
       {
         "name": "pageSize",
@@ -9397,7 +9438,7 @@
         "name": "selected",
         "type": "string[]",
         "required": false,
-        "note": "Selecao controlada.",
+        "note": "Descontinuada: use `value`.",
         "since": "0.4.0"
       },
       {
@@ -9406,6 +9447,12 @@
         "required": false,
         "note": "Quantas linhas falsas o carregando mostra.",
         "since": "0.4.0"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "note": "As chaves marcadas, quando quem usa controla a selecao."
       },
       {
         "name": "virtual",
@@ -9523,9 +9570,16 @@
         "since": "0.4.0"
       },
       {
+        "name": "endMonth",
+        "type": "Date",
+        "required": false,
+        "note": "The latest month to end the month navigation."
+      },
+      {
         "name": "locale",
         "type": "Partial<DayPickerLocale>",
         "required": false,
+        "note": "The locale object used to localize dates.",
         "since": "0.4.0"
       },
       {
@@ -9550,11 +9604,23 @@
         "since": "0.4.0"
       },
       {
+        "name": "showOutsideDays",
+        "type": "boolean",
+        "required": false,
+        "note": "Show the outside days (days falling in the next or the previous month)."
+      },
+      {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
         "note": "Tamanho do gatilho, o mesmo vocabulario do Input.",
         "since": "0.4.0"
+      },
+      {
+        "name": "startMonth",
+        "type": "Date",
+        "required": false,
+        "note": "The earliest month to start the month navigation."
       },
       {
         "name": "value",
@@ -9779,23 +9845,17 @@
         "since": "0.5.0"
       },
       {
-        "name": "onValueChange",
-        "type": "(value: string) => void",
-        "required": true,
-        "since": "0.5.0"
-      },
-      {
-        "name": "value",
-        "type": "string",
-        "required": true,
-        "since": "0.5.0"
-      },
-      {
         "name": "classNames",
         "type": "Partial<Record<\"input\" | \"preview\", string>>",
         "required": false,
         "note": "Classe por parte: `preview`, `input`.",
         "since": "0.5.0"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "O texto do primeiro desenho, quando a peca guarda o proprio valor."
       },
       {
         "name": "disabled",
@@ -9804,10 +9864,24 @@
         "since": "0.5.0"
       },
       {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Avisado no Enter e ao sair do campo, e nunca no Escape.",
+        "since": "0.5.0"
+      },
+      {
         "name": "placeholder",
         "type": "string",
         "required": false,
         "note": "O que aparece quando o valor esta vazio.",
+        "since": "0.5.0"
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O texto de agora, quando quem usa guarda o valor.",
         "since": "0.5.0"
       }
     ]
@@ -9817,15 +9891,16 @@
     "props": [
       {
         "name": "description",
-        "type": "string",
+        "type": "ReactNode",
         "required": true,
         "note": "Por que esta vazio.",
         "since": "0.4.0"
       },
       {
         "name": "title",
-        "type": "string",
+        "type": "ReactNode",
         "required": true,
+        "note": "Aceita no e nao so texto, como o titulo do `PageHeader` e o do `Timeline`.",
         "since": "0.4.0"
       },
       {
@@ -12022,6 +12097,76 @@
       }
     ]
   },
+  "MenuCheckboxItem": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the checkbox item is currently ticked."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\", string>>",
+        "required": false,
+        "note": "Classe por parte: `indicator`, a coluna que guarda a marca."
+      },
+      {
+        "name": "closeOnClick",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether to close the menu when the item is clicked."
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the checkbox item is initially ticked."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "Overrides the text label to use when the item is matched during keyboard text navigation."
+      },
+      {
+        "name": "nativeButton",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop."
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "((checked: boolean, eventDetails: MenuRootChangeEventDetails) => void)",
+        "required": false,
+        "note": "Event handler called when the checkbox item is ticked or unticked."
+      },
+      {
+        "name": "onClick",
+        "type": "((event: BaseUIEvent<MouseEvent<HTMLDivElement, MouseEvent>>) => void)",
+        "required": false,
+        "note": "The click handler for the menu item."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, MenuCheckboxItemState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"neutral\" | null",
+        "required": false
+      }
+    ]
+  },
   "MenuContent": {
     "forwardsRoot": true,
     "props": [
@@ -12062,6 +12207,12 @@
   "MenuGroup": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, o titulo do grupo."
+      },
       {
         "name": "label",
         "type": "string",
@@ -12131,6 +12282,134 @@
       }
     ]
   },
+  "MenuLinkItem": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "closeOnClick",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether to close the menu when the item is clicked."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "Overrides the text label to use when the item is matched during keyboard text navigation."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>, MenuLinkItemState> | ReactElement<...>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
+  "MenuRadioGroup": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, o titulo do grupo."
+      },
+      {
+        "name": "defaultValue",
+        "type": "any",
+        "required": false,
+        "note": "The uncontrolled value of the radio item that should be initially selected."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "Titulo do grupo: \"Ordenar por\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: any, eventDetails: MenuRootChangeEventDetails) => void)",
+        "required": false,
+        "note": "Function called when the selected value changes."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, MenuRadioGroupState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "value",
+        "type": "any",
+        "required": false,
+        "note": "The controlled value of the radio item that should be currently selected."
+      }
+    ]
+  },
+  "MenuRadioItem": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "value",
+        "type": "any",
+        "required": true,
+        "note": "Value of the radio item."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\", string>>",
+        "required": false,
+        "note": "Classe por parte: `indicator`, a coluna que guarda o ponto."
+      },
+      {
+        "name": "closeOnClick",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether to close the menu when the item is clicked."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "Overrides the text label to use when the item is matched during keyboard text navigation."
+      },
+      {
+        "name": "nativeButton",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop."
+      },
+      {
+        "name": "onClick",
+        "type": "((event: BaseUIEvent<MouseEvent<HTMLDivElement, MouseEvent>>) => void)",
+        "required": false,
+        "note": "The click handler for the menu item."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, MenuRadioItemState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"neutral\" | null",
+        "required": false
+      }
+    ]
+  },
   "MenuSeparator": {
     "forwardsRoot": true,
     "props": [
@@ -12147,6 +12426,129 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "MenuSubmenu": {
+    "forwardsRoot": false,
+    "props": [
+      {
+        "name": "actionsRef",
+        "type": "RefObject<MenuRootActions | null>",
+        "required": false,
+        "note": "A ref to imperative actions."
+      },
+      {
+        "name": "closeParentOnEsc",
+        "type": "boolean",
+        "required": false,
+        "note": "When in a submenu, determines whether pressing the Escape key closes the entire menu, or only the current child menu."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the menu is initially open."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "highlightItemOnHover",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether moving the pointer over items should highlight them."
+      },
+      {
+        "name": "loopFocus",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether to loop keyboard focus back to the first item when the end of the list is reached while using the arrow keys."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean, eventDetails: MenuRootChangeEventDetails) => void)",
+        "required": false,
+        "note": "Event handler called when the menu is opened or closed."
+      },
+      {
+        "name": "onOpenChangeComplete",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Event handler called after any animations complete when the menu is opened or closed."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the menu is currently open."
+      },
+      {
+        "name": "orientation",
+        "type": "MenuRootOrientation",
+        "required": false,
+        "note": "The visual orientation of the menu."
+      }
+    ]
+  },
+  "MenuSubmenuTrigger": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\", string>>",
+        "required": false,
+        "note": "Classe por parte: `indicator`, a seta que aponta para o ramo."
+      },
+      {
+        "name": "closeDelay",
+        "type": "number",
+        "required": false,
+        "note": "How long to wait before closing the menu that was opened on hover."
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "required": false,
+        "note": "How long to wait before the menu may be opened on hover."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "Overrides the text label to use when the item is matched during keyboard text navigation."
+      },
+      {
+        "name": "nativeButton",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop."
+      },
+      {
+        "name": "onClick",
+        "type": "((event: BaseUIEvent<MouseEvent<HTMLDivElement, MouseEvent>>) => void)",
+        "required": false
+      },
+      {
+        "name": "openOnHover",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the menu should also open when the trigger is hovered."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, MenuSubmenuTriggerState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
       }
     ]
   },
@@ -12835,6 +13237,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"action\" | \"input\" | \"wrapper\", string>>",
+        "required": false,
+        "note": "Classe por parte: `wrapper`, `input`, `action`."
+      },
+      {
         "name": "defaultValue",
         "type": "string | number | readonly string[]",
         "required": false,
@@ -12842,7 +13250,7 @@
       },
       {
         "name": "labels",
-        "type": "{ show: string; hide: string; }",
+        "type": "{ show?: string | undefined; hide?: string | undefined; }",
         "required": false,
         "note": "O que o leitor de tela ouve no botao, antes e depois de revelar.",
         "since": "0.5.0"
@@ -12871,7 +13279,6 @@
         "name": "wrapperClassName",
         "type": "string",
         "required": false,
-        "note": "Classe da moldura, quando o campo precisa de largura propria.",
         "since": "0.5.0"
       }
     ]
@@ -18959,9 +19366,9 @@
       },
       {
         "name": "classNames",
-        "type": "Partial<Record<\"indicator\" | \"label\", string>>",
+        "type": "Partial<Record<\"circle\" | \"indicator\" | \"label\", string>>",
         "required": false,
-        "note": "Classe por parte: `indicator`, `label`.",
+        "note": "Classe por parte: `circle`, `indicator`, `label`.",
         "since": "0.5.0"
       },
       {
@@ -20935,6 +21342,28 @@
       }
     ]
   },
+  "SelectGroup": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, SelectGroupState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
+  "SelectGroupLabel": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, SelectGroupLabelState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
   "SelectItem": {
     "forwardsRoot": true,
     "props": [
@@ -20972,6 +21401,23 @@
         "required": false,
         "note": "A unique value that identifies this select item.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "SelectSeparator": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "orientation",
+        "type": "Orientation",
+        "required": false,
+        "note": "The orientation of the separator."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, SelectSeparatorState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
       }
     ]
   },
@@ -21371,12 +21817,13 @@
     "props": []
   },
   "SidebarMenuSkeleton": {
-    "forwardsRoot": false,
+    "forwardsRoot": true,
     "props": [
       {
         "name": "count",
         "type": "number",
         "required": false,
+        "note": "Quantas linhas de marca de lugar.",
         "since": "0.4.0"
       }
     ]
@@ -21653,8 +22100,14 @@
         "name": "tone",
         "type": "\"auto\" | \"none\"",
         "required": false,
-        "note": "Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo ponto.",
+        "note": "Descontinuada: use `trend`.",
         "since": "0.4.0"
+      },
+      {
+        "name": "trend",
+        "type": "\"auto\" | \"none\"",
+        "required": false,
+        "note": "Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo ponto."
       },
       {
         "name": "variant",
@@ -22133,19 +22586,6 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "onValueChange",
-        "type": "(value: string[]) => void",
-        "required": true,
-        "since": "0.5.0"
-      },
-      {
-        "name": "value",
-        "type": "string[]",
-        "required": true,
-        "note": "As fichas de agora.",
-        "since": "0.5.0"
-      },
-      {
         "name": "classNames",
         "type": "Partial<Record<\"field\" | \"input\" | \"remove\" | \"tag\", string>>",
         "required": false,
@@ -22153,10 +22593,28 @@
         "since": "0.5.0"
       },
       {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "note": "As fichas do primeiro desenho, quando a peca guarda a propria lista."
+      },
+      {
+        "name": "labels",
+        "type": "{ remove?: ((tag: string) => string) | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve nos botoes da peca."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string[]) => void)",
+        "required": false,
+        "note": "Avisado com a lista inteira a cada ficha que entra ou sai.",
+        "since": "0.5.0"
+      },
+      {
         "name": "removeLabel",
         "type": "((tag: string) => string)",
         "required": false,
-        "note": "O que o leitor de tela ouve no botao de cada ficha.",
         "since": "0.5.0"
       },
       {
@@ -22164,6 +22622,13 @@
         "type": "string[]",
         "required": false,
         "note": "O que fecha uma ficha alem do Enter.",
+        "since": "0.5.0"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "note": "As fichas de agora, quando quem usa guarda a lista.",
         "since": "0.5.0"
       }
     ]
@@ -22244,12 +22709,13 @@
     ]
   },
   "ToastViewport": {
-    "forwardsRoot": false,
+    "forwardsRoot": true,
     "props": [
       {
         "name": "container",
         "type": "HTMLElement | null",
         "required": true,
+        "note": "Onde o portal ancora.",
         "since": "0.4.0"
       },
       {
@@ -22258,6 +22724,12 @@
         "required": false,
         "note": "Onde os avisos aparecem.",
         "since": "0.4.0"
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, ToastViewportState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
       }
     ]
   },
@@ -22680,17 +23152,10 @@
         "since": "0.4.0"
       },
       {
-        "name": "onSelectedChange",
-        "type": "(ids: string[]) => void",
-        "required": true,
-        "since": "0.4.0"
-      },
-      {
-        "name": "selected",
+        "name": "defaultValue",
         "type": "string[]",
-        "required": true,
-        "note": "Ids marcados.",
-        "since": "0.4.0"
+        "required": false,
+        "note": "Os ids iniciais, quando a arvore controla o proprio estado."
       },
       {
         "name": "expanded",
@@ -22718,6 +23183,31 @@
         "type": "((ids: string[]) => void)",
         "required": false,
         "since": "0.4.0"
+      },
+      {
+        "name": "onSelectedChange",
+        "type": "((ids: string[]) => void)",
+        "required": false,
+        "note": "Descontinuada: use `onValueChange`.",
+        "since": "0.4.0"
+      },
+      {
+        "name": "onValueChange",
+        "type": "((ids: string[]) => void)",
+        "required": false
+      },
+      {
+        "name": "selected",
+        "type": "string[]",
+        "required": false,
+        "note": "Descontinuada: use `value`.",
+        "since": "0.4.0"
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "note": "Ids marcados, quando quem usa controla o estado."
       }
     ]
   },
