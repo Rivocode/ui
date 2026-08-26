@@ -131,13 +131,128 @@ export function storyKeepsOpen(source: string, name: string) {
   return body.includes('rc-keep-open')
 }
 
+/* ---------------------------------------------------------------------------
+ * Cutting a story out, with what it stands on
+ *
+ * A story is rarely alone in its file. `Command.tsx` writes the `GROUPS` it
+ * feeds the palette above the story; `Form.tsx` writes the Zod `schema`;
+ * `ToastViewport.tsx` writes the tiny component that fires the notice. Taking
+ * only the exported function published three examples that do not run: the
+ * page showed `groups={GROUPS}` with no `GROUPS` anywhere, and the reader who
+ * copied it got a red screen and no clue that the file it came from compiles.
+ *
+ * So the cut follows what the story names. Everything at the top level is a
+ * candidate; what the body mentions comes along, and what those bring in turn
+ * comes too, so a constant built out of another constant does not arrive half
+ * written. What nobody mentions stays out — the point of the cut is still to
+ * show one story, not the whole file.
+ * ------------------------------------------------------------------------- */
+
+/**
+ * The name a top-level statement declares, when it declares one.
+ *
+ * The doc comment above the declaration travels with it, so the name is read
+ * past it. Reading from the first character instead returned nothing for every
+ * statement that bothered to explain itself — which is most of them, and which
+ * is how `ToastViewport` published a story calling a component the reader
+ * could not see.
+ */
+function declaredName(text: string) {
+  const code = text.replace(/^(?:\s*(?:\/\/[^\n]*|\/\*[\s\S]*?\*\/)\s*)+/, '')
+  const match =
+    /^(?:export\s+)?(?:default\s+)?(?:async\s+)?(?:function|class|const|let|var|type|interface|enum)\s+([A-Za-z_$][\w$]*)/.exec(
+      code,
+    )
+  return match?.[1] ?? null
+}
+
+const OPENS_STATEMENT =
+  /^(?:import|export|const|let|var|function|async|class|type|interface|enum)\b|^\/\*|^\/\//
+
+/** Whether everything opened inside this text was closed again. */
+function isBalanced(text: string) {
+  let depth = 0
+  let inBlockComment = false
+
+  for (let index = 0; index < text.length; index++) {
+    const two = text.slice(index, index + 2)
+    if (inBlockComment) {
+      if (two === '*/') {
+        inBlockComment = false
+        index++
+      }
+      continue
+    }
+    if (two === '/*') {
+      inBlockComment = true
+      index++
+      continue
+    }
+    const character = text[index]
+    if (character === '{' || character === '(' || character === '[') depth++
+    if (character === '}' || character === ')' || character === ']') depth--
+  }
+
+  return depth <= 0 && !inBlockComment
+}
+
+const isOnlyComment = (text: string) =>
+  text
+    .split('\n')
+    .every((line) => line.trim() === '' || /^\s*(?:\/\/|\/\*|\*)/.test(line))
+
+/**
+ * The file split into its top-level statements, each with the doc comment
+ * written above it.
+ *
+ * A statement starts at column zero — the previews are formatted, so indented
+ * lines are always inside something — and a comment block glues to whatever it
+ * introduces, which is what keeps a doc comment from being cut away
+ * from the constant it explains.
+ */
+function topLevelStatements(source: string) {
+  const statements: string[] = []
+  let current: string[] = []
+
+  const flush = () => {
+    const text = current.join('\n').trim()
+    if (text) statements.push(text)
+    current = []
+  }
+
+  for (const line of source.split('\n')) {
+    const pending = current.join('\n')
+    if (
+      OPENS_STATEMENT.test(line) &&
+      pending.trim() &&
+      isBalanced(pending) &&
+      !isOnlyComment(pending)
+    ) {
+      flush()
+    }
+    current.push(line)
+  }
+
+  flush()
+  return statements
+}
+
+const mentions = (text: string, name: string) => new RegExp(`\\b${name}\\b`).test(text)
+
 /** Cuts one export out of the example file, so only that story is shown. */
 export function sliceSource(source: string, name: string) {
   const start = source.indexOf(`export function ${name}(`)
   if (start === -1) return null
 
   const next = source.indexOf('\nexport function ', start + 1)
-  const body = (next === -1 ? source.slice(start) : source.slice(start, next)).trimEnd()
+  const raw = next === -1 ? source.slice(start) : source.slice(start, next)
+
+  /*
+   * The next story's doc comment sits above its `export`, so cutting at the
+   * `export` carried it home: every example but the last one on a page ended
+   * in a stray `/** Vertical *\/` that belongs to the example below it.
+   */
+  const body = raw.replace(/(?:\n\s*(?:\/\*[\s\S]*?\*\/|\/\/[^\n]*))+\s*$/, '').trimEnd()
 
   // An import that lists a dozen pieces wraps over several lines, and taking
   // only the lines that start with `import` cut it down to a lone `import {`.
@@ -156,5 +271,38 @@ export function sliceSource(source: string, name: string) {
     imports.push(statement.join('\n'))
   }
 
-  return withoutAutoOpen(`${imports.join('\n')}\n\n${body}`)
+  /*
+   * The supporting statements, chased until nothing new is named.
+   *
+   * The story is the seed and every round asks the text gathered so far which
+   * of the remaining declarations it mentions. One pass would not do: a story
+   * that names `GROUPS` and a `GROUPS` built from a `ROWS` above it would
+   * publish the group and leave the rows behind, which is the same broken
+   * example one line further down.
+   */
+  const candidates = topLevelStatements(source)
+    .filter((statement) => !statement.startsWith('import '))
+    .map((statement) => ({ text: statement, name: declaredName(statement) }))
+    .filter((statement) => statement.name !== null && statement.name !== name)
+
+  const taken = new Set<string>()
+  let text = body
+  let found = true
+
+  while (found) {
+    found = false
+    for (const candidate of candidates) {
+      if (taken.has(candidate.name!)) continue
+      if (!mentions(text, candidate.name!)) continue
+
+      taken.add(candidate.name!)
+      text += `\n${candidate.text}`
+      found = true
+    }
+  }
+
+  const support = candidates.filter((candidate) => taken.has(candidate.name!))
+  const parts = [imports.join('\n'), ...support.map((item) => item.text), body].filter(Boolean)
+
+  return withoutAutoOpen(parts.join('\n\n'))
 }

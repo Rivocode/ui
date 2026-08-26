@@ -20,7 +20,7 @@ export function IssueInvoice() {
           {(field) => <Input {...field} placeholder="você@empresa.com" />}
         </FormField>
 
-        <FormField name="vencimento" label="Vencimento">
+        <FormField name="dueAt" label="Vencimento">
           {(field) => <DatePicker {...forDate(field)} />}
         </FormField>
 
