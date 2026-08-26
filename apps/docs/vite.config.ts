@@ -171,7 +171,19 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
   })
 }
 
+/*
+ * The index an agent reads.
+ *
+ * A part is listed under the piece it composes, not beside it. Forty-five of
+ * the entries here are parts - CardHeader, DialogFooter, SelectItem - and
+ * listing them at the same level makes an agent count a hundred and twenty-six
+ * pieces, spend context opening CardTitle.md as if it stood alone, and miss
+ * the one thing that matters about it: that it only exists inside Card.
+ */
 function indexForAgents(docs: Doc[]) {
+  const names = new Set(docs.map((doc) => doc.name))
+  const parentOf = (name: string) => findParent(name, names)
+
   const byFamily = new Map<string, Doc[]>()
   for (const doc of docs) {
     const list = byFamily.get(doc.family) ?? []
@@ -179,12 +191,18 @@ function indexForAgents(docs: Doc[]) {
     byFamily.set(doc.family, list)
   }
 
+  const pieces = docs.filter((doc) => !parentOf(doc.name)).length
+
   const sections = [...byFamily.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([family, items]) => {
       const lines = items
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((doc) => `- [${doc.name}](/componentes/${doc.slug}.md)`)
+        .map((doc) => {
+          const parent = parentOf(doc.name)
+          const link = `[${doc.name}](/componentes/${doc.slug}.md)`
+          return parent ? `  - ${link} — parte de ${parent}` : `- ${link}`
+        })
         .join('\n')
       return `## ${family}\n\n${lines}`
     })
@@ -192,7 +210,7 @@ function indexForAgents(docs: Doc[]) {
 
   return `# @rivocode/ui
 
-Design system da RivoCode: ${docs.length} documentos, tokens em tres camadas,
+Design system da RivoCode: ${pieces} peças em ${docs.length} documentos, tokens em tres camadas,
 dois temas e duas densidades. Cada endereco abaixo entrega markdown cru, sem HTML em
 volta, para leitura por agent.
 
