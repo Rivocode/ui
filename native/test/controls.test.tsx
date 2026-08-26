@@ -1,8 +1,9 @@
 import { describe, expect, mock, test } from "bun:test";
+import type { ReactTestInstance } from "react-test-renderer";
 
 import { Badge, Button, Checkbox, Select, Switch, Tabs } from "../src";
 import { tokens } from "../tokens";
-import { act, byClass, byRole, render, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("Button", () => {
   test("é um botão para o leitor de tela e dispara o onPress", () => {
@@ -169,6 +170,89 @@ describe("Select", () => {
     { label: "Últimos 30 dias", value: "30" },
     { label: "Este ano", value: "ano" },
   ];
+
+  const many = [
+    { label: "Serviço", value: "servico" },
+    { label: "Produto", value: "produto" },
+    { label: "Frete", value: "frete" },
+  ];
+
+  test("multiple: escolher NÃO fecha a folha, para dar tempo de escolher mais", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={onValueChange} />,
+    );
+    act(() => byLabel(screen, "Categorias")[0].props.onPress());
+
+    const option = byRole(screen, "checkbox").find(
+      (node) => node.props.accessibilityState?.checked === false,
+    );
+    act(() => option!.props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["servico", "produto"]);
+    // A folha continua aberta: escolher três é o motivo de multiple existir.
+    expect(textOf(screen)).toContain("Frete");
+  });
+
+  test("multiple: tocar de novo desmarca, e só aquele valor sai", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <Select label="Categorias" items={many} multiple value={["servico", "frete"]} onValueChange={onValueChange} />,
+    );
+    act(() => byLabel(screen, "Categorias")[0].props.onPress());
+    const marked = byRole(screen, "checkbox").filter(
+      (node) => node.props.accessibilityState?.checked === true,
+    );
+    expect(marked.length).toBe(2);
+    act(() => marked[0].props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["frete"]);
+  });
+
+  test("multiple: o item marcado é caixa de marcar, e não botão com estado mudo", () => {
+    const screen = render(
+      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={() => {}} />,
+    );
+    act(() => byLabel(screen, "Categorias")[0].props.onPress());
+    // Papel de checkbox: tocar alterna e a folha fica: é o que o leitor de tela
+    // precisa ouvir, e "botão selecionado" o TalkBack não anuncia direito.
+    expect(byRole(screen, "checkbox").length).toBe(3);
+  });
+
+  test("multiple: o gatilho diz quantos, na tela e para o leitor de tela", () => {
+    const none = render(
+      <Select label="Categorias" items={many} multiple value={[]} onValueChange={() => {}} placeholder="Escolha as categorias" />,
+    );
+    expect(textOf(none)).toContain("Escolha as categorias");
+
+    const one = render(
+      <Select label="Categorias" items={many} multiple value={["frete"]} onValueChange={() => {}} />,
+    );
+    // Com uma só, o nome dela diz mais que a contagem.
+    expect(textOf(one)).toContain("Frete");
+
+    const three = render(
+      <Select label="Categorias" items={many} multiple value={["servico", "produto", "frete"]} onValueChange={() => {}} />,
+    );
+    expect(textOf(three)).toContain("3 selecionados");
+    expect(byLabel(three, "Categorias")[0].props.accessibilityValue.text).toBe("3 selecionados");
+  });
+
+  test("multiple: a folha oferece um jeito explícito de terminar", () => {
+    const screen = render(
+      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={() => {}} />,
+    );
+    act(() => byLabel(screen, "Categorias")[0].props.onPress());
+    // Pelo texto que ele mostra: o nome falado do Pressable vem do Text de
+    // dentro, e um accessibilityLabel repetindo isso seria adorno.
+    const textIn = (node: ReactTestInstance) =>
+      node
+        .findAllByType("Text" as never)
+        .map((child) => String(child.props.children))
+        .join("");
+    const done = byRole(screen, "button").find((node) => textIn(node) === "Concluir");
+    expect(done).toBeDefined();
+    act(() => done!.props.onPress());
+    expect(textOf(screen)).not.toContain("Frete");
+  });
 
   test("fechado mostra o placeholder e anuncia o valor", () => {
     const screen = render(

@@ -30,6 +30,35 @@ describe("Combobox", () => {
     expect(onValueChange).toHaveBeenCalledWith("1");
   });
 
+  test("multiple: escolher marca e mantém a folha e a busca de pé", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <Combobox items={items} multiple value={["1"]} onValueChange={onValueChange} label="Clientes" />,
+    );
+    act(() => byLabel(screen, "Clientes")[0].props.onPress());
+
+    const option = byRole(screen, "checkbox").find(
+      (node) => node.props.accessibilityState?.checked === false,
+    );
+    act(() => option!.props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["1", "2"]);
+    // Folha aberta e busca no lugar: dá para digitar o próximo nome.
+    expect(textOf(screen)).toContain("Clínica São Lucas");
+  });
+
+  test("multiple: o gatilho conta quantos, e com um só diz o nome", () => {
+    const two = render(
+      <Combobox items={items} multiple value={["1", "2"]} onValueChange={() => {}} label="Clientes" />,
+    );
+    expect(textOf(two)).toContain("2 selecionados");
+    expect(byLabel(two, "Clientes")[0].props.accessibilityValue.text).toBe("2 selecionados");
+
+    const one = render(
+      <Combobox items={items} multiple value={["2"]} onValueChange={() => {}} label="Clientes" />,
+    );
+    expect(textOf(one)).toContain("Transportes Cabo Branco");
+  });
+
   test("busca sem resultado explica, em vez de sumir em silencio", () => {
     const screen = render(
       <Combobox items={items} value={null} onValueChange={() => {}} label="Cliente" />,
