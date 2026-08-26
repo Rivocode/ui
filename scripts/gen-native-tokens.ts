@@ -41,7 +41,10 @@ const toNumber = (value: string) => {
 };
 
 const paletteCss = await read("src/tokens/palette.css");
-const scalesCss = await read("src/tokens/scales.css");
+// Escala e forma sao lidas juntas: para o nativo as duas sao a mesma coisa,
+// que e "medida que nao vem do tema de cor".
+const scalesCss =
+  (await read("src/tokens/scales.css")) + "\n" + (await read("src/tokens/forma.css"));
 
 const palette = new Map<string, string>();
 for (const [name, value] of declarations(paletteCss)) {

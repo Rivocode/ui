@@ -142,12 +142,59 @@ de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesm
 lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
 dela, e um tema de cliente decide o próprio brilho.
 
+### Forma e movimento
+
+Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
+"futurista" antes de qualquer cor, e esses nove tokens vivem em
+`src/tokens/forma.css`, fora da escala, justamente para o tema poder redefinir:
+
+| Token | O que decide |
+|---|---|
+| `--rc-radius-sm` a `--rc-radius-xl` | O canto de campo, cartão, painel e diálogo |
+| `--rc-radius-pill` | A pílula: chave, badge, avatar, barra |
+| `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | O tempo de cada transição |
+| `--rc-duration-sheet`, `--rc-ease-sheet` | O tempo e a curva da folha lateral, que segue o dedo |
+| `--rc-ease` | A curva de todo o resto — seca e mecânica, ou macia |
+| `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
+
+Redefina no mesmo seletor do tema, junto com os papéis de cor:
+
+```css
+[data-rc-theme="acme"] {
+  --rc-radius-md: 0px;                          /* canto reto */
+  --rc-duration-base: 140ms;                    /* movimento seco */
+  --rc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
+`:root` e `[data-rc-theme="x"]` têm a mesma especificidade, então o tema vence.
+
+## O que o tema precisa garantir
+
+Os papéis não são independentes. Estas relações precisam valer, e as três
+primeiras são medidas por `bun run check` — um tema que as quebra falha no CI,
+e não na tela do cliente:
+
+| Invariante | Por quê |
+|---|---|
+| `--rc-border-strong` a 3:1 da superfície | É a fronteira que identifica o controle (WCAG 1.4.11). Abaixo disso o campo não se distingue da página |
+| `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
+| `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
+| `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
+
+`--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor — no tema claro
+da casa as duas são branco puro, e cartão branco sobre página cinza é o padrão
+de nove entre dez painéis. Componente nenhum pode depender dessa diferença para
+existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`.
+
 ## O que **não** entra no tema
 
-Altura de controle, respiro, raio de canto, duração de animação e empilhamento
-vivem em `src/tokens/scales.css` e valem para todos os temas. Um tema que
-redefine `--rc-control-md` está resolvendo densidade no lugar errado, para
-isso existe `density="compact"`, e ele muda a escala inteira de uma vez.
+Altura de controle e respiro vivem em `src/tokens/scales.css` e valem para
+todos os temas. Um tema que redefine `--rc-control-md` está resolvendo
+densidade no lugar errado, para isso existe `density="compact"`, e ele muda a
+escala inteira de uma vez. Escala de texto e empilhamento seguem a mesma
+regra: são estrutura, e mudar deixaria de ser tema.
 
 ## Um tema de cliente, do começo ao fim
 
@@ -234,18 +281,23 @@ Pedir "todos os cinquenta papéis" importa: sem isso o agente escreve os dez
 óbvios e deixa gráfico e estados sem cor, que é exatamente a falha silenciosa
 que a lista acima existe para evitar.
 
-## As duas guardas
+## As guardas
 
-O repositório da biblioteca tem duas travas que rodam em `bun run check`, e
-existem porque as duas falhas são silenciosas:
+O repositório da biblioteca tem travas que rodam em `bun run check`, e existem
+porque todas essas falhas são silenciosas:
 
 **Cor literal.** Nenhum componente pode escrever `#d4f34a`, `bg-lime-400` ou
 `rgb(...)` direto. Se pudesse, o tema do cliente não alcançaria aquela peça, e o
 erro só apareceria na tela dele.
 
-**Contraste.** Quarenta pares medidos, texto contra o fundo em que ele de fato
-aparece, nos dois temas. Um tema novo deve passar pela mesma medida, é a
+**Contraste.** Os pares de texto, os pares compostos de estado sobre o próprio
+fundo, e a fronteira não-textual de 1.4.11 — nos dois temas, com o alfa
+composto antes de medir. Um tema novo deve passar pela mesma medida, é a
 diferença entre "parece bom no meu monitor" e "dá para ler".
+
+**Forma documentada.** Todo token que um tema pode declarar precisa estar
+citado neste guia — os papéis de cor e os de forma. Sem isso o guia passa a
+mentir em silêncio, e a mentira aparece meses depois, na tela de um cliente.
 
 ## Ajuste fino com className
 

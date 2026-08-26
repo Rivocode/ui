@@ -1,22 +1,32 @@
 /**
- * Confere se o guia de temas cita todos os papeis que um tema precisa declarar.
+ * Confere se o guia de temas cita tudo que um tema pode declarar.
  *
- * O guia lista cinquenta tokens e diz que faltar um deixa a peca com a cor do
- * tema anterior. Se alguem acrescentar um papel novo ao tema e nao ao guia, o
- * texto passa a mentir, e a mentira so aparece na tela de um cliente meses
- * depois, como uma cor da RivoCode isolada no meio da marca dele.
+ * Sao duas listas. Os papeis de cor, em que faltar um deixa a peca com a cor
+ * do tema anterior; e os tokens de forma - canto, duracao, curva, espacamento
+ * de letra - que o tema tambem pode redefinir. Se alguem acrescentar um e nao
+ * o citar no guia, o texto passa a mentir: no primeiro caso a mentira aparece
+ * na tela de um cliente meses depois, como uma cor da RivoCode isolada no meio
+ * da marca dele; no segundo ela e uma capacidade que ninguem descobre, que foi
+ * o que aconteceu com o raio - sempre funcionou num seletor de tema, e o guia
+ * desaconselhava por escrito.
  *
- * A checagem e do guia contra o tema, e nao ao contrario: o tema e a verdade.
+ * A checagem e do guia contra os tokens, e nao ao contrario: o token e a
+ * verdade.
  */
 import { readFileSync } from "node:fs";
 
 const TEMA = "src/tokens/themes/rivocode-dark.css";
+const FORMA = "src/tokens/forma.css";
 const GUIA = "apps/docs/src/content/temas.md";
 
 const tema = readFileSync(TEMA, "utf8");
+const forma = readFileSync(FORMA, "utf8");
 const guia = readFileSync(GUIA, "utf8");
 
-const papeis = [...tema.matchAll(/^\s+(--rc-[a-z0-9-]+):/gm)].map((achado) => achado[1]);
+const declarados = (css: string) =>
+  [...css.matchAll(/^\s+(--rc-[a-z0-9-]+):/gm)].map((achado) => achado[1]!);
+
+const papeis = [...declarados(tema), ...declarados(forma)];
 
 /**
  * O guia escreve familia por padrao: `--rc-<estado>-fg` cobre os quatro
@@ -36,16 +46,19 @@ function citado(papel: string) {
   const sombra = /^--rc-shadow-([1-3])$/.exec(papel);
   if (sombra) return guia.includes("--rc-shadow-1` a `--rc-shadow-3");
 
+  const raio = /^--rc-radius-(sm|md|lg|xl)$/.exec(papel);
+  if (raio) return guia.includes("--rc-radius-sm` a `--rc-radius-xl");
+
   return false;
 }
 
 const faltando = papeis.filter((papel) => !citado(papel));
 
 if (faltando.length > 0) {
-  console.error(`${faltando.length} papel(eis) no tema e fora do guia:\n`);
+  console.error(`${faltando.length} token(s) que o tema pode declarar e fora do guia:\n`);
   for (const papel of faltando) console.error(`  ${papel}`);
   console.error(`\nDocumente em ${GUIA}, ou o guia passa a mentir em silencio.`);
   process.exit(1);
 }
 
-console.log(`${papeis.length} papeis do tema, todos citados no guia.`);
+console.log(`${papeis.length} tokens de tema e forma, todos citados no guia.`);

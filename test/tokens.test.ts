@@ -4,8 +4,13 @@ import { compose, contrastRatio, readTokens } from "../scripts/check-contrast";
 
 const read = (p: string) => Bun.file(p).text();
 
+/** As camadas que todo tema herda: paleta, escala e forma. */
 const base = async () =>
-  (await read("src/tokens/palette.css")) + "\n" + (await read("src/tokens/scales.css"));
+  [
+    await read("src/tokens/palette.css"),
+    await read("src/tokens/scales.css"),
+    await read("src/tokens/forma.css"),
+  ].join("\n");
 
 test("todo token que o contrato referencia existe nos dois temas", async () => {
   const contract = await read("src/tokens/contract.css");
@@ -122,4 +127,51 @@ test("o anel de foco tambem alcanca 3:1, nos dois fundos", async () => {
       expect(`${tema} ${sob} ${razao >= 3}`).toBe(`${tema} ${sob} true`);
     }
   }
+});
+
+test("forma e movimento vivem em arquivo proprio, que o tema pode redefinir", async () => {
+  // Canto reto, movimento seco e rotulo espacado sao os tres sinais visuais
+  // que mais mudam entre uma marca e outra, e estavam do lado errado da
+  // fronteira: dentro da escala global, junto com densidade - que e outra
+  // coisa e tem dono proprio.
+  const forma = await read("src/tokens/forma.css");
+  const escalas = await read("src/tokens/scales.css");
+
+  for (const token of [
+    "--rc-radius-sm",
+    "--rc-radius-md",
+    "--rc-radius-lg",
+    "--rc-radius-xl",
+    "--rc-radius-pill",
+    "--rc-duration-fast",
+    "--rc-duration-base",
+    "--rc-ease",
+    "--rc-tracking-display",
+  ]) {
+    expect(`${token} em forma.css: ${forma.includes(`${token}:`)}`).toBe(`${token} em forma.css: true`);
+    expect(`${token} fora de scales.css: ${!escalas.includes(`${token}:`)}`).toBe(
+      `${token} fora de scales.css: true`,
+    );
+  }
+});
+
+test("o preset importa a forma antes dos temas, senao o tema nao vence", async () => {
+  // :root e [data-rc-theme="x"] tem a mesma especificidade, entao quem decide
+  // e a ordem do arquivo. Importar a forma depois do tema faria o padrao da
+  // casa apagar a escolha do cliente, em silencio.
+  const preset = await read("src/preset.css");
+  const ondeForma = preset.indexOf("tokens/forma.css");
+  const ondeTema = preset.indexOf("tokens/themes/rivocode-dark.css");
+
+  expect(ondeForma).toBeGreaterThan(-1);
+  expect(ondeForma).toBeLessThan(ondeTema);
+});
+
+test("a densidade continua sendo da densidade, e nao do tema", async () => {
+  // O contrario do de cima: altura de controle e respiro seguem no arquivo de
+  // escala, porque quem decide isso e o data-rc-density.
+  const escalas = await read("src/tokens/scales.css");
+
+  expect(escalas).toContain("--rc-control-md:");
+  expect(escalas).toContain("--rc-pad-panel:");
 });
