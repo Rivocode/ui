@@ -1,9 +1,16 @@
 export { Form, type FormProps } from "./form";
 export { FormField, type FormFieldRow, type FormFieldProps } from "./form-field";
 export {
+  forChecked,
+  forDate,
+  forValue,
+  // Os nomes de antes, que continuam valendo.
   forCheckbox,
   forDatePicker,
   forSelect,
+  type CheckedProps,
+  type DateProps,
+  type ValueProps,
   type PropsDeCheckbox,
   type PropsDeDatePicker,
   type PropsDeSelect,

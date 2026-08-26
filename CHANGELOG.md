@@ -21,6 +21,26 @@ O `NumberField` nao aceita nome de formatador, e a razao e o campo ser
 editavel: um formatador so escreve, e o que a pessoa digita precisa ser lido de
 volta.
 
+### Os adaptadores de formulario tem nome de formato, e nao de peca
+
+`forCheckbox` sempre serviu o `Switch` sem uma linha de diferenca, e
+`forSelect` serve `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider` e
+`OTPField`. O nome fazia a API parecer menor do que e.
+
+| Antes | Agora | Serve |
+|---|---|---|
+| `forSelect` | `forValue` | Tudo que tem `value` e `onValueChange` |
+| `forCheckbox` | `forChecked` | Tudo que tem `checked` e `onCheckedChange` |
+| `forDatePicker` | `forDate` | Valor em `Date` |
+
+Os nomes antigos continuam valendo e apontam para os mesmos adaptadores.
+`forValue` devolve o valor com o tipo que o schema deu a ele, em vez de
+`unknown`, entao controle tipado encaixa sem `as`.
+
+Os tipos deixam o portugues: `PropsDeSelect` vira `ValueProps`,
+`PropsDeCheckbox` vira `CheckedProps`, `PropsDeDatePicker` vira `DateProps`.
+Os nomes antigos seguem exportados como apelido.
+
 ### Os formatadores saem tambem pela raiz
 
 `currencyShort`, `percent`, `integer`, `monthShort` e os demais continuam em

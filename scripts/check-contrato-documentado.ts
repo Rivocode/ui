@@ -44,7 +44,12 @@ const skill = [
  */
 function exportado(arquivo: string) {
   const fonte = readFileSync(arquivo, "utf8");
-  const semRecharts = fonte.replace(/export \{[\s\S]*?\} from "recharts";/g, "");
+  const semRecharts = fonte
+    .replace(/export \{[\s\S]*?\} from "recharts";/g, "")
+    // Comentario dentro do bloco de export nao e nome de export: sem tirar,
+    // "// os nomes de antes" virava uma peca que a doc precisaria citar.
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/[^\n]*/g, "");
 
   const nomes = new Set<string>();
 
