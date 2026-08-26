@@ -127,6 +127,13 @@ describe("DataList", () => {
     expect(onSelectedChange).toHaveBeenCalledWith(["1"]);
   });
 
+  test("lista vazia sem busca escrita não fala em busca", () => {
+    // Sem `empty` e sem filtro, a lista some em silêncio, como sempre fez -
+    // dizer "nenhum resultado para a busca" inventaria uma busca que não houve.
+    const screen = render(list({ data: [] }));
+    expect(textOf(screen)).not.toContain("Nenhum resultado para a busca.");
+  });
+
   test("vazio só vale depois que a consulta voltou, e diz o porquê", () => {
     const empty = {
       title: "Nenhuma nota por aqui",

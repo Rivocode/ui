@@ -155,10 +155,17 @@ export function DataList<Row>({
       )
     : rows;
 
-  if (visible.length === 0) {
-    // Filtro que zerou nao e consulta vazia: o `empty` continua reservado para
-    // quando nao ha o que buscar. Trocar um pelo outro faz a tela dizer "emita
-    // a primeira nota" para quem tem trinta e errou uma letra na busca.
+  /*
+   * Filtro que zerou nao e consulta vazia: o `empty` continua reservado para
+   * quando nao ha o que buscar. Trocar um pelo outro faz a tela dizer "emita a
+   * primeira nota" para quem tem trinta e errou uma letra na busca.
+   *
+   * A frase depende do `needle`, e nao so da lista vazia: quem nao passa
+   * `empty` sempre viu a lista sumir em silencio quando nao havia dados, e sem
+   * essa condicao passaria a ler "nenhum resultado para a busca" sem nunca ter
+   * buscado nada.
+   */
+  if (needle && visible.length === 0) {
     return <Text className="py-8 text-center text-sm text-fg-muted">Nenhum resultado para a busca.</Text>;
   }
 
