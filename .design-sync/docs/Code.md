@@ -19,4 +19,4 @@ longa estica a página inteira.
 
 ## No React Native
 
-Ainda não portado — código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, e ele vai dentro de um `Text`: `Abra o <Code>app.json</Code>` quebra linha junto com a frase que o cerca. **A rolagem horizontal que a fila prometia nunca foi deste lado:** barra de rolagem dentro de um parágrafo é armadilha para o dedo que rola a tela, e quem precisa dela é o `CodeBlock` — retorno de API, linha de log —, que é outra peça e ainda não portou. O argumento é o inverso do daqui: lá quebrar um JSON no meio muda o que está escrito, e aqui quebrar um caminho longo no meio é o certo, porque a alternativa é esticar a tela inteira. O corpo da letra não é escrito: o `Text` aninhado herda o do texto de fora, que é o que o `0.9em` do web dizia. E `selectable` vem ligado, porque o toque longo é o gesto nativo para copiar — no Android quem seleciona é o `Text` de fora, e ali é ele que precisa carregar a prop.

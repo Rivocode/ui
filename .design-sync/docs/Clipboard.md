@@ -35,4 +35,10 @@ pessoa escolher entre coisas que ela acha que são diferentes.
 
 ## No React Native
 
-Ainda não portado — precisa do `expo-clipboard`, e dependência é escolha do app. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, no caminho próprio `@rivocode/ui-native/clipboard` — o mesmo arranjo do `form` e do `chart`, e pela mesma razão: o `expo-clipboard` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app liga e reconstrói (`npx expo install expo-clipboard`). Ele tem caminho **separado** do `FileUpload` de propósito: quem põe um botão de copiar ao lado da chave de acesso de uma NF-e não anexa arquivo nenhum, e um índice comum aos dois cobraria os dois.
+
+**A confirmação passa a ser dupla, e no web bastava uma.** A regra não muda — copiar é a ação sem resultado visível, e sem confirmação a pessoa toca de novo por dúvida. O que muda é por onde ela chega. O botão continua trocando o ícone e o nome acessível, como lá; e a peça dispara **também** um aviso, porque aqui trocar o `accessibilityLabel` de um `Pressable` que já está sob o foco **não é reanunciado** nem pelo VoiceOver nem pelo TalkBack: quem não vê o ícone virar visto não ficaria sabendo de nada. O aviso que o `RivoProvider` já monta mora num `accessibilityLiveRegion="polite"`, e é o único canal desta tela que fala sozinho. `toast={false}` desliga, para a tela que copia várias coisas seguidas e não quer uma pilha de avisos.
+
+**Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve `false` quando a área de transferência recusa — o caso do passe web, fora de contexto seguro —, e no iOS e no Android ele sempre resolve `true`.
+
+Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.

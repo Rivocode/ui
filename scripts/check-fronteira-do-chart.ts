@@ -1,13 +1,14 @@
 /**
- * Guarda da fronteira do grafico, nos DOIS pacotes.
+ * Guarda das fronteiras de peer OPCIONAL, nos DOIS pacotes.
  *
- * O desenho de dado tem peer OPCIONAL - a recharts no web, o react-native-svg
- * no nativo -, e por isso cada pacote se divide em dois pontos de entrada:
- * quem so quer botao e tabela instala `@rivocode/ui` e nao paga os ~180kB do
- * `@rivocode/ui/chart`; quem so quer um `Button` no celular instala
- * `@rivocode/ui-native` e nao precisa ligar o react-native-svg ao projeto
- * nativo, que la custa build e nao so bytes. O preco desse arranjo e um
- * invariante: nenhum modulo alcancado pelo indice da raiz pode importar o
+ * Nasceu para o grafico - e o nome do arquivo ainda diz isso -, mas o
+ * invariante nunca foi do grafico: e de todo subcaminho que existe porque um
+ * peer nao pode ser cobrado de quem nao o usa. Quem so quer botao e tabela
+ * instala `@rivocode/ui` e nao paga os ~180kB do `@rivocode/ui/chart`; quem so
+ * quer um `Button` no celular instala `@rivocode/ui-native` e nao precisa
+ * ligar o react-native-svg, o expo-clipboard nem o expo-document-picker ao
+ * projeto nativo, que la custam build e nao so bytes. O preco desse arranjo e
+ * sempre o mesmo: nenhum modulo alcancado pelo indice da raiz pode importar o
  * peer, nem direto nem por dentro de uma peca do subcaminho.
  *
  * O invariante vivia so em prosa - um comentario em `src/components/stat.tsx`
@@ -18,21 +19,29 @@
  * pior tipo de quebra - a que a nossa suite nao pode sentir, porque aqui a
  * recharts esta instalada como devDependency.
  *
- * Sao duas regras por pacote, e a segunda e que fecha a porta de verdade:
+ * Sao duas regras por fronteira, e a segunda e que fecha a porta de verdade:
  *
- *   1. O peer so entra no diretorio do grafico.
- *   2. O diretorio do grafico so e importado de dentro dele mesmo - importar a
- *      Sparkline arrasta a recharts junto, e o passo 1 nao veria nada.
+ *   1. O peer so entra no diretorio do subcaminho.
+ *   2. O diretorio do subcaminho so e importado de dentro dele mesmo -
+ *      importar a Sparkline arrasta a recharts junto, e o passo 1 nao veria
+ *      nada.
  *
  * A guarda le import, e nao texto. `grep -rn recharts src/` acusaria o
  * comentario do Stat, que e justamente quem explica a regra; guarda que acusa
  * a propria documentacao dela morre na primeira semana.
  *
- * O nativo entrou depois, e nao ganhou script proprio de proposito: o
- * invariante e o mesmo, a leitura de import e a mesma, e duas guardas iguais
- * divergem na primeira correcao que so uma delas recebe. A prova disso e o
- * furo que a versao anterior tinha e que a tabela abaixo fechou nos dois de
- * uma vez - veja `inside()`.
+ * **A tabela abaixo e a peca inteira, e ela existe para crescer.** Nem o
+ * nativo, nem o formulario, nem as duas fronteiras do Expo ganharam script
+ * proprio: o invariante e o mesmo, a leitura de import e a mesma, e duas
+ * guardas iguais divergem na primeira correcao que so uma delas recebe. A
+ * prova disso e o furo que a primeira versao tinha e que a tabela fechou em
+ * todas de uma vez - veja `inside()`. Subcaminho novo com peer novo e uma
+ * linha aqui, e nada mais.
+ *
+ * Uma nota sobre o nome do arquivo: ele continua `check-fronteira-do-chart`
+ * porque o script se chama `check:chart` no package.json da raiz, e renomear
+ * um sem o outro deixa o comando morto. Leia "chart" como "o primeiro
+ * subcaminho que precisou disto".
  */
 import { Glob } from "bun";
 
@@ -41,11 +50,11 @@ type Frontier = {
   pkg: string;
   /** A raiz do codigo do pacote. */
   core: string;
-  /** O diretorio do grafico, com barra no fim. */
-  chart: string;
+  /** O diretorio do subcaminho, com barra no fim. */
+  dir: string;
   /** O especificador publico do subcaminho. */
   entry: string;
-  /** O peer opcional que nao pode vazar. */
+  /** O peer opcional - ou os peers - que nao podem vazar. */
   peer: RegExp;
   /** Por que ele nao pode vazar, em uma linha. */
   why: string;
@@ -55,20 +64,62 @@ const FRONTIERS: Frontier[] = [
   {
     pkg: "@rivocode/ui",
     core: "src",
-    chart: "src/chart/",
+    dir: "src/chart/",
     entry: "@rivocode/ui/chart",
     peer: /^recharts(\/|$)/,
     why: "A recharts e peer opcional: quem instalou so o @rivocode/ui nao a tem.",
   },
   {
+    pkg: "@rivocode/ui",
+    core: "src",
+    dir: "src/form/",
+    entry: "@rivocode/ui/form",
+    peer: /^(react-hook-form|@hookform\/resolvers|zod)(\/|$)/,
+    why:
+      "O react-hook-form, o zod e o resolver sao peers opcionais: quem instalou\n" +
+      "    so o @rivocode/ui monta um Input sem nenhum dos tres.",
+  },
+  {
     pkg: "@rivocode/ui-native",
     core: "native/src",
-    chart: "native/src/chart/",
+    dir: "native/src/chart/",
     entry: "@rivocode/ui-native/chart",
     peer: /^react-native-svg(\/|$)/,
     why:
       "O react-native-svg e peer opcional, e no celular ele nao e so bytes: e\n" +
       "    modulo nativo, que o app precisa ligar e reconstruir.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    dir: "native/src/form/",
+    entry: "@rivocode/ui-native/form",
+    peer: /^(react-hook-form|@hookform\/resolvers|zod)(\/|$)/,
+    why:
+      "O react-hook-form, o zod e o resolver sao peers opcionais, e o metro\n" +
+      "    resolve import por arquivo: no indice da raiz, quem so quer um Button\n" +
+      "    teria de instalar os tres.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    dir: "native/src/clipboard/",
+    entry: "@rivocode/ui-native/clipboard",
+    peer: /^expo-clipboard(\/|$)/,
+    why:
+      "O expo-clipboard e peer opcional e modulo nativo do Expo: quem nao copia\n" +
+      "    nada nao deve ter de instalar e reconstruir por causa dele.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    dir: "native/src/file-upload/",
+    entry: "@rivocode/ui-native/file-upload",
+    peer: /^expo-document-picker(\/|$)/,
+    why:
+      "O expo-document-picker e peer opcional e modulo nativo do Expo. Ele tem\n" +
+      "    caminho SEPARADO do clipboard de proposito: quem copia uma chave de\n" +
+      "    NF-e nao anexa arquivo, e um indice comum aos dois cobraria os dois.",
   },
 ];
 
@@ -100,9 +151,9 @@ function importsOf(file: string, code: string) {
 }
 
 /**
- * O caminho cai dentro do diretorio do grafico?
+ * O caminho cai dentro do diretorio do subcaminho?
  *
- * O `startsWith(chart)` sozinho tem um furo, e e o furo do import mais natural
+ * O `startsWith(dir)` sozinho tem um furo, e e o furo do import mais natural
  * que existe: `import { ChartDonut } from "./chart"` a partir do indice da
  * raiz resolve para `src/chart` - sem a barra final, porque o especificador
  * aponta o DIRETORIO e quem poe o `/index` e o resolvedor de modulos, nao nos.
@@ -117,7 +168,7 @@ const breaches: string[] = [];
 for (const frontier of FRONTIERS) {
   for await (const file of new Glob("**/*.{ts,tsx}").scan(frontier.core)) {
     const path = `${frontier.core}/${file}`;
-    if (inside(path, frontier.chart)) continue;
+    if (inside(path, frontier.dir)) continue;
 
     const code = await Bun.file(path).text();
 
@@ -127,10 +178,10 @@ for (const frontier of FRONTIERS) {
         continue;
       }
 
-      if (inside(resolved, frontier.chart) || resolved === frontier.entry) {
+      if (inside(resolved, frontier.dir) || resolved === frontier.entry) {
         breaches.push(
           `  ${path}:${line}  importa "${specifier}"\n` +
-            `    Tudo em ${frontier.chart} arrasta o peer junto, mesmo que a peca nao pareca.`,
+            `    Tudo em ${frontier.dir} arrasta o peer junto, mesmo que a peca nao pareca.`,
         );
       }
     }
@@ -138,12 +189,12 @@ for (const frontier of FRONTIERS) {
 }
 
 if (breaches.length > 0) {
-  console.error(`${breaches.length} import(s) atravessando a fronteira do grafico:\n`);
+  console.error(`${breaches.length} import(s) atravessando fronteira de peer opcional:\n`);
   for (const item of breaches) console.error(item);
   console.error(
     "\nO nucleo dos dois pacotes tem que continuar montando sem o peer instalado." +
-      "\n\nSe a peca precisa mesmo do grafico, ela pertence ao diretorio do grafico" +
-      "\ne sai pelo subcaminho. Se e o nucleo que precisa do desenho, copie o SVG -" +
+      "\n\nSe a peca precisa mesmo do peer, ela pertence ao diretorio dele e sai" +
+      "\npelo subcaminho. Se e o nucleo que precisa, refaca a parte sem o peer -" +
       "\ne o que o `Stat` faz no web, e o que a `Sparkline` nativa faz com `View`;" +
       "\nos comentarios das duas explicam por que." +
       "\n\nNada aqui quebra o build: quebra a instalacao de quem nao tem o peer," +
@@ -153,7 +204,7 @@ if (breaches.length > 0) {
 }
 
 console.log(
-  FRONTIERS.map((frontier) => `${frontier.pkg}: o peer nao sai de ${frontier.chart}`).join(
+  FRONTIERS.map((frontier) => `${frontier.pkg}: o peer nao sai de ${frontier.dir}`).join(
     ", e ninguem de fora entra la.\n",
   ) + ", e ninguem de fora entra la.",
 );

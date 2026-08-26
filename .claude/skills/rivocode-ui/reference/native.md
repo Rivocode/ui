@@ -63,9 +63,36 @@ e leva nome e valor para o meio. **Cor de série é papel de token** (`chart-1` 
 A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
 `chart` do `Stat`, e o `Stat` sai da raiz.
 
+## Copiar e anexar: dois caminhos, e não um
+
+`Clipboard` e `FileUpload` também pedem peer opcional, e cada um mora num
+subcaminho próprio — **um subcaminho por peer, e não um por assunto**. Quem põe
+um botão de copiar ao lado da chave de acesso de uma NF-e não anexa arquivo
+nenhum, e um índice comum cobraria os dois módulos do Expo de quem só usa um.
+
+```sh
+npx expo install expo-clipboard        # @rivocode/ui-native/clipboard
+npx expo install expo-document-picker  # @rivocode/ui-native/file-upload
+```
+
+```tsx
+import { Clipboard } from '@rivocode/ui-native/clipboard'
+import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
+```
+
+Duas coisas mordem. **A confirmação de copiar é dupla**: o botão troca de nome,
+como no web, e a peça dispara **também** um aviso — porque `accessibilityLabel`
+trocado num `Pressable` que já está sob o foco não é reanunciado nem pelo
+VoiceOver nem pelo TalkBack, e o aviso do `RivoProvider` é o único canal desta
+tela que fala sozinho (`toast={false}` desliga). E **a área de soltar não
+existe**: no celular não há arrastar, então o que abre o seletor é um botão de
+altura de controle, com o `hint` dentro do nome falado. O `accept` fala MIME,
+que é o que o seletor do sistema sabe filtrar, e o que volta é um `PickedFile`
+com `uri` local — `size` pode faltar, e `maxSize` só recusa o que mediu.
+
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts` e `native/src/chart/index.ts` em 2026-08-26:** 56 traduzem com o mesmo nome, 3 traduzem com outro, 8 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-26:** 61 traduzem com o mesmo nome, 3 traduzem com outro, 3 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -86,10 +113,10 @@ A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
 | `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate` |
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho |
-| `Clipboard` | ○ na fila | precisa do `expo-clipboard`, e dependência é escolha do app |
-| `Code` | ○ na fila | código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido |
+| `Clipboard` | ✔ traduz | vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla — o botão troca de nome e um aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado |
+| `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
-| `ColorPicker` | ○ na fila | a grade de amostras atravessa, e o campo hexadecimal também; falta escrever a peça |
+| `ColorPicker` | ✔ traduz | sai na raiz; controlada, e sem seta — cada amostra é um alvo de 44px com o desenho de 32 por dentro, e são seis por linha, não dez |
 | `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `ContextMenu` | ✕ não porta | não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita |
@@ -102,7 +129,7 @@ A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
 | `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web |
 | `Field` | ✔ traduz | `label`, `description` e `error` como props; o erro vence a descrição, como no web |
 | `Fieldset` | ✔ traduz | `legend` como prop |
-| `FileUpload` | ○ na fila | precisa do `expo-document-picker`; entra quando houver app dono da dependência |
+| `FileUpload` | ✔ traduz | vive em `@rivocode/ui-native/file-upload`; a área de soltar vira um botão, porque no celular não há soltar — o `accept` fala MIME e o tamanho sai formatado sem `Intl` |
 | `Form` | ✔ traduz | vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText` |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco — não há `focus-visible` em tela de toque |
@@ -143,7 +170,7 @@ A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta |
 | `Textarea` | ✔ traduz | `rows` é a altura inicial; o campo cresce com o conteúdo |
-| `Timeline` | ○ na fila | o que aconteceu, em ordem, ainda é composição sua |
+| `Timeline` | ✔ traduz | os eventos vêm por `items`, com `tone` e `pending` em cada um; `at` é texto pronto, e cada evento é uma parada só do leitor de tela, com a posição escrita no rótulo |
 | `ToastViewport` | ✔ vira `useToast` | não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo |
 | `Toggle` | ✔ traduz | `pressed` e `onPressedChange` |
 | `ToggleGroup` | ✔ traduz | `items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web |

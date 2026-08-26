@@ -47,12 +47,20 @@ import {
   SearchInput,
   Slider,
   Textarea,
+  ColorPicker,
   ToggleGroup,
 } from "../../native/src";
 /* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
    e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
    paga - e `scripts/check-fronteira-do-chart.ts` guarda essa fronteira. */
 import { ChartDonut, ChartRadial } from "../../native/src/chart";
+/* Copiar e anexar tem cada um o SEU subcaminho, e um peer do Expo atras de
+   cada um: expo-clipboard e expo-document-picker. Um subcaminho por peer, e
+   nao um por assunto - quem so copia a chave nao instala o seletor de
+   documentos. Este app instalou os dois porque faz as duas coisas. */
+import { Clipboard } from "../../native/src/clipboard";
+import { FileUpload, FileUploadItem, FileUploadList } from "../../native/src/file-upload";
+import type { PickedFile } from "../../native/src/file-upload";
 import type { RivoNativeTheme } from "../../native/tokens";
 
 type Invoice = {
@@ -62,6 +70,17 @@ type Invoice = {
   status: "Paga" | "Aberta" | "Vencida";
   tone: "success" | "info" | "danger";
 };
+
+/** A chave de acesso de uma NF-e: 44 digitos que ninguem redigita. */
+const ACCESS_KEY = "35240612345678000199550010000048131000048139";
+
+/** A paleta do cliente. O leque padrao serve para experimentar, nao para marca. */
+const BRAND_COLORS = [
+  { value: "#d4f34a", label: "Lima" },
+  { value: "#3ddc97", label: "Teal" },
+  { value: "#f2b21c", label: "Âmbar" },
+  { value: "#6aa9ff", label: "Azul" },
+];
 
 const INVOICES: Invoice[] = [
   { id: "1", number: "4813", customer: "Clínica São Lucas", status: "Paga", tone: "success" },
@@ -107,6 +126,9 @@ function Painel({
   const [goal, setGoal] = useState(80);
   const [otp, setOtp] = useState("");
   const [rowMenu, setRowMenu] = useState(false);
+  const [brand, setBrand] = useState("#d4f34a");
+  const [attachments, setAttachments] = useState<PickedFile[]>([]);
+  const [refused, setRefused] = useState<string | null>(null);
 
   return (
     <SafeAreaView className="flex-1">
@@ -142,6 +164,66 @@ function Painel({
               </View>
             </View>
             <ChartRadial value={82} centerLabel="da meta do mês" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Chave de acesso</CardTitle>
+            <CardDescription>Copiar, anexar e vestir o cliente.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <View className="flex-row items-center gap-2">
+              <Text className="min-w-0 flex-1 font-mono text-xs text-fg-muted" numberOfLines={1}>
+                {ACCESS_KEY}
+              </Text>
+              <Clipboard value={ACCESS_KEY} labels={{ copy: "Copiar a chave" }} />
+            </View>
+
+            <Separator className="my-4" />
+
+            <FileUpload
+              label="Escolher o XML"
+              hint="XML ou PDF, até 5 MB"
+              accept="text/xml,application/xml,application/pdf"
+              maxSize={5 * 1024 * 1024}
+              onSelect={(files) => {
+                setRefused(null);
+                setAttachments((current) => [...current, ...files]);
+              }}
+              // A peca nao conhece rede: quem sobe, avisa e tenta de novo e o
+              // app. Aqui ela so mostra o motivo da recusa.
+              onReject={(rejections) =>
+                setRefused(`${rejections[0]!.file.name}: ${rejections[0]!.reason}`)
+              }
+            />
+
+            {refused && <Text className="mt-2 text-xs text-danger-text">{refused}</Text>}
+
+            {attachments.length > 0 && (
+              <FileUploadList>
+                {attachments.map((file) => (
+                  <FileUploadItem
+                    key={file.uri}
+                    name={file.name}
+                    size={file.size ?? 0}
+                    onRemove={() =>
+                      setAttachments((current) => current.filter((other) => other.uri !== file.uri))
+                    }
+                  />
+                ))}
+              </FileUploadList>
+            )}
+
+            <Separator className="my-4" />
+
+            <ColorPicker
+              label="Cor da marca do cliente"
+              value={brand}
+              onValueChange={setBrand}
+              swatches={BRAND_COLORS}
+              columns={4}
+            />
           </CardContent>
         </Card>
 

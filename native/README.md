@@ -73,28 +73,40 @@ O que não traduz fica de fora de propósito: sombra de caixa (no RN é
 `elevation`/`shadow*`, decisão da peça), `clamp()` de marketing, `z-index` — e
 a densidade compacta, porque alvo de toque não encolhe em tela de dedo.
 
-## Dois subcaminhos, dois peers opcionais
+## Quatro subcaminhos, e um peer por porta
 
-O formulário e o gráfico não saem do índice da raiz:
+O formulário, o gráfico, o copiar e o anexar não saem do índice da raiz:
 
 ```tsx
 import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
 import { ChartContainer, ChartDonut, ChartRadial } from '@rivocode/ui-native/chart'
+import { Clipboard } from '@rivocode/ui-native/clipboard'
+import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
 
-O `react-hook-form` e o `react-native-svg` são peers **opcionais**, e o metro
-resolve import por arquivo: dentro do índice principal, um app que só quer um
-`Button` teria de instalar os dois para o bundle fechar. No caso do
-`react-native-svg` o preço é maior que bytes — ele é módulo nativo, que o app
-liga ao projeto de iOS e Android e reconstrói.
+Cada porta tem **um** peer opcional atrás, e o metro resolve import por
+arquivo: dentro do índice principal, um app que só quer um `Button` teria de
+instalar os quatro para o bundle fechar. Nos três de baixo o preço é maior que
+bytes — são módulos nativos, que o app liga ao projeto de iOS e Android e
+reconstrói.
 
 ```sh
-npx expo install react-native-svg     # só quem desenha gráfico
+npx expo install react-native-svg         # só quem desenha gráfico
+npx expo install expo-clipboard           # só quem copia
+npx expo install expo-document-picker     # só quem anexa
 ```
+
+**É um subcaminho por peer, e não um por assunto.** O `Clipboard` e o
+`FileUpload` dividiriam bem uma porta chamada `/expo`, e a conta de quem
+instala diz que não: quem põe um botão de copiar ao lado da chave de acesso de
+uma NF-e não anexa arquivo nenhum, e um índice comum cobraria dele o seletor
+de documentos. `scripts/check-fronteira-do-chart.ts`, na raiz do repositório,
+guarda as quatro fronteiras — nada alcançável pelo índice da raiz pode
+importar de dentro delas.
 
 ## O catálogo
 
-59 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
+62 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
 só conhece o comportamento de baixo, `Select` abre numa folha, e `Sidebar`,
 `Menubar` e `Tooltip` não portam — são idiomas de desktop. A tabela completa
 de tradução está no guia.

@@ -12,11 +12,15 @@
     // /ui/node_modules, onde nenhum dos tres existe, e o tsc reprova o
     // provider e o grafico por um erro que nao e deles. O nativewind ja
     // falhava assim desde que o catalogo dobrou; o react-native-svg entrou
-    // junto quando o grafico chegou.
+    // junto quando o grafico chegou, e os dois modulos do Expo quando o
+    // Clipboard e o FileUpload chegaram - um peer opcional por subcaminho, e
+    // cada um precisa da propria linha aqui.
     "paths": {
       "react-native": ["./node_modules/react-native"],
       "nativewind": ["./node_modules/nativewind"],
-      "react-native-svg": ["./node_modules/react-native-svg"]
+      "react-native-svg": ["./node_modules/react-native-svg"],
+      "expo-clipboard": ["./node_modules/expo-clipboard"],
+      "expo-document-picker": ["./node_modules/expo-document-picker"]
     }
   },
   "include": [

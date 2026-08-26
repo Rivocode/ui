@@ -85,3 +85,11 @@ export {
   type WizardFooterProps,
   type WizardState,
 } from "./steps";
+export {
+  ColorPicker,
+  normalizeColor,
+  type ColorPickerProps,
+  type ColorSwatch,
+} from "./color-picker";
+export { Timeline, type TimelineEvent, type TimelineProps, type TimelineTone } from "./timeline";
+export { Code, type CodeProps } from "./code";

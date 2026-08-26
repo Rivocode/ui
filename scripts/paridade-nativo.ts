@@ -41,20 +41,29 @@ import { Glob } from "bun";
 
 const DOCS = ".design-sync/docs";
 /**
- * Os indices do pacote nativo - os TRES, e os dois de baixo nao sao detalhe.
+ * Os indices do pacote nativo - os CINCO, e os quatro de baixo nao sao detalhe.
  *
- * O formulario e o grafico moram em caminhos proprios
- * (`@rivocode/ui-native/form`, `@rivocode/ui-native/chart`) pela mesma razao
- * do web, onde o `Form` e o `ChartContainer` tambem nao saem de
- * `src/index.ts`: o react-hook-form e o react-native-svg sao peers opcionais,
- * e o metro resolve import por arquivo - dentro do indice principal, quem so
- * quer um Button teria de instalar os dois. Medindo so o indice da raiz, o
- * `--check` diria que o Form nao portou no dia seguinte ao porte.
+ * O formulario, o grafico, o copiar e o anexar moram em caminhos proprios
+ * (`@rivocode/ui-native/form`, `/chart`, `/clipboard`, `/file-upload`) pela
+ * mesma razao do web, onde o `Form` e o `ChartContainer` tambem nao saem de
+ * `src/index.ts`: cada um deles tem um peer OPCIONAL atras - react-hook-form,
+ * react-native-svg, expo-clipboard, expo-document-picker - e o metro resolve
+ * import por arquivo. Dentro do indice principal, quem so quer um Button teria
+ * de instalar os quatro.
+ *
+ * E um subcaminho por PEER, e nao um por assunto: o clipboard e o file-upload
+ * dividiriam bem uma porta chamada `/expo`, e a conta de quem instala diz que
+ * nao - quem copia a chave de acesso de uma NF-e nao anexa arquivo.
+ *
+ * Medindo so o indice da raiz, o `--check` diria que o Form nao portou no dia
+ * seguinte ao porte.
  */
 const NATIVE_INDEXES = [
   "native/src/index.ts",
   "native/src/form/index.ts",
   "native/src/chart/index.ts",
+  "native/src/clipboard/index.ts",
+  "native/src/file-upload/index.ts",
 ];
 
 type State =
@@ -399,19 +408,80 @@ const PARITY: Record<string, Row> = {
   },
 
   // ------------------------------------------------------------------ na fila
-  Clipboard: { state: "fila", note: "precisa do `expo-clipboard`, e dependência é escolha do app" },
+  Clipboard: {
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla — o botão troca de nome e um " +
+      "aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/clipboard` — o mesmo arranjo do `form` e do " +
+      "`chart`, e pela mesma razão: o `expo-clipboard` é peer **opcional**, e no celular ele não é " +
+      "só bytes, é módulo nativo que o app liga e reconstrói (`npx expo install expo-clipboard`). " +
+      "Ele tem caminho **separado** do `FileUpload` de propósito: quem põe um botão de copiar ao " +
+      "lado da chave de acesso de uma NF-e não anexa arquivo nenhum, e um índice comum aos dois " +
+      "cobraria os dois.\n\n" +
+      "**A confirmação passa a ser dupla, e no web bastava uma.** A regra não muda — copiar é a " +
+      "ação sem resultado visível, e sem confirmação a pessoa toca de novo por dúvida. O que muda " +
+      "é por onde ela chega. O botão continua trocando o ícone e o nome acessível, como lá; e a " +
+      "peça dispara **também** um aviso, porque aqui trocar o `accessibilityLabel` de um " +
+      "`Pressable` que já está sob o foco **não é reanunciado** nem pelo VoiceOver nem pelo " +
+      "TalkBack: quem não vê o ícone virar visto não ficaria sabendo de nada. O aviso que o " +
+      "`RivoProvider` já monta mora num `accessibilityLiveRegion=\"polite\"`, e é o único canal " +
+      "desta tela que fala sozinho. `toast={false}` desliga, para a tela que copia várias coisas " +
+      "seguidas e não quer uma pilha de avisos.\n\n" +
+      "**Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve " +
+      "`false` quando a área de transferência recusa — o caso do passe web, fora de contexto " +
+      "seguro —, e no iOS e no Android ele sempre resolve `true`.\n\n" +
+      "Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` " +
+      "para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.",
+  },
   Code: {
-    state: "fila",
-    note: "código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido",
+    state: "traduz",
+    note:
+      "o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); " +
+      "a rolagem própria é do `CodeBlock`, que continua fora",
+    page:
+      "Traduz, e ele vai dentro de um `Text`: `Abra o <Code>app.json</Code>` quebra linha junto " +
+      "com a frase que o cerca. **A rolagem horizontal que a fila prometia nunca foi deste " +
+      "lado:** barra de rolagem dentro de um parágrafo é armadilha para o dedo que rola a tela, " +
+      "e quem precisa dela é o `CodeBlock` — retorno de API, linha de log —, que é outra peça e " +
+      "ainda não portou. O argumento é o inverso do daqui: lá quebrar um JSON no meio muda o que " +
+      "está escrito, e aqui quebrar um caminho longo no meio é o certo, porque a alternativa é " +
+      "esticar a tela inteira. O corpo da letra não é escrito: o `Text` aninhado herda o do texto " +
+      "de fora, que é o que o `0.9em` do web dizia. E `selectable` vem ligado, porque o toque " +
+      "longo é o gesto nativo para copiar — no Android quem seleciona é o `Text` de fora, e ali " +
+      "é ele que precisa carregar a prop.",
   },
   ColorPicker: {
-    state: "fila",
-    note: "a grade de amostras atravessa, e o campo hexadecimal também; falta escrever a peça",
+    state: "traduz",
+    note:
+      "sai na raiz; controlada, e sem seta — cada amostra é um alvo de 44px com o desenho de 32 " +
+      "por dentro, e são seis por linha, não dez",
     page:
-      "Ainda não portado, e o que falta é trabalho e não decisão: a grade de amostras é uma " +
-      "lista de `Pressable` com `accessibilityRole=\"radio\"`, e o campo hexadecimal é um " +
-      "`Input` com `autoCapitalize=\"none\"`. Até lá, um `Sheet` com a paleta do cliente em " +
-      "botões resolve o caso comum — escolher entre os tons que a marca já tem.",
+      "Traduz, e sai pelo índice da raiz: não há peer nenhum atrás dela. As duas entradas do web " +
+      "atravessam inteiras — as **amostras**, para escolher olhando, e o **campo hexadecimal**, " +
+      "para quem já tem o valor no manual da marca. O `normalizeColor` é o mesmo dos dois lados, " +
+      "linha por linha: `#0f8`, `BFDD3A` e `  #D4F34A  ` saem todos como seis dígitos minúsculos " +
+      "com cerquilha.\n\n" +
+      "**Três coisas mudam, e as três saem do dedo.** É controlada, sem `defaultValue`, como toda " +
+      "peça daqui. **Não há navegação por seta** — nem `Home`, nem `End`, nem uma única parada de " +
+      "tabulação —, e por isso `columns` deixa de ser o passo das setas e passa a ser só o " +
+      "desenho: o padrão cai de dez para **seis por linha**, porque dez alvos de 44px com vão de " +
+      "8 dariam 512px numa tela de 390. E cada amostra é um alvo de **44px com o desenho colorido " +
+      "de 32 por dentro** — a grade de cores bonita e pequena demais para o polegar é o defeito " +
+      "clássico desta peça. A marca do escolhido continua sendo **por fora**, pela mesma razão do " +
+      "web: símbolo desenhado sobre a amostra fica ilegível em metade das cores possíveis, e não " +
+      "há token que garanta contraste contra um valor que a pessoa inventou.\n\n" +
+      "**O campo pede o teclado alfanumérico comum** (`keyboardType=\"default\"`), e não o " +
+      "numérico: hexadecimal tem `a` a `f` e uma cerquilha, e nenhum teclado de números traz as " +
+      "duas coisas. O que ele desliga é o que o sistema faria por conta — `autoCapitalize=\"none\"` " +
+      "para `bfdd3a` não virar `Bfdd3a`, e `autoCorrect={false}` para o corretor não trocar seis " +
+      "letras sem sentido pela palavra mais parecida.\n\n" +
+      "Quem não vê a cor a ouve por dois caminhos: o `accessibilityState.checked` de cada amostra, " +
+      "e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato " +
+      "ao lado dele sai do leitor de tela — ele repete em cor o que o campo diz em texto, e cor " +
+      "não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.\n\n" +
+      "O `classNames` por parte não porta: como todas as peças daqui, ela veste só pela raiz.",
   },
   DateRangePicker: {
     state: "traduz",
@@ -437,8 +507,40 @@ const PARITY: Record<string, Row> = {
     note: "o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado",
   },
   FileUpload: {
-    state: "fila",
-    note: "precisa do `expo-document-picker`; entra quando houver app dono da dependência",
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/file-upload`; a área de soltar vira um botão, porque no " +
+      "celular não há soltar — o `accept` fala MIME e o tamanho sai formatado sem `Intl`",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/file-upload` — o `expo-document-picker` é " +
+      "peer **opcional** e módulo nativo (`npx expo install expo-document-picker`), e tem caminho " +
+      "separado do `Clipboard` pela mesma conta: a regra da casa é **um subcaminho por peer**, e " +
+      "não um por assunto. O que não muda é o principal: **a peça continua não conhecendo rede**. " +
+      "Ela valida `accept` e `maxSize` na entrada, entrega os aceitos em `onSelect` e os recusados " +
+      "em `onReject`, cada recusa com o motivo pronto para um aviso.\n\n" +
+      "**A área de soltar vira um botão, e isso é a peça inteira mudando de forma.** No celular " +
+      "não há arrastar: nada pode ser solto em lugar nenhum, e o retângulo tracejado de 96px do " +
+      "web é, letra por letra, o idioma de \"solte aqui\" — desenhá-lo numa tela de toque promete " +
+      "um gesto que o aparelho não tem. Tirado o soltar, o que sobra daquela caixa é um botão com " +
+      "muito espaço vazio em volta: **o espaço era o alvo de soltar, e não a affordance**. Então " +
+      "sobra o botão, numa altura de controle — e a altura que ele devolve é da **lista**, que é " +
+      "onde o arquivo aparece, sobe, falha e é removido. O `hint` continua existindo, e entra no " +
+      "nome falado do botão pelo mesmo motivo que no web ele mora dentro do `<button>`: quem ouve " +
+      "a tela precisa saber \"XML ou PDF, até 5 MB\" antes de abrir o seletor, e não depois de ser " +
+      "recusado.\n\n" +
+      "**O `accept` fala MIME.** O seletor do Expo filtra por tipo (`text/xml`, `image/*`), e não " +
+      "por extensão: um `.xml` mandado para lá não casaria nada e abriria o diálogo vazio. Então " +
+      "a extensão com ponto continua valendo — na validação de volta, contra o nome do arquivo —, " +
+      "mas não vai para o sistema. E o que volta não é um `File`: é um `PickedFile` " +
+      "(`uri`, `name`, `size?`, `mimeType?`), com o `uri` local que o app usa para subir. **O " +
+      "`size` pode faltar**, porque nem todo provedor de arquivo do Android o informa, e por isso " +
+      "`maxSize` só recusa o que conseguiu medir. Fechar o seletor devolve `canceled` e nenhum " +
+      "callback dispara, como fechar a janela do seletor do web.\n\n" +
+      "`FileUploadList` e `FileUploadItem` atravessam com o mesmo contrato — `progress` de 0 a " +
+      "100 vira barra anunciada, `error` vence o progresso e oferece \"Tentar de novo\" —, com duas " +
+      "diferenças de plataforma: o corte do nome é `numberOfLines`, que lá é prop e não classe, e " +
+      "o tamanho sai formatado **sem `Intl`** (\"47,1 KB\", com a vírgula escrita à mão), pela " +
+      "mesma razão que o `Meter` nativo não tem `format`.",
   },
   Form: {
     state: "traduz",
@@ -573,7 +675,25 @@ const PARITY: Record<string, Row> = {
       "já precisava existir para o dedo. O resto é igual — a peça é controlada, a repetida não " +
       "entra duas vezes e sair do campo fecha o que estava meio escrito.",
   },
-  Timeline: { state: "fila", note: "o que aconteceu, em ordem, ainda é composição sua" },
+  Timeline: {
+    state: "traduz",
+    note:
+      "os eventos vêm por `items`, com `tone` e `pending` em cada um; `at` é texto pronto, e cada " +
+      "evento é uma parada só do leitor de tela, com a posição escrita no rótulo",
+    page:
+      "Traduz, com a lista por `items`: cada evento leva `title`, `at`, `by`, `description`, " +
+      "`tone` e `pending`, e a composição do `TimelineItem` não atravessa — a mesma regra do " +
+      "`RadioGroup` e do `Select`. **O carimbo é texto, e não um `RelativeTime`**: cada evento é " +
+      "uma parada só do leitor de tela e o rótulo dela é montado a partir desse texto, então um " +
+      "relógio vivo lá dentro continuaria andando na tela enquanto o rótulo ficaria preso na hora " +
+      "em que montou — e trilha de auditoria não pode dizer duas horas diferentes. Para o " +
+      "carimbo, `formatDate`. **A ordem, que o `<ol>` do web entrega de graça, vai escrita**: não " +
+      "existe papel de item de lista no React Native, então cada evento anuncia \"3 de 5: Nota " +
+      "autorizada, 12/03 às 14:22, por Ana Duarte\" — uma frase com o que mudou, quando e por " +
+      "quem, em vez de três paradas de VoiceOver que não dizem o assunto. E nada é tocável: uma " +
+      "trilha se lê, e o marcador de 9px nunca seria alvo de dedo — quem quer abrir o detalhe de " +
+      "um evento põe um `Item` com `onPress`.",
+  },
   Tracker: {
     state: "traduz",
     note: "a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string`",

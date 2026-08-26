@@ -104,4 +104,12 @@ faixa, não cor.
 
 ## No React Native
 
-Ainda não portado, e o que falta é trabalho e não decisão: a grade de amostras é uma lista de `Pressable` com `accessibilityRole="radio"`, e o campo hexadecimal é um `Input` com `autoCapitalize="none"`. Até lá, um `Sheet` com a paleta do cliente em botões resolve o caso comum — escolher entre os tons que a marca já tem.
+Traduz, e sai pelo índice da raiz: não há peer nenhum atrás dela. As duas entradas do web atravessam inteiras — as **amostras**, para escolher olhando, e o **campo hexadecimal**, para quem já tem o valor no manual da marca. O `normalizeColor` é o mesmo dos dois lados, linha por linha: `#0f8`, `BFDD3A` e `  #D4F34A  ` saem todos como seis dígitos minúsculos com cerquilha.
+
+**Três coisas mudam, e as três saem do dedo.** É controlada, sem `defaultValue`, como toda peça daqui. **Não há navegação por seta** — nem `Home`, nem `End`, nem uma única parada de tabulação —, e por isso `columns` deixa de ser o passo das setas e passa a ser só o desenho: o padrão cai de dez para **seis por linha**, porque dez alvos de 44px com vão de 8 dariam 512px numa tela de 390. E cada amostra é um alvo de **44px com o desenho colorido de 32 por dentro** — a grade de cores bonita e pequena demais para o polegar é o defeito clássico desta peça. A marca do escolhido continua sendo **por fora**, pela mesma razão do web: símbolo desenhado sobre a amostra fica ilegível em metade das cores possíveis, e não há token que garanta contraste contra um valor que a pessoa inventou.
+
+**O campo pede o teclado alfanumérico comum** (`keyboardType="default"`), e não o numérico: hexadecimal tem `a` a `f` e uma cerquilha, e nenhum teclado de números traz as duas coisas. O que ele desliga é o que o sistema faria por conta — `autoCapitalize="none"` para `bfdd3a` não virar `Bfdd3a`, e `autoCorrect={false}` para o corretor não trocar seis letras sem sentido pela palavra mais parecida.
+
+Quem não vê a cor a ouve por dois caminhos: o `accessibilityState.checked` de cada amostra, e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato ao lado dele sai do leitor de tela — ele repete em cor o que o campo diz em texto, e cor não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.
+
+O `classNames` por parte não porta: como todas as peças daqui, ela veste só pela raiz.
