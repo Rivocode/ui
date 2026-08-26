@@ -206,6 +206,14 @@ sua ou a nossa:
 <RivoProvider theme="acme">
 ```
 
+A prop aceita o nome do seu tema, e não só os dois de casa. Para guardar a
+escolha num seletor, o tipo é `RivoThemeSetting` — os de casa, `system` e o
+nome do cliente, com o autocomplete dos conhecidos preservado:
+
+```tsx
+const [tema, setTema] = useState<RivoThemeSetting>("acme")
+```
+
 O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
 barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
 alcança essas peças.

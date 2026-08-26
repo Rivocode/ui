@@ -7,7 +7,9 @@ export {
   useRivoContext,
   type RivoDensity,
   type RivoProviderProps,
+  type RivoResolvedTheme,
   type RivoTheme,
+  type RivoThemeSetting,
 } from "./provider/rivo-provider";
 
 export { Button, buttonVariants, type ButtonProps } from "./components/button";

@@ -15,11 +15,27 @@ import {
 
 import { cn } from "../lib/cn";
 
+/** Os dois temas de casa. Um tema de cliente e um nome fora desta uniao. */
 export type RivoTheme = "rivocode-dark" | "rivocode-light";
+
+/**
+ * O que a prop `theme` aceita: os dois de casa, `system`, ou o nome do tema de
+ * um cliente.
+ *
+ * O `string & {}` mantem o autocomplete dos nomes conhecidos e ainda deixa
+ * passar "acme". Sem ele, o guia de personalizacao terminava num erro de tipo,
+ * e quem veste um cliente comecava o projeto escrevendo `as` no ponto de
+ * entrada do sistema - que e o pior lugar possivel para ensinar que casting e
+ * normal.
+ */
+export type RivoThemeSetting = RivoTheme | "system" | (string & {});
+
+/** O tema ja resolvido: `system` virou um dos dois de casa. */
+export type RivoResolvedTheme = RivoTheme | (string & {});
 export type RivoDensity = "comfortable" | "compact";
 
 type RivoContextValue = {
-  theme: RivoTheme;
+  theme: RivoResolvedTheme;
   density: RivoDensity;
   /**
    * Onde dialogo, menu e dica renderizam. No modo escopado os tokens vivem num
@@ -43,8 +59,12 @@ export function useRivoContext(): RivoContextValue {
 
 export type RivoProviderProps = {
   children: ReactNode;
-  /** `system` segue a preferencia do sistema operacional. */
-  theme?: RivoTheme | "system";
+  /**
+   * `system` segue a preferencia do sistema operacional. O nome de um tema de
+   * cliente tambem vale: e o que o `data-rc-theme` escreve, e a camada 3 do
+   * CSS faz o resto.
+   */
+  theme?: RivoThemeSetting;
   density?: RivoDensity;
   /**
    * `global` veste a pagina inteira, para projeto novo. `local` veste apenas
@@ -84,7 +104,7 @@ export function RivoProvider({
   className,
 }: RivoProviderProps) {
   const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme);
-  const resolved: RivoTheme = theme === "system" ? systemTheme : theme;
+  const resolved: RivoResolvedTheme = theme === "system" ? systemTheme : theme;
 
   useEffect(() => {
     if (theme !== "system" || typeof window === "undefined") return;
