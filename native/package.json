@@ -12,6 +12,7 @@
   "types": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./form": "./src/form/index.ts",
     "./tokens": "./tokens.ts",
     "./theme.css": "./theme.css"
   },
@@ -29,9 +30,23 @@
   ],
   "sideEffects": false,
   "peerDependencies": {
+    "@hookform/resolvers": "^5",
     "nativewind": ">=5.0.0-preview.1",
     "react": ">=19",
-    "react-native": ">=0.76"
+    "react-hook-form": "^7",
+    "react-native": ">=0.76",
+    "zod": "^3.25.0 || ^4"
+  },
+  "peerDependenciesMeta": {
+    "@hookform/resolvers": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   },
   "dependencies": {
     "tailwind-merge": "^3"

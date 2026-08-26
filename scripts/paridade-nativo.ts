@@ -23,12 +23,12 @@
  * 1. Peca do catalogo sem linha aqui - alguem publicou peca nova e a tabela
  *    ficou muda sobre ela.
  * 2. Linha aqui sem peca no catalogo - a tabela promete o que nao existe.
- * 3. Linha `traduz`/`vira` cujo nome nativo NAO esta em `native/src/index.ts`
- *    - a tabela promete import que quebra.
- * 4. Linha `fila`/`nao` cujo nome JA esta no indice nativo - a peca portou e
+ * 3. Linha `traduz`/`vira` cujo nome nativo NAO esta em nenhum indice do
+ *    pacote nativo - a tabela promete import que quebra.
+ * 4. Linha `fila`/`nao` cujo nome JA esta num indice nativo - a peca portou e
  *    a doc continua mandando o leitor usar o substituto.
  *
- * A verdade e o codigo: `.design-sync/docs` e `native/src/index.ts`. O que
+ * A verdade e o codigo: `.design-sync/docs` e os indices nativos. O que
  * esta escrito abaixo e o julgamento - por que uma peca nao atravessa, e o que
  * usar no lugar -, e isso nenhum cruzamento de indices descobre sozinho.
  *
@@ -40,7 +40,17 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { Glob } from "bun";
 
 const DOCS = ".design-sync/docs";
-const NATIVE_INDEX = "native/src/index.ts";
+/**
+ * Os indices do pacote nativo - os DOIS, e o segundo nao e detalhe.
+ *
+ * O formulario mora num caminho proprio (`@rivocode/ui-native/form`) pela
+ * mesma razao do web, onde o `Form` tambem nao sai de `src/index.ts`: o
+ * react-hook-form e peer opcional, e o metro resolve import por arquivo -
+ * dentro do indice principal, quem so quer um Button teria de instala-lo.
+ * Medindo so o indice da raiz, o `--check` diria que o Form nao portou no dia
+ * seguinte ao porte.
+ */
+const NATIVE_INDEXES = ["native/src/index.ts", "native/src/form/index.ts"];
 
 type State =
   /** Existe no nativo com o mesmo nome. A API quase nunca e a mesma. */
@@ -317,8 +327,23 @@ const PARITY: Record<string, Row> = {
       "botões resolve o caso comum — escolher entre os tons que a marca já tem.",
   },
   DateRangePicker: {
-    state: "fila",
-    note: "dois `DatePicker` até lá — e a validação de fim-antes-do-começo passa a ser sua",
+    state: "traduz",
+    note: "um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir",
+    page:
+      "Traduz, com um desenho só: **um mês, numa folha de baixo, com a faixa pintada na " +
+      "própria grade**. Os dois meses lado a lado do web não cabem — 390px partidos ao meio " +
+      "dão 27px de célula, e o alvo de toque mínimo é 44 —, e dois `DatePicker` em sequência, " +
+      "que era o que esta tabela mandava fazer até agora, perdem justamente o que faz a peça " +
+      "existir: as duas pontas na mesma grade, com os dias do meio pintados. **A validação de " +
+      "fim-antes-do-começo deixou de ser sua**: tocar 20 e depois 5 devolve 5 a 20, porque a " +
+      "peça ordena as duas pontas em vez de descartar o primeiro toque, e o `Aplicar` fica " +
+      "desligado enquanto falta a segunda. Por isso o tipo mudou: o `DateRange` daqui tem " +
+      "`from` e `to` **obrigatórios**, os dois como ISO `aaaa-mm-dd`, e o vazio é `null`. O " +
+      "intervalo pela metade, que no web sai no `onValueChange` entre os dois cliques para o " +
+      "resumo do filtro acompanhar, não sai daqui: sob uma folha não há tela atrás para " +
+      "acompanhar nada — quem quiser acompanhar lê o resumo que a própria folha escreve " +
+      "acima do mês. Sem `confirm`: a folha sempre confirma, porque o toque fora dela é o " +
+      "gesto de desistir e não pode valer como aplicar.",
   },
   Editable: {
     state: "fila",
@@ -329,15 +354,31 @@ const PARITY: Record<string, Row> = {
     note: "precisa do `expo-document-picker`; entra quando houver app dono da dependência",
   },
   Form: {
-    state: "fila",
-    note: "o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle",
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type=\"submit\"`, e há um adaptador a mais, o `forText`",
     page:
-      "Ainda não portado — e falta menos do que parece. O `react-hook-form` roda no React " +
-      "Native sem adaptação, e o `useZodForm` é o mesmo Zod. O que não atravessou foi o " +
-      "`FormField` daqui, que liga o `Field` ao controle e põe rótulo, descrição e erro no " +
-      "lugar certo. Até lá, `Controller` na mão em volta do `Field` nativo, passando o " +
-      "`error` do `formState.errors` — o `Field` nativo já sabe que o erro vence a " +
-      "descrição.",
+      "Traduz, no caminho próprio `@rivocode/ui-native/form` — o mesmo arranjo do web, e pela " +
+      "mesma razão: o `react-hook-form` é peer opcional. O `useZodForm` é idêntico, linha por " +
+      "linha, porque não há navegador nele.\n\n" +
+      "**O que muda é quem dispara o envio.** No React Native não existe `<form>`, não existe " +
+      "`type=\"submit\"` e não existe Enter que envie: nada é implícito. Então o `Form` " +
+      "entrega o envio a quem desenha o botão — `children` pode ser uma função que recebe " +
+      "`{ submit, isSubmitting }` —, e continua aceitando JSX comum para quando o botão mora " +
+      "fora, numa barra fixa no rodapé da tela.\n\n" +
+      "**E muda a ponte com o controle.** No web o `Field` da Base UI liga rótulo, ajuda e " +
+      "erro a qualquer controle que esteja dentro, pelo contexto; aqui não há contexto nenhum " +
+      "— o `Field` nativo desenha um `Text` em cima e outro embaixo, e o controle do meio não " +
+      "fica sabendo de nada. Por isso o campo que o `FormField` entrega leva duas coisas a " +
+      "mais, `accessibilityLabel` e `invalid`, e os adaptadores as põem no controle: sem " +
+      "isso, um `TextInput` sob um rótulo fica **sem nome nenhum** para o leitor de tela. O " +
+      "`label` do `FormField` é obrigatório aqui pela mesma razão.\n\n" +
+      "Os adaptadores são quatro. `forValue`, `forChecked` e `forDate` têm o nome e o " +
+      "trabalho do web — o `forDate` agora converte o vazio para `null` e fala ISO, que é o " +
+      "que o `DatePicker` e o `DateRangePicker` nativos pedem. O quarto é só daqui: " +
+      "`forText`, para `Input` e `Textarea`, porque o `TextInput` chama `onChangeText` com a " +
+      "string crua e não com um evento — espalhar o campo nele guardaria no formulário um " +
+      "objeto de evento que não existe. Ele leva o `ref` junto, e aí o `form.setFocus()` " +
+      "funciona de verdade: `TextInput` tem `focus()`.",
   },
   Indicator: {
     state: "traduz",
@@ -412,7 +453,28 @@ const PARITY: Record<string, Row> = {
       "`<time>`, e no toque não há `title` nem onde pousar o ponteiro — quando a data exata " +
       "importa, ela precisa estar escrita na tela.",
   },
-  Steps: { state: "fila", note: "a régua de passos e o `useWizard()` não atravessaram" },
+  Steps: {
+    state: "traduz",
+    note: "só o modo estreito do web — texto e barra —, e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro",
+    page:
+      "Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha \"Passo 2 " +
+      "de 4\", o título do passo e a barra de progresso. A régua de bolinhas não atravessa " +
+      "porque ela já tinha sido medida e reprovada abaixo de 640px — cinco passos numa faixa " +
+      "de 390px dão 60px de rótulo por passo, e \"Conferir os itens\" vira \"Confe…\" cinco " +
+      "vezes seguidas. A descrição, que o modo estreito do web esconde por falta de largura, " +
+      "aparece: aqui o passo atual é o único na tela.\n\n" +
+      "Por isso não há `onStepClick`: ele só existia na régua larga, e sem bolinha não há o " +
+      "que tocar. Voltar é o botão do `WizardFooter`, e pular passo continua sendo o `goTo`.\n\n" +
+      "O `useWizard()` atravessa **inteiro e idêntico** — é `useState` e três contas de " +
+      "índice, sem DOM e sem media query. Deixar o passo para o router nativo seria trocar um " +
+      "estado de tela por cinco rotas, e um assistente não é navegação: os passos partilham " +
+      "um formulário só, o back do aparelho não pode perder o que já foi digitado, e " +
+      "\"Conferir\" não é um endereço que alguém deva abrir direto. Quem quiser uma rota por " +
+      "passo continua podendo, porque o `goTo` aceita o índice que o router mandar. O " +
+      "`WizardFooter` empilha sempre, na ordem escrita — voltar em cima, avançar embaixo, " +
+      "onde o polegar está —, e o `w-full` de cada botão, que no web chega por seletor de " +
+      "filho, aqui é o `alignItems: stretch` padrão do React Native.",
+  },
   TagsInput: {
     state: "traduz",
     note: "Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta",
@@ -425,7 +487,28 @@ const PARITY: Record<string, Row> = {
       "entra duas vezes e sair do campo fecha o que estava meio escrito.",
   },
   Timeline: { state: "fila", note: "o que aconteceu, em ordem, ainda é composição sua" },
-  Tracker: { state: "fila", note: "a faixa de quadradinhos por período ainda não porta" },
+  Tracker: {
+    state: "traduz",
+    note: "a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string`",
+    page:
+      "Traduz, e o que **não** atravessa é a dica por quadrado — nem poderia. No web cada " +
+      "ponto monta um `Tooltip`, e um tooltip é um portal: 365 dias seriam 365 portais " +
+      "montados para que no máximo um apareça. E mesmo de graça eles não serviriam, porque " +
+      "dica se abre ao pousar o ponteiro. Trocar cada quadrado por um `Pressable` também não " +
+      "resolve: 90 períodos em 358px dão 4px por quadrado, seis vezes menos que o alvo de " +
+      "toque mínimo.\n\n" +
+      "**No lugar, a faixa inteira vira um alvo só.** O dedo pousa e arrasta sobre ela, uma " +
+      "marca fina acompanha, e o texto do período lido aparece numa linha fixa embaixo — que " +
+      "é onde o rótulo da dica passa a morar. A linha existe desde o primeiro quadro, " +
+      "mostrando o período mais recente: o espaço fica reservado, a tela não pula no primeiro " +
+      "toque, e o mais recente é o que a pergunta \"piorou ontem?\" quer ler primeiro.\n\n" +
+      "A leitura de tela também muda de forma. A lista escondida com os 365 textos, que no " +
+      "web é barata, aqui seriam 365 paradas de VoiceOver dentro de um cartão; a faixa é uma " +
+      "parada só, do tipo ajustável — o mesmo contrato do `Slider` —, e cada passo anuncia o " +
+      "texto de um período. Nenhum dado fica inalcançável e nenhum vira obstáculo. Por isso o " +
+      "`label` de cada ponto é `string`, e não `ReactNode`: ele vai inteiro para o valor " +
+      "acessível da faixa, e de um `ReactNode` não há como ler o texto de volta.",
+  },
   Tree: {
     state: "fila",
     note: "hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe",
@@ -571,18 +654,22 @@ async function catalogPieces() {
  * aparece aqui, a doc que manda usar o substituto passa a mentir.
  */
 function exportadosNoNativo() {
-  const fonte = readFileSync(NATIVE_INDEX, "utf8")
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\/\/[^\n]*/g, "");
-
   const names = new Set<string>();
-  for (const block of fonte.matchAll(/export \{([\s\S]*?)\} from/g)) {
-    for (const cru of block[1]!.split(",")) {
-      const parte = cru.trim();
-      if (!parte || parte.startsWith("type ")) continue;
-      names.add(parte.split(/\s+as\s+/).pop()!.trim());
+
+  for (const index of NATIVE_INDEXES) {
+    const fonte = readFileSync(index, "utf8")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/[^\n]*/g, "");
+
+    for (const block of fonte.matchAll(/export \{([\s\S]*?)\} from/g)) {
+      for (const cru of block[1]!.split(",")) {
+        const parte = cru.trim();
+        if (!parte || parte.startsWith("type ")) continue;
+        names.add(parte.split(/\s+as\s+/).pop()!.trim());
+      }
     }
   }
+
   return names;
 }
 
@@ -623,7 +710,7 @@ function scoreboard(pieces: string[], _native: Set<string>) {
 
   return (
     `**${pieces.length} peças no catálogo do web, medidas contra ` +
-    `\`native/src/index.ts\` em ${new Date().toISOString().slice(0, 10)}:** ` +
+    `\`${NATIVE_INDEXES.join("` e `")}\` em ${new Date().toISOString().slice(0, 10)}:** ` +
     `${conta("traduz")} traduzem com o mesmo nome, ${conta("vira")} traduzem com outro, ` +
     `${conta("fila")} estão na fila e ${conta("nao")} não portam por decisão. ` +
     "A coluna do meio separa as duas ausências, que é a distinção que a tabela existe " +
@@ -745,14 +832,14 @@ for (const piece of Object.keys(PARITY)) {
   if ((row.state === "traduz" || row.state === "vira") && !existe) {
     problems.push(
       `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${nome}\` nao sai de\n` +
-        `    ${NATIVE_INDEX}. A tabela promete um import que quebra.`,
+        `    ${NATIVE_INDEXES.join(" nem ")}. A tabela promete um import que quebra.`,
     );
   }
 
   if ((row.state === "fila" || row.state === "nao") && existe) {
     problems.push(
       `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${nome}\` JA sai de\n` +
-        `    ${NATIVE_INDEX}. A peca portou: promova a linha, senao a doc segue\n` +
+        `    ${NATIVE_INDEXES.join(" ou ")}. A peca portou: promova a linha, senao a doc segue\n` +
         "    mandando usar o substituto.",
     );
   }

@@ -27,9 +27,24 @@ Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
 Nunca prometa que a tela do web "vai rodar no celular": o que se reaproveita é
 o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
+## O formulário entra por outro caminho
+
+`Form`, `FormField`, os adaptadores e o `useZodForm` vivem em
+`@rivocode/ui-native/form`, não no índice da raiz — o `react-hook-form` é peer
+opcional, e o metro resolve import por arquivo.
+
+```tsx
+import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
+```
+
+Duas diferenças mordem logo: **nada envia sozinho** (sem `<form>`, sem
+`type="submit"`, sem Enter — o `Form` entrega `{ submit, isSubmitting }` por
+função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põe
+`accessibilityLabel` e `invalid` na linha, e o adaptador os leva ao controle).
+
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 49 traduzem com o mesmo nome, 3 traduzem com outro, 15 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts` e `native/src/form/index.ts` em 2026-08-26:** 53 traduzem com o mesmo nome, 3 traduzem com outro, 11 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -59,7 +74,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `ContextMenu` | ✕ não porta | não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita |
 | `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
-| `DateRangePicker` | ○ na fila | dois `DatePicker` até lá — e a validação de fim-antes-do-começo passa a ser sua |
+| `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
 | `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger` |
 | `Editable` | ○ na fila | o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado |
@@ -67,7 +82,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `Field` | ✔ traduz | `label`, `description` e `error` como props; o erro vence a descrição, como no web |
 | `Fieldset` | ✔ traduz | `legend` como prop |
 | `FileUpload` | ○ na fila | precisa do `expo-document-picker`; entra quando houver app dono da dependência |
-| `Form` | ○ na fila | o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle |
+| `Form` | ✔ traduz | vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText` |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco — não há `focus-visible` em tela de toque |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
@@ -101,7 +116,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `Spinner` | ✔ traduz | `small` e `large`, os dois tamanhos do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche |
-| `Steps` | ○ na fila | a régua de passos e o `useWizard()` não atravessaram |
+| `Steps` | ✔ traduz | só o modo estreito do web — texto e barra —, e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro |
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo |
@@ -113,7 +128,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `ToggleGroup` | ✔ traduz | `items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web |
 | `Toolbar` | ✕ não porta | superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem |
 | `Tooltip` | ✕ não porta | hover não existe no toque; o rótulo precisa estar na tela |
-| `Tracker` | ○ na fila | a faixa de quadradinhos por período ainda não porta |
+| `Tracker` | ✔ traduz | a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string` |
 | `Tree` | ○ na fila | hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe |
 | `TreeSelect` | ○ na fila | escolher dentro de árvore vira folha com níveis; até lá, dois `Select` encadeados |
 
@@ -128,8 +143,9 @@ bun run scripts/paridade-nativo.ts --check    # só confere
 ```
 
 O `--check` falha quando uma peça nova do catálogo não tem linha, quando uma
-linha promete um import que não existe em `native/src/index.ts`, e quando uma
-peça marcada como `○ na fila` **já portou** — que é o caso silencioso: a doc
+linha promete um import que não sai de nenhum índice do pacote nativo
+(`native/src/index.ts` e `native/src/form/index.ts`), e quando uma peça
+marcada como `○ na fila` **já portou** — que é o caso silencioso: a doc
 continua mandando usar o substituto depois que a peça de verdade chegou.
 Portou peça nova no native? Rode o script e comite o que ele reescrever.
 

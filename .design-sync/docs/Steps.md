@@ -62,4 +62,8 @@ tamanho do que ele aceitou fazer.
 
 ## No React Native
 
-Ainda não portado — a régua de passos e o `useWizard()` não atravessaram. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha "Passo 2 de 4", o título do passo e a barra de progresso. A régua de bolinhas não atravessa porque ela já tinha sido medida e reprovada abaixo de 640px — cinco passos numa faixa de 390px dão 60px de rótulo por passo, e "Conferir os itens" vira "Confe…" cinco vezes seguidas. A descrição, que o modo estreito do web esconde por falta de largura, aparece: aqui o passo atual é o único na tela.
+
+Por isso não há `onStepClick`: ele só existia na régua larga, e sem bolinha não há o que tocar. Voltar é o botão do `WizardFooter`, e pular passo continua sendo o `goTo`.
+
+O `useWizard()` atravessa **inteiro e idêntico** — é `useState` e três contas de índice, sem DOM e sem media query. Deixar o passo para o router nativo seria trocar um estado de tela por cinco rotas, e um assistente não é navegação: os passos partilham um formulário só, o back do aparelho não pode perder o que já foi digitado, e "Conferir" não é um endereço que alguém deva abrir direto. Quem quiser uma rota por passo continua podendo, porque o `goTo` aceita o índice que o router mandar. O `WizardFooter` empilha sempre, na ordem escrita — voltar em cima, avançar embaixo, onde o polegar está —, e o `w-full` de cada botão, que no web chega por seletor de filho, aqui é o `alignItems: stretch` padrão do React Native.

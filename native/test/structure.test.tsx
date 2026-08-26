@@ -12,8 +12,11 @@ import {
   DescriptionList,
   Item,
   PageHeader,
+  Steps,
   Toggle,
   ToggleGroup,
+  WizardFooter,
+  useWizard,
 } from "../src";
 import { act, byClass, byRole, byType, render, textOf } from "./helpers";
 
@@ -202,5 +205,131 @@ describe("Item", () => {
 
     const plain = render(<Item title="Pix" />);
     expect(byClass(plain, /border-border/).length).toBe(0);
+  });
+});
+
+const STEPS = [
+  { id: "client", title: "Cliente" },
+  { id: "items", title: "Itens", description: "O que entra na nota" },
+  { id: "review", title: "Conferir" },
+];
+
+describe("Steps", () => {
+  test("porta o modo estreito do web: onde esta, o titulo, e a barra andando", () => {
+    const screen = render(<Steps steps={STEPS} current={1} />);
+
+    const texto = textOf(screen);
+    expect(texto).toContain("Passo 2 de 3");
+    expect(texto).toContain("Itens");
+    // A descricao, que o modo estreito do web esconde por falta de largura.
+    expect(texto).toContain("O que entra na nota");
+
+    // A regua de bolinhas NAO porta: sem passo clicavel, nao ha botao nenhum.
+    expect(byRole(screen, "button").length).toBe(0);
+
+    const [barra] = byClass(screen, /bg-accent/);
+    expect(barra.props.style.width).toBe(`${(2 / 3) * 100}%`);
+  });
+
+  test("uma parada so do leitor de tela, com a frase inteira", () => {
+    const screen = render(<Steps steps={STEPS} current={0} />);
+
+    const [regua] = byRole(screen, "progressbar");
+    expect(regua.props.accessible).toBe(true);
+    expect(regua.props.accessibilityLabel).toBe("Passo 1 de 3: Cliente");
+    expect(regua.props.accessibilityValue).toEqual({ min: 1, max: 3, now: 1 });
+  });
+
+  test("indice fora da lista nao quebra a tela, e lista vazia nao desenha nada", () => {
+    expect(textOf(render(<Steps steps={STEPS} current={9} />))).toContain("Passo 3 de 3");
+    expect(textOf(render(<Steps steps={STEPS} current={-2} />))).toContain("Passo 1 de 3");
+    // Lista vazia nao desenha regua nenhuma - so o fundo do provider sobra.
+    expect(textOf(render(<Steps steps={[]} current={0} />)).trim()).toBe("");
+  });
+});
+
+describe("useWizard", () => {
+  /** O estado sem desenho: um host que so devolve o que o hook diz. */
+  function Wizard({ onState }: { onState: (state: ReturnType<typeof useWizard>) => void }) {
+    const wizard = useWizard(STEPS);
+    onState(wizard);
+    return <Text>{wizard.current?.title}</Text>;
+  }
+
+  const mount = () => {
+    let state!: ReturnType<typeof useWizard>;
+    const screen = render(<Wizard onState={(next) => (state = next)} />);
+    return { screen, get: () => state };
+  };
+
+  test("anda, volta, e para nas duas pontas", async () => {
+    const { screen, get } = mount();
+
+    expect(get().isFirst).toBe(true);
+    expect(get().isLast).toBe(false);
+
+    await act(async () => void (await get().next()));
+    expect(get().step).toBe(1);
+    expect(textOf(screen)).toContain("Itens");
+
+    await act(async () => void (await get().next()));
+    await act(async () => void (await get().next()));
+    // O ultimo passo nao passa do fim.
+    expect(get().step).toBe(2);
+    expect(get().isLast).toBe(true);
+
+    act(() => get().back());
+    act(() => get().back());
+    act(() => get().back());
+    expect(get().step).toBe(0);
+  });
+
+  test("a checagem manda: `false` segura o passo, e ela pode ser assincrona", async () => {
+    const { get } = mount();
+
+    let andou = true;
+    await act(async () => {
+      andou = await get().next(async () => false);
+    });
+    expect(andou).toBe(false);
+    expect(get().step).toBe(0);
+
+    await act(async () => {
+      andou = await get().next(async () => true);
+    });
+    expect(andou).toBe(true);
+    expect(get().step).toBe(1);
+  });
+
+  test("goTo aceita o indice do router, e o prende dentro da lista", () => {
+    const { get } = mount();
+
+    act(() => get().goTo(2));
+    expect(get().step).toBe(2);
+    act(() => get().goTo(90));
+    expect(get().step).toBe(2);
+    act(() => get().goTo(-1));
+    expect(get().step).toBe(0);
+  });
+});
+
+describe("WizardFooter", () => {
+  test("empilha na ordem escrita: o que avanca fica embaixo, onde o polegar esta", () => {
+    const screen = render(
+      <WizardFooter>
+        <Button variant="ghost" onPress={() => {}}>
+          Voltar
+        </Button>
+        <Button onPress={() => {}}>Continuar</Button>
+      </WizardFooter>,
+    );
+
+    // Coluna, e nao linha: nada de flex-row, e nenhuma inversao de ordem.
+    const [rodape] = byClass(screen, /mt-6 gap-3/);
+    expect(rodape.props.className).not.toContain("flex-row");
+
+    const rotulos = byRole(screen, "button").map((node) => node.props.accessibilityLabel);
+    expect(rotulos.length).toBe(2);
+    expect(textOf(screen).indexOf("Voltar")).toBeLessThan(textOf(screen).indexOf("Continuar"));
   });
 });

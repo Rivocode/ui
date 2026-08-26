@@ -4,7 +4,8 @@ import type { ReactTestInstance, ReactTestRenderer } from "react-test-renderer";
 import { tokens } from "../tokens";
 import { Sparkline } from "../src/sparkline";
 import { Stat } from "../src/stat";
-import { act, byLabel, render, textOf } from "./helpers";
+import { Tracker } from "../src/tracker";
+import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 const dark = tokens.themes["rivocode-dark"];
 
@@ -152,5 +153,76 @@ describe("Sparkline", () => {
       (node) => typeof node.type === "string" && node.props?.accessibilityElementsHidden === true,
     );
     expect(hidden).toHaveLength(1);
+  });
+});
+
+describe("Tracker", () => {
+  const DATA = [
+    { tone: "success" as const, label: "10/08 · sem falha" },
+    { tone: "danger" as const, label: "11/08 · 3 falhas" },
+    { tone: "warning" as const, label: "12/08 · 1 falha" },
+  ];
+
+  test("a dica por quadrado nao porta: nao ha portal, nem Pressable por periodo", () => {
+    const screen = render(<Tracker data={DATA} label="Emissões dos últimos 3 dias" />);
+
+    // Nenhum alvo de toque por quadrado - 4px de alvo seria promessa que o
+    // dedo nao cumpre. O alvo e a faixa inteira, e ela e ajustavel.
+    expect(screen.root.findAll((node) => node.props?.accessibilityRole === "button").length).toBe(
+      0,
+    );
+    expect(byRole(screen, "adjustable").length).toBe(1);
+
+    // Um quadrado por periodo, cada um com o tom que o dado pediu.
+    expect(byClass(screen, /bg-success/).length).toBe(1);
+    expect(byClass(screen, /bg-danger/).length).toBe(1);
+    expect(byClass(screen, /bg-warning/).length).toBe(1);
+  });
+
+  test("a linha de baixo comeca no periodo mais recente, e o espaco ja esta reservado", () => {
+    const screen = render(<Tracker data={DATA} label="Emissões" />);
+    expect(textOf(screen)).toContain("12/08 · 1 falha");
+  });
+
+  test("a faixa e uma parada so, e o leitor de tela anda periodo a periodo", () => {
+    const screen = render(<Tracker data={DATA} label="Emissões" />);
+
+    const [faixa] = byRole(screen, "adjustable");
+    expect(faixa.props.accessible).toBe(true);
+    expect(faixa.props.accessibilityLabel).toBe("Emissões");
+    expect(faixa.props.accessibilityValue.text).toBe("3 de 3: 12/08 · 1 falha");
+
+    act(() => faixa.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
+    expect(byRole(screen, "adjustable")[0].props.accessibilityValue.text).toBe(
+      "2 de 3: 11/08 · 3 falhas",
+    );
+    expect(textOf(screen)).toContain("11/08 · 3 falhas");
+
+    // A ponta segura: nao ha periodo antes do primeiro.
+    act(() => faixa.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
+    act(() => faixa.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
+    expect(byRole(screen, "adjustable")[0].props.accessibilityValue.text).toBe(
+      "1 de 3: 10/08 · sem falha",
+    );
+
+    // E o texto de baixo nao e lido duas vezes: a faixa ja o anuncia.
+    const [linha] = byClass(screen, /text-xs text-fg-muted/);
+    expect(linha.props.accessibilityElementsHidden).toBe(true);
+  });
+
+  test("a marca do periodo lido so aparece depois de medir a faixa", () => {
+    const screen = render(<Tracker data={DATA} label="Emissões" />);
+    expect(byClass(screen, /w-0\.5/).length).toBe(0);
+
+    const [faixa] = byRole(screen, "adjustable");
+    act(() => faixa.props.onLayout({ nativeEvent: { layout: { width: 300, height: 44 } } }));
+
+    const [marca] = byClass(screen, /w-0\.5/);
+    // Terceiro de tres numa faixa de 300: meio do ultimo terco, menos o fio.
+    expect(marca.props.style.left).toBe(2 * 100 + 50 - 1);
+  });
+
+  test("sem dado nao desenha faixa nenhuma", () => {
+    expect(textOf(render(<Tracker data={[]} label="Emissões" />)).trim()).toBe("");
   });
 });

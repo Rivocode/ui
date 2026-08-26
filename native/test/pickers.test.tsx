@@ -1,6 +1,14 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import { Calendar, Combobox, DatePicker, Menu, Slider, formatDate } from "../src";
+import {
+  Calendar,
+  Combobox,
+  DatePicker,
+  DateRangePicker,
+  Menu,
+  Slider,
+  formatDate,
+} from "../src";
 import { act, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("Combobox", () => {
@@ -148,5 +156,118 @@ describe("Menu", () => {
     act(() => first.props.onPress());
     expect(calls[0]).toBe("open:false");
     expect(danger).toBeDefined();
+  });
+});
+
+describe("DateRangePicker", () => {
+  const open = (screen: ReturnType<typeof render>) =>
+    act(() => byLabel(screen, "Período")[0].props.onPress());
+
+  /* O Button nativo nao carrega accessibilityLabel: o nome dele e o Text de
+     dentro, como no aparelho. Entao o localizador do teste procura por ele. */
+  const buttonWith = (screen: ReturnType<typeof render>, text: string) =>
+    byRole(screen, "button").find(
+      (node) =>
+        node.findAll((child) => child.type === "Text" && child.props.children === text).length > 0,
+    )!;
+
+  test("o gatilho mostra o intervalo por extenso, e o vazio cai no placeholder", () => {
+    const vazio = render(
+      <DateRangePicker value={null} onValueChange={() => {}} label="Período" />,
+    );
+    expect(textOf(vazio)).toContain("Escolha o período");
+
+    const cheio = render(
+      <DateRangePicker
+        value={{ from: "2026-08-05", to: "2026-08-20" }}
+        onValueChange={() => {}}
+        label="Período"
+      />,
+    );
+    expect(textOf(cheio)).toContain("05/08/2026 – 20/08/2026");
+    expect(byLabel(cheio, "Período")[0].props.accessibilityValue.text).toBe(
+      "05/08/2026 – 20/08/2026",
+    );
+  });
+
+  test("as duas pontas saem na mesma grade, e a peca ordena os toques", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <DateRangePicker value={null} onValueChange={onValueChange} label="Período" />,
+    );
+
+    open(screen);
+    expect(textOf(screen)).toContain("Toque no primeiro dia");
+
+    // Fim antes do comeco: o dedo toca 20 e depois 5.
+    act(() => byLabel(screen, "20/08/2026")[0].props.onPress());
+    expect(textOf(screen)).toContain("20/08/2026 – toque no último dia.");
+
+    act(() => byLabel(screen, "05/08/2026")[0].props.onPress());
+    // Sai ordenado: a validacao de fim-antes-do-comeco deixou de ser do app.
+    expect(textOf(screen)).toContain("05/08/2026 – 20/08/2026");
+
+    // O meio do intervalo tambem se anuncia escolhido: a faixa pintada nao
+    // existe para quem ouve a grade.
+    expect(byLabel(screen, "12/08/2026")[0].props.accessibilityState.selected).toBe(true);
+    expect(byLabel(screen, "25/08/2026")[0].props.accessibilityState.selected).toBe(false);
+
+    // Nada saiu ainda: quem aplica e o botao.
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  test("Aplicar so liga com as duas pontas, e entrega o intervalo fechado", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <DateRangePicker value={null} onValueChange={onValueChange} label="Período" />,
+    );
+
+    open(screen);
+    const aplicar = () => buttonWith(screen, "Aplicar");
+    expect(aplicar().props.disabled).toBe(true);
+
+    act(() => byLabel(screen, "05/08/2026")[0].props.onPress());
+    // Com meia escolha ele continua desligado: a listagem nunca recebe um
+    // periodo que comeca e nao termina.
+    expect(aplicar().props.disabled).toBe(true);
+
+    act(() => byLabel(screen, "09/08/2026")[0].props.onPress());
+    expect(aplicar().props.disabled).toBe(false);
+
+    act(() => aplicar().props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith({ from: "2026-08-05", to: "2026-08-09" });
+    // Fechou: a grade nao esta mais montada.
+    expect(byLabel(screen, "09/08/2026").length).toBe(0);
+  });
+
+  test("Limpar entrega null, e os limites continuam desligando o dia", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <DateRangePicker
+        value={{ from: "2026-08-05", to: "2026-08-20" }}
+        onValueChange={onValueChange}
+        label="Período"
+        min="2026-08-03"
+      />,
+    );
+
+    open(screen);
+    expect(byLabel(screen, "02/08/2026")[0].props.accessibilityState.disabled).toBe(true);
+
+    act(() => buttonWith(screen, "Limpar").props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(null);
+  });
+
+  test("o terceiro toque recomeca o intervalo em vez de esticar o anterior", () => {
+    const screen = render(
+      <DateRangePicker value={null} onValueChange={() => {}} label="Período" />,
+    );
+
+    open(screen);
+    act(() => byLabel(screen, "05/08/2026")[0].props.onPress());
+    act(() => byLabel(screen, "09/08/2026")[0].props.onPress());
+    act(() => byLabel(screen, "15/08/2026")[0].props.onPress());
+
+    expect(textOf(screen)).toContain("15/08/2026 – toque no último dia.");
   });
 });

@@ -54,12 +54,47 @@ function Chevron({ left }: { left?: boolean }) {
   );
 }
 
-export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
-  const today = new Date();
-  const anchor = value ? new Date(`${value}T12:00:00`) : today;
-  const [year, setYear] = useState(anchor.getFullYear());
-  const [month, setMonth] = useState(anchor.getMonth());
+/** Como um dia se pinta. `edge` so vale quando ha faixa. */
+export type DayPaint = {
+  /** Ponta da escolha: a pastilha de acento com o numero em cima. */
+  chosen: boolean;
+  /** Dia entre as duas pontas de um intervalo. */
+  within?: boolean;
+  /** Onde a faixa comeca e termina, para arredondar so as duas beiradas. */
+  edge?: "start" | "end" | "both";
+};
 
+export type MonthViewProps = {
+  /** O mes desenhado, e quem o troca: o estado do mes mora em quem chama. */
+  year: number;
+  month: number;
+  onMonthChange: (year: number, month: number) => void;
+  min?: string;
+  max?: string;
+  /** Como cada dia se pinta, decidido por quem chama. */
+  paintOf: (iso: string) => DayPaint;
+  onDayPress: (iso: string) => void;
+};
+
+/**
+ * Um mes desenhado, sem opiniao sobre o que e "escolhido".
+ *
+ * Ele existe separado porque o `Calendar` e o `DateRangePicker` precisam do
+ * MESMO mes - o mesmo primeiro dia da semana, a mesma conta de dias, o mesmo
+ * alvo de 40px, a mesma regra de limite. Escrito duas vezes, o dia em que um
+ * dos dois ganhasse "semana comeca na segunda" o outro continuaria no domingo,
+ * e ninguem descobriria qual dos dois estava errado.
+ */
+export function MonthView({
+  year,
+  month,
+  onMonthChange,
+  min,
+  max,
+  paintOf,
+  onDayPress,
+}: MonthViewProps) {
+  const today = new Date();
   const firstWeekday = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells: Array<number | null> = [
@@ -69,8 +104,7 @@ export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
 
   const shift = (delta: number) => {
     const next = new Date(year, month + delta, 1);
-    setYear(next.getFullYear());
-    setMonth(next.getMonth());
+    onMonthChange(next.getFullYear(), next.getMonth());
   };
 
   const isoToday = toISO(today.getFullYear(), today.getMonth(), today.getDate());
@@ -119,17 +153,37 @@ export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
           if (day === null) return <View key={`vazio-${index}`} className="w-[14.28%] py-1" />;
 
           const iso = toISO(year, month, day);
-          const active = iso === value;
+          const paint = paintOf(iso);
+          const active = paint.chosen;
           const blocked = (min !== undefined && iso < min) || (max !== undefined && iso > max);
 
           return (
-            <View key={iso} className="w-[14.28%] items-center py-0.5">
+            <View
+              key={iso}
+              /* A faixa do intervalo pinta a CELULA, e nao a pastilha: e o
+                 unico jeito de o meio do periodo sair continuo, porque a
+                 pastilha tem 40px dentro de uma celula de 14,28% da largura e
+                 sempre sobraria vao dos dois lados. */
+              className={cn(
+                "w-[14.28%] items-center py-0.5",
+                (paint.within === true || paint.edge !== undefined) && "bg-selected",
+                (paint.edge === "start" || paint.edge === "both") && "rounded-l-pill",
+                (paint.edge === "end" || paint.edge === "both") && "rounded-r-pill",
+              )}
+            >
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={formatDate(iso)}
-                accessibilityState={{ selected: active, disabled: blocked }}
+                /* Anunciado como escolhido tambem no MEIO do intervalo: o dia
+                   12 faz parte do periodo mesmo sem ser ponta, e quem ouve a
+                   grade so tem este estado para saber disso - a faixa pintada
+                   nao existe para ele. */
+                accessibilityState={{
+                  selected: active || paint.within === true,
+                  disabled: blocked,
+                }}
                 disabled={blocked}
-                onPress={() => onValueChange(iso)}
+                onPress={() => onDayPress(iso)}
                 className={`size-10 items-center justify-center rounded-pill ${
                   active ? "bg-accent" : blocked ? "" : "active:bg-selected"
                 } ${iso === isoToday && !active ? "border border-border-strong" : ""}`}
@@ -147,6 +201,36 @@ export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
         })}
       </View>
     </View>
+  );
+}
+
+/** O mes em que um calendario abre: o do valor, ou o de hoje. */
+export function useMonthOf(iso: string | null | undefined) {
+  const anchor = iso ? new Date(`${iso}T12:00:00`) : new Date();
+  const [year, setYear] = useState(anchor.getFullYear());
+  const [month, setMonth] = useState(anchor.getMonth());
+
+  const onMonthChange = (nextYear: number, nextMonth: number) => {
+    setYear(nextYear);
+    setMonth(nextMonth);
+  };
+
+  return { year, month, onMonthChange };
+}
+
+export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
+  const { year, month, onMonthChange } = useMonthOf(value);
+
+  return (
+    <MonthView
+      year={year}
+      month={month}
+      onMonthChange={onMonthChange}
+      min={min}
+      max={max}
+      paintOf={(iso) => ({ chosen: iso === value })}
+      onDayPress={onValueChange}
+    />
   );
 }
 
