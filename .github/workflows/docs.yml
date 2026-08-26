@@ -139,6 +139,19 @@ jobs:
 
           if [ "$alvo" = "200" ]; then
             echo "O token enxerga o projeto $(jq -r '.name' /tmp/projeto.json) dentro de $VERCEL_ORG_ID."
+
+            # O apelido do time, para o CLI.
+            #
+            # Aqui em cima a pergunta carrega o teamId e e respondida. O CLI,
+            # sem `--scope`, pergunta a mesma coisa pela conta pessoal do dono
+            # do token - e um token preso a um time nao tem conta pessoal para
+            # olhar. Era esse o "Could not retrieve Project Settings": nao
+            # falta de acesso, e sim pergunta feita no lugar errado.
+            slug=$(curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v2/teams/$VERCEL_ORG_ID" | jq -r '.slug // empty')
+            # Sem o apelido, o proprio id serve de escopo.
+            echo "VERCEL_SCOPE=${slug:-$VERCEL_ORG_ID}" >> "$GITHUB_ENV"
+            echo "Escopo do CLI: ${slug:-$VERCEL_ORG_ID}"
             exit 0
           fi
 
@@ -166,10 +179,10 @@ jobs:
       # locally". Este passo e quem escreve o `.vercel/` aqui, a partir dos ids,
       # e a propria documentacao pede que ele venha antes do build.
       - name: Buscar as configuracoes do projeto
-        run: npx vercel@latest pull --yes --environment=production
+        run: npx vercel@latest pull --yes --environment=production --scope "$VERCEL_SCOPE"
 
       - name: Construir
-        run: npx vercel@latest build --prod
+        run: npx vercel@latest build --prod --scope "$VERCEL_SCOPE"
 
       # A conferencia que a integracao da Vercel nunca fez: o site existe para
       # ser lido por agente, e o indice e a porta. Se o build sair sem
@@ -192,4 +205,4 @@ jobs:
           fi
 
       - name: Publicar
-        run: npx vercel@latest deploy --prebuilt --prod
+        run: npx vercel@latest deploy --prebuilt --prod --scope "$VERCEL_SCOPE"
