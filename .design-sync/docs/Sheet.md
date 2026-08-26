@@ -6,6 +6,9 @@ category: Sobreposição
 
 Folha que desliza da borda da tela, com gesto de arrastar.
 
+Compõe com `SheetTrigger`, `SheetContent`, `SheetTitle`, `SheetDescription`,
+`SheetHandle` e `SheetClose`.
+
 `side` decide de onde ela entra, e o gesto de fechar segue o lado. E a peça de
 navegação no celular e o painel de ações onde o polegar alcança. O tipo é
 `SheetSide`, e são três lados: `bottom` (o padrão), `left` e `right`. Não há
