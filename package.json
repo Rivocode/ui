@@ -49,7 +49,7 @@
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",
-    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:colors && bun run check:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:grupos && bun run check:native && bun run check:paridade && bun test",
+    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:colors && bun run check:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:grupos && bun run check:native && bun run check:paridade && bun run check:testes && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
     "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
@@ -71,7 +71,8 @@
     "check:doc": "bun run scripts/check-doc-tem-codigo.ts",
     "check:contrato": "bun run scripts/check-contrato-documentado.ts",
     "build:skill": "rm -rf skill agent && mkdir -p skill agent && cp -R .claude/skills/rivocode-ui/. skill/ && cp .claude/agents/rivocode-ui.md agent/rivocode-ui.md",
-    "check:instalacao": "bun run scripts/check-instalacao-unica.ts"
+    "check:instalacao": "bun run scripts/check-instalacao-unica.ts",
+    "check:testes": "bun run scripts/check-contagem-de-testes.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

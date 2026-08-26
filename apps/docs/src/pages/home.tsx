@@ -18,6 +18,24 @@ import { version } from '../../../../package.json'
  * picture, and the catalog is the last thing rather than the first.
  * ------------------------------------------------------------------------- */
 
+/*
+ * O único número desta página escrito à mão.
+ *
+ * Os outros três da vitrine saem do catálogo enquanto o site é construído. Este
+ * não pode: a contagem só existe depois de a suíte rodar, e cobrar a suíte
+ * inteira do build da Vercel — minutos, a cada push — para imprimir um dígito é
+ * caro demais pelo que se ganha.
+ *
+ * Então ele fica versionado aqui, e quem o mantém honesto é `bun run
+ * check:testes`, que recalcula em segundos e falha dizendo qual número
+ * regravar. Sem essa guarda o dígito envelhece calado, como envelheceu duas
+ * vezes: parado em 292, e depois em 348 enquanto a suíte chegava a 552.
+ *
+ * Conta a suíte da raiz inteira — `test/` e `native/test/` —, que é o que o
+ * rótulo ao lado promete.
+ */
+const TESTS = 552
+
 const INSTALL = 'npm install @rivocode/ui'
 
 const SKILL_CMD = 'npx rivocode-ui skill'
@@ -267,7 +285,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         <div className="animate-fade mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 [animation-delay:320ms]">
           <Stat value={String(ENTRIES.length)} label="peças no catálogo" />
           <Stat value={String(WITH_EXAMPLE)} label="com exemplo que roda" />
-          <Stat value="348" label="testes, todos verdes" />
+          <Stat value={String(TESTS)} label="testes verdes, web e nativo" />
           <Stat value={String(GUIDES.length)} label="guias de uso" />
         </div>
       </section>
