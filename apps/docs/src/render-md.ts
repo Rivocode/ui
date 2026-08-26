@@ -11,7 +11,7 @@
  * Nothing here is a second copy to maintain, rename a prop and both change.
  * ------------------------------------------------------------------------- */
 
-import type { Prop } from './props-parse'
+import type { Prop } from './props'
 
 export type Part = {
   name: string

@@ -6,15 +6,15 @@ import { defineConfig, type Plugin } from 'vite'
 import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
 import { GUIDE_LIST } from './src/guide-list'
 import { findParent, importPathOf } from './src/parts'
-import { parseProps, parsesRootProps } from './src/props-parse'
 import { renderDoc, type Part } from './src/render-md'
+import type { Prop } from './src/props'
 import { slugify } from './src/slug'
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
 const DOCS_DIR = here('../../.design-sync/docs')
 const PREVIEWS_DIR = here('../../.design-sync/previews')
-const TYPES_FILE = here('./src/component-types.json')
+const PROPS_FILE = here('./src/component-props.json')
 const CONVENTIONS = here('../../.design-sync/conventions.md')
 /*
  * A skill mora onde o Claude Code procura, e nao numa pasta so para o site: uma
@@ -92,17 +92,19 @@ function readPreviews() {
 
 /**
  * The `.d.ts` of every piece, by name, from the file the extraction script
- * writes. See `scripts/tipos-do-catalogo.ts` for why it is a file and not a
- * walk over `ds-bundle/`.
+ * writes. The file is generated from the compiler by
+ * `scripts/props-do-catalogo.ts`, and `check:props` fails when it drifts.
  */
+type Piece = { forwardsRoot: boolean; props: Prop[] }
+
 function readTypes() {
   try {
-    return new Map<string, string>(
-      Object.entries(JSON.parse(readFileSync(TYPES_FILE, 'utf8')) as Record<string, string>),
+    return new Map<string, Piece>(
+      Object.entries(JSON.parse(readFileSync(PROPS_FILE, 'utf8')) as Record<string, Piece>),
     )
   } catch {
     // Not generated yet: the tables come out empty, the page still serves.
-    return new Map<string, string>()
+    return new Map<string, Piece>()
   }
 }
 
@@ -149,7 +151,7 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
     .map((name) => ({
       name,
       body: (docs.find((item) => item.name === name)?.body ?? '').replace(/^\s*#\s+\S.*\n+/, ''),
-      props: parseProps(types.get(name), name),
+      props: types.get(name)?.props ?? [],
     }))
 
   const related = docs
@@ -161,8 +163,8 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
     name: doc.name,
     body: doc.body.trimStart(),
     importPath: importPathOf(doc.name),
-    props: parseProps(types.get(doc.name), doc.name),
-    forwardsRootProps: parsesRootProps(types.get(doc.name)),
+    props: types.get(doc.name)?.props ?? [],
+    forwardsRootProps: types.get(doc.name)?.forwardsRoot ?? false,
     stories,
     parts,
     related,
