@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
+import { cloneElement, useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
 import { ResponsiveContainer } from "recharts";
 
 import { Alert, AlertDescription, AlertTitle } from "../components/alert";
@@ -39,6 +39,16 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   empty?: { title: string; description: string; icon?: ReactNode };
   /** Considera vazio tambem quando a serie existe mas nao tem ponto. */
   data?: readonly unknown[];
+
+  /**
+   * O que o leitor de tela ouve no lugar do desenho.
+   *
+   * Sem ela, o nome sai dos rotulos das series do `config` - que ja e uma
+   * frase, e nao o amontoado de ticks que o SVG daria sozinho. Escreva a sua
+   * quando o grafico responde a uma pergunta ("Faturamento por mes, em reais"):
+   * a serie diz o que foi medido, e nao o que a tela pergunta.
+   */
+  label?: string;
 };
 
 /** As oito cores de serie do tema, na ordem em que devem ser usadas. */
@@ -72,6 +82,7 @@ export function ChartContainer({
   errorMessage,
   empty,
   data,
+  label,
   ...props
 }: ChartContainerProps) {
   const id = useId().replace(/:/g, "");
@@ -103,7 +114,26 @@ export function ChartContainer({
         "[&_.recharts-tooltip-cursor]:fill-accent-subtle",
         "[&_.recharts-tooltip-cursor]:stroke-border",
         "[&_.recharts-reference-line_line]:stroke-border-strong",
+        // A Recharts entrega o `<svg>` com `tabindex="0"`, e com razao: com o
+        // foco nela, seta para os lados anda com a dica de ponto em ponto, e e
+        // a unica forma de ler o valor exato sem ponteiro. O que faltava era o
+        // contorno - ela apaga o do navegador e nao repoe nenhum, entao a
+        // parada de tabulacao existia sem pintar nada (WCAG 2.4.7).
+        //
+        // Anel por dentro (`-outline-offset-2`): a superficie ocupa o
+        // contentor inteiro, e por fora ele seria cortado pelo cartao que quase
+        // sempre embrulha o grafico.
+        //
+        // O `outline-solid` nao e enfeite. O `outline-none` da linha de cima
+        // grava `--tw-outline-style: none` na propria superficie, e o
+        // `outline-2` le esse mesmo custom property para decidir o traco - sem
+        // reescrever o estilo, o anel sai com 2px de largura e estilo nenhum,
+        // que e exatamente o nada de onde estamos saindo.
         "[&_.recharts-surface]:outline-none",
+        "[&_.recharts-surface:focus-visible]:outline-solid",
+        "[&_.recharts-surface:focus-visible]:outline-2",
+        "[&_.recharts-surface:focus-visible]:-outline-offset-2",
+        "[&_.recharts-surface:focus-visible]:outline-ring",
         className,
       )}
     >
@@ -139,11 +169,58 @@ export function ChartContainer({
         </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          {children}
+          {describe(children, label ?? nameFromConfig(config))}
         </ResponsiveContainer>
       )}
     </div>
   );
+}
+
+/**
+ * O nome de ultimo recurso, montado das series do `config`.
+ *
+ * Sem nenhum nome, o navegador calcula um a partir do conteudo do SVG e
+ * entrega os rotulos dos eixos colados: "MarAbrMaiJunJulAgo020406080". Isso e
+ * ruido com forma de nome - passa em qualquer varredura automatica de "tem
+ * nome acessivel?" e nao diz nada a quem ouve.
+ */
+function nameFromConfig(config: ChartConfig) {
+  const series = Object.values(config)
+    .map((entry) => entry.label)
+    .filter(Boolean);
+
+  return series.length > 0 ? `Gráfico de ${series.join(", ")}` : "Gráfico";
+}
+
+/**
+ * Poe nome e papel no grafico da Recharts.
+ *
+ * Sao dois consertos numa clonagem so, e os dois mexem em atributo que so
+ * existe no `<svg>` interno - a Recharts repassa `role` e `aria-label` da peca
+ * dela para a superficie, entao daqui de fora nao ha outro caminho.
+ *
+ * O papel troca de `application` para `img`. A Recharts marca `application`
+ * porque implementa teclado (seta anda com a dica, Enter fixa), mas
+ * `application` faz o NVDA e o JAWS sairem do modo de navegacao e entregarem
+ * TODAS as teclas ao componente - e o que ele devolve em troca, a dica, nao e
+ * anunciado: nao ha regiao viva nenhuma. O usuario de leitor perde as setas do
+ * modo de navegacao e nao ganha leitura de valor. Como `img` com nome, ele
+ * ouve o que o grafico e e continua navegando a pagina.
+ *
+ * A parada de tabulacao FICA. Ela nao e vazia: para quem enxerga e navega por
+ * teclado, e a unica forma de ler valor exato, e agora ela pinta um anel.
+ *
+ * Prop escrita na peca pela mao de quem usa vence: quem passar o proprio
+ * `aria-label` no `LineChart` nao e sobrescrito aqui.
+ */
+function describe(chart: ReactElement, name: string) {
+  type A11y = { role?: string; "aria-label"?: string };
+  const written = chart.props as A11y;
+
+  return cloneElement(chart as ReactElement<A11y>, {
+    role: written.role ?? "img",
+    "aria-label": written["aria-label"] ?? name,
+  });
 }
 
 /** Ocupa a altura que o grafico ocuparia, para a tela nao pular entre estados. */

@@ -63,6 +63,15 @@ export function Sparkline({
   const shared = {
     data: points,
     margin: { top: 2, right: 2, bottom: 2, left: 2 },
+    /*
+     * O `<svg>` da Recharts nasce com `tabindex="0"` e `role="application"`,
+     * e nenhum dos dois cabe aqui. Ela nao tem dica, nao tem eixo e nao tem
+     * tecla nenhuma para responder - a parada de tabulacao era vazia, e sem
+     * contorno. Quem diz o que ela e, quando ela diz alguma coisa, e o `div`
+     * de fora: `img` com rotulo, ou escondida.
+     */
+    tabIndex: -1,
+    "aria-hidden": true,
   };
 
   return (

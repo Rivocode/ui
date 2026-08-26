@@ -39,6 +39,16 @@ export type ChartDonutProps<Slice> = {
    */
   format?: Format;
   className?: string;
+  /**
+   * O que o leitor de tela ouve no lugar do desenho.
+   *
+   * Com a legenda ligada - que e o padrao - ela nao e necessaria: cada fatia ja
+   * esta ali embaixo em texto, com nome e valor, e nomear o anel de novo faria
+   * a mesma lista ser lida duas vezes. Sem legenda, o nome sai dos nomes das
+   * fatias; escreva o seu quando a rosca responder a uma pergunta ("Faturamento
+   * por natureza").
+   */
+  label?: string;
 };
 
 /**
@@ -74,6 +84,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   legend = true,
   format,
   className,
+  label,
 }: ChartDonutProps<Slice>) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
@@ -88,11 +99,38 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const colorOf = (slice: Slice, index: number) =>
     config?.[String(slice[nameKey])]?.color ?? PALETTE[index % PALETTE.length];
 
+  /*
+   * O nome do desenho, quando ele precisa de um.
+   *
+   * Com a legenda ligada nao precisa: ela repete cada fatia em texto logo
+   * abaixo, e nomear o anel faria a mesma lista ser lida duas vezes - entao o
+   * SVG sai escondido do leitor de tela. Sem legenda e sem `label`, esconder
+   * seria apagar a informacao inteira, e ai as fatias viram frase.
+   */
+  const sliceNames = () =>
+    data.map((slice) => config?.[String(slice[nameKey])]?.label ?? String(slice[nameKey]));
+
+  const name = label ?? (legend ? undefined : `Rosca de ${sliceNames().join(", ")}`);
+
   return (
     <div className={cn("w-full", className)}>
       <div className="relative h-48 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
+          {/*
+           * O `<svg>` da Recharts nasce com `tabindex="0"` e
+           * `role="application"`, e aqui os dois enganam. Ela nao tem a
+           * navegacao por seta que a Recharts implementa para o grafico
+           * cartesiano - isso anda por eixo, e rosca nao tem eixo -, entao a
+           * parada de tabulacao era uma parada morta, e sem contorno. Fora do
+           * caminho do Tab, a rosca continua legivel: a legenda abaixo repete
+           * cada fatia em texto, e ela e que responde ao leitor de tela.
+           */}
+          <PieChart
+            tabIndex={-1}
+            role={name ? "img" : undefined}
+            aria-label={name}
+            aria-hidden={name ? undefined : true}
+          >
             <Pie
               data={data}
               dataKey={valueKey}

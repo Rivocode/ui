@@ -114,7 +114,15 @@ test("a barra indeterminada nao se parece com tarefa concluida", () => {
   expect(indicator).toBeDefined();
   expect(indicator?.className).toContain("data-[indeterminate]:w-1/5");
   expect(indicator?.className).toContain("data-[indeterminate]:animate-indeterminate");
-  expect(indicator?.className).toContain("motion-reduce:animate-none");
+  // A guarda de movimento repete a variante de dado. Escrita como
+  // `motion-reduce:animate-none` - que e o que este teste cobrava, e o que a
+  // peca tinha - ela compila com uma classe a menos de especificidade que
+  // `data-[indeterminate]:animate-indeterminate` e nunca casa: quem pediu
+  // menos movimento via a barra atravessar do mesmo jeito.
+  expect(indicator?.className).toContain("motion-reduce:data-[indeterminate]:animate-none");
+  // E parada ela nao pode continuar valendo um quinto da trilha, que se le
+  // como "20% concluido". Trilha inteira, em faixas.
+  expect(indicator?.className).toContain("motion-reduce:data-[indeterminate]:w-full");
 });
 
 test("a barra em 100% nao carrega a marca da indeterminada", () => {

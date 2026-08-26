@@ -73,36 +73,39 @@ export function ChartRadial({
       aria-label={label ?? `${percentage}%`}
     >
       {variant === "segmented" ? (
-        <SegmentedArc
-          percentage={percentage}
-          sweep={sweep}
-          segments={segments}
-          color={color}
-        />
+        <SegmentedArc percentage={percentage} sweep={sweep} segments={segments} color={color} />
       ) : (
-      <ResponsiveContainer width="100%" height="100%">
-        <RadialBarChart
-          data={[{ value: clamped }]}
-          startAngle={start}
-          endAngle={end}
-          innerRadius="72%"
-          outerRadius="100%"
-          barSize={14}
-        >
-          {/* O eixo escondido e o que prende o arco a escala: sem ele a
-           * Recharts normaliza pelo maior valor da serie, e um unico ponto
-           * sempre daria a volta inteira. */}
-          <PolarAngleAxis type="number" domain={[0, max]} angleAxisId={0} tick={false} />
-          <RadialBar
-            dataKey="value"
-            angleAxisId={0}
-            fill={color}
-            cornerRadius={999}
-            background={{ fill: "var(--rc-skeleton)" }}
-            isAnimationActive={false}
-          />
-        </RadialBarChart>
-      </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+          <RadialBarChart
+            data={[{ value: clamped }]}
+            startAngle={start}
+            endAngle={end}
+            innerRadius="72%"
+            outerRadius="100%"
+            barSize={14}
+            // O `<svg>` da Recharts nasce com `tabindex="0"` e
+            // `role="application"`. Aqui os dois sao ruido: o arco e uma medida
+            // so, quem nomeia ja e o `div` acima como `img`, e nao ha nada para
+            // andar com as setas. Sem isto sobrava uma parada de tabulacao sem
+            // contorno e sem funcao dentro de um elemento que o leitor de tela ja
+            // trata como figura.
+            tabIndex={-1}
+            aria-hidden="true"
+          >
+            {/* O eixo escondido e o que prende o arco a escala: sem ele a
+             * Recharts normaliza pelo maior valor da serie, e um unico ponto
+             * sempre daria a volta inteira. */}
+            <PolarAngleAxis type="number" domain={[0, max]} angleAxisId={0} tick={false} />
+            <RadialBar
+              dataKey="value"
+              angleAxisId={0}
+              fill={color}
+              cornerRadius={999}
+              background={{ fill: "var(--rc-skeleton)" }}
+              isAnimationActive={false}
+            />
+          </RadialBarChart>
+        </ResponsiveContainer>
       )}
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">

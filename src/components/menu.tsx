@@ -11,7 +11,21 @@ import { useRivoContext } from "../provider/rivo-provider";
 export const Menu = BaseMenu.Root;
 
 export function MenuTrigger({ className, ...props }: ComponentProps<typeof BaseMenu.Trigger>) {
-  return <BaseMenu.Trigger {...props} className={cn("outline-none", className)} />;
+  return (
+    <BaseMenu.Trigger
+      {...props}
+      className={cn(
+        // Ele sai sem PELE de proposito - o uso comum e `render={<Button />}`, e
+        // duas fontes de estilo brigariam. Foco nao e pele: `outline-none`
+        // sozinho nao e "sem estilo", e remocao ativa do unico sinal que o
+        // navegador da de graca. Quando o gatilho e escrito na mao, como na
+        // barra de menus, o anel daqui e o unico que existe; quando ele vem de
+        // um Button, o anel e o mesmo e as classes se fundem sem dobrar.
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        className,
+      )}
+    />
+  );
 }
 
 /**

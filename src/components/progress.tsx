@@ -82,7 +82,27 @@ export function Progress({
             // ocuparia a trilha inteira, parado - que e como se le uma barra
             // em 100%. Um quinto da trilha atravessando diz espera.
             "data-[indeterminate]:w-1/5 data-[indeterminate]:animate-indeterminate",
-            "motion-reduce:animate-none",
+            /*
+             * Quem pediu menos movimento no sistema nao ve a travessia. Sao
+             * duas correcoes num par de classes:
+             *
+             * 1. A variante repete o `data-[indeterminate]`. Sem ele,
+             *    `motion-reduce:animate-none` compila como `.classe` dentro da
+             *    media - (0,1,0) - contra `.classe[data-indeterminate]` -
+             *    (0,2,0) - e perde por especificidade, em qualquer ordem: media
+             *    nao soma especificidade. A guarda escrita hoje era exatamente
+             *    esta armadilha, e a barra girou por meses com a classe certa
+             *    escrita ali.
+             *
+             * 2. Parada, um quinto da trilha nao e "espera", e "20% concluido"
+             *    - um estado que mente. Entao ela ocupa a trilha inteira e
+             *    troca a cor chapada por faixas: cheia sem textura leria como
+             *    tarefa terminada, e a textura e o unico jeito de dizer
+             *    "trabalhando" sem mover nada.
+             */
+            "motion-reduce:data-[indeterminate]:animate-none",
+            "motion-reduce:data-[indeterminate]:w-full",
+            "motion-reduce:data-[indeterminate]:bg-[image:repeating-linear-gradient(115deg,var(--rc-accent)_0_0.5rem,var(--rc-accent-hover)_0.5rem_1rem)]",
             classNames?.indicator,
           )}
         />

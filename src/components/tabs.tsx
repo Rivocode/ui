@@ -96,5 +96,22 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
 }
 
 export function TabPanel({ className, ...props }: ComponentProps<typeof BaseTabs.Panel>) {
-  return <BaseTabs.Panel {...props} className={cn("pt-4 outline-none", className)} />;
+  return (
+    <BaseTabs.Panel
+      {...props}
+      className={cn(
+        "pt-4 outline-none",
+        // O painel da Base UI e focavel mesmo tendo filho focavel - e o que o
+        // WAI-ARIA manda para o conteudo que o Tab alcanca depois da fila de
+        // abas. Como ele apagava o contorno e nao repunha nada, cada pagina de
+        // documentacao tinha uma parada de tabulacao invisivel por painel (doze
+        // so na do DataTable): o foco sumia da tela e reaparecia depois.
+        //
+        // O anel vai por dentro porque o painel ocupa a largura toda do
+        // conteudo, e por fora ele seria cortado pelo que o embrulha.
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+        className,
+      )}
+    />
+  );
 }
