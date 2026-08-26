@@ -12,12 +12,36 @@ name: release-native
 on:
   push:
     tags: ["native-v*"]
-  # Permite repetir uma publicacao que falhou no meio, sem criar outra tag.
+  # Permite repetir uma publicacao que falhou no meio, sem criar outra tag - e,
+  # com `ensaio`, atravessar o caminho inteiro sem gastar versao nenhuma.
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag ja existente para publicar, como native-v0.2.0"
-        required: true
+        # Deixou de ser obrigatoria por causa do ensaio: um ensaio quer rodar o
+        # que esta na main agora, e nao o que uma tag congelou. Para publicar de
+        # verdade ela continua exigida - a conferencia esta no passo "Conferir a
+        # tag e a versao", e nao aqui, porque o formulario nao sabe condicionar
+        # um campo ao outro.
+        description: "Tag ja existente para publicar, como native-v0.2.0. Vazio so em ensaio."
+        required: false
+      ensaio:
+        # O primeiro lancamento por CI e um voo cego, e sempre foi.
+        #
+        # Este workflow tem quatro execucoes e quatro falhas, todas no ultimo
+        # passo: a 0.2.0 ja estava publicada a mao, e cada tentativa gastava
+        # install, tipos, tokens, paridade, suite e empacotamento para morrer no
+        # `npm publish`. O caminho completo nunca chegou ao fim. E nao havia como
+        # exercita-lo: a unica maneira de descobrir se ele funciona era criar uma
+        # tag de versao nova - queimar um numero para fazer um teste.
+        #
+        # O ensaio quebra esse laco. Tudo roda igual, na mesma ordem, com os
+        # mesmos segredos e o mesmo `--dry-run` que a estreia faz. So o
+        # `npm publish` real fica de fora, e as duas guardas que existem para
+        # proteger um numero de versao - a tag e o "ja publicada" - passam a
+        # relatar em vez de parar, porque em ensaio nao ha numero a proteger.
+        description: "Ensaio: roda o caminho inteiro e NAO publica"
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -87,10 +111,43 @@ jobs:
           fi
           echo "Segredo presente."
 
-      - name: Conferir se a tag bate com a versao
+      # A tag e a versao do native/package.json precisam contar a mesma
+      # historia. Sem esta conferencia, `git tag native-v0.3.0` sobre um
+      # package.json em 0.2.0 republica silenciosamente a versao velha.
+      #
+      # Em ensaio a conferencia continua acontecendo, mas nao para a corrida:
+      # o ensaio costuma rodar direto da main, onde `ref_name` e "main" e nao
+      # ha tag nenhuma para bater. Parar ai seria fazer o ensaio morrer no
+      # segundo passo - exatamente o que ele existe para evitar.
+      - name: Conferir a tag e a versao
+        env:
+          ENSAIO: ${{ inputs.ensaio }}
+          TAG: ${{ github.event.inputs.tag }}
         run: |
-          tag="${{ github.event.inputs.tag || github.ref_name }}"
           pkg="native-v$(node -p "require('./native/package.json').version")"
+
+          if [ "$ENSAIO" = "true" ]; then
+            if [ -z "$TAG" ]; then
+              echo "Ensaio a partir de ${{ github.ref_name }}, sobre $pkg."
+            elif [ "$TAG" != "$pkg" ]; then
+              echo "Aviso: a tag $TAG nao bate com o native/package.json ($pkg)."
+              echo "Numa publicacao de verdade isto pararia aqui."
+            else
+              echo "Ensaio sobre $pkg."
+            fi
+            exit 0
+          fi
+
+          # Fora do ensaio a tag e obrigatoria, e o formulario nao consegue
+          # exigi-la so quando `ensaio` esta desmarcado. Sem esta linha, um
+          # disparo distraido publicaria o que estivesse na main.
+          if [ -z "$TAG" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Publicacao de verdade exige a tag no formulario."
+            echo "Para so exercitar o caminho, marque a caixa \"Ensaio\"."
+            exit 1
+          fi
+
+          tag="${TAG:-${{ github.ref_name }}}"
           if [ "$tag" != "$pkg" ]; then
             echo "A tag $tag nao bate com a versao do native/package.json ($pkg)."
             exit 1
@@ -117,6 +174,7 @@ jobs:
         # de autenticacao em vez de falar da versao.
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ENSAIO: ${{ inputs.ensaio }}
         run: |
           versao=$(node -p "require('./native/package.json').version")
 
@@ -126,6 +184,20 @@ jobs:
           # parar o passo - a primeira publicacao de um pacote novo tem que
           # atravessar esta guarda.
           publicada=$(npm view "@rivocode/ui-native@$versao" version 2>/dev/null || true)
+
+          # Em ensaio, esta guarda vira o contrario de si mesma.
+          #
+          # Ela existe para nao gastar a corrida inteira quando o numero ja foi
+          # usado. O ensaio quer justamente gastar a corrida inteira, e a versao
+          # que ele tem a mao e quase sempre uma ja publicada - foi assim que as
+          # quatro primeiras execucoes morreram. Parar aqui devolveria o
+          # problema: para exercitar o caminho seria preciso um numero novo, que
+          # e a versao que o ensaio existe para nao queimar.
+          if [ -n "$publicada" ] && [ "$ENSAIO" = "true" ]; then
+            echo "A versao $versao ja esta no registro."
+            echo "Num lancamento de verdade isto pararia aqui; em ensaio, segue."
+            exit 0
+          fi
 
           if [ -n "$publicada" ]; then
             echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
@@ -209,14 +281,84 @@ jobs:
       # Vale mesmo quando a publicacao vai acontecer logo em seguida: uma
       # quebra de empacotamento aparece aqui, com o publish real ainda por
       # fazer, e nao com metade da versao ja no registro.
+      #
+      # O `--dry-run` NAO e offline, e essa foi a descoberta que quase custou o
+      # ensaio inteiro. Ele monta o tarball e vai ate o registro perguntar se a
+      # publicacao seria aceita - e a primeira coisa que o registro responde e
+      # que aquele numero ja existe:
+      #
+      #   npm error You cannot publish over the previously published versions: 0.2.0.
+      #
+      # Ou seja, o proprio ensaio morreria no penultimo passo, na mesma pedra
+      # que derrubou as quatro execucoes anteriores, e pelo mesmo motivo: a
+      # unica coisa que falta e um numero novo.
+      #
+      # Por isso, em ensaio, esta e a UNICA mensagem tolerada. Chegar ate ela
+      # prova o que o ensaio veio provar - o empacotamento fechou, o
+      # `--access public` foi entendido, o registro atendeu e leu o manifesto -
+      # e o que sobra e a recusa que so um numero novo resolve. Qualquer outra
+      # falha continua derrubando a corrida, que e o ponto de ter um ensaio.
+      #
+      # Numa publicacao de verdade a versao e inedita, o comando passa limpo, e
+      # nada disto entra em campo.
       - name: Ensaiar a publicacao
         working-directory: native
-        run: npm publish --access public --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ENSAIO: ${{ inputs.ensaio }}
+        run: |
+          set +e
+          saida=$(npm publish --access public --dry-run 2>&1)
+          codigo=$?
+          echo "$saida"
 
+          if [ $codigo -eq 0 ]; then
+            exit 0
+          fi
+
+          if [ "$ENSAIO" = "true" ] &&
+             echo "$saida" | grep -q "cannot publish over the previously published versions"; then
+            echo
+            echo "O registro so recusou o NUMERO: tudo antes disso passou."
+            echo "Num lancamento de verdade a versao seria inedita e o comando fecharia limpo."
+            exit 0
+          fi
+
+          exit $codigo
+
+      # A unica linha que o ensaio nao atravessa. Tudo acima ja rodou igual.
       - name: Publicar
+        if: ${{ inputs.ensaio != true }}
         working-directory: native
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Um ensaio que termina em verde parece uma publicacao que terminou em
+      # verde: mesmo cheque, mesma cor, mesma duracao. Quem abrir a lista de
+      # execucoes amanha precisa conseguir separar os dois sem entrar passo a
+      # passo - e, principalmente, nao pode sair daqui achando que a versao
+      # subiu. Por isso o recado vai tambem para o resumo da execucao, que e a
+      # primeira coisa que a pagina mostra.
+      - name: Dizer que foi ensaio
+        if: ${{ inputs.ensaio == true }}
+        # Pelo mesmo motivo do passo que consulta a versao: o .npmrc escrito
+        # pelo setup-node espera esta variavel, e sem ela o `npm view` reclama
+        # de autenticacao em vez de responder o que se perguntou.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          versao=$(node -p "require('./native/package.json').version")
+          {
+            echo "## Ensaio - NADA foi publicado"
+            echo
+            echo "O caminho inteiro rodou sobre a versao \`$versao\`: install,"
+            echo "tipos, tokens, paridade, suite, empacotamento e"
+            echo "\`npm publish --dry-run\`. O unico passo pulado foi o"
+            echo "\`npm publish\` real."
+            echo
+            echo "No registro continua: latest \`$(npm view @rivocode/ui-native version 2>/dev/null || echo '?')\`."
+            echo
+            echo "Para publicar de verdade, crie a tag \`native-v<versao>\` -"
+            echo "e o gatilho de tag faz o resto."
+          } | tee -a "$GITHUB_STEP_SUMMARY"
