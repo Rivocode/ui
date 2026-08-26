@@ -78,8 +78,18 @@ jobs:
       - run: bun install --frozen-lockfile
 
       # O `.vercel/` nao e versionado - e conta local, e nao configuracao de
-      # projeto. Os dois identificadores chegam por segredo, e sao eles que
-      # dizem qual projeto receber o resultado.
+      # projeto -, entao no runner ele nao existe. E o `vercel build` nao se
+      # vira so com os dois identificadores no ambiente: ele procura as
+      # configuracoes do projeto em disco e para com "No Project Settings found
+      # locally". Este passo e quem escreve o `.vercel/` aqui, a partir dos ids,
+      # e a propria documentacao pede que ele venha antes do build.
+      - name: Buscar as configuracoes do projeto
+        run: npx vercel@latest pull --yes --environment=production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
       - name: Construir
         run: npx vercel@latest build --prod
         env:
