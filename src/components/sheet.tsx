@@ -4,6 +4,7 @@ import { Drawer as BaseDrawer } from "@base-ui/react/drawer";
 import { createContext, use, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { InertBackground } from "../lib/inert-background";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -124,6 +125,10 @@ export function SheetContent({
           <BaseDrawer.Content>{children}</BaseDrawer.Content>
         </BaseDrawer.Popup>
       </BaseDrawer.Viewport>
+
+      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
+          aplicado pelo gerenciador de foco que mora dentro do popup. */}
+      <InertBackground container={portalContainer} />
     </BaseDrawer.Portal>
   );
 }

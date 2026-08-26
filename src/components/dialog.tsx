@@ -4,6 +4,7 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { InertBackground } from "../lib/inert-background";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -59,6 +60,10 @@ export function DialogContent({
       >
         {children}
       </BaseDialog.Popup>
+
+      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
+          aplicado pelo gerenciador de foco que mora dentro do popup. */}
+      <InertBackground container={portalContainer} />
     </BaseDialog.Portal>
   );
 }
