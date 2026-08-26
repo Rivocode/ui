@@ -55,9 +55,7 @@ test("a divisoria respeita o minimo dos dois lados", () => {
 
 test("no celular os dois lados empilham, em vez de espremer", () => {
   // Duas colunas de 190px nao sao duas colunas: sao duas listas ilegiveis.
-  const { container } = withTheme(
-    <Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />,
-  );
+  withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
 
   // O primeiro filho e o container do provider; a peca e o proximo.
   const splitter = screen.getByRole("separator").parentElement!;

@@ -41,7 +41,7 @@ test("a barra de menus tem gatilho proprio, com o estilo dentro da peca", () => 
 test("a moldura de campo acompanha os tres tamanhos do campo", () => {
   // O Input tem sm, md e lg; a moldura cravava a altura media, entao um campo
   // pequeno dentro dela saia com o respiro do medio.
-  const { container } = withTheme(
+  withTheme(
     <InputGroup size="sm">
       <InputPrefix>R$</InputPrefix>
       <Input aria-label="Valor" size="sm" />

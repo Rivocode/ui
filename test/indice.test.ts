@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test";
 import { readdirSync } from "node:fs";
 
+import { indexLine, partNote } from "../apps/docs/src/agent-address";
 import { findParent } from "../apps/docs/src/parts";
 
 /*
@@ -39,27 +40,50 @@ test("parte e peca nao se confundem na contagem", () => {
   expect(pieces.length).toBeLessThan(names.length);
 });
 
-test("a parte aponta para dentro da pagina de quem a monta", async () => {
-  // Uma parte nao tem exemplo proprio porque nao ha o que exemplificar sem a
-  // peca em volta - e a pagina solta dela dizia isso em voz alta, gastando uma
-  // busca do agente para nao acrescentar nada. Agora o endereco leva a ancora
-  // dentro da peca principal, onde a parte tem prosa, props e o exemplo junto.
-  const index = await Bun.file("apps/docs/dist/llms.txt").text();
+/*
+ * Estes tres mediam o conteudo de `apps/docs/dist/`, e por isso passavam na
+ * maquina que acabara de buildar e falhavam no CI, onde o `check` roda antes de
+ * qualquer build. Guarda que depende de artefato nao e guarda: e cara ou coroa
+ * com aparencia de rigor. Agora medem a funcao que escreve o endereco, que e o
+ * que eles sempre quiseram dizer.
+ */
 
-  expect(index).toContain("[CardHeader](/componentes/card.md#cardheader) — parte de Card");
-  expect(index).not.toContain("[CardHeader](/componentes/card-header.md)");
+const CARD = { name: "Card", slug: "card" };
+
+test("a parte aponta para dentro da pagina de quem a monta", () => {
+  expect(indexLine("CardHeader", "card-header", CARD)).toBe(
+    "  - [CardHeader](/componentes/card.md#cardheader) — parte de Card",
+  );
 });
 
-test("o endereco antigo da parte continua respondendo, com o caminho", async () => {
+test("a peca continua com endereco proprio, e sem indentacao", () => {
+  expect(indexLine("Card", "card")).toBe("- [Card](/componentes/card.md)");
+});
+
+test("o endereco antigo da parte responde com o caminho, e nao com o vazio", () => {
   // Agente que guardou o link nao pode encontrar o vazio.
-  const note = await Bun.file("apps/docs/dist/componentes/card-header.md").text();
+  const note = partNote("CardHeader", CARD);
 
   expect(note).toContain("é parte de Card");
   expect(note).toContain("/componentes/card.md#cardheader");
 });
 
-test("a ancora existe de verdade na pagina de quem monta", async () => {
-  const page = await Bun.file("apps/docs/dist/componentes/card.md").text();
+test("a ancora que o endereco promete e a que a pagina escreve", async () => {
+  // O `###` do nome da parte e o que vira `#cardheader` no markdown. Se o
+  // renderizador mudar o nivel do titulo, o link para de resolver - e nada
+  // reclamaria, porque link quebrado dentro de um .md nao falha build nenhum.
+  const { renderDoc } = await import("../apps/docs/src/render-md");
+  const page = renderDoc({
+    name: "Card",
+    body: "O cartao.",
+    importPath: "@rivocode/ui",
+    props: [],
+    forwardsRootProps: true,
+    stories: [],
+    parts: [{ name: "CardHeader", body: "O topo.", props: [] }],
+    related: [],
+  });
 
   expect(page).toContain("### CardHeader");
+  expect(partNote("CardHeader", CARD)).toContain("#cardheader");
 });

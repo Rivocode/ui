@@ -5,6 +5,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
 import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
 import { GUIDE_LIST } from './src/guide-list'
+import { indexLine, partNote } from './src/agent-address'
 import { findParent, importPathOf } from './src/parts'
 import { renderDoc, type Part } from './src/render-md'
 import type { Prop } from './src/props'
@@ -200,15 +201,8 @@ function indexForAgents(docs: Doc[]) {
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((doc) => {
           const parent = parentOf(doc.name)
-          if (!parent) return `- [${doc.name}](/componentes/${doc.slug}.md)`
-
-          // A parte aponta para dentro da pagina de quem a monta, e nao para
-          // um endereco proprio: la ela tem prosa, props E o exemplo que a
-          // monta - sozinha ela nunca teve exemplo, porque nao ha o que
-          // exemplificar sem a peca em volta. Uma busca a menos por peca.
-          const owner = docs.find((item) => item.name === parent)
-          const anchor = `/componentes/${owner?.slug ?? slugify(parent)}.md#${doc.name.toLowerCase()}`
-          return `  - [${doc.name}](${anchor}) — parte de ${parent}`
+          const owner = parent ? docs.find((item) => item.name === parent) : undefined
+          return indexLine(doc.name, doc.slug, owner && { name: owner.name, slug: owner.slug })
         })
         .join('\n')
       return `## ${family}\n\n${lines}`
@@ -349,9 +343,7 @@ function rawDocs(): Plugin {
           type: 'asset',
           fileName: `componentes/${doc.slug}.md`,
           source: owner
-            ? `# ${doc.name}\n\n${doc.name} é parte de ${parent}, e é documentada na página ` +
-              `dele — com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
-              `[/componentes/${owner.slug}.md](/componentes/${owner.slug}.md#${doc.name.toLowerCase()})\n`
+            ? partNote(doc.name, { name: owner.name, slug: owner.slug })
             : buildMarkdown(doc, docs, sources),
         })
       }

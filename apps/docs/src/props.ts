@@ -12,18 +12,9 @@
  * ------------------------------------------------------------------------- */
 
 import CATALOG from '@/component-props.json'
+import type { Piece, Prop } from '@/prop-types'
 
-export type Prop = {
-  name: string
-  type: string
-  required: boolean
-  /** The doc comment above the prop, when the source carries one. */
-  note?: string
-  /** The version this prop first shipped in. Absent means it has not shipped. */
-  since?: string
-}
-
-type Piece = { forwardsRoot: boolean; props: Prop[] }
+export type { Prop, Piece } from '@/prop-types'
 
 const byName = new Map<string, Piece>(Object.entries(CATALOG as Record<string, Piece>))
 

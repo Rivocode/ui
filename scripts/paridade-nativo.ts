@@ -565,7 +565,7 @@ function table(pieces: string[]) {
   return rows.join("\n");
 }
 
-function scoreboard(pieces: string[], native: Set<string>) {
+function scoreboard(pieces: string[], _native: Set<string>) {
   const conta = (state: State) => pieces.filter((p) => PARITY[p]!.state === state).length;
 
   return (
