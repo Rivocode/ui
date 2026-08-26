@@ -1,7 +1,7 @@
 "use client";
 
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -64,9 +64,19 @@ export function Checkbox({
   classNames,
   ...props
 }: CheckboxProps) {
+  /*
+   * O `Field` passa o proprio rotulo a todo controle que mora dentro dele, e
+   * quando o controle ja tem texto proprio os dois se somam: o leitor de tela
+   * anunciava "Impostos" no lugar de "ISS retido na fonte". Com texto proprio,
+   * o texto e que nomeia.
+   */
+  const textId = useId();
+  const named = children !== undefined;
+
   const box = (
     <BaseCheckbox.Root
       {...props}
+      aria-labelledby={named ? textId : props["aria-labelledby"]}
       className={cn(
         "inline-flex size-[var(--rc-box)] shrink-0 items-center justify-center",
         "rounded-sm border border-border-strong bg-surface",
@@ -123,7 +133,8 @@ export function Checkbox({
       )}
     >
       {box}
-      {children}
+      {/* O texto ganha id proprio, e e ele que nomeia a caixa. */}
+      <span id={textId}>{children}</span>
     </label>
   );
 }

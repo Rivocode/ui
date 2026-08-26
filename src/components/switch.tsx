@@ -1,7 +1,7 @@
 "use client";
 
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -38,9 +38,19 @@ export function Switch({
   classNames,
   ...props
 }: SwitchProps) {
+  /*
+   * O `Field` passa o proprio rotulo a todo controle que mora dentro dele, e
+   * quando o controle ja tem texto proprio os dois se somam: o leitor de tela
+   * anunciava "Impostos" no lugar de "ISS retido na fonte". Com texto proprio,
+   * o texto e que nomeia.
+   */
+  const textId = useId();
+  const named = children !== undefined;
+
   const key = (
     <BaseSwitch.Root
       {...props}
+      aria-labelledby={named ? textId : props["aria-labelledby"]}
       className={cn(
         "relative inline-flex h-6 w-11 shrink-0 items-center rounded-pill p-0.5",
         "border border-border-strong bg-surface-raised",
@@ -81,7 +91,8 @@ export function Switch({
       )}
     >
       {key}
-      {children}
+      {/* O texto ganha id proprio, e e ele que nomeia a chave. */}
+      <span id={textId}>{children}</span>
     </label>
   );
 }

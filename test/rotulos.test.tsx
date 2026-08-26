@@ -59,7 +59,7 @@ test("a chave com texto liga pelo texto", () => {
  * para um campo nao voltar a se desenhar com a borda de divisoria.
  */
 
-import { Input } from "../src/components/field";
+import { Field, FieldLabel, Input } from "../src/components/field";
 import { InputGroup } from "../src/components/input-group";
 import { SelectTrigger, Select } from "../src/components/select";
 
@@ -90,4 +90,41 @@ test("o gatilho do select tambem", () => {
   );
 
   expect(screen.getByLabelText("Situacao").className).toContain("border-border-strong");
+});
+
+test("dentro de um campo, cada circulo se chama pelo proprio texto", () => {
+  // O Field passa o proprio rotulo a todo controle que mora dentro dele, e
+  // para um controle isso esta certo. Num grupo de escolha unica nao: o leitor
+  // de tela anunciava "Forma de pagamento" para Pix e para Boleto igualmente,
+  // e quem depende dele nao tinha como distinguir as opcoes.
+  withTheme(
+    <Field>
+      <FieldLabel>Forma de pagamento</FieldLabel>
+      <RadioGroup defaultValue="pix">
+        <Radio value="pix">Pix</Radio>
+        <Radio value="boleto">Boleto</Radio>
+      </RadioGroup>
+    </Field>,
+  );
+
+  expect(screen.getByRole("radio", { name: "Pix" })).toBeDefined();
+  expect(screen.getByRole("radio", { name: "Boleto" })).toBeDefined();
+  // O grupo continua sendo o dono do rotulo do campo.
+  expect(screen.getByRole("radiogroup", { name: "Forma de pagamento" })).toBeDefined();
+});
+
+test("a caixa e a chave continuam se chamando pelo proprio texto no campo", () => {
+  // Aqui herdar o rotulo do campo tambem seria errado, mas por outra razao:
+  // com um controle so, o nome do campo e o nome do controle, e os dois textos
+  // se somariam - "ISS retido ISS retido".
+  withTheme(
+    <Field>
+      <FieldLabel>Impostos</FieldLabel>
+      <Checkbox>ISS retido na fonte</Checkbox>
+      <Switch>Avisar por email</Switch>
+    </Field>,
+  );
+
+  expect(screen.getByRole("checkbox", { name: "ISS retido na fonte" })).toBeDefined();
+  expect(screen.getByRole("switch", { name: "Avisar por email" })).toBeDefined();
 });
