@@ -35,7 +35,7 @@ const SPINNER_TOKEN: Record<string, keyof (typeof tokens.themes)["rivocode-dark"
  * TODO botao, inclusive o que hoje monta sozinho num teste ou num trecho solto.
  */
 function ButtonSpinner({ variant }: { variant: string }) {
-  const { theme } = useRivo();
+  const { colors } = useRivo();
   return (
     // Enfeite, como o spinner aria-hidden do web: quem conta que esta ocupado
     // e o accessibilityState, e um "Carregando" solto aqui viraria uma segunda
@@ -44,7 +44,7 @@ function ButtonSpinner({ variant }: { variant: string }) {
       accessibilityElementsHidden
       importantForAccessibility="no"
       size="small"
-      color={tokens.themes[theme][SPINNER_TOKEN[variant]]}
+      color={colors[SPINNER_TOKEN[variant]]}
     />
   );
 }

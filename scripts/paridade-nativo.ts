@@ -42,7 +42,7 @@ import { Glob } from "bun";
 const DOCS = ".design-sync/docs";
 const NATIVE_INDEX = "native/src/index.ts";
 
-type Estado =
+type State =
   /** Existe no nativo com o mesmo nome. A API quase nunca e a mesma. */
   | "traduz"
   /** Existe com outro nome, e o outro nome e a peca inteira. */
@@ -52,17 +52,17 @@ type Estado =
   /** Nao vai existir, e a razao esta na nota. */
   | "nao";
 
-type Linha = {
-  estado: Estado;
+type Row = {
+  state: State;
   /** O nome nativo, quando ele difere. Obrigatorio no estado `vira`. */
-  nativo?: string;
+  native?: string;
   /** A celula da tabela: fragmento curto, minusculo, sem ponto final. */
-  nota: string;
+  note: string;
   /**
    * O paragrafo da pagina da peca, quando a frase montada nao basta.
    * Escrito onde escolher errado custa caro.
    */
-  pagina?: string;
+  page?: string;
 };
 
 /**
@@ -72,7 +72,7 @@ type Linha = {
  * decisao propria de nativo, e ficar de fora da tabela por um acidente de
  * grafia era exatamente o silencio que este arquivo existe para fechar.
  */
-const PARTE_QUE_E_PECA = new Set(["ButtonGroup"]);
+const PARTS_THAT_ARE_PIECES = new Set(["ButtonGroup"]);
 
 /** Pecas que a regra de prefixo engoliria e nao deveria. Igual ao site. */
 const AUTONOMAS = new Set([
@@ -99,42 +99,42 @@ const PAI: Record<string, string> = {
   Radio: "RadioGroup",
 };
 
-const PARIDADE: Record<string, Linha> = {
+const PARITY: Record<string, Row> = {
   // ---------------------------------------------------------------- traduzem
   Accordion: {
-    estado: "traduz",
-    nota: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada",
+    state: "traduz",
+    note: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada",
   },
   Alert: {
-    estado: "traduz",
-    nota: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`",
+    state: "traduz",
+    note: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`",
   },
   AlertDialog: {
-    estado: "traduz",
-    nota: "`actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web",
+    state: "traduz",
+    note: "`actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web",
   },
-  AspectRatio: { estado: "traduz", nota: "`ratio` numérico, igual" },
+  AspectRatio: { state: "traduz", note: "`ratio` numérico, igual" },
   Avatar: {
-    estado: "traduz",
-    nota: "só `fallback`, as iniciais: imagem remota ainda não entra",
+    state: "traduz",
+    note: "só `fallback`, as iniciais: imagem remota ainda não entra",
   },
-  Badge: { estado: "traduz", nota: "os mesmos tons; o texto é filho" },
+  Badge: { state: "traduz", note: "os mesmos tons; o texto é filho" },
   Button: {
-    estado: "traduz",
-    nota: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda",
+    state: "traduz",
+    note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda",
   },
   Calendar: {
-    estado: "traduz",
-    nota: "mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`",
+    state: "traduz",
+    note: "mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`",
   },
   Card: {
-    estado: "traduz",
-    nota: "com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` — sem `CardFooter`",
+    state: "traduz",
+    note: "com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` — sem `CardFooter`",
   },
   Checkbox: {
-    estado: "traduz",
-    nota: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`",
-    pagina:
+    state: "traduz",
+    note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`",
+    page:
       "Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é " +
       "**sempre controlado**. `checked` e `onCheckedChange` são obrigatórios, não há " +
       "`defaultChecked` e não há `indeterminate` — a caixa de selecionar-todas do web não " +
@@ -142,70 +142,70 @@ const PARIDADE: Record<string, Linha> = {
       "web não compila.",
   },
   CheckboxGroup: {
-    estado: "traduz",
-    nota: "`items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho",
+    state: "traduz",
+    note: "`items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho",
   },
   Collapsible: {
-    estado: "traduz",
-    nota: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`",
+    state: "traduz",
+    note: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`",
   },
   Combobox: {
-    estado: "traduz",
-    nota: "a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho",
+    state: "traduz",
+    note: "a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho",
   },
   DatePicker: {
-    estado: "traduz",
-    nota: "abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa`",
+    state: "traduz",
+    note: "abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa`",
   },
   DescriptionList: {
-    estado: "traduz",
-    nota: "as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN",
+    state: "traduz",
+    note: "as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN",
   },
   Dialog: {
-    estado: "traduz",
-    nota: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`",
+    state: "traduz",
+    note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`",
   },
-  EmptyState: { estado: "traduz", nota: "`description` obrigatória, pelo mesmo motivo do web" },
+  EmptyState: { state: "traduz", note: "`description` obrigatória, pelo mesmo motivo do web" },
   Field: {
-    estado: "traduz",
-    nota: "`label`, `description` e `error` como props; o erro vence a descrição, como no web",
+    state: "traduz",
+    note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web",
   },
-  Fieldset: { estado: "traduz", nota: "`legend` como prop" },
+  Fieldset: { state: "traduz", note: "`legend` como prop" },
   Input: {
-    estado: "traduz",
-    nota: "a borda acende no foco — não há `focus-visible` em tela de toque",
+    state: "traduz",
+    note: "a borda acende no foco — não há `focus-visible` em tela de toque",
   },
   MaskedInput: {
-    estado: "traduz",
-    nota: "o valor é só dígitos; a máscara é do campo, o dado não a carrega",
+    state: "traduz",
+    note: "o valor é só dígitos; a máscara é do campo, o dado não a carrega",
   },
   Menu: {
-    estado: "traduz",
-    nota: "folha de baixo com `actions`, nunca popup ancorado",
+    state: "traduz",
+    note: "folha de baixo com `actions`, nunca popup ancorado",
   },
   NumberField: {
-    estado: "traduz",
-    nota: "vira stepper — menos, valor, mais —, que é o idioma do toque",
+    state: "traduz",
+    note: "vira stepper — menos, valor, mais —, que é o idioma do toque",
   },
   OTPField: {
-    estado: "traduz",
-    nota: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só",
+    state: "traduz",
+    note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só",
   },
-  PageHeader: { estado: "traduz", nota: "`title`, `description`, `badge` e `actions` como props" },
-  Progress: { estado: "traduz", nota: "`value` de 0 a 100 e `label`; sem `format`" },
+  PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
+  Progress: { state: "traduz", note: "`value` de 0 a 100 e `label`; sem `format`" },
   RadioGroup: {
-    estado: "traduz",
-    nota: "`items` na raiz; não existe `Radio` solto para compor",
+    state: "traduz",
+    note: "`items` na raiz; não existe `Radio` solto para compor",
   },
   RivoProvider: {
-    estado: "traduz",
-    nota: "mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe",
+    state: "traduz",
+    note: "mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe",
   },
-  SearchInput: { estado: "traduz", nota: "`value` e `onValueChange` obrigatórios" },
+  SearchInput: { state: "traduz", note: "`value` e `onValueChange` obrigatórios" },
   Select: {
-    estado: "traduz",
-    nota: "poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo",
-    pagina:
+    state: "traduz",
+    note: "poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo",
+    page:
       "Traduz, e a forma de escrever é outra. No web o `Select` pede `items` na raiz **e** " +
       "as quatro partes (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); no " +
       "nativo ele é uma tag só — `<Select items={…} value={…} onValueChange={…} " +
@@ -213,20 +213,20 @@ const PARIDADE: Record<string, Linha> = {
       "plataforma para escolher. O `label` é obrigatório: é por ele que o leitor de tela " +
       "anuncia o gatilho, papel que no web era do `SelectTrigger`.",
   },
-  Separator: { estado: "traduz", nota: "só a linha horizontal" },
+  Separator: { state: "traduz", note: "só a linha horizontal" },
   Sheet: {
-    estado: "traduz",
-    nota: "só o comportamento de baixo, que já era o modo estreito do web",
+    state: "traduz",
+    note: "só o comportamento de baixo, que já era o modo estreito do web",
   },
-  Skeleton: { estado: "traduz", nota: "mesma marca de lugar, mesmo token" },
+  Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token" },
   Slider: {
-    estado: "traduz",
-    nota: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
+    state: "traduz",
+    note: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
   },
   Sparkline: {
-    estado: "traduz",
-    nota: "`line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`)",
-    pagina:
+    state: "traduz",
+    note: "`line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`)",
+    page:
       "Traduz: o `@rivocode/ui-native` exporta `Sparkline`, e ela é o que o slot `chart` do " +
       "`Stat` nativo esperava. Ela é desenhada com `View`, sem SVG, e isso decide o que " +
       "atravessa: `variant=\"line\"` e `variant=\"bar\"` significam a mesma coisa nos dois " +
@@ -237,38 +237,38 @@ const PARIDADE: Record<string, Linha> = {
       'sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que ' +
       "calar.",
   },
-  Spinner: { estado: "traduz", nota: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
+  Spinner: { state: "traduz", note: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
   Stat: {
-    estado: "traduz",
-    nota: "`value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche",
+    state: "traduz",
+    note: "`value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche",
   },
   Switch: {
-    estado: "traduz",
-    nota: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token",
+    state: "traduz",
+    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token",
   },
   Tabs: {
-    estado: "traduz",
-    nota: "só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo",
-    pagina:
+    state: "traduz",
+    note: "só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo",
+    page:
       "Traduz pela metade, de propósito. O `Tabs` nativo é **só** a caixinha " +
       '(`variant="segmented"` no web): `items`, `value`, `onValueChange`, sem `TabList`, ' +
       "`Tab` nem `TabPanel`. Aba que troca a seção da página não é peça no celular — é tab " +
       "bar do router —, e insistir numa aba desenhada por cima disso dá duas navegações " +
       "concorrentes na mesma tela.",
   },
-  Textarea: { estado: "traduz", nota: "`rows` é a altura inicial; o campo cresce com o conteúdo" },
-  Toggle: { estado: "traduz", nota: "`pressed` e `onPressedChange`" },
+  Textarea: { state: "traduz", note: "`rows` é a altura inicial; o campo cresce com o conteúdo" },
+  Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
   ToggleGroup: {
-    estado: "traduz",
-    nota: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
+    state: "traduz",
+    note: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
   },
 
   // ------------------------------------------------ traduzem com outro nome
   Autocomplete: {
-    estado: "vira",
-    nativo: "Combobox",
-    nota: "e **não** aceita valor fora da lista: a folha escolhe, não digita",
-    pagina:
+    state: "vira",
+    native: "Combobox",
+    note: "e **não** aceita valor fora da lista: a folha escolhe, não digita",
+    page:
       "No React Native quem cobre este caso é o `Combobox` — com uma perda que precisa " +
       "entrar na sua decisão: ele **não aceita valor fora da lista**. O que o " +
       "`Autocomplete` tem de próprio, que é deixar a pessoa escrever o que não está " +
@@ -276,13 +276,13 @@ const PARIDADE: Record<string, Linha> = {
       "`Input` seu com sugestões, e não esta peça.",
   },
   DataTable: {
-    estado: "vira",
-    nativo: "DataList",
-    nota: "`filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho",
-    pagina:
+    state: "vira",
+    native: "DataList",
+    note: "`filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho",
+    page:
       "Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de " +
       "estados — carregando, erro, vazio, dados — na mesma ordem, com o erro vencendo o " +
-      "carregando e o vazio valendo só depois que a resposta chegou. Dos quatro opt-in " +
+      "carregando e o vazio valendo só after que a resposta chegou. Dos quatro opt-in " +
       "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não " +
       "portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem " +
       "cabeçalho, e no celular ordenar é um `Menu` de \"ordenar por\" que a tela monta em " +
@@ -290,39 +290,39 @@ const PARIDADE: Record<string, Linha> = {
       "`filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.",
   },
   ToastViewport: {
-    estado: "vira",
-    nativo: "useToast",
-    nota: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo",
+    state: "vira",
+    native: "useToast",
+    note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo",
   },
 
   // ------------------------------------------------------------------ na fila
   ChartContainer: {
-    estado: "fila",
-    nota: "a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje",
+    state: "fila",
+    note: "a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje",
   },
-  ChartDonut: { estado: "fila", nota: "depende de um gráfico nativo que ainda não existe" },
-  ChartRadial: { estado: "fila", nota: "depende de um gráfico nativo que ainda não existe" },
-  Clipboard: { estado: "fila", nota: "precisa do `expo-clipboard`, e dependência é escolha do app" },
+  ChartDonut: { state: "fila", note: "depende de um gráfico nativo que ainda não existe" },
+  ChartRadial: { state: "fila", note: "depende de um gráfico nativo que ainda não existe" },
+  Clipboard: { state: "fila", note: "precisa do `expo-clipboard`, e dependência é escolha do app" },
   Code: {
-    estado: "fila",
-    nota: "código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido",
+    state: "fila",
+    note: "código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido",
   },
   DateRangePicker: {
-    estado: "fila",
-    nota: "dois `DatePicker` até lá — e a validação de fim-antes-do-começo passa a ser sua",
+    state: "fila",
+    note: "dois `DatePicker` até lá — e a validação de fim-antes-do-começo passa a ser sua",
   },
   Editable: {
-    estado: "fila",
-    nota: "o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado",
+    state: "fila",
+    note: "o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado",
   },
   FileUpload: {
-    estado: "fila",
-    nota: "precisa do `expo-document-picker`; entra quando houver app dono da dependência",
+    state: "fila",
+    note: "precisa do `expo-document-picker`; entra quando houver app dono da dependência",
   },
   Form: {
-    estado: "fila",
-    nota: "o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle",
-    pagina:
+    state: "fila",
+    note: "o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle",
+    page:
       "Ainda não portado — e falta menos do que parece. O `react-hook-form` roda no React " +
       "Native sem adaptação, e o `useZodForm` é o mesmo Zod. O que não atravessou foi o " +
       "`FormField` daqui, que liga o `Field` ao controle e põe rótulo, descrição e erro no " +
@@ -331,141 +331,141 @@ const PARIDADE: Record<string, Linha> = {
       "descrição.",
   },
   Indicator: {
-    estado: "fila",
-    nota: "a contagem por cima do ícone ainda é `View` posicionada na mão",
+    state: "fila",
+    note: "a contagem por cima do ícone ainda é `View` posicionada na mão",
   },
   InputGroup: {
-    estado: "fila",
-    nota: "sem moldura: prefixo e sufixo ainda são composição sua em volta do `Input`",
+    state: "fila",
+    note: "sem moldura: prefixo e sufixo ainda são composição sua em volta do `Input`",
   },
   Item: {
-    estado: "fila",
-    nota: "a linha de lista é o `renderItem` do `DataList`, escrito à mão",
+    state: "fila",
+    note: "a linha de lista é o `renderItem` do `DataList`, escrito à mão",
   },
   Meter: {
-    estado: "fila",
-    nota: "use `Progress` até lá — sabendo que o leitor vai anunciar carregamento para uma medida que não carrega",
-    pagina:
-      "Ainda não portado. Até lá, `Progress` — sabendo o que se paga por isso: o `Progress` " +
-      'nativo anuncia `progressbar`, e o leitor de tela lê "carregando" para uma medida que ' +
-      "não carrega. Espaço em disco a 80% vira uma tarefa que nunca termina. Se a medida é " +
-      "o assunto da tela, escreva o número em texto ao lado da barra: o texto é verdadeiro " +
-      "nos dois mundos.",
+    state: "traduz",
+    note: "sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`",
+    page:
+      "Portado. A diferença é o texto do valor: no web ele sai de `format`, e no nativo vai " +
+      "pronto em `valueLabel` — trazer a tabela de formatadores custaria o `Intl` num bundle " +
+      "de celular. O papel de acessibilidade também muda, e por uma razão: o React Native " +
+      "não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca " +
+      "como `progressbar` — que é justamente o erro que ela existe para evitar.",
   },
   PasswordInput: {
-    estado: "fila",
-    nota: "o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus",
+    state: "fila",
+    note: "o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus",
   },
   RelativeTime: {
-    estado: "fila",
-    nota: "o texto é seu, e não há relógio que se atualize sozinho",
+    state: "fila",
+    note: "o texto é seu, e não há relógio que se atualize sozinho",
   },
-  Steps: { estado: "fila", nota: "a régua de passos e o `useWizard()` não atravessaram" },
-  TagsInput: { estado: "fila", nota: "a ficha que se escreve ainda não tem peça nativa" },
-  Timeline: { estado: "fila", nota: "o que aconteceu, em ordem, ainda é composição sua" },
-  Tracker: { estado: "fila", nota: "a faixa de quadradinhos por período ainda não porta" },
+  Steps: { state: "fila", note: "a régua de passos e o `useWizard()` não atravessaram" },
+  TagsInput: { state: "fila", note: "a ficha que se escreve ainda não tem peça nativa" },
+  Timeline: { state: "fila", note: "o que aconteceu, em ordem, ainda é composição sua" },
+  Tracker: { state: "fila", note: "a faixa de quadradinhos por período ainda não porta" },
   Tree: {
-    estado: "fila",
-    nota: "hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe",
+    state: "fila",
+    note: "hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe",
   },
   TreeSelect: {
-    estado: "fila",
-    nota: "escolher dentro de árvore vira folha com níveis; até lá, dois `Select` encadeados",
+    state: "fila",
+    note: "escolher dentro de árvore vira folha com níveis; até lá, dois `Select` encadeados",
   },
 
   // --------------------------------------------------------------- não portam
   Breadcrumb: {
-    estado: "nao",
-    nota: "o caminho de volta é o botão de voltar do router",
-    pagina:
+    state: "nao",
+    note: "o caminho de volta é o botão de voltar do router",
+    page:
       "Não porta. O caminho até onde a pessoa está é, no celular, o botão de voltar do " +
       "router mais o título da tela — desenhar uma trilha por cima disso duplica a " +
       "navegação e come a largura que o título precisa.",
   },
   ButtonGroup: {
-    estado: "nao",
-    nota: "`Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo",
+    state: "nao",
+    note: "`Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo",
   },
   Command: {
-    estado: "nao",
-    nota: "paleta de comandos é gesto de mesa: um campo, uma lista e o teclado",
-    pagina:
+    state: "nao",
+    note: "paleta de comandos é gesto de mesa: um campo, uma lista e o teclado",
+    page:
       "Não porta. A paleta de comandos é um gesto de mesa — abre por atalho, anda por seta, " +
       "confirma por Enter — e nenhuma das três coisas existe no toque. No celular a porta " +
       "equivalente é a tela de busca do router, com o campo no topo e o resultado levando " +
       "direto para a tela.",
   },
   ContextMenu: {
-    estado: "nao",
-    nota: "não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita",
-    pagina:
+    state: "nao",
+    note: "não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita",
+    page:
       "Não porta como peça, e não é por falta de caso de uso: o menu do botão direito é, no " +
       "celular, o toque longo. O que falta é um `longPress` no `Menu` nativo, que hoje só " +
       "abre por `open`/`onOpenChange` — até lá, chame `onOpenChange(true)` no `onLongPress` " +
       "do seu próprio `Pressable`. Peça nova aqui seria um segundo `Menu` com outro nome.",
   },
   Kbd: {
-    estado: "nao",
-    nota: "não há teclado para desenhar",
-    pagina:
+    state: "nao",
+    note: "não há teclado para desenhar",
+    page:
       "Não porta. A peça desenha uma tecla, e o celular não tem teclado físico para a tecla " +
       "representar — `⌘K` numa tela de toque promete um gesto que não existe. O que no web " +
       "é atalho, no celular é um botão visível.",
   },
   Menubar: {
-    estado: "nao",
-    nota: "idioma de mesa; navegação nativa é tab bar e drawer do router",
+    state: "nao",
+    note: "idioma de mesa; navegação nativa é tab bar e drawer do router",
   },
   NavigationMenu: {
-    estado: "nao",
-    nota: "idioma de mesa; navegação nativa é tab bar e drawer do router",
+    state: "nao",
+    note: "idioma de mesa; navegação nativa é tab bar e drawer do router",
   },
   Pagination: {
-    estado: "nao",
-    nota: "lista de celular rola; escolher o número da página é gesto de mesa",
+    state: "nao",
+    note: "lista de celular rola; escolher o número da página é gesto de mesa",
   },
   Popover: {
-    estado: "nao",
-    nota: "painel ancorado que o próprio dedo cobre — use `Sheet`",
-    pagina:
-      "Não porta. O painel ancorado ao gatilho é um problema de tela estreita antes de ser " +
-      "um problema de toque: ele nasce debaixo do dedo que o abriu e não tem para onde " +
+    state: "nao",
+    note: "painel ancorado que o próprio dedo cobre — use `Sheet`",
+    page:
+      "Não porta. O painel ancorado ao gatilho é um problem de tela estreita antes de ser " +
+      "um problem de toque: ele nasce debaixo do dedo que o abriu e não tem para onde " +
       "fugir. No React Native o equivalente é o `Sheet`, que sobe de baixo e não disputa " +
       "espaço com nada.",
   },
   PreviewCard: {
-    estado: "nao",
-    nota: "aparece ao pousar o ponteiro, e não há pousar no toque",
+    state: "nao",
+    note: "aparece ao pousar o ponteiro, e não há pousar no toque",
   },
   ScrollArea: {
-    estado: "nao",
-    nota: "rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha",
+    state: "nao",
+    note: "rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha",
   },
   Sidebar: {
-    estado: "nao",
-    nota: "idioma de mesa; navegação nativa é tab bar e drawer do router",
-    pagina:
+    state: "nao",
+    note: "idioma de mesa; navegação nativa é tab bar e drawer do router",
+    page:
       "Não porta. A barra lateral é o esqueleto de navegação de uma tela larga; no celular " +
       "quem faz esse papel é a tab bar e o drawer do router (Expo Router, React " +
       "Navigation), que trazem gesto de borda, histórico e estado de aba de graça. Uma " +
       "gaveta desenhada à mão por cima disso perde os três.",
   },
   Splitter: {
-    estado: "nao",
-    nota: "duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router",
+    state: "nao",
+    note: "duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router",
   },
   Table: {
-    estado: "nao",
-    nota: "não há tabela no celular; a consulta vira `DataList`",
+    state: "nao",
+    note: "não há tabela no celular; a consulta vira `DataList`",
   },
   Toolbar: {
-    estado: "nao",
-    nota: "superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem",
+    state: "nao",
+    note: "superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem",
   },
   Tooltip: {
-    estado: "nao",
-    nota: "hover não existe no toque; o rótulo precisa estar na tela",
-    pagina:
+    state: "nao",
+    note: "hover não existe no toque; o rótulo precisa estar na tela",
+    page:
       "Não porta, e não há substituto: a dica aparece ao pousar o ponteiro, e no toque não " +
       "existe pousar. O que no web era um ícone com dica vira, no celular, um ícone com " +
       "rótulo escrito ao lado — ou um `accessibilityLabel`, que resolve para o leitor de " +
@@ -478,19 +478,19 @@ const PARIDADE: Record<string, Linha> = {
  * ----------------------------------------------------------------------- */
 
 /** As pecas com pagina propria no site, pela mesma regra de prefixo dele. */
-async function pecasDoCatalogo() {
-  const paginas: string[] = [];
-  for await (const arquivo of new Glob("*.md").scan(DOCS)) {
-    paginas.push(arquivo.replace(/\.md$/, ""));
+async function catalogPieces() {
+  const pages: string[] = [];
+  for await (const file of new Glob("*.md").scan(DOCS)) {
+    pages.push(file.replace(/\.md$/, ""));
   }
-  paginas.sort();
+  pages.sort();
 
   const parte = (nome: string) => {
-    if (AUTONOMAS.has(nome) || PARTE_QUE_E_PECA.has(nome)) return false;
+    if (AUTONOMAS.has(nome) || PARTS_THAT_ARE_PIECES.has(nome)) return false;
     const nomeado = PAI[nome];
-    if (nomeado) return paginas.includes(nomeado);
+    if (nomeado) return pages.includes(nomeado);
 
-    for (const outro of paginas) {
+    for (const outro of pages) {
       if (outro === nome || !nome.startsWith(outro)) continue;
       if (!/^[A-Z]/.test(nome.slice(outro.length))) continue;
       return true;
@@ -498,7 +498,7 @@ async function pecasDoCatalogo() {
     return false;
   };
 
-  return paginas.filter((nome) => !parte(nome));
+  return pages.filter((nome) => !parte(nome));
 }
 
 /**
@@ -513,54 +513,54 @@ function exportadosNoNativo() {
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/\/\/[^\n]*/g, "");
 
-  const nomes = new Set<string>();
-  for (const bloco of fonte.matchAll(/export \{([\s\S]*?)\} from/g)) {
-    for (const cru of bloco[1]!.split(",")) {
+  const names = new Set<string>();
+  for (const block of fonte.matchAll(/export \{([\s\S]*?)\} from/g)) {
+    for (const cru of block[1]!.split(",")) {
       const parte = cru.trim();
       if (!parte || parte.startsWith("type ")) continue;
-      nomes.add(parte.split(/\s+as\s+/).pop()!.trim());
+      names.add(parte.split(/\s+as\s+/).pop()!.trim());
     }
   }
-  return nomes;
+  return names;
 }
 
 /* --------------------------------------------------------------------------
  * O texto
  * ----------------------------------------------------------------------- */
 
-const SIMBOLO: Record<Estado, string> = {
+const SYMBOL: Record<State, string> = {
   traduz: "✔ traduz",
   vira: "✔ vira",
   fila: "○ na fila",
   nao: "✕ não porta",
 };
 
-const nomeNativo = (peca: string, linha: Linha) => linha.nativo ?? peca;
+const nativeName = (piece: string, row: Row) => row.native ?? piece;
 
-function celulaDeEstado(peca: string, linha: Linha) {
-  if (linha.estado === "vira") return `✔ vira \`${nomeNativo(peca, linha)}\``;
-  return SIMBOLO[linha.estado];
+function stateCell(piece: string, row: Row) {
+  if (row.state === "vira") return `✔ vira \`${nativeName(piece, row)}\``;
+  return SYMBOL[row.state];
 }
 
-function tabela(pecas: string[]) {
-  const linhas = [
+function table(pieces: string[]) {
+  const rows = [
     "| Peça | No React Native | O que saber antes de contar com ela |",
     "| --- | --- | --- |",
   ];
 
-  for (const peca of pecas) {
-    const linha = PARIDADE[peca]!;
-    linhas.push(`| \`${peca}\` | ${celulaDeEstado(peca, linha)} | ${linha.nota} |`);
+  for (const piece of pieces) {
+    const row = PARITY[piece]!;
+    rows.push(`| \`${piece}\` | ${stateCell(piece, row)} | ${row.note} |`);
   }
 
-  return linhas.join("\n");
+  return rows.join("\n");
 }
 
-function placar(pecas: string[], nativo: Set<string>) {
-  const conta = (estado: Estado) => pecas.filter((p) => PARIDADE[p]!.estado === estado).length;
+function scoreboard(pieces: string[], native: Set<string>) {
+  const conta = (state: State) => pieces.filter((p) => PARITY[p]!.state === state).length;
 
   return (
-    `**${pecas.length} peças no catálogo do web, medidas contra ` +
+    `**${pieces.length} peças no catálogo do web, medidas contra ` +
     `\`native/src/index.ts\` em ${new Date().toISOString().slice(0, 10)}:** ` +
     `${conta("traduz")} traduzem com o mesmo nome, ${conta("vira")} traduzem com outro, ` +
     `${conta("fila")} estão na fila e ${conta("nao")} não portam por decisão. ` +
@@ -571,42 +571,42 @@ function placar(pecas: string[], nativo: Set<string>) {
 }
 
 /** O paragrafo que entra na pagina da peca, quando nao ha um escrito a mao. */
-function paragrafoDaPagina(peca: string, linha: Linha) {
-  if (linha.pagina) return linha.pagina;
+function pageParagraph(piece: string, row: Row) {
+  if (row.page) return row.page;
 
-  const nativo = nomeNativo(peca, linha);
+  const native = nativeName(piece, row);
 
-  if (linha.estado === "traduz") {
+  if (row.state === "traduz") {
     return (
-      `Traduz: o \`@rivocode/ui-native\` exporta \`${nativo}\` — ${linha.nota}. ` +
+      `Traduz: o \`@rivocode/ui-native\` exporta \`${native}\` — ${row.note}. ` +
       "A API não é a mesma do web (no nativo tudo é controlado), e a " +
       "[tabela de paridade](/react-native) diz o que muda peça a peça."
     );
   }
 
-  if (linha.estado === "vira") {
+  if (row.state === "vira") {
     return (
-      `No React Native esta peça é \`${nativo}\` — ${linha.nota}. ` +
+      `No React Native esta peça é \`${native}\` — ${row.note}. ` +
       "A [tabela de paridade](/react-native) tem o resto do catálogo."
     );
   }
 
-  if (linha.estado === "fila") {
+  if (row.state === "fila") {
     return (
-      `Ainda não portado — ${linha.nota}. ` +
+      `Ainda não portado — ${row.note}. ` +
       "É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa " +
       "as duas."
     );
   }
 
   return (
-    `Não porta, por decisão — ${linha.nota}. ` +
+    `Não porta, por decisão — ${row.note}. ` +
     "Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de " +
     "cada uma."
   );
 }
 
-const TITULO_DA_SECAO = "## No React Native";
+const SECTION_TITLE = "## No React Native";
 
 /**
  * Troca a secao se ela ja existe, acrescenta no fim se nao existe.
@@ -615,12 +615,12 @@ const TITULO_DA_SECAO = "## No React Native";
  * `R$` e o `$` seguinte era lido como referencia de captura pelo `replace` -
  * o arquivo inteiro apareceu no meio da tabela, sem erro nenhum.
  */
-function comSecaoDeNativo(markdown: string, paragrafo: string) {
-  const secao = `${TITULO_DA_SECAO}\n\n${paragrafo}\n`;
-  const existente = /\n## No React Native\n[\s\S]*?(?=\n## |$)/;
+function withNativeSection(markdown: string, paragraph: string) {
+  const section = `${SECTION_TITLE}\n\n${paragraph}\n`;
+  const existing = /\n## No React Native\n[\s\S]*?(?=\n## |$)/;
 
-  if (existente.test(markdown)) return markdown.replace(existente, () => `\n${secao}`);
-  return `${markdown.replace(/\s*$/, "")}\n\n${secao}`;
+  if (existing.test(markdown)) return markdown.replace(existing, () => `\n${section}`);
+  return `${markdown.replace(/\s*$/, "")}\n\n${section}`;
 }
 
 /**
@@ -629,22 +629,22 @@ function comSecaoDeNativo(markdown: string, paragrafo: string) {
  * O guia continua sendo escrito a mao; o que este arquivo possui e o miolo
  * desta secao, e so ele.
  */
-function comSecaoTrocada(markdown: string, titulo: string, corpo: string) {
-  const alvo = new RegExp(`(^|\\n)${titulo}\\n[\\s\\S]*?(?=\\n## |$)`);
-  if (!alvo.test(markdown)) {
+function withReplacedSection(markdown: string, title: string, body: string) {
+  const target = new RegExp(`(^|\\n)${title}\\n[\\s\\S]*?(?=\\n## |$)`);
+  if (!target.test(markdown)) {
     throw new Error(
-      `Nao achei a secao "${titulo}". Ela e o lugar onde a tabela e publicada:\n` +
+      `Nao achei a secao "${title}". Ela e o lugar onde a tabela e publicada:\n` +
         "escreva o titulo no arquivo, ou corrija o titulo aqui.",
     );
   }
-  return markdown.replace(alvo, (_, antes: string) => `${antes}${titulo}\n\n${corpo}\n`);
+  return markdown.replace(target, (_, before: string) => `${before}${title}\n\n${body}\n`);
 }
 
-const GUIAS = [
-  { arquivo: "apps/docs/src/content/react-native.md", titulo: "## A paridade, peça por peça" },
+const GUIDES = [
+  { file: "apps/docs/src/content/react-native.md", title: "## A paridade, peça por peça" },
   {
-    arquivo: ".claude/skills/rivocode-ui/reference/native.md",
-    titulo: "## A paridade, peça por peça",
+    file: ".claude/skills/rivocode-ui/reference/native.md",
+    title: "## A paridade, peça por peça",
   },
 ];
 
@@ -652,87 +652,87 @@ const GUIAS = [
  * Rodar
  * ----------------------------------------------------------------------- */
 
-const conferir = process.argv.includes("--check");
-const pecas = await pecasDoCatalogo();
-const nativo = exportadosNoNativo();
-const problemas: string[] = [];
+const checking = process.argv.includes("--check");
+const pieces = await catalogPieces();
+const native = exportadosNoNativo();
+const problems: string[] = [];
 
-for (const peca of pecas) {
-  if (!PARIDADE[peca]) {
-    problemas.push(
-      `\`${peca}\` tem pagina no catalogo e nao tem linha na tabela de paridade.\n` +
+for (const piece of pieces) {
+  if (!PARITY[piece]) {
+    problems.push(
+      `\`${piece}\` tem pagina no catalogo e nao tem linha na tabela de paridade.\n` +
         "    Peca sem linha se le como esquecimento do leitor: escreva o estado dela em\n" +
         "    scripts/paridade-nativo.ts.",
     );
   }
 }
 
-for (const peca of Object.keys(PARIDADE)) {
-  if (!pecas.includes(peca)) {
-    problemas.push(
-      `\`${peca}\` tem linha na tabela de paridade e nao tem pagina no catalogo.\n` +
+for (const piece of Object.keys(PARITY)) {
+  if (!pieces.includes(piece)) {
+    problems.push(
+      `\`${piece}\` tem linha na tabela de paridade e nao tem pagina no catalogo.\n` +
         "    A tabela esta prometendo peca que nao existe.",
     );
     continue;
   }
 
-  const linha = PARIDADE[peca]!;
-  const nome = nomeNativo(peca, linha);
-  const existe = nativo.has(nome);
+  const row = PARITY[piece]!;
+  const nome = nativeName(piece, row);
+  const existe = native.has(nome);
 
-  if ((linha.estado === "traduz" || linha.estado === "vira") && !existe) {
-    problemas.push(
-      `\`${peca}\` esta como "${celulaDeEstado(peca, linha)}" e \`${nome}\` nao sai de\n` +
+  if ((row.state === "traduz" || row.state === "vira") && !existe) {
+    problems.push(
+      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${name}\` nao sai de\n` +
         `    ${NATIVE_INDEX}. A tabela promete um import que quebra.`,
     );
   }
 
-  if ((linha.estado === "fila" || linha.estado === "nao") && existe) {
-    problemas.push(
-      `\`${peca}\` esta como "${celulaDeEstado(peca, linha)}" e \`${nome}\` JA sai de\n` +
+  if ((row.state === "fila" || row.state === "nao") && existe) {
+    problems.push(
+      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${name}\` JA sai de\n` +
         `    ${NATIVE_INDEX}. A peca portou: promova a linha, senao a doc segue\n` +
         "    mandando usar o substituto.",
     );
   }
 }
 
-if (problemas.length > 0) {
-  console.error(`${problemas.length} divergencia(s) entre a tabela de paridade e o codigo:\n`);
-  for (const problema of problemas) console.error(`  ${problema}\n`);
+if (problems.length > 0) {
+  console.error(`${problems.length} divergencia(s) entre a tabela de paridade e o codigo:\n`);
+  for (const problem of problems) console.error(`  ${problem}\n`);
   process.exit(1);
 }
 
-const corpoDaSecao = `${placar(pecas, nativo)}\n\n${tabela(pecas)}`;
-const desatualizados: string[] = [];
+const sectionBody = `${scoreboard(pieces, native)}\n\n${table(pieces)}`;
+const outdated: string[] = [];
 
-for (const guia of GUIAS) {
-  const antes = readFileSync(guia.arquivo, "utf8");
-  const depois = comSecaoTrocada(antes, guia.titulo, corpoDaSecao);
-  if (antes === depois) continue;
-  if (!conferir) writeFileSync(guia.arquivo, depois);
-  desatualizados.push(guia.arquivo);
+for (const guide of GUIDES) {
+  const before = readFileSync(guide.file, "utf8");
+  const after = withReplacedSection(before, guide.title, sectionBody);
+  if (before === after) continue;
+  if (!checking) writeFileSync(guide.file, after);
+  outdated.push(guide.file);
 }
 
-for (const peca of pecas) {
-  const caminho = `${DOCS}/${peca}.md`;
-  const antes = readFileSync(caminho, "utf8");
-  const depois = comSecaoDeNativo(antes, paragrafoDaPagina(peca, PARIDADE[peca]!));
-  if (antes === depois) continue;
-  if (!conferir) writeFileSync(caminho, depois);
-  desatualizados.push(caminho);
+for (const piece of pieces) {
+  const path = `${DOCS}/${piece}.md`;
+  const before = readFileSync(path, "utf8");
+  const after = withNativeSection(before, pageParagraph(piece, PARITY[piece]!));
+  if (before === after) continue;
+  if (!checking) writeFileSync(path, after);
+  outdated.push(path);
 }
 
-if (conferir) {
-  if (desatualizados.length > 0) {
-    console.error(`${desatualizados.length} arquivo(s) fora da tabela de paridade:\n`);
-    for (const arquivo of desatualizados) console.error(`  ${arquivo}`);
+if (checking) {
+  if (outdated.length > 0) {
+    console.error(`${outdated.length} arquivo(s) fora da tabela de paridade:\n`);
+    for (const file of outdated) console.error(`  ${file}`);
     console.error("\nRode `bun run scripts/paridade-nativo.ts` e comite o resultado.");
     process.exit(1);
   }
-  console.log(`${pecas.length} pecas conferidas: a tabela e as paginas dizem a mesma coisa.`);
+  console.log(`${pieces.length} pecas conferidas: a tabela e as paginas dizem a mesma coisa.`);
 } else {
   console.log(
-    `${pecas.length} pecas na tabela; ${desatualizados.length} arquivo(s) reescrito(s).\n` +
-      `Indice nativo medido agora: ${nativo.size} exportacoes.`,
+    `${pieces.length} pecas na tabela; ${outdated.length} arquivo(s) reescrito(s).\n` +
+      `Indice nativo medido agora: ${native.size} exportacoes.`,
   );
 }

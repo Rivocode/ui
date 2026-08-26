@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -16,12 +15,12 @@ export function Separator({ className }: { className?: string }) {
 }
 
 export function Spinner({ size = "small" }: { size?: "small" | "large" }) {
-  const { theme } = useRivo();
+  const { colors } = useRivo();
   return (
     <ActivityIndicator
       accessibilityLabel="Carregando"
       size={size}
-      color={tokens.themes[theme]["fg-subtle"]}
+      color={colors["fg-subtle"]}
     />
   );
 }

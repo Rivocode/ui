@@ -175,3 +175,21 @@ test("a densidade continua sendo da densidade, e nao do tema", async () => {
   expect(scales).toContain("--rc-control-md:");
   expect(scales).toContain("--rc-pad-panel:");
 });
+
+test("nenhuma peca nativa le o tema direto, sem passar pelo contexto", async () => {
+  // Peca que pinta por fora da classe - o trilho do Switch, o giro do Button -
+  // precisa ler `colors` do contexto. Lendo `tokens.themes[...]` ela pega
+  // sempre o tema de casa, e a tela do cliente sai com metade das cores dele e
+  // metade da lima da RivoCode. O provider e a unica excecao: e ele quem
+  // resolve qual tema vale.
+  const { Glob } = await import("bun");
+  const offenders: string[] = [];
+
+  for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
+    if (file.endsWith("provider.tsx")) continue;
+    const code = await Bun.file(file).text();
+    if (/tokens\.themes\[/.test(code)) offenders.push(file);
+  }
+
+  expect(offenders).toEqual([]);
+});

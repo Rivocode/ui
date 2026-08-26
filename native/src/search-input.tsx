@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Pressable, TextInput, View, type TextInputProps } from "react-native";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -26,7 +25,7 @@ export function SearchInput({
   ...props
 }: SearchInputProps) {
   const [focused, setFocused] = useState(false);
-  const { theme } = useRivo();
+  const { colors } = useRivo();
 
   return (
     <View
@@ -55,7 +54,7 @@ export function SearchInput({
           setFocused(false);
           onBlur?.(event);
         }}
-        placeholderTextColor={tokens.themes[theme]["fg-subtle"]}
+        placeholderTextColor={colors["fg-subtle"]}
         className="h-full flex-1 text-base text-fg"
       />
 

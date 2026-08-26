@@ -25,4 +25,4 @@ não carrega, e quem ouve fica esperando o fim de uma operação que não existe
 
 ## No React Native
 
-Ainda não portado. Até lá, `Progress` — sabendo o que se paga por isso: o `Progress` nativo anuncia `progressbar`, e o leitor de tela lê "carregando" para uma medida que não carrega. Espaço em disco a 80% vira uma tarefa que nunca termina. Se a medida é o assunto da tela, escreva o número em texto ao lado da barra: o texto é verdadeiro nos dois mundos.
+Portado. A diferença é o texto do valor: no web ele sai de `format`, e no nativo vai pronto em `valueLabel` — trazer a tabela de formatadores custaria o `Intl` num bundle de celular. O papel de acessibilidade também muda, e por uma razão: o React Native não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca como `progressbar` — que é justamente o erro que ela existe para evitar.

@@ -2,6 +2,7 @@
 import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { mock } from "bun:test";
 import * as reactNativeMock from "./react-native-mock";
+import * as nativewindMock from "./nativewind-mock";
 
 GlobalRegistrator.register();
 
@@ -9,6 +10,11 @@ GlobalRegistrator.register();
 // testes delas (native/test) recebem este dublê; os testes web nunca importam
 // react-native, entao o mock nao os toca.
 mock.module("react-native", () => reactNativeMock);
+
+// O nativewind so existe no app de exemplo, e o provider importa dele o
+// VariableContextProvider que veste o tema de cliente. O duble guarda as
+// variaveis onde o teste consegue le-las.
+mock.module("nativewind", () => nativewindMock);
 
 // Desmonta o que cada teste montou. Sem isto, um Provider deixa atributo e
 // container de portal para tras, e o teste seguinte mede sujeira do anterior.

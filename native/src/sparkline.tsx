@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
 
-import { tokens, type RivoNativeColorRole } from "../tokens";
+import { type RivoNativeColorRole } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -66,9 +66,8 @@ export function Sparkline({
   className,
   label,
 }: SparklineProps) {
-  const { theme } = useRivo();
-  const colors = tokens.themes[theme];
-
+  const { colors } = useRivo();
+  
   /*
    * A diferenca que importa entre o web e o nativo: la o ResponsiveContainer
    * le a largura do DOM antes de pintar, e aqui NAO existe largura ate o

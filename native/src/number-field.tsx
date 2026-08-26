@@ -1,6 +1,5 @@
 import { Pressable, Text, TextInput, View } from "react-native";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -33,7 +32,7 @@ export function NumberField({
   disabled,
   className,
 }: NumberFieldProps) {
-  const { theme } = useRivo();
+  const { colors } = useRivo();
   const nudge = (delta: number) => onValueChange(clamp(value + delta, min, max));
 
   const stepper = (delta: number, sign: string, stepLabel: string, blocked: boolean) => (
@@ -67,7 +66,7 @@ export function NumberField({
           if (digits !== "") onValueChange(clamp(Number(digits), min, max));
         }}
         editable={!disabled}
-        placeholderTextColor={tokens.themes[theme]["fg-subtle"]}
+        placeholderTextColor={colors["fg-subtle"]}
         // textAlign como PROP, nunca centralizar por classe: o runtime nativo
         // mapeia esse estilo de TextInput para a prop com um caminho que nao
         // e string, e quebra ao aplicar. Bordas explicitas em vez do atalho

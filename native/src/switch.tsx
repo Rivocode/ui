@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Pressable, Switch as NativeSwitch, Text } from "react-native";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -19,9 +18,8 @@ export type SwitchProps = {
  * agora, sem confirmar - a mesma regra de escolha do web.
  */
 export function Switch({ checked, onCheckedChange, children, disabled, className }: SwitchProps) {
-  const { theme } = useRivo();
-  const colors = tokens.themes[theme];
-
+  const { colors } = useRivo();
+  
   const control = (
     <NativeSwitch
       value={checked}

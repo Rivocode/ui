@@ -29,7 +29,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
 ## A paridade, peça por peça
 
-**82 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 42 traduzem com o mesmo nome, 3 traduzem com outro, 21 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**82 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 43 traduzem com o mesmo nome, 3 traduzem com outro, 20 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -75,7 +75,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `MaskedInput` | ✔ traduz | o valor é só dígitos; a máscara é do campo, o dado não a carrega |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
-| `Meter` | ○ na fila | use `Progress` até lá — sabendo que o leitor vai anunciar carregamento para uma medida que não carrega |
+| `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel` |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NumberField` | ✔ traduz | vira stepper — menos, valor, mais —, que é o idioma do toque |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só |

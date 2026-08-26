@@ -2,6 +2,29 @@
 
 ## 0.5.0 (nao publicado)
 
+### O nativo ganha camada 3: tema de cliente
+
+`@rivocode/ui-native` aceita um tema de cliente, gerado do mesmo CSS que veste
+o web:
+
+```sh
+bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+```
+
+```tsx
+<RivoProvider theme={acmeTheme} scheme="system">
+```
+
+Os dois temas de casa nao mudam: continuam no `light-dark()`, com troca no
+mesmo frame e sem re-render. O tema de cliente entra pelo
+`VariableContextProvider` do NativeWind e custa uma re-renderizacao por troca -
+paga so por quem veste um cliente.
+
+Para quem escreve peca nativa: cor lida por fora da classe agora vem de
+`useRivo().colors`, e nao de `tokens.themes[...]`. Um teste falha se alguem
+voltar a ler direto, porque assim a tela do cliente sairia com metade das cores
+dele e metade da lima da RivoCode.
+
 ### `format` significava tres coisas, e agora significa uma
 
 Nas pecas que escrevem numero, `format` era `Intl.NumberFormatOptions`; no

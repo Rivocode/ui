@@ -265,6 +265,58 @@ O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
 barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
 alcança essas peças.
 
+## O mesmo tema no React Native
+
+O arquivo que você acabou de escrever veste as duas plataformas. **A fonte é
+uma só de propósito**: um segundo lugar para manter a cor de um cliente é como
+a promessa se quebra na prática — não por decisão, por divergência silenciosa
+seis meses depois.
+
+**1. Gere o mapa nativo a partir do mesmo CSS:**
+
+```sh
+bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+```
+
+Ele lê os blocos `[data-rc-theme="acme-light"]` e `[data-rc-theme="acme-dark"]`
+— um seletor sozinho serve aos dois esquemas — e emite um `RivoNativeThemeMap`.
+**Se faltar um papel, ele falha e diz quais**: um tema incompleto herda a cor da
+RivoCode em peças isoladas, e isso só aparece na tela do cliente.
+
+**2. Vista a árvore:**
+
+```tsx
+import { RivoProvider } from '@rivocode/ui-native'
+import { acmeTheme } from './acme.theme'
+
+<RivoProvider theme={acmeTheme} scheme="system">
+```
+
+Com tema de casa, quem decide claro e escuro é o próprio nome do tema; com tema
+de cliente, é a prop `scheme`.
+
+### O que isso custa, e o que não custa
+
+Os dois temas de casa continuam compilados como `light-dark(claro, escuro)`, que
+o runtime de CSS nativo avalia sozinho: trocar entre eles acontece **no mesmo
+frame, sem re-renderização**. Nada disso muda.
+
+O tema de cliente não cabe nesse caminho — os valores dele não existem em build
+— então ele entra pelo `VariableContextProvider`, que redefine as variáveis para
+a árvore abaixo. O custo é **uma re-renderização quando o tema ou o esquema
+mudam**, e só é pago por quem veste um cliente.
+
+Em troca, ele aninha: um provider de tema escuro dentro de uma tela clara veste
+só a sua árvore, que é o mesmo que o `scope="local"` faz no web.
+
+### A regra que as peças seguem
+
+Peça que pinta por fora da classe — o trilho do `Switch`, o giro do `Button`, a
+cor da `Sparkline` — lê os papéis do contexto (`useRivo().colors`), e nunca de
+`tokens.themes`. Lendo o mapa direto ela pegaria sempre o tema de casa, e a tela
+do cliente sairia com metade das cores dele e metade da lima da RivoCode. Há um
+teste que falha se alguém voltar a ler direto.
+
 ## Como pedir isto a um agente
 
 O endereço cru deste guia é
