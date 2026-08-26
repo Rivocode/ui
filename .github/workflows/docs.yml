@@ -43,13 +43,19 @@ jobs:
         with:
           node-version: 22
 
-      # Os tres segredos sao conferidos ANTES do install.
+      # Os tres segredos sao conferidos ANTES do install, e conferidos de
+      # verdade: nao basta existirem.
       #
       # O CLI le o token da variavel de ambiente, que e o caminho recomendado
       # em CI - na linha de comando ele apareceria na lista de processos e no
       # log. E `--token` vazio nao falha como falta de segredo: falha com
       # "voce definiu --token, mas sem valor", que manda procurar no lugar
       # errado. Aqui a mensagem diz o que e.
+      #
+      # A limpeza nao e zelo: um segredo colado com aspas em volta, ou com a
+      # quebra de linha que o navegador leva junto, chega ate aqui como parte
+      # do valor. O `prj_x` vira `"prj_x"`, a Vercel nao acha projeto nenhum e
+      # responde a mesma coisa que responderia a um token sem acesso.
       - name: Conferir os segredos da Vercel
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -73,7 +79,74 @@ jobs:
             echo "configuracao de projeto. Por isso os dois ids vem por segredo."
             exit 1
           fi
+
+          limpar() { printf '%s' "$1" | tr -d "[:space:]\"'"; }
+
+          token=$(limpar "$VERCEL_TOKEN")
+          org=$(limpar "$VERCEL_ORG_ID")
+          projeto=$(limpar "$VERCEL_PROJECT_ID")
+
+          # O valor limpo e novo para o Actions, que so mascara o que veio do
+          # cofre. Sem isto, um segredo com aspas sairia legivel no log.
+          echo "::add-mask::$token"
+
+          {
+            echo "VERCEL_TOKEN=$token"
+            echo "VERCEL_ORG_ID=$org"
+            echo "VERCEL_PROJECT_ID=$projeto"
+          } >> "$GITHUB_ENV"
+
           echo "Os tres segredos estao no lugar."
+          case "$org" in team_*) ;; *) echo "Aviso: VERCEL_ORG_ID nao comeca por team_, entao o projeto seria de conta pessoal." ;; esac
+          case "$projeto" in prj_*) ;; *) echo "Aviso: VERCEL_PROJECT_ID nao comeca por prj_." ;; esac
+
+      # A pergunta que o `vercel pull` nao responde.
+      #
+      # Ele falha com "Could not retrieve Project Settings" para tres causas
+      # diferentes - token recusado, token sem acesso ao time, ids de outro
+      # projeto - e ainda manda apagar um `.vercel/` que no runner nem existe.
+      # Foram varias publicacoes perdidas nessa mensagem. A API responde as
+      # tres separadas, entao e ela quem conta o que houve, antes de gastar o
+      # install e o build.
+      - name: Conferir o acesso do token
+        run: |
+          erro() { echo; echo "$@"; }
+
+          conta=$(curl -sS -o /tmp/conta.json -w '%{http_code}' \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            https://api.vercel.com/v2/user) || conta=000
+
+          if [ "$conta" != "200" ]; then
+            erro "A Vercel recusou o token (HTTP $conta)."
+            echo "Ele expirou ou foi revogado. Gere outro em vercel.com/account/tokens"
+            echo "e regrave VERCEL_TOKEN. No formulario, ESCOPO = o time dono do projeto,"
+            echo "e nao a conta pessoal."
+            exit 1
+          fi
+          echo "Token da conta $(jq -r '.user.username // .user.email // "?"' /tmp/conta.json)."
+
+          alvo=$(curl -sS -o /tmp/projeto.json -w '%{http_code}' \
+            -H "Authorization: Bearer $VERCEL_TOKEN" \
+            "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID?teamId=$VERCEL_ORG_ID") || alvo=000
+
+          if [ "$alvo" = "200" ]; then
+            echo "O token enxerga o projeto $(jq -r '.name' /tmp/projeto.json) dentro de $VERCEL_ORG_ID."
+            exit 0
+          fi
+
+          erro "O token nao chega ao projeto (HTTP $alvo): $(jq -r '.error.code // "?"' /tmp/projeto.json)"
+          echo "Procurado: projeto $VERCEL_PROJECT_ID no time $VERCEL_ORG_ID."
+          echo
+          echo "O que este token alcanca hoje:"
+          curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/teams \
+            | jq -r '.teams[]? | "  time     \(.id)  \(.slug)"'
+          curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v9/projects?limit=20&teamId=$VERCEL_ORG_ID" \
+            | jq -r '.projects[]? | "  projeto  \(.id)  \(.name)"'
+          echo
+          echo "Se a lista de times sair vazia, o token e de conta pessoal: refaca com o"
+          echo "time no escopo. Se o time aparece mas o projeto nao, o VERCEL_PROJECT_ID"
+          echo "e de outro projeto - o valor certo e o projectId do .vercel/project.json."
+          exit 1
 
       - run: bun install --frozen-lockfile
 
@@ -85,17 +158,9 @@ jobs:
       # e a propria documentacao pede que ele venha antes do build.
       - name: Buscar as configuracoes do projeto
         run: npx vercel@latest pull --yes --environment=production
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Construir
         run: npx vercel@latest build --prod
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       # A conferencia que a integracao da Vercel nunca fez: o site existe para
       # ser lido por agente, e o indice e a porta. Se o build sair sem
@@ -119,7 +184,3 @@ jobs:
 
       - name: Publicar
         run: npx vercel@latest deploy --prebuilt --prod
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
