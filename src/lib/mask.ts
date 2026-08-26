@@ -88,6 +88,13 @@ function looksLikePattern(mask: string): boolean {
 export function applyMask(text: string, mask: Mask): string {
   if (mask === "moeda") return applyCurrencyMask(text);
 
+  // O telefone e o outro molde que depende do que ja foi digitado, e a decisao
+  // mora aqui pelo mesmo motivo que a da moeda: fora daqui, ela vira contorno
+  // que cada chamador precisa lembrar de repetir. O `MASKS.telefone` guarda um
+  // molde so - o do celular -, entao `applyMask("8388112233", "telefone")`
+  // devolvia "(83) 88112-233", com o fixo vestindo a pontuacao do celular.
+  if (mask === "telefone") return applyPattern(text, phonePatternFor(text));
+
   const pattern = MASKS[mask as MaskName];
   if (pattern) return applyPattern(text, pattern);
 

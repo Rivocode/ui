@@ -100,3 +100,13 @@ test("o nome antigo continua valendo, para quem ja instalou a 0.5.0", () => {
   // motivo que nao muda comportamento nenhum.
   expect(phoneMask("11987654321")).toBe(phonePatternFor("11987654321"));
 });
+
+test("o fixo nao ganha a pontuacao do celular quando se chama applyMask direto", () => {
+  // O molde do telefone muda no meio da digitacao, e o MASKS guarda um so - o
+  // do celular. O MaskedInput contornava por fora, escolhendo o molde antes de
+  // aplicar; quem chamasse `applyMask` direto recebia o fixo embolado, com a
+  // promessa do proprio MASKS.telefone quebrada ("a nona casa so aparece
+  // quando existe"). O `moeda` ja era decidido aqui dentro pelo mesmo motivo.
+  expect(applyMask("8388112233", "telefone")).toBe("(83) 8811-2233");
+  expect(applyMask("83988112233", "telefone")).toBe("(83) 98811-2233");
+});

@@ -2,7 +2,7 @@
 
 import { useState, type ComponentProps } from "react";
 
-import { applyMask, phonePatternFor, unmask, type Mask } from "../lib/mask";
+import { applyMask, unmask, type Mask } from "../lib/mask";
 import { Input } from "./field";
 
 export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value"> & {
@@ -42,7 +42,7 @@ export function MaskedInput({
 }: MaskedInputProps) {
   const controlled = value !== undefined;
   const [internal, setInternal] = useState(() =>
-    applyMask(defaultValue, patternFor(mask, defaultValue)),
+    applyMask(defaultValue, mask),
   );
   const text = controlled ? value : internal;
 
@@ -55,7 +55,7 @@ export function MaskedInput({
       inputMode={inputMode ?? (digitsOnly ? "numeric" : undefined)}
       onChange={(event) => {
         const raw = event.target.value;
-        const masked = applyMask(raw, patternFor(mask, raw));
+        const masked = applyMask(raw, mask);
 
         if (!controlled) setInternal(masked);
         onValueChange?.(masked, unmask(masked));
@@ -63,16 +63,6 @@ export function MaskedInput({
       }}
     />
   );
-}
-
-/**
- * O molde deste texto. So o telefone muda de molde no meio do caminho, e a
- * escolha precisa valer nos dois lugares: o valor que chega pronto do servidor
- * passa pelo estado inicial, e nao pelo onChange - era so ali que ela faltava,
- * e o fixo entrava com a pontuacao do celular ate a primeira tecla.
- */
-function patternFor(mask: Mask, text: string): Mask {
-  return mask === "telefone" ? phonePatternFor(text) : mask;
 }
 
 /** Moldes que so aceitam digito, para o teclado do celular abrir em numeros. */
