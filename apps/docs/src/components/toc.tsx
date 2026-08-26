@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
  * On this page
@@ -8,12 +8,16 @@ import { useEffect, useState } from 'react'
  * late: the examples load on demand, and the parts section is built from the
  * catalog. A list written up front would be missing exactly those.
  *
- * A coluna nao rola por dentro. Ela era presa no topo com a altura da janela e
- * rolagem propria, e um indice longo — o de temas passa de trinta linhas —
- * ficava cortado nas duas pontas: a lista se movia sozinha para acompanhar a
- * leitura e o titulo "Nesta pagina" saia por cima. Agora ela e uma coluna
- * comum ao lado do texto, com a altura que a lista pedir, e quem manda no
- * gesto e a pagina: um so scroll, um so lugar onde ele acontece.
+ * A coluna nao rola por dentro, e nao sai da tela. Sao os dois lados de um
+ * mesmo defeito, e cada um foi visto sozinho antes: presa no topo com a
+ * altura da janela, ela ganhava barra propria e um indice longo aparecia
+ * cortado nas duas pontas; solta, ela some assim que a leitura desce, e a
+ * pagina de Icones - tres linhas - deixava de dizer onde a pessoa estava.
+ *
+ * O que sustenta os dois e a altura da lista, medida em `useRail`. Cabendo na
+ * tela, ela fica imovel. Nao cabendo, desliza junto com a pagina: descendo
+ * chega ao fim da lista, subindo volta ao comeco. Rolagem so existe uma, e e
+ * a da pagina.
  * ------------------------------------------------------------------------- */
 
 /**
@@ -177,20 +181,83 @@ function useActive(items: Item[]) {
   return active
 }
 
+/** A altura do cabecalho grudado, que e onde o indice pode encostar. */
+const TOPO = 56
+
+/**
+ * Mantem o indice a vista sem dar rolagem propria a ele.
+ *
+ * `position: sticky` sozinho resolve a lista curta e abandona a longa: ela
+ * gruda pelo topo, e o que passa da altura da janela fica embaixo da dobra,
+ * fora de alcance para sempre. Dar `overflow` a ela seria uma segunda rolagem
+ * dentro da primeira, que e justamente o que nao se quer.
+ *
+ * Entao a lista continua grudada e anda por cima disso, no mesmo passo da
+ * pagina, ate ter mostrado tudo o que nao cabia. Descer revela o fim, subir
+ * devolve o comeco, e o deslocamento anda com a rolagem em vez de responder a
+ * ela: nada se move sozinho enquanto a pessoa esta parada.
+ */
+function useRail(quantidade: number) {
+  const rail = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    // Pela quantidade de linhas, e nao uma vez so: no primeiro render a lista
+    // ainda esta vazia e o `nav` nem existe, entao um efeito sem dependencia
+    // saia sem achar nada e nunca mais voltava.
+    const nav = rail.current
+    if (!nav) return
+
+    let deslocamento = 0
+    let anterior = window.scrollY
+
+    const acertar = () => {
+      const y = window.scrollY
+      const delta = y - anterior
+      anterior = y
+
+      // O que a lista tem alem do que a janela mostra. Zero ou menos, ela
+      // cabe inteira e nao ha o que deslocar.
+      const excedente = nav.offsetHeight - (window.innerHeight - TOPO)
+
+      deslocamento = excedente <= 0 ? 0 : Math.min(excedente, Math.max(0, deslocamento + delta))
+      // `transform`, e nao `top`: mexer no `top` de um elemento grudado o faz
+      // saltar no quadro em que o valor muda, porque ele reancora de uma vez.
+      nav.style.transform = deslocamento ? `translateY(${-deslocamento}px)` : ''
+    }
+
+    acertar()
+    window.addEventListener('scroll', acertar, { passive: true })
+    window.addEventListener('resize', acertar)
+    // A lista cresce quando os exemplos chegam, e o que cabia deixa de caber.
+    const observer = new ResizeObserver(acertar)
+    observer.observe(nav)
+
+    return () => {
+      window.removeEventListener('scroll', acertar)
+      window.removeEventListener('resize', acertar)
+      observer.disconnect()
+    }
+  }, [quantidade])
+
+  return rail
+}
+
 export function Toc({ watch }: { watch: string }) {
   const items = useHeadings(watch)
   const active = useActive(items)
+  const rail = useRail(items.length)
 
   // One heading is not an index of anything.
   if (items.length < 2) return null
 
   return (
     <nav
+      ref={rail}
       aria-label="Nesta página"
       // `self-start` para a coluna ter a altura da lista, e nao a da linha
-      // inteira: esticada, ela empurraria a borda do trilho ate o rodape do
-      // texto, desenhando uma linha vertical que nao pertence a nada.
-      className="hidden w-56 shrink-0 self-start py-10 pl-6 xl:block"
+      // inteira: esticada, ela nao teria onde grudar, e a borda do trilho
+      // desceria ate o rodape do texto como uma linha que nao pertence a nada.
+      className="sticky top-14 hidden w-56 shrink-0 self-start py-10 pl-6 xl:block"
     >
       <p className="mb-3 font-mono text-[0.7rem] tracking-widest text-fg-subtle uppercase">
         Nesta página
