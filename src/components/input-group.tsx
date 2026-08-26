@@ -19,7 +19,7 @@ export function InputGroup({ className, ...props }: InputGroupProps) {
     <div
       {...props}
       className={cn(
-        "flex w-full items-stretch overflow-hidden rounded-md border border-border bg-surface",
+        "flex w-full items-stretch overflow-hidden rounded-md border border-border-strong bg-surface",
         "h-[var(--rc-control-md)] font-sans text-base text-fg",
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",

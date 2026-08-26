@@ -26,9 +26,11 @@
    * igual ao cartao, e o esqueleto sumia por completo. */
   --rc-skeleton: rgb(255 255 255 / 0.08);
 
+  /* A divisoria decorativa: separa area, e nao identifica controle. */
   --rc-border: rgb(255 255 255 / 0.09);
-  --rc-border-strong: rgb(255 255 255 / 0.14);
-  --rc-line-hover: rgb(255 255 255 / 0.26);
+  /* A fronteira de controle, nos 3:1 da WCAG 1.4.11 - ver o tema claro. */
+  --rc-border-strong: rgb(255 255 255 / 0.38);
+  --rc-line-hover: rgb(255 255 255 / 0.5);
   --rc-ring: var(--rc-p-lima-500);
 
   --rc-success: var(--rc-p-teal-400);

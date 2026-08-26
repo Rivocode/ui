@@ -51,3 +51,43 @@ test("a chave com texto liga pelo texto", () => {
   fireEvent.click(screen.getByText("Enviar o XML junto com o PDF"));
   expect(screen.getByRole("switch").getAttribute("data-checked")).not.toBeNull();
 });
+
+/*
+ * WCAG 1.4.11: o que identifica um controle precisa de 3:1 contra o fundo. Nos
+ * tokens quem carrega essa promessa e o --rc-border-strong; --rc-border segue
+ * sendo a divisoria decorativa, que nao identifica nada. Estes testes existem
+ * para um campo nao voltar a se desenhar com a borda de divisoria.
+ */
+
+import { Input } from "../src/components/field";
+import { InputGroup } from "../src/components/input-group";
+import { SelectTrigger, Select } from "../src/components/select";
+
+test("o campo se desenha com a fronteira de controle, e nao com a divisoria", () => {
+  comTema(<Input aria-label="Razao social" />);
+  const campo = screen.getByLabelText("Razao social");
+
+  expect(campo.className).toContain("border-border-strong");
+});
+
+test("a moldura de campo com encosto tambem", () => {
+  comTema(
+    <InputGroup>
+      <Input aria-label="Valor" />
+    </InputGroup>,
+  );
+  // A moldura e quem desenha a borda; o campo dentro dela vai sem borda propria.
+  const moldura = screen.getByLabelText("Valor").parentElement!;
+
+  expect(moldura.className).toContain("border-border-strong");
+});
+
+test("o gatilho do select tambem", () => {
+  comTema(
+    <Select>
+      <SelectTrigger aria-label="Situacao" />
+    </Select>,
+  );
+
+  expect(screen.getByLabelText("Situacao").className).toContain("border-border-strong");
+});

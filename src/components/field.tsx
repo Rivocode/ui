@@ -8,7 +8,9 @@ import { cn } from "../lib/cn";
 
 export const inputVariants = cva(
   cn(
-    "w-full rounded-md border border-border bg-surface text-fg",
+    // A fronteira do campo identifica um controle, entao ela veste o
+    // border-strong, que e o papel com a promessa de 3:1 (WCAG 1.4.11).
+    "w-full rounded-md border border-border-strong bg-surface text-fg",
     "placeholder:text-fg-subtle",
     "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",

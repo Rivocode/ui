@@ -105,6 +105,25 @@ const PARES_COMPOSTOS: Array<[string, string, string, number]> = [
 ];
 
 /**
+ * O que identifica um controle, e nao carrega texto.
+ *
+ * A WCAG 1.4.11 pede 3:1 para a fronteira de campo, caixa, chave e botao, e
+ * para o anel de foco. Ate aqui o check media texto e parava ai - e era
+ * exatamente nessa faixa que a biblioteca falhava, com a borda em 1,48.
+ *
+ * O fundo entra na lista porque a mesma borda e desenhada sobre a pagina, o
+ * cartao e o cartao levantado, e ela precisa passar nos tres.
+ */
+const MIN_NAO_TEXTUAL = 3;
+const FRONTEIRAS: Array<[string, string, number]> = [
+  ["--rc-border-strong", "--rc-bg", MIN_NAO_TEXTUAL],
+  ["--rc-border-strong", "--rc-surface", MIN_NAO_TEXTUAL],
+  ["--rc-border-strong", "--rc-surface-raised", MIN_NAO_TEXTUAL],
+  ["--rc-ring", "--rc-bg", MIN_NAO_TEXTUAL],
+  ["--rc-ring", "--rc-surface", MIN_NAO_TEXTUAL],
+];
+
+/**
  * Cor de serie de grafico nao carrega texto, entao ela nao entra na regra de
  * 4,5:1. A norma pede 3:1 para objeto grafico que precisa ser percebido, e e
  * essa que vale aqui: uma linha de grafico que some no fundo nao e legivel de
@@ -155,6 +174,25 @@ if (import.meta.main) {
       if (!ok) failed++;
       console.log(
         `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${bg}  ${ratio.toFixed(2)}:1 (min ${min})`,
+      );
+    }
+
+    // As fronteiras: a cor e desenhada sobre o proprio fundo em que ela vive,
+    // entao o alfa se compoe com ele.
+    for (const [linha, sob, min] of FRONTEIRAS) {
+      const cor = tokens[linha];
+      const fundo = tokens[sob];
+      if (!cor || !fundo) {
+        console.log(`  FALTA  ${linha} sobre ${sob}`);
+        failed++;
+        continue;
+      }
+
+      const ratio = contrastRatio(compose(cor, fundo), fundo);
+      const ok = ratio >= min;
+      if (!ok) failed++;
+      console.log(
+        `  ${ok ? "ok   " : "FALHA"} ${linha} sobre ${sob}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`,
       );
     }
 

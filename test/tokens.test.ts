@@ -82,3 +82,44 @@ test("o aviso se le sobre o proprio fundo de aviso, e nao so sobre a pagina", as
     }
   }
 });
+
+test("a fronteira do controle alcanca os 3:1 que a norma pede", async () => {
+  // WCAG 1.4.11: o que identifica um controle precisa de 3:1 contra o que
+  // esta atras. Aqui o alfa e composto antes de medir, senao a conta e sobre
+  // uma cor que ninguem ve.
+  const shared = await base();
+
+  for (const tema of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
+    for (const sob of ["--rc-bg", "--rc-surface", "--rc-surface-raised"]) {
+      const fundo = t[sob]!;
+      const borda = compose(t["--rc-border-strong"]!, fundo);
+      const razao = contrastRatio(borda, fundo);
+      expect(`${tema} ${sob} ${razao >= 3}`).toBe(`${tema} ${sob} true`);
+    }
+
+    // O hover precisa continuar sendo mais forte do que o repouso, senao a
+    // resposta ao mouse some junto.
+    const repouso = contrastRatio(
+      compose(t["--rc-border-strong"]!, t["--rc-surface"]!),
+      t["--rc-surface"]!,
+    );
+    const hover = contrastRatio(
+      compose(t["--rc-line-hover"]!, t["--rc-surface"]!),
+      t["--rc-surface"]!,
+    );
+    expect(`${tema} hover>repouso ${hover > repouso}`).toBe(`${tema} hover>repouso true`);
+  }
+});
+
+test("o anel de foco tambem alcanca 3:1, nos dois fundos", async () => {
+  const shared = await base();
+
+  for (const tema of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
+    for (const sob of ["--rc-bg", "--rc-surface"]) {
+      const razao = contrastRatio(compose(t["--rc-ring"]!, t[sob]!), t[sob]!);
+      expect(`${tema} ${sob} ${razao >= 3}`).toBe(`${tema} ${sob} true`);
+    }
+  }
+});
