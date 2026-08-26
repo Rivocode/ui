@@ -12,29 +12,29 @@ import { findParent } from "../apps/docs/src/parts";
  * perder a unica informacao que importa sobre ela.
  */
 
-const nomes = readdirSync(".design-sync/docs")
+const names = readdirSync(".design-sync/docs")
   .filter((arquivo) => arquivo.endsWith(".md"))
   .map((arquivo) => arquivo.replace(/\.md$/, ""));
 
-const pecas = nomes.filter((nome) => !findParent(nome, nomes));
+const pieces = names.filter((nome) => !findParent(nome, names));
 
 test("a skill diz o mesmo numero de pecas que o catalogo tem", async () => {
   // O numero na skill e a primeira coisa que um agente le, e era o unico
   // lugar do sistema onde ele estava certo enquanto o indice contava tudo. Ele
   // aparece em dois arquivos, e os dois envelhecem juntos.
   const skill = await Bun.file(".claude/skills/rivocode-ui/SKILL.md").text();
-  const escolha = await Bun.file(
+  const choice = await Bun.file(
     ".claude/skills/rivocode-ui/reference/components.md",
   ).text();
 
-  expect(/S[aã]o (\d+)/.exec(skill)?.[1]).toBe(String(pecas.length));
-  expect(/tem (\d+) peças/.exec(escolha)?.[1]).toBe(String(pecas.length));
+  expect(/S[aã]o (\d+)/.exec(skill)?.[1]).toBe(String(pieces.length));
+  expect(/tem (\d+) peças/.exec(choice)?.[1]).toBe(String(pieces.length));
 });
 
 test("parte e peca nao se confundem na contagem", () => {
-  expect(findParent("CardHeader", nomes)).toBe("Card");
-  expect(findParent("Card", nomes)).toBeNull();
+  expect(findParent("CardHeader", names)).toBe("Card");
+  expect(findParent("Card", names)).toBeNull();
   // DataTable nao vira parte de Table: o nome nao comeca por ele.
-  expect(findParent("DataTable", nomes)).toBeNull();
-  expect(pecas.length).toBeLessThan(nomes.length);
+  expect(findParent("DataTable", names)).toBeNull();
+  expect(pieces.length).toBeLessThan(names.length);
 });

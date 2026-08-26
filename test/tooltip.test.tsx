@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../src/components/tooltip";
 
-function Exemplo() {
+function Example() {
   return (
     <Tooltip defaultOpen>
       <TooltipTrigger aria-label="Excluir">x</TooltipTrigger>
@@ -16,7 +16,7 @@ function Exemplo() {
 test("a dica aparece e diz o que o botao de icone faz", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getByText("Excluir nota")).toBeDefined();
@@ -26,7 +26,7 @@ test("a dica nao precisa de provedor proprio, o RivoProvider ja carrega", () => 
   expect(() =>
     render(
       <RivoProvider>
-        <Exemplo />
+        <Example />
       </RivoProvider>,
     ),
   ).not.toThrow();
@@ -35,7 +35,7 @@ test("a dica nao precisa de provedor proprio, o RivoProvider ja carrega", () => 
 test("a dica abre dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');

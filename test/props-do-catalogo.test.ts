@@ -10,43 +10,43 @@ import { expect, test } from "bun:test";
  * prop propria" tendo.
  */
 
-const catalogo = await Bun.file("apps/docs/src/component-props.json").json();
+const catalog = await Bun.file("apps/docs/src/component-props.json").json();
 
-const nomes = (peca: string) => (catalogo[peca]?.props ?? []).map((p: { name: string }) => p.name);
+const namesOf = (piece: string) => (catalog[piece]?.props ?? []).map((p: { name: string }) => p.name);
 
 test("a peca controlada leva os callbacks que a controlam", () => {
-  expect(nomes("Select")).toContain("onValueChange");
-  expect(nomes("Select")).toContain("onOpenChange");
-  expect(nomes("Dialog")).toContain("onOpenChange");
-  expect(nomes("Checkbox")).toContain("onCheckedChange");
+  expect(namesOf("Select")).toContain("onValueChange");
+  expect(namesOf("Select")).toContain("onOpenChange");
+  expect(namesOf("Dialog")).toContain("onOpenChange");
+  expect(namesOf("Checkbox")).toContain("onCheckedChange");
 });
 
 test("a peca cuja prop e a razao de existir nao aparece sem prop", () => {
-  expect(nomes("Breadcrumb")).toEqual(expect.arrayContaining(["items", "maxItems"]));
-  expect(nomes("Pagination")).toEqual(
+  expect(namesOf("Breadcrumb")).toEqual(expect.arrayContaining(["items", "maxItems"]));
+  expect(namesOf("Pagination")).toEqual(
     expect.arrayContaining(["page", "pageCount", "onPageChange", "siblings"]),
   );
-  expect(nomes("Progress")).toEqual(expect.arrayContaining(["value", "label", "showValue"]));
-  expect(nomes("MaskedInput")).toEqual(expect.arrayContaining(["mask", "onValueChange"]));
+  expect(namesOf("Progress")).toEqual(expect.arrayContaining(["value", "label", "showValue"]));
+  expect(namesOf("MaskedInput")).toEqual(expect.arrayContaining(["mask", "onValueChange"]));
 });
 
 test("quem so repassa o elemento raiz continua sem prop propria", () => {
   // CardHeader e um <div> com classe: dizer "nao tem prop propria" ali e
   // verdade, e a tabela precisa saber a diferenca entre isso e um buraco.
-  expect(nomes("CardHeader")).toEqual([]);
-  expect(catalogo.CardHeader.forwardsRoot).toBe(true);
+  expect(namesOf("CardHeader")).toEqual([]);
+  expect(catalog.CardHeader.forwardsRoot).toBe(true);
 });
 
 test("a prop obrigatoria vem antes da opcional", () => {
-  const props = catalogo.DataTable.props as Array<{ name: string; required: boolean }>;
-  const primeiraOpcional = props.findIndex((p) => !p.required);
-  const ultimaObrigatoria = props.map((p) => p.required).lastIndexOf(true);
+  const props = catalog.DataTable.props as Array<{ name: string; required: boolean }>;
+  const firstOptional = props.findIndex((p) => !p.required);
+  const lastRequired = props.map((p) => p.required).lastIndexOf(true);
 
-  expect(ultimaObrigatoria).toBeLessThan(primeiraOpcional);
+  expect(lastRequired).toBeLessThan(firstOptional);
 });
 
 test("a nota da prop vem do JSDoc, e nao de uma copia na doc", () => {
-  const props = catalogo.DataTable.props as Array<{ name: string; note?: string }>;
+  const props = catalog.DataTable.props as Array<{ name: string; note?: string }>;
   const rowKey = props.find((p) => p.name === "rowKey");
 
   expect(rowKey?.note).toContain("Identidade da linha");

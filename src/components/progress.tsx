@@ -46,7 +46,7 @@ export function Progress({
   classNames,
   ...props
 }: ProgressProps) {
-  const escrever = resolveFormat(format) as ((valor: number) => string) | undefined;
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   return (
     <BaseProgress.Root
@@ -65,7 +65,7 @@ export function Progress({
             <BaseProgress.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
             >
-              {escrever ? (_, valor) => (valor === null ? "" : escrever(valor)) : null}
+              {write ? (_, value) => (value === null ? "" : write(value)) : null}
             </BaseProgress.Value>
           )}
         </div>

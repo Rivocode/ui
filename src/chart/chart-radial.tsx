@@ -48,25 +48,25 @@ export function ChartRadial({
   className,
   label,
 }: ChartRadialProps) {
-  const preso = Math.max(0, Math.min(value, max));
-  const porcento = Math.round((preso / max) * 100);
+  const clamped = Math.max(0, Math.min(value, max));
+  const percentage = Math.round((clamped / max) * 100);
 
   // O arco comeca no topo e anda no sentido do relogio. Com `sweep` de 270 ele
   // deixa a base aberta, que e onde o rotulo de baixo respira.
-  const inicio = 90 + sweep / 2;
-  const fim = inicio - sweep;
+  const start = 90 + sweep / 2;
+  const end = start - sweep;
 
   return (
     <div
       className={cn("relative h-44 w-full", className)}
       role="img"
-      aria-label={label ?? `${porcento}%`}
+      aria-label={label ?? `${percentage}%`}
     >
       <ResponsiveContainer width="100%" height="100%">
         <RadialBarChart
-          data={[{ value: preso }]}
-          startAngle={inicio}
-          endAngle={fim}
+          data={[{ value: clamped }]}
+          startAngle={start}
+          endAngle={end}
           innerRadius="72%"
           outerRadius="100%"
           barSize={14}
@@ -90,7 +90,7 @@ export function ChartRadial({
         {/* Preso a largura do miolo, como na rosca: um total longo escapando
             por cima do arco e o defeito classico desta peca. */}
         <span className="max-w-[62%] text-center font-display text-2xl leading-tight text-balance text-fg">
-          {centerValue ?? `${porcento}%`}
+          {centerValue ?? `${percentage}%`}
         </span>
         {centerLabel && (
           <span className="mt-0.5 max-w-[70%] text-center text-xs text-fg-subtle">

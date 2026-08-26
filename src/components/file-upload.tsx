@@ -7,12 +7,12 @@ import { cn } from "../lib/cn";
 import { Button } from "./button";
 
 /** "48,2 KB", "1,2 MB": o tamanho sai formatado, nunca digitado. */
-const NUMERO = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
+const UNIT = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
 function fileSize(bytes: number) {
-  if (bytes < 1024) return `${NUMERO.format(bytes)} B`;
-  if (bytes < 1024 * 1024) return `${NUMERO.format(bytes / 1024)} KB`;
-  return `${NUMERO.format(bytes / (1024 * 1024))} MB`;
+  if (bytes < 1024) return `${UNIT.format(bytes)} B`;
+  if (bytes < 1024 * 1024) return `${UNIT.format(bytes / 1024)} KB`;
+  return `${UNIT.format(bytes / (1024 * 1024))} MB`;
 }
 
 export type Rejection = {

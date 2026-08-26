@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../src/components/dialog";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
-function Exemplo() {
+function Example() {
   return (
     <Dialog defaultOpen>
       <DialogContent>
@@ -18,7 +18,7 @@ function Exemplo() {
 test("o dialogo aberto mostra titulo e descricao", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getByText("Excluir projeto")).toBeDefined();
@@ -28,7 +28,7 @@ test("o dialogo aberto mostra titulo e descricao", () => {
 test("no modo escopado o dialogo renderiza dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');
@@ -39,7 +39,7 @@ test("no modo escopado o dialogo renderiza dentro do container que carrega o tem
 test("o empilhamento vem da escala, nunca de um numero cravado", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const popup = screen.getByRole("dialog");
@@ -48,5 +48,5 @@ test("o empilhamento vem da escala, nunca de um numero cravado", () => {
 });
 
 test("o dialogo exige o Provider e diz isso claramente", () => {
-  expect(() => render(<Exemplo />)).toThrow(/RivoProvider/);
+  expect(() => render(<Example />)).toThrow(/RivoProvider/);
 });

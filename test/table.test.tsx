@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "../src/components/table";
 
-function Exemplo() {
+function Example() {
   return (
     <Table>
       <TableHeader>
@@ -34,14 +34,14 @@ function Exemplo() {
 }
 
 test("sai como tabela de verdade, nao como grade de divs", () => {
-  render(<Exemplo />);
+  render(<Example />);
   expect(screen.getByRole("table")).toBeDefined();
   expect(screen.getAllByRole("columnheader")).toHaveLength(2);
   expect(screen.getAllByRole("row")).toHaveLength(3);
 });
 
 test("a linha selecionada se marca para o leitor de tela, nao so com cor", () => {
-  render(<Exemplo />);
+  render(<Example />);
   const rows = screen.getAllByRole("row");
   const selecionada = rows.find((l) => l.getAttribute("aria-selected") === "true");
   expect(selecionada).toBeDefined();
@@ -49,12 +49,12 @@ test("a linha selecionada se marca para o leitor de tela, nao so com cor", () =>
 });
 
 test("a tabela rola de lado sem empurrar a pagina", () => {
-  render(<Exemplo />);
-  const moldura = screen.getByRole("table").parentElement;
-  expect(moldura?.className).toContain("overflow-x-auto");
+  render(<Example />);
+  const frame = screen.getByRole("table").parentElement;
+  expect(frame?.className).toContain("overflow-x-auto");
 });
 
 test("o espacamento da celula segue a densidade", () => {
-  render(<Exemplo />);
+  render(<Example />);
   expect(screen.getAllByRole("cell")[0]!.className).toContain("--rc-control-pad");
 });

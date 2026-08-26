@@ -13,12 +13,12 @@ import {
   ComboboxValue,
 } from "../src/components/combobox";
 
-const CLIENTES = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
+const CUSTOMERS = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
 
 function list(props: { items?: string[] } = {}) {
   return render(
     <RivoProvider scope="local">
-      <Combobox items={props.items ?? CLIENTES} defaultOpen>
+      <Combobox items={props.items ?? CUSTOMERS} defaultOpen>
         <ComboboxInput placeholder="Buscar cliente" />
         <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
           <ComboboxList>
@@ -56,11 +56,11 @@ test("a escolha multipla monta as fichas sem sair da biblioteca", () => {
   // nunca fazer.
   render(
     <RivoProvider scope="local">
-      <Combobox items={CLIENTES} multiple defaultValue={CLIENTES}>
+      <Combobox items={CUSTOMERS} multiple defaultValue={CUSTOMERS}>
         <ComboboxChips>
           <ComboboxValue>
-            {(escolhidos: string[]) =>
-              escolhidos.map((cliente) => (
+            {(chosen: string[]) =>
+              chosen.map((cliente) => (
                 <ComboboxChip key={cliente} aria-label={cliente}>
                   {cliente}
                 </ComboboxChip>

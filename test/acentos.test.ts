@@ -12,7 +12,7 @@ import { Glob } from "bun";
  */
 
 /** Palavra sem acento => como ela se escreve. */
-const FALTANDO: Record<string, string> = {
+const MISSING: Record<string, string> = {
   Nao: "Não",
   nao: "não",
   possivel: "possível",
@@ -30,35 +30,35 @@ const FALTANDO: Record<string, string> = {
   ultima: "última",
   periodo: "período",
   numero: "número",
-  codigo: "código",
+  code: "código",
   voce: "você",
   selecao: "seleção",
   atencao: "atenção",
 };
 
 /** Rotulo em atributo, texto solto entre tags do JSX, e o que a CLI escreve. */
-const ROTULO =
+const LABEL =
   /(?:aria-label|title|placeholder|emptyMessage|errorMessage|label|aria-valuetext)\s*[=:]\s*"([^"]+)"|>\s*([A-Z][^<>{}\n]{4,}?)\s*<|console\.(?:log|error|warn)\(\s*[`"]([^`"]+)[`"]/g;
 
-async function rotulosDe(arquivo: string) {
-  const codigo = await Bun.file(arquivo).text();
+async function labelsOf(file: string) {
+  const code = await Bun.file(file).text();
   // Comentario fora: a prosa do codigo segue a convencao do repo.
-  const semComentario = codigo.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
-  return [...semComentario.matchAll(ROTULO)].map((m) => m[1] ?? m[2] ?? m[3] ?? "");
+  const withoutComments = code.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  return [...withoutComments.matchAll(LABEL)].map((m) => m[1] ?? m[2] ?? m[3] ?? "");
 }
 
 test("todo texto que a biblioteca escreve na tela sai acentuado", async () => {
-  const faltas: string[] = [];
+  const misses: string[] = [];
 
-  for await (const arquivo of new Glob("src/**/*.{ts,tsx}").scan(".")) {
-    for (const rotulo of await rotulosDe(arquivo)) {
-      for (const [errado, certo] of Object.entries(FALTANDO)) {
-        if (new RegExp(`\\b${errado}\\b`).test(rotulo)) {
-          faltas.push(`${arquivo}: "${rotulo}" -> ${errado} deveria ser ${certo}`);
+  for await (const file of new Glob("src/**/*.{ts,tsx}").scan(".")) {
+    for (const label of await labelsOf(file)) {
+      for (const [wrong, right] of Object.entries(MISSING)) {
+        if (new RegExp(`\\b${wrong}\\b`).test(label)) {
+          misses.push(`${file}: "${label}" -> ${wrong} deveria ser ${right}`);
         }
       }
     }
   }
 
-  expect(faltas).toEqual([]);
+  expect(misses).toEqual([]);
 });

@@ -33,13 +33,13 @@ export function PropsTable({
   const props = propsOf(component)
 
   if (props.length === 0) {
-    const aviso = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
+    const toast = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
 
     return compact ? (
-      <p className="text-sm text-fg-subtle">{aviso}</p>
+      <p className="text-sm text-fg-subtle">{toast}</p>
     ) : (
       <p className="rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
-        {aviso}
+        {toast}
       </p>
     )
   }

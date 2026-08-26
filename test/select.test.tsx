@@ -10,14 +10,14 @@ import {
   SelectValue,
 } from "../src/components/select";
 
-const OPCOES = [
+const OPTIONS = [
   { label: "Abertas", value: "abertas" },
   { label: "Pagas", value: "pagas" },
 ];
 
-function Exemplo() {
+function Example() {
   return (
-    <Select items={OPCOES} defaultValue="abertas" defaultOpen>
+    <Select items={OPTIONS} defaultValue="abertas" defaultOpen>
       <SelectTrigger aria-label="Status">
         <SelectValue placeholder="Escolha" />
       </SelectTrigger>
@@ -32,7 +32,7 @@ function Exemplo() {
 test("o gatilho anuncia o valor escolhido", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getByLabelText("Status").textContent).toContain("Abertas");
@@ -41,7 +41,7 @@ test("o gatilho anuncia o valor escolhido", () => {
 test("as opcoes abrem dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');
@@ -51,7 +51,7 @@ test("as opcoes abrem dentro do container que carrega o tema", () => {
 test("o empilhamento vem da escala", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const list = screen.getByRole("listbox");

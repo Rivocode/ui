@@ -15,7 +15,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
-const DICIONARIO: Record<string, string> = {
+const DICTIONARY: Record<string, string> = {
   acao: "ação",
   acoes: "ações",
   alteracao: "alteração",
@@ -112,7 +112,7 @@ const DICIONARIO: Record<string, string> = {
 };
 
 /** Props cujo valor a pessoa le. `mask`, `value` e `name` ficam de fora. */
-const PROPS_DE_TEXTO = new Set([
+const TEXT_PROPS = new Set([
   "placeholder",
   "label",
   "title",
@@ -126,7 +126,7 @@ const PROPS_DE_TEXTO = new Set([
 ]);
 
 /** Chaves de objeto cujo valor a pessoa le. */
-const CHAVES_DE_TEXTO = new Set([
+const TEXT_KEYS = new Set([
   "label",
   "header",
   "title",
@@ -135,15 +135,15 @@ const CHAVES_DE_TEXTO = new Set([
   "emptyMessage",
 ]);
 
-function acentuar(text: string) {
-  return text.replace(/\p{L}+/gu, (palavra) => {
-    const alvo = DICIONARIO[palavra.toLowerCase()];
-    if (!alvo) return palavra;
+function addAccents(text: string) {
+  return text.replace(/\p{L}+/gu, (word) => {
+    const alvo = DICTIONARY[word.toLowerCase()];
+    if (!alvo) return word;
 
     // Preserva a caixa da primeira letra. Uma palavra TODA EM CAIXA ALTA e
     // quase sempre constante de codigo, entao ela fica como esta.
-    if (palavra === palavra.toUpperCase() && palavra.length > 1) return palavra;
-    if (palavra[0] === palavra[0].toUpperCase()) {
+    if (word === word.toUpperCase() && word.length > 1) return word;
+    if (word[0] === word[0].toUpperCase()) {
       return alvo[0].toUpperCase() + alvo.slice(1);
     }
     return alvo[0].toLowerCase() + alvo.slice(1);
@@ -154,49 +154,49 @@ function acentuar(text: string) {
  * As faixas que viram conteudo: texto entre tags, valor de prop de texto,
  * valor de chave de texto e comentario de documentacao.
  */
-const FAIXAS: RegExp[] = [
+const RANGES: RegExp[] = [
   // Texto de JSX. `{` e `}` de fora, porque ali dentro e expressao.
   />([^<>{}]*[A-Za-z][^<>{}]*)</g,
   // prop="texto" e prop={'texto'}
-  new RegExp(`\\b(?:${[...PROPS_DE_TEXTO].join("|")})=\\{?["'\`]([^"'\`]*)["'\`]`, "g"),
+  new RegExp(`\\b(?:${[...TEXT_PROPS].join("|")})=\\{?["'\`]([^"'\`]*)["'\`]`, "g"),
   // chave: "texto"
-  new RegExp(`\\b(?:${[...CHAVES_DE_TEXTO].join("|")}):\\s*["'\`]([^"'\`]*)["'\`]`, "g"),
+  new RegExp(`\\b(?:${[...TEXT_KEYS].join("|")}):\\s*["'\`]([^"'\`]*)["'\`]`, "g"),
   // Comentario de documentacao.
   /\/\*\*([\s\S]*?)\*\//g,
 ];
 
-function processar(fonte: string) {
-  let output = fonte;
+function process(source: string) {
+  let output = source;
 
-  for (const faixa of FAIXAS) {
-    output = output.replace(faixa, (whole, dentro: string) => {
-      const trocado = acentuar(dentro);
-      if (trocado === dentro) return whole;
+  for (const range of RANGES) {
+    output = output.replace(range, (whole, inside: string) => {
+      const swapped = addAccents(inside);
+      if (swapped === inside) return whole;
       // Reconstroi trocando so a parte capturada, para nao mexer nas aspas
       // nem nos sinais em volta.
-      const at = whole.indexOf(dentro);
-      return whole.slice(0, at) + trocado + whole.slice(at + dentro.length);
+      const at = whole.indexOf(inside);
+      return whole.slice(0, at) + swapped + whole.slice(at + inside.length);
     });
   }
 
   return output;
 }
 
-const PASTA = ".design-sync/previews";
-let mexidos = 0;
+const FOLDER = ".design-sync/previews";
+let touched = 0;
 
-for (const arquivo of readdirSync(PASTA)) {
-  if (!arquivo.endsWith(".tsx")) continue;
+for (const file of readdirSync(FOLDER)) {
+  if (!file.endsWith(".tsx")) continue;
 
-  const caminho = `${PASTA}/${arquivo}`;
-  const antes = readFileSync(caminho, "utf8");
-  const depois = processar(antes);
+  const path = `${FOLDER}/${file}`;
+  const before = readFileSync(path, "utf8");
+  const after = process(before);
 
-  if (depois !== antes) {
-    writeFileSync(caminho, depois);
-    mexidos++;
-    console.log(`acentuado ${arquivo}`);
+  if (after !== before) {
+    writeFileSync(path, after);
+    touched++;
+    console.log(`acentuado ${file}`);
   }
 }
 
-console.log(`\n${mexidos} arquivo(s) mexido(s).`);
+console.log(`\n${touched} arquivo(s) mexido(s).`);

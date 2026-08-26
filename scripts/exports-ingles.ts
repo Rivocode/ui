@@ -12,7 +12,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 
-const NOMES: Record<string, string> = {
+const NAMES: Record<string, string> = {
   Aberto: "Open",
   AcoesDaLinha: "RowActions",
   AvisoDeSucesso: "SuccessNotice",
@@ -89,42 +89,42 @@ const NOMES: Record<string, string> = {
   Vertical: "Vertical",
 };
 
-const PASTA = ".design-sync/previews";
+const FOLDER = ".design-sync/previews";
 let mexidos = 0;
-let trocas = 0;
+let swaps = 0;
 
-for (const arquivo of readdirSync(PASTA)) {
-  if (!arquivo.endsWith(".tsx")) continue;
+for (const file of readdirSync(FOLDER)) {
+  if (!file.endsWith(".tsx")) continue;
 
-  const caminho = `${PASTA}/${arquivo}`;
-  const antes = readFileSync(caminho, "utf8");
+  const path = `${FOLDER}/${file}`;
+  const before = readFileSync(path, "utf8");
 
   // O que o arquivo importa nao pode virar nome de export dele: `LineChart`
   // como titulo de exemplo apagaria o `LineChart` da Recharts logo acima.
-  const importados = new Set(
-    [...antes.matchAll(/import\s*\{([^}]*)\}/g)].flatMap((achado) =>
-      achado[1]
+  const imported = new Set(
+    [...before.matchAll(/import\s*\{([^}]*)\}/g)].flatMap((found) =>
+      found[1]
         .split(",")
         .map((part) => part.replace("type ", "").split(" as ").pop()!.trim())
         .filter(Boolean),
     ),
   );
 
-  const depois = antes.replace(/export function (\w+)\(/g, (whole, name: string) => {
-    const novo = NOMES[name];
-    if (!novo) return whole;
-    if (importados.has(novo)) {
-      console.warn(`  ${arquivo}: ${novo} colide com um import, mantido ${name}`);
+  const after = before.replace(/export function (\w+)\(/g, (whole, name: string) => {
+    const next = NAMES[name];
+    if (!next) return whole;
+    if (imported.has(next)) {
+      console.warn(`  ${file}: ${next} colide com um import, mantido ${name}`);
       return whole;
     }
-    trocas++;
-    return `export function ${novo}(`;
+    swaps++;
+    return `export function ${next}(`;
   });
 
-  if (depois !== antes) {
-    writeFileSync(caminho, depois);
+  if (after !== before) {
+    writeFileSync(path, after);
     mexidos++;
   }
 }
 
-console.log(`${trocas} export(s) renomeado(s) em ${mexidos} arquivo(s).`);
+console.log(`${swaps} export(s) renomeado(s) em ${mexidos} arquivo(s).`);

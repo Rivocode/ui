@@ -16,23 +16,23 @@ import { formatters } from "../src/lib/format";
  * barra em 82%, e nada reclama.
  */
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o nome do formatador vale no medidor, como vale no eixo", () => {
-  comTema(<Meter value={82} aria-label="Cota" showValue format="percent" />);
+  withTheme(<Meter value={82} aria-label="Cota" showValue format="percent" />);
 
   expect(screen.getByText("82%")).toBeDefined();
 });
 
 test("a funcao propria tambem vale, sem passar por Intl", () => {
-  comTema(
+  withTheme(
     <Progress
       value={3}
       aria-label="Notas"
       showValue
-      format={(valor) => `${valor} de 10 notas`}
+      format={(value) => `${value} de 10 notas`}
     />,
   );
 
@@ -42,7 +42,7 @@ test("a funcao propria tambem vale, sem passar por Intl", () => {
 test("quem quer as opcoes do Intl pede pelo nome delas", () => {
   // O contrato antigo nao some, muda de nome: numberFormat diz o que e, e
   // deixa de disputar a palavra `format` com o vocabulario do grafico.
-  comTema(
+  withTheme(
     <Meter
       value={0.82}
       aria-label="Cota"
@@ -58,8 +58,8 @@ test("quem quer as opcoes do Intl pede pelo nome delas", () => {
 test("os formatadores sao um so, e o grafico nao e dono deles", async () => {
   // Eles moravam em chart/, entao formatar dinheiro numa tabela obrigava a
   // importar do subcaminho do grafico.
-  const doChart = await import("../src/chart/format");
+  const fromChart = await import("../src/chart/format");
 
   expect(formatters.currencyShort(2480)).toBe("R$ 2,5K");
-  expect(doChart.formatters.currencyShort).toBe(formatters.currencyShort);
+  expect(fromChart.formatters.currencyShort).toBe(formatters.currencyShort);
 });

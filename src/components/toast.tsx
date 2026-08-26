@@ -5,13 +5,13 @@ import { useMemo, useRef } from "react";
 
 import { cn } from "../lib/cn";
 
-type Gerenciador = ReturnType<typeof BaseToast.useToastManager>;
+type Manager = ReturnType<typeof BaseToast.useToastManager>;
 
 export type ToastApi = {
-  add: Gerenciador["add"];
-  update: Gerenciador["update"];
-  close: Gerenciador["close"];
-  promise: Gerenciador["promise"];
+  add: Manager["add"];
+  update: Manager["update"];
+  close: Manager["close"];
+  promise: Manager["promise"];
 };
 
 /**
@@ -28,9 +28,9 @@ export type ToastApi = {
  * nao de quem a usa.
  */
 export function useToast(): ToastApi {
-  const gerenciador = BaseToast.useToastManager();
-  const current = useRef(gerenciador);
-  current.current = gerenciador;
+  const manager = BaseToast.useToastManager();
+  const current = useRef(manager);
+  current.current = manager;
 
   return useMemo<ToastApi>(
     () => ({

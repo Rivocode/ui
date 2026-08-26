@@ -45,7 +45,7 @@ export function Radio({
   classNames,
   ...props
 }: RadioProps) {
-  const circulo = (
+  const circle = (
     <BaseRadio.Root
       {...props}
       className={cn(
@@ -64,7 +64,7 @@ export function Radio({
     </BaseRadio.Root>
   );
 
-  if (children === undefined) return circulo;
+  if (children === undefined) return circle;
 
   return (
     <label
@@ -79,7 +79,7 @@ export function Radio({
         labelClassName,
       )}
     >
-      {circulo}
+      {circle}
       {children}
     </label>
   );

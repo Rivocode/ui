@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { DescriptionList, DescriptionItem } from "../src/components/description-list";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
-function lista(children: React.ReactNode) {
+function list(children: React.ReactNode) {
   return render(
     <RivoProvider scope="local">
       <DescriptionList>{children}</DescriptionList>
@@ -13,7 +13,7 @@ function lista(children: React.ReactNode) {
 }
 
 test("sai como dl/dt/dd de verdade", () => {
-  const { container } = lista(
+  const { container } = list(
     <>
       <DescriptionItem label="CNPJ">12.345.678/0001-90</DescriptionItem>
       <DescriptionItem label="Vencimento">17/09/2026</DescriptionItem>
@@ -28,7 +28,7 @@ test("sai como dl/dt/dd de verdade", () => {
 });
 
 test("o valor aceita nó, não só texto", () => {
-  lista(
+  list(
     <DescriptionItem label="Situação">
       <span data-testid="badge">Paga</span>
     </DescriptionItem>,

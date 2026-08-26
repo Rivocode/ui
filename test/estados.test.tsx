@@ -12,8 +12,8 @@ test("o aviso de erro se anuncia ao leitor de tela sem esperar foco", () => {
       <AlertDescription>Tente de novo em alguns segundos.</AlertDescription>
     </Alert>,
   );
-  const aviso = screen.getByRole("alert");
-  expect(aviso.className).toContain("text-danger-text");
+  const alert = screen.getByRole("alert");
+  expect(alert.className).toContain("text-danger-text");
 });
 
 test("o aviso informativo nao interrompe o leitor de tela", () => {
@@ -27,9 +27,9 @@ test("o aviso informativo nao interrompe o leitor de tela", () => {
 
 test("o esqueleto some quando a pessoa pede menos movimento", () => {
   render(<Skeleton className="h-4 w-40" data-testid="osso" />);
-  const osso = screen.getByTestId("osso");
-  expect(osso.className).toContain("animate-pulse");
-  expect(osso.className).toContain("motion-reduce:animate-none");
+  const bone = screen.getByTestId("osso");
+  expect(bone.className).toContain("animate-pulse");
+  expect(bone.className).toContain("motion-reduce:animate-none");
 });
 
 test("o esqueleto se esconde do leitor de tela, porque nao tem o que ler", () => {

@@ -34,7 +34,7 @@ export function Pagination({
   siblings = 1,
   ...props
 }: PaginationProps) {
-  const paginas = montarPaginas(page, pageCount, siblings);
+  const pages = buildPages(page, pageCount, siblings);
 
   return (
     <nav
@@ -54,18 +54,18 @@ export function Pagination({
       </span>
 
       <ol className="hidden items-center gap-1 sm:flex">
-        {paginas.map((numero, index) =>
-          numero === "reticencia" ? (
+        {pages.map((number, index) =>
+          number === "reticencia" ? (
             <li key={`corte-${index}`} aria-hidden="true" className="px-1 text-fg-subtle">
               ...
             </li>
           ) : (
-            <li key={numero}>
+            <li key={number}>
               <button
                 type="button"
-                aria-label={`Página ${numero}`}
-                aria-current={numero === page ? "page" : undefined}
-                onClick={() => onPageChange(numero)}
+                aria-label={`Página ${number}`}
+                aria-current={number === page ? "page" : undefined}
+                onClick={() => onPageChange(number)}
                 className={cn(
                   "h-[var(--rc-control-sm)] min-w-[var(--rc-control-sm)] rounded-md px-2",
                   "text-sm text-fg-muted",
@@ -76,7 +76,7 @@ export function Pagination({
                   "aria-[current=page]:hover:bg-accent-hover",
                 )}
               >
-                {numero}
+                {number}
               </button>
             </li>
           ),
@@ -118,16 +118,16 @@ function Step({ label, children, ...props }: ComponentProps<"button"> & { label:
  * Primeira, ultima, a atual e os vizinhos. A reticencia so entra quando pula
  * mais de uma pagina, senao ela ocuparia o lugar de um numero que caberia.
  */
-function montarPaginas(current: number, total: number, vizinhos: number): (number | "reticencia")[] {
+function buildPages(current: number, total: number, siblings: number): (number | "reticencia")[] {
   if (total <= 1) return total === 1 ? [1] : [];
 
-  const inicio = Math.max(2, current - vizinhos);
-  const fim = Math.min(total - 1, current + vizinhos);
+  const start = Math.max(2, current - siblings);
+  const end = Math.min(total - 1, current + siblings);
   const output: (number | "reticencia")[] = [1];
 
-  if (inicio > 2) output.push(inicio === 3 ? 2 : "reticencia");
-  for (let numero = inicio; numero <= fim; numero += 1) output.push(numero);
-  if (fim < total - 1) output.push(fim === total - 2 ? total - 1 : "reticencia");
+  if (start > 2) output.push(start === 3 ? 2 : "reticencia");
+  for (let number = start; number <= end; number += 1) output.push(number);
+  if (end < total - 1) output.push(end === total - 2 ? total - 1 : "reticencia");
   if (total > 1) output.push(total);
 
   return output;

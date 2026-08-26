@@ -11,7 +11,7 @@ import {
   MenuTrigger,
 } from "../src/components/menu";
 
-function Exemplo() {
+function Example() {
   return (
     <Menu defaultOpen>
       <MenuTrigger aria-label="Mais acoes">...</MenuTrigger>
@@ -30,7 +30,7 @@ function Exemplo() {
 test("os itens saem com papel de item de menu", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getAllByRole("menuitem")).toHaveLength(3);
@@ -39,7 +39,7 @@ test("os itens saem com papel de item de menu", () => {
 test("o item destrutivo usa o token de perigo como texto", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getByRole("menuitem", { name: "Cancelar nota" }).className).toContain(
@@ -50,7 +50,7 @@ test("o item destrutivo usa o token de perigo como texto", () => {
 test("o menu abre dentro do container que carrega o tema", () => {
   render(
     <RivoProvider scope="local" theme="rivocode-light">
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   const container = document.querySelector('[data-rc-portal][data-rc-theme="rivocode-light"]');
@@ -60,7 +60,7 @@ test("o menu abre dentro do container que carrega o tema", () => {
 test("o titulo do grupo aparece, e o grupo o carrega por dentro", () => {
   render(
     <RivoProvider>
-      <Exemplo />
+      <Example />
     </RivoProvider>,
   );
   expect(screen.getByText("Nota 4813")).toBeDefined();

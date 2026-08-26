@@ -8,12 +8,12 @@ import { ButtonGroup } from "../src/components/button-group";
 import { Command, type CommandGroup } from "../src/components/command";
 import { Kbd } from "../src/components/kbd";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", () => {
-  comTema(<Kbd keys="mod+k" />);
+  withTheme(<Kbd keys="mod+k" />);
 
   // O rotulo diz a combinacao inteira; as teclas em si ficam escondidas, senao
   // o leitor soletraria "comando" e "K" como dois textos soltos.
@@ -22,7 +22,7 @@ test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", (
 });
 
 test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
-  const { container } = comTema(
+  const { container } = withTheme(
     <ButtonGroup>
       <Button>Salvar</Button>
       <Button variant="secondary">Salvar e enviar</Button>
@@ -37,7 +37,7 @@ test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {
 });
 
 test("a proporcao vira estilo, e nao mais uma classe escrita a mao", () => {
-  const { container } = comTema(
+  const { container } = withTheme(
     <AspectRatio ratio={4 / 3} data-testid="moldura">
       <img src="/nota.png" alt="" />
     </AspectRatio>,
@@ -48,7 +48,7 @@ test("a proporcao vira estilo, e nao mais uma classe escrita a mao", () => {
   expect(box.getAttribute("style")).toContain("1.333");
 });
 
-const GRUPOS: CommandGroup[] = [
+const GROUPS: CommandGroup[] = [
   {
     label: "Ir para",
     items: [
@@ -59,7 +59,7 @@ const GRUPOS: CommandGroup[] = [
 ];
 
 test("a paleta acha pelo apelido, e nao so pelo rotulo exato", () => {
-  comTema(<Command open onOpenChange={() => {}} groups={GRUPOS} />);
+  withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "fatura" } });
 
@@ -72,7 +72,7 @@ test("a paleta ignora acento, porque ninguem digita acento com pressa", () => {
     { items: [{ id: "sao", label: "São Paulo", onSelect: () => {} }] },
   ];
 
-  comTema(<Command open onOpenChange={() => {}} groups={groups} />);
+  withTheme(<Command open onOpenChange={() => {}} groups={groups} />);
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "sao" } });
 
   expect(screen.getByRole("option", { name: /São Paulo/ })).toBeDefined();
@@ -82,7 +82,7 @@ test("Enter escolhe o item marcado, e fecha", () => {
   let picked = "";
   let isOpen = true;
 
-  comTema(
+  withTheme(
     <Command
       open
       onOpenChange={(proxima) => {
@@ -108,7 +108,7 @@ test("Enter escolhe o item marcado, e fecha", () => {
 });
 
 test("sem resultado ela diz isso, em vez de mostrar lista vazia", () => {
-  comTema(<Command open onOpenChange={() => {}} groups={GRUPOS} />);
+  withTheme(<Command open onOpenChange={() => {}} groups={GROUPS} />);
 
   fireEvent.change(screen.getByRole("combobox"), { target: { value: "zzz" } });
 

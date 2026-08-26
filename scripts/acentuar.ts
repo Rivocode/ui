@@ -11,7 +11,7 @@
  * rules do not recognise is left alone and reported for a human to read.
  */
 
-const PALAVRAS: Record<string, string> = {
+const WORDS: Record<string, string> = {
   nao: "não",
   acao: "ação",
   acoes: "ações",
@@ -298,7 +298,7 @@ const PALAVRAS: Record<string, string> = {
 /* Onde `e` é o verbo, e não a conjunção. Cada regra descreve um contorno em que
  * a leitura não é ambígua: depois de ponto, antes de artigo, e assim por
  * diante. O que não casar fica como está, errar para menos é recuperável. */
-const VERBO: Array<[RegExp, string]> = [
+const VERB: Array<[RegExp, string]> = [
   [/\bnao e\b/g, "não é"],
   [/\bque e\b/g, "que é"],
   [/\bisso e\b/g, "isso é"],
@@ -320,45 +320,43 @@ const VERBO: Array<[RegExp, string]> = [
 ];
 
 /** Applies a function to prose only, leaving code fences and spans untouched. */
-function apenasNaProsa(texto: string, tratar: (trecho: string) => string) {
+function proseOnly(text: string, apply: (chunk: string) => string) {
   // O destino de um link entra na lista de trechos intocados junto com o
   // codigo: acentuar `/instalacao` quebra o endereco em silencio.
-  const partes = texto.split(/(```[\s\S]*?```|`[^`\n]*`|<[^>]+>|\]\([^)]*\)|https?:\/\/\S+)/g);
-  return partes
-    .map((parte, indice) => (indice % 2 === 0 ? tratar(parte) : parte))
-    .join("");
+  const parts = text.split(/(```[\s\S]*?```|`[^`\n]*`|<[^>]+>|\]\([^)]*\)|https?:\/\/\S+)/g);
+  return parts.map((part, index) => (index % 2 === 0 ? apply(part) : part)).join("");
 }
 
-function manterCaixa(original: string, corrigida: string) {
+function keepCase(original: string, fixed: string) {
   if (original[0] === original[0]?.toUpperCase()) {
-    return corrigida[0].toUpperCase() + corrigida.slice(1);
+    return fixed[0]!.toUpperCase() + fixed.slice(1);
   }
-  return corrigida;
+  return fixed;
 }
 
-export function acentuar(texto: string) {
-  return apenasNaProsa(texto, (trecho) => {
-    let saida = trecho;
+export function addAccents(text: string) {
+  return proseOnly(text, (chunk) => {
+    let output = chunk;
 
-    for (const [regra, troca] of VERBO) saida = saida.replace(regra, troca);
+    for (const [rule, swap] of VERB) output = output.replace(rule, swap);
 
-    saida = saida.replace(/\b([A-Za-zÀ-ÿ]+)\b/g, (palavra) => {
-      const corrigida = PALAVRAS[palavra.toLowerCase()];
-      return corrigida ? manterCaixa(palavra, corrigida) : palavra;
+    output = output.replace(/\b([A-Za-zÀ-ÿ]+)\b/g, (word) => {
+      const fixed = WORDS[word.toLowerCase()];
+      return fixed ? keepCase(word, fixed) : word;
     });
 
-    return saida;
+    return output;
   });
 }
 
 /** Lines where a bare `e` survived, for a human to read. */
-export function pendencias(texto: string) {
-  const linhas: string[] = [];
-  apenasNaProsa(texto, (trecho) => {
-    for (const linha of trecho.split("\n")) {
-      if (/\be\b/.test(linha) && linha.trim()) linhas.push(linha.trim());
+export function pendingLines(text: string) {
+  const lines: string[] = [];
+  proseOnly(text, (chunk) => {
+    for (const line of chunk.split("\n")) {
+      if (/\be\b/.test(line) && line.trim()) lines.push(line.trim());
     }
-    return trecho;
+    return chunk;
   });
-  return linhas;
+  return lines;
 }

@@ -9,7 +9,7 @@ import {
 } from "../src/components/file-upload";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
-const arquivo = (name: string, size: number, type = "application/xml") => {
+const file = (name: string, size: number, type = "application/xml") => {
   const file = new File([new Uint8Array(size)], name, { type });
   return file;
 };
@@ -33,7 +33,7 @@ test("escolher pelo seletor entrega os aceitos", () => {
   const { container } = dropzone({ onSelect: (files) => (recebidos = files) });
 
   const input = container.querySelector<HTMLInputElement>("input[type=file]")!;
-  fireEvent.change(input, { target: { files: [arquivo("nota.xml", 100)] } });
+  fireEvent.change(input, { target: { files: [file("nota.xml", 100)] } });
 
   expect(recebidos.map((file) => file.name)).toEqual(["nota.xml"]);
 });
@@ -43,7 +43,7 @@ test("soltar na area tambem entrega", () => {
   dropzone({ onSelect: (files) => (recebidos = files) });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
-  fireEvent.drop(area, { dataTransfer: { files: [arquivo("nota.xml", 100)] } });
+  fireEvent.drop(area, { dataTransfer: { files: [file("nota.xml", 100)] } });
 
   expect(recebidos.map((file) => file.name)).toEqual(["nota.xml"]);
 });
@@ -69,7 +69,7 @@ test("maior que maxSize e recusado com motivo legivel", () => {
   });
 
   const area = screen.getByRole("button", { name: /arraste o xml/i });
-  fireEvent.drop(area, { dataTransfer: { files: [arquivo("pesado.xml", 4096)] } });
+  fireEvent.drop(area, { dataTransfer: { files: [file("pesado.xml", 4096)] } });
 
   expect(aceitos).toEqual([]);
   expect(recusas[0]?.file.name).toBe("pesado.xml");
@@ -90,9 +90,9 @@ test("tipo fora do accept e recusado, os demais passam", () => {
   fireEvent.drop(area, {
     dataTransfer: {
       files: [
-        arquivo("nota.xml", 100),
-        arquivo("recibo.pdf", 100, "application/pdf"),
-        arquivo("foto.png", 100, "image/png"),
+        file("nota.xml", 100),
+        file("recibo.pdf", 100, "application/pdf"),
+        file("foto.png", 100, "image/png"),
       ],
     },
   });
@@ -108,7 +108,7 @@ test("desabilitada, a area nao aceita nem clique nem soltar", () => {
   const area = screen.getByRole("button", { name: /arraste o xml/i });
   expect(area.hasAttribute("disabled")).toBe(true);
 
-  fireEvent.drop(area, { dataTransfer: { files: [arquivo("nota.xml", 100)] } });
+  fireEvent.drop(area, { dataTransfer: { files: [file("nota.xml", 100)] } });
   expect(aceitos).toEqual([]);
 });
 
@@ -135,8 +135,8 @@ test("progress vira barra com valor anunciado", () => {
     </RivoProvider>,
   );
 
-  const barra = screen.getByRole("progressbar");
-  expect(barra.getAttribute("aria-valuenow")).toBe("62");
+  const bar = screen.getByRole("progressbar");
+  expect(bar.getAttribute("aria-valuenow")).toBe("62");
 });
 
 test("erro vence progresso e oferece nova tentativa", () => {

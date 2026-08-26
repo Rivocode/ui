@@ -35,65 +35,65 @@ const ACENTOS: Record<string, string> = {
   selecao: "seleção", sensivel: "sensível", serie: "série", servico: "serviço",
   servicos: "serviços", situacao: "situação", situacoes: "situações",
   substituicao: "substituição", tambem: "também", tecnico: "técnico",
-  titulo: "título", tres: "três", isLast: "último", unica: "única", unico: "único",
+  title: "título", tres: "três", isLast: "último", unica: "única", unico: "único",
   usuario: "usuário", util: "útil", valido: "válido", visivel: "visível",
   voce: "você",
 };
 
 /** Palavras de ligacao ficam minusculas no meio do titulo. */
-const LIGACOES = new Set([
+const LINKS = new Set([
   "de", "da", "do", "das", "dos", "e", "em", "no", "na", "com", "sem", "por",
   "para", "a", "o", "as", "os", "ao", "aos",
 ]);
 
-function titulo(nomeDoExport: string) {
+function title(nomeDoExport: string) {
   const parts = nomeDoExport
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
     .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
     .split(" ")
     .filter(Boolean);
 
-  const palavras = parts.map((part, index) => {
+  const words = parts.map((part, index) => {
     const baixa = part.toLowerCase();
     const acentuada = ACENTOS[baixa] ?? baixa;
 
     // Sigla escrita toda em caixa alta continua como esta: OTP, PDF, CNPJ.
     if (part.length > 1 && part === part.toUpperCase()) return part;
 
-    if (index > 0 && LIGACOES.has(baixa)) return acentuada;
+    if (index > 0 && LINKS.has(baixa)) return acentuada;
     if (index === 0) return acentuada[0].toUpperCase() + acentuada.slice(1);
     return acentuada;
   });
 
-  return palavras.join(" ");
+  return words.join(" ");
 }
 
-const PASTA = ".design-sync/previews";
-let mexidos = 0;
-let titulos = 0;
+const FOLDER = ".design-sync/previews";
+let touched = 0;
+let titleCount = 0;
 
-for (const arquivo of readdirSync(PASTA)) {
-  if (!arquivo.endsWith(".tsx")) continue;
+for (const file of readdirSync(FOLDER)) {
+  if (!file.endsWith(".tsx")) continue;
 
-  const caminho = `${PASTA}/${arquivo}`;
-  const antes = readFileSync(caminho, "utf8");
+  const path = `${FOLDER}/${file}`;
+  const before = readFileSync(path, "utf8");
 
-  const depois = antes.replace(
+  const after = before.replace(
     /(^|\n)(export function (\w+)\()/g,
-    (whole, quebra: string, declaracao: string, name: string, at: number) => {
+    (whole, gap: string, declaration: string, name: string, at: number) => {
       // Ja tem comentario de documentacao logo acima? Entao ele manda.
-      const anterior = antes.slice(0, at + quebra.length).trimEnd();
-      if (anterior.endsWith("*/")) return whole;
+      const previous = before.slice(0, at + gap.length).trimEnd();
+      if (previous.endsWith("*/")) return whole;
 
-      titulos++;
-      return `${quebra}/** ${titulo(name)} */\n${declaracao}`;
+      titleCount++;
+      return `${gap}/** ${title(name)} */\n${declaration}`;
     },
   );
 
-  if (depois !== antes) {
-    writeFileSync(caminho, depois);
-    mexidos++;
+  if (after !== before) {
+    writeFileSync(path, after);
+    touched++;
   }
 }
 
-console.log(`${titulos} titulo(s) escrito(s) em ${mexidos} arquivo(s).`);
+console.log(`${titleCount} titulo(s) escrito(s) em ${touched} arquivo(s).`);

@@ -5,25 +5,25 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import { DataTable, type Column } from "../src/components/data-table";
 import { Steps, useWizard, type Step } from "../src/components/steps";
 
-type Nota = { id: string; number: string; customer: string; amount: string };
+type Invoice = { id: string; number: string; customer: string; amount: string };
 
-const NOTAS: Nota[] = [
+const INVOICES: Invoice[] = [
   { id: "1", number: "4813", customer: "Clinica Sao Lucas", amount: "R$ 2.480,00" },
   { id: "2", number: "4814", customer: "Transportes Cabo Branco", amount: "R$ 940,00" },
 ];
 
-const COLUNAS: Column<Nota>[] = [
+const COLUMNS: Column<Invoice>[] = [
   { key: "number", header: "Numero" },
   { key: "customer", header: "Cliente" },
   { key: "amount", header: "Valor", align: "right", hideOnMobile: true },
 ];
 
-function table(props: Partial<React.ComponentProps<typeof DataTable<Nota>>> = {}) {
+function table(props: Partial<React.ComponentProps<typeof DataTable<Invoice>>> = {}) {
   return render(
     <RivoProvider scope="local">
       <DataTable
-        data={NOTAS}
-        columns={COLUNAS}
+        data={INVOICES}
+        columns={COLUMNS}
         rowKey={(invoice) => invoice.id}
         empty={{ title: "Nenhuma nota", description: "Emita a primeira para ela aparecer." }}
         {...props}
@@ -70,7 +70,7 @@ test("o vazio nao aparece enquanto a consulta esta em pe", () => {
 });
 
 test("a linha avisa quem clicou nela", () => {
-  let clicada: Nota | undefined;
+  let clicada: Invoice | undefined;
   table({ onRowClick: (nota) => (clicada = nota) });
   fireEvent.click(screen.getByText("Clinica Sao Lucas"));
   expect(clicada?.number).toBe("4813");
@@ -82,21 +82,21 @@ const PASSOS: Step[] = [
   { id: "revisao", title: "Revisao" },
 ];
 
-function Assistente() {
-  const assistente = useWizard(PASSOS);
+function Wizard() {
+  const wizard = useWizard(PASSOS);
   return (
     <RivoProvider scope="local">
-      <Steps steps={PASSOS} current={assistente.step} onStepClick={assistente.goTo} />
-      <p>Agora: {assistente.current?.title}</p>
-      <button onClick={() => assistente.next()}>Avancar</button>
-      <button onClick={() => assistente.next(() => false)}>Avancar travado</button>
-      <button onClick={assistente.back}>Voltar</button>
+      <Steps steps={PASSOS} current={wizard.step} onStepClick={wizard.goTo} />
+      <p>Agora: {wizard.current?.title}</p>
+      <button onClick={() => wizard.next()}>Avancar</button>
+      <button onClick={() => wizard.next(() => false)}>Avancar travado</button>
+      <button onClick={wizard.back}>Voltar</button>
     </RivoProvider>
   );
 }
 
 test("o assistente anda e volta", () => {
-  render(<Assistente />);
+  render(<Wizard />);
   expect(screen.getByText("Agora: Dados")).toBeDefined();
 
   fireEvent.click(screen.getByText("Avancar"));
@@ -107,20 +107,20 @@ test("o assistente anda e volta", () => {
 });
 
 test("checagem que reprova segura o passo", () => {
-  render(<Assistente />);
+  render(<Wizard />);
   fireEvent.click(screen.getByText("Avancar travado"));
   expect(screen.getByText("Agora: Dados")).toBeDefined();
 });
 
 test("a regua marca o passo atual e so deixa voltar", () => {
-  render(<Assistente />);
+  render(<Wizard />);
   fireEvent.click(screen.getByText("Avancar"));
 
   const botoes = screen.getAllByRole("button").filter((b) => b.getAttribute("aria-current"));
   expect(botoes[0]!.textContent).toContain("Itens");
 
-  const passoDeDados = screen.getByText("Dados").closest("button") as HTMLButtonElement;
+  const dataStep = screen.getByText("Dados").closest("button") as HTMLButtonElement;
   const passoDeRevisao = screen.getByText("Revisao").closest("button") as HTMLButtonElement;
-  expect(passoDeDados.disabled).toBe(false);
+  expect(dataStep.disabled).toBe(false);
   expect(passoDeRevisao.disabled).toBe(true);
 });

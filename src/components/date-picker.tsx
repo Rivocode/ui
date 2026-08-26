@@ -25,7 +25,7 @@ export type DatePickerProps = Omit<
     /** A data inicial, quando o componente controla o proprio estado. */
     defaultValue?: Date;
     /** Chamado quando a data muda, pela digitacao ou pelo Aplicar. */
-    onValueChange?: (data: Date | undefined) => void;
+    onValueChange?: (date: Date | undefined) => void;
     /** Tamanho do campo, o mesmo vocabulario do Input. */
     size?: "sm" | "md" | "lg";
     /** Dias que nao podem ser escolhidos. Vai direto para o calendario. */
@@ -34,7 +34,7 @@ export type DatePickerProps = Omit<
      * Sem rodape, o clique no dia ja vale e o painel fecha. Ligue quando a
      * escolha dispara trabalho caro, como recarregar uma listagem.
      */
-    confirmar?: boolean;
+    confirm?: boolean;
   };
 
 /**
@@ -66,37 +66,37 @@ export function DatePicker({
   startMonth,
   endMonth,
   showOutsideDays,
-  confirmar,
+  confirm,
   name,
   onBlur,
   ...props
 }: DatePickerProps) {
   const controlled = value !== undefined;
   const [dataInterna, setDataInterna] = useState<Date | undefined>(defaultValue);
-  const data = controlled ? value : dataInterna;
+  const date = controlled ? value : dataInterna;
 
-  const [text, setText] = useState(() => formatDate(data));
+  const [text, setText] = useState(() => formatDate(date));
   const [rawText, setRawText] = useState(false);
   const [isOpen, setAberto] = useState(false);
 
   // O rascunho so existe com rodape. Sem ele, o clique no dia ja e a escolha.
-  const [rascunho, setRascunho] = useState<Date | undefined>(data);
-  const picked = confirmar && isOpen ? rascunho : data;
+  const [draft, setRascunho] = useState<Date | undefined>(date);
+  const picked = confirm && isOpen ? draft : date;
 
-  const [mes, setMes] = useState<Date>(() => data ?? new Date());
+  const [mes, setMes] = useState<Date>(() => date ?? new Date());
 
   // Enquanto ninguem digita, o campo espelha a data. Isso mantem o campo certo
   // quando a data muda de fora, sem apagar o que esta sendo digitado agora.
-  const displayText = rawText ? text : formatDate(data);
+  const displayText = rawText ? text : formatDate(date);
 
-  function mudarData(nova: Date | undefined) {
+  function changeDate(nova: Date | undefined) {
     if (!controlled) setDataInterna(nova);
     setRascunho(nova);
     if (nova) setMes(nova);
     onValueChange?.(nova);
   }
 
-  const gatilho = (
+  const trigger = (
     <button
       type="button"
       disabled={disabled}
@@ -133,7 +133,7 @@ export function DatePicker({
           const lida = parseDate(masked);
           // Campo esvaziado limpa a data; texto pela metade ainda nao diz nada,
           // entao a data anterior fica de pe ate o campo perder o foco.
-          if (lida || masked === "") mudarData(lida);
+          if (lida || masked === "") changeDate(lida);
         }}
         onBlur={(event) => {
           setRawText(false);
@@ -149,21 +149,21 @@ export function DatePicker({
           // Abrir sempre parte da data escolhida, e nao do mes que sobrou de
           // uma navegacao anterior. Fechar por fora descarta o rascunho.
           if (abrir) {
-            setRascunho(data);
-            if (data) setMes(data);
+            setRascunho(date);
+            if (date) setMes(date);
           }
         }}
-        trigger={gatilho}
+        trigger={trigger}
         title="Escolher data"
         align="end"
         footer={
-          confirmar && (
+          confirm && (
             <div className="flex items-center justify-between gap-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  mudarData(undefined);
+                  changeDate(undefined);
                   setAberto(false);
                 }}
               >
@@ -171,9 +171,9 @@ export function DatePicker({
               </Button>
               <Button
                 size="sm"
-                disabled={!rascunho}
+                disabled={!draft}
                 onClick={() => {
-                  mudarData(rascunho);
+                  changeDate(draft);
                   setAberto(false);
                 }}
               >
@@ -190,11 +190,11 @@ export function DatePicker({
           onMonthChange={setMes}
           onSelect={(nova) => {
             setRawText(false);
-            if (confirmar) {
+            if (confirm) {
               setRascunho(nova);
               return;
             }
-            mudarData(nova);
+            changeDate(nova);
             setAberto(false);
           }}
           disabled={disabledDays}
@@ -207,12 +207,12 @@ export function DatePicker({
       </CalendarPanel>
 
       {/* O formulario nativo precisa de um valor que o servidor entenda, e
-          `dd/mm/aaaa` nao e. Vai como `aaaa-mm-dd`, o mesmo do input de data. */}
+          `dd/mm/aaaa` nao e. Vai como `aaaa-mm-dd`, o mesmo do input de date. */}
       {name && (
         <input
           type="hidden"
           name={name}
-          value={data ? formatDate(data).split("/").reverse().join("-") : ""}
+          value={date ? formatDate(date).split("/").reverse().join("-") : ""}
         />
       )}
     </div>

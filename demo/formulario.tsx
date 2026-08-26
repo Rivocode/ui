@@ -17,7 +17,7 @@ import {
 } from "../src/index";
 import { Form, FormField, forChecked, forDate, forValue, useZodForm } from "../src/form";
 
-const FORMAS = [
+const PAYMENT_METHODS = [
   { label: "Boleto", value: "boleto" },
   { label: "Pix", value: "pix" },
   { label: "Cartao", value: "cartao" },
@@ -32,7 +32,7 @@ const schema = z.object({
 
 type Entry = z.input<typeof schema>;
 
-function Formulario({ values, comErro }: { values: Partial<Entry>; comErro?: boolean }) {
+function InvoiceForm({ values, comErro }: { values: Partial<Entry>; comErro?: boolean }) {
   const form = useZodForm(schema, {
     defaultValues: { email: "", vencimento: undefined, forma: "", aceite: false, ...values },
   });
@@ -55,12 +55,12 @@ function Formulario({ values, comErro }: { values: Partial<Entry>; comErro?: boo
 
       <FormField name="forma" label="Forma de pagamento">
         {(field) => (
-          <Select {...forValue(field)} items={FORMAS}>
+          <Select {...forValue(field)} items={PAYMENT_METHODS}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {FORMAS.map((o) => (
+              {PAYMENT_METHODS.map((o) => (
                 <SelectItem key={o.value} value={o.value}>
                   {o.label}
                 </SelectItem>
@@ -86,7 +86,7 @@ function Formulario({ values, comErro }: { values: Partial<Entry>; comErro?: boo
   );
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[640px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
@@ -94,7 +94,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
       <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div>
           <p className="mb-4 text-sm text-fg-muted">Preenchido</p>
-          <Formulario
+          <InvoiceForm
             values={{
               email: "financeiro@rivocode.com",
               vencimento: new Date(2026, 2, 3),
@@ -106,7 +106,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-4 text-sm text-fg-muted">Com erro do schema</p>
-          <Formulario values={{ email: "financeiro@" }} comErro />
+          <InvoiceForm values={{ email: "financeiro@" }} comErro />
         </div>
       </div>
     </RivoProvider>
@@ -115,7 +115,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

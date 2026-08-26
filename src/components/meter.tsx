@@ -40,7 +40,7 @@ export function Meter({
   classNames,
   ...props
 }: MeterProps) {
-  const escrever = resolveFormat(format) as ((valor: number) => string) | undefined;
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   return (
     <BaseMeter.Root
@@ -59,7 +59,7 @@ export function Meter({
             <BaseMeter.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
             >
-              {escrever ? (_, valor) => (valor === null ? "" : escrever(valor)) : null}
+              {write ? (_, value) => (value === null ? "" : write(value)) : null}
             </BaseMeter.Value>
           )}
         </div>

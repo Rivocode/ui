@@ -6,7 +6,7 @@ import { Checkbox } from "../src/components/checkbox";
 import { Radio, RadioGroup } from "../src/components/radio";
 import { Switch } from "../src/components/switch";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
@@ -18,7 +18,7 @@ function comTema(node: React.ReactNode) {
  */
 
 test("a caixa com texto sai dentro de um label, e o clique no texto marca", () => {
-  comTema(<Checkbox>ISS retido na fonte</Checkbox>);
+  withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
 
   const box = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
   expect(box.getAttribute("data-checked")).toBeNull();
@@ -28,12 +28,12 @@ test("a caixa com texto sai dentro de um label, e o clique no texto marca", () =
 });
 
 test("sem texto ela continua sendo so a caixa, para quem monta o arranjo", () => {
-  const { container } = comTema(<Checkbox aria-label="Marcar" />);
+  const { container } = withTheme(<Checkbox aria-label="Marcar" />);
   expect(container.querySelector("label")).toBeNull();
 });
 
 test("o circulo com texto tambem marca pelo texto", () => {
-  comTema(
+  withTheme(
     <RadioGroup defaultValue="produto">
       <Radio value="servico">Prestação de serviço</Radio>
       <Radio value="produto">Venda de produto</Radio>
@@ -46,7 +46,7 @@ test("o circulo com texto tambem marca pelo texto", () => {
 });
 
 test("a chave com texto liga pelo texto", () => {
-  comTema(<Switch>Enviar o XML junto com o PDF</Switch>);
+  withTheme(<Switch>Enviar o XML junto com o PDF</Switch>);
 
   fireEvent.click(screen.getByText("Enviar o XML junto com o PDF"));
   expect(screen.getByRole("switch").getAttribute("data-checked")).not.toBeNull();
@@ -64,26 +64,26 @@ import { InputGroup } from "../src/components/input-group";
 import { SelectTrigger, Select } from "../src/components/select";
 
 test("o campo se desenha com a fronteira de controle, e nao com a divisoria", () => {
-  comTema(<Input aria-label="Razao social" />);
-  const campo = screen.getByLabelText("Razao social");
+  withTheme(<Input aria-label="Razao social" />);
+  const field = screen.getByLabelText("Razao social");
 
-  expect(campo.className).toContain("border-border-strong");
+  expect(field.className).toContain("border-border-strong");
 });
 
 test("a moldura de campo com encosto tambem", () => {
-  comTema(
+  withTheme(
     <InputGroup>
       <Input aria-label="Valor" />
     </InputGroup>,
   );
   // A moldura e quem desenha a borda; o campo dentro dela vai sem borda propria.
-  const moldura = screen.getByLabelText("Valor").parentElement!;
+  const frame = screen.getByLabelText("Valor").parentElement!;
 
-  expect(moldura.className).toContain("border-border-strong");
+  expect(frame.className).toContain("border-border-strong");
 });
 
 test("o gatilho do select tambem", () => {
-  comTema(
+  withTheme(
     <Select>
       <SelectTrigger aria-label="Situacao" />
     </Select>,

@@ -29,7 +29,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
@@ -38,7 +38,7 @@ function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   const [avisos, setAvisos] = useState(true);
 
   return (
@@ -47,14 +47,14 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Bloco titulo="Chave">
+          <Block titulo="Chave">
             <label className="flex items-center gap-3 text-base text-fg">
               <Switch checked={avisos} onCheckedChange={setAvisos} />
               Avisar por email quando a nota for paga
             </label>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Escolha unica">
+          <Block titulo="Escolha unica">
             <RadioGroup defaultValue="pix">
               {[
                 { value: "pix", label: "Pix" },
@@ -67,18 +67,18 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </label>
               ))}
             </RadioGroup>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Varias linhas">
+          <Block titulo="Varias linhas">
             <Field>
               <FieldLabel>Observacao</FieldLabel>
               <Textarea placeholder="O que o cliente pediu" />
             </Field>
-          </Bloco>
+          </Block>
         </div>
 
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Bloco titulo="Pessoas">
+          <Block titulo="Pessoas">
             <div className="flex items-center gap-3">
               <Avatar size="sm" fallback="EB" />
               <Avatar fallback="CS" />
@@ -86,13 +86,13 @@ function Amostra({ theme }: { theme: RivoTheme }) {
               <Separator orientation="vertical" className="h-8" />
               <Spinner />
             </div>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Progresso">
+          <Block titulo="Progresso">
             <Progress value={62} label="Enviando notas" showValue />
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Modo de exibicao">
+          <Block titulo="Modo de exibicao">
             <ToggleGroup defaultValue={["esquerda"]}>
               <Toggle value="esquerda" aria-label="Alinhar a esquerda">
                 <AlignLeft size={15} aria-hidden="true" />
@@ -104,9 +104,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 <AlignRight size={15} aria-hidden="true" />
               </Toggle>
             </ToggleGroup>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Acao sem volta">
+          <Block titulo="Acao sem volta">
             <AlertDialog defaultOpen={theme === "rivocode-light"}>
               <AlertDialogTrigger render={<Button variant="destructive" />}>
                 Cancelar nota
@@ -126,11 +126,11 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </Bloco>
+          </Block>
         </div>
 
         <div className="w-full max-w-96">
-          <Bloco titulo="Sanfona">
+          <Block titulo="Sanfona">
             <Accordion>
               <AccordionItem title="Como emito uma nota?">
                 Pelo botao Emitir nota, no topo da listagem. O rascunho fica salvo se voce sair no
@@ -144,7 +144,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 O endereco do cliente cadastrado, com copia para o financeiro.
               </AccordionItem>
             </Accordion>
-          </Bloco>
+          </Block>
         </div>
       </div>
     </RivoProvider>
@@ -153,7 +153,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

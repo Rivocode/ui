@@ -41,6 +41,15 @@ Os tipos deixam o portugues: `PropsDeSelect` vira `ValueProps`,
 `PropsDeCheckbox` vira `CheckedProps`, `PropsDeDatePicker` vira `DateProps`.
 Os nomes antigos seguem exportados como apelido.
 
+### O DatePicker renomeia a prop `confirmar`
+
+Era a unica prop publica em portugues numa API em ingles. Agora e `confirm`.
+
+```tsx
+<DatePicker confirmar />   // antes
+<DatePicker confirm />     // agora
+```
+
 ### Os formatadores saem tambem pela raiz
 
 `currencyShort`, `percent`, `integer`, `monthShort` e os demais continuam em

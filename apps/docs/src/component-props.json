@@ -7776,7 +7776,7 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "confirmar",
+        "name": "confirm",
         "type": "boolean",
         "required": false,
         "note": "Sem rodape, o clique no dia ja vale e o painel fecha."
@@ -7807,7 +7807,7 @@
       },
       {
         "name": "onValueChange",
-        "type": "((data: Date | undefined) => void)",
+        "type": "((date: Date | undefined) => void)",
         "required": false,
         "note": "Chamado quando a data muda, pela digitacao ou pelo Aplicar."
       },
@@ -7847,7 +7847,7 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "confirmar",
+        "name": "confirm",
         "type": "boolean",
         "required": false,
         "note": "Rodape com Aplicar."
@@ -7877,7 +7877,7 @@
       },
       {
         "name": "onValueChange",
-        "type": "((intervalo: DateRange | undefined) => void)",
+        "type": "((range: DateRange | undefined) => void)",
         "required": false,
         "note": "Chamado quando o intervalo muda."
       },

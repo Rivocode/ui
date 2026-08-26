@@ -42,20 +42,20 @@ export function MaskedInput({
 }: MaskedInputProps) {
   const controlled = value !== undefined;
   const [internal, setInternal] = useState(() =>
-    applyMask(defaultValue, moldeDe(mask, defaultValue)),
+    applyMask(defaultValue, patternFor(mask, defaultValue)),
   );
   const text = controlled ? value : internal;
 
-  const soNumero = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
+  const digitsOnly = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
 
   return (
     <Input
       {...props}
       value={text}
-      inputMode={inputMode ?? (soNumero ? "numeric" : undefined)}
+      inputMode={inputMode ?? (digitsOnly ? "numeric" : undefined)}
       onChange={(event) => {
         const raw = event.target.value;
-        const masked = applyMask(raw, moldeDe(mask, raw));
+        const masked = applyMask(raw, patternFor(mask, raw));
 
         if (!controlled) setInternal(masked);
         onValueChange?.(masked, unmask(masked));
@@ -71,7 +71,7 @@ export function MaskedInput({
  * passa pelo estado inicial, e nao pelo onChange - era so ali que ela faltava,
  * e o fixo entrava com a pontuacao do celular ate a primeira tecla.
  */
-function moldeDe(mask: Mask, text: string): Mask {
+function patternFor(mask: Mask, text: string): Mask {
   return mask === "telefone" ? phoneMask(text) : mask;
 }
 

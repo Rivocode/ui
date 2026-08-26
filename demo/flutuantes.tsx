@@ -36,7 +36,7 @@ const STATUS = [
   { label: "Vencidas", value: "vencidas" },
 ];
 
-function AvisoDeEntrada() {
+function EntryToast() {
   const toast = useToast();
   useEffect(() => {
     toast.add({
@@ -48,10 +48,10 @@ function AvisoDeEntrada() {
   return null;
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
-      <AvisoDeEntrada />
+      <EntryToast />
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
       <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
@@ -130,7 +130,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

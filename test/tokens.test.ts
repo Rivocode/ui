@@ -21,8 +21,8 @@ test("todo token que o contrato referencia existe nos dois temas", async () => {
   const dark = readTokens(shared + (await read("src/tokens/themes/rivocode-dark.css")));
   const light = readTokens(shared + (await read("src/tokens/themes/rivocode-light.css")));
 
-  const faltando = referenced.filter((t) => !dark[t] || !light[t]);
-  expect(faltando).toEqual([]);
+  const missing = referenced.filter((t) => !dark[t] || !light[t]);
+  expect(missing).toEqual([]);
 });
 
 test("nenhum componente le da paleta crua", async () => {
@@ -48,8 +48,8 @@ test("o acento do tema claro passa como texto, e a lima crua nao passaria", asyn
 });
 
 test("a densidade compacta alcanca painel, item de lista, caixa e dia", async () => {
-  const escalas = await Bun.file("src/tokens/scales.css").text();
-  const compacta = escalas.slice(escalas.indexOf('[data-rc-density="compact"]'));
+  const scales = await Bun.file("src/tokens/scales.css").text();
+  const compacta = scales.slice(scales.indexOf('[data-rc-density="compact"]'));
 
   for (const token of ["--rc-pad-panel", "--rc-item-y", "--rc-box", "--rc-day"]) {
     expect(compacta).toContain(token);
@@ -78,12 +78,12 @@ test("o aviso se le sobre o proprio fundo de aviso, e nao so sobre a pagina", as
   // compor o alfa antes de medir, o tema claro passava com 4,39.
   const shared = await base();
 
-  for (const tema of ["rivocode-light", "rivocode-dark"]) {
-    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
-    for (const estado of ["info", "success", "warning", "danger"]) {
-      const fundo = compose(t[`--rc-${estado}-subtle`]!, t["--rc-bg"]!);
-      const razao = contrastRatio(t[`--rc-${estado}-text`]!, fundo);
-      expect(`${tema} ${estado} ${razao >= 4.5}`).toBe(`${tema} ${estado} true`);
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${theme}.css`)));
+    for (const state of ["info", "success", "warning", "danger"]) {
+      const background = compose(t[`--rc-${state}-subtle`]!, t["--rc-bg"]!);
+      const ratio = contrastRatio(t[`--rc-${state}-text`]!, background);
+      expect(`${theme} ${state} ${ratio >= 4.5}`).toBe(`${theme} ${state} true`);
     }
   }
 });
@@ -94,18 +94,18 @@ test("a fronteira do controle alcanca os 3:1 que a norma pede", async () => {
   // uma cor que ninguem ve.
   const shared = await base();
 
-  for (const tema of ["rivocode-light", "rivocode-dark"]) {
-    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
-    for (const sob of ["--rc-bg", "--rc-surface", "--rc-surface-raised"]) {
-      const fundo = t[sob]!;
-      const borda = compose(t["--rc-border-strong"]!, fundo);
-      const razao = contrastRatio(borda, fundo);
-      expect(`${tema} ${sob} ${razao >= 3}`).toBe(`${tema} ${sob} true`);
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${theme}.css`)));
+    for (const over of ["--rc-bg", "--rc-surface", "--rc-surface-raised"]) {
+      const background = t[over]!;
+      const border = compose(t["--rc-border-strong"]!, background);
+      const ratio = contrastRatio(border, background);
+      expect(`${theme} ${over} ${ratio >= 3}`).toBe(`${theme} ${over} true`);
     }
 
     // O hover precisa continuar sendo mais forte do que o repouso, senao a
     // resposta ao mouse some junto.
-    const repouso = contrastRatio(
+    const atRest = contrastRatio(
       compose(t["--rc-border-strong"]!, t["--rc-surface"]!),
       t["--rc-surface"]!,
     );
@@ -113,18 +113,18 @@ test("a fronteira do controle alcanca os 3:1 que a norma pede", async () => {
       compose(t["--rc-line-hover"]!, t["--rc-surface"]!),
       t["--rc-surface"]!,
     );
-    expect(`${tema} hover>repouso ${hover > repouso}`).toBe(`${tema} hover>repouso true`);
+    expect(`${theme} hover>atRest ${hover > atRest}`).toBe(`${theme} hover>atRest true`);
   }
 });
 
 test("o anel de foco tambem alcanca 3:1, nos dois fundos", async () => {
   const shared = await base();
 
-  for (const tema of ["rivocode-light", "rivocode-dark"]) {
-    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
-    for (const sob of ["--rc-bg", "--rc-surface"]) {
-      const razao = contrastRatio(compose(t["--rc-ring"]!, t[sob]!), t[sob]!);
-      expect(`${tema} ${sob} ${razao >= 3}`).toBe(`${tema} ${sob} true`);
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${theme}.css`)));
+    for (const over of ["--rc-bg", "--rc-surface"]) {
+      const ratio = contrastRatio(compose(t["--rc-ring"]!, t[over]!), t[over]!);
+      expect(`${theme} ${over} ${ratio >= 3}`).toBe(`${theme} ${over} true`);
     }
   }
 });
@@ -134,8 +134,8 @@ test("forma e movimento vivem em arquivo proprio, que o tema pode redefinir", as
   // que mais mudam entre uma marca e outra, e estavam do lado errado da
   // fronteira: dentro da escala global, junto com densidade - que e outra
   // coisa e tem dono proprio.
-  const forma = await read("src/tokens/forma.css");
-  const escalas = await read("src/tokens/scales.css");
+  const shape = await read("src/tokens/forma.css");
+  const scales = await read("src/tokens/scales.css");
 
   for (const token of [
     "--rc-radius-sm",
@@ -148,8 +148,8 @@ test("forma e movimento vivem em arquivo proprio, que o tema pode redefinir", as
     "--rc-ease",
     "--rc-tracking-display",
   ]) {
-    expect(`${token} em forma.css: ${forma.includes(`${token}:`)}`).toBe(`${token} em forma.css: true`);
-    expect(`${token} fora de scales.css: ${!escalas.includes(`${token}:`)}`).toBe(
+    expect(`${token} em forma.css: ${shape.includes(`${token}:`)}`).toBe(`${token} em forma.css: true`);
+    expect(`${token} fora de scales.css: ${!scales.includes(`${token}:`)}`).toBe(
       `${token} fora de scales.css: true`,
     );
   }
@@ -160,18 +160,18 @@ test("o preset importa a forma antes dos temas, senao o tema nao vence", async (
   // e a ordem do arquivo. Importar a forma depois do tema faria o padrao da
   // casa apagar a escolha do cliente, em silencio.
   const preset = await read("src/preset.css");
-  const ondeForma = preset.indexOf("tokens/forma.css");
-  const ondeTema = preset.indexOf("tokens/themes/rivocode-dark.css");
+  const shapeAt = preset.indexOf("tokens/forma.css");
+  const themeAt = preset.indexOf("tokens/themes/rivocode-dark.css");
 
-  expect(ondeForma).toBeGreaterThan(-1);
-  expect(ondeForma).toBeLessThan(ondeTema);
+  expect(shapeAt).toBeGreaterThan(-1);
+  expect(shapeAt).toBeLessThan(themeAt);
 });
 
 test("a densidade continua sendo da densidade, e nao do tema", async () => {
   // O contrario do de cima: altura de controle e respiro seguem no arquivo de
   // escala, porque quem decide isso e o data-rc-density.
-  const escalas = await read("src/tokens/scales.css");
+  const scales = await read("src/tokens/scales.css");
 
-  expect(escalas).toContain("--rc-control-md:");
-  expect(escalas).toContain("--rc-pad-panel:");
+  expect(scales).toContain("--rc-control-md:");
+  expect(scales).toContain("--rc-pad-panel:");
 });

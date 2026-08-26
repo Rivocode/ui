@@ -9,12 +9,12 @@ import { Item, ItemActions, ItemContent, ItemTitle } from "../src/components/ite
 import { Breadcrumb } from "../src/components/breadcrumb";
 import { Pagination } from "../src/components/pagination";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o campo com mascara pontua enquanto se digita", () => {
-  comTema(<MaskedInput mask="cpf" placeholder="CPF" />);
+  withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
   const field = screen.getByPlaceholderText("CPF") as HTMLInputElement;
   fireEvent.change(field, { target: { value: "12345678901" } });
   expect(field.value).toBe("123.456.789-01");
@@ -23,7 +23,7 @@ test("o campo com mascara pontua enquanto se digita", () => {
 test("quem escuta recebe o texto pontuado e o cru", () => {
   let masked = "";
   let cru = "";
-  comTema(
+  withTheme(
     <MaskedInput
       mask="cnpj"
       placeholder="CNPJ"
@@ -41,7 +41,7 @@ test("quem escuta recebe o texto pontuado e o cru", () => {
 });
 
 test("o telefone troca de molde entre o fixo e o celular", () => {
-  comTema(<MaskedInput mask="telefone" placeholder="Telefone" />);
+  withTheme(<MaskedInput mask="telefone" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 
   fireEvent.change(field, { target: { value: "8332211234" } });
@@ -56,34 +56,34 @@ test("o telefone fixo que chega pronto ja entra com o molde certo", () => {
   // o onChange escolhia o molde com phoneMask, e o estado inicial nao. Saia
   // "(83) 88112-233", com a pontuacao do celular num numero de oito casas. E
   // se corrigia sozinho na primeira tecla, o que torna dificil reproduzir.
-  comTema(<MaskedInput mask="telefone" defaultValue="8388112233" placeholder="Telefone" />);
+  withTheme(<MaskedInput mask="telefone" defaultValue="8388112233" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
 
   expect(field.value).toBe("(83) 8811-2233");
 });
 
 test("o celular que chega pronto continua com nove casas", () => {
-  comTema(<MaskedInput mask="telefone" defaultValue="83988112233" placeholder="Celular" />);
+  withTheme(<MaskedInput mask="telefone" defaultValue="83988112233" placeholder="Celular" />);
   const field = screen.getByPlaceholderText("Celular") as HTMLInputElement;
 
   expect(field.value).toBe("(83) 98811-2233");
 });
 
 test("o campo de dinheiro enche da direita para a esquerda", () => {
-  comTema(<MaskedInput mask="moeda" placeholder="Valor" />);
+  withTheme(<MaskedInput mask="moeda" placeholder="Valor" />);
   const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
   fireEvent.change(field, { target: { value: "123456" } });
   expect(field.value).toBe("1.234,56");
 });
 
 test("o campo com mascara abre o teclado de numeros no celular", () => {
-  comTema(<MaskedInput mask="cpf" placeholder="CPF" />);
+  withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
   expect(screen.getByPlaceholderText("CPF").getAttribute("inputmode")).toBe("numeric");
 });
 
 test("a moldura de campo aceita encosto e botao", () => {
   let cliques = 0;
-  comTema(
+  withTheme(
     <InputGroup>
       <InputPrefix>R$</InputPrefix>
       <MaskedInput mask="moeda" placeholder="Valor" />
@@ -98,7 +98,7 @@ test("a moldura de campo aceita encosto e botao", () => {
 });
 
 test("a linha de lista arruma media, texto e acao", () => {
-  comTema(
+  withTheme(
     <Item>
       <ItemContent>
         <ItemTitle>Nota 4813</ItemTitle>
@@ -113,7 +113,7 @@ test("a linha de lista arruma media, texto e acao", () => {
 });
 
 test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
-  comTema(
+  withTheme(
     <Breadcrumb
       items={[
         { label: "Inicio", href: "/" },
@@ -129,7 +129,7 @@ test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
 });
 
 test("caminho comprido dobra o meio em reticencia", () => {
-  comTema(
+  withTheme(
     <Breadcrumb
       items={[
         { label: "Inicio", href: "/" },
@@ -147,11 +147,11 @@ test("caminho comprido dobra o meio em reticencia", () => {
 });
 
 test("a paginacao anda e trava nas pontas", () => {
-  function Lista() {
+  function List() {
     const [pagina, setPagina] = useState(1);
     return <Pagination page={pagina} pageCount={3} onPageChange={setPagina} />;
   }
-  comTema(<Lista />);
+  withTheme(<List />);
 
   const anterior = screen.getByLabelText("Página anterior") as HTMLButtonElement;
   const proxima = screen.getByLabelText("Próxima página") as HTMLButtonElement;
@@ -165,7 +165,7 @@ test("a paginacao anda e trava nas pontas", () => {
 });
 
 test("muitas paginas cabem na mesma largura, com reticencia", () => {
-  comTema(<Pagination page={50} pageCount={100} onPageChange={() => {}} />);
+  withTheme(<Pagination page={50} pageCount={100} onPageChange={() => {}} />);
   expect(screen.getAllByText("...")).toHaveLength(2);
   expect(screen.getByLabelText("Página 1")).toBeDefined();
   expect(screen.getByLabelText("Página 100")).toBeDefined();
@@ -173,7 +173,7 @@ test("muitas paginas cabem na mesma largura, com reticencia", () => {
 });
 
 test("a paginacao nao mostra reticencia quando so um numero foi pulado", () => {
-  comTema(<Pagination page={4} pageCount={6} onPageChange={() => {}} />);
+  withTheme(<Pagination page={4} pageCount={6} onPageChange={() => {}} />);
   expect(screen.queryByText("...")).toBeNull();
   expect(screen.getByLabelText("Página 2")).toBeDefined();
 });

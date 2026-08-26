@@ -41,29 +41,29 @@ export function currency(value: number) {
  * decide. `mil` e o que a lingua escreve, e le melhor num paragrafo. Nenhuma
  * das duas e errada; misturar as duas na mesma tela e.
  */
-const SUFIXOS = {
-  simbolo: { bilhao: "B", milhao: "M", milhar: "K", junto: true },
-  palavra: { bilhao: "bi", milhao: "mi", milhar: "mil", junto: false },
+const SUFFIXES = {
+  symbol: { billion: "B", million: "M", thousand: "K", tight: true },
+  word: { billion: "bi", million: "mi", thousand: "mil", tight: false },
 } as const;
 
-function abbreviate(value: number, forma: keyof typeof SUFIXOS) {
-  const { bilhao, milhao, milhar, junto } = SUFIXOS[forma];
+function abbreviate(value: number, shape: keyof typeof SUFFIXES) {
+  const { billion, million, thousand, tight } = SUFFIXES[shape];
   const size = Math.abs(value);
-  const space = junto ? "" : " ";
+  const space = tight ? "" : " ";
 
-  const escrever = (dividido: number, suffix: string) =>
-    `${numberFormat({ maximumFractionDigits: 1 }).format(dividido)}${space}${suffix}`;
+  const write = (divided: number, suffix: string) =>
+    `${numberFormat({ maximumFractionDigits: 1 }).format(divided)}${space}${suffix}`;
 
-  if (size >= 1_000_000_000) return escrever(value / 1_000_000_000, bilhao);
-  if (size >= 1_000_000) return escrever(value / 1_000_000, milhao);
-  if (size >= 1_000) return escrever(value / 1_000, milhar);
+  if (size >= 1_000_000_000) return write(value / 1_000_000_000, billion);
+  if (size >= 1_000_000) return write(value / 1_000_000, million);
+  if (size >= 1_000) return write(value / 1_000, thousand);
 
   return numberFormat({ maximumFractionDigits: 0 }).format(value);
 }
 
 /** `12,4K`, `1,2M`, `340`. */
 export function compact(value: number) {
-  return abbreviate(value, "simbolo");
+  return abbreviate(value, "symbol");
 }
 
 /**
@@ -73,7 +73,7 @@ export function compact(value: number) {
  * ela custa o dobro da largura, e largura de eixo e espaco tirado do grafico.
  */
 export function compactWords(value: number) {
-  return abbreviate(value, "palavra");
+  return abbreviate(value, "word");
 }
 
 /** `R$ 2,5K`, `R$ 1,2M`. O que cabe num eixo. */
@@ -111,12 +111,12 @@ export function percent(value: number, digits = 0) {
  * `parseDate` do nucleo faz. Quem passa hora, ou um `Date`, esta falando de
  * instante, e instante continua sendo lido no fuso local.
  */
-const DIA_DE_CALENDARIO = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/;
+const CALENDAR_DAY = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/;
 
 function toDate(date: Date | string | number) {
   if (date instanceof Date) return date;
   if (typeof date === "string") {
-    const parts = DIA_DE_CALENDARIO.exec(date.trim());
+    const parts = CALENDAR_DAY.exec(date.trim());
     if (parts) {
       return new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3] ?? "1"));
     }

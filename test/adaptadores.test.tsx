@@ -17,7 +17,7 @@ import { RadioGroup, Radio } from "../src/components/radio";
 
 const schema = z.object({ avisar: z.boolean(), forma: z.string() });
 
-function Formulario() {
+function InvoiceForm() {
   const form = useZodForm(schema, { defaultValues: { avisar: true, forma: "pix" } });
 
   return (
@@ -41,18 +41,18 @@ function Formulario() {
 }
 
 test("o adaptador de marcado veste a chave, e nao so a caixa", () => {
-  render(<Formulario />);
+  render(<InvoiceForm />);
 
   expect(screen.getByRole("switch").getAttribute("data-checked")).not.toBeNull();
 });
 
 test("o adaptador de valor veste o grupo de escolha unica", () => {
-  const { container } = render(<Formulario />);
+  const { container } = render(<InvoiceForm />);
 
-  const marcados = [...container.querySelectorAll('[role="radio"][data-checked]')];
-  expect(marcados.length).toBe(1);
+  const marked = [...container.querySelectorAll('[role="radio"][data-checked]')];
+  expect(marked.length).toBe(1);
   // O marcado e o do schema, e nao o primeiro da lista por acaso.
-  expect(marcados[0]!.closest("label")!.textContent).toContain("Pix");
+  expect(marked[0]!.closest("label")!.textContent).toContain("Pix");
 });
 
 test("os nomes antigos continuam valendo", async () => {

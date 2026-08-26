@@ -15,7 +15,7 @@ import {
   SidebarTrigger,
 } from "../src/components/sidebar";
 
-function barra(defaultOpen: boolean) {
+function sidebar(defaultOpen: boolean) {
   return render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={defaultOpen}>
@@ -39,7 +39,7 @@ function barra(defaultOpen: boolean) {
 }
 
 test("aberta, a barra mostra o nome de cada destino", () => {
-  barra(true);
+  sidebar(true);
 
   expect(screen.getByText("Painel")).toBeDefined();
   expect(screen.getByText("Cadastros")).toBeDefined();
@@ -48,32 +48,32 @@ test("aberta, a barra mostra o nome de cada destino", () => {
 });
 
 test("encolhida, o campo de busca vira botao, porque 3,5rem nao aceitam texto", () => {
-  const { container } = barra(false);
+  const { container } = sidebar(false);
 
   expect(container.querySelector("input[type=search]")).toBeNull();
   expect(screen.getByRole("button", { name: "Buscar" })).toBeDefined();
 });
 
 test("encolhida, o submenu vira menu ao lado em vez de sumir", () => {
-  barra(false);
+  sidebar(false);
 
   // A lista some da barra, senao ela indentaria dentro de 3,5rem.
   expect(screen.queryByText("Clientes")).toBeNull();
 
   // E o pai continua alcancavel, agora como gatilho de menu.
-  const gatilho = screen.getByRole("button", { name: "Cadastros" });
-  fireEvent.click(gatilho);
+  const trigger = screen.getByRole("button", { name: "Cadastros" });
+  fireEvent.click(trigger);
 
   expect(screen.getByRole("menuitem", { name: "Clientes" })).toBeDefined();
 });
 
 test("o gatilho abre e fecha, e diz qual dos dois no aria", () => {
-  barra(true);
+  sidebar(true);
 
-  const gatilho = screen.getByRole("button", { name: "Fechar menu" });
-  expect(gatilho.getAttribute("aria-expanded")).toBe("true");
+  const trigger = screen.getByRole("button", { name: "Fechar menu" });
+  expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-  fireEvent.click(gatilho);
+  fireEvent.click(trigger);
   expect(screen.getByRole("button", { name: "Abrir menu" }).getAttribute("aria-expanded")).toBe(
     "false",
   );
@@ -128,7 +128,7 @@ function comCelular<T>(run: () => T): T {
 
 test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     // `defaultOpen` fala da coluna da mesa. No celular a barra cobre a tela, e
     // abrir sozinha tapa justamente o que a pessoa veio ver.
     expect(screen.queryByText("Painel")).toBeNull();
@@ -137,7 +137,7 @@ test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
 
 test("no celular o gatilho abre a folha", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     expect(screen.getByText("Painel")).toBeDefined();
   });
@@ -145,7 +145,7 @@ test("no celular o gatilho abre a folha", () => {
 
 test("no celular, escolher um destino fecha a folha", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     fireEvent.click(screen.getByText("Painel"));
     // Na mesa ela continuaria aberta: ali a barra nao cobre nada.
@@ -153,7 +153,7 @@ test("no celular, escolher um destino fecha a folha", () => {
   });
 });
 
-function barraComGrupo(defaultOpen: boolean) {
+function sidebarWithGroup(defaultOpen: boolean) {
   return render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={defaultOpen}>
@@ -174,7 +174,7 @@ function barraComGrupo(defaultOpen: boolean) {
 test("encolhida, o rotulo do grupo some em vez de sair cortado", () => {
   // Em 3,5rem "CATALOGO" viraria "CATA". Sumir diz menos; mentir sobre o nome
   // do grupo diz errado.
-  const { container } = barraComGrupo(false);
+  const { container } = sidebarWithGroup(false);
 
   expect(screen.queryByText("Catalogo")).toBeNull();
   // O destino continua la: encolhida, ele e so o icone, com o nome no tooltip.
@@ -182,7 +182,7 @@ test("encolhida, o rotulo do grupo some em vez de sair cortado", () => {
 });
 
 test("aberta, o rotulo do grupo aparece", () => {
-  barraComGrupo(true);
+  sidebarWithGroup(true);
 
   expect(screen.getByText("Catalogo")).toBeDefined();
 });

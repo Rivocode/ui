@@ -7,7 +7,7 @@ import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 import { ChartLegendContent } from "../src/chart/chart-legend";
 import { Line, LineChart } from "recharts";
 
-const comTema = (node: React.ReactNode) => render(<RivoProvider scope="local">{node}</RivoProvider>);
+const withTheme = (node: React.ReactNode) => render(<RivoProvider scope="local">{node}</RivoProvider>);
 
 const CONFIG: ChartConfig = {
   emitidas: { label: "Emitidas" },
@@ -144,7 +144,7 @@ test("a dica da pizza tambem usa o nome da fatia", () => {
 });
 
 test("o grafico carregando mostra esqueleto, e nao a moldura vazia", () => {
-  comTema(
+  withTheme(
     <ChartContainer config={{ pagas: { label: "Pagas" } }} isLoading className="h-40">
       <LineChart data={[]}>
         <Line dataKey="pagas" />
@@ -156,7 +156,7 @@ test("o grafico carregando mostra esqueleto, e nao a moldura vazia", () => {
 
 test("o erro oferece nova tentativa quando ha para onde tentar", () => {
   let tentou = 0;
-  comTema(
+  withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
       isError
@@ -174,7 +174,7 @@ test("o erro oferece nova tentativa quando ha para onde tentar", () => {
 });
 
 test("consulta vazia mostra o convite, e nao um grafico sem ponto", () => {
-  comTema(
+  withTheme(
     <ChartContainer
       config={{ pagas: { label: "Pagas" } }}
       data={[]}

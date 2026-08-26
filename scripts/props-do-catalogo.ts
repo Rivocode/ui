@@ -20,106 +20,106 @@
 import { API, SignatureKind, SymbolFlags } from "typescript/unstable/async";
 
 const RAIZ = process.cwd();
-const DESTINO = "apps/docs/src/component-props.json";
+const TARGET = "apps/docs/src/component-props.json";
 
 /** As entradas publicas do pacote. O que nao sai por elas nao e documentavel. */
-const ENTRADAS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
+const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
 
 /**
  * O que todo componente repassa ao elemento raiz. Fica numa linha so no fim da
  * tabela, em vez de repetido em 165 paginas.
  */
-const REPASSADAS = new Set(["className", "style", "id", "children"]);
+const FORWARDED = new Set(["className", "style", "id", "children"]);
 
-export type PropDoCatalogo = {
+export type CatalogProp = {
   name: string;
   type: string;
   required: boolean;
   note?: string;
 };
 
-export type PecaDoCatalogo = {
+export type CatalogPiece = {
   /** Se ela aceita os atributos do elemento raiz alem das props proprias. */
   forwardsRoot: boolean;
-  props: PropDoCatalogo[];
+  props: CatalogProp[];
 };
 
 /**
  * `boolean | undefined` numa linha que ja tem a coluna "Obrigatoria: nao" diz
  * a mesma coisa duas vezes, e a segunda ocupa a largura que o tipo precisa.
  */
-function semUndefined(tipo: string, opcional: boolean): string {
-  if (!opcional) return tipo;
-  const limpo = tipo.replace(/\s*\|\s*undefined\s*$/, "");
-  return limpo || tipo;
+function withoutUndefined(type: string, optional: boolean): string {
+  if (!optional) return type;
+  const clean = type.replace(/\s*\|\s*undefined\s*$/, "");
+  return clean || type;
 }
 
 /** Uma linha so, sem quebra: a tabela da doc e a do site nao aceitam paragrafo. */
-function primeiraLinha(texto: string): string | undefined {
-  const limpo = texto.replace(/\s+/g, " ").trim();
-  if (!limpo) return undefined;
-  const ponto = limpo.indexOf(". ");
-  return ponto === -1 ? limpo : limpo.slice(0, ponto + 1);
+function firstSentence(text: string): string | undefined {
+  const clean = text.replace(/\s+/g, " ").trim();
+  if (!clean) return undefined;
+  const period = clean.indexOf(". ");
+  return period === -1 ? clean : clean.slice(0, period + 1);
 }
 
-async function ler(): Promise<Record<string, PecaDoCatalogo>> {
+async function readCatalog(): Promise<Record<string, CatalogPiece>> {
   const api = new API({ cwd: RAIZ });
   const snapshot = await api.updateSnapshot({ openProjects: [`${RAIZ}/tsconfig.json`] });
   const projeto = (await snapshot.getProjects())[0];
   if (!projeto) throw new Error("Nao consegui abrir o projeto do tsconfig.json.");
 
   const { checker, program } = projeto;
-  const catalogo: Record<string, PecaDoCatalogo> = {};
+  const catalog: Record<string, CatalogPiece> = {};
 
-  for (const entrada of ENTRADAS) {
-    const arquivo = await program.getSourceFile(`${RAIZ}/${entrada}`);
-    if (!arquivo) throw new Error(`Nao achei ${entrada}.`);
+  for (const entrada of ENTRY_POINTS) {
+    const file = await program.getSourceFile(`${RAIZ}/${entrada}`);
+    if (!file) throw new Error(`Nao achei ${entrada}.`);
 
-    const modulo = await checker.getSymbolAtLocation(arquivo);
-    if (!modulo) throw new Error(`${entrada} nao resolveu como modulo.`);
+    const module = await checker.getSymbolAtLocation(file);
+    if (!module) throw new Error(`${entrada} nao resolveu como modulo.`);
 
-    for (const [chave, simbolo] of await modulo.getExports()) {
-      const nome = String(chave);
+    for (const [key, symbol] of await module.getExports()) {
+      const name = String(key);
       // Componente comeca com maiuscula. Hook e utilitario tem outra forma de
       // documentacao, e forcar os dois na mesma tabela mente sobre os dois.
-      if (!/^[A-Z]/.test(nome) || catalogo[nome]) continue;
+      if (!/^[A-Z]/.test(name) || catalog[name]) continue;
 
-      const tipo = await checker.getTypeOfSymbol(simbolo);
-      if (!tipo) continue;
+      const type = await checker.getTypeOfSymbol(symbol);
+      if (!type) continue;
 
-      const assinaturas = await checker.getSignaturesOfType(tipo, SignatureKind.Call);
-      if (!assinaturas.length) continue;
+      const signatures = await checker.getSignaturesOfType(type, SignatureKind.Call);
+      if (!signatures.length) continue;
 
-      const parametro = await checker.getParameterType(assinaturas[0]!, 0);
-      if (!parametro) continue;
+      const parameter = await checker.getParameterType(signatures[0]!, 0);
+      if (!parameter) continue;
 
-      const todas = await checker.getPropertiesOfType(parametro);
-      const props: PropDoCatalogo[] = [];
+      const all = await checker.getPropertiesOfType(parameter);
+      const props: CatalogProp[] = [];
       let forwardsRoot = false;
 
-      for (const prop of todas) {
-        const origem = prop.declarations[0]?.path ?? "";
+      for (const prop of all) {
+        const declaredIn = prop.declarations[0]?.path ?? "";
         // O que vem do React e o elemento raiz: 280 atributos de HTML que
         // dizem o mesmo em toda peca. A presenca deles e a resposta do
         // forwardsRoot, e nao linha de tabela.
-        const doReact = origem.includes("@types/react");
-        if (doReact || REPASSADAS.has(prop.name)) {
+        const fromReact = declaredIn.includes("@types/react");
+        if (fromReact || FORWARDED.has(prop.name)) {
           if (prop.name === "className") forwardsRoot = true;
           continue;
         }
 
-        const tipoDaProp = await checker.getTypeOfSymbol(prop);
-        const nota = primeiraLinha(await prop.getDocumentationComment(checker));
-        const opcional = Boolean(prop.flags & SymbolFlags.Optional);
-        const escrito = tipoDaProp
-          ? (await checker.typeToString(tipoDaProp)).replace(/\s+/g, " ").trim()
+        const propType = await checker.getTypeOfSymbol(prop);
+        const note = firstSentence(await prop.getDocumentationComment(checker));
+        const optional = Boolean(prop.flags & SymbolFlags.Optional);
+        const written = propType
+          ? (await checker.typeToString(propType)).replace(/\s+/g, " ").trim()
           : "unknown";
 
         props.push({
           name: prop.name,
-          type: semUndefined(escrito, opcional),
-          required: !opcional,
-          ...(nota ? { note: nota } : {}),
+          type: withoutUndefined(written, optional),
+          required: !optional,
+          ...(note ? { note: note } : {}),
         });
       }
 
@@ -129,45 +129,45 @@ async function ler(): Promise<Record<string, PecaDoCatalogo>> {
         a.required === b.required ? a.name.localeCompare(b.name) : a.required ? -1 : 1,
       );
 
-      catalogo[nome] = { forwardsRoot, props };
+      catalog[name] = { forwardsRoot, props };
     }
   }
 
   await api.close();
 
   // Ordenado, para o arquivo nao trocar de linha a cada rodada e sujar o diff.
-  return Object.fromEntries(Object.entries(catalogo).sort(([a], [b]) => a.localeCompare(b)));
+  return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
 }
 
 if (import.meta.main) {
-  const catalogo = await ler();
-  const texto = `${JSON.stringify(catalogo, null, 2)}\n`;
-  const conferir = process.argv.includes("--check");
+  const catalog = await readCatalog();
+  const text = `${JSON.stringify(catalog, null, 2)}\n`;
+  const checking = process.argv.includes("--check");
 
-  if (conferir) {
-    const atual = await Bun.file(DESTINO)
+  if (checking) {
+    const current = await Bun.file(TARGET)
       .text()
       .catch(() => "");
 
-    if (atual !== texto) {
-      console.error(`${DESTINO} divergiu dos tipos. Rode: bun run gen:props`);
+    if (current !== text) {
+      console.error(`${TARGET} divergiu dos tipos. Rode: bun run gen:props`);
 
-      const antes: Record<string, PecaDoCatalogo> = atual ? JSON.parse(atual) : {};
-      for (const [peca, dados] of Object.entries(catalogo)) {
-        const velhas = new Set((antes[peca]?.props ?? []).map((p) => p.name));
-        const novas = dados.props.map((p) => p.name).filter((p) => !velhas.has(p));
-        const sumiram = [...velhas].filter((p) => !dados.props.some((atual) => atual.name === p));
-        if (novas.length) console.error(`  ${peca}: entrou ${novas.join(", ")}`);
-        if (sumiram.length) console.error(`  ${peca}: saiu ${sumiram.join(", ")}`);
+      const before: Record<string, CatalogPiece> = current ? JSON.parse(current) : {};
+      for (const [piece, data] of Object.entries(catalog)) {
+        const previous = new Set((before[piece]?.props ?? []).map((p) => p.name));
+        const added = data.props.map((p) => p.name).filter((p) => !previous.has(p));
+        const removed = [...previous].filter((p) => !data.props.some((current) => current.name === p));
+        if (added.length) console.error(`  ${piece}: entrou ${added.join(", ")}`);
+        if (removed.length) console.error(`  ${piece}: saiu ${removed.join(", ")}`);
       }
       process.exit(1);
     }
 
-    const total = Object.values(catalogo).reduce((soma, peca) => soma + peca.props.length, 0);
-    console.log(`props em dia: ${Object.keys(catalogo).length} pecas, ${total} props.`);
+    const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
+    console.log(`props em dia: ${Object.keys(catalog).length} pecas, ${total} props.`);
   } else {
-    await Bun.write(DESTINO, texto);
-    const total = Object.values(catalogo).reduce((soma, peca) => soma + peca.props.length, 0);
-    console.log(`${DESTINO}: ${Object.keys(catalogo).length} pecas, ${total} props.`);
+    await Bun.write(TARGET, text);
+    const total = Object.values(catalog).reduce((sum, piece) => sum + piece.props.length, 0);
+    console.log(`${TARGET}: ${Object.keys(catalog).length} pecas, ${total} props.`);
   }
 }

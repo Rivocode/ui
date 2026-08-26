@@ -17,9 +17,9 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-type Nota = { id: string; numero: string; cliente: string; value: string; situacao: string };
+type Invoice = { id: string; numero: string; cliente: string; value: string; situacao: string };
 
-const NOTAS: Nota[] = [
+const INVOICES: Invoice[] = [
   { id: "1", numero: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", situacao: "Paga" },
   {
     id: "2",
@@ -37,7 +37,7 @@ const NOTAS: Nota[] = [
   },
 ];
 
-const COLUNAS: Column<Nota>[] = [
+const COLUMNS: Column<Invoice>[] = [
   { key: "numero", header: "Numero" },
   { key: "cliente", header: "Cliente" },
   { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
@@ -57,7 +57,7 @@ const PASSOS: Step[] = [
   { id: "revisao", title: "Revisao", description: "Conferir e emitir" },
 ];
 
-function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
@@ -66,91 +66,91 @@ function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function Assistente() {
-  const assistente = useWizard(PASSOS);
+function Wizard() {
+  const wizard = useWizard(PASSOS);
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
-      <Steps steps={PASSOS} current={assistente.step} onStepClick={assistente.goTo} />
+      <Steps steps={PASSOS} current={wizard.step} onStepClick={wizard.goTo} />
 
       <div className="mt-6 flex flex-col gap-4">
-        {assistente.step === 0 && (
+        {wizard.step === 0 && (
           <Field>
             <FieldLabel>Cliente</FieldLabel>
             <Input defaultValue="Clinica Sao Lucas" />
           </Field>
         )}
-        {assistente.step === 1 && (
+        {wizard.step === 1 && (
           <Field>
             <FieldLabel>Descricao do servico</FieldLabel>
             <Input placeholder="Consultoria de agosto" />
           </Field>
         )}
-        {assistente.step === 2 && (
+        {wizard.step === 2 && (
           <p className="text-base text-fg-muted">
-            Nota para Clinica Sao Lucas, no valor de R$ 2.480,00.
+            Invoice para Clinica Sao Lucas, no valor de R$ 2.480,00.
           </p>
         )}
       </div>
 
       <WizardFooter>
-        <Button variant="ghost" disabled={assistente.isFirst} onClick={assistente.back}>
+        <Button variant="ghost" disabled={wizard.isFirst} onClick={wizard.back}>
           Voltar
         </Button>
-        {assistente.isLast ? (
+        {wizard.isLast ? (
           <Button>Emitir nota</Button>
         ) : (
-          <Button onClick={() => assistente.next()}>Avancar</Button>
+          <Button onClick={() => wizard.next()}>Avancar</Button>
         )}
       </WizardFooter>
     </div>
   );
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[900px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
       <div className="flex flex-col gap-10">
-        <Bloco titulo="Com dados">
+        <Block titulo="Com dados">
           <DataTable
-            data={NOTAS}
-            columns={COLUNAS}
+            data={INVOICES}
+            columns={COLUMNS}
             rowKey={(nota) => nota.id}
             empty={{ title: "Nenhuma nota", description: "Emita a primeira." }}
           />
-        </Bloco>
+        </Block>
 
         <div className="flex flex-col gap-10 sm:flex-row sm:gap-x-12">
           <div className="flex-1">
-            <Bloco titulo="Carregando">
+            <Block titulo="Carregando">
               <DataTable
                 data={undefined}
-                columns={COLUNAS}
+                columns={COLUMNS}
                 rowKey={(nota) => nota.id}
                 skeletonRows={3}
               />
-            </Bloco>
+            </Block>
           </div>
 
           <div className="flex-1">
-            <Bloco titulo="Erro">
+            <Block titulo="Erro">
               <DataTable
                 data={undefined}
                 isError
                 onRetry={() => {}}
                 errorMessage="A prefeitura nao respondeu. Tente de novo em alguns minutos."
-                columns={COLUNAS}
+                columns={COLUMNS}
                 rowKey={(nota) => nota.id}
               />
-            </Bloco>
+            </Block>
 
             <div className="mt-8">
-              <Bloco titulo="Vazio">
-                <DataTable<Nota>
+              <Block titulo="Vazio">
+                <DataTable<Invoice>
                   data={[]}
-                  columns={COLUNAS}
+                  columns={COLUMNS}
                   rowKey={(nota) => nota.id}
                   empty={{
                     icon: <FileText size={24} aria-hidden="true" />,
@@ -159,14 +159,14 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                     action: <Button size="sm">Emitir nota</Button>,
                   }}
                 />
-              </Bloco>
+              </Block>
             </div>
           </div>
         </div>
 
-        <Bloco titulo="Formulario em etapas">
-          <Assistente />
-        </Bloco>
+        <Block titulo="Formulario em etapas">
+          <Wizard />
+        </Block>
       </div>
     </RivoProvider>
   );
@@ -174,7 +174,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

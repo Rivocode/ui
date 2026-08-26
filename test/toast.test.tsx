@@ -46,18 +46,18 @@ test("usar o aviso fora do Provider da erro, e nao silencio", () => {
 
 test("o gerenciador tem identidade estavel, senao um useEffect entra em laco", () => {
   const vistos: unknown[] = [];
-  function Espia() {
+  function Spy() {
     vistos.push(useToast());
     return null;
   }
   const { rerender } = render(
     <RivoProvider>
-      <Espia />
+      <Spy />
     </RivoProvider>,
   );
   rerender(
     <RivoProvider>
-      <Espia />
+      <Spy />
     </RivoProvider>,
   );
   expect(vistos.length).toBeGreaterThan(1);
@@ -88,10 +88,10 @@ test("o aviso entra pela borda mais proxima, e nao atravessa a tela", () => {
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
 
-  const aviso = screen.getByText("Nota emitida").closest("[class*='rounded-lg']");
-  expect(aviso).not.toBeNull();
+  const alert = screen.getByText("Nota emitida").closest("[class*='rounded-lg']");
+  expect(alert).not.toBeNull();
   // Ancorado a esquerda, ele desliza da esquerda.
-  expect(aviso!.className).toContain("data-[starting-style]:-translate-x-4");
+  expect(alert!.className).toContain("data-[starting-style]:-translate-x-4");
 });
 
 function DisparoComTom({ type }: { type?: string }) {

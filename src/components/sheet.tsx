@@ -44,13 +44,13 @@ export function Sheet({ side = "bottom", children, ...props }: SheetProps) {
 export const SheetTrigger = BaseDrawer.Trigger;
 export const SheetClose = BaseDrawer.Close;
 
-const MOLDURA: Record<SheetSide, string> = {
+const VIEWPORT_SIDE: Record<SheetSide, string> = {
   bottom: "items-end justify-center",
   left: "items-stretch justify-start",
   right: "items-stretch justify-end",
 };
 
-const PAINEL: Record<SheetSide, string> = {
+const PANEL_SIDE: Record<SheetSide, string> = {
   bottom: cn(
     "max-h-[85dvh] w-full rounded-t-xl border-t",
     "pb-[max(1.5rem,env(safe-area-inset-bottom))]",
@@ -105,7 +105,7 @@ export function SheetContent({
       />
 
       <BaseDrawer.Viewport
-        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", MOLDURA[side], classNames?.viewport)}
+        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", VIEWPORT_SIDE[side], classNames?.viewport)}
       >
         <BaseDrawer.Popup
           {...props}
@@ -117,7 +117,7 @@ export function SheetContent({
             // Enquanto o dedo esta na tela o painel segue o dedo sem transicao,
             // senao ele chega atrasado e parece emperrado.
             "data-[swiping]:select-none data-[swiping]:duration-0",
-            PAINEL[side],
+            PANEL_SIDE[side],
             className,
           )}
         >

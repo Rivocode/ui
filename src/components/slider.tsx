@@ -47,13 +47,13 @@ export function Slider({
   classNames,
   ...props
 }: SliderProps) {
-  const escrever = resolveFormat(format) as ((valor: number) => string) | undefined;
+  const write = resolveFormat(format) as ((valor: number) => string) | undefined;
 
   // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
   // uma faixa com um pino so nao deixa mover o outro limite.
   const values = props.value ?? props.defaultValue;
-  const quantos = Array.isArray(values) ? values.length : 1;
-  const labels = Array.from({ length: quantos }, (_, index) =>
+  const count = Array.isArray(values) ? values.length : 1;
+  const labels = Array.from({ length: count }, (_, index) =>
     Array.isArray(thumbLabel) ? thumbLabel[index] : thumbLabel,
   );
 
@@ -70,7 +70,7 @@ export function Slider({
             <BaseSlider.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
             >
-              {escrever ? (_, valores) => valores.map(escrever).join(" – ") : null}
+              {write ? (_, values) => values.map(write).join(" – ") : null}
             </BaseSlider.Value>
           )}
         </div>

@@ -19,7 +19,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
+function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   return (
     <RivoProvider scope="local" theme={theme} density={density} className="p-8">
       <p className="mb-6 font-mono text-xs tracking-widest text-fg-subtle uppercase">
@@ -85,9 +85,9 @@ function Amostra({ theme, density }: { theme: RivoTheme; density: RivoDensity })
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" density="comfortable" />
-    <Amostra theme="rivocode-dark" density="compact" />
-    <Amostra theme="rivocode-light" density="comfortable" />
-    <Amostra theme="rivocode-light" density="compact" />
+    <Sample theme="rivocode-dark" density="comfortable" />
+    <Sample theme="rivocode-dark" density="compact" />
+    <Sample theme="rivocode-light" density="comfortable" />
+    <Sample theme="rivocode-light" density="compact" />
   </div>,
 );

@@ -132,8 +132,8 @@ const filtroSemAcento = constructFilterFn({
 /** Sem paginacao pedida, uma "pagina" que cabe qualquer lista. */
 const SEM_PAGINACAO = Number.MAX_SAFE_INTEGER;
 
-const chavesDe = (selecao: RowSelectionState) =>
-  Object.keys(selecao).filter((key) => selecao[key]);
+const keysOf = (selection: RowSelectionState) =>
+  Object.keys(selection).filter((key) => selection[key]);
 
 /**
  * Tabela com os tres estados que toda listagem tem e quase nenhuma trata:
@@ -182,34 +182,34 @@ export function DataTable<Row>({
   classNames,
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
-  const [selecaoInterna, setSelecaoInterna] = useState<RowSelectionState>({});
+  const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>({});
 
   // Controlada quando `selected` veio; interna quando nao. Nos dois casos o
   // motor enxerga o mesmo formato, e `onSelectedChange` ouve as mudancas.
-  const selecao: RowSelectionState = useMemo(
-    () => (selected ? Object.fromEntries(selected.map((key) => [key, true])) : selecaoInterna),
-    [selected, selecaoInterna],
+  const selection: RowSelectionState = useMemo(
+    () => (selected ? Object.fromEntries(selected.map((key) => [key, true])) : internalSelection),
+    [selected, internalSelection],
   );
 
   // O motor exige `Record`, e a API publica nunca exigiu: o cast fica aqui na
   // fronteira, e o resto do arquivo segue no `Row` de quem chamou.
-  type Linha = Record<string, unknown>;
+  type EngineRow = Record<string, unknown>;
 
-  const defs = useMemo<ColumnDef<typeof FEATURES, Linha>[]>(
+  const defs = useMemo<ColumnDef<typeof FEATURES, EngineRow>[]>(
     () =>
       columns.map((column) => ({
         id: column.key,
-        accessorFn: (row: Linha) => (column.value ? column.value(row as Row) : row[column.key]),
+        accessorFn: (row: EngineRow) => (column.value ? column.value(row as Row) : row[column.key]),
         enableSorting: column.sortable ?? false,
         enableGlobalFilter: true,
       })),
     [columns],
   );
 
-  const table = useTable<typeof FEATURES, Linha>({
+  const table = useTable<typeof FEATURES, EngineRow>({
     features: FEATURES,
     columns: defs,
-    data: (data ?? []) as unknown as Linha[],
+    data: (data ?? []) as unknown as EngineRow[],
     getRowId: (row, index) => rowKey(row as unknown as Row, index),
     enableRowSelection: selectable ?? false,
     // Numero ordena crescente no primeiro clique, como texto: a surpresa de
@@ -227,14 +227,14 @@ export function DataTable<Row>({
       });
     },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
-      const proxima = typeof updater === "function" ? updater(selecao) : updater;
+      const proxima = typeof updater === "function" ? updater(selection) : updater;
       if (!selected) setSelecaoInterna(proxima);
-      onSelectedChange?.(chavesDe(proxima));
+      onSelectedChange?.(keysOf(proxima));
     },
     state: {
       globalFilter: filter || undefined,
       pagination: { pageIndex, pageSize: pageSize ?? SEM_PAGINACAO },
-      rowSelection: selecao,
+      rowSelection: selection,
     },
   });
 
@@ -283,14 +283,14 @@ export function DataTable<Row>({
     );
   }
 
-  const linhas = table.getRowModel().rows;
-  const totalFiltrado = table.getFilteredRowModel().rows.length;
-  const totalColunas = columns.length + (selectable ? 1 : 0);
+  const rows = table.getRowModel().rows;
+  const filteredTotal = table.getFilteredRowModel().rows.length;
+  const columnCount = columns.length + (selectable ? 1 : 0);
 
   // O rodape so existe com paginacao, e conta o que sobrou do filtro: "1-2 de
   // 5" e a lista, nao o banco.
-  const inicio = pageIndex * (pageSize ?? SEM_PAGINACAO) + 1;
-  const fim = Math.min(inicio + (pageSize ?? SEM_PAGINACAO) - 1, totalFiltrado);
+  const first = pageIndex * (pageSize ?? SEM_PAGINACAO) + 1;
+  const last = Math.min(first + (pageSize ?? SEM_PAGINACAO) - 1, filteredTotal);
 
   return (
     <div className={className}>
@@ -378,16 +378,16 @@ export function DataTable<Row>({
                 ))}
               </TableRow>
             ))
-          ) : linhas.length === 0 && filter ? (
+          ) : rows.length === 0 && filter ? (
             // Filtro que zerou nao e consulta vazia: o EmptyState de `empty`
             // continua reservado para quando o banco nao tem nada.
             <TableRow>
-              <TableCell colSpan={totalColunas} className="py-8 text-center text-fg-muted">
+              <TableCell colSpan={columnCount} className="py-8 text-center text-fg-muted">
                 Nenhum resultado para a busca.
               </TableCell>
             </TableRow>
           ) : (
-            linhas.map((linha) => (
+            rows.map((linha) => (
               <TableRow
                 key={linha.id}
                 onClick={
@@ -427,7 +427,7 @@ export function DataTable<Row>({
         </TableBody>
       </Table>
 
-      {pageSize !== undefined && !loading && totalFiltrado > 0 && (
+      {pageSize !== undefined && !loading && filteredTotal > 0 && (
         <div
           className={cn(
             "flex flex-wrap items-center justify-between gap-3 pt-3",
@@ -435,7 +435,7 @@ export function DataTable<Row>({
           )}
         >
           <p className="text-sm text-fg-muted">
-            {inicio}–{fim} de {totalFiltrado}
+            {first}–{last} de {filteredTotal}
           </p>
           <Pagination
             page={pageIndex + 1}

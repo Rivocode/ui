@@ -8,19 +8,19 @@ import { ChartRadial } from "../src/chart/chart-radial";
 import { Sparkline } from "../src/chart/sparkline";
 import type { ChartConfig } from "../src/chart/chart";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-const FATIAS = [
+const SLICES = [
   { natureza: "servico", total: 148_200 },
   { natureza: "produto", total: 62_400 },
 ];
 
 test("a rosca usa o buraco para o total, que e o numero que a pessoa veio buscar", () => {
-  comTema(
+  withTheme(
     <ChartDonut
-      data={FATIAS}
+      data={SLICES}
       valueKey="total"
       nameKey="natureza"
       centerValue="R$ 210,6 mil"
@@ -33,7 +33,7 @@ test("a rosca usa o buraco para o total, que e o numero que a pessoa veio buscar
 });
 
 test("a linha miuda se esconde do leitor de tela, porque nao ha o que ler nela", () => {
-  const { container } = comTema(<Sparkline data={[1, 4, 3, 9]} />);
+  const { container } = withTheme(<Sparkline data={[1, 4, 3, 9]} />);
   const box = container.querySelector("[aria-hidden=true]");
 
   expect(box).not.toBeNull();
@@ -41,7 +41,7 @@ test("a linha miuda se esconde do leitor de tela, porque nao ha o que ler nela",
 });
 
 test("com rotulo ela vira imagem, e o leitor de tela passa a ter o que dizer", () => {
-  comTema(<Sparkline data={[1, 4, 3, 9]} label="Emissao subindo desde marco" />);
+  withTheme(<Sparkline data={[1, 4, 3, 9]} label="Emissao subindo desde marco" />);
 
   expect(screen.getByRole("img", { name: "Emissao subindo desde marco" })).toBeDefined();
 });
@@ -53,19 +53,19 @@ const PAYLOAD = [
 ];
 
 test("sem `onToggle` a legenda e texto, e nao finge ser clicavel", () => {
-  comTema(<ChartLegendContent payload={PAYLOAD} config={CONFIG} />);
+  withTheme(<ChartLegendContent payload={PAYLOAD} config={CONFIG} />);
 
   expect(screen.queryByRole("button")).toBeNull();
   expect(screen.getByText("Emitidas")).toBeDefined();
 });
 
 test("com `onToggle` cada serie vira botao que diz no aria se esta ligada", () => {
-  function Grafico() {
+  function Chart() {
     const series = useSeriesToggle();
     return <ChartLegendContent payload={PAYLOAD} config={CONFIG} {...series} />;
   }
 
-  comTema(<Grafico />);
+  withTheme(<Chart />);
 
   const emitidas = screen.getByRole("button", { name: /Emitidas/ });
   expect(emitidas.getAttribute("aria-pressed")).toBe("true");
@@ -80,7 +80,7 @@ test("com `onToggle` cada serie vira botao que diz no aria se esta ligada", () =
 });
 
 test("o arco prende a escala, e um valor sozinho nao da a volta inteira", () => {
-  const { container } = comTema(<ChartRadial value={30} label="30% da meta" />);
+  const { container } = withTheme(<ChartRadial value={30} label="30% da meta" />);
 
   // O eixo escondido e quem segura isso; sem ele a Recharts normaliza pelo
   // maior valor da serie, que com um ponto so e o proprio ponto.
@@ -89,6 +89,6 @@ test("o arco prende a escala, e um valor sozinho nao da a volta inteira", () => 
 });
 
 test("sem valor escrito, o meio mostra a porcentagem", () => {
-  const { container } = comTema(<ChartRadial value={41} max={50} />);
+  const { container } = withTheme(<ChartRadial value={41} max={50} />);
   expect(container.textContent).toContain("82%");
 });

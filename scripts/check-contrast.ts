@@ -35,7 +35,7 @@ export function compose(value: string, background: string): string {
   const [r, g, b, alpha] = [+rgba[1]!, +rgba[2]!, +rgba[3]!, +rgba[4]!];
   const base = background.replace("#", "");
   const [br, bg, bb] = [0, 2, 4].map((i) => parseInt(base.slice(i, i + 2), 16));
-  const mistura = (cor: number, fundo: number) => Math.round(alpha * cor + (1 - alpha) * fundo);
+  const mistura = (color: number, background: number) => Math.round(alpha * color + (1 - alpha) * background);
 
   return `#${[mistura(r, br!), mistura(g, bg!), mistura(b, bb!)]
     .map((c) => c.toString(16).padStart(2, "0"))
@@ -91,7 +91,7 @@ const PAIRS: Array<[string, string, number]> = [
  * pares acima fazem - responde outra pergunta, e deixa passar o par que a
  * pessoa realmente le.
  */
-const PARES_COMPOSTOS: Array<[string, string, string, number]> = [
+const COMPOSED_PAIRS: Array<[string, string, string, number]> = [
   ["--rc-info-text", "--rc-info-subtle", "--rc-bg", MIN_TEXT],
   ["--rc-info-text", "--rc-info-subtle", "--rc-surface", MIN_TEXT],
   ["--rc-success-text", "--rc-success-subtle", "--rc-bg", MIN_TEXT],
@@ -115,7 +115,7 @@ const PARES_COMPOSTOS: Array<[string, string, string, number]> = [
  * cartao e o cartao levantado, e ela precisa passar nos tres.
  */
 const MIN_NAO_TEXTUAL = 3;
-const FRONTEIRAS: Array<[string, string, number]> = [
+const BOUNDARIES: Array<[string, string, number]> = [
   ["--rc-border-strong", "--rc-bg", MIN_NAO_TEXTUAL],
   ["--rc-border-strong", "--rc-surface", MIN_NAO_TEXTUAL],
   ["--rc-border-strong", "--rc-surface-raised", MIN_NAO_TEXTUAL],
@@ -129,7 +129,7 @@ const FRONTEIRAS: Array<[string, string, number]> = [
  * essa que vale aqui: uma linha de grafico que some no fundo nao e legivel de
  * outro jeito.
  */
-const MIN_GRAFICO = 3;
+const MIN_CHART = 3;
 const SERIES = Array.from({ length: 8 }, (_, index) => `--rc-chart-${index + 1}`);
 
 /** `--rc-fg-disabled` e isento: texto desabilitado nao entra na norma. */
@@ -150,8 +150,8 @@ if (import.meta.main) {
       ...SERIES.flatMap(
         (serie) =>
           [
-            [serie, "--rc-bg", MIN_GRAFICO],
-            [serie, "--rc-surface", MIN_GRAFICO],
+            [serie, "--rc-bg", MIN_CHART],
+            [serie, "--rc-surface", MIN_CHART],
           ] as Array<[string, string, number]>,
       ),
     ]) {
@@ -179,40 +179,40 @@ if (import.meta.main) {
 
     // As fronteiras: a cor e desenhada sobre o proprio fundo em que ela vive,
     // entao o alfa se compoe com ele.
-    for (const [linha, sob, min] of FRONTEIRAS) {
-      const cor = tokens[linha];
-      const fundo = tokens[sob];
-      if (!cor || !fundo) {
-        console.log(`  FALTA  ${linha} sobre ${sob}`);
+    for (const [line, over, min] of BOUNDARIES) {
+      const color = tokens[line];
+      const background = tokens[over];
+      if (!color || !background) {
+        console.log(`  FALTA  ${line} sobre ${over}`);
         failed++;
         continue;
       }
 
-      const ratio = contrastRatio(compose(cor, fundo), fundo);
+      const ratio = contrastRatio(compose(color, background), background);
       const ok = ratio >= min;
       if (!ok) failed++;
       console.log(
-        `  ${ok ? "ok   " : "FALHA"} ${linha} sobre ${sob}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`,
+        `  ${ok ? "ok   " : "FALHA"} ${line} sobre ${over}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`,
       );
     }
 
     // Os pares de alfa: compoe o fundo antes de medir.
-    for (const [fg, subtle, under, min] of PARES_COMPOSTOS) {
-      const texto = tokens[fg];
-      const fundoAlfa = tokens[subtle];
-      const embaixo = tokens[under];
-      if (!texto || !fundoAlfa || !embaixo) {
+    for (const [fg, subtle, underName, min] of COMPOSED_PAIRS) {
+      const text = tokens[fg];
+      const alphaBackground = tokens[subtle];
+      const under = tokens[underName];
+      if (!text || !alphaBackground || !under) {
         console.log(`  FALTA  ${fg} sobre ${subtle}`);
         failed++;
         continue;
       }
 
-      const fundo = compose(fundoAlfa, embaixo);
-      const ratio = contrastRatio(texto, fundo);
+      const background = compose(alphaBackground, under);
+      const ratio = contrastRatio(text, background);
       const ok = ratio >= min;
       if (!ok) failed++;
       console.log(
-        `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${subtle} em ${under}  ${ratio.toFixed(2)}:1 (min ${min})`,
+        `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${subtle} em ${underName}  ${ratio.toFixed(2)}:1 (min ${min})`,
       );
     }
   }
