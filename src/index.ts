@@ -272,6 +272,7 @@ export {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
+  ComboboxValue,
   type ComboboxContentProps,
   type ComboboxInputProps,
 } from "./components/combobox";

@@ -135,6 +135,16 @@ export function ComboboxGroup({ className, ...props }: ComponentProps<typeof Bas
   return <BaseCombobox.Group {...props} className={cn("flex flex-col", className)} />;
 }
 
+/**
+ * O valor escolhido, para as fichas saberem o que desenhar.
+ *
+ * Nao renderiza elemento nenhum: recebe uma funcao e devolve o que ela montar.
+ * E a peca que faltava para o ComboboxChips servir para alguma coisa - sem
+ * ela, a escolha multipla com ficha so era possivel importando direto da
+ * Base UI.
+ */
+export const ComboboxValue = BaseCombobox.Value;
+
 /** As fichas da escolha multipla, dentro do proprio campo. */
 export function ComboboxChips({ className, ...props }: ComponentProps<typeof BaseCombobox.Chips>) {
   return (
