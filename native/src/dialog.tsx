@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type DialogProps = {
   open: boolean;
@@ -25,7 +26,7 @@ export function Dialog({ open, onOpenChange, title, description, children, class
           onPress={() => onOpenChange(false)}
         />
         <View className={cn("w-full rounded-xl border border-border bg-surface p-6", className)}>
-          <Text accessibilityRole="header" className="text-xl font-semibold text-fg">
+          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
             {title}
           </Text>
           {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}
@@ -63,7 +64,7 @@ export function AlertDialog({
         className="flex-1 items-center justify-center bg-overlay p-6"
       >
         <View className="w-full rounded-xl border border-border bg-surface p-6">
-          <Text accessibilityRole="header" className="text-xl font-semibold text-fg">
+          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
             {title}
           </Text>
           <Text className="mt-1 text-sm text-fg-muted">{description}</Text>

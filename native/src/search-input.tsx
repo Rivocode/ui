@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Pressable, TextInput, View, type TextInputProps } from "react-native";
+import { Pressable, View, type TextInputProps } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { TextInput } from "./text";
 
 export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText"> & {
   value: string;

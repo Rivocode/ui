@@ -1,9 +1,10 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 
 import type { RivoNativeColorRole } from "../../tokens";
 import { cn } from "../cn";
 import { useRivo } from "../provider";
+import { Text } from "../text";
 import { arcPath } from "./arc";
 
 const RADIUS = 42;
@@ -98,6 +99,7 @@ export function ChartRadial({
       <View className="absolute inset-0 items-center justify-center">
         <Text
           numberOfLines={2}
+          font="display"
           className="max-w-[62%] text-center text-2xl font-semibold text-fg"
         >
           {middle}

@@ -1,7 +1,8 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text, TextInput } from "./text";
 
 export type NumberFieldProps = {
   value: number;

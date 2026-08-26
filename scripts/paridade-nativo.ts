@@ -310,7 +310,18 @@ const PARITY: Record<string, Row> = {
   },
   RivoProvider: {
     state: "traduz",
-    note: "mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe",
+    note:
+      "mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única " +
+      "altura — alvo de toque não encolhe; e ganha `fonts`, que o web não tem",
+    page:
+      "Traduz, e ganha uma prop que no web não existe: `fonts`. No navegador as três " +
+      "famílias chegam pelo CSS de tokens; no celular não há CSS de fonte, e carregar " +
+      "arquivo de fonte é decisão do app, não da biblioteca. O app carrega com o " +
+      "`expo-font` e declara os nomes uma vez — `<RivoProvider fonts={{ sans: 'Manrope', " +
+      "display: 'Poppins', mono: 'JetBrainsMono' }}>` —, e o catálogo inteiro passa a " +
+      "vesti-los. Sem a prop, tudo sai na fonte do sistema e nada quebra. Passe junto o " +
+      "`isFontLoaded={isLoaded}` do `expo-font`: nome de fonte ausente falha calado no " +
+      "React Native, e é esse retorno que faz o provider avisar em `__DEV__`.",
   },
   SearchInput: { state: "traduz", note: "`value` e `onValueChange` obrigatórios" },
   Select: {

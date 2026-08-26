@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* Fonts come with the preset below, which already imports the three brand
-   faces. Declaring them here too made the workspace resolve one copy inside
-   this app, and the library's own CSS build stopped finding the files. */
 /* Tailwind only generates the classes it finds while scanning. Beyond this
    folder it has to see the library components, which resolve to source. */
 @source '../../../src/chart';
@@ -12,6 +9,7 @@
 @source '../../../.design-sync/previews';
 @source '.';
 
+@import "../../../src/tokens/themes/rivocode-fonts.css";
 @import "../../../src/preset.css";
 
 html {

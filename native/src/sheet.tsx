@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, Text, View } from "react-native";
+import { Modal, Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type SheetProps = {
   open: boolean;
@@ -25,7 +26,7 @@ export function Sheet({ open, onOpenChange, title, description, children, classN
         />
         <View className={cn("rounded-t-xl border-t border-border bg-surface px-5 pt-3 pb-8", className)}>
           <View className="mb-4 h-1 w-10 self-center rounded-pill bg-border-strong" />
-          <Text accessibilityRole="header" className="text-xl font-semibold text-fg">
+          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
             {title}
           </Text>
           {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}

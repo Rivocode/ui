@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { AppState, Text, type TextProps } from "react-native";
+import { AppState, type TextProps } from "react-native";
 
 import { formatDate } from "./calendar";
 import { cn } from "./cn";
+import { Text } from "./text";
 
 const UNITS = [
   { unit: "year", seconds: 31_536_000, one: "ano", many: "anos" },

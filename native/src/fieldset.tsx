@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type FieldsetProps = {
   /** O titulo do grupo: "Endereço de cobrança". */
@@ -15,7 +16,7 @@ export function Fieldset({ legend, description, children, className }: FieldsetP
   return (
     <View className={cn("gap-4", className)}>
       <View className="gap-0.5">
-        <Text className="text-base font-medium text-fg">{legend}</Text>
+        <Text font="display" className="text-base font-medium text-fg">{legend}</Text>
         {description && <Text className="text-sm text-fg-muted">{description}</Text>}
       </View>
       {children}

@@ -29,6 +29,7 @@
       "default": "./dist/index.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./fonts.css": "./dist/fonts.css",
     "./preset": "./dist/preset.css",
     "./form": {
       "types": "./dist/form/index.d.ts",
@@ -45,7 +46,8 @@
   },
   "scripts": {
     "build": "tsdown && bun run build:css && bun run build:skill",
-    "build:css": "tailwindcss -i src/styles.css -o dist/styles.css && bun run scripts/copy-fonts.ts dist/styles.css && bun run scripts/build-preset.ts",
+    "build:css": "tailwindcss -i src/styles.css -o dist/styles.css && bun run build:fonts && bun run scripts/build-preset.ts",
+    "build:fonts": "tailwindcss -i src/tokens/themes/rivocode-fonts.css -o dist/fonts.css && bun run scripts/copy-fonts.ts dist/fonts.css",
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",

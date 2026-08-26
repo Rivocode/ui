@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { Text, TextInput, View, type TextInputProps } from "react-native";
+import { View } from "react-native";
 import { useState } from "react";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text, TextInput, type TextInputProps } from "./text";
 
 export type FieldProps = {
   label: string;

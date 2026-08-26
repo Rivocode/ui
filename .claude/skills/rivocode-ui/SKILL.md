@@ -89,6 +89,18 @@ da biblioteca, não gera as classes que eles usam, e a tela aparece sem estilo,
 sem erro e sem pista. O plugin do Tailwind também precisa estar na lista de
 plugins do `vite.config.ts`, ou o resultado é o mesmo silêncio.
 
+**As fontes da marca são um import à parte.** Manrope, Poppins e JetBrains Mono
+não vêm mais dentro do CSS da biblioteca: quem quer as faces da RivoCode
+acrescenta uma linha, e quem veste outro cliente simplesmente não a escreve — e
+aí nenhum `.woff2` nosso é baixado.
+
+```css
+@import "@rivocode/ui/fonts.css";   /* opcional: as faces da RivoCode */
+```
+
+Para a fonte do cliente, instale a família dele e declare os três tokens no
+seletor do tema, junto com as cores — `theming.md` traz a receita inteira.
+
 ## O vocabulário de classes
 
 Escreva layout com as mesmas classes que os componentes usam.

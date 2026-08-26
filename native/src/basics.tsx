@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text } from "./text";
 
 export function Separator({ className }: { className?: string }) {
   return <View accessibilityRole="none" className={`h-px bg-border ${className ?? ""}`} />;

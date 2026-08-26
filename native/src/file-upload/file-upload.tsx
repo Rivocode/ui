@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { getDocumentAsync } from "expo-document-picker";
 
 import { Progress } from "../basics";
 import { cn } from "../cn";
-import { mono } from "../font";
+import { Text } from "../text";
 
 export type PickedFile = {
   /** O endereço local do arquivo. É com ele que o app sobe o conteúdo. */
@@ -229,7 +229,7 @@ export function FileUploadItem({
           <Text numberOfLines={1} className="min-w-0 flex-1 text-sm text-fg">
             {name}
           </Text>
-          <Text style={{ fontFamily: mono }} className="text-xs text-fg-subtle">
+          <Text font="mono" className="text-xs text-fg-subtle">
             {fileSize(size)}
           </Text>
         </View>

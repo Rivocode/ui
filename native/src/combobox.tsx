@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
 import { summarize, toggleValue } from "./picker";
 import { SearchInput } from "./search-input";
 import { Sheet } from "./sheet";
+import { Text } from "./text";
 
 export type ComboboxItem = { label: string; value: string; description?: string };
 

@@ -104,6 +104,68 @@ de documentos. `scripts/check-fronteira-do-chart.ts`, na raiz do repositório,
 guarda as quatro fronteiras — nada alcançável pelo índice da raiz pode
 importar de dentro delas.
 
+## A fonte é do app, e o provider só passa o nome adiante
+
+No web as três famílias chegam pelo CSS de tokens. No celular não há CSS de
+fonte: o arquivo `.ttf`/`.otf` entra no bundle do app e é o app quem registra a
+família, com o `expo-font`. Por isso a biblioteca **não carrega fonte nenhuma**
+— ela recebe os nomes já registrados e os aplica ao catálogo inteiro.
+
+Sem configuração, tudo sai na fonte do sistema e nada quebra. `mono` é a única
+com padrão de casa, porque o sistema já a tem: Menlo no iOS, `monospace` no
+Android.
+
+```tsx
+import { useFonts, isLoaded } from 'expo-font'
+import { RivoProvider } from '@rivocode/ui-native'
+
+export default function App() {
+  const [ready] = useFonts({
+    Manrope: require('./assets/Manrope.ttf'),
+    Poppins: require('./assets/Poppins.ttf'),
+    JetBrainsMono: require('./assets/JetBrainsMono.ttf'),
+  })
+  if (!ready) return null
+
+  return (
+    <RivoProvider
+      fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}
+      isFontLoaded={isLoaded}
+    >
+      {/* … */}
+    </RivoProvider>
+  )
+}
+```
+
+`sans` veste o texto corrido, `display` os títulos — Card, Dialog, Sheet,
+PageHeader, Stat, Steps, Fieldset e o miolo dos gráficos — e `mono` o que
+alinha por largura fixa: `Code`, o carimbo da `Timeline`, as iniciais de dia do
+`Calendar`, o campo hexadecimal do `ColorPicker`. Declarar só `sans` é legítimo:
+`display` cai nela, como a pilha do web faz.
+
+Para a sua própria tela usar as mesmas famílias, `useRivoFonts()` devolve as
+três já resolvidas.
+
+**Isto não é um subcaminho, e a regra de cima continua valendo.** Um subcaminho
+existe para conter um peer; aqui não há peer: a biblioteca nunca importa
+`expo-font`, nem em tipo. O app importa, o app carrega, e o que atravessa a
+fronteira é uma string.
+
+### Nome errado falha calado — o provider grita por você
+
+O React Native ignora família que o aparelho não tem: o texto sai na fonte
+padrão, sem erro e sem aviso. Foi assim que `font-mono` viveu meses compilada
+para `ui-monospace`, que é genérica de CSS e não existe instalada em celular
+nenhum.
+
+Em `__DEV__`, o `RivoProvider` acusa o que consegue ver sozinho: pilha de CSS
+com vírgula (`"Manrope, system-ui, sans-serif"` — o RN lê a linha inteira como
+um nome só), aspas herdadas do CSS, `var(--…)`, nome vazio, família genérica, e
+`monospace` fora do Android. O que ele **não** consegue ver sozinho é a tabela
+de fontes do aparelho — daí o `isFontLoaded`: passe o `isLoaded` do `expo-font`
+e cada nome declarado que não chegou ao aparelho sai nomeado no aviso.
+
 ## O catálogo
 
 62 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`

@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, Pressable, Text, type PressableProps } from "react-native";
+import { ActivityIndicator, Pressable, type PressableProps } from "react-native";
 
 import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text } from "./text";
 
 const CONTAINER: Record<string, string> = {
   primary: "bg-accent active:bg-accent-active",

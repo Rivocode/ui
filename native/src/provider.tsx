@@ -3,6 +3,13 @@ import { Appearance, View, useColorScheme } from "react-native";
 import { VariableContextProvider } from "nativewind";
 
 import { tokens, type RivoNativeColorRole, type RivoNativeTheme } from "../tokens";
+import {
+  FontProvider,
+  fontComplaints,
+  fontWarning,
+  resolveFonts,
+  type RivoFonts,
+} from "./font";
 import { ToastProvider } from "./toast";
 
 export type RivoDensity = "comfortable" | "compact";
@@ -49,6 +56,18 @@ export type RivoProviderProps = {
    */
   scheme?: "light" | "dark" | "system";
   density?: RivoDensity;
+  /**
+   * As familias que o APP ja carregou com o `expo-font`, uma por papel. A
+   * biblioteca nunca carrega fonte: ela so passa o nome adiante, e o papel que
+   * ficar de fora sai na fonte do sistema.
+   */
+  fonts?: RivoFonts;
+  /**
+   * O `isLoaded` do `expo-font`, para o provider conferir em `__DEV__` se cada
+   * nome de `fonts` chegou mesmo ao aparelho. Sem ele o erro de nome so
+   * aparece como texto na fonte errada, sem aviso nenhum.
+   */
+  isFontLoaded?: (family: string) => boolean;
 };
 
 export function RivoProvider({
@@ -56,8 +75,21 @@ export function RivoProvider({
   theme = "rivocode-dark",
   scheme = "system",
   density = "comfortable",
+  fonts,
+  isFontLoaded,
 }: RivoProviderProps) {
   const custom = typeof theme === "object" ? theme : undefined;
+  const { sans, display, mono } = fonts ?? {};
+  const families = useMemo(
+    () => resolveFonts({ sans, display, mono }),
+    [sans, display, mono],
+  );
+
+  useEffect(() => {
+    if (!__DEV__) return;
+    const complaints = fontComplaints({ sans, display, mono }, isFontLoaded);
+    if (complaints.length > 0) console.warn(fontWarning(complaints));
+  }, [sans, display, mono, isFontLoaded]);
 
   useEffect(() => {
     const wanted = custom ? scheme : theme;
@@ -96,9 +128,11 @@ export function RivoProvider({
 
   return (
     <RivoContext.Provider value={value}>
-      <View className="flex-1 bg-bg">
-        {dressed(<ToastProvider>{children}</ToastProvider>)}
-      </View>
+      <FontProvider value={families}>
+        <View className="flex-1 bg-bg">
+          {dressed(<ToastProvider>{children}</ToastProvider>)}
+        </View>
+      </FontProvider>
     </RivoContext.Provider>
   );
 }

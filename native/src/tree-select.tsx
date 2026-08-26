@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
 import { summarize, type PickerItem } from "./picker";
 import { Sheet } from "./sheet";
+import { Text } from "./text";
 import { Tree, type TreeNode } from "./tree";
 
 export type TreeSelectProps = {

@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 function Chevron({ open }: { open: boolean }) {
   return (

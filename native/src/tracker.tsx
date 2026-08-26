@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { PanResponder, View, Text, type LayoutChangeEvent } from "react-native";
+import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type TrackerPoint = {
   /** O que aconteceu nesse período. */

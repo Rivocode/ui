@@ -4,7 +4,6 @@
  * relativo dentro de node_modules.
  */
 const ORDER = [
-  "src/tokens/themes/rivocode-fonts.css",
   "src/tokens/palette.css",
   "src/tokens/scales.css",
   "src/tokens/forma.css",

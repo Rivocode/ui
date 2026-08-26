@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 const TONE: Record<string, { box: string; label: string }> = {
   neutral: { box: "bg-surface-raised border border-border", label: "text-fg-muted" },

@@ -13,4 +13,5 @@
 @source '../src/provider';
 @source './previews';
 
+@import '../src/tokens/themes/rivocode-fonts.css';
 @import '../src/preset.css';

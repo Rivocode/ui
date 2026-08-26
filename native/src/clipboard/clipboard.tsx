@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { setStringAsync } from "expo-clipboard";
 
 import { cn } from "../cn";
+import { Text } from "../text";
 import { useToast } from "../toast";
 
 function CopyIcon() {

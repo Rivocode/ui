@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
 import { summarize, toggleValue } from "./picker";
 import { Sheet } from "./sheet";
+import { Text } from "./text";
 
 export type SelectItem = { label: string; value: string };
 

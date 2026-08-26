@@ -138,11 +138,51 @@ ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
 | `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
 | `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
 | `--rc-text-hero` | Tamanho de herói, em `clamp()` |
+| `--rc-font-sans` | `font-sans`: a família do corpo, e o padrão de toda a árvore |
+| `--rc-font-display` | `font-display`: a família de título — a que carrega a marca |
+| `--rc-font-mono` | `font-mono`: a família de código, tabela numérica e `Kbd` |
 
 Os passos de marketing vivem no tema e não no núcleo de propósito: um sistema
 de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesma
 lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
 dela, e um tema de cliente decide o próprio brilho.
+
+**A fonte é papel de tema, e não escala.** Os dois temas da casa declaram as
+três famílias, e um tema de cliente que não as declara fica **sem família
+nenhuma** — a árvore cai na fonte do navegador, exatamente como acontece com um
+tema que esquece `--rc-bg`. Não há valor de `:root` por baixo para segurar a
+queda, e isso é deliberado: uma fonte de sistema silenciosa por baixo faria a
+falta parecer escolha, e o cliente descobriria meses depois que metade da tela
+nunca vestiu a marca dele.
+
+As famílias da RivoCode — Manrope, Poppins e JetBrains Mono — **não vêm mais
+junto com o `styles.css`**. Quem quer a marca importa o arquivo de faces
+separado; quem veste outra fonte instala a dela e nunca baixa as nossas:
+
+```css
+@import "@rivocode/ui/styles.css";
+@import "@rivocode/ui/fonts.css";   /* só quem quer as faces da RivoCode */
+```
+
+Para vestir a fonte do cliente, instale a família e aponte os três tokens no
+mesmo seletor de tema em que você já declarou as cores:
+
+```css
+@import "@rivocode/ui/styles.css";
+@import "@fontsource-variable/inter";
+
+[data-rc-theme="cliente-acme"] {
+  --rc-font-sans: "Inter Variable", system-ui, sans-serif;
+  --rc-font-display: "Inter Variable", system-ui, sans-serif;
+  --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  /* …e os cinquenta papéis de cor. */
+}
+```
+
+Repare que o `@rivocode/ui/fonts.css` **não** aparece aí: é assim que dois
+clientes convivem na mesma aplicação, cada um com a sua família, e nenhum dos
+dois carregando os 220 KB de `.woff2` da RivoCode.
 
 ### Acabamento: gradiente, vidro e brilho
 

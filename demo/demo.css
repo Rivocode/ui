@@ -4,4 +4,5 @@
 @source '../src/provider';
 @source '.';
 
+@import "../src/tokens/themes/rivocode-fonts.css";
 @import "../src/preset.css";

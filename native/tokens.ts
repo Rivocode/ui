@@ -88,11 +88,6 @@ export const tokens = {
       "day": 32
     }
   },
-  "fonts": {
-    "sans": "Manrope Variable",
-    "display": "Poppins",
-    "mono": "JetBrains Mono Variable"
-  },
   "themes": {
     "rivocode-dark": {
       "bg": "#0b0d0f",

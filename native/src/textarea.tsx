@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { TextInput, type TextInputProps } from "react-native";
+import { type TextInputProps } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { TextInput } from "./text";
 
 export type TextareaProps = TextInputProps & {
   invalid?: boolean;

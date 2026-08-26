@@ -302,6 +302,50 @@ aplicadas, e o que faziam uma vez hoje e cobrado a cada `check`. Um deles
 deixou rastro: `Apos` virou `After` dentro de uma frase em portugues na fonte da
 tabela de paridade, e a palavra ficou la por versoes.
 
+### Quebra: a fonte da marca sai do `styles.css`
+
+As `@font-face` do Manrope, do Poppins e do JetBrains Mono estavam dentro do
+`dist/styles.css` de todo mundo, e os 220 KB de `.woff2` viajavam no pacote
+mesmo para quem nunca quis a marca. Elas agora tem entrada propria:
+
+```css
+@import "@rivocode/ui/styles.css";   /* pecas e tokens */
+@import "@rivocode/ui/fonts.css";    /* as faces da marca - opcional */
+```
+
+**Quem importa so o `styles.css` passa a renderizar na fonte do sistema**, sem
+erro e sem aviso. E uma linha para devolver. Nao ha `styles-sem-fontes.css` de
+compatibilidade de proposito: arrastar os dois arquivos faria eles divergirem
+em silencio, e o repositorio ja pagou essa conta.
+
+Medida depois da mudanca: `dist/styles.css` tem zero `@font-face`,
+`dist/fonts.css` tem catorze, e os 16 arquivos de fonte so sao alcancaveis por
+quem importa o segundo.
+
+### A fonte passa a ser papel de tema
+
+Os tres tokens saem de `src/tokens/scales.css`, que e camada global, e passam a
+ser declarados dentro de `[data-rc-theme="..."]`, como cor e sombra ja eram.
+Isso e o que torna possivel duas marcas na mesma pagina:
+
+```css
+@import "@fontsource-variable/inter";
+
+[data-rc-theme="cliente-acme"] {
+  --rc-font-sans: "Inter Variable", system-ui, sans-serif;
+  --rc-font-display: "Inter Variable", sans-serif;
+  --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+```
+
+**Nao ha fallback no `:root`, e isso e deliberado.** Nenhum outro token de tema
+tem - `--rc-bg`, `--rc-accent` e `--rc-shadow-1` tambem nao. Inventar um
+`system-ui` por baixo so para fonte tornaria a falta silenciosa: um tema de
+cliente que esquecesse as tres renderizaria bonito e passaria por escolha.
+
+O `check:temas` cobra os tres agora - passou de 72 para 75 tokens -, entao tema
+novo sem fonte declarada falha o gate.
+
 ### Como migrar
 
 Busca e troca por palavra inteira resolve oito dos dez. Os dois de forma -

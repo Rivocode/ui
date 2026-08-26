@@ -1,11 +1,12 @@
 import { useState, type ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { cn } from "./cn";
 import { EmptyState } from "./empty-state";
 import { Skeleton } from "./skeleton";
+import { Text } from "./text";
 
 export type DataListProps<Row> = {
   data: Row[] | undefined;

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
-import { mono } from "./font";
 import { Input } from "./field";
+import { Text } from "./text";
 
 export type ColorSwatch = string | { value: string; label: string };
 
@@ -180,7 +180,7 @@ export function ColorPicker({
             value={text}
             onChangeText={typeText}
             onBlur={settle}
-            style={{ fontFamily: mono }}
+            font="mono"
             className={cn("flex-1", disabled && "opacity-50")}
           />
         </View>

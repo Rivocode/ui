@@ -118,6 +118,55 @@ aqui o aviso da lista sempre teve uma linha so, e essa linha e a
 `errorMessage`. Dar padrao ao titulo poria duas frases quase iguais uma em cima
 da outra em toda tela que ja usa a peca.
 
+### A fonte da marca chega ao celular, e quem a carrega e o app
+
+Ate aqui o pacote nao embarcava fonte nenhuma: tudo saia na letra do sistema
+enquanto o web tinha Manrope, Poppins e JetBrains Mono. Agora o app declara uma
+vez, no provider, e o catalogo inteiro se veste:
+
+```tsx
+const [ready] = useFonts({ Manrope: ..., Poppins: ..., JetBrainsMono: ... });
+
+<RivoProvider
+  fonts={{ sans: "Manrope", display: "Poppins", mono: "JetBrainsMono" }}
+  isFontLoaded={isLoaded}
+/>
+```
+
+`sans` veste o corrido, `display` os titulos, `mono` o de largura fixa.
+`display` omitida cai em `sans`; `mono` omitida mantem Menlo no iOS e monospace
+no Android. **Nada declarado e o comportamento de antes, byte a byte** - sem
+familia, o wrapper nao injeta `fontFamily` nenhum.
+
+**Nao ha subcaminho novo, e isso e a regra da casa sendo aplicada e nao
+esquecida.** Um subcaminho existe por PEER, e aqui nao ha peer: a biblioteca
+nunca importa `expo-font`, nem em tipo. O que atravessa a fronteira e `string`.
+Uma porta `/font` cobraria instalacao sem nada atras dela e sugeriria,
+falsamente, que a biblioteca carrega fonte.
+
+**O nome errado passa a falhar alto.** Familia que nao esta no aparelho falha
+em silencio - foi assim que o `ui-monospace` durou versoes. Em `__DEV__` o
+provider acusa pilha de CSS com virgula, aspas herdadas, `var(--...)`, nome
+vazio e familia generica. O que ele nao ve sozinho e a tabela de fontes do
+aparelho, e por isso existe o `isFontLoaded`: o app entrega o leitor que ja tem
+do `expo-font`, e cada nome declarado que nao chegou sai nomeado no aviso. E a
+unica forma honesta de responder "declarei Poppins e ela nao carregou" sem
+importar o peer.
+
+Ha guarda: um teste varre `native/src/` e barra `font-sans`, `font-display` e
+`font-mono` em classe, mais qualquer `fontFamily` escrito a mao fora do
+wrapper - e ele que impede alguem de contornar o provider outra vez.
+
+### O bloco `fonts` dos tokens some
+
+`tokens.ts` e `tokens.json` anunciavam `"Manrope Variable"`, `"Poppins"` e
+`"JetBrains Mono Variable"`. Nenhuma existe instalada em aparelho algum, nada
+as lia, e eram perigosas por parecerem utilizaveis: copiar qualquer uma delas
+para `fonts={{...}}` produz o defeito calado. Pior, o gerador as resolvia com
+`split(",")[0]`, ficando com a primeira da pilha e jogando fora o fallback -
+a mesma falha, escrita dentro da ferramenta. No celular so o app sabe o que
+carregou.
+
 ### Como migrar
 
 Busca e troca resolve as duas renomeacoes, e o `tsc` aponta a da `Sparkline`. A

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Checkbox } from "./checkbox";
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type TreeNode = {
   id: string;

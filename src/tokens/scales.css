@@ -12,10 +12,6 @@
   --rc-leading-normal: 1.5;
   --rc-leading-relaxed: 1.7;
 
-  --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
-  --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
-  --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
-
   --rc-z-base: 0;
   --rc-z-sticky: 100;
   --rc-z-dropdown: 200;

@@ -159,7 +159,7 @@ com `uri` local — `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format` |
 | `RadioGroup` | ✔ traduz | `items` na raiz; não existe `Radio` solto para compor |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
-| `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe |
+| `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe; e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
 | `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |

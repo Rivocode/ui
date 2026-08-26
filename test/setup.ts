@@ -6,6 +6,11 @@ import * as nativewindMock from "./nativewind-mock";
 
 GlobalRegistrator.register();
 
+// O `__DEV__` e global do metro, e as pecas nativas leem dele para so avisar
+// em desenvolvimento. Fora do metro ele nao existe, e ler um global ausente e
+// ReferenceError, nao undefined.
+(globalThis as { __DEV__?: boolean }).__DEV__ = true;
+
 // As pecas nativas importam "react-native", que nao roda fora do metro. Os
 // testes delas (native/test) recebem este dublê; os testes web nunca importam
 // react-native, entao o mock nao os toca.

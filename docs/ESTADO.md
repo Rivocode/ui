@@ -10,8 +10,8 @@ acreditar em nada: mede de novo. Numero em documento envelhece calado, e a
 versao anterior deste arquivo passou o dia afirmando que 21 pecas nativas
 estavam na fila quando restavam tres.
 
-**Ha trabalho nao comitado na arvore.** Tudo que esta descrito abaixo como
-feito passa no gate e no build, e nada disso virou commit ainda.
+Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
+`bun run check` inteiro e no `bun run build`.
 
 ## O que existe hoje
 
@@ -24,7 +24,7 @@ feito passa no gate e no build, e nada disso virou commit ainda.
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar  |
 
 O gate do repo esta verde: `bun run check` passa inteiro — dezenove verificacoes
-mais **867 testes em 92 arquivos**. O `bun run build` tambem.
+mais **880 testes em 93 arquivos**. O `bun run build` tambem.
 
 ### O catalogo, por familia
 
@@ -112,6 +112,56 @@ Tres coisas nao estavam na lista e apareceram no caminho:
 3. **`ChartContainer` ja aceitava `id` e `aria-*`.** A pendencia listava nove
    pecas de tipo fechado; eram oito.
 
+## A fonte, que mudou de lugar nos dois pacotes
+
+Ate hoje a fonte era um padrao que nao se dispensava e nao se trocava por tema.
+As tres coisas mudaram.
+
+**No web**, os tokens sairam de `src/tokens/scales.css` - camada global - para
+dentro de `[data-rc-theme="..."]`, como cor e sombra ja eram. E o que permite
+duas marcas na mesma pagina. Nao ha fallback no `:root`, e e deliberado:
+nenhum outro token de tema tem, e um `system-ui` por baixo so para fonte
+tornaria a falta silenciosa. O `check:temas` passou de 72 para **75 tokens**,
+entao tema novo sem fonte declarada falha o gate.
+
+As `@font-face` sairam do `styles.css` e viraram entrada propria,
+`@rivocode/ui/fonts.css`. **Isto e quebra**, e entra na 0.7.0 porque ela ainda
+nao foi publicada - depois da tag, a mesma mudanca custaria um ciclo inteiro.
+Medido: `dist/styles.css` com zero `@font-face`, `dist/fonts.css` com catorze.
+
+**No nativo**, a fonte entra por `fonts` no `RivoProvider`, e quem a carrega e
+o app, com `expo-font`. Nao ha subcaminho novo, e isso e a regra da casa sendo
+aplicada: subcaminho existe por PEER, e aqui nao ha peer - a biblioteca nunca
+importa `expo-font`, e o que atravessa a fronteira e `string`.
+
+O bloco `fonts` dos tokens gerados **foi removido**. Ele anunciava as tres
+familias do web, que nao existem instaladas em aparelho nenhum, e as resolvia
+com `split(",")[0]` - ficando com a primeira da pilha e jogando fora o
+fallback, que e literalmente a falha do `ui-monospace` escrita dentro da
+ferramenta que gera os tokens.
+
+## O comentario, que mudou de regra
+
+Por decisao do dono, com o custo posto na mesa antes: **fica so o JSDoc preso a
+uma prop publica**. Sairam 5015 linhas em 192 arquivos.
+
+O que fica nao e prosa, e dado: `gen:props` extrai o JSDoc de prop para o campo
+`note` de `component-props.json`, que e a tabela publicada. Por isso a passagem
+usou `check:props` como prova - `242 pecas, 3800 props` antes e depois - e nao
+o olho. Nenhuma linha de codigo mudou: cada arquivo foi reparsado e o fluxo de
+tokens comparado.
+
+Tres pastas ficam de fora, cada uma por motivo funcional, e as tres estao
+escritas no `CLAUDE.md`: `.design-sync/previews/` (o bloco e titulo de
+historia, o site o le), `scripts/check-*.ts` (cada um abre com o incidente que
+o fez existir) e `apps/docs/` (e aplicacao, nao exporta prop, entao a regra nao
+teria o que preservar).
+
+**A parte que impede o trabalho de se desfazer sozinho e a mudanca do
+`CLAUDE.md` no mesmo commit.** A secao "Comentario" descrevia a regra antiga
+com exemplos nomeados; o proximo agente que a lesse recolocaria tudo achando
+que consertava.
+
 ## O que esta pendente de verdade
 
 ### Divida de codigo
@@ -141,24 +191,21 @@ pronto.
 
 ## O que esta bloqueado esperando acao humana
 
-Quatro coisas, e nenhuma e trabalho de codigo:
+Tres coisas, e nenhuma e trabalho de codigo:
 
-1. **Comitar o dia.** A arvore tem o trabalho inteiro descrito acima sem
-   commit. O gate e o build passam.
-
-2. **As duas tags.** A arvore esta em `ui@0.7.0` e `ui-native@0.3.0`, e o npm
+1. **As duas tags.** A arvore esta em `ui@0.7.0` e `ui-native@0.3.0`, e o npm
    serve 0.6.1 e 0.2.0. A tag dispara o workflow que publica, e publicacao nao
    se desfaz — por isso nenhuma foi criada sozinha. Os dois CHANGELOGs ja estao
    fechados, entao nao ha mais nada a escrever antes delas.
 
-3. **O ensaio do `release-native`.** `gh workflow run release-native --field
+2. **O ensaio do `release-native`.** `gh workflow run release-native --field
    ensaio=true` roda o caminho inteiro sem publicar. Ele NUNCA publicou de
    verdade em quatro tentativas, e o primeiro lancamento nativo continua sendo
    voo cego ate alguem rodar isso. Vale mais agora do que valia: a 0.3.0 leva
    quatro subcaminhos novos, e subcaminho errado no `exports` so aparece na
    instalacao de quem consome.
 
-4. **A landing (`rivocode.com`), e o gerenciador de pacotes ANTES do bump.**
+3. **A landing (`rivocode.com`), e o gerenciador de pacotes ANTES do bump.**
    Ela consome `^0.2.0` e nao quebra uma linha de codigo ao subir — usa cinco
    botoes, um import de CSS e dois atributos no `<html>`. O problema e outro: a
    arvore dela tem `pnpm-lock.yaml` e `pnpm-workspace.yaml` NAO RASTREADOS, com
@@ -217,11 +264,14 @@ a ultima frente parou.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # dezenove verificacoes mais os 867 testes
+bun run check        # dezenove verificacoes mais os 880 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine em demo/dist/
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
+
+A landing tambem precisa da linha nova de `fonts.css`, ou sai na fonte do
+sistema depois do bump.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
 `ds.rivocode.com.br/convencoes.md` — ele passou a cobrir tambem o pacote nativo
@@ -235,7 +285,7 @@ em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 169 documentos
 bun run check:pecas                                # 83 pecas
-bun test                                           # 867 pass, 92 arquivos
+bun test                                           # 880 pass, 93 arquivos
 bun test native/test                               # a metade nativa
 bun run check:paridade                             # confere as 83 linhas da tabela
 bun run check:contrato                             # os SEIS subcaminhos, web e nativo

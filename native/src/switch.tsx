@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { Pressable, Switch as NativeSwitch, Text } from "react-native";
+import { Pressable, Switch as NativeSwitch } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text } from "./text";
 
 export type SwitchProps = {
   checked: boolean;

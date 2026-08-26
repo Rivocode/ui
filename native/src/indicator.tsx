@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type IndicatorProps = {
   /** O que recebe a marca: o botão do sino, o item da barra, o avatar. */

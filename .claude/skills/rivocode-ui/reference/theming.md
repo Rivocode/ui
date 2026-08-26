@@ -4,6 +4,7 @@
 
 - As três camadas
 - Por que escrever meio tema falha em silêncio
+- A fonte também é papel de tema
 - Os pares que precisam passar no contraste
 - Onde está a lista completa
 
@@ -26,6 +27,33 @@ meio da marca do cliente, quase sempre num gráfico ou num estado que ninguém
 abriu durante o desenvolvimento.
 
 Escreva o tema inteiro de uma vez, a partir do esqueleto pronto.
+
+## A fonte também é papel de tema
+
+`--rc-font-sans`, `--rc-font-display` e `--rc-font-mono` moram no seletor do
+tema, ao lado das cores — e **não** têm valor de `:root` por baixo. Tema que
+esquece as três fica sem família nenhuma, exatamente como um tema que esquece
+`--rc-bg` fica sem fundo. Declare-as sempre.
+
+As faces da RivoCode saem num arquivo separado, `@rivocode/ui/fonts.css`. Um
+tema de cliente **não** importa esse arquivo: importa a família do cliente e
+aponta os três tokens para ela.
+
+```css
+@import "@rivocode/ui/styles.css";
+@import "@fontsource-variable/inter";
+
+[data-rc-theme="cliente-acme"] {
+  --rc-font-sans: "Inter Variable", system-ui, sans-serif;
+  --rc-font-display: "Inter Variable", system-ui, sans-serif;
+  --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  /* …e os cinquenta papéis de cor. */
+}
+```
+
+Dois clientes com fontes diferentes convivem na mesma aplicação por esse
+mecanismo: a família troca por `data-rc-theme`, como a cor.
 
 ## Os pares que precisam passar no contraste
 

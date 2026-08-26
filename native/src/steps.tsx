@@ -1,7 +1,8 @@
 import { useCallback, useState, type ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type Step = {
   id: string;
@@ -34,7 +35,7 @@ export function Steps({ steps, current, className }: StepsProps) {
       className={cn("gap-2", className)}
     >
       <Text className="text-sm text-fg-muted">{position}</Text>
-      <Text className="text-lg font-semibold text-fg">{step.title}</Text>
+      <Text font="display" className="text-lg font-semibold text-fg">{step.title}</Text>
       {step.description !== undefined && (
         <Text className="text-sm text-fg-muted">{step.description}</Text>
       )}

@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from "react";
-import { Pressable, Text, TextInput, View, type TextInputProps } from "react-native";
+import { Pressable, View, type TextInputProps } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
+import { Text, TextInput } from "./text";
 
 export type InputGroupAction = {
   /**

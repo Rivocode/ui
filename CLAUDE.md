@@ -46,6 +46,9 @@ Duas excecoes, e as duas sao funcionais:
   existir. Sem ele, a proxima pessoa remove a guarda por parecer paranoia, e o
   incidente volta. A pasta segue a regra antiga: comentario fica quando explica
   uma decisao ou uma armadilha que o codigo nao mostra.
+- **`apps/docs/`**. E aplicacao, e nao biblioteca: nao exporta prop nenhuma,
+  entao a regra de cima nao teria o que preservar - aplica-la ali e remocao
+  total, sem o criterio que a justifica. Segue a regra antiga.
 
 Regras de forma que continuam valendo:
 

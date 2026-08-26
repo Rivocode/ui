@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Pressable, Text, View, type PressableProps } from "react-native";
+import { Pressable, View, type PressableProps } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type CheckboxProps = {
   checked: boolean;

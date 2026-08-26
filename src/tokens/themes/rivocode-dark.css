@@ -41,6 +41,10 @@
   --rc-info-text: var(--rc-p-blue-400);
   --rc-info-subtle: rgb(106 169 255 / 0.14);
 
+  --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
+  --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
+  --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
   --rc-text-display: clamp(32px, 4.2vw, 54px);
   --rc-text-hero: clamp(44px, 6.6vw, 88px);
 

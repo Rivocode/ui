@@ -6,6 +6,12 @@ export {
   type RivoNativeColors,
   type RivoNativeThemeMap,
 } from "./provider";
+export {
+  useRivoFonts,
+  type RivoFontRole,
+  type RivoFonts,
+  type RivoResolvedFonts,
+} from "./font";
 export { Button, type ButtonProps } from "./button";
 export { Badge, type BadgeProps } from "./badge";
 export { Indicator, type IndicatorProps } from "./indicator";

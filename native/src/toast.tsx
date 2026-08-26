@@ -7,7 +7,9 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+
+import { Text } from "./text";
 
 type ToastData = { id: number; title: string; description?: string };
 

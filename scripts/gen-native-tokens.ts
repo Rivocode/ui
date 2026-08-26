@@ -7,6 +7,15 @@
  * que traduz. Sombra de caixa, clamp() de marketing e empilhamento por
  * z-index sao ideias de CSS; ficam de fora com o motivo anotado.
  *
+ * FONTE NAO TRADUZ, e este e o caso mais caro de aprender. O bloco `fonts`
+ * existiu aqui e emitia "Manrope Variable", "Poppins" e "JetBrains Mono
+ * Variable" - tres familias que nao existem instaladas em iOS nem Android.
+ * Pior: ele resolvia com `value.split(",")[0]`, ficando com a PRIMEIRA da
+ * pilha e jogando fora o fallback, que e exatamente a falha que fez o
+ * `.font-mono` sair na letra padrao por versoes sem ninguem ver. No celular so
+ * o app sabe o que carregou, entao a familia entra por `fonts` no
+ * `RivoProvider` e nao por token. Nao devolva este bloco.
+ *
  * `bun run check:native` roda o gerador e falha se o resultado comitado
  * divergir: mudou token no CSS, o native/ anda junto no mesmo commit.
  */
@@ -89,7 +98,6 @@ function topLevelBlocks(css: string) {
    `clamp()` de marketing, o z-index e os @keyframes ficam no CSS, onde
    fazem sentido. */
 const scales: Record<string, number> = {};
-const fonts: Record<string, string> = {};
 const densities: Record<"comfortable" | "compact", Record<string, number>> = {
   comfortable: {},
   compact: {},
@@ -106,10 +114,6 @@ for (const block of topLevelBlocks(scalesCss)) {
 
   for (const [name, value] of declarations(block.body)) {
     if (name.startsWith("z-") || name.startsWith("tracking-")) continue;
-    if (name.startsWith("font-")) {
-      fonts[name.slice(5)] = value.split(",")[0].trim().replace(/^"|"$/g, "");
-      continue;
-    }
     const number = toNumber(value) ?? (/^[\d.]+$/.test(value) ? Number(value) : null);
     if (number === null) continue;
     if (density) densities[density][name] = number;
@@ -133,7 +137,6 @@ const tokens = {
   palette: Object.fromEntries(palette),
   scales,
   densities,
-  fonts,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),

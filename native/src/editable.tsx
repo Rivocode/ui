@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Pressable, Text, View, type AccessibilityActionEvent } from "react-native";
+import { Pressable, View, type AccessibilityActionEvent } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
 import { Input } from "./field";
+import { Text } from "./text";
 
 export type EditableProps = {
   /** O texto de agora. Controlado, como todo o resto do pacote nativo. */

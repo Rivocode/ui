@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { Card, CardContent } from "./card";
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type StatProps = {
   label: string;
@@ -25,7 +26,7 @@ export function Stat({ label, value, delta, deltaLabel, invert, chart, className
     <Card className={cn("flex-1", className)}>
       <CardContent className="gap-1">
         <Text className="text-sm text-fg-muted">{label}</Text>
-        <Text className="text-2xl font-semibold text-fg">{value}</Text>
+        <Text font="display" className="text-2xl font-semibold text-fg">{value}</Text>
 
         {delta !== undefined && (
           <Text className={`text-xs ${good ? "text-success-text" : "text-danger-text"}`}>

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
-import { Text, View, type ViewProps } from "react-native";
+
+import { Text } from "./text";
+import { View, type ViewProps } from "react-native";
 
 export function Card({ children, className, ...props }: ViewProps & { className?: string }) {
   return (
@@ -17,7 +19,7 @@ export function CardHeader({ children }: { children: ReactNode }) {
 }
 
 export function CardTitle({ children }: { children: ReactNode }) {
-  return <Text className="text-xl font-semibold text-fg">{children}</Text>;
+  return <Text font="display" className="text-xl font-semibold text-fg">{children}</Text>;
 }
 
 export function CardDescription({ children }: { children: ReactNode }) {

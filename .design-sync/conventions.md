@@ -60,6 +60,43 @@ menu que ele mesmo abre; e o erro que a falta desta linha ja produziu.
 **Altura de controle vem da densidade**, nunca cravada:
 `h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.
 
+### A fonte é papel de tema, e vem em arquivo separado
+
+`font-sans`, `font-display` e `font-mono` saem de `--rc-font-sans`,
+`--rc-font-display` e `--rc-font-mono`, e os três são declarados **pelo tema**,
+no mesmo seletor `[data-rc-theme="..."]` em que as cores estão. Não há valor de
+`:root` por baixo: tema que não declara família fica sem família nenhuma, do
+mesmo jeito que tema sem `--rc-bg` fica sem fundo.
+
+As faces da RivoCode — Manrope, Poppins e JetBrains Mono — **não viajam mais
+no `styles.css`**. Elas têm entrada própria, e só quem quer a marca a importa:
+
+```css
+@import "@rivocode/ui/styles.css";
+@import "@rivocode/ui/fonts.css";   /* opcional: as faces da RivoCode */
+```
+
+Para vestir a fonte de um cliente, instale a família dele e aponte os três
+tokens no seletor do tema dele, junto com as cores. Sem
+`@rivocode/ui/fonts.css`, nenhum `.woff2` da RivoCode é baixado:
+
+```css
+@import "@rivocode/ui/styles.css";
+@import "@fontsource-variable/inter";
+
+[data-rc-theme="cliente-acme"] {
+  --rc-font-sans: "Inter Variable", system-ui, sans-serif;
+  --rc-font-display: "Inter Variable", system-ui, sans-serif;
+  --rc-font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  /* …e os cinquenta papéis de cor. */
+}
+```
+
+É assim que dois clientes com fontes diferentes convivem na mesma aplicação:
+cada `data-rc-theme` carrega a sua família, e a troca acontece por seletor,
+como a de cor.
+
 ### Os dois subcaminhos
 
 Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo

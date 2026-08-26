@@ -129,7 +129,7 @@ test("o anel de foco tambem alcanca 3:1, nos dois fundos", async () => {
   }
 });
 
-test("forma e movimento vivem em arquivo proprio, que o tema pode redefinir", async () => {
+test("forma, movimento e fonte vivem fora da escala, onde o tema alcanca", async () => {
   // Canto reto, movimento seco e rotulo espacado sao os tres sinais visuais
   // que mais mudam entre uma marca e outra, e estavam do lado errado da
   // fronteira: dentro da escala global, junto com densidade - que e outra
@@ -152,6 +152,23 @@ test("forma e movimento vivem em arquivo proprio, que o tema pode redefinir", as
     expect(`${token} fora de scales.css: ${!scales.includes(`${token}:`)}`).toBe(
       `${token} fora de scales.css: true`,
     );
+  }
+
+  const families = ["--rc-font-sans", "--rc-font-display", "--rc-font-mono"];
+
+  for (const token of families) {
+    expect(`${token} fora de scales.css: ${!scales.includes(`${token}:`)}`).toBe(
+      `${token} fora de scales.css: true`,
+    );
+  }
+
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const css = await read(`src/tokens/themes/${theme}.css`);
+    for (const token of families) {
+      expect(`${theme} declara ${token}: ${css.includes(`${token}:`)}`).toBe(
+        `${theme} declara ${token}: true`,
+      );
+    }
   }
 });
 

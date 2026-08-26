@@ -1,7 +1,7 @@
-import { Text, type TextProps } from "react-native";
+import { type TextProps } from "react-native";
 
 import { cn } from "./cn";
-import { mono } from "./font";
+import { Text } from "./text";
 
 export type CodeProps = Omit<TextProps, "children" | "className"> & {
   /** O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`. */
@@ -25,7 +25,8 @@ export function Code({ children, className, selectable = true, style, ...props }
     <Text
       {...props}
       selectable={selectable}
-      style={[{ fontFamily: mono }, style]}
+      font="mono"
+      style={style}
       className={cn("rounded-sm bg-surface-raised px-1.5 text-fg-muted", className)}
     >
       {children}

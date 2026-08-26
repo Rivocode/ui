@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Button } from "./button";
 import { MonthView, formatDate, useMonthOf, type DayPaint } from "./calendar";
 import { cn } from "./cn";
 import { Sheet } from "./sheet";
+import { Text } from "./text";
 
 export type DateRange = {
   /** `aaaa-mm-dd`, como no `DatePicker`. */

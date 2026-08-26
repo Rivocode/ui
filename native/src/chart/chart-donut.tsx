@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 
 import { cn } from "../cn";
-import { mono } from "../font";
 import { useRivo } from "../provider";
+import { Text } from "../text";
 import { arcPath } from "./arc";
 import { PALETTE, type ChartConfig } from "./chart";
 
@@ -151,6 +151,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
           >
             <Text
               numberOfLines={2}
+              font="display"
               className="max-w-[52%] text-center text-xl font-semibold text-fg"
             >
               {read ? write(readValue) : centerValue}
@@ -189,7 +190,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 <Text numberOfLines={1} className="min-w-0 flex-1 text-sm text-fg-muted">
                   {textOf(slice)}
                 </Text>
-                <Text style={{ fontFamily: mono }} className="text-sm text-fg">{write(values[index]!)}</Text>
+                <Text font="mono" className="text-sm text-fg">{write(values[index]!)}</Text>
               </Pressable>
             );
           })}

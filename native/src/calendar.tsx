@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
-import { mono } from "./font";
 import { Sheet } from "./sheet";
+import { Text } from "./text";
 
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 
@@ -122,7 +122,7 @@ export function MonthView({
         {WEEKDAYS.map((weekday, index) => (
           <Text
             key={index}
-            style={{ fontFamily: mono }}
+            font="mono"
             className="flex-1 text-center text-xs text-fg-subtle uppercase"
           >
             {weekday}

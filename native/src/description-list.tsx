@@ -1,7 +1,8 @@
 import { Children, type ReactNode } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Text } from "./text";
 
 export type DescriptionItemProps = {
   label: string;

@@ -1,7 +1,8 @@
 import { useRef, useState, type ComponentRef } from "react";
-import { Pressable, TextInput, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { TextInput, Text } from "./text";
 
 export type OTPFieldProps = {
   /** Quantos digitos o codigo tem. */

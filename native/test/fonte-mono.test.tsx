@@ -99,7 +99,7 @@ describe("a fonte mono", () => {
     expect(field.props.className).not.toContain("font-mono");
   });
 
-  test("nenhuma peça do pacote nativo pede a classe morta", async () => {
+  test("nenhuma peça do pacote nativo pede classe de fonte", async () => {
     const offenders: string[] = [];
 
     for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
@@ -107,7 +107,23 @@ describe("a fonte mono", () => {
         .replace(/\/\*[\s\S]*?\*\//g, "")
         .replace(/\/\/[^\n]*/g, "");
 
-      if (code.includes("font-mono")) offenders.push(file);
+      if (/font-(mono|sans|display)/.test(code)) offenders.push(file);
+    }
+
+    expect(offenders).toEqual([]);
+  });
+
+  test("só o text.tsx escreve fontFamily: o resto pede o papel e o provider responde", async () => {
+    const offenders: string[] = [];
+
+    for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
+      if (file === "native/src/text.tsx") continue;
+
+      const code = (await Bun.file(file).text())
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/\/\/[^\n]*/g, "");
+
+      if (code.includes("fontFamily")) offenders.push(file);
     }
 
     expect(offenders).toEqual([]);
