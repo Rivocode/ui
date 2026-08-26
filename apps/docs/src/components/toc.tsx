@@ -187,8 +187,19 @@ export function Toc({ watch }: { watch: string }) {
       </p>
 
       <ul className="border-l border-border">
-        {items.map((item) => (
-          <li key={item.id}>
+        {/*
+          A chave é a posição, e não o id.
+
+          Esta lista é lida do documento, e um documento pode escrever o mesmo
+          id duas vezes — foi o que a página de `Button` fez. Duas chaves iguais
+          não deixam o React reconciliar a lista: ele passou a abandonar linhas
+          aqui dentro, que sobreviviam à navegação e se somavam às da próxima
+          peça, até a página ser recarregada. A origem está corrigida, mas o
+          índice não tem como garantir o que lê, e o estrago era grande demais
+          para depender disso.
+        */}
+        {items.map((item, index) => (
+          <li key={`${index}-${item.id}`}>
             <a
               href={`#${item.id}`}
               className={`-ml-px block border-l py-1.5 text-sm leading-snug transition-colors ${

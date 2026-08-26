@@ -1,6 +1,5 @@
-import { marked } from 'marked'
 import { useMemo } from 'react'
-import { anchor } from '@/anchor'
+import { renderMarkdown, type MarkdownOptions } from '@/render-markdown'
 
 /* ---------------------------------------------------------------------------
  * Markdown
@@ -10,22 +9,15 @@ import { anchor } from '@/anchor'
  * one file serves both the page and the raw `.md` address.
  * ------------------------------------------------------------------------- */
 
-marked.setOptions({ gfm: true, breaks: false })
-
-marked.use({
-  renderer: {
-    heading({ tokens, depth }) {
-      const text = this.parser.parseInline(tokens)
-      return `<h${depth} id="${anchor(text)}">${text}</h${depth}>\n`
-    },
-  },
-})
-
 const CLASSES = [
   // Headings
   '[&_h1]:font-display [&_h1]:text-3xl [&_h1]:text-fg [&_h1]:mb-4',
   '[&_h2]:font-display [&_h2]:text-xl [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3',
   '[&_h3]:font-sans [&_h3]:font-medium [&_h3]:text-lg [&_h3]:text-fg [&_h3]:mt-8 [&_h3]:mb-2',
+  // Um documento empurrado para dentro de outro: o titulo dele desce de nivel
+  // sem encolher junto, senao a secao some no meio da prosa.
+  '[&_h4]:font-sans [&_h4]:font-medium [&_h4]:text-base [&_h4]:text-fg [&_h4]:mt-6 [&_h4]:mb-2',
+  '[&_h5]:font-sans [&_h5]:font-medium [&_h5]:text-sm [&_h5]:text-fg [&_h5]:mt-5 [&_h5]:mb-2',
 
   // Prose
   '[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-fg-muted [&_p]:my-4',
@@ -50,9 +42,15 @@ const CLASSES = [
   '[&_td]:border-b [&_td]:border-border [&_td]:py-2 [&_td]:text-fg-muted',
 ].join(' ')
 
-export function Markdown({ source }: { source: string }) {
-  // Content comes from files in this repo, never from third-party input.
-  const html = useMemo(() => marked.parse(source) as string, [source])
+export function Markdown({
+  source,
+  idPrefix,
+  headingOffset,
+}: { source: string } & MarkdownOptions) {
+  const html = useMemo(
+    () => renderMarkdown(source, { idPrefix, headingOffset }),
+    [source, idPrefix, headingOffset],
+  )
 
   return <div className={CLASSES} dangerouslySetInnerHTML={{ __html: html }} />
 }

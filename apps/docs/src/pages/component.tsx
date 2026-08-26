@@ -125,7 +125,13 @@ export function ComponentPage({ slug }: { slug: string }) {
 
                 {part.body && (
                   <div className="mb-3">
-                    <Markdown source={part.body} />
+                    {/* A parte é convidada nesta página: os títulos dela
+                        assinam com o nome dela e descem para dentro do `h3`
+                        acima. Sem isso, o `## No React Native` do ButtonGroup
+                        disputava o endereço `#no-react-native` com o do
+                        Button, e o índice da direita, que identifica cada
+                        linha pelo id, parava de se reconciliar. */}
+                    <Markdown source={part.body} idPrefix={anchor(part.name)} headingOffset={2} />
                   </div>
                 )}
 
