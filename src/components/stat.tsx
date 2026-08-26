@@ -4,6 +4,7 @@ import { ArrowDownRight, ArrowUpRight, Info } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { resolveFormat, type Format } from "../lib/format";
 import { Card, CardContent } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
@@ -12,9 +13,14 @@ export type StatProps = {
   label: string;
   /** O numero, ja formatado: `currencyShort(246_700)`. */
   value: ReactNode;
-  /** Variacao em pontos percentuais. Positivo sobe, negativo desce. */
+  /**
+   * A variacao. Positivo sobe, negativo desce.
+   *
+   * A unidade e do `deltaFormat`, e nao do numero: sem ele o padrao continua
+   * sendo porcentagem.
+   */
   delta?: number;
-  /** Contra o que se compara: "sobre julho". Sem ele, so a porcentagem. */
+  /** Contra o que se compara: "sobre julho". Sem ele, so a variacao. */
   deltaLabel?: string;
   /** Explicacao curta atras de um botao de informacao. */
   hint?: string;
@@ -38,6 +44,22 @@ export type StatProps = {
   actions?: ReactNode;
   /** A faixa de baixo: meta com barra, comparacao, texto de apoio. */
   footer?: ReactNode;
+  /**
+   * Como a variacao e escrita: nome de formatador da casa (`percent`,
+   * `currencyShort`, `integer`...) ou funcao propria. E o mesmo vocabulario do
+   * `Progress`, do `Meter` e do `Slider`, e o mesmo do eixo do grafico.
+   *
+   * Sem ele, `percent` - que era o unico caminho que existia, cravado no JSX.
+   * Delta em real ou em ponto-base saia com um `%` que nao era verdade, e a
+   * unica peca de numero da casa fora do vocabulario de formatacao era esta.
+   *
+   * O `percent` da casa arredonda para inteiro; para casa decimal, passe a
+   * funcao: `deltaFormat={(value) => percent(value, 1)}`.
+   *
+   * O que chega ao formatador e o modulo do `delta`: quem carrega o sinal e a
+   * seta, e o texto que o leitor de tela ouve antes dele.
+   */
+  deltaFormat?: Format;
   /**
    * A variacao como pastilha preenchida, que e a convencao dominante em
    * painel, ou como texto com seta, que e o padrao daqui.
@@ -64,11 +86,13 @@ export function Stat({
   icon,
   actions,
   footer,
+  deltaFormat = "percent",
   deltaVariant = "text",
   className,
 }: StatProps) {
   const rose = (delta ?? 0) >= 0;
   const good = invert ? !rose : rose;
+  const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
 
   return (
     <Card className={className}>
@@ -140,7 +164,8 @@ export function Stat({
             )}
             {/* A cor e a seta contam para o olho; o texto conta para o ouvido. */}
             <span className="sr-only">{rose ? "alta de" : "queda de"} </span>
-            {Math.abs(delta)}%{deltaLabel ? ` ${deltaLabel}` : ""}
+            {writeDelta(Math.abs(delta))}
+            {deltaLabel ? ` ${deltaLabel}` : ""}
           </p>
         )}
 

@@ -32,6 +32,67 @@ Tudo opt-in, tudo client-side, nada muda para quem não pedir:
   para só dizer com o que ela começa — o mesmo par do `Tree` e do `TreeSelect`.
   O checkbox do cabeçalho marca a página visível, não a lista inteira.
 
+## A linha de totais
+
+Toda listagem financeira brasileira termina em "Total: R$ 248,3K". Montada numa
+`<div>` embaixo da tabela, essa linha perde o alinhamento das colunas — uma
+`<div>` não participa do algoritmo de layout de tabela e não conhece a largura
+de nenhuma delas — e, com `maxHeight`, some ao rolar.
+
+O total é **por coluna**, e é o irmão do `cell` uma linha acima: onde o `cell`
+resume uma linha, o `total` resume a coluna inteira. Basta uma coluna declarar
+`total` para o `<tfoot>` existir; as outras saem em branco, alinhadas com quem
+está em cima.
+
+```tsx
+const COLUMNS: Column<Invoice>[] = [
+  { key: 'number', header: 'Número', total: () => 'Total' },
+  { key: 'customer', header: 'Cliente' },
+  {
+    key: 'amount',
+    header: 'Valor',
+    align: 'right',
+    cell: (invoice) => currencyShort(invoice.amount),
+    total: (invoices) => currencyShort(invoices.reduce((sum, i) => sum + i.amount, 0)),
+  },
+]
+```
+
+Alinhamento à direita, `hideOnMobile` e o grudar embaixo com `maxHeight` vêm de
+graça: a célula do total já é a célula daquela coluna. **O dinheiro sai
+abreviado**, como no resto da casa — `currency` por extenso fica para onde o
+centavo é o assunto.
+
+**As linhas que chegam ao `total` são as que sobraram do filtro, de todas as
+páginas.** O rodapé de paginação ao lado já conta assim ("1–4 de 7" conta o que
+sobrou da busca), e um total que mudasse a cada virada de página não seria um
+total de nada. Carregando não há rodapé — não há o que somar —, e busca sem
+resultado também não: a linha que explica já ocupa a tabela inteira.
+
+Por que não um `footer?: (rows) => ReactNode`: ele devolveria o problema de onde
+ele veio. Quem escrevesse teria de montar a `<tr>` e as `<td>` na mão, contar as
+colunas escondidas no celular e repetir o alinhamento de cada uma — e errar em
+qualquer um desses é voltar a ter o total fora de eixo, agora dentro de uma
+tabela. Para o arranjo que uma coluna não alcança — célula que junta duas
+colunas, duas linhas de resumo — o caminho é o `Table` com `TableFooter`, que
+existe justamente para a tabela que você desenha.
+
+`classNames.footer` continua sendo a barra de paginação debaixo da tabela, e não
+esta linha: a linha de totais se veste pelo que o `total` de cada coluna
+devolve.
+
+## Os textos que a peça escreve
+
+Três eram cravados, e nenhum tinha prop:
+
+- **`errorTitle`** (padrão "Não foi possível carregar") e **`errorMessage`** são
+  o par do estado de erro. Uma tela que carrega três listagens precisa dizer
+  qual delas falhou. O `ChartContainer` usa os mesmos dois nomes.
+- **`noResultsMessage`** (padrão "Nenhum resultado para a busca.") é a linha
+  discreta de quando o filtro zerou. Ela não se confunde com o `empty`: filtro
+  que zerou não é consulta vazia, e o remédio de um — limpar a busca — não serve
+  ao outro.
+
 ## Muita linha: rolagem própria e virtualização
 
 Entre "cabe numa página" e "manda para o servidor" existe o caso do meio, que é
@@ -86,9 +147,9 @@ a página que veio e ponha o `Pagination` da casa do lado de fora — e não mar
 ## Quando não usar
 
 Para a tabela que você desenha linha a linha, use `Table`. Ela compõe com
-`TableRow` e `TableCell` e aceita qualquer arranjo — célula que junta duas
-colunas, linha de total, quadro de um recibo. Esta aqui recebe `columns` e
-`rows`, e essa é a troca: ela cuida dos estados e da ordenação, e em compensação
+`TableRow`, `TableCell` e `TableFooter`, e aceita qualquer arranjo — célula que
+junta duas colunas, duas linhas de resumo, o quadro de um recibo. Esta aqui
+recebe `columns` e `rows`, e essa é a troca: ela cuida dos estados e da ordenação, e em compensação
 o desenho de cada linha passa a caber no que uma coluna sabe fazer.
 
 ## No React Native

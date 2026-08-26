@@ -41,6 +41,12 @@ Os mesmos do `DataTable`, e o `empty` é o mesmo objeto: `title`, `description`,
 </ChartContainer>
 ```
 
+**O erro diz o que falhou.** `errorTitle` e `errorMessage` são o par: num
+painel de quatro gráficos, "Não foi possível carregar o gráfico" quatro vezes
+não diz qual deles caiu — e num produto que não fala português não diz nada.
+Sem eles, o texto padrão continua o de sempre. Os dois nomes são os mesmos do
+`DataTable`, de propósito.
+
 **A contagem de pontos sai do próprio gráfico.** A moldura lê o `data` do filho
 da Recharts, então na forma acima não é preciso repeti-lo. Passe `data` aqui só
 quando os pontos não morarem no filho direto — `<ScatterChart>` com o `data` no

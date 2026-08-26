@@ -66,6 +66,7 @@ export function Error() {
       data={undefined}
       isError
       onRetry={() => {}}
+      errorTitle="Não foi possível carregar as notas"
       errorMessage="A prefeitura não respondeu. Tente de novo em alguns minutos."
       columns={COLUMNS}
       rowKey={(invoice) => invoice.id}
@@ -235,6 +236,73 @@ export function Virtual() {
         virtual
       />
     </div>
+  )
+}
+
+/*
+ * A soma de uma coluna, no rodape. `total` e o irmao do `cell` uma coluna
+ * acima: quem sabe formatar a celula sabe formatar a soma dela.
+ */
+const TOTALS: Column<Invoice>[] = [
+  { key: 'number', header: 'Número', sortable: true, total: () => 'Total' },
+  { key: 'customer', header: 'Cliente', sortable: true },
+  {
+    key: 'amount',
+    header: 'Valor',
+    align: 'right',
+    sortable: true,
+    value: (invoice) => invoice.amount,
+    cell: (invoice) => <span className="font-mono">{currencyShort(invoice.amount)}</span>,
+    total: (invoices) => (
+      <span className="font-mono">
+        {currencyShort(invoices.reduce((sum, invoice) => sum + invoice.amount, 0))}
+      </span>
+    ),
+  },
+  {
+    key: 'status',
+    header: 'Situação',
+    align: 'right',
+    cell: (invoice) => (
+      <Badge tone={invoice.status === 'Paga' ? 'success' : 'neutral'}>{invoice.status}</Badge>
+    ),
+  },
+]
+
+/** Com linha de totais */
+export function WithTotals() {
+  return <DataTable data={MANY} columns={TOTALS} rowKey={(invoice) => invoice.id} />
+}
+
+/** Totais que acompanham a busca */
+export function TotalsWithFilter() {
+  const [filter, setFilter] = useState('')
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <Input
+        aria-label="Buscar nota"
+        placeholder="Buscar por cliente ou número…"
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
+        className="max-w-64"
+      />
+      {/* O total conta o que sobrou do filtro, e nao a pagina: virar de
+          pagina nao muda quanto se deve. */}
+      <DataTable
+        data={MANY}
+        columns={TOTALS}
+        rowKey={(invoice) => invoice.id}
+        filter={filter}
+        pageSize={4}
+      />
+    </div>
+  )
+}
+
+/** Total grudado no rodapé da moldura */
+export function StickyTotals() {
+  return (
+    <DataTable data={MANY} columns={TOTALS} rowKey={(invoice) => invoice.id} maxHeight={220} />
   )
 }
 

@@ -13,6 +13,54 @@ de tela, `success` e `info` esperam a pessoa terminar a frase. Interromper
 alguém para dizer "salvo com sucesso" e falta de educacao com quem depende do
 leitor.
 
+## O ícone tem lugar próprio
+
+**Cor nunca é o único sinal.** Sem ícone, os quatro tons são quatro caixas
+idênticas de forma, separadas só pelo matiz — e quem não distingue vermelho de
+verde é uma fatia grande de qualquer base de usuários, sem contar a impressão em
+preto e branco.
+
+O ícone entrava como filho, no meio do título e da descrição: sem coluna
+própria, sem alinhamento com a primeira linha, e num lugar diferente a cada
+tela. Agora ele é `icon`, com posição garantida antes do texto:
+
+```tsx
+<Alert tone="warning" icon={<TriangleAlert />}>
+  <AlertTitle>Certificado vence em 8 dias</AlertTitle>
+  <AlertDescription>Renove antes de 01/09 para não interromper a emissão.</AlertDescription>
+</Alert>
+```
+
+O par canônico do lucide, o mesmo da tabela de ícones da casa: `Info` para
+`info`, `CheckCircle2` para `success`, `TriangleAlert` para `warning`, `CircleX`
+para `danger`. Ele sai `aria-hidden`: o texto ao lado já diz o que ele desenha,
+e o `role` da raiz já diz a urgência — anunciá-lo de novo seria dizer a mesma
+coisa duas vezes.
+
+## Que a pessoa dispensa
+
+`onDismiss` liga o xis no canto direito, com nome acessível ("Fechar aviso", ou
+o que `dismissLabel` disser).
+
+**Quem some com o aviso é quem chamou.** A peça não guarda estado nenhum, pelo
+mesmo motivo de ela não ter `open`: um aviso que se apaga sozinho é `Toast`, e o
+`Alert` existe justamente para o que fica na tela.
+
+```tsx
+const [open, setOpen] = useState(true)
+
+{open && (
+  <Alert tone="warning" icon={<TriangleAlert />} onDismiss={() => setOpen(false)}>
+    <AlertTitle>Certificado vence em 8 dias</AlertTitle>
+    <AlertDescription>Renove antes de 01/09.</AlertDescription>
+  </Alert>
+)}
+```
+
+Sem `onDismiss` não há botão, que continua sendo o padrão: aviso que a pessoa
+pode dispensar é o caso, e não a regra. O que bloqueia uma ação não se dispensa
+— tirá-lo da tela é resolver o que ele aponta.
+
 ## Quando não usar
 
 Para a confirmação do que acabou de acontecer — nota emitida, arquivo enviado —

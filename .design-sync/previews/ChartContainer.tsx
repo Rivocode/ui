@@ -101,6 +101,28 @@ export function EmptyWithAction() {
   )
 }
 
+/** Erro, dizendo qual gráfico falhou */
+export function ErrorWithTitle() {
+  return (
+    <div className="w-full max-w-lg">
+      {/* Num painel de quatro gráficos, "Não foi possível carregar o gráfico"
+          quatro vezes não diz qual deles falhou. */}
+      <ChartContainer
+        config={UMA}
+        className="h-56"
+        isError
+        onRetry={() => {}}
+        errorTitle="Não foi possível carregar o faturamento"
+        errorMessage="A consulta expirou. Tente de novo em alguns minutos."
+      >
+        <LineChart data={MESES}>
+          <Line dataKey="emitidas" stroke="var(--color-emitidas)" isAnimationActive={false} />
+        </LineChart>
+      </ChartContainer>
+    </div>
+  )
+}
+
 /** Linha em degrau */
 export function StepLine() {
   return (

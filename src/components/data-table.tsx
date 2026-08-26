@@ -29,7 +29,15 @@ import { Checkbox } from "./checkbox";
 import { EmptyState } from "./empty-state";
 import { Pagination } from "./pagination";
 import { Skeleton } from "./skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./table";
 
 export type Column<Row> = {
   /** Chave da coluna. Precisa ser unica na tabela. */
@@ -47,6 +55,19 @@ export type Column<Row> = {
    * nao e campo direto da linha. Sem ele, vale `row[key]`.
    */
   value?: (row: Row) => string | number | Date | null | undefined;
+  /**
+   * O que esta coluna mostra no rodape: o irmao do `cell`, uma coluna acima.
+   * Onde o `cell` resume uma linha, este resume a coluna inteira.
+   *
+   * As linhas que chegam sao **as que sobraram do filtro, de todas as
+   * paginas** - o total de uma busca e o total da busca, e virar de pagina nao
+   * muda quanto se deve. Basta uma coluna declarar `total` para o `<tfoot>`
+   * existir; as outras saem em branco, alinhadas com quem esta em cima.
+   *
+   * Dinheiro sai abreviado, como no resto da casa:
+   * `total: (rows) => currencyShort(rows.reduce((sum, row) => sum + row.amount, 0))`.
+   */
+  total?: (rows: Row[]) => ReactNode;
 };
 
 export type DataTableProps<Row> = {
@@ -59,7 +80,23 @@ export type DataTableProps<Row> = {
   isError?: boolean;
   /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
+  /**
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar".
+   *
+   * Ele existe pelo mesmo motivo do `errorMessage`: uma tela que carrega tres
+   * listagens diferentes precisa dizer qual delas falhou, e um produto que nao
+   * fala portugues precisa dizer isso em outra lingua.
+   */
+  errorTitle?: ReactNode;
   errorMessage?: ReactNode;
+  /**
+   * A linha discreta de quando a busca nao acha nada. Sem ela, "Nenhum
+   * resultado para a busca."
+   *
+   * Nao se confunde com o `empty`: filtro que zerou nao e consulta vazia, e o
+   * remedio de um - limpar a busca - nao serve ao outro.
+   */
+  noResultsMessage?: ReactNode;
 
   /**
    * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
@@ -130,6 +167,10 @@ export type DataTableProps<Row> = {
   /**
    * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
    * `[&_tbody_tr]`, que acopla a tela de quem usa a arvore interna da peca.
+   *
+   * `footer` e a barra de paginacao debaixo da tabela, e nao a linha de
+   * totais - essa mora dentro do `<tfoot>` e se veste pelo que o `total` de
+   * cada coluna devolve.
    */
   classNames?: Slots<"table" | "head" | "row" | "cell" | "footer">;
 };
@@ -158,14 +199,14 @@ const flatten = (text: unknown) =>
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase();
 
-const filtroSemAcento = constructFilterFn({
+const accentFreeFilter = constructFilterFn({
   filter: (dataValue, filterValue: string) => flatten(dataValue).includes(filterValue),
   resolveFilterValue: (value: unknown) => flatten(value),
   autoRemove: (value: unknown) => !value,
 });
 
 /** Sem paginacao pedida, uma "pagina" que cabe qualquer lista. */
-const SEM_PAGINACAO = Number.MAX_SAFE_INTEGER;
+const NO_PAGINATION = Number.MAX_SAFE_INTEGER;
 
 const keysOf = (selection: RowSelectionState) =>
   Object.keys(selection).filter((key) => selection[key]);
@@ -203,7 +244,9 @@ export function DataTable<Row>({
   isLoading,
   isError,
   onRetry,
+  errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar a lista.",
+  noResultsMessage = "Nenhum resultado para a busca.",
   empty,
   onRowClick,
   skeletonRows = 5,
@@ -227,7 +270,7 @@ export function DataTable<Row>({
    * mesmo da `Tree` e do `TreeSelect`. Eram tres dialetos para o mesmo dado, e
    * quem escrevia uma tela com as tres pecas reescrevia o binding a cada uma.
    */
-  const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>(() =>
+  const [internalSelection, setInternalSelection] = useState<RowSelectionState>(() =>
     Object.fromEntries((defaultValue ?? []).map((key) => [key, true])),
   );
 
@@ -262,26 +305,26 @@ export function DataTable<Row>({
     // Numero ordena crescente no primeiro clique, como texto: a surpresa de
     // "cliquei e desceu" nao vale a esperteza da inferencia.
     sortDescFirst: false,
-    globalFilterFn: filtroSemAcento,
+    globalFilterFn: accentFreeFilter,
     getColumnCanGlobalFilter: () => true,
     onPaginationChange: (updater: Updater<{ pageIndex: number; pageSize: number }>) => {
       setPageIndex((atual) => {
         const proximo =
           typeof updater === "function"
-            ? updater({ pageIndex: atual, pageSize: pageSize ?? SEM_PAGINACAO })
+            ? updater({ pageIndex: atual, pageSize: pageSize ?? NO_PAGINATION })
             : updater;
         return proximo.pageIndex;
       });
     },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
       const proxima = typeof updater === "function" ? updater(selection) : updater;
-      if (!value) setSelecaoInterna(proxima);
+      if (!value) setInternalSelection(proxima);
       const keys = keysOf(proxima);
       onValueChange?.(keys);
     },
     state: {
       globalFilter: filter || undefined,
-      pagination: { pageIndex, pageSize: pageSize ?? SEM_PAGINACAO },
+      pagination: { pageIndex, pageSize: pageSize ?? NO_PAGINATION },
       rowSelection: selection,
     },
   });
@@ -352,7 +395,7 @@ export function DataTable<Row>({
   if (isError) {
     return (
       <Alert tone="danger" className={className}>
-        <AlertTitle>Não foi possível carregar</AlertTitle>
+        <AlertTitle>{errorTitle}</AlertTitle>
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
@@ -382,8 +425,8 @@ export function DataTable<Row>({
 
   // O rodape so existe com paginacao, e conta o que sobrou do filtro: "1-2 de
   // 5" e a lista, nao o banco.
-  const first = pageIndex * (pageSize ?? SEM_PAGINACAO) + 1;
-  const last = Math.min(first + (pageSize ?? SEM_PAGINACAO) - 1, filteredTotal);
+  const first = pageIndex * (pageSize ?? NO_PAGINATION) + 1;
+  const last = Math.min(first + (pageSize ?? NO_PAGINATION) - 1, filteredTotal);
 
   /*
    * Cabecalho e corpo sao os mesmos nos dois enquadramentos abaixo; o que muda
@@ -498,6 +541,67 @@ export function DataTable<Row>({
     </tr>
   );
 
+  /*
+   * A LINHA DE TOTAIS.
+   *
+   * Toda listagem financeira daqui termina em "Total: R$ 248,3K", e ate agora
+   * isso era uma <div> embaixo da tabela: sem largura de coluna, o total nunca
+   * ficava debaixo do valor que soma, e com `maxHeight` ele rolava embora. Num
+   * <tfoot> a celula divide a largura com a coluna, e o rodape gruda embaixo
+   * pelo mesmo mecanismo com que o cabecalho gruda em cima.
+   *
+   * O SOMATORIO E POR COLUNA, e nao um slot livre. Um `footer?: (rows) => ...`
+   * devolveria o problema de onde ele veio: quem escreve teria de montar a
+   * `<tr>` e as `<td>` na mao, contar as colunas escondidas no celular, repetir
+   * o alinhamento de cada uma - e errar em qualquer um desses e voltar a ter o
+   * total fora de eixo, agora dentro de uma tabela. O `total` e o irmao do
+   * `cell` uma linha acima: quem sabe formatar a celula sabe formatar a soma
+   * dela, e o resto a peca ja sabe.
+   *
+   * AS LINHAS SAO AS DO FILTRO, nao as da pagina. O rodape de paginacao ao lado
+   * ja conta assim ("1-4 de 7" conta o que sobrou da busca), e um total que
+   * mudasse a cada virada de pagina nao seria um total de nada.
+   */
+  const summed = columns.some((column) => column.total)
+    ? table.getFilteredRowModel().rows.map((row) => row.original as unknown as Row)
+    : undefined;
+
+  const foot = summed && !loading && rows.length > 0 && (
+    <TableFooter
+      className={cn(
+        // Mesmo motivo do cabecalho, do outro lado: fora de uma moldura que
+        // rola quem rola e a pagina, e o `sticky` colaria o total no rodape da
+        // janela. O fundo evita a linha aparecendo por baixo, e o risco vira
+        // sombra porque `border-collapse` come a borda de um `<tfoot>` grudado.
+        maxHeight !== undefined && [
+          "sticky bottom-0 z-[var(--rc-z-sticky)] bg-surface",
+          "shadow-[inset_0_1px_0_var(--rc-border)]",
+        ],
+      )}
+    >
+      {/* Virtualizada, a contagem publicada e a das linhas de dado mais o
+          cabecalho; o total e a ultima, e sem indice ele seria anunciado com
+          o numero de outra pessoa. */}
+      <TableRow
+        aria-rowindex={virtualized ? rows.length + 2 : undefined}
+        className="border-b-0 hover:bg-transparent"
+      >
+        {selectable && <TableCell className="w-10" />}
+        {columns.map((column) => (
+          <TableCell
+            key={column.key}
+            className={cn(
+              column.align === "right" && "text-right",
+              column.hideOnMobile && "max-sm:hidden",
+            )}
+          >
+            {column.total?.(summed)}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableFooter>
+  );
+
   const body = (
     <TableBody>
       {loading ? (
@@ -523,7 +627,7 @@ export function DataTable<Row>({
         // continua reservado para quando o banco nao tem nada.
         <TableRow>
           <TableCell colSpan={columnCount} className="py-8 text-center text-fg-muted">
-            Nenhum resultado para a busca.
+            {noResultsMessage}
           </TableCell>
         </TableRow>
       ) : (
@@ -588,6 +692,7 @@ export function DataTable<Row>({
           {caption && <caption className="sr-only">{caption}</caption>}
           {head}
           {body}
+          {foot}
         </Table>
       ) : (
         /*
@@ -608,12 +713,14 @@ export function DataTable<Row>({
           className="w-full overflow-auto rounded-md border border-border bg-surface"
         >
           <table
-            aria-rowcount={virtualized ? rows.length + 1 : undefined}
+            // Cabecalho, linhas de dado e - quando existe - a linha de totais.
+            aria-rowcount={virtualized ? rows.length + (foot ? 2 : 1) : undefined}
             className={cn("w-full border-collapse text-base", classNames?.table)}
           >
             {caption && <caption className="sr-only">{caption}</caption>}
             {head}
             {body}
+            {foot}
           </table>
         </div>
       )}

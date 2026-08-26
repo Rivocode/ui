@@ -25,6 +25,31 @@ export function TableBody({ className, ...props }: ComponentPropsWithoutRef<"tbo
   return <tbody {...props} className={className} />;
 }
 
+/**
+ * O rodape da tabela, num <tfoot> de verdade.
+ *
+ * Toda listagem financeira daqui termina numa linha de totais, e ate agora ela
+ * era montada numa <div> embaixo da tabela. Uma <div> nao participa do
+ * algoritmo de layout de tabela: ela nao conhece a largura de nenhuma coluna,
+ * entao o total nunca fica debaixo do valor que soma, e ela rola embora junto
+ * com o conteudo quando a lista tem moldura propria.
+ *
+ * Num <tfoot> as duas coisas se resolvem de graca - a celula divide a largura
+ * com a coluna, e o elemento pode grudar embaixo do mesmo jeito que o <thead>
+ * gruda em cima.
+ *
+ * O peso e proposital: o rodape e resumo, e resumo nao pode se ler como mais
+ * uma linha de dado.
+ */
+export function TableFooter({ className, ...props }: ComponentPropsWithoutRef<"tfoot">) {
+  return (
+    <tfoot
+      {...props}
+      className={cn("border-t border-border bg-surface font-medium text-fg", className)}
+    />
+  );
+}
+
 export type TableRowProps = ComponentPropsWithoutRef<"tr"> & {
   /** Linha escolhida. Marca no aria tambem, porque cor sozinha nao e estado. */
   selected?: boolean;

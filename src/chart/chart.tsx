@@ -42,6 +42,14 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   isError?: boolean;
   /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
+  /**
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar o grafico".
+   *
+   * O mesmo nome e o mesmo papel do `errorTitle` do `DataTable`: um painel com
+   * quatro graficos precisa dizer qual deles falhou, e um produto que nao fala
+   * portugues precisa dizer isso em outra lingua.
+   */
+  errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
@@ -98,6 +106,7 @@ export function ChartContainer({
   isLoading,
   isError,
   onRetry,
+  errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
   empty,
   data,
@@ -205,7 +214,7 @@ export function ChartContainer({
       ) : isError ? (
         <StateFrame>
           <Alert tone="danger" className="w-full">
-            <AlertTitle>Não foi possível carregar o gráfico</AlertTitle>
+            <AlertTitle>{errorTitle}</AlertTitle>
             <AlertDescription>
               {errorMessage ?? "Tente de novo em alguns minutos."}
             </AlertDescription>
