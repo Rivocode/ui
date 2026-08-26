@@ -8,8 +8,8 @@ export type OTPFieldProps = {
   length?: number;
   value: string;
   onValueChange: (value: string) => void;
-  /** Chamado uma vez, quando o ultimo digito entra. */
-  onComplete?: (value: string) => void;
+  /** Chamado uma vez, quando o ultimo digito entra. Mesmo nome do web. */
+  onValueComplete?: (value: string) => void;
   className?: string;
 };
 
@@ -18,7 +18,13 @@ export type OTPFieldProps = {
  * por tras. E o unico jeito de o teclado, o autofill de SMS e o leitor de
  * tela enxergarem um campo so, enquanto o olho ve um digito por caixa.
  */
-export function OTPField({ length = 6, value, onValueChange, onComplete, className }: OTPFieldProps) {
+export function OTPField({
+  length = 6,
+  value,
+  onValueChange,
+  onValueComplete,
+  className,
+}: OTPFieldProps) {
   // `useRef<TextInput>` parece obvio e e uma armadilha: sob a API estrita de
   // tipos do React Native o nome `TextInput` e o COMPONENTE, nao a instancia,
   // entao a ref virava `TextInputType` - sem `focus` - e nem entrava no
@@ -31,7 +37,7 @@ export function OTPField({ length = 6, value, onValueChange, onComplete, classNa
   const handleChange = (text: string) => {
     const digits = text.replace(/\D/g, "").slice(0, length);
     onValueChange(digits);
-    if (digits.length === length) onComplete?.(digits);
+    if (digits.length === length) onValueComplete?.(digits);
   };
 
   return (

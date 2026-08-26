@@ -40,11 +40,16 @@ export type ToggleGroupItem = { label: string; value: string };
 
 export type ToggleGroupProps = {
   items: ToggleGroupItem[];
-  /** Os valores apertados. Com `single`, no maximo um. */
+  /** Os valores apertados. Sem `multiple`, no maximo um. */
   value: string[];
   onValueChange: (value: string[]) => void;
-  /** `single` desaperta o anterior; o padrao aceita varios ao mesmo tempo. */
-  single?: boolean;
+  /**
+   * `multiple` aceita varios ao mesmo tempo; o padrao desaperta o anterior.
+   * O nome e o sentido sao os do web: a mesma peca nao pode responder ao
+   * contrario de cada lado, e antes disto o nativo pedia `single` e vinha
+   * multiplo por padrao - o oposto exato.
+   */
+  multiple?: boolean;
   disabled?: boolean;
   className?: string;
 };
@@ -54,16 +59,16 @@ export function ToggleGroup({
   items,
   value,
   onValueChange,
-  single,
+  multiple,
   disabled,
   className,
 }: ToggleGroupProps) {
   const toggle = (item: string, pressed: boolean) => {
-    if (single) {
-      onValueChange(pressed ? [item] : []);
+    if (multiple) {
+      onValueChange(pressed ? [...value, item] : value.filter((other) => other !== item));
       return;
     }
-    onValueChange(pressed ? [...value, item] : value.filter((other) => other !== item));
+    onValueChange(pressed ? [item] : []);
   };
 
   return (

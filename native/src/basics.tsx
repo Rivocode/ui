@@ -48,13 +48,17 @@ export function Progress({ value, label, className }: ProgressProps) {
 }
 
 export type AvatarProps = {
-  /** As iniciais. Imagem chega depois, com expo-image; o fallback ja e o produto. */
-  initials: string;
+  /**
+   * As iniciais. Imagem chega depois, com expo-image; o fallback ja e o
+   * produto - e o nome e o mesmo do web de proposito, para a mesma peca nao
+   * pedir prop diferente de cada lado.
+   */
+  fallback: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 };
 
-export function Avatar({ initials, size = "md", className }: AvatarProps) {
+export function Avatar({ fallback, size = "md", className }: AvatarProps) {
   const box = { sm: "size-8", md: "size-10", lg: "size-12" }[size];
   const text = { sm: "text-xs", md: "text-sm", lg: "text-base" }[size];
   return (
@@ -65,7 +69,7 @@ export function Avatar({ initials, size = "md", className }: AvatarProps) {
         className,
       )}
     >
-      <Text className={`font-medium text-fg-muted ${text}`}>{initials}</Text>
+      <Text className={`font-medium text-fg-muted ${text}`}>{fallback}</Text>
     </View>
   );
 }

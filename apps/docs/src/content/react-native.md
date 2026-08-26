@@ -25,6 +25,13 @@ idioma da plataforma antes de atravessar.
 | `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip` | **não portam** | são idiomas de desktop; navegação nativa é tab bar e drawer do router |
 | `FileUpload` | **ainda não** | precisa do expo-document-picker; entra quando houver app dono da dependência |
 
+Onde o nome da peça é o mesmo, o nome da **prop** também é: `Avatar` recebe
+`fallback`, `OTPField` avisa por `onValueComplete`, `ToggleGroup` aceita vários
+com `multiple` — e, sem `multiple`, desaperta o anterior, como no web. Até a
+0.1.0 estas três divergiam (`initials`, `onComplete`, `single` com o sentido
+invertido), e quem escrevia as duas telas do mesmo produto trocava de
+vocabulário no meio do caminho.
+
 ## Instalação
 
 Num app Expo:

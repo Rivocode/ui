@@ -29,21 +29,22 @@ describe("Toggle e ToggleGroup", () => {
     expect(onPressedChange).toHaveBeenCalledWith(false);
   });
 
-  test("no grupo, single desaperta o anterior; o padrao acumula", () => {
+  test("no grupo, o padrao desaperta o anterior; multiple acumula", () => {
     const items = [
       { label: "Paga", value: "paga" },
       { label: "Vencida", value: "vencida" },
     ];
 
+    // O padrao e o mesmo do web: sem `multiple`, so um fica apertado.
     const single = mock(() => {});
-    const one = render(
-      <ToggleGroup items={items} value={["paga"]} onValueChange={single} single />,
-    );
+    const one = render(<ToggleGroup items={items} value={["paga"]} onValueChange={single} />);
     act(() => byRole(one, "togglebutton")[1].props.onPress());
     expect(single).toHaveBeenCalledWith(["vencida"]);
 
     const multi = mock(() => {});
-    const many = render(<ToggleGroup items={items} value={["paga"]} onValueChange={multi} />);
+    const many = render(
+      <ToggleGroup items={items} value={["paga"]} onValueChange={multi} multiple />,
+    );
     act(() => byRole(many, "togglebutton")[1].props.onPress());
     expect(multi).toHaveBeenCalledWith(["paga", "vencida"]);
   });

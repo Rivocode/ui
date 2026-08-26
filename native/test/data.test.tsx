@@ -1,7 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 import { Text } from "react-native";
 
-import { DataList, EmptyState, Progress, Stat } from "../src";
+import { Avatar, DataList, EmptyState, Progress, Stat } from "../src";
 import { act, byClass, byRole, render, textOf } from "./helpers";
 
 const ROWS = [
@@ -86,6 +86,13 @@ describe("Stat", () => {
 
     const bad = render(<Stat label="Vencidas" value="6" delta={50} invert />);
     expect(byClass(bad, /text-danger-text/).length).toBe(1);
+  });
+});
+
+describe("Avatar", () => {
+  test("as iniciais entram por fallback, o mesmo nome do web", () => {
+    const screen = render(<Avatar fallback="EB" />);
+    expect(textOf(screen)).toContain("EB");
   });
 });
 
