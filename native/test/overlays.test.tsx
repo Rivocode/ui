@@ -2,7 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import { Text } from "react-native";
 
 import { AlertDialog, Button, Dialog, Sheet, useToast } from "../src";
-import { act, byLabel, byRole, render, renderError, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, render, renderError, textOf } from "./helpers";
 
 describe("Dialog", () => {
   test("fechado não monta nada; aberto mostra título e corpo", () => {
@@ -30,6 +30,29 @@ describe("Dialog", () => {
     act(() => overlay.props.onPress());
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
+
+  test("a tarja e irma do painel, com papel, e nao o embrulha", () => {
+    const screen = render(
+      <Dialog open onOpenChange={() => {}} title="Nota 4813">
+        <Text>Detalhe</Text>
+      </Dialog>,
+    );
+    const [overlay] = byLabel(screen, "Fechar");
+    // Enquanto o dialogo inteiro morava dentro dela, a primeira parada do
+    // VoiceOver era um botao gigante chamado "Fechar" que engolia o conteudo.
+    expect(overlay.props.children).toBeUndefined();
+    expect(overlay.props.accessibilityRole).toBe("button");
+  });
+
+  test("o leitor de tela nao vaza para a tela de tras, e o titulo e cabecalho", () => {
+    const screen = render(<Dialog open onOpenChange={() => {}} title="Nota 4813" />);
+    expect(byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal)).toBe(
+      true,
+    );
+    const [heading] = byRole(screen, "header");
+    expect(heading).toBeDefined();
+    expect(heading.props.children).toBe("Nota 4813");
+  });
 });
 
 describe("AlertDialog", () => {
@@ -43,6 +66,14 @@ describe("AlertDialog", () => {
   test("o toque fora NÃO fecha: o overlay nem é tocável", () => {
     const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onAction={() => {}} />);
     expect(byLabel(screen, "Fechar").length).toBe(0);
+  });
+
+  test("também prende o leitor de tela e anuncia o título como cabeçalho", () => {
+    const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onAction={() => {}} />);
+    expect(byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal)).toBe(
+      true,
+    );
+    expect(byRole(screen, "header")[0].props.children).toBe("Cancelar a nota?");
   });
 
   test("confirmar fecha e só então age; cancelar só fecha", () => {
@@ -78,6 +109,21 @@ describe("Sheet", () => {
     expect(textOf(screen)).toContain("Corpo da folha");
     act(() => byLabel(screen, "Fechar")[0].props.onPress());
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  test("a tarja tambem e irma do painel, e o titulo e cabecalho", () => {
+    const screen = render(
+      <Sheet open onOpenChange={() => {}} title="Nota 4813">
+        <Text>Corpo da folha</Text>
+      </Sheet>,
+    );
+    const [overlay] = byLabel(screen, "Fechar");
+    expect(overlay.props.children).toBeUndefined();
+    expect(overlay.props.accessibilityRole).toBe("button");
+    expect(byClass(screen, /justify-end/).some((node) => node.props.accessibilityViewIsModal)).toBe(
+      true,
+    );
+    expect(byRole(screen, "header")[0].props.children).toBe("Nota 4813");
   });
 });
 
