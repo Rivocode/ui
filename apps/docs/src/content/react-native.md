@@ -52,7 +52,7 @@ O JSX se reescreve.
 
 ## A paridade, peça por peça
 
-**82 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 42 traduzem com o mesmo nome, 3 traduzem com outro, 21 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 43 traduzem com o mesmo nome, 3 traduzem com outro, 21 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -76,6 +76,7 @@ O JSX se reescreve.
 | `Clipboard` | ○ na fila | precisa do `expo-clipboard`, e dependência é escolha do app |
 | `Code` | ○ na fila | código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
+| `ColorPicker` | ○ na fila | a grade de amostras atravessa, e o campo hexadecimal também; falta escrever a peça |
 | `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `ContextMenu` | ✕ não porta | não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita |
@@ -98,7 +99,7 @@ O JSX se reescreve.
 | `MaskedInput` | ✔ traduz | o valor é só dígitos; a máscara é do campo, o dado não a carrega |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
-| `Meter` | ○ na fila | use `Progress` até lá — sabendo que o leitor vai anunciar carregamento para uma medida que não carrega |
+| `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel` |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NumberField` | ✔ traduz | vira stepper — menos, valor, mais —, que é o idioma do toque |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só |

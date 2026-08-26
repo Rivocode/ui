@@ -29,7 +29,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
 ## A paridade, peça por peça
 
-**82 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 43 traduzem com o mesmo nome, 3 traduzem com outro, 20 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 43 traduzem com o mesmo nome, 3 traduzem com outro, 21 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -53,6 +53,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `Clipboard` | ○ na fila | precisa do `expo-clipboard`, e dependência é escolha do app |
 | `Code` | ○ na fila | código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
+| `ColorPicker` | ○ na fila | a grade de amostras atravessa, e o campo hexadecimal também; falta escrever a peça |
 | `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `ContextMenu` | ✕ não porta | não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita |

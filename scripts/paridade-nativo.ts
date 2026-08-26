@@ -307,6 +307,15 @@ const PARITY: Record<string, Row> = {
     state: "fila",
     note: "código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido",
   },
+  ColorPicker: {
+    state: "fila",
+    note: "a grade de amostras atravessa, e o campo hexadecimal também; falta escrever a peça",
+    page:
+      "Ainda não portado, e o que falta é trabalho e não decisão: a grade de amostras é uma " +
+      "lista de `Pressable` com `accessibilityRole=\"radio\"`, e o campo hexadecimal é um " +
+      "`Input` com `autoCapitalize=\"none\"`. Até lá, um `Sheet` com a paleta do cliente em " +
+      "botões resolve o caso comum — escolher entre os tons que a marca já tem.",
+  },
   DateRangePicker: {
     state: "fila",
     note: "dois `DatePicker` até lá — e a validação de fim-antes-do-começo passa a ser sua",

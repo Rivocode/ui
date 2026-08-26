@@ -26,7 +26,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 ## Antes de escrever a primeira linha
 
-1. **Confira se a peça já existe.** São 81, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 82, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em
