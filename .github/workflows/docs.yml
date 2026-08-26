@@ -43,13 +43,45 @@ jobs:
         with:
           node-version: 22
 
+      # Os tres segredos sao conferidos ANTES do install.
+      #
+      # O CLI le o token da variavel de ambiente, que e o caminho recomendado
+      # em CI - na linha de comando ele apareceria na lista de processos e no
+      # log. E `--token` vazio nao falha como falta de segredo: falha com
+      # "voce definiu --token, mas sem valor", que manda procurar no lugar
+      # errado. Aqui a mensagem diz o que e.
+      - name: Conferir os segredos da Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          faltando=""
+          [ -z "$VERCEL_TOKEN" ] && faltando="$faltando VERCEL_TOKEN"
+          [ -z "$VERCEL_ORG_ID" ] && faltando="$faltando VERCEL_ORG_ID"
+          [ -z "$VERCEL_PROJECT_ID" ] && faltando="$faltando VERCEL_PROJECT_ID"
+
+          if [ -n "$faltando" ]; then
+            echo "Chegaram vazios:$faltando"
+            echo
+            echo "Em Settings > Secrets and variables > Actions, como segredo do REPOSITORIO:"
+            echo "  VERCEL_TOKEN       vercel.com/account/tokens"
+            echo "  VERCEL_ORG_ID      o campo orgId do .vercel/project.json local"
+            echo "  VERCEL_PROJECT_ID  o campo projectId do mesmo arquivo"
+            echo
+            echo "O .vercel/ nao e versionado de proposito: e conta local, e nao"
+            echo "configuracao de projeto. Por isso os dois ids vem por segredo."
+            exit 1
+          fi
+          echo "Os tres segredos estao no lugar."
+
       - run: bun install --frozen-lockfile
 
       # O `.vercel/` nao e versionado - e conta local, e nao configuracao de
       # projeto. Os dois identificadores chegam por segredo, e sao eles que
       # dizem qual projeto receber o resultado.
       - name: Construir
-        run: npx vercel@latest build --prod --token "$VERCEL_TOKEN"
+        run: npx vercel@latest build --prod
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -76,7 +108,7 @@ jobs:
           fi
 
       - name: Publicar
-        run: npx vercel@latest deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+        run: npx vercel@latest deploy --prebuilt --prod
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
