@@ -79,6 +79,16 @@ export function Checkbox({
         "data-[indeterminate]:text-accent-fg",
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[disabled]:text-fg-disabled",
+        // WCAG 2.5.8 pede 24x24 de alvo, e o --rc-box desenha 18 (16 na
+        // densidade compacta). Sem texto ao lado nao ha nada de onde emprestar
+        // area - e o caso da coluna de selecao do DataTable, onde o dedo mais
+        // mira -, entao um pseudo-elemento transparente estica so o alvo, seis
+        // pixels para cada lado. Crescer a caixa de verdade engordaria a
+        // coluna inteira, que e o oposto do que a densidade da casa quer.
+        //
+        // Com rotulo isto nao entra: o `<label>` de fora ja e o alvo, e o halo
+        // so deitaria uma camada por cima do proprio texto.
+        children === undefined && "relative after:absolute after:-inset-1.5",
         classNames?.box,
         className,
       )}

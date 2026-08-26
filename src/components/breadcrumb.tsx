@@ -61,6 +61,16 @@ export function Breadcrumb({ className, items, maxItems = 4, ...props }: Breadcr
                     href={crumb.href}
                     className={cn(
                       "truncate rounded-sm text-fg-muted",
+                      // A migalha mede 58x18: a largura passa, a altura de uma
+                      // linha de texto pequeno nao chega aos 24 da WCAG 2.5.8.
+                      // O pseudo-elemento estica so na vertical - crescer
+                      // tambem na horizontal poria o halo por cima da migalha
+                      // seguinte, que fica a seis pixels de distancia, e o
+                      // clique cairia na migalha errada. O `truncate` traz um
+                      // overflow-hidden que recortaria esse halo, mas ele nao
+                      // vale em elemento inline - se algum dia a migalha virar
+                      // inline-block, o alvo volta a 18 sem aviso.
+                      "relative after:absolute after:inset-x-0 after:-inset-y-1.5",
                       "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
                       "hover:text-fg",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",

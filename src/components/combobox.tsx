@@ -168,7 +168,15 @@ export function ComboboxChip({
       {children}
       <BaseCombobox.ChipRemove
         aria-label="Remover"
-        className="text-fg-subtle transition-colors hover:text-fg"
+        className={cn(
+          "text-fg-subtle transition-colors hover:text-fg",
+          // O menor alvo da biblioteca: 12x12, o tamanho do proprio icone,
+          // contra os 24x24 que a WCAG 2.5.8 pede. O pseudo-elemento leva o
+          // alvo a 24 sem engordar a ficha, que precisa caber varias por linha
+          // dentro do campo. Seis pixels e tambem o px-1.5 da ficha, entao o
+          // halo termina rente a borda dela e nao invade a ficha vizinha.
+          "relative after:absolute after:-inset-1.5",
+        )}
       >
         <X size={12} aria-hidden="true" />
       </BaseCombobox.ChipRemove>
