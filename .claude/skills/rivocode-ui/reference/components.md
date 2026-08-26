@@ -27,6 +27,7 @@ exemplos que rodam e a tabela de props.
 | Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
 | Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
 | "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
+| O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
 | Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
 | Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |

@@ -261,6 +261,12 @@ export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export { Clipboard, type ClipboardProps } from "./components/clipboard";
+export {
+  Timeline,
+  TimelineItem,
+  type TimelineProps,
+  type TimelineItemProps,
+} from "./components/timeline";
 export { Code, CodeBlock, type CodeProps, type CodeBlockProps } from "./components/code";
 export {
   RelativeTime,

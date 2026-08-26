@@ -18482,6 +18482,44 @@
       }
     ]
   },
+  "Timeline": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "TimelineItem": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "at",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Quando aconteceu."
+      },
+      {
+        "name": "by",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Quem fez."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"marker\" | \"meta\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `marker`, `title`, `meta`, `content`."
+      },
+      {
+        "name": "pending",
+        "type": "boolean | null",
+        "required": false,
+        "note": "O que ainda nao aconteceu fica vazado."
+      },
+      {
+        "name": "tone",
+        "type": "\"accent\" | \"danger\" | \"neutral\" | \"success\" | \"warning\" | null",
+        "required": false
+      }
+    ]
+  },
   "ToastViewport": {
     "forwardsRoot": false,
     "props": [

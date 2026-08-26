@@ -5,6 +5,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import { Clipboard } from "../src/components/clipboard";
 import { RelativeTime } from "../src/components/relative-time";
 import { Code, CodeBlock } from "../src/components/code";
+import { Timeline, TimelineItem } from "../src/components/timeline";
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
@@ -112,4 +113,38 @@ test("o bloco numera as linhas quando se pede", () => {
   withTheme(<CodeBlock lineNumbers>{"um\ndois\ntres"}</CodeBlock>);
 
   expect(screen.getByText("3")).toBeDefined();
+});
+
+/* --- Timeline ----------------------------------------------------------- */
+
+test("a linha do tempo sai como lista ordenada, porque a ordem e o dado", () => {
+  const { container } = withTheme(
+    <Timeline>
+      <TimelineItem title="Emitida" at="12:04" by="Ana" tone="accent" />
+      <TimelineItem title="Autorizada" at="12:05" tone="success" />
+      <TimelineItem title="Cancelada" at="14:20" by="Carlos" tone="danger">
+        Motivo: dados do destinatário
+      </TimelineItem>
+      <TimelineItem title="Substituição" pending />
+    </Timeline>,
+  );
+
+  expect(container.querySelector("ol")).not.toBeNull();
+  expect(container.querySelectorAll("li").length).toBe(4);
+  expect(screen.getByText(/dados do destinatário/)).toBeDefined();
+});
+
+test("o que ainda nao aconteceu nao se veste de acontecido", () => {
+  // Preencher o marcador de um evento futuro faz a linha prometer que ele ja
+  // ocorreu - o erro que uma trilha de auditoria nao pode cometer.
+  const { container } = withTheme(
+    <Timeline>
+      <TimelineItem title="Paga" tone="success" />
+      <TimelineItem title="Baixa no banco" pending />
+    </Timeline>,
+  );
+
+  const markers = container.querySelectorAll("li > span");
+  expect(markers[0]!.className).toContain("bg-success");
+  expect(markers[1]!.className).toContain("ring-border-strong");
 });
