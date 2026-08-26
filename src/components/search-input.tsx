@@ -46,7 +46,10 @@ export function SearchInput({ className, shortcut, onClear, onKeyDown, ...props 
         onKeyDown={handleKeyDown}
         className={cn(
           "h-[var(--rc-control-md)] w-full rounded-md border border-border bg-surface",
-          "pl-8 font-sans text-base text-fg placeholder:text-fg-subtle",
+          // O max-sm:text-[16px] e o mesmo do inputVariants, repetido porque
+          // este campo desenha o proprio controle em vez de herda-lo: abaixo
+          // de 16px o Safari do iPhone amplia a pagina ao focar e nao volta.
+          "pl-8 font-sans text-base max-sm:text-[16px] text-fg placeholder:text-fg-subtle",
           shortcut ? "pr-16" : "pr-[var(--rc-control-pad-md)]",
           "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",

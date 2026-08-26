@@ -52,6 +52,11 @@ export function byLabel(renderer: ReactTestRenderer, label: string): ReactTestIn
   return hosts(renderer, (node) => node.props?.accessibilityLabel === label);
 }
 
+/** Pelo nome do elemento host, para o que nao tem papel nem rotulo. */
+export function byType(renderer: ReactTestRenderer, type: string): ReactTestInstance[] {
+  return hosts(renderer, (node) => node.type === type);
+}
+
 export function byClass(renderer: ReactTestRenderer, pattern: RegExp): ReactTestInstance[] {
   return hosts(renderer, (node) => pattern.test(node.props?.className ?? ""));
 }

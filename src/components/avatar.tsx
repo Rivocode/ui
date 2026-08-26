@@ -9,7 +9,12 @@ import { cn } from "../lib/cn";
 export const avatarVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-pill",
-    "bg-surface-raised align-middle font-sans font-medium text-fg-muted select-none",
+    // O corpo do avatar nao pode ser uma superficie: no tema claro da casa,
+    // surface e surface-raised sao os dois branco puro, e o circulo sumiria
+    // dentro do cartao. O --rc-skeleton existe justamente para contrastar com
+    // a superficie sem ser outra superficie, e e o unico papel do tema com
+    // essa promessa.
+    "bg-skeleton align-middle font-sans font-medium text-fg-muted select-none",
   ),
   {
     variants: {

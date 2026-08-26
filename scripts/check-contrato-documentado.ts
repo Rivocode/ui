@@ -12,15 +12,15 @@
  */
 import { readdirSync, readFileSync } from "node:fs";
 
-const CONTRATO = ".design-sync/conventions.md";
+const CONTRACT_FILE = ".design-sync/conventions.md";
 const SKILL_DIR = ".claude/skills/rivocode-ui";
 
-const ALVOS = [
-  { arquivo: "src/chart/index.ts", name: "@rivocode/ui/chart" },
-  { arquivo: "src/form/index.ts", name: "@rivocode/ui/form" },
+const TARGETS = [
+  { file: "src/chart/index.ts", name: "@rivocode/ui/chart" },
+  { file: "src/form/index.ts", name: "@rivocode/ui/form" },
 ];
 
-const contrato = readFileSync(CONTRATO, "utf8");
+const contract = readFileSync(CONTRACT_FILE, "utf8");
 /**
  * A skill inteira, e nao so o corpo dela.
  *
@@ -42,43 +42,52 @@ const skill = [
  * dois textos, e cobrar uma a uma so criaria ruido a cada peca que a Recharts
  * ganhar.
  */
-function exportado(arquivo: string) {
-  const fonte = readFileSync(arquivo, "utf8");
-  const semRecharts = fonte.replace(/export \{[\s\S]*?\} from "recharts";/g, "");
+function exportsOf(file: string) {
+  const source = readFileSync(file, "utf8");
+  const withoutRecharts = source
+    // `[^}]` e nao `[\s\S]*?`: o nao-guloso comecava no primeiro `export {` do
+    // arquivo e apagava src/chart/index.ts inteiro antes de contar - o check
+    // saia verde havia versoes com useChartMotion, ChartLegend e
+    // ChartLegendContent fora da skill.
+    .replace(/export \{[^}]*\} from "recharts";/g, "")
+    // Comentario dentro do bloco de export nao e nome de export: sem tirar,
+    // "// os nomes de antes" virava uma peca que a doc precisaria citar.
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/[^\n]*/g, "");
 
-  const nomes = new Set<string>();
+  const names = new Set<string>();
 
-  for (const bloco of semRecharts.matchAll(/export \{([\s\S]*?)\} from/g)) {
-    for (const bruto of bloco[1].split(",")) {
-      const part = bruto.trim();
+  for (const block of withoutRecharts.matchAll(/export \{([\s\S]*?)\} from/g)) {
+    for (const raw of block[1].split(",")) {
+      const part = raw.trim();
       // Tipo nao precisa aparecer em texto de contrato: quem escreve tela usa a
       // peca, e o tipo chega pelo editor.
       if (!part || part.startsWith("type ")) continue;
-      nomes.add(part);
+      names.add(part);
     }
   }
 
-  return [...nomes];
+  return [...names];
 }
 
-let faltas = 0;
+let misses = 0;
 
-for (const alvo of ALVOS) {
-  const nomes = exportado(alvo.arquivo);
-  const foraDoContrato = nomes.filter((name) => !contrato.includes(name));
-  const foraDaSkill = nomes.filter((name) => !skill.includes(name));
+for (const target of TARGETS) {
+  const names = exportsOf(target.file);
+  const missingFromContract = names.filter((name) => !contract.includes(name));
+  const missingFromSkill = names.filter((name) => !skill.includes(name));
 
-  if (foraDoContrato.length > 0) {
-    console.error(`${CONTRATO} nao cita, de ${alvo.name}: ${foraDoContrato.join(", ")}`);
-    faltas += foraDoContrato.length;
+  if (missingFromContract.length > 0) {
+    console.error(`${CONTRACT_FILE} nao cita, de ${target.name}: ${missingFromContract.join(", ")}`);
+    misses += missingFromContract.length;
   }
-  if (foraDaSkill.length > 0) {
-    console.error(`a skill nao cita, de ${alvo.name}: ${foraDaSkill.join(", ")}`);
-    faltas += foraDaSkill.length;
+  if (missingFromSkill.length > 0) {
+    console.error(`a skill nao cita, de ${target.name}: ${missingFromSkill.join(", ")}`);
+    misses += missingFromSkill.length;
   }
 }
 
-if (faltas > 0) {
+if (misses > 0) {
   console.error(`\nO que um agente le ficou atras do que o pacote exporta.`);
   process.exit(1);
 }

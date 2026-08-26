@@ -47,6 +47,21 @@ O `id` do gradiente sai do `id` deste gráfico. Sem isso, dois gráficos na mesm
 página com o mesmo nome de série pintariam um com o gradiente do outro, porque
 `id` de SVG é global no documento.
 
+## Movimento
+
+```tsx
+const motion = useChartMotion()
+
+<Line dataKey="pagas" stroke="var(--color-pagas)" {...motion} />
+```
+
+`useChartMotion()` liga a animação da Recharts à preferência de "reduzir
+movimento" do sistema. O resto do catálogo resolve isso por token — o
+`--rc-duration-*` vai a zero e toda transição para —, mas a Recharts não anima
+por CSS, ela interpola em JavaScript, e nenhum token a alcança. Sem isto, o
+único movimento que sobra numa tela com movimento reduzido é justamente o maior
+deles.
+
 ## As peças da Recharts que saem daqui
 
 `Area`, `AreaChart`, `Bar`, `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`,
@@ -58,3 +73,15 @@ página com o mesmo nome de série pintariam um com o gradiente do outro, porque
 A lista é curada, e não um `export *`. O `Tooltip` e o `Legend` da Recharts
 **não** saem por aqui: os nossos já embrulham os dois, e o nome colidiria com o
 `Tooltip` do catálogo.
+
+## Os eixos
+
+`ChartXAxis` e `ChartYAxis` embrulham os da Recharts com a cor, a fonte e o
+respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
+`format="currencyShort"` no de valor. Sem eles, cada tela escreve o próprio
+`tickFormatter` e um eixo lê diferente do outro — R$ 12.400 aqui, 12400 ali,
+12,4k na terceira.
+
+## No React Native
+
+Ainda não portado — a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

@@ -24,3 +24,23 @@ jobs:
       # O build nao entra no `check`, e e onde aparece o que so quebra ao
       # empacotar: entrada faltando, CSS que nao compila, skill nao copiada.
       - run: bun run build
+
+  # O pacote nativo publica FONTE, entao erro de tipo dele cai no build de quem
+  # consome - e o skipLibCheck de la nao ajuda, porque so cobre .d.ts. A
+  # conferencia mora num job proprio porque react e react-native sao peers: o
+  # unico lugar onde estao instalados e o app de exemplo, que nao e workspace.
+  # Por isso ela nao pode entrar no `bun run check`, que precisa rodar num
+  # clone limpo - e por isso precisa rodar aqui, senao nao roda em lugar nenhum.
+  nativo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile
+        working-directory: examples/native
+
+      - run: bun run check:native:types

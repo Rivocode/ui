@@ -29,7 +29,7 @@ import {
   type ChartConfig,
 } from "../src/chart";
 
-const MESES = [
+const MONTHS = [
   { mes: "Mar", emitidas: 38, pagas: 30 },
   { mes: "Abr", emitidas: 45, pagas: 39 },
   { mes: "Mai", emitidas: 41, pagas: 40 },
@@ -38,7 +38,7 @@ const MESES = [
   { mes: "Ago", emitidas: 63, pagas: 47 },
 ];
 
-const NOTAS = { emitidas: { label: "Emitidas" }, pagas: { label: "Pagas" } } satisfies ChartConfig;
+const INVOICES = { emitidas: { label: "Emitidas" }, pagas: { label: "Pagas" } } satisfies ChartConfig;
 
 const FATURAMENTO = [
   { mes: "Mar", servico: 42000, produto: 12000 },
@@ -47,18 +47,18 @@ const FATURAMENTO = [
   { mes: "Jun", servico: 62000, produto: 18000 },
 ];
 
-const RECEITA = {
+const REVENUE = {
   servico: { label: "Servico" },
   produto: { label: "Produto" },
 } satisfies ChartConfig;
 
-const SITUACAO = [
+const STATUS = [
   { name: "pagas", value: 47 },
   { name: "abertas", value: 12 },
   { name: "vencidas", value: 4 },
 ];
 
-const SITUACOES = {
+const STATUSES = {
   pagas: { label: "Pagas" },
   abertas: { label: "Abertas" },
   vencidas: { label: "Vencidas", color: "var(--rc-danger)" },
@@ -68,7 +68,7 @@ function dinheiro(value: number) {
   return `R$ ${(value / 1000).toLocaleString("pt-BR")}k`;
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   const movimento = useChartMotion();
 
   return (
@@ -81,13 +81,13 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             <CardTitle>Notas por mes</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={NOTAS} className="h-64">
-              <LineChart data={MESES} margin={{ left: -20, right: 8, top: 8 }}>
+            <ChartContainer config={INVOICES} className="h-64">
+              <LineChart data={MONTHS} margin={{ left: -20, right: 8, top: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="mes" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
-                <ChartLegend content={<ChartLegendContent config={NOTAS} />} />
+                <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
+                <ChartLegend content={<ChartLegendContent config={INVOICES} />} />
                 <Line
                   dataKey="emitidas"
                   stroke="var(--color-emitidas)"
@@ -112,7 +112,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             <CardTitle>Faturamento</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={RECEITA} className="h-64">
+            <ChartContainer config={REVENUE} className="h-64">
               <BarChart data={FATURAMENTO} margin={{ left: -8, right: 8, top: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="mes" tickLine={false} axisLine={false} />
@@ -120,12 +120,12 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 <ChartTooltip
                   content={
                     <ChartTooltipContent
-                      config={RECEITA}
+                      config={REVENUE}
                       formatValue={(value) => `R$ ${value.toLocaleString("pt-BR")}`}
                     />
                   }
                 />
-                <ChartLegend content={<ChartLegendContent config={RECEITA} />} />
+                <ChartLegend content={<ChartLegendContent config={REVENUE} />} />
                 <Bar
                   dataKey="servico"
                   stackId="a"
@@ -152,12 +152,12 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             <CardTitle>Emissao acumulada</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={NOTAS} className="h-56">
-              <AreaChart data={MESES} margin={{ left: -20, right: 8, top: 8 }}>
+            <ChartContainer config={INVOICES} className="h-56">
+              <AreaChart data={MONTHS} margin={{ left: -20, right: 8, top: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="mes" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent config={NOTAS} />} />
+                <ChartTooltip content={<ChartTooltipContent config={INVOICES} />} />
                 <Area
                   dataKey="emitidas"
                   stroke="var(--color-emitidas)"
@@ -176,22 +176,22 @@ function Amostra({ theme }: { theme: RivoTheme }) {
             <CardTitle>Situacao das notas</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={SITUACOES} className="h-56">
+            <ChartContainer config={STATUSES} className="h-56">
               <PieChart>
-                <ChartTooltip content={<ChartTooltipContent config={SITUACOES} hideIndicator />} />
+                <ChartTooltip content={<ChartTooltipContent config={STATUSES} hideIndicator />} />
                 <Pie
-                  data={SITUACAO}
+                  data={STATUS}
                   dataKey="valor"
                   nameKey="nome"
                   innerRadius={48}
                   strokeWidth={0}
                   {...movimento}
                 >
-                  {SITUACAO.map((fatia) => (
+                  {STATUS.map((fatia) => (
                     <Cell key={fatia.name} fill={`var(--color-${fatia.name})`} />
                   ))}
                 </Pie>
-                <ChartLegend content={<ChartLegendContent config={SITUACOES} />} />
+                <ChartLegend content={<ChartLegendContent config={STATUSES} />} />
               </PieChart>
             </ChartContainer>
           </CardContent>
@@ -203,7 +203,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

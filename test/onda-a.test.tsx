@@ -21,7 +21,7 @@ import {
 import { Toggle, ToggleGroup } from "../src/components/toggle";
 import { Field, FieldLabel, Textarea } from "../src/components/field";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
@@ -29,7 +29,7 @@ test("a chave liga e desliga, e conta o estado", () => {
   // Sem o <label> em volta: no happy-dom o clique no botao sobe para o rotulo,
   // que devolve outro clique para o mesmo controle e a chave volta ao inicio.
   // No navegador isso nao acontece, e o padrao com rotulo esta na vitrine.
-  comTema(<Switch defaultChecked={false} aria-label="Avisos por email" />);
+  withTheme(<Switch defaultChecked={false} aria-label="Avisos por email" />);
   const key = screen.getByRole("switch");
   expect(key.getAttribute("aria-checked")).toBe("false");
   fireEvent.click(key);
@@ -37,7 +37,7 @@ test("a chave liga e desliga, e conta o estado", () => {
 });
 
 test("a chave marca invalido junto com o Field", () => {
-  comTema(
+  withTheme(
     <Field invalid>
       <Switch />
     </Field>,
@@ -46,7 +46,7 @@ test("a chave marca invalido junto com o Field", () => {
 });
 
 test("o grupo de radio deixa so um marcado", () => {
-  comTema(
+  withTheme(
     <RadioGroup defaultValue="pix">
       <label>
         <Radio value="pix" />
@@ -66,31 +66,68 @@ test("o grupo de radio deixa so um marcado", () => {
 });
 
 test("a linha que separa se anuncia como separador", () => {
-  comTema(<Separator />);
+  withTheme(<Separator />);
   expect(screen.getByRole("separator")).toBeDefined();
 });
 
 test("a linha vertical troca a espessura de eixo", () => {
-  comTema(<Separator orientation="vertical" />);
+  withTheme(<Separator orientation="vertical" />);
   const row = screen.getByRole("separator");
   expect(row.className).toContain("w-px");
   expect(row.className).not.toContain("h-px");
 });
 
 test("o avatar mostra a inicial quando nao ha foto", () => {
-  comTema(<Avatar fallback="EB" />);
+  withTheme(<Avatar fallback="EB" />);
   expect(screen.getByText("EB")).toBeDefined();
 });
 
+test("o avatar nao se veste de superficie, senao ele some dentro do cartao", () => {
+  // No tema claro da casa, --rc-surface e --rc-surface-raised sao os dois
+  // branco puro: 1,00 para 1. O circulo desaparecia e sobrava a inicial solta,
+  // que numa fila sobreposta ainda se recorta. E o mesmo motivo pelo qual o
+  // --rc-skeleton existe, escrito no proprio tema.
+  withTheme(<Avatar fallback="EB" />);
+  const circle = screen.getByText("EB").parentElement!;
+
+  expect(circle.className).not.toContain("bg-surface");
+  expect(circle.className).toContain("bg-skeleton");
+});
+
 test("a barra de progresso conta quanto falta", () => {
-  comTema(<Progress value={40} label="Enviando" showValue />);
-  const barra = screen.getByRole("progressbar");
-  expect(barra.getAttribute("aria-valuenow")).toBe("40");
+  withTheme(<Progress value={40} label="Enviando" showValue />);
+  const bar = screen.getByRole("progressbar");
+  expect(bar.getAttribute("aria-valuenow")).toBe("40");
   expect(screen.getByText("Enviando")).toBeDefined();
 });
 
+test("a barra indeterminada nao se parece com tarefa concluida", () => {
+  // Sem largura propria o indicador ocupa a trilha inteira e fica parado, que
+  // e exatamente como se le uma barra em 100%. A espera sem fim previsto
+  // precisa parecer espera: um quinto da trilha, atravessando.
+  const { container } = withTheme(<Progress value={null} aria-label="Sincronizando" />);
+  // Raiz, trilha e indicador recebem o data-indeterminate; o indicador e o
+  // ultimo, porque e o mais fundo.
+  const marked = container.querySelectorAll("[data-indeterminate]");
+  const indicator = marked[marked.length - 1];
+
+  expect(indicator).toBeDefined();
+  expect(indicator?.className).toContain("data-[indeterminate]:w-1/5");
+  expect(indicator?.className).toContain("data-[indeterminate]:animate-indeterminate");
+  expect(indicator?.className).toContain("motion-reduce:animate-none");
+});
+
+test("a barra em 100% nao carrega a marca da indeterminada", () => {
+  // O que liga a largura parcial e o movimento e o atributo, e nao a classe:
+  // a barra que terminou nao pode receber nenhum dos dois.
+  const { container } = withTheme(<Progress value={100} aria-label="Enviado" />);
+
+  expect(container.querySelectorAll("[data-indeterminate]").length).toBe(0);
+  expect(container.querySelectorAll("[data-complete]").length).toBeGreaterThan(0);
+});
+
 test("o giro se anuncia, e da para calar quando ha texto do lado", () => {
-  const { rerender } = comTema(<Spinner />);
+  const { rerender } = withTheme(<Spinner />);
   expect(screen.getByRole("status")).toBeDefined();
 
   rerender(
@@ -102,19 +139,19 @@ test("o giro se anuncia, e da para calar quando ha texto do lado", () => {
 });
 
 test("a sanfona abre e fecha o painel", () => {
-  comTema(
+  withTheme(
     <Accordion>
       <AccordionItem title="Como emitir">Pelo botao Emitir nota.</AccordionItem>
     </Accordion>,
   );
-  const gatilho = screen.getByRole("button", { name: /Como emitir/ });
-  expect(gatilho.getAttribute("aria-expanded")).toBe("false");
-  fireEvent.click(gatilho);
-  expect(gatilho.getAttribute("aria-expanded")).toBe("true");
+  const trigger = screen.getByRole("button", { name: /Como emitir/ });
+  expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  fireEvent.click(trigger);
+  expect(trigger.getAttribute("aria-expanded")).toBe("true");
 });
 
 test("o aviso de acao sem volta se anuncia como alertdialog", () => {
-  comTema(
+  withTheme(
     <AlertDialog defaultOpen>
       <AlertDialogTrigger>Excluir</AlertDialogTrigger>
       <AlertDialogContent>
@@ -131,7 +168,7 @@ test("o aviso de acao sem volta se anuncia como alertdialog", () => {
 });
 
 test("o botao que fica apertado conta que esta apertado", () => {
-  comTema(
+  withTheme(
     <ToggleGroup defaultValue={["lista"]}>
       <Toggle value="lista">Lista</Toggle>
       <Toggle value="grade">Grade</Toggle>
@@ -146,7 +183,7 @@ test("o botao que fica apertado conta que esta apertado", () => {
 });
 
 test("o campo de varias linhas se liga ao rotulo como o Input", () => {
-  comTema(
+  withTheme(
     <Field>
       <FieldLabel>Observacao</FieldLabel>
       <Textarea placeholder="O que o cliente pediu" />

@@ -137,9 +137,15 @@ export function ComponentPage({ slug }: { slug: string }) {
       )}
 
       {shown.length === 0 && (
+        /*
+         * A parte nao chega mais aqui: o endereco dela leva a pagina de quem a
+         * monta, e la ela aparece inteira. Entao esta mensagem parou de ser
+         * "voce esta no lugar errado" e virou o que sempre deveria ser - a
+         * lacuna, dita em voz alta, na pagina de quem a tem.
+         */
         <p className="mt-8 rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
-          Esta peça ainda não tem exemplo que roda. Ela costuma ser um pedaço de outra, o exemplo
-          vive na peça principal, que a monta.
+          Esta peça ainda não tem exemplo que roda — a prosa e a tabela de props abaixo são o que
+          existe hoje. É uma lacuna nossa, e não uma característica dela.
         </p>
       )}
     </article>

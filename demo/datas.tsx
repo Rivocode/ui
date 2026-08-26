@@ -10,7 +10,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   const [vencimento, setVencimento] = useState<Date | undefined>(new Date(2026, 2, 3));
   const [periodo, setPeriodo] = useState<DateRange | undefined>({
     from: new Date(2026, 2, 3),
@@ -26,7 +26,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
           <label htmlFor="vencimento" className="mb-1.5 block text-sm font-medium text-fg">
             Vencimento
           </label>
-          <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} confirmar />
+          <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} confirm />
         </div>
 
         <div className="w-full max-w-72">
@@ -57,7 +57,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

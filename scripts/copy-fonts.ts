@@ -42,23 +42,23 @@ for (const padrao of pastas) {
   }
 }
 
-const destino = join(dirname(cssPath), "files");
+const target = join(dirname(cssPath), "files");
 let copiados = 0;
-const faltando: string[] = [];
+const missing: string[] = [];
 
 for (const name of wanted) {
-  const origem = disponivel.get(name);
-  if (!origem) {
-    faltando.push(name);
+  const source = disponivel.get(name);
+  if (!source) {
+    missing.push(name);
     continue;
   }
-  await Bun.write(join(destino, name), Bun.file(origem));
+  await Bun.write(join(target, name), Bun.file(source));
   copiados++;
 }
 
-if (faltando.length > 0) {
-  console.error(`fontes referenciadas que nao existem em node_modules: ${faltando.join(", ")}`);
+if (missing.length > 0) {
+  console.error(`fontes referenciadas que nao existem em node_modules: ${missing.join(", ")}`);
   process.exit(1);
 }
 
-console.log(`${copiados} arquivo(s) de fonte copiado(s) para ${destino}`);
+console.log(`${copiados} arquivo(s) de fonte copiado(s) para ${target}`);

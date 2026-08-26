@@ -30,3 +30,7 @@ A tendência entra pelo slot `chart`, com a `Sparkline` de `@rivocode/ui/chart`:
 
 O núcleo não importa a `Sparkline` de propósito: ela traz o recharts junto, e
 um painel sem gráfico não deveria pagar por ele.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Stat` — `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

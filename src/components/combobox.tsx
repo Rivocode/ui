@@ -135,6 +135,16 @@ export function ComboboxGroup({ className, ...props }: ComponentProps<typeof Bas
   return <BaseCombobox.Group {...props} className={cn("flex flex-col", className)} />;
 }
 
+/**
+ * O valor escolhido, para as fichas saberem o que desenhar.
+ *
+ * Nao renderiza elemento nenhum: recebe uma funcao e devolve o que ela montar.
+ * E a peca que faltava para o ComboboxChips servir para alguma coisa - sem
+ * ela, a escolha multipla com ficha so era possivel importando direto da
+ * Base UI.
+ */
+export const ComboboxValue = BaseCombobox.Value;
+
 /** As fichas da escolha multipla, dentro do proprio campo. */
 export function ComboboxChips({ className, ...props }: ComponentProps<typeof BaseCombobox.Chips>) {
   return (
@@ -158,7 +168,15 @@ export function ComboboxChip({
       {children}
       <BaseCombobox.ChipRemove
         aria-label="Remover"
-        className="text-fg-subtle transition-colors hover:text-fg"
+        className={cn(
+          "text-fg-subtle transition-colors hover:text-fg",
+          // O menor alvo da biblioteca: 12x12, o tamanho do proprio icone,
+          // contra os 24x24 que a WCAG 2.5.8 pede. O pseudo-elemento leva o
+          // alvo a 24 sem engordar a ficha, que precisa caber varias por linha
+          // dentro do campo. Seis pixels e tambem o px-1.5 da ficha, entao o
+          // halo termina rente a borda dela e nao invade a ficha vizinha.
+          "relative after:absolute after:-inset-1.5",
+        )}
       >
         <X size={12} aria-hidden="true" />
       </BaseCombobox.ChipRemove>

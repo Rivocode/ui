@@ -4,7 +4,21 @@ import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
 
-export type InputGroupProps = ComponentProps<"div">;
+export type InputGroupProps = ComponentProps<"div"> & {
+  /**
+   * A altura da moldura, que precisa acompanhar a do campo de dentro. O Input
+   * tem tres tamanhos e a moldura tinha um: um campo `sm` dentro dela saia com
+   * o respiro do medio.
+   */
+  size?: "sm" | "md" | "lg";
+};
+
+/** A altura por tamanho, do mesmo token que o Input usa. */
+const HEIGHT = {
+  sm: "h-[var(--rc-control-sm)]",
+  md: "h-[var(--rc-control-md)]",
+  lg: "h-[var(--rc-control-lg)]",
+} as const;
 
 /**
  * Moldura que encosta texto ou botao no campo: `R$` antes, `,00` depois,
@@ -14,13 +28,14 @@ export type InputGroupProps = ComponentProps<"div">;
  * dois. Sem isso aparecem duas bordas encaixadas e dois aneis de foco, e o
  * conjunto deixa de parecer um campo so.
  */
-export function InputGroup({ className, ...props }: InputGroupProps) {
+export function InputGroup({ className, size = "md", ...props }: InputGroupProps) {
   return (
     <div
       {...props}
       className={cn(
-        "flex w-full items-stretch overflow-hidden rounded-md border border-border bg-surface",
-        "h-[var(--rc-control-md)] font-sans text-base text-fg",
+        "flex w-full items-stretch overflow-hidden rounded-md border border-border-strong bg-surface",
+        HEIGHT[size],
+        "font-sans text-base text-fg",
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         "focus-within:ring-offset-bg",

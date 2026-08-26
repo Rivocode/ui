@@ -7,6 +7,7 @@ import { ChartTooltipContent } from "./chart-tooltip";
 
 import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
+import { resolveFormat, type Format } from "../lib/format";
 
 export type ChartDonutProps<Slice> = {
   data: Slice[];
@@ -31,7 +32,12 @@ export type ChartDonutProps<Slice> = {
    */
   legend?: boolean;
   /** Como escrever o valor, na legenda e na dica. */
-  format?: (value: number) => string;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria. O mesmo vocabulario do eixo e
+   * do Meter - antes daqui so a funcao entrava, e o nome dava erro de tipo.
+   */
+  format?: Format;
   className?: string;
 };
 
@@ -69,15 +75,17 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
 }: ChartDonutProps<Slice>) {
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
+
   /** Verdadeiro enquanto o ponteiro esta sobre alguma fatia. */
   const [reading, setReading] = useState(false);
 
   // Em fracao do raio disponivel, e nao em pixel: assim a rosca acompanha a
   // altura que a classe deu ao contentor.
-  const externo = "88%";
+  const outer = "88%";
   const internal = `${Math.round(88 * (1 - thickness))}%`;
 
-  const corDe = (slice: Slice, index: number) =>
+  const colorOf = (slice: Slice, index: number) =>
     config?.[String(slice[nameKey])]?.color ?? PALETTE[index % PALETTE.length];
 
   return (
@@ -90,7 +98,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               dataKey={valueKey}
               nameKey={nameKey}
               innerRadius={internal}
-              outerRadius={externo}
+              outerRadius={outer}
               paddingAngle={2}
               // A ponta reta e o que faz a rosca parecer recortada a tesoura,
               // ainda mais com a folga do `paddingAngle` mostrando o corte. O
@@ -113,7 +121,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                     // da e cair em `var(--color-<nome>)`: essas variaveis sao
                     // escritas pelo `ChartContainer`, e a rosca desenha sozinha,
                     // fora dele. Foi assim que ela saiu inteira preta.
-                    fill={corDe(slice, index)}
+                    fill={colorOf(slice, index)}
                   />
                 );
               })}
@@ -121,7 +129,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
 
             <Tooltip
               cursor={false}
-              content={<ChartTooltipContent config={config} formatValue={format} />}
+              content={<ChartTooltipContent config={config} formatValue={write} />}
             />
           </PieChart>
         </ResponsiveContainer>
@@ -167,12 +175,12 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 <span
                   aria-hidden="true"
                   className="size-2 shrink-0 rounded-sm"
-                  style={{ background: corDe(slice, index) }}
+                  style={{ background: colorOf(slice, index) }}
                 />
                 <span className="min-w-0 flex-1 truncate text-fg-muted">
                   {config?.[name]?.label ?? name}
                 </span>
-                <span className="shrink-0 font-mono text-fg">{format ? format(value) : value}</span>
+                <span className="shrink-0 font-mono text-fg">{write ? write(value) : value}</span>
               </li>
             );
           })}

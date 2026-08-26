@@ -27,10 +27,10 @@ export type MaskName = keyof typeof MASKS;
 /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
 export type Mask = MaskName | "moeda" | (string & {});
 
-function combina(caractere: string, mark: string): boolean {
-  if (mark === "9") return /\d/.test(caractere);
-  if (mark === "A") return /[a-zA-Z]/.test(caractere);
-  if (mark === "*") return /[a-zA-Z0-9]/.test(caractere);
+function matches(character: string, mark: string): boolean {
+  if (mark === "9") return /\d/.test(character);
+  if (mark === "A") return /[a-zA-Z]/.test(character);
+  if (mark === "*") return /[a-zA-Z0-9]/.test(character);
   return false;
 }
 
@@ -41,15 +41,15 @@ export function applyPattern(text: string, pattern: string): string {
   let output = "";
   let position = 0;
 
-  for (const caractere of text) {
+  for (const character of text) {
     while (position < pattern.length && !MARKS.has(pattern[position]!)) {
       output += pattern[position];
       position += 1;
     }
     if (position >= pattern.length) break;
 
-    if (combina(caractere, pattern[position]!)) {
-      output += pattern[position] === "A" ? caractere.toUpperCase() : caractere;
+    if (matches(character, pattern[position]!)) {
+      output += pattern[position] === "A" ? character.toUpperCase() : character;
       position += 1;
     }
   }
@@ -64,21 +64,45 @@ export function applyPattern(text: string, pattern: string): string {
  * anda para a esquerda a cada digito, o contrario de todo o resto.
  */
 export function applyCurrencyMask(text: string): string {
-  const digitos = text.replace(/\D/g, "").replace(/^0+/, "").slice(0, 12);
-  if (!digitos) return "";
+  const digits = text.replace(/\D/g, "").replace(/^0+/, "").slice(0, 12);
+  if (!digits) return "";
 
-  const centavos = digitos.padStart(3, "0");
-  const whole = centavos.slice(0, -2);
-  const resto = centavos.slice(-2);
+  const cents = digits.padStart(3, "0");
+  const whole = cents.slice(0, -2);
+  const rest = cents.slice(-2);
   const withDot = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  return `${withDot},${resto}`;
+  return `${withDot},${rest}`;
+}
+
+/**
+ * O que separa um molde escrito na mao de um nome de molde digitado errado e
+ * ter marca dentro: `99h99` e molde, `dinheiro` e `cnjp` nao sao. Sem esta
+ * pergunta, o nome errado caia no molde literal e era escrito no campo -
+ * quem digitava 248000 com `mask="dinheiro"` via "dinheiro" aparecer.
+ */
+function looksLikePattern(mask: string): boolean {
+  return /[9A*]/.test(mask);
 }
 
 /** Aplica a mascara pedida, seja nome de molde, molde cru ou moeda. */
 export function applyMask(text: string, mask: Mask): string {
   if (mask === "moeda") return applyCurrencyMask(text);
-  const pattern = MASKS[mask as MaskName] ?? mask;
-  return applyPattern(text, pattern);
+
+  const pattern = MASKS[mask as MaskName];
+  if (pattern) return applyPattern(text, pattern);
+
+  if (looksLikePattern(mask)) return applyPattern(text, mask);
+
+  // Em producao o campo passa cru, que e menos pior do que escrever o nome do
+  // molde no lugar do que a pessoa digitou. Em desenvolvimento o erro fala.
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      `[rivocode/ui] mask="${mask}" nao e um molde conhecido nem parece um molde. ` +
+        `Os prontos sao: ${Object.keys(MASKS).join(", ")}, moeda. ` +
+        `Molde escrito na mao usa 9 para digito, A para letra e * para os dois.`,
+    );
+  }
+  return text;
 }
 
 /** Tira a pontuacao e devolve so o que o usuario digitou. */
@@ -91,8 +115,8 @@ export function unmask(text: string): string {
  * por ponto flutuante. `1.234,56` vira `123456`.
  */
 export function toCents(text: string): number {
-  const digitos = text.replace(/\D/g, "");
-  return digitos ? Number(digitos) : 0;
+  const digits = text.replace(/\D/g, "");
+  return digits ? Number(digits) : 0;
 }
 
 /**

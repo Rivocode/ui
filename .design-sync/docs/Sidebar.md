@@ -47,6 +47,9 @@ abre e fecha ao ser clicada, e `SidebarTrigger` é o botão que faz o mesmo pelo
 teclado.
 
 `SidebarInset` é a área da página, ao lado da barra.
+`SidebarBrand` é a marca no topo, e encolhe junto com a barra: aberta mostra o
+nome ao lado do símbolo, na coluna de ícones mostra só o símbolo.
+
 
 ## O celular já vem resolvido
 
@@ -88,3 +91,7 @@ estreito quebra o layout largo, e o contrário não.
 Menos de cinco destinos cabem numa `Menubar` ou num `NavigationMenu` no topo, e
 sobra a largura inteira para o conteúdo. A barra lateral paga por si quando a
 lista cresce, ganha grupos e precisa de submenu.
+
+## No React Native
+
+Não porta. A barra lateral é o esqueleto de navegação de uma tela larga; no celular quem faz esse papel é a tab bar e o drawer do router (Expo Router, React Navigation), que trazem gesto de borda, histórico e estado de aba de graça. Uma gaveta desenhada à mão por cima disso perde os três.

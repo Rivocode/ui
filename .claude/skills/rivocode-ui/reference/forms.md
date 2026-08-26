@@ -38,12 +38,25 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 
-Controle que não fala a língua do React Hook Form entra por um adaptador:
-`forDatePicker`, `forSelect` e `forCheckbox`. Eles traduzem o `onChange` do
-campo para o que a peça espera.
+Controle que não fala a língua do React Hook Form entra por um adaptador. O
+nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
+
+| Adaptador | Serve |
+|---|---|
+| `forValue` | Tudo que tem `value` e `onValueChange`: `Select`, `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider`, `OTPField`, `Combobox`, `TreeSelect` |
+| `forChecked` | Tudo que tem `checked` e `onCheckedChange`: `Checkbox` e `Switch` |
+| `forDate` | O `DatePicker` e o `DateRangePicker`, cujo valor é `Date` |
 
 ```tsx
-<FormField name="vencimento" label="Vencimento" render={(field) => (
-  <DatePicker {...forDatePicker(field)} />
-)} />
+<FormField name="vencimento" label="Vencimento">
+  {(field) => <DatePicker {...forDate(field)} />}
+</FormField>
+
+<FormField name="forma" label="Forma de pagamento">
+  {(field) => <Select {...forValue(field)} items={FORMAS} />}
+</FormField>
 ```
+
+`forValue` devolve o valor com o tipo que o schema deu a ele, então controle
+tipado encaixa sem `as`. Os nomes antigos — `forSelect`, `forCheckbox`,
+`forDatePicker` — continuam valendo e apontam para os mesmos adaptadores.

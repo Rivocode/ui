@@ -155,7 +155,7 @@ export type SidebarProps = ComponentProps<"aside"> & {
 export function Sidebar({
   className,
   children,
-  title = "Navegacao",
+  title = "Navegação",
   side = "left",
   ...props
 }: SidebarProps) {
@@ -319,7 +319,7 @@ export function SidebarInput({ className, label = "Buscar", ...props }: SidebarI
         type="search"
         aria-label={label}
         className={cn(
-          "h-[var(--rc-control-md)] w-full rounded-md border border-border bg-bg",
+          "h-[var(--rc-control-md)] w-full rounded-md border border-border-strong bg-bg",
           "pr-2.5 pl-8 font-sans text-sm text-fg placeholder:text-fg-subtle",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           className,
@@ -335,17 +335,15 @@ export type SidebarGroupProps = ComponentProps<"div"> & {
 };
 
 export function SidebarGroup({ className, label, children, ...props }: SidebarGroupProps) {
+  // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz menos,
+  // mas mentir sobre o nome do grupo diz errado. Quem decide e o estado, e nao
+  // um seletor de CSS, que e como o resto do arquivo resolve o colapso.
+  const { collapsed } = useSidebar();
+
   return (
     <div {...props} className={cn("flex flex-col gap-1", className)}>
-      {label && (
-        <p
-          className={cn(
-            "px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase",
-            // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz
-            // menos, mas mentir sobre o nome do grupo diz errado.
-            "group-data-[collapsed]/barra:hidden",
-          )}
-        >
+      {label && !collapsed && (
+        <p className="px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase">
           {label}
         </p>
       )}
@@ -418,8 +416,18 @@ export function SidebarMenuItem({
     );
   }
 
+  // Encolhida, o nome sai da tela e sobra um `<a>` com um icone dentro. A dica
+  // conta isso para o olho e nao para a arvore de acessibilidade, entao o que
+  // o leitor de tela encontra e uma coluna de doze "link" sem nome nenhum - no
+  // estado que e o padrao de toda tela de operacao. O nome ja esta aqui na
+  // mao: quando `children` e texto ele vira `aria-label`, que e o nome mais
+  // limpo possivel; quando vem estruturado nao ha string para virar atributo,
+  // e ai o proprio texto continua na arvore, escondido so para o olho.
+  const label = typeof children === "string" ? children : undefined;
+
   const row = (
     <a
+      aria-label={collapsed ? label : undefined}
       {...props}
       onClick={handleClick}
       aria-current={active ? "page" : undefined}
@@ -427,6 +435,7 @@ export function SidebarMenuItem({
     >
       {icon && <span className="flex shrink-0 items-center">{icon}</span>}
       {!collapsed && <span className="min-w-0 flex-1 truncate">{children}</span>}
+      {collapsed && !label && <span className="sr-only">{children}</span>}
       {!collapsed && badge}
     </a>
   );
@@ -456,6 +465,11 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
   return (
     <button
       type="button"
+      // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela,
+      // e nada mais. O padrao vem antes do espalhamento de proposito: quem
+      // escreve "Opcoes de Clientes" diz mais do que este generico, e continua
+      // mandando - mas o silencio deixa de ser o padrao.
+      aria-label="Mais opções"
       {...props}
       className={cn(
         "absolute top-1/2 right-1 -translate-y-1/2",

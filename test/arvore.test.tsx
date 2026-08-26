@@ -6,7 +6,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import { Tree, type TreeNode } from "../src/components/tree";
 import { TreeSelect } from "../src/components/tree-select";
 
-const ARVORE: TreeNode[] = [
+const TREE: TreeNode[] = [
   {
     id: "financeiro",
     label: "Financeiro",
@@ -22,12 +22,12 @@ const ARVORE: TreeNode[] = [
   },
 ];
 
-function ArvoreControlada({ multiple = true, filter = "" }) {
+function ControlledTree({ multiple = true, filter = "" }) {
   const [ids, setIds] = useState<string[]>([]);
   return (
     <RivoProvider scope="local">
       <Tree
-        items={ARVORE}
+        items={TREE}
         selected={ids}
         onSelectedChange={setIds}
         multiple={multiple}
@@ -40,13 +40,13 @@ function ArvoreControlada({ multiple = true, filter = "" }) {
 }
 
 test("marcar o pai marca todas as folhas debaixo dele", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   fireEvent.click(screen.getByText("Financeiro"));
   expect(screen.getByText("Escolhidos: contas-pagar,contas-receber")).toBeDefined();
 });
 
 test("o pai com parte das filhas fica em estado misto", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   fireEvent.click(screen.getByText("Contas a pagar"));
 
   const parent = screen.getByText("Financeiro").closest("[role=treeitem]")!;
@@ -55,7 +55,7 @@ test("o pai com parte das filhas fica em estado misto", () => {
 });
 
 test("desmarcar o pai limpa so as folhas dele", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   fireEvent.click(screen.getByText("Financeiro"));
   fireEvent.click(screen.getByText("Expedicao"));
   fireEvent.click(screen.getByText("Financeiro"));
@@ -63,7 +63,7 @@ test("desmarcar o pai limpa so as folhas dele", () => {
 });
 
 test("sem escolha multipla, so folha escolhe e a escolha troca", () => {
-  render(<ArvoreControlada multiple={false} />);
+  render(<ControlledTree multiple={false} />);
 
   fireEvent.click(screen.getByText("Financeiro"));
   expect(screen.getByText("Escolhidos: nenhum")).toBeDefined();
@@ -74,21 +74,21 @@ test("sem escolha multipla, so folha escolhe e a escolha troca", () => {
 });
 
 test("a busca guarda o caminho ate quem casou", () => {
-  render(<ArvoreControlada filter="expedicao" />);
+  render(<ControlledTree filter="expedicao" />);
   expect(screen.getByText("Operacao")).toBeDefined();
   expect(screen.getByText("Expedicao")).toBeDefined();
   expect(screen.queryByText("Contas a pagar")).toBeNull();
 });
 
 test("a arvore se anuncia com os papeis certos", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   expect(screen.getByRole("tree").getAttribute("aria-multiselectable")).toBe("true");
   expect(screen.getAllByRole("treeitem").length).toBe(5);
   expect(screen.getAllByRole("group").length).toBe(2);
 });
 
 test("as setas andam pelas linhas que estao na tela", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   const rows = screen.getAllByRole("treeitem");
   rows[0]!.focus();
 
@@ -100,7 +100,7 @@ test("as setas andam pelas linhas que estao na tela", () => {
 });
 
 test("espaco escolhe pelo teclado", () => {
-  render(<ArvoreControlada />);
+  render(<ControlledTree />);
   screen.getAllByRole("treeitem")[1]!.focus();
   fireEvent.keyDown(screen.getByRole("tree"), { key: " " });
   expect(screen.getByText("Escolhidos: contas-pagar")).toBeDefined();
@@ -109,7 +109,7 @@ test("espaco escolhe pelo teclado", () => {
 test("o gatilho mostra os nomes enquanto eles cabem", () => {
   render(
     <RivoProvider scope="local">
-      <TreeSelect items={ARVORE} defaultValue={["contas-pagar"]} />
+      <TreeSelect items={TREE} defaultValue={["contas-pagar"]} />
     </RivoProvider>,
   );
   expect(screen.getByText("Contas a pagar")).toBeDefined();
@@ -138,7 +138,7 @@ test("passando de tres, o gatilho conta em vez de listar", () => {
 test("id que nao existe mais na arvore nao conta como escolha", () => {
   render(
     <RivoProvider scope="local">
-      <TreeSelect items={ARVORE} defaultValue={["setor-que-sumiu"]} placeholder="Escolha" />
+      <TreeSelect items={TREE} defaultValue={["setor-que-sumiu"]} placeholder="Escolha" />
     </RivoProvider>,
   );
   expect(screen.getByText("Escolha")).toBeDefined();
@@ -147,7 +147,7 @@ test("id que nao existe mais na arvore nao conta como escolha", () => {
 test("sem escolha, o gatilho mostra o convite", () => {
   render(
     <RivoProvider scope="local">
-      <TreeSelect items={ARVORE} placeholder="Escolha o setor" />
+      <TreeSelect items={TREE} placeholder="Escolha o setor" />
     </RivoProvider>,
   );
   expect(screen.getByText("Escolha o setor")).toBeDefined();

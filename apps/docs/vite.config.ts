@@ -6,15 +6,15 @@ import { defineConfig, type Plugin } from 'vite'
 import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
 import { GUIDE_LIST } from './src/guide-list'
 import { findParent, importPathOf } from './src/parts'
-import { parseProps, parsesRootProps } from './src/props-parse'
 import { renderDoc, type Part } from './src/render-md'
+import type { Prop } from './src/props'
 import { slugify } from './src/slug'
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
 const DOCS_DIR = here('../../.design-sync/docs')
 const PREVIEWS_DIR = here('../../.design-sync/previews')
-const TYPES_FILE = here('./src/component-types.json')
+const PROPS_FILE = here('./src/component-props.json')
 const CONVENTIONS = here('../../.design-sync/conventions.md')
 /*
  * A skill mora onde o Claude Code procura, e nao numa pasta so para o site: uma
@@ -92,17 +92,19 @@ function readPreviews() {
 
 /**
  * The `.d.ts` of every piece, by name, from the file the extraction script
- * writes. See `scripts/tipos-do-catalogo.ts` for why it is a file and not a
- * walk over `ds-bundle/`.
+ * writes. The file is generated from the compiler by
+ * `scripts/props-do-catalogo.ts`, and `check:props` fails when it drifts.
  */
+type Piece = { forwardsRoot: boolean; props: Prop[] }
+
 function readTypes() {
   try {
-    return new Map<string, string>(
-      Object.entries(JSON.parse(readFileSync(TYPES_FILE, 'utf8')) as Record<string, string>),
+    return new Map<string, Piece>(
+      Object.entries(JSON.parse(readFileSync(PROPS_FILE, 'utf8')) as Record<string, Piece>),
     )
   } catch {
     // Not generated yet: the tables come out empty, the page still serves.
-    return new Map<string, string>()
+    return new Map<string, Piece>()
   }
 }
 
@@ -149,7 +151,7 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
     .map((name) => ({
       name,
       body: (docs.find((item) => item.name === name)?.body ?? '').replace(/^\s*#\s+\S.*\n+/, ''),
-      props: parseProps(types.get(name), name),
+      props: types.get(name)?.props ?? [],
     }))
 
   const related = docs
@@ -161,15 +163,27 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
     name: doc.name,
     body: doc.body.trimStart(),
     importPath: importPathOf(doc.name),
-    props: parseProps(types.get(doc.name), doc.name),
-    forwardsRootProps: parsesRootProps(types.get(doc.name)),
+    props: types.get(doc.name)?.props ?? [],
+    forwardsRootProps: types.get(doc.name)?.forwardsRoot ?? false,
     stories,
     parts,
     related,
   })
 }
 
+/*
+ * The index an agent reads.
+ *
+ * A part is listed under the piece it composes, not beside it. Forty-five of
+ * the entries here are parts - CardHeader, DialogFooter, SelectItem - and
+ * listing them at the same level makes an agent count a hundred and twenty-six
+ * pieces, spend context opening CardTitle.md as if it stood alone, and miss
+ * the one thing that matters about it: that it only exists inside Card.
+ */
 function indexForAgents(docs: Doc[]) {
+  const names = new Set(docs.map((doc) => doc.name))
+  const parentOf = (name: string) => findParent(name, names)
+
   const byFamily = new Map<string, Doc[]>()
   for (const doc of docs) {
     const list = byFamily.get(doc.family) ?? []
@@ -177,12 +191,25 @@ function indexForAgents(docs: Doc[]) {
     byFamily.set(doc.family, list)
   }
 
+  const pieces = docs.filter((doc) => !parentOf(doc.name)).length
+
   const sections = [...byFamily.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([family, items]) => {
       const lines = items
         .sort((a, b) => a.name.localeCompare(b.name))
-        .map((doc) => `- [${doc.name}](/componentes/${doc.slug}.md)`)
+        .map((doc) => {
+          const parent = parentOf(doc.name)
+          if (!parent) return `- [${doc.name}](/componentes/${doc.slug}.md)`
+
+          // A parte aponta para dentro da pagina de quem a monta, e nao para
+          // um endereco proprio: la ela tem prosa, props E o exemplo que a
+          // monta - sozinha ela nunca teve exemplo, porque nao ha o que
+          // exemplificar sem a peca em volta. Uma busca a menos por peca.
+          const owner = docs.find((item) => item.name === parent)
+          const anchor = `/componentes/${owner?.slug ?? slugify(parent)}.md#${doc.name.toLowerCase()}`
+          return `  - [${doc.name}](${anchor}) — parte de ${parent}`
+        })
         .join('\n')
       return `## ${family}\n\n${lines}`
     })
@@ -190,7 +217,7 @@ function indexForAgents(docs: Doc[]) {
 
   return `# @rivocode/ui
 
-Design system da RivoCode: ${docs.length} documentos, tokens em tres camadas,
+Design system da RivoCode: ${pieces} peças em ${docs.length} documentos, tokens em tres camadas,
 dois temas e duas densidades. Cada endereco abaixo entrega markdown cru, sem HTML em
 volta, para leitura por agent.
 
@@ -299,11 +326,33 @@ function rawDocs(): Plugin {
 
       const sources = readAll(docs)
 
+      const names = new Set(docs.map((doc) => doc.name))
+
       for (const doc of docs) {
+        const parent = findParent(doc.name, names)
+
+        /*
+         * Parte nao ganha pagina propria.
+         *
+         * Ela ja e publicada inteira - prosa, props e o exemplo que a monta -
+         * dentro da pagina de quem a compoe, e a versao solta dela nunca teve
+         * exemplo: nao ha o que exemplificar sem a peca em volta. Setenta e
+         * seis dos cento e cinquenta e sete arquivos eram isso, e cada um
+         * custava ao agente uma busca que nao acrescentava nada.
+         *
+         * O endereco antigo continua respondendo, com um bilhete de tres
+         * linhas: agente que guardou o link nao pode encontrar o vazio.
+         */
+        const owner = parent ? docs.find((item) => item.name === parent) : undefined
+
         this.emitFile({
           type: 'asset',
           fileName: `componentes/${doc.slug}.md`,
-          source: buildMarkdown(doc, docs, sources),
+          source: owner
+            ? `# ${doc.name}\n\n${doc.name} é parte de ${parent}, e é documentada na página ` +
+              `dele — com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
+              `[/componentes/${owner.slug}.md](/componentes/${owner.slug}.md#${doc.name.toLowerCase()})\n`
+            : buildMarkdown(doc, docs, sources),
         })
       }
     },

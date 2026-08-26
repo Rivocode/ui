@@ -17,10 +17,12 @@ import {
   type RowSelectionState,
   type Updater,
 } from "@tanstack/react-table";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
-import { useMemo, useState, type MouseEvent, type ReactNode } from "react";
+import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
@@ -85,11 +87,46 @@ export type DataTableProps<Row> = {
    */
   filter?: string;
 
+  /**
+   * Altura maxima da tabela. Com ela a lista ganha moldura propria: rola por
+   * dentro em vez de empurrar a pagina, e o cabecalho gruda no topo.
+   *
+   * Numero vira pixel. Sozinha, ela nao virtualiza nada - as linhas continuam
+   * todas no DOM, e isso basta ate uns poucos milhares.
+   */
+  maxHeight?: number | string;
+
+  /**
+   * Desenha so as linhas que cabem na moldura, e o caminho do meio aparece:
+   * cem mil linhas com `sortable` e `filter` continuando a funcionar, sem
+   * mandar a pessoa para a paginacao no servidor.
+   *
+   * Precisa de `maxHeight` - sem altura nao ha o que caber. Nao combina com
+   * `pageSize`: paginar ja resolve o mesmo problema de outro jeito.
+   */
+  virtual?: boolean;
+
+  /**
+   * A altura de uma linha, em pixel, quando `virtual` esta ligado.
+   *
+   * Nao e chute: virtualizar so fecha a conta com linha de altura conhecida -
+   * e o espaco de quem nao foi desenhado sai dessa multiplicacao. Por isso a
+   * linha virtualizada recebe esta altura, e o padrao acompanha a densidade
+   * confortavel. Numa lista densa, ou com celula de duas linhas, passe a sua.
+   */
+  rowHeight?: number;
+
   /** Coluna de checkbox a esquerda. As chaves vem do `rowKey`. */
   selectable?: boolean;
   /** Selecao controlada. Sem ela, a tabela guarda a propria selecao. */
   selected?: string[];
   onSelectedChange?: (keys: string[]) => void;
+
+  /**
+   * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
+   * `[&_tbody_tr]`, que acopla a tela de quem usa a arvore interna da peca.
+   */
+  classNames?: Slots<"table" | "head" | "row" | "cell" | "footer">;
 };
 
 /*
@@ -125,8 +162,8 @@ const filtroSemAcento = constructFilterFn({
 /** Sem paginacao pedida, uma "pagina" que cabe qualquer lista. */
 const SEM_PAGINACAO = Number.MAX_SAFE_INTEGER;
 
-const chavesDe = (selecao: RowSelectionState) =>
-  Object.keys(selecao).filter((key) => selecao[key]);
+const keysOf = (selection: RowSelectionState) =>
+  Object.keys(selection).filter((key) => selection[key]);
 
 /**
  * Tabela com os tres estados que toda listagem tem e quase nenhuma trata:
@@ -161,7 +198,7 @@ export function DataTable<Row>({
   isLoading,
   isError,
   onRetry,
-  errorMessage = "Nao foi possivel carregar a lista.",
+  errorMessage = "Não foi possível carregar a lista.",
   empty,
   onRowClick,
   skeletonRows = 5,
@@ -169,39 +206,43 @@ export function DataTable<Row>({
   caption,
   pageSize,
   filter,
+  maxHeight,
+  virtual,
+  rowHeight = 44,
   selectable,
   selected,
   onSelectedChange,
+  classNames,
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
-  const [selecaoInterna, setSelecaoInterna] = useState<RowSelectionState>({});
+  const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>({});
 
   // Controlada quando `selected` veio; interna quando nao. Nos dois casos o
   // motor enxerga o mesmo formato, e `onSelectedChange` ouve as mudancas.
-  const selecao: RowSelectionState = useMemo(
-    () => (selected ? Object.fromEntries(selected.map((key) => [key, true])) : selecaoInterna),
-    [selected, selecaoInterna],
+  const selection: RowSelectionState = useMemo(
+    () => (selected ? Object.fromEntries(selected.map((key) => [key, true])) : internalSelection),
+    [selected, internalSelection],
   );
 
   // O motor exige `Record`, e a API publica nunca exigiu: o cast fica aqui na
   // fronteira, e o resto do arquivo segue no `Row` de quem chamou.
-  type Linha = Record<string, unknown>;
+  type EngineRow = Record<string, unknown>;
 
-  const defs = useMemo<ColumnDef<typeof FEATURES, Linha>[]>(
+  const defs = useMemo<ColumnDef<typeof FEATURES, EngineRow>[]>(
     () =>
       columns.map((column) => ({
         id: column.key,
-        accessorFn: (row: Linha) => (column.value ? column.value(row as Row) : row[column.key]),
+        accessorFn: (row: EngineRow) => (column.value ? column.value(row as Row) : row[column.key]),
         enableSorting: column.sortable ?? false,
         enableGlobalFilter: true,
       })),
     [columns],
   );
 
-  const table = useTable<typeof FEATURES, Linha>({
+  const table = useTable<typeof FEATURES, EngineRow>({
     features: FEATURES,
     columns: defs,
-    data: (data ?? []) as unknown as Linha[],
+    data: (data ?? []) as unknown as EngineRow[],
     getRowId: (row, index) => rowKey(row as unknown as Row, index),
     enableRowSelection: selectable ?? false,
     // Numero ordena crescente no primeiro clique, como texto: a surpresa de
@@ -219,14 +260,14 @@ export function DataTable<Row>({
       });
     },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
-      const proxima = typeof updater === "function" ? updater(selecao) : updater;
+      const proxima = typeof updater === "function" ? updater(selection) : updater;
       if (!selected) setSelecaoInterna(proxima);
-      onSelectedChange?.(chavesDe(proxima));
+      onSelectedChange?.(keysOf(proxima));
     },
     state: {
       globalFilter: filter || undefined,
       pagination: { pageIndex, pageSize: pageSize ?? SEM_PAGINACAO },
-      rowSelection: selecao,
+      rowSelection: selection,
     },
   });
 
@@ -247,10 +288,56 @@ export function DataTable<Row>({
     onRowClick?.(row);
   }
 
+  const rows = table.getRowModel().rows;
+
+  /*
+   * Virtualizar exige tres coisas, e as tres precisam existir antes de qualquer
+   * retorno cedo - por isso o virtualizador e criado aqui em cima, mesmo nos
+   * estados de erro e de carregando, onde ele conta zero linhas.
+   *
+   * 1. UMA MOLDURA COM ALTURA E ROLAGEM PROPRIA. Nao ha "linha que cabe" sem
+   *    um retangulo que diga quanto cabe: quem rola a pagina inteira rola o
+   *    documento, e o documento nao tem fim conhecido. Por isso `virtual`
+   *    depende de `maxHeight`, e a moldura vira o elemento que rola.
+   *
+   * 2. NAO POSICIONAR LINHA. O jeito comum de virtualizar - `position:
+   *    absolute` com `translateY` em cada linha - destroi a tabela: linha
+   *    absoluta sai do algoritmo de layout de tabela, e com ela vao a
+   *    largura de coluna compartilhada e o alinhamento entre cabecalho e
+   *    celula. O que sobra e uma grade de divs com cara de tabela, e a peca
+   *    inteira existe para nao ser isso. Aqui as linhas visiveis ficam em
+   *    fluxo normal, e o espaco de quem nao foi desenhado vira duas linhas
+   *    vazias, uma antes e uma depois, com a altura que falta. O `<tbody>`
+   *    continua tendo so `<tr>` por filho, cada `<tr>` so `<td>`, e o
+   *    navegador continua calculando as colunas como sempre.
+   *
+   * 3. CABECALHO GRUDADO. Rolagem longa sem cabecalho fixo e ilegivel na
+   *    terceira tela: a pessoa esquece qual coluna e qual e volta ao topo para
+   *    conferir. Ele gruda com `--rc-z-sticky`, que e o degrau de empilhamento
+   *    desta familia - abaixo de menu, dialogo e toast, que precisam passar
+   *    por cima dele.
+   */
+  const viewport = useRef<HTMLDivElement>(null);
+  const virtualized = virtual === true && maxHeight !== undefined;
+
+  const virtualizer = useVirtualizer({
+    count: virtualized ? rows.length : 0,
+    getScrollElement: () => viewport.current,
+    estimateSize: () => rowHeight,
+    // Uma tela de folga para cada lado: rolar rapido nao pode revelar buraco.
+    overscan: 10,
+  });
+
+  const visible = virtualized ? virtualizer.getVirtualItems() : [];
+  const firstVisible = visible[0];
+  const lastVisible = visible[visible.length - 1];
+  const spaceBefore = firstVisible ? firstVisible.start : 0;
+  const spaceAfter = lastVisible ? virtualizer.getTotalSize() - lastVisible.end : 0;
+
   if (isError) {
     return (
       <Alert tone="danger" className={className}>
-        <AlertTitle>Nao foi possivel carregar</AlertTitle>
+        <AlertTitle>Não foi possível carregar</AlertTitle>
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
@@ -275,148 +362,256 @@ export function DataTable<Row>({
     );
   }
 
-  const linhas = table.getRowModel().rows;
-  const totalFiltrado = table.getFilteredRowModel().rows.length;
-  const totalColunas = columns.length + (selectable ? 1 : 0);
+  const filteredTotal = table.getFilteredRowModel().rows.length;
+  const columnCount = columns.length + (selectable ? 1 : 0);
 
   // O rodape so existe com paginacao, e conta o que sobrou do filtro: "1-2 de
   // 5" e a lista, nao o banco.
-  const inicio = pageIndex * (pageSize ?? SEM_PAGINACAO) + 1;
-  const fim = Math.min(inicio + (pageSize ?? SEM_PAGINACAO) - 1, totalFiltrado);
+  const first = pageIndex * (pageSize ?? SEM_PAGINACAO) + 1;
+  const last = Math.min(first + (pageSize ?? SEM_PAGINACAO) - 1, filteredTotal);
 
-  return (
-    <div className={className}>
-      <Table>
-        {caption && <caption className="sr-only">{caption}</caption>}
+  /*
+   * Cabecalho e corpo sao os mesmos nos dois enquadramentos abaixo; o que muda
+   * e a moldura em volta deles.
+   */
+  const head = (
+    <TableHeader
+      className={cn(
+        // O cabecalho so gruda dentro de uma moldura que rola. Sem
+        // `maxHeight` quem rola e a pagina, e um `sticky` aqui colaria a
+        // linha de titulos no topo da janela, por cima do resto da tela.
+        //
+        // O fundo e obrigatorio: sem ele a linha que passa por baixo aparece
+        // atraves do cabecalho. E o risco de baixo vira sombra, porque
+        // `border-collapse` e `position: sticky` juntos comem a borda de um
+        // `<thead>` grudado - o navegador colapsa a borda para dentro da
+        // primeira linha, que rola embora com ela.
+        maxHeight !== undefined && [
+          "sticky top-0 z-[var(--rc-z-sticky)] bg-surface",
+          "shadow-[inset_0_-1px_0_var(--rc-border)]",
+        ],
+      )}
+    >
+      <TableRow aria-rowindex={virtualized ? 1 : undefined}>
+        {selectable && (
+          <TableHead className={cn("w-10", classNames?.head)}>
+            <Checkbox
+              aria-label="Selecionar todas as linhas da página"
+              checked={table.getIsAllPageRowsSelected()}
+              indeterminate={table.getIsSomePageRowsSelected()}
+              onCheckedChange={() =>
+                table.toggleAllPageRowsSelected(!table.getIsAllPageRowsSelected())
+              }
+            />
+          </TableHead>
+        )}
+        {columns.map((column) => {
+          const engineColumn = table.getColumn(column.key);
+          const direcao = engineColumn?.getIsSorted();
+          return (
+            <TableHead
+              key={column.key}
+              aria-sort={
+                direcao === "asc" ? "ascending" : direcao === "desc" ? "descending" : undefined
+              }
+              className={cn(
+                column.align === "right" && "text-right",
+                column.hideOnMobile && "max-sm:hidden",
+                classNames?.head,
+              )}
+            >
+              {column.sortable && engineColumn ? (
+                <button
+                  type="button"
+                  onClick={() => engineColumn.toggleSorting()}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-sm",
+                    // O th ja pede uppercase, e a folha do navegador zera
+                    // text-transform em controle de formulario: sem repetir
+                    // aqui, a linha de cabecalho sai com caixa misturada.
+                    "uppercase",
+                    "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "transition-colors duration-[var(--rc-duration-fast)] hover:text-fg",
+                    direcao && "text-fg",
+                  )}
+                >
+                  {column.header}
+                  {direcao === "asc" ? (
+                    <ArrowUp className="size-3.5 text-accent-text" aria-hidden="true" />
+                  ) : direcao === "desc" ? (
+                    <ArrowDown className="size-3.5 text-accent-text" aria-hidden="true" />
+                  ) : (
+                    <ChevronsUpDown className="size-3.5 text-fg-subtle" aria-hidden="true" />
+                  )}
+                </button>
+              ) : (
+                column.header
+              )}
+            </TableHead>
+          );
+        })}
+      </TableRow>
+    </TableHeader>
+  );
 
-        <TableHeader>
-          <TableRow>
+  /**
+   * As linhas que vao para o DOM, com o indice que cada uma ocupa na lista
+   * inteira - e nao no pedaco desenhado. E o indice que o `aria-rowindex`
+   * publica: sem ele, quem ouve a tela ouviria "linha 3 de 500" ao chegar na
+   * linha 402.
+   */
+  const drawn: { row: (typeof rows)[number]; index: number }[] = virtualized
+    ? visible.flatMap((item) => {
+        const row = rows[item.index];
+        return row ? [{ row, index: item.index }] : [];
+      })
+    : rows.map((row, index) => ({ row, index }));
+
+  /**
+   * O espaco de quem nao foi desenhado, numa linha vazia.
+   *
+   * Ela sai do fluxo do leitor de tela com `aria-hidden`, e a contagem certa
+   * vem do `aria-rowcount` na tabela mais o `aria-rowindex` de cada linha de
+   * dado - senao a lista seria anunciada como "3 linhas" o tempo todo.
+   *
+   * A altura vai em `style` porque e medida, e nao desenho: ela muda a cada
+   * quadro de rolagem, e nenhum token poderia saber quanto vale.
+   */
+  const spacer = (height: number, side: string) => (
+    <tr key={`espaco-${side}`} aria-hidden="true">
+      <td colSpan={columnCount} style={{ height }} />
+    </tr>
+  );
+
+  const body = (
+    <TableBody>
+      {loading ? (
+        Array.from({ length: skeletonRows }, (_, row) => (
+          <TableRow key={`carregando-${row}`}>
             {selectable && (
-              <TableHead className="w-10">
-                <Checkbox
-                  aria-label="Selecionar todas as linhas da pagina"
-                  checked={table.getIsAllPageRowsSelected()}
-                  indeterminate={table.getIsSomePageRowsSelected()}
-                  onCheckedChange={() =>
-                    table.toggleAllPageRowsSelected(!table.getIsAllPageRowsSelected())
-                  }
-                />
-              </TableHead>
+              <TableCell className="w-10">
+                <Skeleton className="size-4" />
+              </TableCell>
             )}
-            {columns.map((column) => {
-              const engineColumn = table.getColumn(column.key);
-              const direcao = engineColumn?.getIsSorted();
-              return (
-                <TableHead
+            {columns.map((column) => (
+              <TableCell key={column.key} className={cn(column.hideOnMobile && "max-sm:hidden")}>
+                {/* A falsa linha tem a largura da coluna, e nao a do texto
+                    que vier: assim a tabela nao pula quando os dados
+                    chegam. */}
+                <Skeleton className="h-4 w-full max-w-[12ch]" />
+              </TableCell>
+            ))}
+          </TableRow>
+        ))
+      ) : rows.length === 0 && filter ? (
+        // Filtro que zerou nao e consulta vazia: o EmptyState de `empty`
+        // continua reservado para quando o banco nao tem nada.
+        <TableRow>
+          <TableCell colSpan={columnCount} className="py-8 text-center text-fg-muted">
+            Nenhum resultado para a busca.
+          </TableCell>
+        </TableRow>
+      ) : (
+        <>
+          {spaceBefore > 0 && spacer(spaceBefore, "antes")}
+          {drawn.map(({ row: linha, index }) => (
+            <TableRow
+              key={linha.id}
+              aria-rowindex={virtualized ? index + 2 : undefined}
+              /*
+               * Virtualizada, a linha tem altura fixa - e a estimativa deixa
+               * de ser estimativa. Sem isso o `rowHeight` seria um palpite:
+               * o virtualizador poe os espacadores contando com ele, e uma
+               * linha que cresce faz a rolagem prometer um fim que nao
+               * chega. A altura vem da prop, entao ela e dado de quem chamou
+               * e nao medida cravada aqui dentro.
+               */
+              style={virtualized ? { height: rowHeight } : undefined}
+              onClick={
+                onRowClick
+                  ? (event) => openRow(event, linha.original as unknown as Row)
+                  : undefined
+              }
+              className={cn(onRowClick && "cursor-pointer", classNames?.row)}
+              data-selected={linha.getIsSelected() || undefined}
+            >
+              {selectable && (
+                <TableCell className={cn("w-10", classNames?.cell)}>
+                  <Checkbox
+                    aria-label="Selecionar linha"
+                    checked={linha.getIsSelected()}
+                    onCheckedChange={(checked) => linha.toggleSelected(checked === true)}
+                  />
+                </TableCell>
+              )}
+              {columns.map((column) => (
+                <TableCell
                   key={column.key}
-                  aria-sort={
-                    direcao === "asc" ? "ascending" : direcao === "desc" ? "descending" : undefined
-                  }
                   className={cn(
                     column.align === "right" && "text-right",
                     column.hideOnMobile && "max-sm:hidden",
+                    classNames?.cell,
                   )}
                 >
-                  {column.sortable && engineColumn ? (
-                    <button
-                      type="button"
-                      onClick={() => engineColumn.toggleSorting()}
-                      className={cn(
-                        "inline-flex items-center gap-1.5 rounded-sm",
-                        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        "transition-colors duration-[var(--rc-duration-fast)] hover:text-fg",
-                        direcao && "text-fg",
-                      )}
-                    >
-                      {column.header}
-                      {direcao === "asc" ? (
-                        <ArrowUp className="size-3.5 text-accent-text" aria-hidden="true" />
-                      ) : direcao === "desc" ? (
-                        <ArrowDown className="size-3.5 text-accent-text" aria-hidden="true" />
-                      ) : (
-                        <ChevronsUpDown className="size-3.5 text-fg-subtle" aria-hidden="true" />
-                      )}
-                    </button>
-                  ) : (
-                    column.header
-                  )}
-                </TableHead>
-              );
-            })}
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {loading ? (
-            Array.from({ length: skeletonRows }, (_, row) => (
-              <TableRow key={`carregando-${row}`}>
-                {selectable && (
-                  <TableCell className="w-10">
-                    <Skeleton className="size-4" />
-                  </TableCell>
-                )}
-                {columns.map((column) => (
-                  <TableCell key={column.key} className={cn(column.hideOnMobile && "max-sm:hidden")}>
-                    {/* A falsa linha tem a largura da coluna, e nao a do texto
-                        que vier: assim a tabela nao pula quando os dados
-                        chegam. */}
-                    <Skeleton className="h-4 w-full max-w-[12ch]" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : linhas.length === 0 && filter ? (
-            // Filtro que zerou nao e consulta vazia: o EmptyState de `empty`
-            // continua reservado para quando o banco nao tem nada.
-            <TableRow>
-              <TableCell colSpan={totalColunas} className="py-8 text-center text-fg-muted">
-                Nenhum resultado para a busca.
-              </TableCell>
+                  {column.cell
+                    ? column.cell(linha.original as unknown as Row)
+                    : String(linha.original[column.key] ?? "")}
+                </TableCell>
+              ))}
             </TableRow>
-          ) : (
-            linhas.map((linha) => (
-              <TableRow
-                key={linha.id}
-                onClick={
-                  onRowClick
-                    ? (event) => openRow(event, linha.original as unknown as Row)
-                    : undefined
-                }
-                className={cn(onRowClick && "cursor-pointer")}
-                data-selected={linha.getIsSelected() || undefined}
-              >
-                {selectable && (
-                  <TableCell className="w-10">
-                    <Checkbox
-                      aria-label="Selecionar linha"
-                      checked={linha.getIsSelected()}
-                      onCheckedChange={(checked) => linha.toggleSelected(checked === true)}
-                    />
-                  </TableCell>
-                )}
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.key}
-                    className={cn(
-                      column.align === "right" && "text-right",
-                      column.hideOnMobile && "max-sm:hidden",
-                    )}
-                  >
-                    {column.cell
-                      ? column.cell(linha.original as unknown as Row)
-                      : String(linha.original[column.key] ?? "")}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+          ))}
+          {spaceAfter > 0 && spacer(spaceAfter, "depois")}
+        </>
+      )}
+    </TableBody>
+  );
 
-      {pageSize !== undefined && !loading && totalFiltrado > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+  return (
+    <div className={className}>
+      {maxHeight === undefined ? (
+        <Table className={classNames?.table}>
+          {caption && <caption className="sr-only">{caption}</caption>}
+          {head}
+          {body}
+        </Table>
+      ) : (
+        /*
+         * Com altura, a moldura que rola precisa ser a mae direta da tabela: o
+         * `sticky` do cabecalho se mede contra o ancestral que rola mais
+         * proximo, e o `<div>` de rolagem lateral que o `Table` desenha por
+         * dentro ficaria no meio - ele e um ancestral que rola, so que nunca
+         * rola na vertical, e o cabecalho grudaria num lugar que nao anda.
+         *
+         * Por isso a `<table>` daqui e escrita a mao, com as mesmas classes
+         * que o `Table` poe nela. Continua sendo tabela de verdade; o que
+         * mudou foi so quem segura a rolagem.
+         */
+        <div
+          ref={viewport}
+          data-rc-viewport=""
+          style={{ maxHeight }}
+          className="w-full overflow-auto rounded-md border border-border bg-surface"
+        >
+          <table
+            aria-rowcount={virtualized ? rows.length + 1 : undefined}
+            className={cn("w-full border-collapse text-base", classNames?.table)}
+          >
+            {caption && <caption className="sr-only">{caption}</caption>}
+            {head}
+            {body}
+          </table>
+        </div>
+      )}
+
+      {pageSize !== undefined && !loading && filteredTotal > 0 && (
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-3 pt-3",
+            classNames?.footer,
+          )}
+        >
           <p className="text-sm text-fg-muted">
-            {inicio}–{fim} de {totalFiltrado}
+            {first}–{last} de {filteredTotal}
           </p>
           <Pagination
             page={pageIndex + 1}

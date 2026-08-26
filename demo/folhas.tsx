@@ -16,7 +16,7 @@ import {
   type SheetSide,
 } from "../src/index";
 
-const ITENS = [
+const ITEMS = [
   { icone: LayoutDashboard, label: "Painel", ativo: true },
   { icone: FileText, label: "Notas fiscais", contagem: 4 },
   { icone: Users, label: "Clientes" },
@@ -30,7 +30,7 @@ function MenuLateral() {
       <SheetContent className="p-4">
         <SheetTitle className="px-2 text-lg">RivoCode</SheetTitle>
         <nav className="mt-4 flex flex-col gap-1">
-          {ITENS.map(({ icone: Icone, label, ativo, contagem }) => (
+          {ITEMS.map(({ icone: Icone, label, ativo, contagem }) => (
             <a
               key={label}
               href="#"
@@ -52,7 +52,7 @@ function MenuLateral() {
   );
 }
 
-function FolhaDeBaixo() {
+function BottomSheet() {
   return (
     <Sheet side="bottom" defaultOpen>
       <SheetTrigger render={<Button variant="secondary" />}>Acoes da nota</SheetTrigger>
@@ -70,20 +70,20 @@ function FolhaDeBaixo() {
   );
 }
 
-function Amostra({ theme, side }: { theme: RivoTheme; side: SheetSide }) {
+function Sample({ theme, side }: { theme: RivoTheme; side: SheetSide }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">
         {theme} / folha {side === "left" ? "lateral" : "de baixo"}
       </p>
-      {side === "left" ? <MenuLateral /> : <FolhaDeBaixo />}
+      {side === "left" ? <MenuLateral /> : <BottomSheet />}
     </RivoProvider>
   );
 }
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" side="left" />
-    <Amostra theme="rivocode-light" side="bottom" />
+    <Sample theme="rivocode-dark" side="left" />
+    <Sample theme="rivocode-light" side="bottom" />
   </div>,
 );

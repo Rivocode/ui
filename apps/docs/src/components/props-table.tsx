@@ -33,13 +33,13 @@ export function PropsTable({
   const props = propsOf(component)
 
   if (props.length === 0) {
-    const aviso = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
+    const toast = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
 
     return compact ? (
-      <p className="text-sm text-fg-subtle">{aviso}</p>
+      <p className="text-sm text-fg-subtle">{toast}</p>
     ) : (
       <p className="rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
-        {aviso}
+        {toast}
       </p>
     )
   }
@@ -66,6 +66,17 @@ export function PropsTable({
                   {prop.required && (
                     <span className="ml-2 font-mono text-[0.65rem] tracking-wide text-danger-text uppercase">
                       obrigatória
+                    </span>
+                  )}
+                  {/* Quem tem uma versão velha instalada precisa saber se a
+                      prop existe para ele — e hoje descobre pelo erro de tipo,
+                      ou pior, pelo atributo solto no DOM. */}
+                  {prop.since && (
+                    <span
+                      title={`Existe desde a versão ${prop.since}`}
+                      className="ml-2 font-mono text-[0.65rem] tracking-wide text-fg-subtle"
+                    >
+                      {prop.since}
                     </span>
                   )}
                   {prop.note && (

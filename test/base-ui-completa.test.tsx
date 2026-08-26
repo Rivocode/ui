@@ -21,25 +21,25 @@ import {
   NavigationMenuTrigger,
 } from "../src/components/navigation-menu";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
 test("o bloco que esconde abre e fecha", () => {
-  comTema(
+  withTheme(
     <Collapsible>
       <CollapsibleTrigger>Chaves de recuperacao</CollapsibleTrigger>
       <CollapsiblePanel>alien-bean-pasta</CollapsiblePanel>
     </Collapsible>,
   );
-  const gatilho = screen.getByRole("button", { name: /Chaves/ });
-  expect(gatilho.getAttribute("aria-expanded")).toBe("false");
-  fireEvent.click(gatilho);
-  expect(gatilho.getAttribute("aria-expanded")).toBe("true");
+  const trigger = screen.getByRole("button", { name: /Chaves/ });
+  expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  fireEvent.click(trigger);
+  expect(trigger.getAttribute("aria-expanded")).toBe("true");
 });
 
 test("a area de rolagem entrega o conteudo, e nao so a moldura", () => {
-  comTema(
+  withTheme(
     <ScrollArea className="h-20">
       <p>Texto comprido</p>
     </ScrollArea>,
@@ -48,14 +48,14 @@ test("a area de rolagem entrega o conteudo, e nao so a moldura", () => {
 });
 
 test("o controle de faixa conta o valor", () => {
-  comTema(<Slider defaultValue={25} label="Desconto" showValue thumbLabel="Desconto" />);
-  const pino = screen.getByRole("slider");
-  expect(pino.getAttribute("aria-valuenow")).toBe("25");
+  withTheme(<Slider defaultValue={25} label="Desconto" showValue thumbLabel="Desconto" />);
+  const thumb = screen.getByRole("slider");
+  expect(thumb.getAttribute("aria-valuenow")).toBe("25");
   expect(screen.getByText("Desconto")).toBeDefined();
 });
 
 test("a faixa poe um pino por limite, cada um com o proprio nome", () => {
-  comTema(
+  withTheme(
     <Slider
       defaultValue={[20, 60]}
       label="Faixa de valor"
@@ -70,14 +70,14 @@ test("a faixa poe um pino por limite, cada um com o proprio nome", () => {
 });
 
 test("a medida de capacidade nao se anuncia como progresso", () => {
-  comTema(<Meter value={24} max={100} label="Espaco usado" showValue />);
+  withTheme(<Meter value={24} max={100} label="Espaco usado" showValue />);
   const medida = screen.getByRole("meter");
   expect(medida.getAttribute("aria-valuenow")).toBe("24");
   expect(screen.queryByRole("progressbar")).toBeNull();
 });
 
 test("o campo de numero anda de passo em passo, dentro do limite", () => {
-  comTema(<NumberField defaultValue={2} min={0} max={3} />);
+  withTheme(<NumberField defaultValue={2} min={0} max={3} />);
   const field = screen.getByRole("textbox") as HTMLInputElement;
   expect(field.value).toBe("2");
 
@@ -89,7 +89,7 @@ test("o campo de numero anda de passo em passo, dentro do limite", () => {
 });
 
 test("o codigo de verificacao abre uma casa por digito", () => {
-  const { container } = comTema(<OTPField length={6} />);
+  const { container } = withTheme(<OTPField length={6} />);
 
   // A raiz da Base UI renderiza um input escondido, que e quem guarda o codigo
   // inteiro e recebe a colagem. As casas visiveis sao as outras.
@@ -102,26 +102,26 @@ test("o codigo de verificacao abre uma casa por digito", () => {
 });
 
 test("a barra de menus agrupa os menus numa peca so", () => {
-  comTema(<Menubar aria-label="Principal" />);
+  withTheme(<Menubar aria-label="Principal" />);
   expect(screen.getByLabelText("Principal")).toBeDefined();
 });
 
 test("a barra de ferramentas junta os botoes numa parada de tabulacao", () => {
-  comTema(
+  withTheme(
     <ToolbarRoot aria-label="Formatacao">
       <ToolbarButton>Negrito</ToolbarButton>
       <ToolbarButton>Italico</ToolbarButton>
     </ToolbarRoot>,
   );
-  const barra = screen.getByRole("toolbar");
-  expect(barra.getAttribute("aria-label")).toBe("Formatacao");
+  const bar = screen.getByRole("toolbar");
+  expect(bar.getAttribute("aria-label")).toBe("Formatacao");
   expect(screen.getAllByRole("button").length).toBe(2);
 });
 
 test("o grupo de caixas guarda a escolha em lista", () => {
   // Sem <label> em volta: no happy-dom o clique no botao sobe para o rotulo,
   // que devolve outro clique ao mesmo controle e a marcacao volta ao inicio.
-  comTema(
+  withTheme(
     <CheckboxGroup defaultValue={["pix"]} aria-label="Formas">
       <Checkbox name="forma" value="pix" aria-label="Pix" />
       <Checkbox name="forma" value="boleto" aria-label="Boleto" />
@@ -134,7 +134,7 @@ test("o grupo de caixas guarda a escolha em lista", () => {
 });
 
 test("a legenda entra na leitura do campo dentro dela", () => {
-  comTema(
+  withTheme(
     <FieldsetRoot>
       <FieldsetLegend>Endereco</FieldsetLegend>
       <Field>
@@ -149,7 +149,7 @@ test("a legenda entra na leitura do campo dentro dela", () => {
 });
 
 test("a navegacao de topo se anuncia como navegacao", () => {
-  comTema(
+  withTheme(
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>

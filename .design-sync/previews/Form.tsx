@@ -1,5 +1,5 @@
 import { Button, DatePicker, Input } from '@rivocode/ui'
-import { Form, FormField, forDatePicker, useZodForm } from '@rivocode/ui/form'
+import { Form, FormField, forDate, useZodForm } from '@rivocode/ui/form'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -20,8 +20,8 @@ export function IssueInvoice() {
           {(field) => <Input {...field} placeholder="você@empresa.com" />}
         </FormField>
 
-        <FormField name="vencimento" label="Vencimento">
-          {(field) => <DatePicker {...forDatePicker(field)} />}
+        <FormField name="dueAt" label="Vencimento">
+          {(field) => <DatePicker {...forDate(field)} />}
         </FormField>
 
         <Button type="submit" className="self-start">

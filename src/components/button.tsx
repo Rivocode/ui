@@ -16,8 +16,16 @@ export const buttonVariants = cva(
     "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
     // Desabilitado vira neutro de proposito. Desbotar a cor da marca produz
     // um verde sujo que parece defeito, nao estado.
-    "disabled:pointer-events-none disabled:border-transparent",
-    "disabled:bg-surface-raised disabled:text-fg-disabled disabled:shadow-none",
+    //
+    // Carregando tambem desabilita, para nao enviar duas vezes, mas nao pode
+    // virar esse cinza: quem esta excluindo precisa continuar vendo que a acao
+    // e destrutiva. Entao o neutro fica atras do not-data-loading, e o
+    // andamento se veste com a propria variante, mais clara e com o cursor de
+    // espera.
+    "disabled:pointer-events-none not-data-loading:disabled:border-transparent",
+    "not-data-loading:disabled:bg-surface-raised not-data-loading:disabled:text-fg-disabled",
+    "not-data-loading:disabled:shadow-none",
+    "data-loading:cursor-progress data-loading:opacity-80",
   ),
   {
     variants: {
@@ -106,6 +114,7 @@ export function Button({
     props: {
       ...props,
       ...(render ? {} : { disabled: disabled || loading }),
+      "data-loading": loading || undefined,
       "aria-busy": loading || undefined,
       className: cn(buttonVariants({ variant, size, shape }), className),
       children: content,

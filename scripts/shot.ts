@@ -8,7 +8,7 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
  * estreito e o que pega painel que sai da tela, tabela que empurra a pagina e
  * calendario de dois meses que nao cabe.
  */
-const PAGINAS = [
+const PAGES = [
   { rota: "/index.html", name: "vitrine", height: 2600, alturaCelular: 4200 },
   { rota: "/dialog.html", name: "dialogo", height: 760, alturaCelular: 900 },
   { rota: "/listagem.html", name: "listagem", height: 1900, alturaCelular: 2000 },
@@ -35,7 +35,7 @@ const servidor = servir();
  * ter retrato: parece certo e esconde o que quebrou. Por isso a largura de
  * celular vem de um iframe dentro de `celular.html`.
  */
-const RETRATOS = PAGINAS.flatMap(({ rota, name, height, alturaCelular }) => [
+const SHOTS = PAGES.flatMap(({ rota, name, height, alturaCelular }) => [
   { rota, output: `demo/dist/${name}.png`, janela: `1240,${height}` },
   {
     rota: `/celular.html#.${rota}`,
@@ -44,7 +44,7 @@ const RETRATOS = PAGINAS.flatMap(({ rota, name, height, alturaCelular }) => [
   },
 ]);
 
-for (const { rota, output, janela } of RETRATOS) {
+for (const { rota, output, janela } of SHOTS) {
   const proc = Bun.spawn(
     [
       CHROME,

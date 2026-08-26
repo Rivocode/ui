@@ -49,3 +49,11 @@ extenso como a linha de baixo:
 `ChartDonut` tem lista embaixo com nome e valor de cada fatia, ligada por
 padrão. O arco não tem: ele mostra uma medida só, e a legenda de um item é o
 próprio rótulo.
+
+Com `variant="segmented"` o arco vira tracinhos, que é a variação mais pedida
+de medidor em painel. Os traços apagados continuam na tela de propósito: sem a
+escala inteira visível, um traço aceso não significa nada.
+
+## No React Native
+
+Ainda não portado — depende de um gráfico nativo que ainda não existe. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

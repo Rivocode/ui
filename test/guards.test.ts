@@ -25,3 +25,24 @@ test("resolve um token de tema que aponta para a paleta", () => {
 test("a ordem das cores nao muda a razao", () => {
   expect(contrastRatio("#d4f34a", "#0f1113")).toBeCloseTo(contrastRatio("#0f1113", "#d4f34a"), 5);
 });
+
+test("o pacote publicado leva o CHANGELOG junto", async () => {
+  // Numa biblioteca em 0.x, com o pacote ja tendo trocado nomes publicos duas
+  // vezes, quem tem uma versao velha instalada precisa poder ler o que mudou
+  // sem sair do node_modules. O arquivo existia no repo e ficava de fora do
+  // que o npm empacota.
+  const pkg = await Bun.file("package.json").json();
+
+  expect(pkg.files).toContain("CHANGELOG.md");
+  expect(await Bun.file("CHANGELOG.md").exists()).toBe(true);
+});
+
+test("a versao escrita no codigo e a mesma do pacote", async () => {
+  // `version` sai na API publica, e um numero errado ali e pior que numero
+  // nenhum: quem depura por ele conclui a coisa errada sobre o que tem
+  // instalado. Sao dois arquivos, e os dois envelhecem juntos.
+  const pkg = await Bun.file("package.json").json();
+  const index = await Bun.file("src/index.ts").text();
+
+  expect(index).toContain(`export const version = "${pkg.version}";`);
+});

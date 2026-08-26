@@ -17,14 +17,14 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-const ITENS = [
+const ITEMS = [
   { icone: LayoutDashboard, label: "Painel", ativo: true },
   { icone: FileText, label: "Notas fiscais", contagem: 4 },
   { icone: Users, label: "Clientes" },
   { icone: Settings, label: "Ajustes" },
 ];
 
-function TelaComBarra({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) {
+function ScreenWithSidebar({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) {
   return (
     <RivoProvider scope="local" theme={theme}>
       <SidebarProvider defaultOpen={isOpen}>
@@ -36,7 +36,7 @@ function TelaComBarra({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) 
           <SidebarContent>
             <SidebarGroup label="Operacao">
               <SidebarMenu>
-                {ITENS.map(({ icone: Icone, label, ativo, contagem }) => (
+                {ITEMS.map(({ icone: Icone, label, ativo, contagem }) => (
                   <SidebarMenuItem
                     key={label}
                     href="#"
@@ -76,7 +76,7 @@ function TelaComBarra({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) 
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <TelaComBarra theme="rivocode-dark" isOpen />
-    <TelaComBarra theme="rivocode-light" isOpen={false} />
+    <ScreenWithSidebar theme="rivocode-dark" isOpen />
+    <ScreenWithSidebar theme="rivocode-light" isOpen={false} />
   </div>,
 );

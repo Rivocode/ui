@@ -1,33 +1,37 @@
 /* ---------------------------------------------------------------------------
  * Props, for the page
  *
- * The API table is read from the `.d.ts` the package build emits, one file per
- * component. Hand-written prop tables are the first thing to rot: a prop gets
- * renamed, the table keeps the old name, and the page lies with confidence.
+ * The table is generated from the compiler, by `scripts/props-do-catalogo.ts`,
+ * and committed as JSON. Hand-written prop tables are the first thing to rot: a
+ * prop gets renamed, the table keeps the old name, and the page lies with
+ * confidence. What we had before rotted a step earlier - the tables were parsed
+ * out of a `.d.ts` snapshot left behind by a bundle sync, stamped 0.1.0, which
+ * carried no callback at all.
  *
- * The parsing itself lives in `props-parse.ts`, shared with the plugin that
- * writes the raw markdown.
+ * `bun run check:props` fails when this file drifts from the types.
  * ------------------------------------------------------------------------- */
 
-import { parseProps, parsesRootProps, type Prop } from '@/props-parse'
+import CATALOG from '@/component-props.json'
 
-export type { Prop }
+export type Prop = {
+  name: string
+  type: string
+  required: boolean
+  /** The doc comment above the prop, when the source carries one. */
+  note?: string
+  /** The version this prop first shipped in. Absent means it has not shipped. */
+  since?: string
+}
 
-/*
- * From a committed JSON, no longer from a glob over `ds-bundle/`: that
- * directory is 14 MB and stays out of Git, so the published site shipped every
- * piece's prose and not one prop. `bun run scripts/tipos-do-catalogo.ts`
- * regenerates this file after a fresh sync.
- */
-import TYPES from '@/component-types.json'
+type Piece = { forwardsRoot: boolean; props: Prop[] }
 
-const byName = new Map<string, string>(Object.entries(TYPES as Record<string, string>))
+const byName = new Map<string, Piece>(Object.entries(CATALOG as Record<string, Piece>))
 
 export function propsOf(component: string): Prop[] {
-  return parseProps(byName.get(component), component)
+  return byName.get(component)?.props ?? []
 }
 
 /** Whether this component forwards the usual root props. */
 export function forwardsRootProps(component: string) {
-  return parsesRootProps(byName.get(component))
+  return byName.get(component)?.forwardsRoot ?? false
 }

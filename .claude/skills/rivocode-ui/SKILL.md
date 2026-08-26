@@ -26,7 +26,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 ## Antes de escrever a primeira linha
 
-1. **Confira se a peça já existe.** São 67, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 82, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em
@@ -39,7 +39,13 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 3. **Nunca invente prop.** Se o documento não a lista, ela não existe. Um chute
    falha no `tsc` na melhor das hipóteses, e passa despercebido como atributo
-   solto no DOM na pior.
+   solto no DOM na pior. A tabela sai do compilador, então ela é a API inteira,
+   callbacks incluídos — `onValueChange`, `onOpenChange`, `onCheckedChange`.
+
+4. **Toda listagem tem quatro finais**: dados, carregando, erro e vazio. O
+   `DataTable` e o `ChartContainer` recebem os quatro por prop, e entregar só
+   o caminho feliz é entregar metade da tela —
+   [reference/components.md](reference/components.md) tem a ordem certa.
 
 ## O Provider, uma vez, na raiz
 
@@ -102,13 +108,29 @@ responder ao tema do cliente.
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
-| Empilhamento | `z-[var(--rc-z-dialog)]`, e os pares `dropdown`, `overlay`, `popover`, `toast`, `tooltip` |
+| Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 
 **Toda peça aceita `className` na raiz, e a classe de quem usa vence a da
 peça** (merge por grupo: `h-14` derruba o `h-10` do Button). É o caminho para
 o wrapper de cliente — um arquivo no projeto dele, com token e nunca cor
 literal — em vez de fork. Nas peças em camadas, a documentação da prop diz o
 que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
+
+**Abaixo da raiz, vista a parte pelo nome, com `classNames`.** A trilha do
+`Progress`, o pino do `Slider`, a marca do `Checkbox`, a linha do `DataTable`
+e a tarja do `Dialog` têm nome de fora — os mesmos da seção "Partes" da
+página:
+
+```tsx
+<Slider classNames={{ track: 'bg-accent-subtle', thumb: 'shadow-glow' }} />
+<Dialog classNames={{ backdrop: 'backdrop-blur-md' }} />
+<DataTable classNames={{ row: 'hover:bg-accent-subtle' }} />
+```
+
+Nunca alcance a parte por variante de descendente (`[&_tbody_tr]`): isso
+acopla a tela à árvore interna da peça, e uma `div` que vira `span` dentro da
+biblioteca quebra a tela sem aviso e sem erro. A regra da cor é a mesma do
+`className`: token, nunca cor literal.
 
 **Preencher e escrever texto são tokens diferentes.** `bg-danger` preenche e
 recebe `text-danger-fg` por cima; `text-danger-text` é o vermelho que se lê
@@ -154,7 +176,10 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 ## O que nunca fazer
 
 - Cor literal em `className` ou em `style`. Sempre token.
-- `z-index` numérico. Sempre `z-[var(--rc-z-…)]`.
+- `z-index` numérico. Sempre `z-[var(--rc-z-…)]`. São oito degraus, e os que a
+  sua tela escreve são os das pontas: `--rc-z-sticky` para cabeçalho, coluna
+  congelada e barra que gruda ao rolar, `--rc-z-base` para voltar ao plano do
+  conteúdo. Os seis do meio são das peças, que já sobem sozinhas.
 - Altura cravada em controle. Sempre `var(--rc-control-…)`.
 - Montar `TooltipProvider`, `ToastViewport` ou container de portal à mão. O
   Provider já fez.

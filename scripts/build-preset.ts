@@ -7,6 +7,7 @@ const ORDER = [
   "src/tokens/themes/rivocode-fonts.css",
   "src/tokens/palette.css",
   "src/tokens/scales.css",
+  "src/tokens/forma.css",
   "src/tokens/contract.css",
   "src/tokens/themes/rivocode-dark.css",
   "src/tokens/themes/rivocode-light.css",

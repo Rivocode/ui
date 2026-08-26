@@ -42,3 +42,7 @@ O que não funciona é `var(--color-<nome>)`: essas variáveis são escritas pel
 Acima de seis fatias ela para de informar: as menores viram tiras finas e a
 legenda vira uma lista que a pessoa lê em vez de olhar. Nesse caso, barra
 deitada lê melhor, e ainda cabe o rótulo por extenso.
+
+## No React Native
+
+Ainda não portado — depende de um gráfico nativo que ainda não existe. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

@@ -42,7 +42,7 @@ const MAC: Record<string, string> = {
   right: "→",
 };
 
-const OUTROS: Record<string, string> = {
+const OTHERS: Record<string, string> = {
   mod: "Ctrl",
   cmd: "Ctrl",
   meta: "Ctrl",
@@ -73,7 +73,7 @@ const NO_MAC =
 /** Traduz o nome de uma tecla para a escrita da plataforma. */
 export function keyName(key: string) {
   const token = key.toLowerCase();
-  const table = NO_MAC ? MAC : OUTROS;
+  const table = NO_MAC ? MAC : OTHERS;
   return table[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 

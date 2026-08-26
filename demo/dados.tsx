@@ -37,7 +37,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-const CLIENTES = [
+const CUSTOMERS = [
   { value: "clinica", label: "Clinica Sao Lucas" },
   { value: "transportes", label: "Transportes Cabo Branco" },
   { value: "supermercado", label: "Supermercado Tambau" },
@@ -45,7 +45,7 @@ const CLIENTES = [
   { value: "escola", label: "Escola Monteiro" },
 ];
 
-const SETORES: TreeNode[] = [
+const SECTORS: TreeNode[] = [
   {
     id: "financeiro",
     label: "Financeiro",
@@ -64,13 +64,13 @@ const SETORES: TreeNode[] = [
   },
 ];
 
-const NOTAS = [
+const INVOICES = [
   { numero: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", situacao: "Paga" },
   { numero: "4814", cliente: "Transportes Cabo Branco", value: "R$ 940,00", situacao: "Aberta" },
   { numero: "4815", cliente: "Supermercado Tambau", value: "R$ 12.300,00", situacao: "Aberta" },
 ];
 
-function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
@@ -79,7 +79,7 @@ function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   const [pagina, setPagina] = useState(3);
   const [setores, setSetores] = useState<string[]>(["contas-pagar", "contas-receber"]);
 
@@ -89,7 +89,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div className="flex w-full max-w-96 flex-col gap-10">
-          <Bloco titulo="Caminho">
+          <Block titulo="Caminho">
             <Breadcrumb
               items={[
                 { label: "Inicio", href: "#" },
@@ -99,9 +99,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 { label: "4813" },
               ]}
             />
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Campos com mascara">
+          <Block titulo="Campos com mascara">
             <Field>
               <FieldLabel>CNPJ</FieldLabel>
               <MaskedInput mask="cnpj" defaultValue="12345678000199" />
@@ -110,9 +110,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
               <FieldLabel>Telefone</FieldLabel>
               <MaskedInput mask="telefone" defaultValue="83988112233" />
             </Field>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Campo com encosto">
+          <Block titulo="Campo com encosto">
             <InputGroup>
               <InputPrefix>R$</InputPrefix>
               <MaskedInput mask="moeda" defaultValue="248000" />
@@ -129,11 +129,11 @@ function Amostra({ theme }: { theme: RivoTheme }) {
               <MaskedInput mask="" placeholder="minha-empresa" />
               <InputSuffix>.rivocode.com</InputSuffix>
             </InputGroup>
-          </Bloco>
+          </Block>
         </div>
 
         <div className="flex w-full max-w-[26rem] flex-col gap-10">
-          <Bloco titulo="Abas que rolam de lado">
+          <Block titulo="Abas que rolam de lado">
             <Tabs defaultValue="todas">
               <TabList>
                 <Tab value="todas">Todas</Tab>
@@ -146,7 +146,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
               <TabPanel value="todas">
                 <div className="flex flex-col">
-                  {NOTAS.map((nota) => (
+                  {INVOICES.map((nota) => (
                     <Item key={nota.numero}>
                       <ItemMedia>
                         <FileText size={18} aria-hidden="true" />
@@ -165,9 +165,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </div>
               </TabPanel>
             </Tabs>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Linha com moldura">
+          <Block titulo="Linha com moldura">
             <Item variant="outline" interactive>
               <ItemMedia>
                 <Avatar fallback="CS" />
@@ -182,14 +182,14 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </Button>
               </ItemActions>
             </Item>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Busca em lista longa">
-            <Combobox items={CLIENTES}>
+          <Block titulo="Busca em lista longa">
+            <Combobox items={CUSTOMERS}>
               <ComboboxInput placeholder="Buscar cliente" />
               <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
                 <ComboboxList>
-                  {(item: (typeof CLIENTES)[number]) => (
+                  {(item: (typeof CUSTOMERS)[number]) => (
                     <ComboboxItem key={item.value} value={item}>
                       {item.label}
                     </ComboboxItem>
@@ -197,20 +197,20 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Escolha em arvore">
+          <Block titulo="Escolha em arvore">
             <TreeSelect
-              items={SETORES}
+              items={SECTORS}
               value={setores}
               onValueChange={setSetores}
               placeholder="Escolha os setores"
             />
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Paginacao">
+          <Block titulo="Paginacao">
             <Pagination page={pagina} pageCount={12} onPageChange={setPagina} />
-          </Bloco>
+          </Block>
         </div>
       </div>
     </RivoProvider>
@@ -219,7 +219,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

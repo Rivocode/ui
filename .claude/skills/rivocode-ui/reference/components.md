@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 67 peças. O índice de todas fica em
+O catálogo tem 82 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -23,6 +23,19 @@ exemplos que rodam e a tabela de props.
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
 | Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
 | Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
+| Nome de arquivo, comando ou chave de JSON no texto | `Code` | O `Kbd` promete "aperte isto"; este é para ler ou copiar |
+| Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
+| Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
+| "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
+| O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
+| Contagem por cima do sino, da aba, do menu | `Indicator` | Posiciona sozinho, e a contagem é dita e não só vista |
+| Fila de pessoas sobrepostas | `AvatarGroup` | Corta para uma letra e conta o excedente em "+n" |
+| Senha, com o olho que revela | `PasswordInput` | O botão diz a ação e não o estado; sair do campo esconde de novo |
+| Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
+| Ocorrência por período, em faixa | `Tracker` | Responde "piorou ontem?"; cabe no rodapé de um `Stat` |
+| Lista e detalhe lado a lado, com proporção ajustável | `Splitter` | Divisória é `separator` de verdade e anda pelas setas; empilha no celular |
+| Corrigir um valor sem sair da tela | `Editable` | Escape desfaz, sair do campo salva; fechado é um `button` |
+| Escolher a cor de marca de um cliente | `ColorPicker` | Grade de amostras que anda por seta e diz qual está escolhida, mais o hexadecimal colado do manual |
 | Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
 | Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |

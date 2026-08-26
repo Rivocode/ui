@@ -53,7 +53,8 @@ para `success`, `warning` e `info`.
 
 São cinquenta. Um tema completo declara todos; faltando um, o componente que o
 usa cai no valor do tema anterior, e o sintoma costuma ser uma cor da RivoCode
-isolada no meio do azul do cliente.
+isolada no meio do azul do cliente. Depois deles vêm três papéis de acabamento
+— gradiente, brilho e vidro — que são os únicos opcionais.
 
 ### Superfície
 
@@ -133,7 +134,7 @@ ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
 | Token | O que veste |
 |---|---|
 | `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição — cada uma já carrega o hairline de 1px que separa o flutuante da página |
-| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho |
+| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
 | `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
 | `--rc-text-hero` | Tamanho de herói, em `clamp()` |
 
@@ -142,12 +143,140 @@ de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesm
 lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
 dela, e um tema de cliente decide o próprio brilho.
 
+### Acabamento: gradiente, vidro e brilho
+
+Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
+opcionais** do guia: ausentes, o gesto simplesmente não acontece, e é assim que
+os dois temas da casa nascem — os três declarados como `none`.
+
+| Token | Onde chega | O gesto |
+|---|---|---|
+| `--rc-accent-image` | `background-image` de quem veste `bg-accent` | O acento em gradiente |
+| `--rc-accent-shadow` | `box-shadow` do mesmo `bg-accent` | "Neste tema o primário brilha", sem `shadow-glow` em tela nenhuma |
+| `--rc-overlay-filter` | `backdrop-filter` da tarja, `bg-overlay` | Vidro fosco atrás de diálogo, folha e paleta de comando |
+
+O acabamento viaja junto com o papel, e não com a peça: quem já vestia
+`bg-accent` recebe o gradiente e o brilho, quem já vestia `bg-overlay` recebe o
+vidro. É o que torna a tarja alcançável — ela é um nó interno do portal, e
+`classNames={{ backdrop }}` resolve **uma tela**, enquanto o token resolve o
+tema inteiro, nas quatro peças que têm tarja, de uma vez.
+
+Quatro coisas para saber antes de usar:
+
+- **A classe de quem escreve a tela continua vencendo.** As regras são
+  `:where()`, de especificidade zero: um `bg-none` ou um `shadow-none` no
+  `className` desfaz o acabamento naquela peça, e um `bg-linear-to-r` seu
+  substitui o gradiente do tema.
+- **O gradiente cobre a cor.** `background-image` pinta por cima de
+  `background-color`, então com um gradiente opaco o `hover:bg-accent-hover` do
+  Button acontece embaixo e ninguém vê. Dê alfa ao gradiente e o hover volta a
+  aparecer através dele.
+- **Botão desabilitado fica de fora.** O Button neutraliza o primário morto
+  trocando a cor de fundo, e o gradiente sobreviveria a essa troca; a regra o
+  exclui. Carregando não é desabilitado para esse fim: ali a cor ainda diz qual
+  ação está em andamento.
+- **O alcance é o `bg-accent` escrito direto** — botão primário, barra de
+  progresso. O acento que só chega sob estado, como o `data-[checked]:bg-accent`
+  da caixa de marcar, compila com outro nome de classe e não recebe o
+  acabamento.
+
+No React Native os três não atravessam: gradiente e `backdrop-filter` não são
+propriedades de `View`, e o gerador de tema nativo os ignora em silêncio, como
+já faz com `box-shadow` e `clamp()`. São papéis de web.
+
+#### Um tema futurista, os três de uma vez
+
+```css
+/* tema-neon.css */
+[data-rc-theme="neon"] {
+  color-scheme: dark;
+
+  --rc-bg: oklch(16% 0.02 285);
+  --rc-surface: oklch(21% 0.03 285);
+  --rc-surface-raised: oklch(26% 0.03 285);
+
+  /* Com vidro, a tarja preta de sempre vira lama: ela clareia e desfoca. */
+  --rc-overlay: oklch(14% 0.04 285 / 0.55);
+  --rc-overlay-filter: blur(10px) saturate(130%);
+
+  --rc-accent: oklch(64% 0.21 300);
+  --rc-accent-hover: oklch(70% 0.21 300);
+  --rc-accent-active: oklch(58% 0.21 300);
+  --rc-accent-fg: oklch(99% 0 0);
+
+  /* Alfa de propósito: o gradiente cobre a cor, e sem ele o hover do Button
+     acontece embaixo, invisível. */
+  --rc-accent-image: linear-gradient(
+    135deg,
+    oklch(64% 0.21 300 / 0.92),
+    oklch(72% 0.16 200 / 0.92)
+  );
+
+  /* O brilho deixa de ser enfeite que cada tela liga e vira estado do acento. */
+  --rc-accent-shadow: 0 0 28px oklch(64% 0.21 300 / 0.45);
+
+  /* …e os cinquenta papéis obrigatórios. */
+}
+```
+
+O que muda na tela, sem uma linha de componente ou de página: o botão primário
+sai em degradê violeta→ciano e acende sozinho, e volta ao roxo chapado quando
+desabilita; a tarja do `Dialog`, do `AlertDialog`, do `Sheet` e do `Command`
+vira vidro fosco.
+
+### Forma e movimento
+
+Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
+"futurista" antes de qualquer cor, e esses nove tokens vivem em
+`src/tokens/forma.css`, fora da escala, justamente para o tema poder redefinir:
+
+| Token | O que decide |
+|---|---|
+| `--rc-radius-sm` a `--rc-radius-xl` | O canto de campo, cartão, painel e diálogo |
+| `--rc-radius-pill` | A pílula: chave, badge, avatar, barra |
+| `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | O tempo de cada transição |
+| `--rc-duration-sheet`, `--rc-ease-sheet` | O tempo e a curva da folha lateral, que segue o dedo |
+| `--rc-ease` | A curva de todo o resto — seca e mecânica, ou macia |
+| `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
+
+Redefina no mesmo seletor do tema, junto com os papéis de cor:
+
+```css
+[data-rc-theme="acme"] {
+  --rc-radius-md: 0px;                          /* canto reto */
+  --rc-duration-base: 140ms;                    /* movimento seco */
+  --rc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
+`:root` e `[data-rc-theme="x"]` têm a mesma especificidade, então o tema vence.
+
+## O que o tema precisa garantir
+
+Os papéis não são independentes. Estas relações precisam valer, e as três
+primeiras são medidas por `bun run check` — um tema que as quebra falha no CI,
+e não na tela do cliente:
+
+| Invariante | Por quê |
+|---|---|
+| `--rc-border-strong` a 3:1 da superfície | É a fronteira que identifica o controle (WCAG 1.4.11). Abaixo disso o campo não se distingue da página |
+| `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
+| `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
+| `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
+
+`--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor — no tema claro
+da casa as duas são branco puro, e cartão branco sobre página cinza é o padrão
+de nove entre dez painéis. Componente nenhum pode depender dessa diferença para
+existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`.
+
 ## O que **não** entra no tema
 
-Altura de controle, respiro, raio de canto, duração de animação e empilhamento
-vivem em `src/tokens/scales.css` e valem para todos os temas. Um tema que
-redefine `--rc-control-md` está resolvendo densidade no lugar errado, para
-isso existe `density="compact"`, e ele muda a escala inteira de uma vez.
+Altura de controle e respiro vivem em `src/tokens/scales.css` e valem para
+todos os temas. Um tema que redefine `--rc-control-md` está resolvendo
+densidade no lugar errado, para isso existe `density="compact"`, e ele muda a
+escala inteira de uma vez. Escala de texto e empilhamento seguem a mesma
+regra: são estrutura, e mudar deixaria de ser tema.
 
 ## Um tema de cliente, do começo ao fim
 
@@ -206,9 +335,69 @@ sua ou a nossa:
 <RivoProvider theme="acme">
 ```
 
+A prop aceita o nome do seu tema, e não só os dois de casa. Para guardar a
+escolha num seletor, o tipo é `RivoThemeSetting` — os de casa, `system` e o
+nome do cliente, com o autocomplete dos conhecidos preservado:
+
+```tsx
+const [tema, setTema] = useState<RivoThemeSetting>("acme")
+```
+
 O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
 barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
 alcança essas peças.
+
+## O mesmo tema no React Native
+
+O arquivo que você acabou de escrever veste as duas plataformas. **A fonte é
+uma só de propósito**: um segundo lugar para manter a cor de um cliente é como
+a promessa se quebra na prática — não por decisão, por divergência silenciosa
+seis meses depois.
+
+**1. Gere o mapa nativo a partir do mesmo CSS:**
+
+```sh
+bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+```
+
+Ele lê os blocos `[data-rc-theme="acme-light"]` e `[data-rc-theme="acme-dark"]`
+— um seletor sozinho serve aos dois esquemas — e emite um `RivoNativeThemeMap`.
+**Se faltar um papel, ele falha e diz quais**: um tema incompleto herda a cor da
+RivoCode em peças isoladas, e isso só aparece na tela do cliente.
+
+**2. Vista a árvore:**
+
+```tsx
+import { RivoProvider } from '@rivocode/ui-native'
+import { acmeTheme } from './acme.theme'
+
+<RivoProvider theme={acmeTheme} scheme="system">
+```
+
+Com tema de casa, quem decide claro e escuro é o próprio nome do tema; com tema
+de cliente, é a prop `scheme`.
+
+### O que isso custa, e o que não custa
+
+Os dois temas de casa continuam compilados como `light-dark(claro, escuro)`, que
+o runtime de CSS nativo avalia sozinho: trocar entre eles acontece **no mesmo
+frame, sem re-renderização**. Nada disso muda.
+
+O tema de cliente não cabe nesse caminho — os valores dele não existem em build
+— então ele entra pelo `VariableContextProvider`, que redefine as variáveis para
+a árvore abaixo. O custo é **uma re-renderização quando o tema ou o esquema
+mudam**, e só é pago por quem veste um cliente.
+
+Em troca, ele aninha: um provider de tema escuro dentro de uma tela clara veste
+só a sua árvore, que é o mesmo que o `scope="local"` faz no web.
+
+### A regra que as peças seguem
+
+Peça que pinta por fora da classe — o trilho do `Switch`, o giro do `Button`, a
+cor da `Sparkline` — lê os papéis do contexto (`useRivo().colors`), e nunca de
+`tokens.themes`. Lendo o mapa direto ela pegaria sempre o tema de casa, e a tela
+do cliente sairia com metade das cores dele e metade da lima da RivoCode. Há um
+teste que falha se alguém voltar a ler direto.
 
 ## Como pedir isto a um agente
 
@@ -226,18 +415,23 @@ Pedir "todos os cinquenta papéis" importa: sem isso o agente escreve os dez
 óbvios e deixa gráfico e estados sem cor, que é exatamente a falha silenciosa
 que a lista acima existe para evitar.
 
-## As duas guardas
+## As guardas
 
-O repositório da biblioteca tem duas travas que rodam em `bun run check`, e
-existem porque as duas falhas são silenciosas:
+O repositório da biblioteca tem travas que rodam em `bun run check`, e existem
+porque todas essas falhas são silenciosas:
 
 **Cor literal.** Nenhum componente pode escrever `#d4f34a`, `bg-lime-400` ou
 `rgb(...)` direto. Se pudesse, o tema do cliente não alcançaria aquela peça, e o
 erro só apareceria na tela dele.
 
-**Contraste.** Quarenta pares medidos, texto contra o fundo em que ele de fato
-aparece, nos dois temas. Um tema novo deve passar pela mesma medida, é a
+**Contraste.** Os pares de texto, os pares compostos de estado sobre o próprio
+fundo, e a fronteira não-textual de 1.4.11 — nos dois temas, com o alfa
+composto antes de medir. Um tema novo deve passar pela mesma medida, é a
 diferença entre "parece bom no meu monitor" e "dá para ler".
+
+**Forma documentada.** Todo token que um tema pode declarar precisa estar
+citado neste guia — os papéis de cor e os de forma. Sem isso o guia passa a
+mentir em silêncio, e a mentira aparece meses depois, na tela de um cliente.
 
 ## Ajuste fino com className
 

@@ -4,18 +4,21 @@ import { render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import {
   Combobox,
+  ComboboxChip,
+  ComboboxChips,
   ComboboxContent,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
+  ComboboxValue,
 } from "../src/components/combobox";
 
-const CLIENTES = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
+const CUSTOMERS = ["Clinica Sao Lucas", "Transportes Cabo Branco"];
 
 function list(props: { items?: string[] } = {}) {
   return render(
     <RivoProvider scope="local">
-      <Combobox items={props.items ?? CLIENTES} defaultOpen>
+      <Combobox items={props.items ?? CUSTOMERS} defaultOpen>
         <ComboboxInput placeholder="Buscar cliente" />
         <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
           <ComboboxList>
@@ -44,4 +47,34 @@ test("sem nada na lista, o aviso aparece", () => {
   // A Base UI cola um juntador de palavras no fim do aviso, para o leitor de
   // tela reanunciar; por isso a busca e por trecho, e nao por texto exato.
   expect(screen.getByText(/Nenhum cliente com esse nome/)).toBeDefined();
+});
+
+test("a escolha multipla monta as fichas sem sair da biblioteca", () => {
+  // ComboboxChips e ComboboxChip ja existiam e nao tinham como ser montados:
+  // faltava a peca que mapeia o valor escolhido para as fichas. Sem ela, o
+  // unico caminho era importar direto da Base UI, que e o que a skill manda
+  // nunca fazer.
+  render(
+    <RivoProvider scope="local">
+      <Combobox items={CUSTOMERS} multiple defaultValue={CUSTOMERS}>
+        <ComboboxChips>
+          <ComboboxValue>
+            {(chosen: string[]) =>
+              chosen.map((cliente) => (
+                <ComboboxChip key={cliente} aria-label={cliente}>
+                  {cliente}
+                </ComboboxChip>
+              ))
+            }
+          </ComboboxValue>
+          <ComboboxInput placeholder="Buscar cliente" />
+        </ComboboxChips>
+      </Combobox>
+    </RivoProvider>,
+  );
+
+  expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
+  expect(screen.getByText("Transportes Cabo Branco")).toBeDefined();
+  // Cada ficha traz o proprio botao de remover, ja pronto no componente.
+  expect(screen.getAllByRole("button", { name: "Remover" }).length).toBe(2);
 });

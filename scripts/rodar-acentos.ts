@@ -1,31 +1,31 @@
-import { acentuar, pendencias } from "./acentuar";
+import { addAccents, pendingLines } from "./acentuar";
 
 import { readdirSync } from "node:fs";
 
 // O Glob do Bun ignora pasta oculta, e a dos documentos comeca com ponto, na
 // primeira tentativa os 106 arquivos passaram batido e o script disse "5 de 5".
-const alvos = [
+const TARGETS = [
   ...readdirSync(".design-sync/docs")
-    .filter((arquivo) => arquivo.endsWith(".md"))
-    .map((arquivo) => `.design-sync/docs/${arquivo}`),
+    .filter((file) => file.endsWith(".md"))
+    .map((file) => `.design-sync/docs/${file}`),
   ...readdirSync("apps/docs/src/content")
-    .filter((arquivo) => arquivo.endsWith(".md"))
-    .map((arquivo) => `apps/docs/src/content/${arquivo}`),
+    .filter((file) => file.endsWith(".md"))
+    .map((file) => `apps/docs/src/content/${file}`),
 ];
 
-let mudados = 0;
-const restantes: string[] = [];
+let changed = 0;
+const pending: string[] = [];
 
-for (const arquivo of alvos) {
-  const antes = await Bun.file(arquivo).text();
-  const depois = acentuar(antes);
-  if (antes !== depois) {
-    await Bun.write(arquivo, depois);
-    mudados++;
+for (const file of TARGETS) {
+  const before = await Bun.file(file).text();
+  const after = addAccents(before);
+  if (before !== after) {
+    await Bun.write(file, after);
+    changed++;
   }
-  for (const row of pendencias(depois)) restantes.push(`${arquivo}: ${row}`);
+  for (const row of pendingLines(after)) pending.push(`${file}: ${row}`);
 }
 
-console.log(`arquivos alterados: ${mudados} de ${alvos.length}`);
-console.log(`linhas com "e" solto, para revisar: ${restantes.length}`);
-await Bun.write("/tmp/revisar-e.txt", restantes.join("\n"));
+console.log(`arquivos alterados: ${changed} de ${TARGETS.length}`);
+console.log(`linhas com "e" solto, para revisar: ${pending.length}`);
+await Bun.write("/tmp/revisar-e.txt", pending.join("\n"));

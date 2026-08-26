@@ -28,3 +28,7 @@ cada campo dentro. "Número" sozinho não diz nada; "Endereco, número" diz.
 
 O respiro entre grupos e maior que o respiro entre campos, de propósito: e ele
 que mostra onde um assunto termina.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Fieldset` — `legend` como prop. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -11,7 +11,7 @@
  * Nothing here is a second copy to maintain, rename a prop and both change.
  * ------------------------------------------------------------------------- */
 
-import type { Prop } from './props-parse'
+import type { Prop } from './props'
 
 export type Part = {
   name: string
@@ -41,12 +41,14 @@ function propsTable(props: Prop[]) {
     .map(
       (prop) =>
         `| \`${prop.name}\` | \`${cell(prop.type)}\` | ${prop.required ? 'sim' : ''} | ${
-          prop.note ? cell(prop.note) : ''
-        } |`,
+          prop.since ?? '—'
+        } | ${prop.note ? cell(prop.note) : ''} |`,
     )
     .join('\n')
 
-  return `| Prop | Tipo | Obrigatória | O que faz |\n| --- | --- | --- | --- |\n${rows}`
+  // A coluna de versão existe para o agente que lê isto sem saber qual versão
+  // o projeto tem instalada: `—` é prop que ainda não saiu em versão nenhuma.
+  return `| Prop | Tipo | Obrigatória | Desde | O que faz |\n| --- | --- | --- | --- | --- |\n${rows}`
 }
 
 export function renderDoc(input: RenderInput) {

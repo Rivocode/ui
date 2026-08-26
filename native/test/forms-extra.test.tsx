@@ -98,11 +98,16 @@ describe("NumberField", () => {
 });
 
 describe("OTPField", () => {
-  test("uma caixa por digito, e onComplete so no ultimo", () => {
-    const onComplete = mock(() => {});
+  test("uma caixa por digito, e onValueComplete so no ultimo", () => {
+    const onValueComplete = mock(() => {});
     const onValueChange = mock(() => {});
     const screen = render(
-      <OTPField length={4} value="12" onValueChange={onValueChange} onComplete={onComplete} />,
+      <OTPField
+        length={4}
+        value="12"
+        onValueChange={onValueChange}
+        onValueComplete={onValueComplete}
+      />,
     );
 
     expect(textOf(screen)).toContain("1");
@@ -110,11 +115,11 @@ describe("OTPField", () => {
 
     const input = screen.root.findByType("TextInput" as never);
     act(() => input.props.onChangeText("123"));
-    expect(onComplete).not.toHaveBeenCalled();
+    expect(onValueComplete).not.toHaveBeenCalled();
 
     act(() => input.props.onChangeText("1234"));
     expect(onValueChange).toHaveBeenCalledWith("1234");
-    expect(onComplete).toHaveBeenCalledWith("1234");
+    expect(onValueComplete).toHaveBeenCalledWith("1234");
   });
 });
 

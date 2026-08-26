@@ -1,4 +1,4 @@
-export const version = "0.4.0";
+export const version = "0.5.0";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useMobile } from "./lib/screen";
@@ -7,7 +7,9 @@ export {
   useRivoContext,
   type RivoDensity,
   type RivoProviderProps,
+  type RivoResolvedTheme,
   type RivoTheme,
+  type RivoThemeSetting,
 } from "./provider/rivo-provider";
 
 export { Button, buttonVariants, type ButtonProps } from "./components/button";
@@ -92,6 +94,26 @@ export {
   type DateRangePickerProps,
 } from "./components/date-range-picker";
 export { formatDate, parseDate, maskDate } from "./lib/date";
+/*
+ * Os formatadores nasceram no subcaminho do grafico, e ali era o lugar errado:
+ * formatar dinheiro numa celula de tabela nao e assunto de grafico. Saem
+ * tambem pela raiz, e sao o mesmo vocabulario que `format` aceita no Meter, no
+ * Progress, no Slider e no eixo.
+ */
+export {
+  compact,
+  compactWords,
+  currency,
+  currencyShort,
+  currencyShortWords,
+  dayMonth,
+  formatters,
+  integer,
+  monthShort,
+  percent,
+  type Format,
+  type FormatName,
+} from "./lib/format";
 export {
   Sheet,
   SheetClose,
@@ -237,7 +259,33 @@ export { Meter, type MeterProps } from "./components/meter";
 export { NumberField, type NumberFieldProps } from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
-export { Menubar, type MenubarProps } from "./components/menubar";
+export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
+export { Clipboard, type ClipboardProps } from "./components/clipboard";
+export { Indicator, type IndicatorProps } from "./components/indicator";
+export { PasswordInput, type PasswordInputProps } from "./components/password-input";
+export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
+export { TagsInput, type TagsInputProps } from "./components/tags-input";
+export { Splitter, type SplitterProps } from "./components/splitter";
+export { Editable, type EditableProps } from "./components/editable";
+export {
+  ColorPicker,
+  normalizeColor,
+  type ColorPickerProps,
+  type ColorSwatch,
+} from "./components/color-picker";
+export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
+export {
+  Timeline,
+  TimelineItem,
+  type TimelineProps,
+  type TimelineItemProps,
+} from "./components/timeline";
+export { Code, CodeBlock, type CodeProps, type CodeBlockProps } from "./components/code";
+export {
+  RelativeTime,
+  type RelativeTimeProps,
+  type RelativeUnit,
+} from "./components/relative-time";
 export {
   ToolbarButton,
   ToolbarGroup,
@@ -272,6 +320,7 @@ export {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
+  ComboboxValue,
   type ComboboxContentProps,
   type ComboboxInputProps,
 } from "./components/combobox";

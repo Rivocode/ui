@@ -23,7 +23,7 @@ export type DateRangePickerProps = Omit<
   /** O intervalo inicial, quando o componente controla o proprio estado. */
   defaultValue?: DateRange;
   /** Chamado quando o intervalo muda. Vem incompleto entre o primeiro e o segundo clique. */
-  onValueChange?: (intervalo: DateRange | undefined) => void;
+  onValueChange?: (range: DateRange | undefined) => void;
   /** Texto do gatilho quando nao ha intervalo. */
   placeholder?: string;
   /** Tamanho do gatilho, o mesmo vocabulario do Input. */
@@ -38,7 +38,7 @@ export type DateRangePickerProps = Omit<
    * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
    * primeiro clique e outra no segundo.
    */
-  confirmar?: boolean;
+  confirm?: boolean;
 };
 
 /**
@@ -65,27 +65,27 @@ export function DateRangePicker({
   disabledDays,
   numberOfMonths = 2,
   locale,
-  confirmar = true,
+  confirm = true,
   ...props
 }: DateRangePickerProps) {
   const controlled = value !== undefined;
-  const [intervaloInterno, setIntervaloInterno] = useState<DateRange | undefined>(defaultValue);
-  const intervalo = controlled ? value : intervaloInterno;
+  const [internalRange, setIntervaloInterno] = useState<DateRange | undefined>(defaultValue);
+  const range = controlled ? value : internalRange;
 
   const [isOpen, setAberto] = useState(false);
-  const [rascunho, setRascunho] = useState<DateRange | undefined>(intervalo);
-  const picked = confirmar && isOpen ? rascunho : intervalo;
+  const [draft, setRascunho] = useState<DateRange | undefined>(range);
+  const picked = confirm && isOpen ? draft : range;
 
-  const label = descrever(intervalo) ?? placeholder;
-  const vazio = descrever(intervalo) === undefined;
+  const label = describe(range) ?? placeholder;
+  const empty = describe(range) === undefined;
 
-  function mudar(novo: DateRange | undefined) {
-    if (!controlled) setIntervaloInterno(novo);
-    setRascunho(novo);
-    onValueChange?.(novo);
+  function change(next: DateRange | undefined) {
+    if (!controlled) setIntervaloInterno(next);
+    setRascunho(next);
+    onValueChange?.(next);
   }
 
-  const gatilho = (
+  const trigger = (
     <button
       {...props}
       type="button"
@@ -93,7 +93,7 @@ export function DateRangePicker({
       className={cn(
         inputVariants({ size }),
         "flex items-center justify-between gap-2 text-left",
-        vazio && "text-fg-subtle",
+        empty && "text-fg-subtle",
         className,
       )}
     >
@@ -107,19 +107,19 @@ export function DateRangePicker({
       open={isOpen}
       onOpenChange={(abrir) => {
         setAberto(abrir);
-        if (abrir) setRascunho(intervalo);
+        if (abrir) setRascunho(range);
       }}
-      trigger={gatilho}
+      trigger={trigger}
       title="Escolher período"
       align="start"
       footer={
-        confirmar && (
+        confirm && (
           <div className="flex items-center justify-between gap-3">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => {
-                mudar(undefined);
+                change(undefined);
                 setAberto(false);
               }}
             >
@@ -129,9 +129,9 @@ export function DateRangePicker({
               size="sm"
               // So com o intervalo fechado: aplicar com meia escolha mandaria
               // para a listagem um periodo que comeca e nao termina.
-              disabled={!rascunho?.from || !rascunho.to}
+              disabled={!draft?.from || !draft.to}
               onClick={() => {
-                mudar(rascunho);
+                change(draft);
                 setAberto(false);
               }}
             >
@@ -148,12 +148,12 @@ export function DateRangePicker({
         numberOfMonths={numberOfMonths}
         disabled={disabledDays}
         locale={locale}
-        onSelect={(novo) => {
-          if (confirmar) {
-            setRascunho(novo);
+        onSelect={(next) => {
+          if (confirm) {
+            setRascunho(next);
             return;
           }
-          mudar(novo);
+          change(next);
         }}
         autoFocus
       />
@@ -162,9 +162,9 @@ export function DateRangePicker({
 }
 
 /** `undefined` quando nao ha nada para mostrar, para o gatilho cair no placeholder. */
-function descrever(intervalo: DateRange | undefined): string | undefined {
-  if (!intervalo?.from) return undefined;
-  const inicio = formatDate(intervalo.from);
-  if (!intervalo.to) return `${inicio} \u2013 ...`;
-  return `${inicio} \u2013 ${formatDate(intervalo.to)}`;
+function describe(range: DateRange | undefined): string | undefined {
+  if (!range?.from) return undefined;
+  const start = formatDate(range.from);
+  if (!range.to) return `${start} \u2013 ...`;
+  return `${start} \u2013 ${formatDate(range.to)}`;
 }

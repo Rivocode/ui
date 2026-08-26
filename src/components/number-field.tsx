@@ -7,9 +7,19 @@ import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { inputVariants } from "./field";
 
-export type NumberFieldProps = ComponentProps<typeof BaseNumberField.Root> & {
+export type NumberFieldProps = Omit<ComponentProps<typeof BaseNumberField.Root>, "format"> & {
   placeholder?: string;
   size?: "sm" | "md" | "lg";
+  /**
+   * As opcoes do `Intl.NumberFormat`. Era `format`, e mudou de nome porque
+   * `format` passou a significar "nome de formatador da casa, ou funcao" nas
+   * outras pecas que escrevem numero.
+   *
+   * Aqui o nome de formatador nao entra, e a razao e o campo ser editavel: um
+   * formatador so escreve, e o que a pessoa digita precisa ser lido de volta.
+   * O `Intl` sabe fazer as duas coisas.
+   */
+  numberFormat?: Intl.NumberFormatOptions;
 };
 
 const STEP = cn(
@@ -36,6 +46,7 @@ export function NumberField({
   className,
   placeholder,
   size,
+  numberFormat,
   // O nome pertence ao campo, e nao a caixa em volta dele. Espalhado no
   // `Root`, que e um `div`, o `aria-label` nao rotulava nada e o input ficava
   // sem nome: nao dava para rotular um NumberField sem embrulhar num `Field`.
@@ -44,7 +55,7 @@ export function NumberField({
   ...props
 }: NumberFieldProps) {
   return (
-    <BaseNumberField.Root {...props} className={cn("w-full", className)}>
+    <BaseNumberField.Root {...props} format={numberFormat} className={cn("w-full", className)}>
       <BaseNumberField.Group
         className={cn(
           "flex w-full items-stretch overflow-hidden rounded-md border border-border bg-surface",

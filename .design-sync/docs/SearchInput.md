@@ -16,3 +16,7 @@ a tela, porque é ela que sabe o que mais escuta teclado.
 
 Combina com o `filter` do `DataTable`: o campo fica onde a tela pedir e a
 tabela só recebe o texto.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `SearchInput` — `value` e `onValueChange` obrigatórios. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

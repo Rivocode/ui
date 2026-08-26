@@ -36,12 +36,12 @@ export function parseDate(text: string): Date | undefined {
 
 /**
  * A mascara enquanto se digita. So aceita numero, poe as barras sozinha e para
- * em oito digitos, entao o campo nunca fica num formato que o `parseDate` nao
+ * em oito digits, entao o campo nunca fica num formato que o `parseDate` nao
  * entende.
  */
 export function maskDate(text: string): string {
-  const digitos = text.replace(/\D/g, "").slice(0, 8);
-  if (digitos.length <= 2) return digitos;
-  if (digitos.length <= 4) return `${digitos.slice(0, 2)}/${digitos.slice(2)}`;
-  return `${digitos.slice(0, 2)}/${digitos.slice(2, 4)}/${digitos.slice(4)}`;
+  const digits = text.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }

@@ -4,6 +4,8 @@ import { Drawer as BaseDrawer } from "@base-ui/react/drawer";
 import { createContext, use, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { InertBackground } from "../lib/inert-background";
+import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
 /** De onde a folha entra. */
@@ -43,13 +45,13 @@ export function Sheet({ side = "bottom", children, ...props }: SheetProps) {
 export const SheetTrigger = BaseDrawer.Trigger;
 export const SheetClose = BaseDrawer.Close;
 
-const MOLDURA: Record<SheetSide, string> = {
+const VIEWPORT_SIDE: Record<SheetSide, string> = {
   bottom: "items-end justify-center",
   left: "items-stretch justify-start",
   right: "items-stretch justify-end",
 };
 
-const PAINEL: Record<SheetSide, string> = {
+const PANEL_SIDE: Record<SheetSide, string> = {
   bottom: cn(
     "max-h-[85dvh] w-full rounded-t-xl border-t",
     "pb-[max(1.5rem,env(safe-area-inset-bottom))]",
@@ -71,9 +73,20 @@ const PAINEL: Record<SheetSide, string> = {
   ),
 };
 
-export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup>;
+export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup> & {
+  /**
+   * Classe por parte: `backdrop`, `viewport`. A tarja e irma do painel dentro
+   * do portal, entao nem `className` nem variante de descendente alcancam ela.
+   */
+  classNames?: Slots<"backdrop" | "viewport">;
+};
 
-export function SheetContent({ className, children, ...props }: SheetContentProps) {
+export function SheetContent({
+  className,
+  children,
+  classNames,
+  ...props
+}: SheetContentProps) {
   const { portalContainer } = useRivoContext();
   const side = use(LadoContext);
 
@@ -88,11 +101,12 @@ export function SheetContent({ className, children, ...props }: SheetContentProp
           "transition-opacity duration-[var(--rc-duration-sheet)] ease-rc-sheet",
           "data-[swiping]:duration-0",
           "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+          classNames?.backdrop,
         )}
       />
 
       <BaseDrawer.Viewport
-        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", MOLDURA[side])}
+        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", VIEWPORT_SIDE[side], classNames?.viewport)}
       >
         <BaseDrawer.Popup
           {...props}
@@ -104,13 +118,17 @@ export function SheetContent({ className, children, ...props }: SheetContentProp
             // Enquanto o dedo esta na tela o painel segue o dedo sem transicao,
             // senao ele chega atrasado e parece emperrado.
             "data-[swiping]:select-none data-[swiping]:duration-0",
-            PAINEL[side],
+            PANEL_SIDE[side],
             className,
           )}
         >
           <BaseDrawer.Content>{children}</BaseDrawer.Content>
         </BaseDrawer.Popup>
       </BaseDrawer.Viewport>
+
+      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
+          aplicado pelo gerenciador de foco que mora dentro do popup. */}
+      <InertBackground container={portalContainer} />
     </BaseDrawer.Portal>
   );
 }

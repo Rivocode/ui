@@ -68,7 +68,7 @@ test("texto que nao virou data volta para a ultima data ao sair do campo", () =>
 });
 
 test("o campo espelha a data que muda de fora", () => {
-  function Controlado() {
+  function Controlled() {
     const [data, setData] = useState<Date | undefined>(new Date(2026, 2, 3));
     return (
       <RivoProvider scope="local">
@@ -77,7 +77,7 @@ test("o campo espelha a data que muda de fora", () => {
       </RivoProvider>
     );
   }
-  render(<Controlado />);
+  render(<Controlled />);
   fireEvent.click(screen.getByText("Natal"));
   expect(field().value).toBe("25/12/2026");
 });
@@ -166,7 +166,7 @@ test("com rodape, o clique no dia e so rascunho ate o Aplicar", async () => {
   let recebida: Date | undefined;
   render(
     <RivoProvider scope="local">
-      <DatePicker confirmar onValueChange={(d) => (recebida = d)} />
+      <DatePicker confirm onValueChange={(d) => (recebida = d)} />
     </RivoProvider>,
   );
 

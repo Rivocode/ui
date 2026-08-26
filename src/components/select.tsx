@@ -25,7 +25,7 @@ export function SelectTrigger({
       {...props}
       className={cn(
         "flex h-[var(--rc-control-md)] min-w-40 items-center justify-between gap-2",
-        "rounded-md border border-border bg-surface px-[var(--rc-control-pad-md)]",
+        "rounded-md border border-border-strong bg-surface px-[var(--rc-control-pad-md)]",
         "font-sans text-base text-fg select-none",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none hover:bg-surface-raised",

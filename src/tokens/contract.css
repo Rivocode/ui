@@ -98,4 +98,71 @@
      usa nenhum dos dois. */
   --animate-rise: rc-rise var(--rc-duration-slow) var(--rc-ease) both;
   --animate-fade: rc-fade var(--rc-duration-slow) var(--rc-ease) both;
+  /* A travessia da barra indeterminada. Duracao propria: as do contrato sao
+     de transicao, e uma delas zerada deixaria a barra parada no lugar. */
+  --animate-indeterminate: rc-indeterminate 1.4s var(--rc-ease) infinite;
+}
+
+/* ---------------------------------------------------------------------------
+ * O acabamento que o papel carrega.
+ *
+ * Tres gestos comuns nao cabiam no vocabulario, e por um motivo estrutural: o
+ * contrato so sabe traduzir papel em COR. `bg-accent` e background-color, e
+ * gradiente e background-image; vidro fosco e backdrop-filter e nao tem papel
+ * nenhum; e o brilho existia como `--rc-glow-accent`, mas so acendia se cada
+ * tela escrevesse `shadow-glow` - um tema nao conseguia dizer "aqui o acento
+ * brilha". Quem quisesse os tres so alcancava a raiz da peca pelo className, e
+ * a tarja do dialogo nem raiz e: e no interior do portal.
+ *
+ * Entao o acabamento passa a viajar junto com o papel: quem veste `bg-accent`
+ * recebe o gradiente e o brilho do tema, quem veste `bg-overlay` recebe o
+ * vidro. Nenhuma tela muda, nenhuma peca muda.
+ *
+ * Tres decisoes seguram isso no lugar:
+ *
+ * `@layer utilities` - regra fora de camada vence QUALQUER camada, entao um
+ * `background-image` solto aqui derrubaria o `bg-linear-to-r` de quem quisesse
+ * escrever o proprio gradiente na mesma peca.
+ *
+ * `:where()` - especificidade zero. Dentro da mesma camada, qualquer
+ * utilitario de classe (0,1,0) ganha, mesmo vindo antes no arquivo. O tema
+ * propoe o acabamento e a classe de quem escreve a tela desfaz, que e a mesma
+ * direcao do resto da biblioteca.
+ *
+ * `var(--x, none)` - o papel e opcional, e o valor neutro e `none` escrito por
+ * extenso. Token vazio nao serve: `--rc-accent-image: ;` e declaracao legal,
+ * mas a substituicao produz `background-image: ;`, invalido em tempo de valor
+ * computado - a declaracao ainda vence a cascata e cai em `unset`. Em
+ * background-image isso da `none` por sorte, porque ela nao herda; num papel
+ * herdado a mesma escrita traz o valor do pai. `none` e o initial das tres
+ * propriedades, entao o tema de casa nasce sem mudar um pixel. Vale dizer que
+ * isto nao poderia morar no `@theme`: variavel de tema que ninguem usa e
+ * podada do CSS gerado, e essas tres so aparecem no tema do cliente.
+ *
+ * O alcance: `.bg-accent` escrito direto - botao primario, barra de progresso.
+ * O acento que so chega sob estado (`data-[checked]:bg-accent`, na caixa de
+ * marcar) compila com outro nome de classe e fica de fora, de proposito: essa
+ * lista viraria acoplamento a peca.
+ * ------------------------------------------------------------------------- */
+@layer utilities {
+  /* O desabilitado fica fora. O Button neutraliza o primario desabilitado
+     trocando background-color, e um gradiente pintado por cima sobreviveria a
+     troca: o botao morto voltaria a vestir a marca. `data-loading` continua
+     dentro pelo mesmo motivo que continua colorido la - carregando tambem
+     desabilita, e ali a cor ainda diz qual acao esta em andamento. */
+  :where(.bg-accent:not(:disabled:not([data-loading]), [data-disabled], [aria-disabled="true"])) {
+    background-image: var(--rc-accent-image, none);
+    /* O anel de foco do Tailwind reescreve a box-shadow inteira enquanto o
+       foco esta ali, entao o brilho sai de cena nesse instante. E a ordem
+       certa: o anel precisa se ver, o brilho e enfeite. */
+    box-shadow: var(--rc-accent-shadow, none);
+  }
+
+  /* A tarja do Dialog, do AlertDialog, do Sheet e do Command de uma vez. Uma
+     peca sozinha ja da para vestir com `classNames={{ backdrop }}`, mas isso e
+     por tela; o token e por tema, e alcanca as quatro sem que nenhuma delas
+     saiba do assunto. */
+  :where(.bg-overlay) {
+    backdrop-filter: var(--rc-overlay-filter, none);
+  }
 }

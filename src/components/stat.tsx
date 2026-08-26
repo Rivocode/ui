@@ -29,6 +29,20 @@ export type StatProps = {
    * junto, e um painel sem grafico nao deveria pagar por ele.
    */
   chart?: ReactNode;
+  /**
+   * O icone em caixa, a esquerda do rotulo. E a convencao de painel, e sem
+   * slot cada tela remontava o cartao inteiro para te-lo.
+   */
+  icon?: ReactNode;
+  /** O canto direito do cartao: o menu de tres pontos, um botao de acao. */
+  actions?: ReactNode;
+  /** A faixa de baixo: meta com barra, comparacao, texto de apoio. */
+  footer?: ReactNode;
+  /**
+   * A variacao como pastilha preenchida, que e a convencao dominante em
+   * painel, ou como texto com seta, que e o padrao daqui.
+   */
+  deltaVariant?: "text" | "pill";
   className?: string;
 };
 
@@ -47,6 +61,10 @@ export function Stat({
   hint,
   invert,
   chart,
+  icon,
+  actions,
+  footer,
+  deltaVariant = "text",
   className,
 }: StatProps) {
   const rose = (delta ?? 0) >= 0;
@@ -55,7 +73,25 @@ export function Stat({
   return (
     <Card className={className}>
       <CardContent className="py-4">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-start justify-between gap-3">
+          {icon && (
+            <span
+              aria-hidden="true"
+              className={cn(
+                "flex size-9 shrink-0 items-center justify-center rounded-md",
+                "bg-accent-subtle text-accent-text",
+              )}
+            >
+              {icon}
+            </span>
+          )}
+          {/* As acoes ficam no canto e fora do fluxo do rotulo: um menu de
+              tres pontos empurrando o texto muda a largura do rotulo de um
+              cartao para o outro, e a fila de cartoes perde o alinhamento. */}
+          {actions && <span className="-mt-1 -mr-1 ml-auto shrink-0">{actions}</span>}
+        </div>
+
+        <div className={cn("flex items-center gap-1.5", (icon || actions) && "mt-2")}>
           <p className="text-sm text-fg-muted">{label}</p>
           {hint && (
             <Tooltip>
@@ -86,8 +122,15 @@ export function Stat({
         {delta !== undefined && (
           <p
             className={cn(
-              "mt-1 flex items-center gap-1 text-xs",
-              good ? "text-success-text" : "text-danger-text",
+              "mt-1 flex w-fit items-center gap-1 text-xs",
+              deltaVariant === "pill"
+                ? cn(
+                    "rounded-pill px-1.5 py-0.5 font-medium",
+                    good ? "bg-success-subtle text-success-text" : "bg-danger-subtle text-danger-text",
+                  )
+                : good
+                  ? "text-success-text"
+                  : "text-danger-text",
             )}
           >
             {rose ? (
@@ -105,6 +148,13 @@ export function Stat({
             cartao tinha que escolher entre mostrar a tendencia e mostrar o
             valor inteiro, e o valor e a razao do cartao. */}
         {chart && <div className="mt-3">{chart}</div>}
+
+        {/* O rodape depois da tendencia, separado por uma linha: ele costuma
+            trazer outra medida - meta, comparacao - e sem a divisoria as duas
+            se leem como uma coisa so. */}
+        {footer && (
+          <div className="mt-3 border-t border-border pt-3 text-xs text-fg-muted">{footer}</div>
+        )}
       </CardContent>
     </Card>
   );

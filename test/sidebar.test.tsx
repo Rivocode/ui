@@ -5,8 +5,11 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
   SidebarInput,
   SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuRow,
   SidebarMenuItem,
   SidebarMenuSkeleton,
   SidebarMenuSub,
@@ -14,7 +17,11 @@ import {
   SidebarTrigger,
 } from "../src/components/sidebar";
 
-function barra(defaultOpen: boolean) {
+function withTheme(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
+}
+
+function sidebar(defaultOpen: boolean) {
   return render(
     <RivoProvider scope="local">
       <SidebarProvider defaultOpen={defaultOpen}>
@@ -38,7 +45,7 @@ function barra(defaultOpen: boolean) {
 }
 
 test("aberta, a barra mostra o nome de cada destino", () => {
-  barra(true);
+  sidebar(true);
 
   expect(screen.getByText("Painel")).toBeDefined();
   expect(screen.getByText("Cadastros")).toBeDefined();
@@ -47,32 +54,32 @@ test("aberta, a barra mostra o nome de cada destino", () => {
 });
 
 test("encolhida, o campo de busca vira botao, porque 3,5rem nao aceitam texto", () => {
-  const { container } = barra(false);
+  const { container } = sidebar(false);
 
   expect(container.querySelector("input[type=search]")).toBeNull();
   expect(screen.getByRole("button", { name: "Buscar" })).toBeDefined();
 });
 
 test("encolhida, o submenu vira menu ao lado em vez de sumir", () => {
-  barra(false);
+  sidebar(false);
 
   // A lista some da barra, senao ela indentaria dentro de 3,5rem.
   expect(screen.queryByText("Clientes")).toBeNull();
 
   // E o pai continua alcancavel, agora como gatilho de menu.
-  const gatilho = screen.getByRole("button", { name: "Cadastros" });
-  fireEvent.click(gatilho);
+  const trigger = screen.getByRole("button", { name: "Cadastros" });
+  fireEvent.click(trigger);
 
   expect(screen.getByRole("menuitem", { name: "Clientes" })).toBeDefined();
 });
 
 test("o gatilho abre e fecha, e diz qual dos dois no aria", () => {
-  barra(true);
+  sidebar(true);
 
-  const gatilho = screen.getByRole("button", { name: "Fechar menu" });
-  expect(gatilho.getAttribute("aria-expanded")).toBe("true");
+  const trigger = screen.getByRole("button", { name: "Fechar menu" });
+  expect(trigger.getAttribute("aria-expanded")).toBe("true");
 
-  fireEvent.click(gatilho);
+  fireEvent.click(trigger);
   expect(screen.getByRole("button", { name: "Abrir menu" }).getAttribute("aria-expanded")).toBe(
     "false",
   );
@@ -127,7 +134,7 @@ function comCelular<T>(run: () => T): T {
 
 test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     // `defaultOpen` fala da coluna da mesa. No celular a barra cobre a tela, e
     // abrir sozinha tapa justamente o que a pessoa veio ver.
     expect(screen.queryByText("Painel")).toBeNull();
@@ -136,7 +143,7 @@ test("no celular a barra comeca fechada, mesmo com defaultOpen", () => {
 
 test("no celular o gatilho abre a folha", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     expect(screen.getByText("Painel")).toBeDefined();
   });
@@ -144,10 +151,136 @@ test("no celular o gatilho abre a folha", () => {
 
 test("no celular, escolher um destino fecha a folha", () => {
   comCelular(() => {
-    barra(true);
+    sidebar(true);
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     fireEvent.click(screen.getByText("Painel"));
     // Na mesa ela continuaria aberta: ali a barra nao cobre nada.
     expect(screen.queryByText("Painel")).toBeNull();
   });
+});
+
+function sidebarWithGroup(defaultOpen: boolean) {
+  return render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarGroup label="Catalogo">
+              <SidebarMenu>
+                <SidebarMenuItem href="#pecas">Pecas</SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+}
+
+test("encolhida, o rotulo do grupo some em vez de sair cortado", () => {
+  // Em 3,5rem "CATALOGO" viraria "CATA". Sumir diz menos; mentir sobre o nome
+  // do grupo diz errado.
+  const { container } = sidebarWithGroup(false);
+
+  expect(screen.queryByText("Catalogo")).toBeNull();
+  // O destino continua la: encolhida, ele e so o icone, com o nome no tooltip.
+  expect(container.querySelector('a[href="#pecas"]')).not.toBeNull();
+});
+
+test("aberta, o rotulo do grupo aparece", () => {
+  sidebarWithGroup(true);
+
+  expect(screen.getByText("Catalogo")).toBeDefined();
+});
+
+/* ---------------------------------------------------------------------------
+ * Nome de cada destino com a barra encolhida
+ *
+ * Encolhida a barra, o rotulo sai da tela e o `<a>` fica so com o icone. Uma
+ * suite de interacao mediu a arvore de acessibilidade do navegador e achou
+ * doze links sem nome nenhum - no estado que e o padrao de toda tela de
+ * operacao. O leitor de tela anuncia "link" doze vezes seguidas.
+ *
+ * O que estes testes nao alcancam: o happy-dom nao computa a arvore de
+ * acessibilidade do navegador. O `getByRole(..., { name })` aqui usa o calculo
+ * do dom-accessibility-api, que le `aria-label` e o texto dos filhos - e o
+ * bastante para provar que o nome existe no DOM, e nao para provar como cada
+ * motor o anuncia.
+ * ------------------------------------------------------------------------- */
+
+test("encolhida, o destino continua tendo nome, e nao vira um link mudo", () => {
+  sidebar(false);
+
+  expect(screen.getByRole("link", { name: "Painel" })).toBeDefined();
+});
+
+test("encolhida, o destino de filho estruturado tambem tem nome", () => {
+  // Nem todo item chega como texto puro: quem monta a barra costuma passar um
+  // `<span>` com marcacao dentro, e ai nao ha string para virar `aria-label`.
+  render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={false}>
+        <Sidebar>
+          <SidebarMenu>
+            <SidebarMenuItem href="#feedback">
+              <span>Feedback</span>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+
+  expect(screen.getByRole("link", { name: "Feedback" })).toBeDefined();
+});
+
+test("aberta, o nome vem do texto na linha, sem rotulo repetido", () => {
+  // Larga, o texto esta visivel e um `aria-label` por cima so criaria uma
+  // segunda fonte de verdade para o mesmo nome.
+  sidebar(true);
+
+  const link = screen.getByRole("link", { name: "Painel" });
+  expect(link.getAttribute("aria-label")).toBeNull();
+});
+
+test("o botao de acao da linha tem nome, mesmo quem esquecer de dar um", () => {
+  // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela, e
+  // nada mais. O padrao nao substitui o nome certo - "Opcoes de Clientes" diz
+  // mais que "Mais opcoes" - mas e melhor que o silencio, e quem passa o seu
+  // continua mandando.
+  withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuRow>
+              <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              <SidebarMenuAction />
+            </SidebarMenuRow>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(screen.getByRole("button", { name: "Mais opções" })).toBeDefined();
+});
+
+test("o nome escrito por quem monta vence o padrao", () => {
+  withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuRow>
+              <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              <SidebarMenuAction aria-label="Opções de Clientes" />
+            </SidebarMenuRow>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(screen.getByRole("button", { name: "Opções de Clientes" })).toBeDefined();
 });

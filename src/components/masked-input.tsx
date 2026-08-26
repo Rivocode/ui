@@ -20,8 +20,8 @@ export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange
 };
 
 /**
- * Campo com mascara: CPF, CNPJ, telefone, CEP, cartao, placa, dinheiro, ou
- * qualquer molde escrito na mao.
+ * Campo com mascara: `cpf`, `cnpj`, `telefone`, `cep`, `data`, `hora`,
+ * `cartao`, `placa` e `moeda`, ou qualquer molde escrito na mao.
  *
  * A mascara e do campo e nao do valor: quem recebe a mudanca leva as duas
  * versoes, e decide qual guardar. Guardar o texto pontuado no banco e o erro
@@ -41,20 +41,21 @@ export function MaskedInput({
   ...props
 }: MaskedInputProps) {
   const controlled = value !== undefined;
-  const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
+  const [internal, setInternal] = useState(() =>
+    applyMask(defaultValue, patternFor(mask, defaultValue)),
+  );
   const text = controlled ? value : internal;
 
-  const soNumero = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
+  const digitsOnly = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
 
   return (
     <Input
       {...props}
       value={text}
-      inputMode={inputMode ?? (soNumero ? "numeric" : undefined)}
+      inputMode={inputMode ?? (digitsOnly ? "numeric" : undefined)}
       onChange={(event) => {
         const raw = event.target.value;
-        const pattern = mask === "telefone" ? phoneMask(raw) : mask;
-        const masked = applyMask(raw, pattern);
+        const masked = applyMask(raw, patternFor(mask, raw));
 
         if (!controlled) setInternal(masked);
         onValueChange?.(masked, unmask(masked));
@@ -62,6 +63,16 @@ export function MaskedInput({
       }}
     />
   );
+}
+
+/**
+ * O molde deste texto. So o telefone muda de molde no meio do caminho, e a
+ * escolha precisa valer nos dois lugares: o valor que chega pronto do servidor
+ * passa pelo estado inicial, e nao pelo onChange - era so ali que ela faltava,
+ * e o fixo entrava com a pontuacao do celular ate a primeira tecla.
+ */
+function patternFor(mask: Mask, text: string): Mask {
+  return mask === "telefone" ? phoneMask(text) : mask;
 }
 
 /** Moldes que so aceitam digito, para o teclado do celular abrir em numeros. */

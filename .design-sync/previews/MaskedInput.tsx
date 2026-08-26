@@ -1,4 +1,5 @@
-import { Field, FieldLabel, MaskedInput } from '@rivocode/ui'
+import { Field, FieldDescription, FieldLabel, MaskedInput, toCents } from '@rivocode/ui'
+import { useState } from 'react'
 
 /** Moldes */
 export function Masks() {
@@ -15,6 +16,25 @@ export function Masks() {
       <Field>
         <FieldLabel>CEP</FieldLabel>
         <MaskedInput mask="cep" defaultValue="58000000" />
+      </Field>
+    </div>
+  )
+}
+
+/** Dinheiro */
+export function Money() {
+  const [cents, setCents] = useState(248_000)
+
+  return (
+    <div className="w-80">
+      <Field>
+        <FieldLabel>Valor da nota</FieldLabel>
+        <MaskedInput
+          mask="moeda"
+          defaultValue="248000"
+          onValueChange={(masked) => setCents(toCents(masked))}
+        />
+        <FieldDescription>Vai para o servidor como {cents} centavos.</FieldDescription>
       </Field>
     </div>
   )

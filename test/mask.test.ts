@@ -68,3 +68,17 @@ test("sem mascara sobra so o que foi digitado", () => {
   expect(unmask("123.456.789-01")).toBe("12345678901");
   expect(unmask("(83) 98811-2233")).toBe("83988112233");
 });
+
+test("molde que nao existe nao vira o proprio valor do campo", () => {
+  // "dinheiro" e o nome que o JSDoc do MaskedInput anunciava, e "cnjp" e o
+  // erro de digitacao de todo dia. Os dois eram escritos no campo: quem
+  // digitava 248000 via "dinheiro" aparecer no lugar do numero.
+  expect(applyMask("248000", "dinheiro")).toBe("248000");
+  expect(applyMask("12345678901", "cnjp")).toBe("12345678901");
+});
+
+test("molde escrito na mao com letra literal continua valendo", () => {
+  // O que separa molde de nome errado e ter marca dentro - 9, A ou *. Um
+  // molde com letra solta no meio ainda e molde.
+  expect(applyMask("1430", "99h99")).toBe("14h30");
+});

@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import { Text, TextInput, View, type TextInputProps } from "react-native";
 import { useState } from "react";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -39,7 +38,7 @@ export type InputProps = TextInputProps & { invalid?: boolean };
  */
 export function Input({ invalid, onFocus, onBlur, className, ...props }: InputProps) {
   const [focused, setFocused] = useState(false);
-  const { theme } = useRivo();
+  const { colors } = useRivo();
 
   return (
     <TextInput
@@ -52,7 +51,7 @@ export function Input({ invalid, onFocus, onBlur, className, ...props }: InputPr
         setFocused(false);
         onBlur?.(event);
       }}
-      placeholderTextColor={tokens.themes[theme]["fg-subtle"]}
+      placeholderTextColor={colors["fg-subtle"]}
       className={cn(
         "h-12 rounded-md border bg-surface px-3.5 text-base text-fg",
         invalid ? "border-danger" : focused ? "border-accent" : "border-border-strong",

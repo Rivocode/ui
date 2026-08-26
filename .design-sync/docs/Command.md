@@ -45,3 +45,7 @@ filtrar por ele.
 
 Menos de dez destinos não justificam. Com essa quantidade a barra lateral mostra
 tudo de uma vez, e a paleta vira um passo a mais para chegar no mesmo lugar.
+
+## No React Native
+
+Não porta. A paleta de comandos é um gesto de mesa — abre por atalho, anda por seta, confirma por Enter — e nenhuma das três coisas existe no toque. No celular a porta equivalente é a tela de busca do router, com o campo no topo e o resultado levando direto para a tela.

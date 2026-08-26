@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { TextInput, type TextInputProps } from "react-native";
 
-import { tokens } from "../tokens";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
@@ -25,7 +24,7 @@ export function Textarea({
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
-  const { theme } = useRivo();
+  const { colors } = useRivo();
 
   return (
     <TextInput
@@ -40,7 +39,7 @@ export function Textarea({
         setFocused(false);
         onBlur?.(event);
       }}
-      placeholderTextColor={tokens.themes[theme]["fg-subtle"]}
+      placeholderTextColor={colors["fg-subtle"]}
       style={[{ minHeight: rows * 24 }, style]}
       className={cn(
         "rounded-md border bg-surface px-3.5 py-3 text-base text-fg",

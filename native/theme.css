@@ -22,8 +22,8 @@
   --color-selected: light-dark(rgba(212,243,74,0.16), rgba(212,243,74,0.05));
   --color-skeleton: light-dark(rgba(15,17,19,0.08), rgba(255,255,255,0.08));
   --color-border: light-dark(rgba(15,17,19,0.1), rgba(255,255,255,0.09));
-  --color-border-strong: light-dark(rgba(15,17,19,0.18), rgba(255,255,255,0.14));
-  --color-line-hover: light-dark(rgba(15,17,19,0.3), rgba(255,255,255,0.26));
+  --color-border-strong: light-dark(rgba(15,17,19,0.48), rgba(255,255,255,0.38));
+  --color-line-hover: light-dark(rgba(15,17,19,0.62), rgba(255,255,255,0.5));
   --color-ring: light-dark(#4a7100, #d4f34a);
   --color-success: light-dark(#0f766e, #3ddc97);
   --color-success-fg: light-dark(#ffffff, #0f1113);
@@ -31,7 +31,7 @@
   --color-success-subtle: light-dark(rgba(15,118,110,0.1), rgba(61,220,151,0.14));
   --color-warning: light-dark(#a15c00, #f2b21c);
   --color-warning-fg: light-dark(#ffffff, #0f1113);
-  --color-warning-text: light-dark(#a15c00, #f2b21c);
+  --color-warning-text: light-dark(#8f5200, #f2b21c);
   --color-warning-subtle: light-dark(rgba(161,92,0,0.1), rgba(242,178,28,0.14));
   --color-danger: light-dark(#c0261f, #dc2626);
   --color-danger-fg: #ffffff;

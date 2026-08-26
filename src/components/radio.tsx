@@ -2,9 +2,10 @@
 
 import { Radio as BaseRadio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 export type RadioGroupProps = ComponentProps<typeof BaseRadioGroup>;
 
@@ -24,18 +25,40 @@ export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children">
    * Sem ele, sai so o circulo, e o arranjo fica com quem monta a tela.
    */
   children?: ReactNode;
-  /** Classe do `<label>` de fora, quando ha texto. */
+  /**
+   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
+   * `classNames.label`, e continua valendo.
+   */
   labelClassName?: string;
+  /** Classe por parte: `indicator`, `label`. */
+  classNames?: Slots<"indicator" | "label">;
 };
 
 /**
  * Uma opcao de escolha unica. Sempre dentro de um `RadioGroup`, que e quem
  * guarda o valor e liga a navegacao por seta.
  */
-export function Radio({ className, children, labelClassName, ...props }: RadioProps) {
-  const circulo = (
+export function Radio({
+  className,
+  children,
+  labelClassName,
+  classNames,
+  ...props
+}: RadioProps) {
+  /*
+   * O `Field` passa o proprio rotulo a todo controle que mora dentro dele, e
+   * para um controle isso esta certo. Num grupo de escolha unica nao: os dois
+   * circulos herdavam "Forma de pagamento", e o leitor de tela anunciava o
+   * mesmo nome para Pix e para Boleto - quem depende dele nao tinha como
+   * distinguir as opcoes. Com texto proprio, o texto e que nomeia.
+   */
+  const textId = useId();
+  const named = children !== undefined;
+
+  const circle = (
     <BaseRadio.Root
       {...props}
+      aria-labelledby={named ? textId : props["aria-labelledby"]}
       className={cn(
         "flex size-[var(--rc-box)] shrink-0 items-center justify-center rounded-pill",
         "border border-border-strong bg-surface",
@@ -48,11 +71,11 @@ export function Radio({ className, children, labelClassName, ...props }: RadioPr
         className,
       )}
     >
-      <BaseRadio.Indicator className="size-2 rounded-pill bg-accent-fg" />
+      <BaseRadio.Indicator className={cn("size-2 rounded-pill bg-accent-fg", classNames?.indicator)} />
     </BaseRadio.Root>
   );
 
-  if (children === undefined) return circulo;
+  if (children === undefined) return circle;
 
   return (
     <label
@@ -63,11 +86,13 @@ export function Radio({ className, children, labelClassName, ...props }: RadioPr
         // borda e fazer o clique valer a dez centimetros do texto.
         "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        classNames?.label,
         labelClassName,
       )}
     >
-      {circulo}
-      {children}
+      {circle}
+      {/* O texto ganha id proprio, e e ele que nomeia o circulo. */}
+      <span id={textId}>{children}</span>
     </label>
   );
 }

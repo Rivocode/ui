@@ -4,6 +4,8 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { InertBackground } from "../lib/inert-background";
+import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const Dialog = BaseDialog.Root;
@@ -12,9 +14,19 @@ export const DialogClose = BaseDialog.Close;
 
 export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
   children: ReactNode;
+  /**
+   * Classe por parte: `backdrop`. A tarja e irma do painel dentro do portal,
+   * entao nem `className` nem variante de descendente alcancam ela.
+   */
+  classNames?: Slots<"backdrop">;
 };
 
-export function DialogContent({ className, children, ...props }: DialogContentProps) {
+export function DialogContent({
+  className,
+  children,
+  classNames,
+  ...props
+}: DialogContentProps) {
   const { portalContainer } = useRivoContext();
 
   return (
@@ -27,6 +39,7 @@ export function DialogContent({ className, children, ...props }: DialogContentPr
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
+          classNames?.backdrop,
         )}
       />
       <BaseDialog.Popup
@@ -47,6 +60,10 @@ export function DialogContent({ className, children, ...props }: DialogContentPr
       >
         {children}
       </BaseDialog.Popup>
+
+      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
+          aplicado pelo gerenciador de foco que mora dentro do popup. */}
+      <InertBackground container={portalContainer} />
     </BaseDialog.Portal>
   );
 }

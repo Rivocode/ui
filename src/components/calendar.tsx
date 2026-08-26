@@ -161,8 +161,8 @@ export function Calendar({
       }}
       components={{
         Chevron: ({ orientation = "right", size: _size, disabled: _disabled, ...chevron }) => {
-          const Icone = CHEVRONS[orientation];
-          return <Icone {...chevron} size={16} aria-hidden="true" />;
+          const Chevron = CHEVRONS[orientation];
+          return <Chevron {...chevron} size={16} aria-hidden="true" />;
         },
         ...props.components,
       }}

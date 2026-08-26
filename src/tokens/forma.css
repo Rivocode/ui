@@ -1,0 +1,88 @@
+/* ---------------------------------------------------------------------------
+ * Forma e movimento.
+ *
+ * Canto, duracao, curva e espacamento de letra. Sao os tres sinais visuais que
+ * mais mudam de uma marca para outra - canto reto e movimento seco dizem
+ * "futurista" antes de qualquer cor - e por isso vivem separados da escala: um
+ * tema pode redefinir tudo o que esta aqui, e o guia de temas documenta cada
+ * um.
+ *
+ * O que nao entra: altura de controle e respiro, que sao densidade e tem dono
+ * proprio no `data-rc-density`; escala de texto e empilhamento, que sao
+ * estrutura.
+ *
+ * A ordem importa. `:root` e `[data-rc-theme="x"]` tem a mesma
+ * especificidade, entao quem decide e a ordem do arquivo: o preset importa
+ * este antes dos temas, senao o padrao da casa apagaria a escolha do cliente.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  /* Forma. O padrao do produto e o canto sobrio, a pilula e variante. */
+  --rc-radius-sm: 6px;
+  --rc-radius-md: 8px;
+  --rc-radius-lg: 12px;
+  --rc-radius-xl: 16px;
+  --rc-radius-pill: 999px;
+
+  /* Titulo grande pede letra junta: e o que separa display de texto crescido.
+     O corpo fica em 0, porque texto de produto apertado cansa. */
+  --rc-tracking-display: -0.02em;
+  --rc-tracking-tight: -0.01em;
+
+  /* Movimento */
+  --rc-duration-fast: 120ms;
+  --rc-duration-base: 200ms;
+  --rc-duration-slow: 320ms;
+  --rc-ease: cubic-bezier(0.2, 0, 0, 1);
+  /* A curva da folha que desliza. Sai rapido e chega devagar, para o painel
+     acompanhar o dedo em vez de parecer que decidiu sozinho. */
+  --rc-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
+  --rc-duration-sheet: 450ms;
+}
+
+/* Entrada de pagina de marca: sobe um passo e assenta. Produto de operacao
+   nao anima entrada; landing e hero animam uma vez, e so. As duracoes zeram
+   com prefers-reduced-motion, entao quem pediu menos movimento ve o conteudo
+   ja assentado. */
+@keyframes rc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Espera sem fim previsto: a barra atravessa a trilha em vez de ficar cheia e
+   parada, que e como se le uma tarefa concluida. O movimento e o unico sinal
+   que a indeterminada tem, entao ele nao zera com prefers-reduced-motion -
+   quem pediu menos movimento recebe animate-none no componente, e ai a barra
+   fica parcial, que ainda nao mente. */
+@keyframes rc-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
+@keyframes rc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --rc-duration-fast: 0ms;
+    --rc-duration-base: 0ms;
+    --rc-duration-slow: 0ms;
+    --rc-duration-sheet: 0ms;
+  }
+}

@@ -2,6 +2,7 @@
 @import "./tokens/themes/rivocode-fonts.css";
 @import "./tokens/palette.css";
 @import "./tokens/scales.css";
+@import "./tokens/forma.css";
 @import "./tokens/contract.css";
 @import "./tokens/themes/rivocode-dark.css";
 @import "./tokens/themes/rivocode-light.css";

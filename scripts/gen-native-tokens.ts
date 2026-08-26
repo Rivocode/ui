@@ -41,7 +41,10 @@ const toNumber = (value: string) => {
 };
 
 const paletteCss = await read("src/tokens/palette.css");
-const scalesCss = await read("src/tokens/scales.css");
+// Escala e forma sao lidas juntas: para o nativo as duas sao a mesma coisa,
+// que e "medida que nao vem do tema de cor".
+const scalesCss =
+  (await read("src/tokens/scales.css")) + "\n" + (await read("src/tokens/forma.css"));
 
 const palette = new Map<string, string>();
 for (const [name, value] of declarations(paletteCss)) {
@@ -200,6 +203,84 @@ export type RivoNativeColorRole = keyof (typeof tokens.themes)["rivocode-dark"];
 
 // No modo check nada e escrito: compara o comitado com o que os CSS pedem
 // agora, e falha ANTES de esconder a diferenca.
+/* ---------------------------------------------------------------------------
+ * O tema de cliente
+ *
+ * A camada 3 do web e um arquivo CSS com os 51 papeis num seletor de tema.
+ * Aqui ele vira o mapa que o `RivoProvider` do nativo veste. A fonte e a
+ * mesma nos dois lados de proposito: um segundo lugar para manter a cor de um
+ * cliente e como a promessa se quebra na pratica - nao por decisao, por
+ * divergencia silenciosa seis meses depois.
+ *
+ *   bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+ *
+ * O arquivo pode trazer um seletor so, que serve aos dois esquemas, ou o par
+ * `x-light` e `x-dark`, que e a convencao dos temas de casa.
+ * ------------------------------------------------------------------------- */
+
+const themeArg = process.argv.indexOf("--tema");
+
+if (themeArg !== -1) {
+  const source = process.argv[themeArg + 1];
+  if (!source) {
+    console.error("Falta o arquivo: bun run gen:native --tema tema-acme.css");
+    process.exit(1);
+  }
+
+  const outArg = process.argv.indexOf("--saida");
+  const target = outArg !== -1 ? process.argv[outArg + 1]! : source.replace(/\.css$/, ".theme.ts");
+  const css = await read(source);
+
+  /** Cada bloco `[data-rc-theme="x"] { ... }` do arquivo, por nome. */
+  const blocks = new Map<string, string>();
+  for (const block of css.matchAll(/\[data-rc-theme=["']([\w-]+)["']\]\s*\{([\s\S]*?)\}/g)) {
+    blocks.set(block[1]!, block[2]!);
+  }
+
+  if (blocks.size === 0) {
+    console.error(`Nenhum [data-rc-theme="..."] em ${source}: e ele que declara a camada 3.`);
+    process.exit(1);
+  }
+
+  const colorsOf = (body: string) => {
+    const colors: Record<string, string> = {};
+    for (const [name, value] of declarations(body)) {
+      const color = toNativeColor(value, palette);
+      if (color) colors[name] = color;
+    }
+    return colors;
+  };
+
+  // `acme-light` e `acme-dark` sao o mesmo tema em dois esquemas; um nome
+  // solto veste os dois, porque um tema de um esquema so e uma escolha
+  // legitima - e melhor do que inventar o outro por conta propria.
+  const names = [...blocks.keys()];
+  const base = names[0]!.replace(/-(light|dark)$/, "");
+  const light = blocks.get(`${base}-light`) ?? blocks.get(base) ?? blocks.get(names[0]!)!;
+  const dark = blocks.get(`${base}-dark`) ?? blocks.get(base) ?? blocks.get(names[0]!)!;
+
+  const map = { light: colorsOf(light), dark: colorsOf(dark) };
+  const missing = Object.keys(tokens.themes["rivocode-dark"]).filter(
+    (role) => !(role in map.light) || !(role in map.dark),
+  );
+
+  await Bun.write(
+    target,
+    `/* Gerado de ${source} por bun run gen:native --tema. Nao editar. */\n` +
+      `import type { RivoNativeThemeMap } from "@rivocode/ui-native";\n\n` +
+      `export const ${base.replace(/-/g, "")}Theme: RivoNativeThemeMap = ${JSON.stringify(map, null, 2)};\n`,
+  );
+
+  console.log(`${target}: ${Object.keys(map.light).length} papeis, claro e escuro.`);
+  if (missing.length > 0) {
+    // Papel faltando nao e detalhe: a peca que o pede herda a cor da RivoCode,
+    // e isso so aparece na tela do cliente, meses depois.
+    console.error(`\n${missing.length} papel(eis) sem valor no tema: ${missing.join(", ")}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
 if (process.argv.includes("--check")) {
   const committedJson = await read("native/tokens.json").catch(() => "");
   const committedTheme = await read("native/theme.css").catch(() => "");

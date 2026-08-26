@@ -6,7 +6,7 @@ import { Checkbox } from "../src/components/checkbox";
 import { Radio, RadioGroup } from "../src/components/radio";
 import { Switch } from "../src/components/switch";
 
-function comTema(node: React.ReactNode) {
+function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
@@ -18,7 +18,7 @@ function comTema(node: React.ReactNode) {
  */
 
 test("a caixa com texto sai dentro de um label, e o clique no texto marca", () => {
-  comTema(<Checkbox>ISS retido na fonte</Checkbox>);
+  withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
 
   const box = screen.getByRole("checkbox", { name: "ISS retido na fonte" });
   expect(box.getAttribute("data-checked")).toBeNull();
@@ -28,12 +28,12 @@ test("a caixa com texto sai dentro de um label, e o clique no texto marca", () =
 });
 
 test("sem texto ela continua sendo so a caixa, para quem monta o arranjo", () => {
-  const { container } = comTema(<Checkbox aria-label="Marcar" />);
+  const { container } = withTheme(<Checkbox aria-label="Marcar" />);
   expect(container.querySelector("label")).toBeNull();
 });
 
 test("o circulo com texto tambem marca pelo texto", () => {
-  comTema(
+  withTheme(
     <RadioGroup defaultValue="produto">
       <Radio value="servico">Prestação de serviço</Radio>
       <Radio value="produto">Venda de produto</Radio>
@@ -46,8 +46,85 @@ test("o circulo com texto tambem marca pelo texto", () => {
 });
 
 test("a chave com texto liga pelo texto", () => {
-  comTema(<Switch>Enviar o XML junto com o PDF</Switch>);
+  withTheme(<Switch>Enviar o XML junto com o PDF</Switch>);
 
   fireEvent.click(screen.getByText("Enviar o XML junto com o PDF"));
   expect(screen.getByRole("switch").getAttribute("data-checked")).not.toBeNull();
+});
+
+/*
+ * WCAG 1.4.11: o que identifica um controle precisa de 3:1 contra o fundo. Nos
+ * tokens quem carrega essa promessa e o --rc-border-strong; --rc-border segue
+ * sendo a divisoria decorativa, que nao identifica nada. Estes testes existem
+ * para um campo nao voltar a se desenhar com a borda de divisoria.
+ */
+
+import { Field, FieldLabel, Input } from "../src/components/field";
+import { InputGroup } from "../src/components/input-group";
+import { SelectTrigger, Select } from "../src/components/select";
+
+test("o campo se desenha com a fronteira de controle, e nao com a divisoria", () => {
+  withTheme(<Input aria-label="Razao social" />);
+  const field = screen.getByLabelText("Razao social");
+
+  expect(field.className).toContain("border-border-strong");
+});
+
+test("a moldura de campo com encosto tambem", () => {
+  withTheme(
+    <InputGroup>
+      <Input aria-label="Valor" />
+    </InputGroup>,
+  );
+  // A moldura e quem desenha a borda; o campo dentro dela vai sem borda propria.
+  const frame = screen.getByLabelText("Valor").parentElement!;
+
+  expect(frame.className).toContain("border-border-strong");
+});
+
+test("o gatilho do select tambem", () => {
+  withTheme(
+    <Select>
+      <SelectTrigger aria-label="Situacao" />
+    </Select>,
+  );
+
+  expect(screen.getByLabelText("Situacao").className).toContain("border-border-strong");
+});
+
+test("dentro de um campo, cada circulo se chama pelo proprio texto", () => {
+  // O Field passa o proprio rotulo a todo controle que mora dentro dele, e
+  // para um controle isso esta certo. Num grupo de escolha unica nao: o leitor
+  // de tela anunciava "Forma de pagamento" para Pix e para Boleto igualmente,
+  // e quem depende dele nao tinha como distinguir as opcoes.
+  withTheme(
+    <Field>
+      <FieldLabel>Forma de pagamento</FieldLabel>
+      <RadioGroup defaultValue="pix">
+        <Radio value="pix">Pix</Radio>
+        <Radio value="boleto">Boleto</Radio>
+      </RadioGroup>
+    </Field>,
+  );
+
+  expect(screen.getByRole("radio", { name: "Pix" })).toBeDefined();
+  expect(screen.getByRole("radio", { name: "Boleto" })).toBeDefined();
+  // O grupo continua sendo o dono do rotulo do campo.
+  expect(screen.getByRole("radiogroup", { name: "Forma de pagamento" })).toBeDefined();
+});
+
+test("a caixa e a chave continuam se chamando pelo proprio texto no campo", () => {
+  // Aqui herdar o rotulo do campo tambem seria errado, mas por outra razao:
+  // com um controle so, o nome do campo e o nome do controle, e os dois textos
+  // se somariam - "ISS retido ISS retido".
+  withTheme(
+    <Field>
+      <FieldLabel>Impostos</FieldLabel>
+      <Checkbox>ISS retido na fonte</Checkbox>
+      <Switch>Avisar por email</Switch>
+    </Field>,
+  );
+
+  expect(screen.getByRole("checkbox", { name: "ISS retido na fonte" })).toBeDefined();
+  expect(screen.getByRole("switch", { name: "Avisar por email" })).toBeDefined();
 });

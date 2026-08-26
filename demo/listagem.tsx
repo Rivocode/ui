@@ -41,7 +41,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-type Nota = {
+type Invoice = {
   id: string;
   cliente: string;
   emissao: string;
@@ -49,7 +49,7 @@ type Nota = {
   status: "paga" | "aberta" | "vencida";
 };
 
-const NOTAS: Nota[] = [
+const INVOICES: Invoice[] = [
   {
     id: "4812",
     cliente: "Prefeitura de Joao Pessoa",
@@ -80,16 +80,16 @@ const NOTAS: Nota[] = [
   },
 ];
 
-const PERIODOS = [
+const PERIODS = [
   { label: "Ultimos 30 dias", value: "30" },
   { label: "Ultimos 90 dias", value: "90" },
   { label: "Este ano", value: "ano" },
 ];
 
 const TOM = { paga: "success", aberta: "info", vencida: "danger" } as const;
-const ROTULO = { paga: "Paga", aberta: "Aberta", vencida: "Vencida" } as const;
+const LABEL = { paga: "Paga", aberta: "Aberta", vencida: "Vencida" } as const;
 
-function LinhasCarregando() {
+function LoadingRows() {
   return (
     <div className="flex flex-col gap-3 p-5" aria-busy="true">
       {[0, 1, 2, 3].map((i) => (
@@ -108,7 +108,7 @@ function LinhasCarregando() {
 function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   const [marcadas, setMarcadas] = useState<string[]>(["4813"]);
 
-  const todas = marcadas.length === NOTAS.length;
+  const todas = marcadas.length === INVOICES.length;
   const algumas = marcadas.length > 0 && !todas;
 
   function alternar(id: string) {
@@ -138,12 +138,12 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
 
           <TabPanel value="todas" className="pt-0">
             <div className="flex items-center gap-3 px-5 py-4">
-              <Select items={PERIODOS} defaultValue="30">
+              <Select items={PERIODS} defaultValue="30">
                 <SelectTrigger aria-label="Periodo">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PERIODOS.map((o) => (
+                  {PERIODS.map((o) => (
                     <SelectItem key={o.value} value={o.value}>
                       {o.label}
                     </SelectItem>
@@ -151,7 +151,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                 </SelectContent>
               </Select>
               <span className="text-sm text-fg-subtle">
-                {marcadas.length} de {NOTAS.length} selecionadas
+                {marcadas.length} de {INVOICES.length} selecionadas
               </span>
             </div>
 
@@ -174,7 +174,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {NOTAS.map((nota) => (
+                {INVOICES.map((nota) => (
                   <TableRow key={nota.id} selected={marcadas.includes(nota.id)}>
                     <TableCell>
                       <Checkbox
@@ -188,7 +188,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                     <TableCell className="text-fg-muted">{nota.emissao}</TableCell>
                     <TableCell>
                       <Badge tone={TOM[nota.status]} size="sm">
-                        {ROTULO[nota.status]}
+                        {LABEL[nota.status]}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right font-mono">{nota.value}</TableCell>
@@ -230,7 +230,7 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
           <p className="px-5 pt-4 text-sm text-fg-subtle">Carregando</p>
-          <LinhasCarregando />
+          <LoadingRows />
         </Card>
 
         <Card>

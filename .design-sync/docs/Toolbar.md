@@ -21,3 +21,14 @@ paradas de Tab** entre o campo anterior e o proximo. Numa barra, e uma.
 
 Use `ToolbarButton` com `render` para vestir `Button`, `Toggle` ou `Select` sem
 perder essa navegação.
+
+## As partes
+
+`ToolbarGroup` junta botões que fazem parte do mesmo assunto — alinhar à
+esquerda, ao centro, à direita — e o `ToolbarSeparator` separa um grupo do
+outro. Para o leitor de tela, o grupo é o que diz que as três opções são uma
+escolha só.
+
+## No React Native
+
+Não porta, por decisão — superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

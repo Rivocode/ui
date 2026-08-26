@@ -30,3 +30,13 @@ marketing e portal.
 
 O painel e único e fica fora da lista: e ele que desliza de uma secao para a
 outra em vez de piscar entre paineis.
+
+## As partes
+
+`NavigationMenuViewport` é o painel onde o conteúdo do item aberto aparece.
+Fica fora dos itens, e não dentro de cada um: assim a troca entre dois menus
+vizinhos anima de um para o outro em vez de fechar e abrir.
+
+## No React Native
+
+Não porta, por decisão — idioma de mesa; navegação nativa é tab bar e drawer do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

@@ -1,9 +1,10 @@
 "use client";
 
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children"> & {
   /**
@@ -11,8 +12,13 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
    * no texto tambem liga e desliga.
    */
   children?: ReactNode;
-  /** Classe do `<label>` de fora, quando ha texto. */
+  /**
+   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
+   * `classNames.label`, e continua valendo.
+   */
   labelClassName?: string;
+  /** Classe por parte: `thumb`, `label`. */
+  classNames?: Slots<"thumb" | "label">;
 };
 
 /**
@@ -25,10 +31,26 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
  * O alvo tem 44px de altura mesmo com o trilho de 24, pelo respiro invisivel:
  * e a medida do dedo, e sem ela a chave so funciona bem no mouse.
  */
-export function Switch({ className, children, labelClassName, ...props }: SwitchProps) {
+export function Switch({
+  className,
+  children,
+  labelClassName,
+  classNames,
+  ...props
+}: SwitchProps) {
+  /*
+   * O `Field` passa o proprio rotulo a todo controle que mora dentro dele, e
+   * quando o controle ja tem texto proprio os dois se somam: o leitor de tela
+   * anunciava "Impostos" no lugar de "ISS retido na fonte". Com texto proprio,
+   * o texto e que nomeia.
+   */
+  const textId = useId();
+  const named = children !== undefined;
+
   const key = (
     <BaseSwitch.Root
       {...props}
+      aria-labelledby={named ? textId : props["aria-labelledby"]}
       className={cn(
         "relative inline-flex h-6 w-11 shrink-0 items-center rounded-pill p-0.5",
         "border border-border-strong bg-surface-raised",
@@ -47,6 +69,7 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
           "size-4 rounded-pill bg-fg-muted",
           "transition-[transform,background-color] duration-[var(--rc-duration-base)] ease-rc",
           "data-[checked]:translate-x-5 data-[checked]:bg-accent-fg",
+          classNames?.thumb,
         )}
       />
     </BaseSwitch.Root>
@@ -63,11 +86,13 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
         // borda e fazer o clique valer a dez centimetros do texto.
         "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        classNames?.label,
         labelClassName,
       )}
     >
       {key}
-      {children}
+      {/* O texto ganha id proprio, e e ele que nomeia a chave. */}
+      <span id={textId}>{children}</span>
     </label>
   );
 }

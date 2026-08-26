@@ -4,6 +4,7 @@ import { AlertDialog as BaseAlertDialog } from "@base-ui/react/alert-dialog";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { InertBackground } from "../lib/inert-background";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const AlertDialog = BaseAlertDialog.Root;
@@ -49,6 +50,10 @@ export function AlertDialogContent({ className, children, ...props }: AlertDialo
       >
         {children}
       </BaseAlertDialog.Popup>
+
+      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
+          aplicado pelo gerenciador de foco que mora dentro do popup. */}
+      <InertBackground container={portalContainer} />
     </BaseAlertDialog.Portal>
   );
 }

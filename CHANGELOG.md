@@ -1,5 +1,172 @@
 # Mudancas
 
+## 0.5.0
+
+Uma bancada externa auditou a biblioteca inteira - 258 exports instanciados,
+118 paginas lidas, contraste medido nos dois temas, 12 telas a 390px e 93
+testes de interacao em tres navegadores. Esta versao e a resposta.
+
+O padrao dos achados vale mais que a lista: **o que era verificado estava
+impecavel, e todo defeito morava numa faixa que nenhum check cobria** - fuso de
+data, callback na doc, contraste nao-textual, estado indeterminado, doc que
+promete peca ausente. Por isso metade do trabalho aqui e verificacao nova, e
+nao conserto.
+
+### As pecas que faltavam
+
+`Clipboard`, `Code` e `CodeBlock`, `RelativeTime`, `Timeline`, `Indicator`,
+`AvatarGroup`, `PasswordInput`, `TagsInput`, `Tracker`, `Splitter` e
+`Editable`. Todas com pagina, exemplo que roda, teste e linha na skill - que e
+o contrato que faltou ao `FileUpload`, publicado com a doc pronta e o
+componente ausente.
+
+### `classNames` por parte
+
+Abaixo da raiz, cada peca era no selado: a trilha do `Progress`, o pino do
+`Slider`, a marca do `Checkbox`, a linha do `DataTable`, a tarja do `Dialog`.
+O unico gancho de parte da biblioteca inteira era o `labelClassName`.
+
+```tsx
+<Slider classNames={{ track: "bg-accent-subtle", thumb: "shadow-glow" }} />
+<Dialog classNames={{ backdrop: "backdrop-blur-md" }} />
+```
+
+Os nomes das partes sao os mesmos da secao "Partes" de cada pagina.
+`labelClassName` continua valendo.
+
+### Forma e movimento entram no tema
+
+Canto, duracao, curva e espacamento de letra saem da escala global para
+`src/tokens/forma.css`, e um tema pode redefinir os nove:
+
+```css
+[data-rc-theme="acme"] {
+  --rc-radius-md: 0px;
+  --rc-duration-base: 140ms;
+}
+```
+
+### Onze consertos que a auditoria achou
+
+Fuso nos formatadores de data do grafico (todo eixo de tempo do produto estava
+deslocado um dia); barra indeterminada que parecia 100%; botao carregando que
+perdia a variante; molde de mascara desconhecido que virava o valor do campo;
+telefone fixo mal-formatado pelo `defaultValue`; caixa misturada no cabecalho
+que ordena; `ComboboxValue` exportado, que destrava as fichas; tom no `Toast`;
+`Avatar` que sumia quando `surface` e `surface-raised` sao iguais; contraste do
+aviso no tema claro; e o rotulo de grupo da `Sidebar` que nunca sumia quando a
+barra encolhia.
+
+Mais tres de acessibilidade que so aparecem no celular ou no teclado: campo de
+texto que disparava o zoom do iOS, quatro alvos abaixo de 24px, e - dentro de
+um `Field` - todo radio de um grupo herdando o rotulo do campo, com o leitor de
+tela dizendo o mesmo nome para todas as opcoes.
+
+### A fronteira dos controles passa a cumprir a WCAG 1.4.11
+
+`--rc-border-strong` sobe para 3:1 contra a superficie, e campo, moldura com
+encosto, gatilho do `Select` e busca da barra passam a veste-la. **A mudanca e
+visivel**: a borda de todo controle fica mais presente nos dois temas.
+
+### Nove guardas novas
+
+`check:props` (as tabelas saem do compilador, e 2.234 callbacks voltaram),
+`check:nomes` (idioma do codigo), `check:doc` (pagina sem codigo e peca sem
+pagina), `check:grupos` (seletor de grupo morto), `check:paridade` (a tabela do
+nativo contra o indice real), `check:native:types` (a fonte publicada do
+nativo), contraste com alfa composto, pares nao-textuais de 1.4.11, e acento em
+texto de interface. Mais o `bun run visual`, que compara os retratos por
+assinatura - ele pega o que `tsc` e teste de unidade nao pegam.
+
+### Cada prop diz em que versao apareceu
+
+As tabelas de props - no site e nos `.md` que um agente le - ganham a coluna
+"Desde". Quem tem uma versao velha instalada precisa saber se a prop que esta
+lendo existe para ele, e ate aqui descobria pelo erro de tipo, ou pior, pelo
+atributo solto no DOM.
+
+O marcador nao e escrito a mao: `bun run gen:props --desde 0.5.0` carimba, no
+lancamento, tudo que ainda nao tem carimbo. Durante o desenvolvimento ninguem
+sabe em que versao a prop vai sair, e adivinhar produz um numero errado que a
+doc publica com confianca. Prop com `—` e prop que ainda nao saiu.
+
+### O nativo ganha camada 3: tema de cliente
+
+`@rivocode/ui-native` aceita um tema de cliente, gerado do mesmo CSS que veste
+o web:
+
+```sh
+bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+```
+
+```tsx
+<RivoProvider theme={acmeTheme} scheme="system">
+```
+
+Os dois temas de casa nao mudam: continuam no `light-dark()`, com troca no
+mesmo frame e sem re-render. O tema de cliente entra pelo
+`VariableContextProvider` do NativeWind e custa uma re-renderizacao por troca -
+paga so por quem veste um cliente.
+
+Para quem escreve peca nativa: cor lida por fora da classe agora vem de
+`useRivo().colors`, e nao de `tokens.themes[...]`. Um teste falha se alguem
+voltar a ler direto, porque assim a tela do cliente sairia com metade das cores
+dele e metade da lima da RivoCode.
+
+### `format` significava tres coisas, e agora significa uma
+
+Nas pecas que escrevem numero, `format` era `Intl.NumberFormatOptions`; no
+eixo do grafico, era nome de formatador ou funcao; no `ChartDonut`, so funcao.
+O caminho que dava erro de tipo era o menos ruim - o que nao dava e pior:
+`{ style: "percent" }` num medidor de 0 a 100 imprime 8.200% ao lado de uma
+barra em 82%, e nada reclama.
+
+| Peca | Antes | Agora |
+|---|---|---|
+| `Meter`, `Progress`, `Slider` | `format={{ style: "percent" }}` | `numberFormat={{ style: "percent" }}` |
+| `Meter`, `Progress`, `Slider` | — | `format="percent"` ou `format={(v) => ...}` |
+| `NumberField` | `format={{ ... }}` | `numberFormat={{ ... }}` |
+| `ChartDonut` | so funcao | tambem nome: `format="currencyShort"` |
+
+O `NumberField` nao aceita nome de formatador, e a razao e o campo ser
+editavel: um formatador so escreve, e o que a pessoa digita precisa ser lido de
+volta.
+
+### Os adaptadores de formulario tem nome de formato, e nao de peca
+
+`forCheckbox` sempre serviu o `Switch` sem uma linha de diferenca, e
+`forSelect` serve `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider` e
+`OTPField`. O nome fazia a API parecer menor do que e.
+
+| Antes | Agora | Serve |
+|---|---|---|
+| `forSelect` | `forValue` | Tudo que tem `value` e `onValueChange` |
+| `forCheckbox` | `forChecked` | Tudo que tem `checked` e `onCheckedChange` |
+| `forDatePicker` | `forDate` | Valor em `Date` |
+
+Os nomes antigos continuam valendo e apontam para os mesmos adaptadores.
+`forValue` devolve o valor com o tipo que o schema deu a ele, em vez de
+`unknown`, entao controle tipado encaixa sem `as`.
+
+Os tipos deixam o portugues: `PropsDeSelect` vira `ValueProps`,
+`PropsDeCheckbox` vira `CheckedProps`, `PropsDeDatePicker` vira `DateProps`.
+Os nomes antigos seguem exportados como apelido.
+
+### O DatePicker renomeia a prop `confirmar`
+
+Era a unica prop publica em portugues numa API em ingles. Agora e `confirm`.
+
+```tsx
+<DatePicker confirmar />   // antes
+<DatePicker confirm />     // agora
+```
+
+### Os formatadores saem tambem pela raiz
+
+`currencyShort`, `percent`, `integer`, `monthShort` e os demais continuam em
+`@rivocode/ui/chart` e passam a sair de `@rivocode/ui`. Formatar dinheiro numa
+celula de tabela nao e assunto de grafico.
+
 ## 0.4.0
 
 O 0.3.0 traduziu os nomes publicos e deixou uma sobra: o tipo virou

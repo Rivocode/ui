@@ -62,9 +62,9 @@ export function Tree({
   const searching = filter.trim().length > 0;
 
   function alternarAberto(id: string) {
-    const novo = abertos.includes(id) ? abertos.filter((x) => x !== id) : [...abertos, id];
-    if (!expanded) setAbertosInternos(novo);
-    onExpandedChange?.(novo);
+    const next = abertos.includes(id) ? abertos.filter((x) => x !== id) : [...abertos, id];
+    if (!expanded) setAbertosInternos(next);
+    onExpandedChange?.(next);
   }
 
   function toggleSelect(node: TreeNode) {

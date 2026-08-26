@@ -1,35 +1,54 @@
-import { useEffect, useRef } from 'react'
-import { useToast } from '@rivocode/ui'
-
-/**
- * O ToastViewport já e montado pelo RivoProvider. Não se usa direto: o que a
- * aplicação faz e chamar `useToast().add(...)`, e o aviso aparece aqui.
- */
-function Aviso({ title, description }: { title: string; description: string }) {
-  const toast = useToast()
-  const disparado = useRef(false)
-
-  useEffect(() => {
-    if (disparado.current) return
-    disparado.current = true
-    toast.add({ title, description, timeout: 0 })
-  }, [toast, title, description])
-
-  return null
-}
+import { Button, useToast } from '@rivocode/ui'
 
 /** Aviso de sucesso */
 export function SuccessNotice() {
+  const toast = useToast()
+
   return (
-    <div className="min-h-40">
+    <div className="flex min-h-40 flex-col items-start gap-3">
       <p className="text-base text-fg-muted">
-        Chame `useToast().add(...)` e o aviso aparece no canto, sem a aplicação
-        montar portal nenhum.
+        A área de avisos já vem montada pelo RivoProvider. A aplicação só chama o
+        gancho.
       </p>
-      <Aviso
-        title="Nota 4816 emitida"
-        description="O PDF foi enviado para o email do cliente."
-      />
+      <Button
+        onClick={() =>
+          toast.add({
+            type: 'success',
+            title: 'Nota 4816 emitida',
+            description: 'O PDF foi enviado para o e-mail do cliente.',
+          })
+        }
+      >
+        Emitir nota
+      </Button>
+    </div>
+  )
+}
+
+/** Aviso de uma espera */
+export function PromiseNotice() {
+  const toast = useToast()
+
+  const emitir = () =>
+    new Promise<string>((resolve) => setTimeout(() => resolve('4817'), 1500))
+
+  return (
+    <div className="flex min-h-40 flex-col items-start gap-3">
+      <p className="text-base text-fg-muted">
+        Com promise, o mesmo aviso atravessa a espera e vira o resultado.
+      </p>
+      <Button
+        variant="secondary"
+        onClick={() =>
+          toast.promise(emitir(), {
+            loading: { title: 'Emitindo a nota…' },
+            success: (numero) => ({ title: `Nota ${numero} emitida` }),
+            error: { title: 'A emissão falhou', description: 'Tente de novo em instantes.' },
+          })
+        }
+      >
+        Emitir com espera
+      </Button>
     </div>
   )
 }

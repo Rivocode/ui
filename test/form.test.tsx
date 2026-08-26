@@ -18,7 +18,7 @@ const schema = z.object({
   aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
-function Exemplo({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schema>) => void }) {
+function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schema>) => void }) {
   const form = useZodForm(schema, {
     defaultValues: { email: "", vencimento: undefined, aceite: false },
   });
@@ -43,20 +43,20 @@ function Exemplo({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
 }
 
 test("o rotulo aponta para o controle, inclusive no DatePicker", () => {
-  render(<Exemplo />);
+  render(<Example />);
 
-  const rotuloEmail = screen.getByText("E-mail") as HTMLLabelElement;
+  const emailLabel = screen.getByText("E-mail") as HTMLLabelElement;
   const email = screen.getByPlaceholderText("voce@empresa.com");
-  expect(rotuloEmail.htmlFor).toBe(email.id);
+  expect(emailLabel.htmlFor).toBe(email.id);
 
-  const rotuloData = screen.getByText("Vencimento") as HTMLLabelElement;
+  const dateLabel = screen.getByText("Vencimento") as HTMLLabelElement;
   const data = screen.getByPlaceholderText("dd/mm/aaaa");
-  expect(rotuloData.htmlFor).toBe(data.id);
+  expect(dateLabel.htmlFor).toBe(data.id);
   expect(data.id).toBeTruthy();
 });
 
 test("o campo de data invalido se marca como o resto do catalogo", async () => {
-  render(<Exemplo />);
+  render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
   await waitFor(() => {
@@ -67,14 +67,14 @@ test("o campo de data invalido se marca como o resto do catalogo", async () => {
 });
 
 test("a ajuda do campo e anunciada pelo leitor de tela", () => {
-  render(<Exemplo />);
+  render(<Example />);
   const email = screen.getByPlaceholderText("voce@empresa.com");
-  const ajuda = screen.getByText("Para onde vai a nota");
-  expect(email.getAttribute("aria-describedby")).toContain(ajuda.id);
+  const help = screen.getByText("Para onde vai a nota");
+  expect(email.getAttribute("aria-describedby")).toContain(help.id);
 });
 
 test("enviar vazio mostra a mensagem do schema, nao a do navegador", async () => {
-  render(<Exemplo />);
+  render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
   await waitFor(() => {
@@ -85,20 +85,20 @@ test("enviar vazio mostra a mensagem do schema, nao a do navegador", async () =>
 });
 
 test("o campo invalido se marca e aponta para o erro", async () => {
-  render(<Exemplo />);
+  render(<Example />);
   fireEvent.click(screen.getByText("Emitir"));
 
   await waitFor(() => {
     const email = screen.getByPlaceholderText("voce@empresa.com");
     expect(email.getAttribute("aria-invalid")).toBe("true");
-    const erro = screen.getByText("Escreva um email valido");
-    expect(email.getAttribute("aria-describedby")).toContain(erro.id);
+    const error = screen.getByText("Escreva um email valido");
+    expect(email.getAttribute("aria-describedby")).toContain(error.id);
   });
 });
 
 test("com tudo preenchido, o onSubmit recebe os valores ja convertidos", async () => {
   let recebido: z.output<typeof schema> | undefined;
-  render(<Exemplo aoEnviar={(v) => (recebido = v)} />);
+  render(<Example aoEnviar={(v) => (recebido = v)} />);
 
   fireEvent.change(screen.getByPlaceholderText("voce@empresa.com"), {
     target: { value: "financeiro@rivocode.com" },
@@ -118,6 +118,6 @@ test("com tudo preenchido, o onSubmit recebe os valores ja convertidos", async (
 });
 
 test("o formulario nao deixa o navegador validar por conta propria", () => {
-  const { container } = render(<Exemplo />);
+  const { container } = render(<Example />);
   expect(container.querySelector("form")!.noValidate).toBe(true);
 });

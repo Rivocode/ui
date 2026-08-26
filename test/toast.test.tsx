@@ -46,18 +46,18 @@ test("usar o aviso fora do Provider da erro, e nao silencio", () => {
 
 test("o gerenciador tem identidade estavel, senao um useEffect entra em laco", () => {
   const vistos: unknown[] = [];
-  function Espia() {
+  function Spy() {
     vistos.push(useToast());
     return null;
   }
   const { rerender } = render(
     <RivoProvider>
-      <Espia />
+      <Spy />
     </RivoProvider>,
   );
   rerender(
     <RivoProvider>
-      <Espia />
+      <Spy />
     </RivoProvider>,
   );
   expect(vistos.length).toBeGreaterThan(1);
@@ -88,8 +88,56 @@ test("o aviso entra pela borda mais proxima, e nao atravessa a tela", () => {
   );
   fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
 
-  const aviso = screen.getByText("Nota emitida").closest("[class*='rounded-lg']");
-  expect(aviso).not.toBeNull();
+  const alert = screen.getByText("Nota emitida").closest("[class*='rounded-lg']");
+  expect(alert).not.toBeNull();
   // Ancorado a esquerda, ele desliza da esquerda.
-  expect(aviso!.className).toContain("data-[starting-style]:-translate-x-4");
+  expect(alert!.className).toContain("data-[starting-style]:-translate-x-4");
+});
+
+function DisparoComTom({ type }: { type?: string }) {
+  const toast = useToast();
+  return (
+    <Button onClick={() => toast.add({ title: "Emissao", description: "Detalhe.", type })}>
+      Emitir
+    </Button>
+  );
+}
+
+/** O balao do aviso na tela, que e quem carrega o tom. */
+function balao() {
+  return document.querySelector('[class*="shadow-3"]') as HTMLElement;
+}
+
+test("o aviso de erro nao sai igual ao de sucesso", () => {
+  // O tom que a Base UI carrega no objeto nao era lido, e Alert e Badge
+  // separam esses tres com cuidado no mesmo sistema: aviso de sucesso, de erro
+  // e de atencao saiam visualmente identicos.
+  const { rerender } = render(
+    <RivoProvider>
+      <DisparoComTom type="success" />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
+  expect(balao().className).toContain("bg-success-subtle");
+
+  rerender(
+    <RivoProvider>
+      <DisparoComTom type="error" />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
+  const tons = [...document.querySelectorAll('[class*="shadow-3"]')].map((no) => no.className);
+  expect(tons.some((classe) => classe.includes("bg-danger-subtle"))).toBe(true);
+});
+
+test("o aviso sem tom continua neutro, que e o padrao", () => {
+  render(
+    <RivoProvider>
+      <DisparoComTom />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
+
+  expect(balao().className).toContain("bg-surface-raised");
+  expect(balao().className).not.toContain("subtle");
 });

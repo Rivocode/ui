@@ -22,9 +22,13 @@
   --rc-selected: rgb(212 243 74 / 0.16);
   --rc-skeleton: rgb(15 17 19 / 0.08);
 
+  /* A divisoria decorativa: separa area, e nao identifica controle. */
   --rc-border: rgb(15 17 19 / 0.1);
-  --rc-border-strong: rgb(15 17 19 / 0.18);
-  --rc-line-hover: rgb(15 17 19 / 0.3);
+  /* A fronteira de controle. A norma pede 3:1 contra o que esta atras (WCAG
+     1.4.11), e e o que campo, caixa, chave e botao secundario vestem: 3,29
+     sobre a pagina e 3,32 sobre o cartao. */
+  --rc-border-strong: rgb(15 17 19 / 0.48);
+  --rc-line-hover: rgb(15 17 19 / 0.62);
   --rc-ring: var(--rc-p-lima-700);
 
   --rc-success: var(--rc-p-teal-700);
@@ -33,7 +37,7 @@
   --rc-success-subtle: rgb(15 118 110 / 0.1);
   --rc-warning: var(--rc-p-amber-700);
   --rc-warning-fg: var(--rc-p-white);
-  --rc-warning-text: var(--rc-p-amber-700);
+  --rc-warning-text: var(--rc-p-amber-800);
   --rc-warning-subtle: rgb(161 92 0 / 0.1);
   --rc-danger: var(--rc-p-red-700);
   --rc-danger-fg: var(--rc-p-white);
@@ -54,6 +58,13 @@
 
   /* No claro a lima nao ilumina, mancha: o glow sai do escurecido dela. */
   --rc-glow-accent: 0 0 32px rgb(74 113 0 / 0.18);
+
+  /* Acabamento neutro - ver o tema escuro. Zerar aqui tambem nao e repeticao:
+     e o que faz o tema da casa apagar o gradiente do cliente quando ele veste
+     uma arvore por dentro. */
+  --rc-accent-image: none;
+  --rc-accent-shadow: none;
+  --rc-overlay-filter: none;
 
   color-scheme: light;
 

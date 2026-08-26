@@ -13,7 +13,7 @@ import {
   type SheetSide,
 } from "../src/components/sheet";
 
-function Exemplo({ side }: { side?: SheetSide }) {
+function Example({ side }: { side?: SheetSide }) {
   return (
     <RivoProvider scope="local">
       <Sheet side={side} defaultOpen>
@@ -30,7 +30,7 @@ function Exemplo({ side }: { side?: SheetSide }) {
 }
 
 test("a folha abre com titulo e descricao", () => {
-  render(<Exemplo />);
+  render(<Example />);
   expect(screen.getByText("Navegacao")).toBeDefined();
   expect(screen.getByText("Escolha para onde ir.")).toBeDefined();
 });
@@ -51,21 +51,21 @@ test("a folha abre dentro do container que carrega o tema", () => {
 });
 
 test("o botao de fechar fecha", () => {
-  render(<Exemplo />);
+  render(<Example />);
   fireEvent.click(screen.getByText("Fechar"));
   expect(screen.queryByText("Navegacao")).toBeNull();
 });
 
 test("a barrinha de pegar nao entra na leitura de tela", () => {
-  const { container } = render(<Exemplo />);
-  const barra = container.ownerDocument.querySelector('[aria-hidden="true"].rounded-pill');
-  expect(barra).not.toBeNull();
+  const { container } = render(<Example />);
+  const bar = container.ownerDocument.querySelector('[aria-hidden="true"].rounded-pill');
+  expect(bar).not.toBeNull();
 });
 
 test("o lado escolhido manda no gesto de fechar", () => {
-  render(<Exemplo side="left" />);
-  const painel = screen.getByText("Navegacao").closest("[data-open]")!;
+  render(<Example side="left" />);
+  const panel = screen.getByText("Navegacao").closest("[data-open]")!;
   // A Base UI marca o painel com a direcao do gesto; a esquerda fecha pela
   // esquerda, e nao para baixo.
-  expect(painel.outerHTML).toContain("translateX");
+  expect(panel.outerHTML).toContain("translateX");
 });

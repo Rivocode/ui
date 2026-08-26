@@ -1,14 +1,21 @@
 "use client";
 
-import { Area, AreaChart, Line, LineChart, ResponsiveContainer } from "recharts";
+import { Area, AreaChart, Bar, BarChart, Line, LineChart, ResponsiveContainer } from "recharts";
 
 import { cn } from "../lib/cn";
 
 export type SparklineProps = {
   /** So os numeros, na ordem do tempo. */
   data: number[];
-  /** `line` para tendencia pura; `area` quando o volume tambem conta. */
-  variant?: "line" | "area";
+  /**
+   * `line` para tendencia pura, `area` quando o volume tambem conta, `bar`
+   * para contagem por periodo - emissoes por dia, chamados por semana.
+   *
+   * O `bar` e o unico que atravessa para o `@rivocode/ui-native`: area pede
+   * poligono preenchido, que sem SVG nao sai. O nome significa a mesma coisa
+   * nos dois, e a ausencia esta escrita na tabela de paridade.
+   */
+  variant?: "line" | "area" | "bar";
   /**
    * A cor. Aceita token: `var(--rc-accent)`. Sem ela, o acento do tema, que e
    * a leitura neutra de "isto e um numero desta tela".
@@ -66,7 +73,14 @@ export function Sparkline({
       aria-hidden={label ? undefined : true}
     >
       <ResponsiveContainer width="100%" height="100%">
-        {variant === "area" ? (
+        {variant === "bar" ? (
+          <BarChart {...comum}>
+            {/* Sem espaco entre as barras alem do minimo: numa faixa de 96px,
+                barra separada por 4px vira tracejado e para de ler como
+                quantidade. */}
+            <Bar dataKey="v" fill={traco} radius={1} isAnimationActive={false} />
+          </BarChart>
+        ) : variant === "area" ? (
           <AreaChart {...comum}>
             <Area
               dataKey="v"

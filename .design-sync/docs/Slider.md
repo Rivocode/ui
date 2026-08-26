@@ -13,6 +13,14 @@ mais e não pede pontaria: arrastar um pino até 37 e trabalho, digitar 37 não.
 <Slider defaultValue={25} max={50} label="Desconto" showValue thumbLabel="Desconto" />
 ```
 
+`format` escreve o número do `showValue` e o que o leitor de tela anuncia: o
+nome de um formatador da casa, ou uma função sua para a unidade que só esta tela
+tem.
+
+```tsx
+<Slider defaultValue={30} max={90} label="Prazo" showValue format={(dias) => `${dias} dias`} />
+```
+
 Com dois valores, vira faixa de dois pinos, e cada pino precisa do próprio
 nome, senao o leitor de tela anuncia dois controles iguais:
 
@@ -24,3 +32,7 @@ nome, senao o leitor de tela anuncia dois controles iguais:
   thumbLabel={['Valor minimo', 'Valor maximo']}
 />
 ```
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Slider` — anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -29,7 +29,7 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
@@ -38,7 +38,7 @@ function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode
   );
 }
 
-function Amostra({ theme }: { theme: RivoTheme }) {
+function Sample({ theme }: { theme: RivoTheme }) {
   const [parcelas, setParcelas] = useState(3);
 
   return (
@@ -47,7 +47,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Bloco titulo="Numero com passo">
+          <Block titulo="Numero com passo">
             <Field>
               <FieldLabel>Parcelas</FieldLabel>
               <NumberField
@@ -57,23 +57,23 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 max={12}
               />
             </Field>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Faixa">
+          <Block titulo="Faixa">
             <Slider defaultValue={25} label="Desconto" showValue thumbLabel="Desconto" max={50} />
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Capacidade">
+          <Block titulo="Capacidade">
             <Meter value={72} label="Notas do plano" showValue />
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Codigo de verificacao">
+          <Block titulo="Codigo de verificacao">
             <OTPField length={6} defaultValue="4813" />
-          </Bloco>
+          </Block>
         </div>
 
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Bloco titulo="Grupo de campos">
+          <Block titulo="Grupo de campos">
             <Fieldset>
               <FieldsetLegend>Endereco</FieldsetLegend>
               <Field>
@@ -85,9 +85,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 <Input defaultValue="1200" />
               </Field>
             </Fieldset>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Grupo de caixas">
+          <Block titulo="Grupo de caixas">
             <CheckboxGroup defaultValue={["pix"]} aria-label="Formas aceitas">
               {[
                 { value: "pix", label: "Pix" },
@@ -100,20 +100,20 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 </label>
               ))}
             </CheckboxGroup>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Bloco que esconde">
+          <Block titulo="Bloco que esconde">
             <Collapsible defaultOpen>
               <CollapsibleTrigger>Dados de quem emite</CollapsibleTrigger>
               <CollapsiblePanel>
                 RivoCode Tecnologia, 12.345.678/0001-99, Joao Pessoa PB.
               </CollapsiblePanel>
             </Collapsible>
-          </Bloco>
+          </Block>
         </div>
 
         <div className="flex w-full max-w-96 flex-col gap-10">
-          <Bloco titulo="Barra de ferramentas">
+          <Block titulo="Barra de ferramentas">
             <Toolbar aria-label="Formatacao">
               <ToolbarButton aria-label="Negrito">
                 <Bold size={15} aria-hidden="true" />
@@ -127,17 +127,17 @@ function Amostra({ theme }: { theme: RivoTheme }) {
               <ToolbarSeparator />
               <ToolbarButton>Limpar formato</ToolbarButton>
             </Toolbar>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Barra de menus">
+          <Block titulo="Barra de menus">
             <Menubar aria-label="Principal">
               <span className="px-2 text-base text-fg-muted">Arquivo</span>
               <span className="px-2 text-base text-fg-muted">Editar</span>
               <span className="px-2 text-base text-fg-muted">Exibir</span>
             </Menubar>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Cartao ao pousar">
+          <Block titulo="Cartao ao pousar">
             <p className="text-base text-fg">
               A nota foi emitida para a{" "}
               <PreviewCard>
@@ -156,9 +156,9 @@ function Amostra({ theme }: { theme: RivoTheme }) {
               </PreviewCard>{" "}
               nesta manha.
             </p>
-          </Bloco>
+          </Block>
 
-          <Bloco titulo="Area de rolagem">
+          <Block titulo="Area de rolagem">
             <ScrollArea className="h-32 rounded-md border border-border p-3">
               <div className="flex flex-col gap-2 text-base text-fg-muted">
                 {Array.from({ length: 12 }, (_, index) => (
@@ -166,7 +166,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
                 ))}
               </div>
             </ScrollArea>
-          </Bloco>
+          </Block>
         </div>
       </div>
     </RivoProvider>
@@ -175,7 +175,7 @@ function Amostra({ theme }: { theme: RivoTheme }) {
 
 createRoot(document.getElementById("root")!).render(
   <div>
-    <Amostra theme="rivocode-dark" />
-    <Amostra theme="rivocode-light" />
+    <Sample theme="rivocode-dark" />
+    <Sample theme="rivocode-light" />
   </div>,
 );

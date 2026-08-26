@@ -1,16 +1,14 @@
 /* ---------------------------------------------------------------------------
- * Escalas: forma, tipografia, empilhamento, movimento e densidade. Sao iguais
- * em todo tema, porque descrevem estrutura e nao marca.
+ * Escalas: tipografia, empilhamento, foco e densidade.
+ *
+ * O que esta aqui e estrutura, e nao marca: e igual em todo tema porque
+ * mudar deixaria de ser tema e passaria a ser outro produto. Canto, movimento
+ * e espacamento de letra saiam daqui e foram para `forma.css`, que o tema pode
+ * redefinir - raio nao tem nada a ver com densidade, e estava do lado errado
+ * da fronteira.
  * ------------------------------------------------------------------------- */
 
 :root {
-  /* Forma. O padrao do produto e o canto sobrio, a pilula e variante. */
-  --rc-radius-sm: 6px;
-  --rc-radius-md: 8px;
-  --rc-radius-lg: 12px;
-  --rc-radius-xl: 16px;
-  --rc-radius-pill: 999px;
-
   /* Tipografia de produto, densa e previsivel. */
   --rc-text-xs: 12px;
   --rc-text-sm: 13px;
@@ -25,11 +23,6 @@
   --rc-leading-normal: 1.5;
   --rc-leading-relaxed: 1.7;
 
-  /* Titulo grande pede letra junta: e o que separa display de texto crescido.
-     O corpo fica em 0, porque texto de produto apertado cansa. */
-  --rc-tracking-display: -0.02em;
-  --rc-tracking-tight: -0.01em;
-
   --rc-font-sans: "Manrope Variable", system-ui, sans-serif;
   --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
   --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
@@ -43,16 +36,6 @@
   --rc-z-popover: 500;
   --rc-z-toast: 600;
   --rc-z-tooltip: 700;
-
-  /* Movimento */
-  --rc-duration-fast: 120ms;
-  --rc-duration-base: 200ms;
-  --rc-duration-slow: 320ms;
-  --rc-ease: cubic-bezier(0.2, 0, 0, 1);
-  /* A curva da folha que desliza. Sai rapido e chega devagar, para o painel
-     acompanhar o dedo em vez de parecer que decidiu sozinho. */
-  --rc-ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);
-  --rc-duration-sheet: 450ms;
 
   /* Foco */
   --rc-ring-width: 2px;
@@ -98,37 +81,4 @@
   --rc-item-y: 4px;
   --rc-box: 16px;
   --rc-day: 32px;
-}
-
-/* Entrada de pagina de marca: sobe um passo e assenta. Produto de operacao
-   nao anima entrada; landing e hero animam uma vez, e so. As duracoes zeram
-   com prefers-reduced-motion, entao quem pediu menos movimento ve o conteudo
-   ja assentado. */
-@keyframes rc-rise {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes rc-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --rc-duration-fast: 0ms;
-    --rc-duration-base: 0ms;
-    --rc-duration-slow: 0ms;
-    --rc-duration-sheet: 0ms;
-  }
 }

@@ -37,3 +37,18 @@ export function FullCircle() {
     </div>
   )
 }
+
+/** Medidor segmentado */
+export function SegmentedGauge() {
+  return (
+    <div className="w-64">
+      <ChartRadial
+        value={82}
+        variant="segmented"
+        centerValue="82%"
+        centerLabel="satisfação no mês"
+        label="82% de satisfação no mês"
+      />
+    </div>
+  )
+}

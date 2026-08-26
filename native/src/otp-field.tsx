@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ComponentRef } from "react";
 import { Pressable, TextInput, Text, View } from "react-native";
 
 import { cn } from "./cn";
@@ -8,8 +8,8 @@ export type OTPFieldProps = {
   length?: number;
   value: string;
   onValueChange: (value: string) => void;
-  /** Chamado uma vez, quando o ultimo digito entra. */
-  onComplete?: (value: string) => void;
+  /** Chamado uma vez, quando o ultimo digito entra. Mesmo nome do web. */
+  onValueComplete?: (value: string) => void;
   className?: string;
 };
 
@@ -18,14 +18,26 @@ export type OTPFieldProps = {
  * por tras. E o unico jeito de o teclado, o autofill de SMS e o leitor de
  * tela enxergarem um campo so, enquanto o olho ve um digito por caixa.
  */
-export function OTPField({ length = 6, value, onValueChange, onComplete, className }: OTPFieldProps) {
-  const input = useRef<TextInput>(null);
+export function OTPField({
+  length = 6,
+  value,
+  onValueChange,
+  onValueComplete,
+  className,
+}: OTPFieldProps) {
+  // `useRef<TextInput>` parece obvio e e uma armadilha: sob a API estrita de
+  // tipos do React Native o nome `TextInput` e o COMPONENTE, nao a instancia,
+  // entao a ref virava `TextInputType` - sem `focus` - e nem entrava no
+  // `ref=` do proprio campo. Como este pacote publica fonte, os dois erros
+  // caiam no tsc de quem consome. `ComponentRef` pergunta ao componente qual
+  // e a instancia dele, e responde certo nos dois conjuntos de tipos.
+  const input = useRef<ComponentRef<typeof TextInput>>(null);
   const [focused, setFocused] = useState(false);
 
   const handleChange = (text: string) => {
     const digits = text.replace(/\D/g, "").slice(0, length);
     onValueChange(digits);
-    if (digits.length === length) onComplete?.(digits);
+    if (digits.length === length) onValueComplete?.(digits);
   };
 
   return (

@@ -1,9 +1,10 @@
 "use client";
 
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 /** Traco do estado misto: alguns selecionados, nem todos. */
 function TracoMisto() {
@@ -47,14 +48,35 @@ export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "chil
    * link no meio da frase.
    */
   children?: ReactNode;
-  /** Classe do `<label>` de fora, quando ha texto. */
+  /**
+   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
+   * `classNames.label`, e continua valendo.
+   */
   labelClassName?: string;
+  /** Classe por parte: `box`, `indicator`, `label`. */
+  classNames?: Slots<"box" | "indicator" | "label">;
 };
 
-export function Checkbox({ className, children, labelClassName, ...props }: CheckboxProps) {
+export function Checkbox({
+  className,
+  children,
+  labelClassName,
+  classNames,
+  ...props
+}: CheckboxProps) {
+  /*
+   * O `Field` passa o proprio rotulo a todo controle que mora dentro dele, e
+   * quando o controle ja tem texto proprio os dois se somam: o leitor de tela
+   * anunciava "Impostos" no lugar de "ISS retido na fonte". Com texto proprio,
+   * o texto e que nomeia.
+   */
+  const textId = useId();
+  const named = children !== undefined;
+
   const box = (
     <BaseCheckbox.Root
       {...props}
+      aria-labelledby={named ? textId : props["aria-labelledby"]}
       className={cn(
         "inline-flex size-[var(--rc-box)] shrink-0 items-center justify-center",
         "rounded-sm border border-border-strong bg-surface",
@@ -67,6 +89,17 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
         "data-[indeterminate]:text-accent-fg",
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[disabled]:text-fg-disabled",
+        // WCAG 2.5.8 pede 24x24 de alvo, e o --rc-box desenha 18 (16 na
+        // densidade compacta). Sem texto ao lado nao ha nada de onde emprestar
+        // area - e o caso da coluna de selecao do DataTable, onde o dedo mais
+        // mira -, entao um pseudo-elemento transparente estica so o alvo, seis
+        // pixels para cada lado. Crescer a caixa de verdade engordaria a
+        // coluna inteira, que e o oposto do que a densidade da casa quer.
+        //
+        // Com rotulo isto nao entra: o `<label>` de fora ja e o alvo, e o halo
+        // so deitaria uma camada por cima do proprio texto.
+        children === undefined && "relative after:absolute after:-inset-1.5",
+        classNames?.box,
         className,
       )}
     >
@@ -75,7 +108,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
           <span
             {...indicatorProps}
             data-rc-check={state.indeterminate ? "indeterminate" : "checked"}
-            className="flex items-center justify-center"
+            className={cn("flex items-center justify-center", classNames?.indicator)}
           >
             {state.indeterminate ? <TracoMisto /> : <Visto />}
           </span>
@@ -95,11 +128,13 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
         // borda e fazer o clique valer a dez centimetros do texto.
         "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        classNames?.label,
         labelClassName,
       )}
     >
       {box}
-      {children}
+      {/* O texto ganha id proprio, e e ele que nomeia a caixa. */}
+      <span id={textId}>{children}</span>
     </label>
   );
 }
