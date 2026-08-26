@@ -52,7 +52,7 @@ O JSX se reescreve.
 
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 43 traduzem com o mesmo nome, 3 traduzem com outro, 21 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 46 traduzem com o mesmo nome, 3 traduzem com outro, 18 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -93,7 +93,7 @@ O JSX se reescreve.
 | `Form` | ○ na fila | o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle |
 | `Indicator` | ○ na fila | a contagem por cima do ícone ainda é `View` posicionada na mão |
 | `Input` | ✔ traduz | a borda acende no foco — não há `focus-visible` em tela de toque |
-| `InputGroup` | ○ na fila | sem moldura: prefixo e sufixo ainda são composição sua em volta do `Input` |
+| `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
 | `Item` | ○ na fila | a linha de lista é o `renderItem` do `DataList`, escrito à mão |
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `MaskedInput` | ✔ traduz | o valor é só dígitos; a máscara é do campo, o dado não a carrega |
@@ -105,7 +105,7 @@ O JSX se reescreve.
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
-| `PasswordInput` | ○ na fila | o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus |
+| `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre — use `Sheet` |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format` |
@@ -128,7 +128,7 @@ O JSX se reescreve.
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo |
-| `TagsInput` | ○ na fila | a ficha que se escreve ainda não tem peça nativa |
+| `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta |
 | `Textarea` | ✔ traduz | `rows` é a altura inicial; o campo cresce com o conteúdo |
 | `Timeline` | ○ na fila | o que aconteceu, em ordem, ainda é composição sua |
 | `ToastViewport` | ✔ vira `useToast` | não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo |

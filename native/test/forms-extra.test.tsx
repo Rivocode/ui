@@ -4,13 +4,16 @@ import { Text } from "react-native";
 import {
   CheckboxGroup,
   Fieldset,
+  InputGroup,
   MaskedInput,
   NumberField,
   OTPField,
+  PasswordInput,
   RadioGroup,
   SearchInput,
+  TagsInput,
 } from "../src";
-import { act, byLabel, byRole, render, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("RadioGroup", () => {
   const items = [
@@ -145,5 +148,105 @@ describe("Fieldset", () => {
     expect(textOf(screen)).toContain("Cobrança");
     expect(textOf(screen)).toContain("Como o cliente paga.");
     expect(textOf(screen)).toContain("campos");
+  });
+});
+
+describe("InputGroup", () => {
+  test("prefixo, sufixo e o botao com nome pela acao, tudo numa moldura so", () => {
+    const onValueChange = mock(() => {});
+    const onPress = mock(() => {});
+    const screen = render(
+      <InputGroup
+        value="120"
+        onValueChange={onValueChange}
+        prefix="R$"
+        suffix=",00"
+        actions={[{ label: "Limpar o valor", onPress, children: "×" }]}
+        accessibilityLabel="Valor"
+      />,
+    );
+
+    expect(textOf(screen)).toContain("R$");
+    expect(textOf(screen)).toContain(",00");
+
+    const input = screen.root.findByType("TextInput" as never);
+    act(() => input.props.onChangeText("125"));
+    expect(onValueChange).toHaveBeenCalledWith("125");
+
+    const action = byLabel(screen, "Limpar o valor")[0];
+    expect(action.props.accessibilityRole).toBe("button");
+    act(() => action.props.onPress());
+    expect(onPress).toHaveBeenCalled();
+  });
+
+  test("invalid pinta a moldura, e o campo de dentro nao ganha borda propria", () => {
+    const screen = render(<InputGroup value="" onValueChange={() => {}} invalid />);
+    expect(byClass(screen, /border-danger/).length).toBe(1);
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.className).not.toContain("border");
+  });
+});
+
+describe("PasswordInput", () => {
+  test("o botao diz a acao e troca com o estado; sair do campo esconde de novo", () => {
+    const screen = render(<PasswordInput value="segredo" onValueChange={() => {}} />);
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.secureTextEntry).toBe(true);
+
+    act(() => byLabel(screen, "Mostrar senha")[0].props.onPress());
+    expect(screen.root.findByType("TextInput" as never).props.secureTextEntry).toBe(false);
+    expect(byLabel(screen, "Mostrar senha").length).toBe(0);
+
+    act(() => byLabel(screen, "Esconder senha")[0].props.onPress());
+    expect(screen.root.findByType("TextInput" as never).props.secureTextEntry).toBe(true);
+
+    act(() => byLabel(screen, "Mostrar senha")[0].props.onPress());
+    act(() => screen.root.findByType("TextInput" as never).props.onBlur({}));
+    expect(screen.root.findByType("TextInput" as never).props.secureTextEntry).toBe(true);
+  });
+});
+
+describe("TagsInput", () => {
+  test("o separador digitado fecha a ficha, e a repetida nao entra duas vezes", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <TagsInput value={["pix"]} onValueChange={onValueChange} accessibilityLabel="Etiquetas" />,
+    );
+
+    const input = screen.root.findByType("TextInput" as never);
+    act(() => input.props.onChangeText("urgente,"));
+    expect(onValueChange).toHaveBeenCalledWith(["pix", "urgente"]);
+
+    onValueChange.mockClear();
+    act(() => input.props.onChangeText("pix,"));
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  test("Enter fecha sem soltar o teclado, e sair do campo fecha o que sobrou", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(<TagsInput value={[]} onValueChange={onValueChange} />);
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.submitBehavior).toBe("submit");
+
+    act(() => input.props.onChangeText("boleto"));
+    act(() => input.props.onSubmitEditing());
+    expect(onValueChange).toHaveBeenCalledWith(["boleto"]);
+
+    onValueChange.mockClear();
+    act(() => input.props.onChangeText("nota"));
+    act(() => input.props.onBlur({}));
+    expect(onValueChange).toHaveBeenCalledWith(["nota"]);
+  });
+
+  test("cada ficha diz o que remove, e o teto fecha o campo", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <TagsInput value={["pix", "boleto"]} onValueChange={onValueChange} max={2} />,
+    );
+
+    act(() => byLabel(screen, "Remover pix")[0].props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["boleto"]);
+
+    expect(screen.root.findByType("TextInput" as never).props.editable).toBe(false);
   });
 });

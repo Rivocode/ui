@@ -15,4 +15,4 @@ Acompanham `InputPrefix`, `InputSuffix` e `InputAction`.
 
 ## No React Native
 
-Ainda não portado — sem moldura: prefixo e sufixo ainda são composição sua em volta do `Input`. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, e a forma muda junto: no web a moldura é composição — `InputGroup` por fora, `Input`, `InputPrefix` e `InputAction` por dentro — e ela desarma a borda do campo com um seletor de descendente. Esse seletor não existe no React Native, e quem escrevesse a mesma árvore lá ganharia duas bordas encaixadas sem jeito de apagar a de dentro. Por isso a moldura nativa desenha o campo: `value`, `onValueChange`, `prefix`, `suffix` e `actions` são props dela. Não há `size` — altura de controle é única no nativo, porque alvo de toque não encolhe.

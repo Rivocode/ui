@@ -23,4 +23,4 @@ ser lido em voz alta do celular.
 
 ## No React Native
 
-Ainda não portado — o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz: o `@rivocode/ui-native` exporta `PasswordInput` — o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

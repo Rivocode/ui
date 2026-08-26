@@ -344,8 +344,16 @@ const PARITY: Record<string, Row> = {
     note: "a contagem por cima do ícone ainda é `View` posicionada na mão",
   },
   InputGroup: {
-    state: "fila",
-    note: "sem moldura: prefixo e sufixo ainda são composição sua em volta do `Input`",
+    state: "traduz",
+    note: "`prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size`",
+    page:
+      "Traduz, e a forma muda junto: no web a moldura é composição — `InputGroup` por fora, " +
+      "`Input`, `InputPrefix` e `InputAction` por dentro — e ela desarma a borda do campo com " +
+      "um seletor de descendente. Esse seletor não existe no React Native, e quem escrevesse a " +
+      "mesma árvore lá ganharia duas bordas encaixadas sem jeito de apagar a de dentro. Por " +
+      "isso a moldura nativa desenha o campo: `value`, `onValueChange`, `prefix`, `suffix` e " +
+      "`actions` são props dela. Não há `size` — altura de controle é única no nativo, porque " +
+      "alvo de toque não encolhe.",
   },
   Item: {
     state: "fila",
@@ -362,15 +370,25 @@ const PARITY: Record<string, Row> = {
       "como `progressbar` — que é justamente o erro que ela existe para evitar.",
   },
   PasswordInput: {
-    state: "fila",
-    note: "o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus",
+    state: "traduz",
+    note: "o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo",
   },
   RelativeTime: {
     state: "fila",
     note: "o texto é seu, e não há relógio que se atualize sozinho",
   },
   Steps: { state: "fila", note: "a régua de passos e o `useWizard()` não atravessaram" },
-  TagsInput: { state: "fila", note: "a ficha que se escreve ainda não tem peça nativa" },
+  TagsInput: {
+    state: "traduz",
+    note: "Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta",
+    page:
+      "Traduz, com um gesto a menos. O Enter fecha a ficha e o separador digitado também — mas " +
+      "ele é lido no texto, e não na tecla, porque o `onKeyPress` do Android não chega para o " +
+      "teclado do sistema. É esse mesmo evento que faltava para o Backspace com o campo vazio " +
+      "tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que " +
+      "já precisava existir para o dedo. O resto é igual — a peça é controlada, a repetida não " +
+      "entra duas vezes e sair do campo fecha o que estava meio escrito.",
+  },
   Timeline: { state: "fila", note: "o que aconteceu, em ordem, ainda é composição sua" },
   Tracker: { state: "fila", note: "a faixa de quadradinhos por período ainda não porta" },
   Tree: {
@@ -691,14 +709,14 @@ for (const piece of Object.keys(PARITY)) {
 
   if ((row.state === "traduz" || row.state === "vira") && !existe) {
     problems.push(
-      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${name}\` nao sai de\n` +
+      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${nome}\` nao sai de\n` +
         `    ${NATIVE_INDEX}. A tabela promete um import que quebra.`,
     );
   }
 
   if ((row.state === "fila" || row.state === "nao") && existe) {
     problems.push(
-      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${name}\` JA sai de\n` +
+      `\`${piece}\` esta como "${stateCell(piece, row)}" e \`${nome}\` JA sai de\n` +
         `    ${NATIVE_INDEX}. A peca portou: promova a linha, senao a doc segue\n` +
         "    mandando usar o substituto.",
     );
