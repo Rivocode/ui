@@ -79,6 +79,14 @@ export function Button({
   // do Android, e so o lg passava - a decisao estava certa e a altura, nao.
   const height = { sm: "h-8", md: "h-11", lg: "h-12" }[size];
   const pad = { sm: "px-3", md: "px-4", lg: "px-5" }[size];
+  /*
+   * O `sm` desenha 32px, e subir para 44 o tornaria identico ao `md` - a
+   * variante existe para a linha densa, tabela, cartao e barra de acao. Entao
+   * o que cresce e a area de toque, e nao o desenho: 32 mais 6 de cada lado da
+   * os 44 da Apple. Quem ja passa do minimo nao ganha area extra, porque
+   * hitSlop em botao grande rouba o toque do vizinho sem nada em troca.
+   */
+  const hitSlop = size === "sm" ? { top: 6, bottom: 6, left: 0, right: 0 } : undefined;
   const text = { sm: "text-sm", md: "text-base", lg: "text-md" }[size];
 
   return (
@@ -89,6 +97,7 @@ export function Button({
       // Sem isto o desabilitado so escurecia: o leitor de tela anunciava um
       // botao ativo que nao responde ao toque, e a espera nao existia para ele.
       accessibilityState={{ disabled: Boolean(blocked), busy: loading }}
+      hitSlop={hitSlop}
       className={cn(
         "flex-row items-center justify-center gap-2 rounded-md",
         height,

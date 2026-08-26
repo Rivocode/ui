@@ -55,6 +55,23 @@ describe("Button", () => {
     );
   });
 
+  test("o botao pequeno cresce o alvo sem crescer o desenho", () => {
+    // Subir o sm para 44 o tornaria identico ao md, e a variante existe para a
+    // linha densa - tabela, cartao, barra de acao. O que cresce e a area de
+    // toque, com hitSlop: 32 + 6 de cada lado da os 44 da Apple.
+    const button = byRole(render(<Button size="sm">x</Button>), "button")[0];
+
+    expect(button.props.className).toContain("h-8");
+    expect(button.props.hitSlop).toEqual({ top: 6, bottom: 6, left: 0, right: 0 });
+  });
+
+  test("o botao que ja passa do minimo nao ganha area extra", () => {
+    // hitSlop em botao grande rouba o toque do vizinho sem nada em troca.
+    const button = byRole(render(<Button size="md">x</Button>), "button")[0];
+
+    expect(button.props.hitSlop).toBeUndefined();
+  });
+
   test("a classe de quem usa vence a da peca, para o wrapper de cliente", () => {
     const screen = render(<Button className="h-14 rounded-pill">x</Button>);
     const root = byRole(screen, "button")[0].props.className as string;

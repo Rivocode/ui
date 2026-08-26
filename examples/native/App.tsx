@@ -220,6 +220,7 @@ function Painel({
               searchPlaceholder="Buscar cliente"
             />
             <ToggleGroup
+              multiple
               items={[
                 { label: "Paga", value: "paga" },
                 { label: "Aberta", value: "aberta" },
@@ -296,7 +297,7 @@ function Painel({
               <Progress value={82} label="82% da meta do mês" />
             </View>
             <View className="flex-row items-center gap-3">
-              <Avatar initials="EB" />
+              <Avatar fallback="EB" />
               <View className="min-w-0 flex-1">
                 <Text className="text-base text-fg">Emanuel Bacalhau</Text>
                 <Text className="text-xs text-fg-subtle">emissor</Text>
