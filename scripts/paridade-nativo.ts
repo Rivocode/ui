@@ -41,16 +41,21 @@ import { Glob } from "bun";
 
 const DOCS = ".design-sync/docs";
 /**
- * Os indices do pacote nativo - os DOIS, e o segundo nao e detalhe.
+ * Os indices do pacote nativo - os TRES, e os dois de baixo nao sao detalhe.
  *
- * O formulario mora num caminho proprio (`@rivocode/ui-native/form`) pela
- * mesma razao do web, onde o `Form` tambem nao sai de `src/index.ts`: o
- * react-hook-form e peer opcional, e o metro resolve import por arquivo -
- * dentro do indice principal, quem so quer um Button teria de instala-lo.
- * Medindo so o indice da raiz, o `--check` diria que o Form nao portou no dia
- * seguinte ao porte.
+ * O formulario e o grafico moram em caminhos proprios
+ * (`@rivocode/ui-native/form`, `@rivocode/ui-native/chart`) pela mesma razao
+ * do web, onde o `Form` e o `ChartContainer` tambem nao saem de
+ * `src/index.ts`: o react-hook-form e o react-native-svg sao peers opcionais,
+ * e o metro resolve import por arquivo - dentro do indice principal, quem so
+ * quer um Button teria de instalar os dois. Medindo so o indice da raiz, o
+ * `--check` diria que o Form nao portou no dia seguinte ao porte.
  */
-const NATIVE_INDEXES = ["native/src/index.ts", "native/src/form/index.ts"];
+const NATIVE_INDEXES = [
+  "native/src/index.ts",
+  "native/src/form/index.ts",
+  "native/src/chart/index.ts",
+];
 
 type State =
   /** Existe no nativo com o mesmo nome. A API quase nunca e a mesma. */
@@ -140,6 +145,94 @@ const PARITY: Record<string, Row> = {
   Card: {
     state: "traduz",
     note: "com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` — sem `CardFooter`",
+  },
+  ChartContainer: {
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o " +
+      "desenho entra por função — não há Recharts, nem contentor que meça, nem `var(--color-série)`",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/chart` — o mesmo arranjo do formulário, e " +
+      "pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só " +
+      "bytes, é módulo nativo que o app precisa ligar e reconstruir.\n\n" +
+      "**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, " +
+      "`errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
+      "as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora " +
+      "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
+      "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de " +
+      "tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma " +
+      "linha de texto.\n\n" +
+      "**O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai " +
+      "sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há " +
+      "contentor que meça e não há variável viva — então a moldura mede com `onLayout`, resolve as " +
+      "cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega " +
+      "o `submit`:\n\n" +
+      "```tsx\n" +
+      "<ChartContainer config={SERIES} data={meses} className=\"h-56\">\n" +
+      "  {({ width, height, colors }) => (\n" +
+      "    <Svg width={width} height={height}>…</Svg>\n" +
+      "  )}\n" +
+      "</ChartContainer>\n" +
+      "```\n\n" +
+      "A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não " +
+      "existe largura antes do layout. O `children` também aceita JSX comum, e é assim que " +
+      "`ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.\n\n" +
+      "Duas regras a mais, as duas por causa do que não existe do lado de cá. O `config.color` pede " +
+      "**papel de token** (`chart-1` a `chart-8`), e não cor de CSS: a cor que a peça recebe é o " +
+      "valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela " +
+      "surda ao tema do cliente. E o `label` só vale na forma de função — com filho em JSX quem " +
+      "nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa " +
+      "parada só do leitor de tela.",
+  },
+  ChartDonut: {
+    state: "traduz",
+    note:
+      "a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva " +
+      "nome e valor ao meio; `format` só aceita função, e as pontas saem retas",
+    page:
+      "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props — `valueKey`, `nameKey`, " +
+      "`config`, `thickness`, `legend`, `centerValue`, `centerLabel`. Duas mudanças de tipo: o " +
+      "miolo é `string` e não `ReactNode`, e o `format` só aceita função, que é a decisão que o " +
+      "`Meter` nativo já tinha tomado — resolver nome de formatador arrasta o `Intl` inteiro para o " +
+      "bundle do celular.\n\n" +
+      "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica " +
+      "diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não " +
+      "existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende " +
+      "a fatia dela e manda nome e valor para o meio, no lugar exato onde o web põe a dica; tocar " +
+      "de novo devolve o total.\n\n" +
+      "A fatia não é o alvo, e a razão é aritmética: um anel de 190px tem cerca de 600px de " +
+      "contorno para dividir entre até seis fatias, e a de 2% fica com doze — a mesma conta que " +
+      "tirou a dica por quadrado do `Tracker`. A linha da legenda tem 44px e a largura da tela.\n\n" +
+      "**E a leitura de tela não usa o truque do `Tracker`.** Lá os 90 períodos viraram uma parada " +
+      "`adjustable` só, porque 90 paradas dentro de um cartão são um obstáculo. Aqui são no máximo " +
+      "seis fatias — acima disso a rosca para de informar e barra deitada lê melhor —, e seis " +
+      "paradas com nome e valor são melhores que uma ajustável, porque cada uma é também o botão " +
+      "que acende a fatia. Contagem diferente, saída diferente. Com `legend={false}` o desenho vira " +
+      "imagem cujo nome carrega as fatias **e os valores**: sem legenda e sem dica, o dado ficaria " +
+      "inalcançável.\n\n" +
+      "Uma diferença de desenho, e ela é medida: as pontas das fatias saem **retas**. O " +
+      "`cornerRadius` do web vem da Recharts, que recorta o canto de uma fatia preenchida; aqui a " +
+      "fatia é um arco traçado, e a ponta redonda que o SVG oferece estende o traço em quase doze " +
+      "graus para cada lado na espessura padrão — uma fatia de 5% apareceria como 11%.",
+  },
+  ChartRadial: {
+    state: "traduz",
+    note:
+      "atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do " +
+      "que está escrito no meio, não só da porcentagem",
+    page:
+      "Traduz quase inteiro, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos muda: " +
+      "**ela nunca teve dica**. O valor mora no meio do arco, em texto, desde o web — o que o dedo " +
+      "faria aqui, o olho já fez. `value`, `max`, `sweep`, `variant` e `segments` atravessam " +
+      "iguais, o arco em tracinhos incluído.\n\n" +
+      "Duas mudanças de tipo, as mesmas da rosca: `centerValue` e `centerLabel` são `string`, e " +
+      "`color` é papel de token (`chart-3`, `success`) e não cor de CSS.\n\n" +
+      "O papel de acessibilidade é `image`, como o `role=\"img\"` do web, e os dois vizinhos " +
+      "explicam por quê: o `Meter` nativo já tinha recusado `progressbar`, que faz o leitor de tela " +
+      "anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que " +
+      "prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a " +
+      "medida. Sem `label`, ele é montado do que está escrito no meio — o valor **e** a linha de " +
+      "baixo, e não só a porcentagem como no web: \"82 por cento\" sozinho não diz por cento de quê.",
   },
   Checkbox: {
     state: "traduz",
@@ -306,12 +399,6 @@ const PARITY: Record<string, Row> = {
   },
 
   // ------------------------------------------------------------------ na fila
-  ChartContainer: {
-    state: "fila",
-    note: "a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje",
-  },
-  ChartDonut: { state: "fila", note: "depende de um gráfico nativo que ainda não existe" },
-  ChartRadial: { state: "fila", note: "depende de um gráfico nativo que ainda não existe" },
   Clipboard: { state: "fila", note: "precisa do `expo-clipboard`, e dependência é escolha do app" },
   Code: {
     state: "fila",
@@ -705,12 +792,18 @@ function table(pieces: string[]) {
   return rows.join("\n");
 }
 
+/** "a, b e c" - com virgula ate o penultimo, como se escreve lista em prosa. */
+function inWords(items: string[]) {
+  if (items.length < 2) return items.join("");
+  return `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}`;
+}
+
 function scoreboard(pieces: string[], _native: Set<string>) {
   const conta = (state: State) => pieces.filter((p) => PARITY[p]!.state === state).length;
 
   return (
     `**${pieces.length} peças no catálogo do web, medidas contra ` +
-    `\`${NATIVE_INDEXES.join("` e `")}\` em ${new Date().toISOString().slice(0, 10)}:** ` +
+    `${inWords(NATIVE_INDEXES.map((file) => `\`${file}\``))} em ${new Date().toISOString().slice(0, 10)}:** ` +
     `${conta("traduz")} traduzem com o mesmo nome, ${conta("vira")} traduzem com outro, ` +
     `${conta("fila")} estão na fila e ${conta("nao")} não portam por decisão. ` +
     "A coluna do meio separa as duas ausências, que é a distinção que a tabela existe " +

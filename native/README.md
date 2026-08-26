@@ -73,9 +73,28 @@ O que não traduz fica de fora de propósito: sombra de caixa (no RN é
 `elevation`/`shadow*`, decisão da peça), `clamp()` de marketing, `z-index` — e
 a densidade compacta, porque alvo de toque não encolhe em tela de dedo.
 
+## Dois subcaminhos, dois peers opcionais
+
+O formulário e o gráfico não saem do índice da raiz:
+
+```tsx
+import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
+import { ChartContainer, ChartDonut, ChartRadial } from '@rivocode/ui-native/chart'
+```
+
+O `react-hook-form` e o `react-native-svg` são peers **opcionais**, e o metro
+resolve import por arquivo: dentro do índice principal, um app que só quer um
+`Button` teria de instalar os dois para o bundle fechar. No caso do
+`react-native-svg` o preço é maior que bytes — ele é módulo nativo, que o app
+liga ao projeto de iOS e Android e reconstrói.
+
+```sh
+npx expo install react-native-svg     # só quem desenha gráfico
+```
+
 ## O catálogo
 
-53 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
+59 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
 só conhece o comportamento de baixo, `Select` abre numa folha, e `Sidebar`,
 `Menubar` e `Tooltip` não portam — são idiomas de desktop. A tabela completa
 de tradução está no guia.

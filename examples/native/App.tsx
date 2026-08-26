@@ -49,6 +49,10 @@ import {
   Textarea,
   ToggleGroup,
 } from "../../native/src";
+/* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
+   e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
+   paga - e `scripts/check-fronteira-do-chart.ts` guarda essa fronteira. */
+import { ChartDonut, ChartRadial } from "../../native/src/chart";
 import type { RivoNativeTheme } from "../../native/tokens";
 
 type Invoice = {
@@ -64,6 +68,18 @@ const INVOICES: Invoice[] = [
   { id: "2", number: "4814", customer: "Transportes Cabo Branco", status: "Aberta", tone: "info" },
   { id: "3", number: "4815", customer: "Supermercado Tambaú", status: "Vencida", tone: "danger" },
 ];
+
+const NATURE = [
+  { kind: "servico", total: 148_200 },
+  { kind: "produto", total: 71_400 },
+  { kind: "locacao", total: 27_100 },
+];
+
+const NATURE_SERIES = {
+  servico: { label: "Serviço" },
+  produto: { label: "Produto" },
+  locacao: { label: "Locação" },
+} as const;
 
 /* A mesma tela que a demo web abre: painel de notas. E o argumento inteiro
    do ui-native - os mesmos papeis, o mesmo vocabulario, outra plataforma. */
@@ -105,6 +121,29 @@ function Painel({
           <Stat label="Faturado" value="R$ 246,7K" delta={20} deltaLabel="sobre julho" />
           <Stat label="Vencidas" value="6" delta={50} deltaLabel="sobre julho" invert />
         </View>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Faturamento por natureza</CardTitle>
+            <CardDescription>Toque uma linha para ler a fatia.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <View className="flex-row gap-4">
+              <View className="flex-1">
+                <ChartDonut
+                  data={NATURE}
+                  valueKey="total"
+                  nameKey="kind"
+                  config={NATURE_SERIES}
+                  centerValue="R$ 246,7K"
+                  centerLabel="faturado"
+                  format={(value) => `R$ ${(value / 1000).toFixed(1).replace(".", ",")}K`}
+                />
+              </View>
+            </View>
+            <ChartRadial value={82} centerLabel="da meta do mês" />
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

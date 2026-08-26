@@ -56,4 +56,8 @@ escala inteira visível, um traço aceso não significa nada.
 
 ## No React Native
 
-Ainda não portado — depende de um gráfico nativo que ainda não existe. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz quase inteiro, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos muda: **ela nunca teve dica**. O valor mora no meio do arco, em texto, desde o web — o que o dedo faria aqui, o olho já fez. `value`, `max`, `sweep`, `variant` e `segments` atravessam iguais, o arco em tracinhos incluído.
+
+Duas mudanças de tipo, as mesmas da rosca: `centerValue` e `centerLabel` são `string`, e `color` é papel de token (`chart-3`, `success`) e não cor de CSS.
+
+O papel de acessibilidade é `image`, como o `role="img"` do web, e os dois vizinhos explicam por quê: o `Meter` nativo já tinha recusado `progressbar`, que faz o leitor de tela anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a medida. Sem `label`, ele é montado do que está escrito no meio — o valor **e** a linha de baixo, e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.

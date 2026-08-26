@@ -42,9 +42,30 @@ Duas diferenças mordem logo: **nada envia sozinho** (sem `<form>`, sem
 função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põe
 `accessibilityLabel` e `invalid` na linha, e o adaptador os leva ao controle).
 
+## O gráfico também, e ele traz um peer nativo
+
+`ChartContainer`, `ChartDonut` e `ChartRadial` vivem em
+`@rivocode/ui-native/chart` e pedem `react-native-svg` — peer **opcional** e
+módulo nativo, que o app instala e liga ao projeto só se desenhar gráfico
+(`npx expo install react-native-svg`).
+
+```tsx
+import { ChartContainer, ChartDonut } from '@rivocode/ui-native/chart'
+```
+
+Três coisas mordem. **A moldura mede e entrega**: `children` como função recebe
+`{ width, height, colors }`, no lugar do `ResponsiveContainer` e das
+`var(--color-série)` — e a medida chega zerada no primeiro quadro. **No toque
+não há dica**: a legenda da rosca é o controle, e tocar a linha acende a fatia
+e leva nome e valor para o meio. **Cor de série é papel de token** (`chart-1` a
+`chart-8`), nunca hexadecimal, senão a peça fica surda ao tema do cliente.
+
+A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
+`chart` do `Stat`, e o `Stat` sai da raiz.
+
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts` e `native/src/form/index.ts` em 2026-08-26:** 53 traduzem com o mesmo nome, 3 traduzem com outro, 11 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts` e `native/src/chart/index.ts` em 2026-08-26:** 56 traduzem com o mesmo nome, 3 traduzem com outro, 8 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -60,9 +81,9 @@ função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põ
 | `ButtonGroup` | ✕ não porta | `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo |
 | `Calendar` | ✔ traduz | mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa` |
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` — sem `CardFooter` |
-| `ChartContainer` | ○ na fila | a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje |
-| `ChartDonut` | ○ na fila | depende de um gráfico nativo que ainda não existe |
-| `ChartRadial` | ○ na fila | depende de um gráfico nativo que ainda não existe |
+| `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função — não há Recharts, nem contentor que meça, nem `var(--color-série)` |
+| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
+| `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
 | `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate` |
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho |
 | `Clipboard` | ○ na fila | precisa do `expo-clipboard`, e dependência é escolha do app |
@@ -144,7 +165,8 @@ bun run scripts/paridade-nativo.ts --check    # só confere
 
 O `--check` falha quando uma peça nova do catálogo não tem linha, quando uma
 linha promete um import que não sai de nenhum índice do pacote nativo
-(`native/src/index.ts` e `native/src/form/index.ts`), e quando uma peça
+(`native/src/index.ts`, `native/src/form/index.ts` e
+`native/src/chart/index.ts`), e quando uma peça
 marcada como `○ na fila` **já portou** — que é o caso silencioso: a doc
 continua mandando usar o substituto depois que a peça de verdade chegou.
 Portou peça nova no native? Rode o script e comite o que ele reescrever.

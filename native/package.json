@@ -13,6 +13,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./form": "./src/form/index.ts",
+    "./chart": "./src/chart/index.ts",
     "./tokens": "./tokens.ts",
     "./theme.css": "./theme.css"
   },
@@ -35,6 +36,7 @@
     "react": ">=19",
     "react-hook-form": "^7",
     "react-native": ">=0.76",
+    "react-native-svg": ">=15",
     "zod": "^3.25.0 || ^4"
   },
   "peerDependenciesMeta": {
@@ -42,6 +44,9 @@
       "optional": true
     },
     "react-hook-form": {
+      "optional": true
+    },
+    "react-native-svg": {
       "optional": true
     },
     "zod": {

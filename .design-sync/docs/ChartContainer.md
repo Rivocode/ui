@@ -117,4 +117,20 @@ respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
 
 ## No React Native
 
-Ainda não portado — a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, no caminho próprio `@rivocode/ui-native/chart` — o mesmo arranjo do formulário, e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app precisa ligar e reconstruir.
+
+**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
+
+**O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há contentor que meça e não há variável viva — então a moldura mede com `onLayout`, resolve as cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega o `submit`:
+
+```tsx
+<ChartContainer config={SERIES} data={meses} className="h-56">
+  {({ width, height, colors }) => (
+    <Svg width={width} height={height}>…</Svg>
+  )}
+</ChartContainer>
+```
+
+A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não existe largura antes do layout. O `children` também aceita JSX comum, e é assim que `ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.
+
+Duas regras a mais, as duas por causa do que não existe do lado de cá. O `config.color` pede **papel de token** (`chart-1` a `chart-8`), e não cor de CSS: a cor que a peça recebe é o valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela surda ao tema do cliente. E o `label` só vale na forma de função — com filho em JSX quem nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa parada só do leitor de tela.

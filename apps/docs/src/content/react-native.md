@@ -71,9 +71,39 @@ não há `for` nem `id`; o `FormField` põe `accessibilityLabel` e `invalid`
 dentro do campo, e o adaptador os leva ao controle. Sem isso, um `TextInput`
 embaixo de um rótulo fica sem nome para o leitor de tela.
 
+## O gráfico entra por outro caminho, e traz um peer nativo
+
+`ChartContainer`, `ChartDonut` e `ChartRadial` vivem em
+`@rivocode/ui-native/chart`, pela mesma regra do formulário — só que aqui o
+peer opcional custa mais do que bytes:
+
+```sh
+npx expo install react-native-svg
+```
+
+```tsx
+import { ChartContainer, ChartDonut, ChartRadial } from '@rivocode/ui-native/chart'
+```
+
+O `react-native-svg` é **módulo nativo**: quem não desenha gráfico não o
+instala, não o liga ao projeto de iOS e Android e não reconstrói por causa
+dele. É por isso que as três peças não saem do índice da raiz — e é por isso
+que a `Sparkline` continua desenhada com `View`, onde está: ela é o slot
+`chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o peer de
+quem só queria um número dentro de um cartão.
+
+Duas decisões valem pelas três peças. **Nada mede sozinho**: no lugar do
+`ResponsiveContainer` e das `var(--color-série)`, o `ChartContainer` mede com
+`onLayout`, resolve as cores do `config` e entrega `{ width, height, colors }`
+a quem desenha — com a medida zerada no primeiro quadro, porque no telefone não
+existe largura antes do layout. E **no toque não há dica**: a rosca põe nome e
+valor de cada fatia na legenda, que é também o controle — tocar a linha acende
+a fatia e manda o valor para o meio do anel, no lugar exato onde o web abre a
+dica. O resto está na tabela abaixo.
+
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts` e `native/src/form/index.ts` em 2026-08-26:** 53 traduzem com o mesmo nome, 3 traduzem com outro, 11 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts` e `native/src/chart/index.ts` em 2026-08-26:** 56 traduzem com o mesmo nome, 3 traduzem com outro, 8 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -89,9 +119,9 @@ embaixo de um rótulo fica sem nome para o leitor de tela.
 | `ButtonGroup` | ✕ não porta | `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo |
 | `Calendar` | ✔ traduz | mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa` |
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` — sem `CardFooter` |
-| `ChartContainer` | ○ na fila | a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje |
-| `ChartDonut` | ○ na fila | depende de um gráfico nativo que ainda não existe |
-| `ChartRadial` | ○ na fila | depende de um gráfico nativo que ainda não existe |
+| `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função — não há Recharts, nem contentor que meça, nem `var(--color-série)` |
+| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
+| `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
 | `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate` |
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho |
 | `Clipboard` | ○ na fila | precisa do `expo-clipboard`, e dependência é escolha do app |

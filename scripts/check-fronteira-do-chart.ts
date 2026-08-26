@@ -1,12 +1,14 @@
 /**
- * Guarda da fronteira do grafico: a recharts fica presa em `src/chart/`.
+ * Guarda da fronteira do grafico, nos DOIS pacotes.
  *
- * A recharts e peer OPCIONAL (`peerDependenciesMeta.recharts.optional`), e o
- * pacote se divide em dois pontos de entrada por causa disso: quem so quer
- * botao e tabela instala `@rivocode/ui` e nao paga os ~180kB do
- * `@rivocode/ui/chart`. O preco desse arranjo e um invariante: nenhum modulo
- * alcancado por `src/index.ts` pode importar a recharts, nem direto nem por
- * dentro de uma peca de `src/chart/`.
+ * O desenho de dado tem peer OPCIONAL - a recharts no web, o react-native-svg
+ * no nativo -, e por isso cada pacote se divide em dois pontos de entrada:
+ * quem so quer botao e tabela instala `@rivocode/ui` e nao paga os ~180kB do
+ * `@rivocode/ui/chart`; quem so quer um `Button` no celular instala
+ * `@rivocode/ui-native` e nao precisa ligar o react-native-svg ao projeto
+ * nativo, que la custa build e nao so bytes. O preco desse arranjo e um
+ * invariante: nenhum modulo alcancado pelo indice da raiz pode importar o
+ * peer, nem direto nem por dentro de uma peca do subcaminho.
  *
  * O invariante vivia so em prosa - um comentario em `src/components/stat.tsx`
  * explicando por que o Stat nao usa a Sparkline. Um `import { Sparkline } from
@@ -16,20 +18,59 @@
  * pior tipo de quebra - a que a nossa suite nao pode sentir, porque aqui a
  * recharts esta instalada como devDependency.
  *
- * Sao duas regras, e a segunda e que fecha a porta de verdade:
+ * Sao duas regras por pacote, e a segunda e que fecha a porta de verdade:
  *
- *   1. `recharts` so entra em `src/chart/`.
- *   2. `src/chart/` so e importado de dentro de `src/chart/` - importar a
+ *   1. O peer so entra no diretorio do grafico.
+ *   2. O diretorio do grafico so e importado de dentro dele mesmo - importar a
  *      Sparkline arrasta a recharts junto, e o passo 1 nao veria nada.
  *
  * A guarda le import, e nao texto. `grep -rn recharts src/` acusaria o
  * comentario do Stat, que e justamente quem explica a regra; guarda que acusa
  * a propria documentacao dela morre na primeira semana.
+ *
+ * O nativo entrou depois, e nao ganhou script proprio de proposito: o
+ * invariante e o mesmo, a leitura de import e a mesma, e duas guardas iguais
+ * divergem na primeira correcao que so uma delas recebe. A prova disso e o
+ * furo que a versao anterior tinha e que a tabela abaixo fechou nos dois de
+ * uma vez - veja `inside()`.
  */
 import { Glob } from "bun";
 
-const CORE = "src";
-const CHART_DIR = "src/chart/";
+type Frontier = {
+  /** O nome publicado, para a mensagem dizer de quem se fala. */
+  pkg: string;
+  /** A raiz do codigo do pacote. */
+  core: string;
+  /** O diretorio do grafico, com barra no fim. */
+  chart: string;
+  /** O especificador publico do subcaminho. */
+  entry: string;
+  /** O peer opcional que nao pode vazar. */
+  peer: RegExp;
+  /** Por que ele nao pode vazar, em uma linha. */
+  why: string;
+};
+
+const FRONTIERS: Frontier[] = [
+  {
+    pkg: "@rivocode/ui",
+    core: "src",
+    chart: "src/chart/",
+    entry: "@rivocode/ui/chart",
+    peer: /^recharts(\/|$)/,
+    why: "A recharts e peer opcional: quem instalou so o @rivocode/ui nao a tem.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    chart: "native/src/chart/",
+    entry: "@rivocode/ui-native/chart",
+    peer: /^react-native-svg(\/|$)/,
+    why:
+      "O react-native-svg e peer opcional, e no celular ele nao e so bytes: e\n" +
+      "    modulo nativo, que o app precisa ligar e reconstruir.",
+  },
+];
 
 /** O que este arquivo importa, ja sem comentario e ja resolvido. */
 function importsOf(file: string, code: string) {
@@ -58,35 +99,40 @@ function importsOf(file: string, code: string) {
   }));
 }
 
-const isRecharts = (specifier: string) => /^recharts(\/|$)/.test(specifier);
-
-/** O ponto de entrada do grafico, pelo caminho ou pelo nome publico. */
-const isChartEntry = (resolved: string) =>
-  resolved.startsWith(CHART_DIR) || resolved === "@rivocode/ui/chart";
+/**
+ * O caminho cai dentro do diretorio do grafico?
+ *
+ * O `startsWith(chart)` sozinho tem um furo, e e o furo do import mais natural
+ * que existe: `import { ChartDonut } from "./chart"` a partir do indice da
+ * raiz resolve para `src/chart` - sem a barra final, porque o especificador
+ * aponta o DIRETORIO e quem poe o `/index` e o resolvedor de modulos, nao nos.
+ * `"src/chart".startsWith("src/chart/")` e falso, entao a forma que qualquer
+ * um escreveria primeiro era a unica que passava.
+ */
+const inside = (resolved: string, dir: string) =>
+  resolved === dir.slice(0, -1) || resolved.startsWith(dir);
 
 const breaches: string[] = [];
 
-for await (const file of new Glob("**/*.{ts,tsx}").scan(CORE)) {
-  const path = `${CORE}/${file}`;
-  const inChart = path.startsWith(CHART_DIR);
-  const code = await Bun.file(path).text();
+for (const frontier of FRONTIERS) {
+  for await (const file of new Glob("**/*.{ts,tsx}").scan(frontier.core)) {
+    const path = `${frontier.core}/${file}`;
+    if (inside(path, frontier.chart)) continue;
 
-  for (const { specifier, resolved, line } of importsOf(path, code)) {
-    if (inChart) continue;
+    const code = await Bun.file(path).text();
 
-    if (isRecharts(specifier)) {
-      breaches.push(
-        `  ${path}:${line}  importa "${specifier}"\n` +
-          "    A recharts e peer opcional: quem instalou so o @rivocode/ui nao a tem.",
-      );
-      continue;
-    }
+    for (const { specifier, resolved, line } of importsOf(path, code)) {
+      if (frontier.peer.test(specifier)) {
+        breaches.push(`  ${path}:${line}  importa "${specifier}"\n    ${frontier.why}`);
+        continue;
+      }
 
-    if (isChartEntry(resolved)) {
-      breaches.push(
-        `  ${path}:${line}  importa "${specifier}"\n` +
-          "    Tudo em src/chart/ arrasta a recharts junto, mesmo que a peca nao pareca.",
-      );
+      if (inside(resolved, frontier.chart) || resolved === frontier.entry) {
+        breaches.push(
+          `  ${path}:${line}  importa "${specifier}"\n` +
+            `    Tudo em ${frontier.chart} arrasta o peer junto, mesmo que a peca nao pareca.`,
+        );
+      }
     }
   }
 }
@@ -95,14 +141,19 @@ if (breaches.length > 0) {
   console.error(`${breaches.length} import(s) atravessando a fronteira do grafico:\n`);
   for (const item of breaches) console.error(item);
   console.error(
-    "\nO nucleo tem que continuar montando sem a recharts instalada." +
-      "\n\nSe a peca precisa mesmo do grafico, ela pertence a `src/chart/` e sai" +
-      "\npelo `@rivocode/ui/chart`. Se e o nucleo que precisa do desenho, copie" +
-      "\no SVG - e o que o `Stat` faz, e o comentario dele explica por que." +
+    "\nO nucleo dos dois pacotes tem que continuar montando sem o peer instalado." +
+      "\n\nSe a peca precisa mesmo do grafico, ela pertence ao diretorio do grafico" +
+      "\ne sai pelo subcaminho. Se e o nucleo que precisa do desenho, copie o SVG -" +
+      "\ne o que o `Stat` faz no web, e o que a `Sparkline` nativa faz com `View`;" +
+      "\nos comentarios das duas explicam por que." +
       "\n\nNada aqui quebra o build: quebra a instalacao de quem nao tem o peer," +
       "\ncom 'module not found' em producao e nenhum erro nosso para culpar.",
   );
   process.exit(1);
 }
 
-console.log(`A recharts nao sai de ${CHART_DIR}, e ninguem de fora entra la.`);
+console.log(
+  FRONTIERS.map((frontier) => `${frontier.pkg}: o peer nao sai de ${frontier.chart}`).join(
+    ", e ninguem de fora entra la.\n",
+  ) + ", e ninguem de fora entra la.",
+);

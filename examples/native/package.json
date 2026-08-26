@@ -11,6 +11,7 @@
     "react-native-css": "^3.0.7",
     "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
     "tailwind-merge": "^3"
   },
   "devDependencies": {

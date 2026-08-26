@@ -59,19 +59,19 @@ describe("Sparkline", () => {
     expect(labelled.props.accessibilityElementsHidden).toBeUndefined();
   });
 
-  test("tone auto pinta de sucesso na subida e de perigo na queda", () => {
-    const rising = render(<Sparkline variant="bar" tone="auto" data={[1, 9]} />);
+  test("trend auto pinta de sucesso na subida e de perigo na queda", () => {
+    const rising = render(<Sparkline variant="bar" trend="auto" data={[1, 9]} />);
     expect(marks(rising)[0].props.style.backgroundColor).toBe(dark["success-text"]);
 
-    const falling = render(<Sparkline variant="bar" tone="auto" data={[9, 1]} />);
+    const falling = render(<Sparkline variant="bar" trend="auto" data={[9, 1]} />);
     expect(marks(falling)[0].props.style.backgroundColor).toBe(dark["danger-text"]);
   });
 
-  test("sem tone ela usa o acento, e o papel de token requested vence", () => {
+  test("sem trend ela usa o acento, e o papel de token requested vence", () => {
     const byDefault = render(<Sparkline variant="bar" data={[1, 9]} />);
     expect(byDefault.root && marks(byDefault)[0].props.style.backgroundColor).toBe(dark["accent-text"]);
 
-    const requested = render(<Sparkline variant="bar" tone="auto" color="chart-3" data={[9, 1]} />);
+    const requested = render(<Sparkline variant="bar" trend="auto" color="chart-3" data={[9, 1]} />);
     expect(marks(requested)[0].props.style.backgroundColor).toBe(dark["chart-3"]);
   });
 
@@ -140,7 +140,7 @@ describe("Sparkline", () => {
         label="Faturamento"
         value="R$ 82,4 mil"
         delta={12}
-        chart={<Sparkline variant="bar" data={[12, 15, 14, 19, 22, 28]} tone="auto" />}
+        chart={<Sparkline variant="bar" data={[12, 15, 14, 19, 22, 28]} trend="auto" />}
       />,
     );
 
