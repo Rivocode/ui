@@ -8568,6 +8568,70 @@
       }
     ]
   },
+  "ColorPicker": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"field\" | \"input\" | \"label\" | \"preview\" | \"swatch\" | \"swatches\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`."
+      },
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "note": "Quantas amostras por linha."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "A cor inicial de quem nao controla o valor de fora."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "hideInput",
+        "type": "boolean",
+        "required": false,
+        "note": "Esconde o campo de texto e deixa so a grade."
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Texto acima da grade."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Avisado com o hexadecimal normalizado, sempre de seis digitos e minusculo."
+      },
+      {
+        "name": "swatches",
+        "type": "ColorSwatch[]",
+        "required": false,
+        "note": "As amostras da grade."
+      },
+      {
+        "name": "swatchesLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela chama a grade quando nao ha `label`."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "A cor escolhida, em hexadecimal de seis digitos."
+      }
+    ]
+  },
   "Combobox": {
     "forwardsRoot": false,
     "props": [
@@ -9213,6 +9277,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "maxHeight",
+        "type": "string | number",
+        "required": false,
+        "note": "Altura maxima da tabela."
+      },
+      {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
@@ -9239,6 +9309,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "rowHeight",
+        "type": "number",
+        "required": false,
+        "note": "A altura de uma linha, em pixel, quando `virtual` esta ligado."
+      },
+      {
         "name": "selectable",
         "type": "boolean",
         "required": false,
@@ -9258,6 +9334,12 @@
         "required": false,
         "note": "Quantas linhas falsas o carregando mostra.",
         "since": "0.4.0"
+      },
+      {
+        "name": "virtual",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha so as linhas que cabem na moldura, e o caminho do meio aparece: cem mil linhas com `sortable` e `filter` continuando a funcionar, sem mandar a pessoa para a paginacao no servidor."
       }
     ]
   },

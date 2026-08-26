@@ -180,3 +180,72 @@ export function Selectable() {
     </div>
   )
 }
+
+/*
+ * O caso do meio: muita linha, e ainda assim ordenar e buscar funcionando.
+ * Cinco mil ja mostra o ponto - com paginacao no servidor, esta tela perderia
+ * as duas coisas.
+ */
+type Event = {
+  id: string
+  at: string
+  level: 'info' | 'erro'
+  message: string
+}
+
+const EVENTS: Event[] = Array.from({ length: 5000 }, (_, index) => ({
+  id: String(index),
+  at: new Date(Date.UTC(2026, 7, 26, 0, 0, index)).toISOString().slice(11, 19),
+  level: index % 37 === 0 ? 'erro' : 'info',
+  message: `Nota ${9000 + index} enviada para a prefeitura`,
+}))
+
+const EVENT_COLUMNS: Column<Event>[] = [
+  { key: 'at', header: 'Hora', sortable: true, cell: (event) => <span className="font-mono">{event.at}</span> },
+  {
+    key: 'level',
+    header: 'Nível',
+    sortable: true,
+    cell: (event) => (
+      <Badge tone={event.level === 'erro' ? 'danger' : 'neutral'}>{event.level}</Badge>
+    ),
+  },
+  { key: 'message', header: 'Evento' },
+]
+
+/** Virtualizada */
+export function Virtual() {
+  const [filter, setFilter] = useState('')
+  return (
+    <div className="flex w-full flex-col gap-3">
+      <Input
+        aria-label="Buscar evento"
+        placeholder="Buscar no log…"
+        value={filter}
+        onChange={(event) => setFilter(event.target.value)}
+        className="max-w-64"
+      />
+      <DataTable
+        data={EVENTS}
+        columns={EVENT_COLUMNS}
+        rowKey={(event) => event.id}
+        filter={filter}
+        caption="Log de envio de notas"
+        maxHeight={360}
+        virtual
+      />
+    </div>
+  )
+}
+
+/** Só a rolagem, sem virtualizar */
+export function Scrollable() {
+  return (
+    <DataTable
+      data={MANY}
+      columns={SORTABLE}
+      rowKey={(invoice) => invoice.id}
+      maxHeight={220}
+    />
+  )
+}

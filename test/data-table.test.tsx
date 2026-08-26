@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { afterAll, beforeAll, expect, test } from "bun:test";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 
 import { DataTable, type Column } from "../src/components/data-table";
@@ -198,4 +198,124 @@ test("a coluna que ordena sai na mesma caixa da que nao ordena", () => {
 
   expect(header.className).toContain("uppercase");
   expect(botao.className).toContain("uppercase");
+});
+
+/* ------------------------------------------------------------------------ *
+ * O caminho do meio: muita linha, sem mandar a pessoa para o servidor
+ * ------------------------------------------------------------------------ */
+
+/*
+ * O happy-dom nao faz layout, entao toda medida sai zero e o virtualizador
+ * concluiria que nao cabe linha nenhuma. O duble abaixo da altura a moldura e
+ * a linha - e so isso: quem decide quantas linhas entram continua sendo o
+ * @tanstack/react-virtual.
+ */
+const VIEWPORT_HEIGHT = 400;
+const ROW_HEIGHT = 40;
+beforeAll(() => {
+  // O virtualizador mede a moldura pelo `offsetHeight`, que no happy-dom e
+  // sempre zero: sem o duble ele conclui que nao cabe linha nenhuma.
+  Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.tagName === "TR" ? ROW_HEIGHT : VIEWPORT_HEIGHT;
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    get: () => 800,
+  });
+});
+
+afterAll(() => {
+  Reflect.deleteProperty(HTMLElement.prototype, "offsetHeight");
+  Reflect.deleteProperty(HTMLElement.prototype, "offsetWidth");
+});
+
+const LOG: Invoice[] = Array.from({ length: 500 }, (_, index) => ({
+  id: String(index),
+  number: String(9000 + index),
+  customer: `Cliente ${index}`,
+  amount: index,
+}));
+
+const bodyRows = (container: HTMLElement) =>
+  [...container.querySelectorAll("tbody tr")].filter((row) => !row.hasAttribute("aria-hidden"));
+
+test("sem pedir nada, quinhentas linhas continuam saindo inteiras", () => {
+  const { container } = table({ data: LOG });
+  expect(bodyRows(container).length).toBe(500);
+  expect(container.querySelector("[data-rc-viewport]")).toBeNull();
+});
+
+test("com virtual, so um punhado de linhas vai para o DOM", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  const rendered = bodyRows(container).length;
+  expect(rendered).toBeGreaterThan(0);
+  expect(rendered).toBeLessThan(60);
+});
+
+test("virtualizada, ela continua sendo uma <table> de verdade", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  expect(container.querySelectorAll("table").length).toBe(1);
+  const body = container.querySelector("tbody")!;
+  // Nenhum filho do tbody que nao seja tr, e nenhuma celula fora de uma tr.
+  expect([...body.children].every((child) => child.tagName === "TR")).toBe(true);
+  for (const row of bodyRows(container)) {
+    expect(row.querySelector("td")).toBeTruthy();
+  }
+});
+
+test("a tabela virtualizada diz quantas linhas existem, e onde cada uma esta", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  // 500 linhas de dado mais a de cabecalho.
+  expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe("501");
+  expect(bodyRows(container)[0]!.getAttribute("aria-rowindex")).toBe("2");
+});
+
+test("os espacadores nao se passam por linha de dado", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  const spacers = [...container.querySelectorAll("tbody tr[aria-hidden='true']")];
+  expect(spacers.length).toBeGreaterThan(0);
+  for (const spacer of spacers) expect(spacer.textContent).toBe("");
+});
+
+test("o cabecalho gruda no topo da moldura que rola", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  const head = container.querySelector("thead")!;
+  expect(head.className).toContain("sticky");
+  expect(head.className).toContain("z-[var(--rc-z-sticky)]");
+});
+
+test("a moldura ganha altura e rolagem propria", () => {
+  const { container } = table({ data: LOG, maxHeight: 320 });
+
+  const viewport = container.querySelector("[data-rc-viewport]") as HTMLElement;
+  expect(viewport).toBeTruthy();
+  expect(viewport.style.maxHeight).toBe("320px");
+  // Sem `virtual`, a rolagem e so rolagem: as linhas continuam todas la.
+  expect(bodyRows(container).length).toBe(500);
+});
+
+test("virtualizada, ordenar continua valendo - que e o motivo de ela existir", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+
+  expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9000");
+
+  fireEvent.click(screen.getByRole("button", { name: /valor/i }));
+  fireEvent.click(screen.getByRole("button", { name: /valor/i }));
+
+  expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9499");
+});
+
+test("virtualizada, filtrar continua valendo e a contagem acompanha", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT, filter: "9007" });
+
+  expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe("2");
+  expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9007");
 });

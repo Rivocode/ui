@@ -31,6 +31,53 @@ Tudo opt-in, tudo client-side, nada muda para quem não pedir:
   aviso em `onSelectedChange`. Passe `selected` para controlar de fora. O
   checkbox do cabeçalho marca a página visível, não a lista inteira.
 
+## Muita linha: rolagem própria e virtualização
+
+Entre "cabe numa página" e "manda para o servidor" existe o caso do meio, que é
+onde mora um painel de log: dezenas de milhares de linhas, e ainda assim
+ordenar e buscar precisam funcionar. Paginar no servidor resolve o volume e
+custa `sortable` e `filter` — a peça volta a ser tabela crua.
+
+```tsx
+<DataTable
+  data={events}          // 80 mil linhas
+  columns={COLUMNS}      // com sortable à vontade
+  rowKey={(event) => event.id}
+  filter={search}
+  maxHeight={480}
+  virtual
+/>
+```
+
+São duas props, e elas são independentes de propósito:
+
+- **`maxHeight`** dá à tabela uma moldura com rolagem própria: ela rola por
+  dentro em vez de empurrar a página, e o cabeçalho gruda no topo dessa moldura
+  (`--rc-z-sticky`, abaixo de menu, diálogo e toast). Sozinha, ela não
+  virtualiza nada — todas as linhas continuam no DOM, e isso basta até uns
+  poucos milhares.
+- **`virtual`** desenha só as linhas que cabem na moldura. Precisa de
+  `maxHeight`: sem altura não há o que caber. Não combine com `pageSize` —
+  paginar já resolve o mesmo problema de outro jeito.
+- **`rowHeight`** (padrão 44) é a altura da linha virtualizada, e a peça a
+  aplica. Não é chute: o espaço de quem não foi desenhado sai dessa
+  multiplicação, e linha que cresce faz a rolagem prometer um fim que não
+  chega. Numa lista densa, ou com célula de duas linhas, passe a sua.
+
+**Ela continua saindo como `<table>` de verdade.** O jeito comum de virtualizar
+— cada linha em `position: absolute` com `translateY` — quebraria isso: linha
+absoluta sai do algoritmo de layout de tabela, e com ela vão a largura de coluna
+compartilhada e o alinhamento entre cabeçalho e célula. O que sobra é uma grade
+de `div` com cara de tabela. Aqui as linhas visíveis ficam em fluxo normal e o
+espaço de quem não foi desenhado vira duas linhas vazias, uma antes e uma
+depois, com a altura que falta. O `<tbody>` continua tendo só `<tr>` por filho,
+e cada `<tr>` só `<td>`.
+
+As linhas vazias saem do fluxo do leitor de tela com `aria-hidden`, e quem
+carrega a contagem certa é o `aria-rowcount` da tabela mais o `aria-rowindex` de
+cada linha — senão a lista seria anunciada como "12 linhas" no meio de oitenta
+mil.
+
 Quem ordena, filtra ou pagina **no servidor** já recebe os dados prontos: mostre
 a página que veio e ponha o `Pagination` da casa do lado de fora — e não marque
 `sortable` nem use `filter`, porque duas ordenações discordando é pior que uma.
