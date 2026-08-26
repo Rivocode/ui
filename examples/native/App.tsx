@@ -2,7 +2,7 @@ import "./generated.css";
 
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -46,6 +46,7 @@ import {
   RadioGroup,
   SearchInput,
   Slider,
+  Text,
   Textarea,
   ColorPicker,
   ToggleGroup,
@@ -174,7 +175,7 @@ function Painel({
           </CardHeader>
           <CardContent>
             <View className="flex-row items-center gap-2">
-              <Text className="min-w-0 flex-1 font-mono text-xs text-fg-muted" numberOfLines={1}>
+              <Text font="mono" className="min-w-0 flex-1 text-xs text-fg-muted" numberOfLines={1}>
                 {ACCESS_KEY}
               </Text>
               <Clipboard value={ACCESS_KEY} labels={{ copy: "Copiar a chave" }} />

@@ -101,8 +101,18 @@ describe("a fonte mono", () => {
 
   test("nenhuma peça do pacote nativo pede classe de fonte", async () => {
     const offenders: string[] = [];
+    const trees = ["native/src/**/*.{ts,tsx}", "examples/native/**/*.{ts,tsx}"];
+    const files: string[] = [];
+    for (const tree of trees) {
+      for await (const found of new Glob(tree).scan(".")) {
+        if (found.includes("node_modules")) continue;
+        files.push(found);
+      }
+    }
 
-    for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
+    expect(files.length).toBeGreaterThan(60);
+
+    for (const file of files) {
       const code = (await Bun.file(file).text())
         .replace(/\/\*[\s\S]*?\*\//g, "")
         .replace(/\/\/[^\n]*/g, "");
