@@ -267,6 +267,12 @@ export { Tracker, type TrackerProps, type TrackerPoint } from "./components/trac
 export { TagsInput, type TagsInputProps } from "./components/tags-input";
 export { Splitter, type SplitterProps } from "./components/splitter";
 export { Editable, type EditableProps } from "./components/editable";
+export {
+  ColorPicker,
+  normalizeColor,
+  type ColorPickerProps,
+  type ColorSwatch,
+} from "./components/color-picker";
 export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
 export {
   Timeline,
