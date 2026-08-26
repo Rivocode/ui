@@ -4,6 +4,7 @@ import {
   cloneElement,
   useEffect,
   useId,
+  useState,
   type ComponentProps,
   type ReactElement,
   type ReactNode,
@@ -129,6 +130,8 @@ export function ChartContainer({
   const points = data ?? dataOfChild(children);
   useMissingDataWarning(empty !== undefined && points === undefined);
 
+  const announcement = useActivePointAnnouncement(id);
+
   return (
     <div
       {...props}
@@ -173,6 +176,21 @@ export function ChartContainer({
       )}
     >
       <style dangerouslySetInnerHTML={{ __html: `[data-rc-chart="${id}"] {\n  ${colors}\n}` }} />
+
+      {/*
+       * O valor exato, para quem nao ve a dica.
+       *
+       * A seta anda com a dica de ponto em ponto - a Recharts implementa isso -
+       * mas a dica so aparece: nada a anuncia. Quem usa leitor de tela ouvia o
+       * nome do grafico e mais nada, e ler valor exato ficava so para quem
+       * enxerga. Aqui a dica vira texto, na regiao viva.
+       *
+       * Ela mora fora do `<svg>` de proposito. A superficie e `role="img"` com
+       * nome, e tudo que esta dentro dela e ignorado pelo leitor.
+       */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {announcement}
+      </div>
 
       {isLoading ? (
         <StateFrame>
@@ -242,6 +260,98 @@ function useMissingDataWarning(missing: boolean) {
         "ChartContainer - e o mesmo array que voce ja entrega ao grafico.",
     );
   }, [missing]);
+}
+
+/** As teclas com que a Recharts anda de um ponto ao outro. */
+const NAVIGATION_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"]);
+
+/** A dica lida como frase: cada pedaco de texto, na ordem, separado por virgula. */
+function readableTip(tip: Node): string {
+  const walker = document.createTreeWalker(tip, NodeFilter.SHOW_TEXT);
+  const parts: string[] = [];
+
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const piece = node.textContent?.trim();
+    if (piece) parts.push(piece);
+  }
+
+  return parts.join(", ");
+}
+
+/**
+ * O que a regiao viva diz: o ponto ativo, quando ele muda POR TECLADO.
+ *
+ * A leitura sai da propria dica desenhada, e nao do estado da Recharts, por
+ * dois motivos. O estado dela mora no contexto de dentro do grafico, e daqui a
+ * moldura so alcanca o filho por clonagem - a mesma razao de `describe` existir.
+ * E a dica pode ser a nossa `ChartTooltipContent` ou qualquer conteudo que a
+ * tela escreveu: lendo o DOM, o anuncio vale para as duas e nunca diverge do
+ * que esta na tela.
+ *
+ * As duas condicoes que este gancho existe para respeitar:
+ *
+ * O ponteiro nao anuncia. Passar o mouse por um grafico de doze meses mudaria
+ * a regiao viva doze vezes em um segundo, e o leitor de tela fila tudo: a
+ * pessoa ouviria marco enquanto o ponteiro ja esta em dezembro. Por isso a
+ * bandeira comeca desligada e so a tecla de navegacao a liga - qualquer evento
+ * de ponteiro a desliga de novo.
+ *
+ * O anuncio nao repete o nome. `aria-label` ja diz o que o grafico e; aqui vai
+ * so o ponto, que e o que muda.
+ *
+ * O observador olha a arvore em vez de esperar um quadro depois da tecla: a
+ * dica pode aparecer no commit seguinte ou depois de uma animacao, e quem
+ * espera por tempo erra nos dois casos. A propria regiao viva esta dentro da
+ * moldura observada, entao escrever nela dispara o observador de novo - o
+ * texto igual nao muda o estado, e o ciclo morre na segunda volta.
+ */
+function useActivePointAnnouncement(chartId: string): string {
+  const [announcement, setAnnouncement] = useState("");
+
+  useEffect(() => {
+    const root = document.querySelector<HTMLElement>(`[data-rc-chart="${chartId}"]`);
+    if (!root) return;
+
+    let byKeyboard = false;
+    const clear = () => setAnnouncement((current) => (current === "" ? current : ""));
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (NAVIGATION_KEYS.has(event.key)) byKeyboard = true;
+    };
+    const onPointer = () => {
+      byKeyboard = false;
+    };
+    // Sair do grafico apaga o que foi dito. Sem isso, voltar ao mesmo ponto
+    // depois seria silencio: regiao viva so fala quando o texto MUDA.
+    const onFocusOut = () => {
+      byKeyboard = false;
+      clear();
+    };
+
+    const observer = new MutationObserver(() => {
+      if (!byKeyboard) return;
+
+      const tip = root.querySelector(".recharts-tooltip-wrapper");
+      const text = tip ? readableTip(tip) : "";
+      setAnnouncement((current) => (current === text ? current : text));
+    });
+
+    observer.observe(root, { subtree: true, childList: true, characterData: true });
+    root.addEventListener("keydown", onKeyDown);
+    root.addEventListener("pointermove", onPointer);
+    root.addEventListener("pointerdown", onPointer);
+    root.addEventListener("focusout", onFocusOut);
+
+    return () => {
+      observer.disconnect();
+      root.removeEventListener("keydown", onKeyDown);
+      root.removeEventListener("pointermove", onPointer);
+      root.removeEventListener("pointerdown", onPointer);
+      root.removeEventListener("focusout", onFocusOut);
+    };
+  }, [chartId]);
+
+  return announcement;
 }
 
 /**

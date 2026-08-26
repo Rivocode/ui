@@ -8,7 +8,31 @@ import type { ChartConfig } from "./chart";
 
 export const ChartTooltip = Tooltip;
 
-export type ChartTooltipContentProps = Partial<TooltipContentProps<number, string>> & {
+/**
+ * So o que a Recharts injeta E esta funcao le.
+ *
+ * O tipo era `Partial<TooltipContentProps<…>>` inteiro, e isso publicava 34
+ * props da Recharts na NOSSA tabela de props - `wrapperClassName`,
+ * `labelClassName`, `contentStyle`, `separator`, `offset` e companhia. Nenhuma
+ * era desestruturada aqui, entao todas apareciam no site e nao faziam nada: a
+ * pessoa escrevia `labelClassName` e ficava procurando o proprio erro.
+ *
+ * Nao ha o que honrar nelas. Esta dica substitui a `DefaultTooltipContent`
+ * inteira - e por isso que ela existe -, e as duas classes que a Recharts
+ * oferece ja tem endereco na casa: a raiz se veste por `className`, como toda
+ * peca da biblioteca, e nao vale ter dois nomes para a mesma raiz. As de
+ * estilo embutido vao contra o motivo da substituicao, que foi tirar estilo
+ * embutido do caminho do tema.
+ *
+ * As tres que sobram sao as que a Recharts clona para dentro do elemento a
+ * cada movimento do ponteiro, e as unicas que este corpo consulta. O `Partial`
+ * continua: no tipo da Recharts `active` e `payload` sao obrigatorias porque
+ * quem as escreve e ela, no clone - quem monta o grafico escreve so
+ * `<ChartTooltipContent config={…} />`, e sem o `Partial` isso nao compila.
+ */
+export type ChartTooltipContentProps = Partial<
+  Pick<TooltipContentProps<number, string>, "active" | "payload" | "label">
+> & {
   config?: ChartConfig;
   /** Esconde a bolinha de cor de cada linha. */
   hideIndicator?: boolean;

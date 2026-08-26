@@ -52,7 +52,7 @@ export function ComponentPage({ slug }: { slug: string }) {
     <article className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8">
         <Badge tone="accent">{entry.family}</Badge>
-        <h1 className="mt-4 font-display text-4xl text-fg">{entry.name}</h1>
+        <h1 className="mt-4 font-display text-4xl break-words text-fg">{entry.name}</h1>
 
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
           <a

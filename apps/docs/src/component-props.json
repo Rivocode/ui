@@ -3468,13 +3468,6 @@
         "type": "number",
         "required": false,
         "note": "Quantas migalhas cabem antes de o meio virar reticencia."
-      },
-      {
-        "name": "maxItems",
-        "type": "number",
-        "required": false,
-        "note": "O nome antigo do teto.",
-        "since": "0.4.0"
       }
     ]
   },
@@ -5706,12 +5699,6 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "accessibilityLayer",
-        "type": "boolean",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
         "name": "active",
         "type": "boolean",
         "required": false,
@@ -5719,90 +5706,9 @@
         "since": "0.4.0"
       },
       {
-        "name": "activeIndex",
-        "type": "TooltipIndex",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "allowEscapeViewBox",
-        "type": "AllowInDimension",
-        "required": false,
-        "note": "This option allows the tooltip to extend beyond the viewBox of the chart itself.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "animationDuration",
-        "type": "number",
-        "required": false,
-        "note": "Specifies the duration of animation, the unit of this option is ms.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "animationEasing",
-        "type": "EasingInput",
-        "required": false,
-        "note": "The type of easing function.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "axisId",
-        "type": "AxisId",
-        "required": false,
-        "note": "Tooltip always attaches itself to the \"Tooltip\" axis.",
-        "since": "0.4.0"
-      },
-      {
         "name": "config",
         "type": "ChartConfig",
         "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "content",
-        "type": "ContentType<number, string>",
-        "required": false,
-        "note": "Renders the content of the tooltip.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "contentStyle",
-        "type": "CSSProperties",
-        "required": false,
-        "note": "CSS styles to be applied to the wrapper `div` element.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "coordinate",
-        "type": "Coordinate",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "cursor",
-        "type": "CursorDefinition",
-        "required": false,
-        "note": "If set false, no cursor will be drawn when tooltip is active.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "defaultIndex",
-        "type": "number | TooltipIndex",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "filterNull",
-        "type": "boolean",
-        "required": false,
-        "note": "When an item of the payload has value null or undefined, this item won't be displayed.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "formatter",
-        "type": "(Formatter<number, string> & ((value: number, name: string, item: TooltipPayloadEntry, index: number, payload: TooltipPayload) => [...] | ReactNode))",
-        "required": false,
-        "note": "Function to customize the value in the tooltip.",
         "since": "0.4.0"
       },
       {
@@ -5820,136 +5726,15 @@
         "since": "0.4.0"
       },
       {
-        "name": "includeHidden",
-        "type": "boolean",
-        "required": false,
-        "note": "If true, the tooltip will display information about hidden series.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "isAnimationActive",
-        "type": "\"auto\" | boolean",
-        "required": false,
-        "note": "If set false, animation of tooltip will be disabled.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "itemSorter",
-        "type": "(TooltipItemSorter<number, string> & TooltipItemSorter)",
-        "required": false,
-        "note": "Sorts tooltip items.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "itemStyle",
-        "type": "CSSProperties",
-        "required": false,
-        "note": "Style of individual items inside the tooltip, a `<li>` element.",
-        "since": "0.4.0"
-      },
-      {
         "name": "label",
         "type": "string | number",
         "required": false,
         "since": "0.4.0"
       },
       {
-        "name": "labelClassName",
-        "type": "string",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "labelFormatter",
-        "type": "(((label: ReactNode, payload: readonly Payload<number, string>[]) => ReactNode) & ((label: ReactNode, payload: TooltipPayload) => ReactNode))",
-        "required": false,
-        "note": "The formatter function of label in tooltip.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "labelStyle",
-        "type": "CSSProperties",
-        "required": false,
-        "note": "\"Label\" is the tooltip title.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "offset",
-        "type": "number | Coordinate",
-        "required": false,
-        "note": "The offset size between the position of tooltip and the mouse cursor position.",
-        "since": "0.4.0"
-      },
-      {
         "name": "payload",
         "type": "TooltipPayload",
         "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "payloadUniqBy",
-        "type": "UniqueOption<TooltipPayloadEntry>",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "portal",
-        "type": "HTMLElement | null",
-        "required": false,
-        "note": "If portal is defined, then Tooltip will use this element as a target for rendering using React Portal: https://react.dev/reference/react-dom/createPortal If this is undefined then Tooltip renders inside the recharts-wrapper element.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "position",
-        "type": "Partial<Coordinate>",
-        "required": false,
-        "note": "If this field is set, the tooltip will be displayed at the specified position regardless of the mouse position.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "reverseDirection",
-        "type": "AllowInDimension",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "separator",
-        "type": "string",
-        "required": false,
-        "note": "The separator between name and value.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "shared",
-        "type": "boolean",
-        "required": false,
-        "note": "Defines whether the tooltip is reacting to the current data point, or to all data points at the current axis coordinate.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "trigger",
-        "type": "TooltipTrigger",
-        "required": false,
-        "note": "If `hover` then the Tooltip shows on mouse enter and hides on mouse leave.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "useTranslate3d",
-        "type": "boolean",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "wrapperClassName",
-        "type": "string",
-        "required": false,
-        "since": "0.4.0"
-      },
-      {
-        "name": "wrapperStyle",
-        "type": "CSSProperties",
-        "required": false,
-        "note": "CSS styles to be applied to the wrapper `div` element.",
         "since": "0.4.0"
       }
     ]
@@ -9402,13 +9187,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "onSelectedChange",
-        "type": "((keys: string[]) => void)",
-        "required": false,
-        "note": "Descontinuada: use `onValueChange`.",
-        "since": "0.4.0"
-      },
-      {
         "name": "onValueChange",
         "type": "((keys: string[]) => void)",
         "required": false
@@ -9432,13 +9210,6 @@
         "type": "boolean",
         "required": false,
         "note": "Coluna de checkbox a esquerda.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "selected",
-        "type": "string[]",
-        "required": false,
-        "note": "Descontinuada: use `value`.",
         "since": "0.4.0"
       },
       {
@@ -13272,12 +13043,6 @@
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
-        "required": false,
-        "since": "0.5.0"
-      },
-      {
-        "name": "wrapperClassName",
-        "type": "string",
         "required": false,
         "since": "0.5.0"
       }
@@ -22097,13 +21862,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "tone",
-        "type": "\"auto\" | \"none\"",
-        "required": false,
-        "note": "Descontinuada: use `trend`.",
-        "since": "0.4.0"
-      },
-      {
         "name": "trend",
         "type": "\"auto\" | \"none\"",
         "required": false,
@@ -22609,12 +22367,6 @@
         "type": "((value: string[]) => void)",
         "required": false,
         "note": "Avisado com a lista inteira a cada ficha que entra ou sai.",
-        "since": "0.5.0"
-      },
-      {
-        "name": "removeLabel",
-        "type": "((tag: string) => string)",
-        "required": false,
         "since": "0.5.0"
       },
       {
@@ -23185,23 +22937,9 @@
         "since": "0.4.0"
       },
       {
-        "name": "onSelectedChange",
-        "type": "((ids: string[]) => void)",
-        "required": false,
-        "note": "Descontinuada: use `onValueChange`.",
-        "since": "0.4.0"
-      },
-      {
         "name": "onValueChange",
         "type": "((ids: string[]) => void)",
         "required": false
-      },
-      {
-        "name": "selected",
-        "type": "string[]",
-        "required": false,
-        "note": "Descontinuada: use `value`.",
-        "since": "0.4.0"
       },
       {
         "name": "value",

@@ -59,15 +59,34 @@ export function readTokens(css: string): Record<string, string> {
   return resolved;
 }
 
-/** Os pares que carregam texto e portanto precisam passar. */
+/**
+ * Os pares que carregam texto e portanto precisam passar.
+ *
+ * `--rc-surface-raised` entra ao lado da pagina e do cartao porque ele nao e
+ * so "cartao levantado": e o fundo do `floatingPanel`, e portanto o fundo real
+ * do Menu, do Select, do Combobox, do Popover, do Tooltip, do Toast neutro e
+ * da dica de grafico. Tudo que essas pecas escrevem se le ali e nao sobre a
+ * pagina - o titulo de grupo do `MenuGroup` em `text-fg-subtle`, a marca do
+ * `SelectItem` e do `ComboboxItem` em `text-accent-text`, o selo neutro em
+ * `text-fg-muted`. Medir esse texto contra `--rc-bg` responde a pergunta
+ * errada, e era assim que esses pares ficavam de fora da guarda.
+ *
+ * `bg-overlay` fica de fora de proposito: nenhuma peca escreve sobre a tarja.
+ * Ela e so o escurecimento atras do Dialog, do AlertDialog, do Sheet e do
+ * Command, e o conteudo deles pousa em `surface`, que ja e medido.
+ */
 const PAIRS: Array<[string, string, number]> = [
   ["--rc-fg", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-surface-raised", MIN_BODY],
   ["--rc-fg-muted", "--rc-bg", MIN_TEXT],
   ["--rc-fg-muted", "--rc-surface", MIN_TEXT],
+  ["--rc-fg-muted", "--rc-surface-raised", MIN_TEXT],
   ["--rc-fg-subtle", "--rc-bg", MIN_TEXT],
   ["--rc-fg-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-fg-subtle", "--rc-surface-raised", MIN_TEXT],
   ["--rc-accent-text", "--rc-bg", MIN_TEXT],
+  ["--rc-accent-text", "--rc-surface-raised", MIN_TEXT],
   ["--rc-accent-fg", "--rc-accent", MIN_TEXT],
   ["--rc-success-text", "--rc-bg", MIN_TEXT],
   ["--rc-warning-text", "--rc-bg", MIN_TEXT],
@@ -102,6 +121,26 @@ const COMPOSED_PAIRS: Array<[string, string, string, number]> = [
   ["--rc-danger-text", "--rc-danger-subtle", "--rc-surface", MIN_TEXT],
   ["--rc-accent-text", "--rc-accent-subtle", "--rc-bg", MIN_TEXT],
   ["--rc-accent-text", "--rc-accent-subtle", "--rc-surface", MIN_TEXT],
+
+  // O item realcado dentro de um painel que flutua. `data-[highlighted]` pinta
+  // `accent-subtle` por cima de `surface-raised` no Menu, no Select e no
+  // Combobox, e o que se le ali e o texto do item mais a marca do escolhido.
+  ["--rc-fg", "--rc-accent-subtle", "--rc-surface-raised", MIN_BODY],
+  ["--rc-accent-text", "--rc-accent-subtle", "--rc-surface-raised", MIN_TEXT],
+  // O mesmo item, no tom de perigo: "Excluir" realcado troca o fundo por
+  // `danger-subtle`, ainda dentro do painel.
+  ["--rc-danger-text", "--rc-danger-subtle", "--rc-surface-raised", MIN_TEXT],
+
+  // O acento tenue tambem e fundo de texto fora do painel: a ficha do Combobox
+  // e do TagsInput e o item ja escolhido do Command escrevem `text-fg` nele.
+  ["--rc-fg", "--rc-accent-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-accent-subtle", "--rc-surface", MIN_BODY],
+
+  // A linha escolhida da tabela, que e alfa por cima de onde a tabela pousa, e
+  // o miolo do intervalo do Calendar, que pousa dentro do Popover.
+  ["--rc-fg", "--rc-selected", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-selected", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-selected", "--rc-surface-raised", MIN_BODY],
 ];
 
 /**

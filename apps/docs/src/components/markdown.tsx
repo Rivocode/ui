@@ -30,17 +30,51 @@ const CLASSES = [
   '[&_li]:text-base [&_li]:leading-relaxed [&_li]:text-fg-muted',
 
   // Code
-  '[&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-accent-text',
+  // `break-words` no codigo entre linhas: um nome como
+  // `accessibilityRole/accessibilityState` e uma palavra so, mais larga que a
+  // coluna de prosa a 320px, e sem poder quebrar ele empurrava a pagina
+  // (medido: 33px de excesso em /react-native). A quebra so acontece quando a
+  // palavra nao cabe sozinha na linha, entao nada muda no que ja cabia.
+  '[&_code]:font-mono [&_code]:text-[0.9em] [&_code]:text-accent-text [&_code]:break-words',
   '[&_code]:bg-accent-subtle [&_code]:rounded-sm [&_code]:px-1.5 [&_code]:py-0.5',
   '[&_pre]:my-5 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:border [&_pre]:border-border',
   '[&_pre]:bg-surface [&_pre]:p-4',
   '[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-fg [&_pre_code]:text-sm',
 
-  // Table
-  '[&_table]:my-5 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm',
+  // Table. A margem vive na moldura, e nao aqui: dentro de um contentor que
+  // rola, ela empurraria o conteudo em vez de separar a tabela da prosa.
+  '[&_table]:w-full [&_table]:border-collapse [&_table]:text-sm',
   '[&_th]:border-b [&_th]:border-border [&_th]:py-2 [&_th]:text-left [&_th]:text-fg',
   '[&_td]:border-b [&_td]:border-border [&_td]:py-2 [&_td]:text-fg-muted',
 ].join(' ')
+
+/*
+ * A tabela do markdown rola dentro da propria moldura.
+ *
+ * Uma tabela de tres colunas com nome de peca e trecho de codigo dentro nao
+ * cabe em 320px, e `<table>` nao encolhe abaixo do proprio conteudo minimo:
+ * ela empurra a PAGINA de lado. Medido a 320px, era a causa das piores
+ * rotas - /react-native passava 116px do viewport, /fundacao 102, e o site
+ * inteiro rolava de lado (WCAG 1.4.10, que pede que nada exija rolagem nos
+ * dois eixos).
+ *
+ * A saida e a mesma do `DataTable` e da tabela de props: quem rola e a
+ * moldura em volta, e o `<table>` continua `<table>` - com as linhas, os
+ * cabecalhos e o papel que o leitor de tela le. Poe `display:block` na tabela
+ * para faze-la rolar sozinha e o desenho funciona, mas o papel de tabela some
+ * junto, e com ele a navegacao por celula.
+ *
+ * O envelope e feito no HTML ja pronto porque o markdown chega como texto: o
+ * `marked` escreve `<table>` sem atributo nenhum, e tabela nao aninha em
+ * tabela, entao a troca e literal e sem ambiguidade.
+ */
+const TABLE_FRAME = 'my-5 overflow-x-auto'
+
+function frameTables(html: string) {
+  return html
+    .replaceAll('<table>', `<div class="${TABLE_FRAME}"><table>`)
+    .replaceAll('</table>', '</table></div>')
+}
 
 export function Markdown({
   source,
@@ -48,7 +82,7 @@ export function Markdown({
   headingOffset,
 }: { source: string } & MarkdownOptions) {
   const html = useMemo(
-    () => renderMarkdown(source, { idPrefix, headingOffset }),
+    () => frameTables(renderMarkdown(source, { idPrefix, headingOffset })),
     [source, idPrefix, headingOffset],
   )
 

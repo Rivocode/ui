@@ -28,7 +28,7 @@ export function GuidePage({ slug }: { slug: string }) {
   return (
     <article className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8">
-        <h1 className="font-display text-4xl text-fg">{guide.title}</h1>
+        <h1 className="font-display text-4xl break-words text-fg">{guide.title}</h1>
         <p className="mt-3 text-lg text-fg-muted">{guide.summary}</p>
 
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
