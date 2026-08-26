@@ -323,6 +323,10 @@ export function DataTable<Row>({
                       onClick={() => engineColumn.toggleSorting()}
                       className={cn(
                         "inline-flex items-center gap-1.5 rounded-sm",
+                        // O th ja pede uppercase, e a folha do navegador zera
+                        // text-transform em controle de formulario: sem repetir
+                        // aqui, a linha de cabecalho sai com caixa misturada.
+                        "uppercase",
                         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         "transition-colors duration-[var(--rc-duration-fast)] hover:text-fg",
                         direcao && "text-fg",

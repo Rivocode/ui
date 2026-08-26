@@ -186,3 +186,16 @@ test("linha clicavel e selecao convivem: o clique no checkbox nao abre a linha",
   fireEvent.click(screen.getByText("Padaria Aurora"));
   expect(aberta?.id).toBe("3");
 });
+
+test("a coluna que ordena sai na mesma caixa da que nao ordena", () => {
+  // O th ja pede uppercase, e a folha do navegador zera text-transform em
+  // controle de formulario: a coluna com sortable renderiza um button dentro,
+  // e a linha saia com caixa misturada - "Numero" ao lado de "CLIENTE".
+  const { container } = tabela();
+
+  const cabecalho = container.querySelector("th") as HTMLElement;
+  const botao = container.querySelector("th button") as HTMLElement;
+
+  expect(cabecalho.className).toContain("uppercase");
+  expect(botao.className).toContain("uppercase");
+});
