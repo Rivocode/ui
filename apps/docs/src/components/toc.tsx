@@ -192,12 +192,20 @@ const TOPO = 56
  * fora de alcance para sempre. Dar `overflow` a ela seria uma segunda rolagem
  * dentro da primeira, que e justamente o que nao se quer.
  *
- * Entao a lista continua grudada e anda por cima disso, no mesmo passo da
- * pagina, ate ter mostrado tudo o que nao cabia. Descer revela o fim, subir
- * devolve o comeco, e o deslocamento anda com a rolagem em vez de responder a
- * ela: nada se move sozinho enquanto a pessoa esta parada.
+ * Entao a lista continua grudada e anda por cima disso, na PROPORCAO do que
+ * ja se leu: no comeco do texto ela mostra o comeco dela, no fim mostra o fim,
+ * e no meio o meio. Assim a linha marcada cai sempre dentro da janela, que e a
+ * unica coisa que o indice precisa garantir.
+ *
+ * A primeira versao somava o quanto a roda tinha girado, e isso parecia a
+ * mesma coisa - nao e. O excedente costuma ser de uns 140px num artigo de dez
+ * mil: os primeiros dois gestos gastavam o curso inteiro, a lista parava no
+ * fim dela, e o resto da leitura acontecia com as linhas do comeco - as unicas
+ * que interessavam ali - fora da tela. Vinte e uma das cento e vinte posicoes
+ * de rolagem tinham a linha marcada invisivel, e eram as vinte e uma
+ * primeiras.
  */
-function useRail(quantidade: number) {
+function useRail(count: number) {
   const rail = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -207,22 +215,26 @@ function useRail(quantidade: number) {
     const nav = rail.current
     if (!nav) return
 
-    let deslocamento = 0
-    let anterior = window.scrollY
-
     const acertar = () => {
-      const y = window.scrollY
-      const delta = y - anterior
-      anterior = y
-
       // O que a lista tem alem do que a janela mostra. Zero ou menos, ela
       // cabe inteira e nao ha o que deslocar.
       const excedente = nav.offsetHeight - (window.innerHeight - TOPO)
 
-      deslocamento = excedente <= 0 ? 0 : Math.min(excedente, Math.max(0, deslocamento + delta))
+      if (excedente <= 0) {
+        nav.style.transform = ''
+        return
+      }
+
+      // Quanto do texto ja passou, de 0 a 1. E o mesmo numero que a barra de
+      // rolagem da janela desenha, entao a lista anda no compasso que a pessoa
+      // ve andar.
+      const percurso = document.documentElement.scrollHeight - window.innerHeight
+      const lido = percurso > 0 ? Math.min(1, Math.max(0, window.scrollY / percurso)) : 0
+
+      const shift = Math.round(excedente * lido)
       // `transform`, e nao `top`: mexer no `top` de um elemento grudado o faz
       // saltar no quadro em que o valor muda, porque ele reancora de uma vez.
-      nav.style.transform = deslocamento ? `translateY(${-deslocamento}px)` : ''
+      nav.style.transform = shift ? `translateY(${-shift}px)` : ''
     }
 
     acertar()
@@ -237,7 +249,7 @@ function useRail(quantidade: number) {
       window.removeEventListener('resize', acertar)
       observer.disconnect()
     }
-  }, [quantidade])
+  }, [count])
 
   return rail
 }
@@ -279,7 +291,7 @@ export function Toc({ watch }: { watch: string }) {
           <li key={`${index}-${item.id}`}>
             <a
               href={`#${item.id}`}
-              aria-current={active === item.id ? 'true' : undefined}
+              aria-current={active === item.id ? 'location' : undefined}
               className={`-ml-px block border-l py-1.5 text-sm leading-snug transition-colors ${
                 item.level === 3 ? 'pr-2 pl-6' : 'pr-2 pl-3'
               } ${
