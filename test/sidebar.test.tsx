@@ -8,12 +8,18 @@ import {
   SidebarGroup,
   SidebarInput,
   SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuRow,
   SidebarMenuItem,
   SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarProvider,
   SidebarTrigger,
 } from "../src/components/sidebar";
+
+function withTheme(node: React.ReactNode) {
+  return render(<RivoProvider scope="local">{node}</RivoProvider>);
+}
 
 function sidebar(defaultOpen: boolean) {
   return render(
@@ -235,4 +241,46 @@ test("aberta, o nome vem do texto na linha, sem rotulo repetido", () => {
 
   const link = screen.getByRole("link", { name: "Painel" });
   expect(link.getAttribute("aria-label")).toBeNull();
+});
+
+test("o botao de acao da linha tem nome, mesmo quem esquecer de dar um", () => {
+  // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela, e
+  // nada mais. O padrao nao substitui o nome certo - "Opcoes de Clientes" diz
+  // mais que "Mais opcoes" - mas e melhor que o silencio, e quem passa o seu
+  // continua mandando.
+  withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuRow>
+              <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              <SidebarMenuAction />
+            </SidebarMenuRow>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(screen.getByRole("button", { name: "Mais opções" })).toBeDefined();
+});
+
+test("o nome escrito por quem monta vence o padrao", () => {
+  withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuRow>
+              <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              <SidebarMenuAction aria-label="Opções de Clientes" />
+            </SidebarMenuRow>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(screen.getByRole("button", { name: "Opções de Clientes" })).toBeDefined();
 });

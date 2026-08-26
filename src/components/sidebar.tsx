@@ -465,6 +465,11 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
   return (
     <button
       type="button"
+      // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela,
+      // e nada mais. O padrao vem antes do espalhamento de proposito: quem
+      // escreve "Opcoes de Clientes" diz mais do que este generico, e continua
+      // mandando - mas o silencio deixa de ser o padrao.
+      aria-label="Mais opções"
       {...props}
       className={cn(
         "absolute top-1/2 right-1 -translate-y-1/2",
