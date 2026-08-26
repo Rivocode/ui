@@ -20,8 +20,8 @@ export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange
 };
 
 /**
- * Campo com mascara: CPF, CNPJ, telefone, CEP, cartao, placa, dinheiro, ou
- * qualquer molde escrito na mao.
+ * Campo com mascara: `cpf`, `cnpj`, `telefone`, `cep`, `data`, `hora`,
+ * `cartao`, `placa` e `moeda`, ou qualquer molde escrito na mao.
  *
  * A mascara e do campo e nao do valor: quem recebe a mudanca leva as duas
  * versoes, e decide qual guardar. Guardar o texto pontuado no banco e o erro

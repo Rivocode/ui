@@ -74,11 +74,35 @@ export function applyCurrencyMask(text: string): string {
   return `${withDot},${resto}`;
 }
 
+/**
+ * O que separa um molde escrito na mao de um nome de molde digitado errado e
+ * ter marca dentro: `99h99` e molde, `dinheiro` e `cnjp` nao sao. Sem esta
+ * pergunta, o nome errado caia no molde literal e era escrito no campo -
+ * quem digitava 248000 com `mask="dinheiro"` via "dinheiro" aparecer.
+ */
+function pareceMolde(mask: string): boolean {
+  return /[9A*]/.test(mask);
+}
+
 /** Aplica a mascara pedida, seja nome de molde, molde cru ou moeda. */
 export function applyMask(text: string, mask: Mask): string {
   if (mask === "moeda") return applyCurrencyMask(text);
-  const pattern = MASKS[mask as MaskName] ?? mask;
-  return applyPattern(text, pattern);
+
+  const pattern = MASKS[mask as MaskName];
+  if (pattern) return applyPattern(text, pattern);
+
+  if (pareceMolde(mask)) return applyPattern(text, mask);
+
+  // Em producao o campo passa cru, que e menos pior do que escrever o nome do
+  // molde no lugar do que a pessoa digitou. Em desenvolvimento o erro fala.
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      `[rivocode/ui] mask="${mask}" nao e um molde conhecido nem parece um molde. ` +
+        `Os prontos sao: ${Object.keys(MASKS).join(", ")}, moeda. ` +
+        `Molde escrito na mao usa 9 para digito, A para letra e * para os dois.`,
+    );
+  }
+  return text;
 }
 
 /** Tira a pontuacao e devolve so o que o usuario digitou. */
