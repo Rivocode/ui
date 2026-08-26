@@ -51,22 +51,20 @@ export function ComponentPage({ slug }: { slug: string }) {
   return (
     <article className="mx-auto max-w-3xl px-6 py-10">
       <header className="mb-8">
-        <Badge tone={entry.undocumented ? 'warning' : 'accent'}>{entry.family}</Badge>
+        <Badge tone="accent">{entry.family}</Badge>
         <h1 className="mt-4 font-display text-4xl text-fg">{entry.name}</h1>
 
-        {!entry.undocumented && (
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
-            <a
-              href={`/componentes/${entry.slug}.md`}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
-            >
-              <FileCode2 size={13} />/componentes/{entry.slug}.md
-            </a>
-            <span className="text-fg-subtle">
-              markdown cru, para quem lê com agent em vez de olho
-            </span>
-          </div>
-        )}
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+          <a
+            href={`/componentes/${entry.slug}.md`}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
+          >
+            <FileCode2 size={13} />/componentes/{entry.slug}.md
+          </a>
+          <span className="text-fg-subtle">
+            markdown cru, para quem lê com agent em vez de olho
+          </span>
+        </div>
       </header>
 
       {shown.length > 0 && (
@@ -86,16 +84,9 @@ export function ComponentPage({ slug }: { slug: string }) {
         </pre>
       </div>
 
-      {entry.undocumented ? (
-        <p className="rounded-md border border-warning bg-warning-subtle p-4 text-sm text-warning-text">
-          Esta peça ainda não tem documento escrito. O exemplo acima é real e roda o componente do
-          pacote, mas o texto sobre quando usar, e sobre o que cada prop faz, está por escrever.
-        </p>
-      ) : (
-        <Section title="Quando usar">
-          <Markdown source={entry.body} />
-        </Section>
-      )}
+      <Section title="Quando usar">
+        <Markdown source={entry.body} />
+      </Section>
 
       <Section title="API">
         <PropsTable component={entry.name} />

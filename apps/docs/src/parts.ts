@@ -3,11 +3,12 @@
  *
  * `TableRow` belongs on the `Table` page, not on one of its own.
  *
- * A hundred and six flat entries in the sidebar force whoever is after a table
- * to open six pages to assemble one. The rule is the name: a piece whose name
- * starts with another piece of the catalog is a part of it, `CardHeader` of
- * `Card`, `ComboboxItem` of `Combobox`. The longest prefix wins, otherwise
- * `ChartTooltipContent` would land on `Chart` instead of `ChartTooltip`.
+ * Over a hundred and fifty flat entries in the sidebar force whoever is after
+ * a table to open six pages to assemble one. The rule is the name: a piece
+ * whose name starts with another piece of the catalog is a part of it,
+ * `CardHeader` of `Card`, `ComboboxItem` of `Combobox`. The longest prefix
+ * wins, otherwise `ChartTooltipContent` would land on `Chart` instead of
+ * `ChartTooltip`.
  *
  * `DataTable` does not become a part of `Table`: its name does not start with
  * it, and the two are genuinely independent pieces.
@@ -22,11 +23,18 @@
  * The prefix says `AlertDialog` is a part of `Alert`, and it is not: one is a
  * banner that stays on the screen, the other is a modal that demands an
  * answer. Same for `ToggleGroup`, which is its own control and not a slice of
- * `Toggle`. The heuristic pays for itself on the forty-odd real parts; these
- * are the ones it gets wrong, listed rather than guessed at.
+ * `Toggle`. The heuristic pays for itself on the seventy-odd real parts;
+ * these are the ones it gets wrong, listed rather than guessed at.
+ *
+ * The `*Group` pieces are the ones that keep being forgotten here, and the
+ * forgetting is invisible: the piece does not disappear, it just stops being
+ * counted and moves into someone else's page. `ButtonGroup` spent a whole
+ * release inside `Button` for exactly that reason, while it shipped its own
+ * doc and its own export.
  */
 const STANDALONE = new Set([
   'AlertDialog',
+  'ButtonGroup',
   'CheckboxGroup',
   'InputGroup',
   'Menubar',

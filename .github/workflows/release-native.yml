@@ -97,6 +97,56 @@ jobs:
           fi
           echo "Publicando $pkg"
 
+      # A versao pode ja estar no registro, e o npm so conta isso no fim.
+      #
+      # Foi assim que este workflow terminou as quatro primeiras execucoes: a
+      # 0.2.0 tinha sido publicada a mao, e cada tentativa gastava install,
+      # tipos, tokens, paridade, suite e empacotamento para morrer no ultimo
+      # passo com `403 ... You cannot publish over the previously published
+      # versions: 0.2.0` - uma mensagem que fala de permissao e nao diz o que
+      # fazer. O caminho automatico nunca foi exercitado ate o fim porque a
+      # unica coisa que faltava era um numero novo.
+      #
+      # A versao do pacote nativo mora em `native/package.json`, e nao na raiz:
+      # os dois pacotes andam em velocidades diferentes, e e por isso que existe
+      # este workflow separado.
+      - name: Conferir se a versao ja esta publicada
+        # O .npmrc que o setup-node escreveu espera esta variavel. Consultar o
+        # registro nao exige credencial, mas com ela ausente o npm le um token
+        # vazio no proprio arquivo de configuracao, e a falha que aparece fala
+        # de autenticacao em vez de falar da versao.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          versao=$(node -p "require('./native/package.json').version")
+
+          # `npm view` responde 404 tanto para versao inexistente quanto para
+          # pacote inexistente, e os dois casos querem dizer a mesma coisa
+          # aqui: pode publicar. Por isso o erro vira string vazia em vez de
+          # parar o passo - a primeira publicacao de um pacote novo tem que
+          # atravessar esta guarda.
+          publicada=$(npm view "@rivocode/ui-native@$versao" version 2>/dev/null || true)
+
+          if [ -n "$publicada" ]; then
+            echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
+            echo
+            echo "O registro nao aceita republicar o mesmo numero - nem com outro"
+            echo "conteudo, nem depois de um unpublish. Publicar de novo exige"
+            echo "uma versao nova."
+            echo
+            echo "O que fazer:"
+            echo "  1. suba a versao em native/package.json e registre a mudanca"
+            echo "     em native/CHANGELOG.md;"
+            echo "  2. apague a tag que sobrou, aqui e no remoto:"
+            echo "     git tag -d native-v$versao && git push origin :native-v$versao"
+            echo "  3. crie a tag da versao nova, que e quem dispara este workflow."
+            echo
+            echo "No registro hoje: latest $(npm view @rivocode/ui-native version 2>/dev/null || echo '?')."
+            exit 1
+          fi
+
+          echo "A versao $versao ainda nao existe no registro."
+
       # Este pacote publica FONTE - `exports` aponta para ./src/index.ts, e o
       # Metro compila no app de quem usa. Erro de tipo daqui nao fica aqui: ele
       # aparece dentro do node_modules de quem consome, e o skipLibCheck de la
@@ -147,6 +197,23 @@ jobs:
 
             console.log('entradas e bin ok:', files.length, 'arquivos');
           "
+
+      # O ensaio, antes da estreia.
+      #
+      # O passo acima confere a LISTA de arquivos; este exercita o caminho da
+      # publicacao inteiro - o mesmo empacotamento, as mesmas regras de
+      # `files` e `exports`, o mesmo `--access public` - e para antes do
+      # unico passo que nao da para desfazer. Os dois nao sao o mesmo passo:
+      # um le o tarball, o outro monta a publicacao.
+      #
+      # Vale mesmo quando a publicacao vai acontecer logo em seguida: uma
+      # quebra de empacotamento aparece aqui, com o publish real ainda por
+      # fazer, e nao com metade da versao ja no registro.
+      - name: Ensaiar a publicacao
+        working-directory: native
+        run: npm publish --access public --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publicar
         working-directory: native

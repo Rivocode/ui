@@ -14,7 +14,7 @@ documentacao nao existia.
 
 | Peca                         | Onde                                       | Estado                                                        |
 | ---------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
-| `@rivocode/ui`               | este repo, `src/`                          | **0.6.1**, publicado no npm, 82 pecas no catalogo             |
+| `@rivocode/ui`               | este repo, `src/`                          | **0.6.1**, publicado no npm, 83 pecas no catalogo             |
 | `@rivocode/ui-native`        | este repo, `native/`                       | **0.2.0**, publicado no npm, 46 das 83 pecas traduzidas       |
 | Site de documentacao         | `apps/docs/`, no ar em `ds.rivocode.com.br` | **Publicado por CI desde hoje**, 158 paginas cruas            |
 | Landing                      | repo `rivocode.com`, na `main`             | Migrada e consumindo o pacote do npm, presa no `^0.2.0`       |
@@ -25,10 +25,10 @@ mais **552 testes em 68 arquivos**, sendo 453 do web e 99 do nativo.
 
 ### O catalogo, por familia
 
-Sao **82 pecas** e **158 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **83 pecas** e **158 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
-dentro de outra coisa, e as 76 partes moram na pagina de quem as monta, com
+dentro de outra coisa, e as 75 partes moram na pagina de quem as monta, com
 ancora propria. Quem conta os 158 arquivos como catalogo passa a gastar
 contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
 esta em `apps/docs/src/parts.ts` e a guarda que a segura em
@@ -41,14 +41,16 @@ esta em `apps/docs/src/parts.ts` e a guarda que a segura em
 | Feedback     |    10 | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, Skeleton, Spinner, ToastViewport                                                                                                                                       |
 | Navegacao    |     9 | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                              |
 | Sobreposicao |     7 | AlertDialog, ContextMenu, Dialog, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                            |
-| Acoes        |     5 | Button, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                  |
+| Acoes        |     6 | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                  |
 | Grafico      |     4 | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                               |
 | Dados        |     4 | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                            |
 | Fundacao     |     1 | RivoProvider                                                                                                                                                                                                                     |
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
-com acento. Nenhuma peca esta sem documento hoje: as 78 que tem exemplo
-executavel tem doc tambem, e a lista "Sem documento" do site esta vazia.
+com acento. Nenhuma peca esta sem documento hoje: as 79 que tem exemplo
+executavel tem doc tambem, e a familia "Sem documento" saiu do catalogo - ela
+existia para peca com exemplo e sem texto, caso que o `check:doc` ja nao deixa
+passar.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional — quem nao usa
@@ -184,15 +186,15 @@ alguem tentaria "consertar".
   fora, porque receita nao versiona como componente e ninguem decidiu se elas
   moram aqui ou num pacote separado.
 
-## Um numero que diverge, de proposito ou nao
+## Um numero que divergia
 
-O catalogo do site conta **82** pecas; a tabela de paridade do nativo conta
-**83**. A diferenca inteira e o `ButtonGroup`: o nome comeca por `Button`, e a
-regra de prefixo do `parts.ts` o trata como parte do `Button` — ele nao esta na
-lista `STANDALONE`, onde `CheckboxGroup`, `InputGroup` e `ToggleGroup` estao. A
-tabela de paridade o conta como peca inteira. As duas guardas passam, cada uma
-consistente consigo mesma. Se alguem for uniformizar, o lugar e o `STANDALONE`,
-e vai mexer nos dois numeros de uma vez.
+O catalogo do site contava **82** pecas e a tabela de paridade do nativo
+contava **83**. A diferenca inteira era o `ButtonGroup`: o nome comeca por
+`Button`, e a regra de prefixo do `parts.ts` o tratava como parte do `Button`,
+apesar de ele ter documento e export proprios. Faltava so o nome na lista
+`STANDALONE`, onde `CheckboxGroup`, `InputGroup` e `ToggleGroup` ja estavam.
+Resolvido: o `ButtonGroup` entrou na lista, os dois numeros sao 83, e a peca
+voltou a ter pagina propria em vez de morar dentro da do `Button`.
 
 ## Como retomar
 
@@ -227,7 +229,7 @@ gh run list --workflow=release-native --limit 5    # as quatro falhas
 curl -sI https://ds.rivocode.com.br/llms.txt       # 200, text/plain
 ```
 
-As 82 pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
+As 83 pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
 parte. O caminho curto e `curl -s https://ds.rivocode.com.br/llms.txt | head`,
 que abre dizendo o numero. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
 

@@ -42,8 +42,6 @@ export type Entry = {
   loadExamples?: () => Promise<Record<string, ComponentType>>
   /** Example source, shown next to what it draws. */
   exampleSource?: string
-  /** Ships in the library and has an example, but no doc written yet. */
-  undocumented?: boolean
   /** Name of the piece this one composes, when it is a part of another. */
   partOf?: string
   /** The pieces that compose this one, documented on the same page. */
@@ -89,40 +87,31 @@ const sourceByName = new Map(
   Object.entries(EXAMPLE_SOURCES).map(([path, source]) => [fileName(path), source]),
 )
 
-const DOCUMENTED: Entry[] = Object.entries(DOCS).map(([path, raw]) => {
-  const name = fileName(path)
-  const { family, body } = splitFrontmatter(raw)
-  return {
-    name,
-    slug: slugify(name),
-    family,
-    body: dropLeadingHeading(body),
-    summary: firstSentence(body),
-    loadExamples: exampleByName.get(name),
-    exampleSource: sourceByName.get(name),
-  }
-})
-
-/*
- * Fourteen pieces from the Base UI wave landed with an example and no doc.
- * Hiding them would make for a pretty, lying site: they ship in the package,
- * and someone searching for `Slider` has to find it. They show up with the
- * example that already runs, and with the gap stated.
+/**
+ * Every piece, parts included, in the order the sidebar reads them.
+ *
+ * The doc is what creates the entry, and there is no second source: a piece
+ * that shipped with an example and no doc used to land here as its own
+ * "Sem documento" family, and that branch is gone because the case can no
+ * longer happen. `bun run check:doc` crosses the exports against
+ * `.design-sync/docs/` in both directions, so an export without a page fails
+ * the gate before it ever reaches the site.
  */
-const EXAMPLE_ONLY: Entry[] = [...exampleByName.keys()]
-  .filter((name) => !DOCUMENTED.some((entry) => entry.name === name))
-  .map((name) => ({
-    name,
-    slug: slugify(name),
-    family: 'Sem documento',
-    body: '',
-    summary: 'Existe na biblioteca e tem exemplo, mas ainda nao foi documentada.',
-    loadExamples: exampleByName.get(name),
-    exampleSource: sourceByName.get(name),
-    undocumented: true,
-  }))
-
-const ALL: Entry[] = [...DOCUMENTED, ...EXAMPLE_ONLY].sort((a, b) => a.name.localeCompare(b.name))
+const ALL: Entry[] = Object.entries(DOCS)
+  .map(([path, raw]) => {
+    const name = fileName(path)
+    const { family, body } = splitFrontmatter(raw)
+    return {
+      name,
+      slug: slugify(name),
+      family,
+      body: dropLeadingHeading(body),
+      summary: firstSentence(body),
+      loadExamples: exampleByName.get(name),
+      exampleSource: sourceByName.get(name),
+    }
+  })
+  .sort((a, b) => a.name.localeCompare(b.name))
 
 const NAMES = new Set(ALL.map((entry) => entry.name))
 
@@ -150,7 +139,6 @@ const FAMILY_ORDER = [
   'Feedback',
   'Gráfico',
   'Geral',
-  'Sem documento',
 ]
 
 /** A family nobody thought to order goes last, never first. */
@@ -179,6 +167,3 @@ export const findEntry = (address: string) => {
 
 /** How many pieces have a running example, not just text. */
 export const WITH_EXAMPLE = ENTRIES.filter((entry) => entry.loadExamples).length
-
-/** The gap, counted and in plain sight: shipped but not documented. */
-export const UNDOCUMENTED = ENTRIES.filter((entry) => entry.undocumented).length
