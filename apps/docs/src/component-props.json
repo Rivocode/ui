@@ -8411,7 +8411,14 @@
   },
   "InputGroup": {
     "forwardsRoot": true,
-    "props": []
+    "props": [
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "A altura da moldura, que precisa acompanhar a do campo de dentro."
+      }
+    ]
   },
   "InputPrefix": {
     "forwardsRoot": true,
@@ -9867,6 +9874,59 @@
       {
         "name": "render",
         "type": "ComponentRenderFn<HTMLProps, MenubarState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
+  "MenubarTrigger": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "closeDelay",
+        "type": "number",
+        "required": false,
+        "note": "How long to wait before closing the menu that was opened on hover."
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "required": false,
+        "note": "How long to wait before the menu may be opened on hover."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
+      {
+        "name": "handle",
+        "type": "MenuHandle<unknown>",
+        "required": false,
+        "note": "A handle to associate the trigger with a menu."
+      },
+      {
+        "name": "nativeButton",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop."
+      },
+      {
+        "name": "openOnHover",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the menu should also open when the trigger is hovered."
+      },
+      {
+        "name": "payload",
+        "type": "unknown",
+        "required": false,
+        "note": "A payload to pass to the menu when it is opened."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, MenuTriggerState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
       }

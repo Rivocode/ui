@@ -259,7 +259,7 @@ export { Meter, type MeterProps } from "./components/meter";
 export { NumberField, type NumberFieldProps } from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
-export { Menubar, type MenubarProps } from "./components/menubar";
+export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export {
   ToolbarButton,
   ToolbarGroup,

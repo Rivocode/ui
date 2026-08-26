@@ -21,8 +21,11 @@ export type CommandItem = {
    * Outras palavras que acham este item. "nf", "fatura" e "boleto" levando a
    * Notas fiscais e o que separa uma paleta util de uma que so acha quem ja
    * sabe o nome exato.
+   *
+   * Aceita uma lista ou uma string com as palavras separadas por espaco - o
+   * JSDoc descrevia uma lista desde o inicio, e o tipo so aceitava a string.
    */
-  keywords?: string;
+  keywords?: string | string[];
   disabled?: boolean;
   onSelect: () => void;
 };
@@ -119,7 +122,9 @@ export function Command({
       .map((group) => ({
         ...group,
         items: group.items.filter((item) =>
-          normalize(`${item.label} ${item.description ?? ""} ${item.keywords ?? ""}`).includes(
+          normalize(
+            `${item.label} ${item.description ?? ""} ${[item.keywords ?? []].flat().join(" ")}`,
+          ).includes(
             termo,
           ),
         ),
