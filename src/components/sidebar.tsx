@@ -416,8 +416,18 @@ export function SidebarMenuItem({
     );
   }
 
+  // Encolhida, o nome sai da tela e sobra um `<a>` com um icone dentro. A dica
+  // conta isso para o olho e nao para a arvore de acessibilidade, entao o que
+  // o leitor de tela encontra e uma coluna de doze "link" sem nome nenhum - no
+  // estado que e o padrao de toda tela de operacao. O nome ja esta aqui na
+  // mao: quando `children` e texto ele vira `aria-label`, que e o nome mais
+  // limpo possivel; quando vem estruturado nao ha string para virar atributo,
+  // e ai o proprio texto continua na arvore, escondido so para o olho.
+  const label = typeof children === "string" ? children : undefined;
+
   const row = (
     <a
+      aria-label={collapsed ? label : undefined}
       {...props}
       onClick={handleClick}
       aria-current={active ? "page" : undefined}
@@ -425,6 +435,7 @@ export function SidebarMenuItem({
     >
       {icon && <span className="flex shrink-0 items-center">{icon}</span>}
       {!collapsed && <span className="min-w-0 flex-1 truncate">{children}</span>}
+      {collapsed && !label && <span className="sr-only">{children}</span>}
       {!collapsed && badge}
     </a>
   );

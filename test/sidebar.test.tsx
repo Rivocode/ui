@@ -186,3 +186,53 @@ test("aberta, o rotulo do grupo aparece", () => {
 
   expect(screen.getByText("Catalogo")).toBeDefined();
 });
+
+/* ---------------------------------------------------------------------------
+ * Nome de cada destino com a barra encolhida
+ *
+ * Encolhida a barra, o rotulo sai da tela e o `<a>` fica so com o icone. Uma
+ * suite de interacao mediu a arvore de acessibilidade do navegador e achou
+ * doze links sem nome nenhum - no estado que e o padrao de toda tela de
+ * operacao. O leitor de tela anuncia "link" doze vezes seguidas.
+ *
+ * O que estes testes nao alcancam: o happy-dom nao computa a arvore de
+ * acessibilidade do navegador. O `getByRole(..., { name })` aqui usa o calculo
+ * do dom-accessibility-api, que le `aria-label` e o texto dos filhos - e o
+ * bastante para provar que o nome existe no DOM, e nao para provar como cada
+ * motor o anuncia.
+ * ------------------------------------------------------------------------- */
+
+test("encolhida, o destino continua tendo nome, e nao vira um link mudo", () => {
+  sidebar(false);
+
+  expect(screen.getByRole("link", { name: "Painel" })).toBeDefined();
+});
+
+test("encolhida, o destino de filho estruturado tambem tem nome", () => {
+  // Nem todo item chega como texto puro: quem monta a barra costuma passar um
+  // `<span>` com marcacao dentro, e ai nao ha string para virar `aria-label`.
+  render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={false}>
+        <Sidebar>
+          <SidebarMenu>
+            <SidebarMenuItem href="#feedback">
+              <span>Feedback</span>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+
+  expect(screen.getByRole("link", { name: "Feedback" })).toBeDefined();
+});
+
+test("aberta, o nome vem do texto na linha, sem rotulo repetido", () => {
+  // Larga, o texto esta visivel e um `aria-label` por cima so criaria uma
+  // segunda fonte de verdade para o mesmo nome.
+  sidebar(true);
+
+  const link = screen.getByRole("link", { name: "Painel" });
+  expect(link.getAttribute("aria-label")).toBeNull();
+});
