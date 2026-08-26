@@ -22,6 +22,18 @@ export type NumberFieldProps = Omit<ComponentProps<typeof BaseNumberField.Root>,
   numberFormat?: Intl.NumberFormatOptions;
 };
 
+/**
+ * A altura por tamanho, do mesmo token que o Input usa. Ela mora na moldura e
+ * nao no campo porque o `h-full` do input de dentro derruba a altura que o
+ * `inputVariants` traz: com a altura cravada aqui, `size="sm"` mudava fonte e
+ * respiro e a caixa continuava media. Mesma solucao do `InputGroup`.
+ */
+const HEIGHT = {
+  sm: "h-[var(--rc-control-sm)]",
+  md: "h-[var(--rc-control-md)]",
+  lg: "h-[var(--rc-control-lg)]",
+} as const;
+
 const STEP = cn(
   "flex w-9 shrink-0 items-center justify-center text-fg-muted",
   "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
@@ -45,7 +57,7 @@ const STEP = cn(
 export function NumberField({
   className,
   placeholder,
-  size,
+  size = "md",
   numberFormat,
   // O nome pertence ao campo, e nao a caixa em volta dele. Espalhado no
   // `Root`, que e um `div`, o `aria-label` nao rotulava nada e o input ficava
@@ -58,8 +70,11 @@ export function NumberField({
     <BaseNumberField.Root {...props} format={numberFormat} className={cn("w-full", className)}>
       <BaseNumberField.Group
         className={cn(
-          "flex w-full items-stretch overflow-hidden rounded-md border border-border bg-surface",
-          "h-[var(--rc-control-md)] font-sans text-base text-fg",
+          // A fronteira do campo veste o border-strong, que e o papel com a
+          // promessa de 3:1 do WCAG 1.4.11 - o border comum some no escuro.
+          "flex w-full items-stretch overflow-hidden rounded-md border border-border-strong bg-surface",
+          HEIGHT[size],
+          "font-sans text-base text-fg",
           "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
           "focus-within:ring-offset-bg",
           "has-[[data-invalid]]:border-danger",

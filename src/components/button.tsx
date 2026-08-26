@@ -102,6 +102,10 @@ export function Button({
           className={cn(
             "size-4 animate-spin rounded-pill border-2 border-current",
             "border-t-transparent",
+            // Quem pediu menos movimento no sistema ve o anel parado: era a
+            // unica animacao da biblioteca sem a guarda, e girar sem parar e
+            // exatamente o que dispara enjoo em quem e sensivel a isso.
+            "motion-reduce:animate-none",
           )}
         />
       )}

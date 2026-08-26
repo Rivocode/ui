@@ -7,6 +7,7 @@ import { Menubar, MenubarTrigger } from "../src/components/menubar";
 import { InputGroup, InputPrefix } from "../src/components/input-group";
 import { Input } from "../src/components/field";
 import { Command, type CommandGroup } from "../src/components/command";
+import { NumberField } from "../src/components/number-field";
 
 /*
  * O atrito que a auditoria mediu: nada aqui estava quebrado, e cada item
@@ -49,6 +50,16 @@ test("a moldura de campo acompanha os tres tamanhos do campo", () => {
   );
 
   const frame = screen.getByLabelText("Valor").parentElement!;
+  expect(frame.className).toContain("--rc-control-sm");
+});
+
+test("o campo de numero acompanha os tres tamanhos", () => {
+  // Mesmo defeito da moldura, um arquivo adiante: a altura estava cravada no
+  // Group e o `h-full` do input derrubava a que o inputVariants trazia, entao
+  // `size="sm"` mudava fonte e respiro e a caixa continuava media.
+  withTheme(<NumberField size="sm" aria-label="Parcelas" defaultValue={3} />);
+
+  const frame = screen.getByLabelText("Parcelas").closest("div")!;
   expect(frame.className).toContain("--rc-control-sm");
 });
 

@@ -100,7 +100,7 @@ export function DatePicker({
     <button
       type="button"
       disabled={disabled}
-      aria-label="Abrir calendario"
+      aria-label="Abrir calendário"
       className={cn(
         "absolute top-1/2 right-1.5 inline-flex size-8 -translate-y-1/2",
         "items-center justify-center rounded-md text-fg-muted",

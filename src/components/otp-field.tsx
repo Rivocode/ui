@@ -40,7 +40,7 @@ export function OTPField({ className, length = 6, ...props }: OTPFieldProps) {
           // aquele primeiro digito fica sem nome nenhum.
           {...(index > 0 ? { "aria-label": `Dígito ${index + 1} de ${length}` } : {})}
           className={cn(
-            "size-11 rounded-md border border-border bg-surface text-center",
+            "size-11 rounded-md border border-border-strong bg-surface text-center",
             "font-mono text-lg text-fg tabular-nums",
             "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
             "outline-none focus-visible:border-accent focus-visible:ring-2",

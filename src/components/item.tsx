@@ -1,7 +1,8 @@
 "use client";
 
+import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactElement } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -31,7 +32,16 @@ export const itemVariants = cva(
   },
 );
 
-export type ItemProps = ComponentProps<"div"> & VariantProps<typeof itemVariants>;
+export type ItemProps = ComponentProps<"div"> &
+  VariantProps<typeof itemVariants> & {
+    /**
+     * Troca o elemento renderizado mantendo a aparencia:
+     * `<Item render={<a href="..." />}>`. E o par obrigatorio do
+     * `interactive`, porque cor de passagem em `div` nao vira alvo de
+     * teclado - o JSDoc ja mandava usar os dois juntos e a prop nao existia.
+     */
+    render?: ReactElement;
+  };
 
 /**
  * A linha de lista: alguma coisa a esquerda, texto no meio, acao a direita.
@@ -45,8 +55,14 @@ export type ItemProps = ComponentProps<"div"> & VariantProps<typeof itemVariants
  * `render` de link ou botao para virar clicavel de verdade, porque cor de
  * passagem em div nao vira alvo de teclado.
  */
-export function Item({ className, variant, interactive, ...props }: ItemProps) {
-  return <div {...props} className={cn(itemVariants({ variant, interactive }), className)} />;
+export function Item({ className, variant, interactive, render, ...props }: ItemProps) {
+  return useRender({
+    render: render ?? <div />,
+    props: {
+      ...props,
+      className: cn(itemVariants({ variant, interactive }), className),
+    },
+  });
 }
 
 /** O canto de imagem, icone ou avatar. */

@@ -92,7 +92,7 @@ export function TreeSelect({
               value={busca}
               onChange={(event) => setBusca(event.target.value)}
               placeholder="Buscar"
-              aria-label="Buscar na arvore"
+              aria-label="Buscar na árvore"
               className={cn(inputVariants({ size: "sm" }), "pl-8")}
             />
           </div>

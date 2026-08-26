@@ -98,7 +98,7 @@ test("o calendario abre pelo botao do campo", () => {
       <DatePicker defaultValue={new Date(2026, 2, 3)} />
     </RivoProvider>,
   );
-  fireEvent.click(screen.getByLabelText("Abrir calendario"));
+  fireEvent.click(screen.getByLabelText("Abrir calendário"));
   expect(screen.getByRole("grid")).toBeDefined();
 });
 
@@ -170,7 +170,7 @@ test("com rodape, o clique no dia e so rascunho ate o Aplicar", async () => {
     </RivoProvider>,
   );
 
-  fireEvent.click(screen.getByLabelText("Abrir calendario"));
+  fireEvent.click(screen.getByLabelText("Abrir calendário"));
   fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
   expect(recebida).toBeUndefined();
 
@@ -186,7 +186,7 @@ test("sem rodape, o clique no dia ja vale e o painel fecha", () => {
     </RivoProvider>,
   );
 
-  fireEvent.click(screen.getByLabelText("Abrir calendario"));
+  fireEvent.click(screen.getByLabelText("Abrir calendário"));
   fireEvent.click(screen.getAllByRole("gridcell")[10]!.querySelector("button")!);
   expect(recebida).toBeDefined();
   expect(screen.queryByRole("grid")).toBeNull();

@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { Glob } from "bun";
 
 import { contrastRatio, readTokens } from "../scripts/check-contrast";
 
@@ -73,4 +74,54 @@ test("a tag de cada pacote aponta para a versao dele", async () => {
   expect(web).toContain('tags: ["v*"]');
   expect(native).toContain('tags: ["native-v*"]');
   expect(native).toContain("native/package.json");
+});
+
+/*
+ * A fronteira de um controle de formulario e o que diz "aqui se digita", e o
+ * WCAG 1.4.11 cobra 3:1 dela. Quem cumpre a promessa e o `--rc-border-strong`;
+ * o `--rc-border` e linha de arranjo, e no tema escuro sai em 1,1:1 - visivel
+ * para quem enxerga bem, invisivel para o resto.
+ *
+ * O `check:contrast` nao pega isso porque mede o token e nao quem o usa: os
+ * dois passam, cada um na promessa que fizeram. Esta guarda olha o outro lado.
+ */
+const CONTROL_ROOT = /"[^"]*\bborder border-border(?!-strong)/;
+
+/**
+ * O bloco `cn(...)` inteiro, com os parenteses balanceados - a classe de um
+ * controle nasce picada em varias strings, e olhar uma de cada vez perderia a
+ * metade que importa.
+ */
+function blocksOf(code: string) {
+  const blocks: string[] = [];
+  for (let i = code.indexOf("cn("); i !== -1; i = code.indexOf("cn(", i + 1)) {
+    let depth = 1;
+    let end = i + 3;
+    while (end < code.length && depth > 0) {
+      if (code[end] === "(") depth += 1;
+      else if (code[end] === ")") depth -= 1;
+      end += 1;
+    }
+    blocks.push(code.slice(i, end));
+  }
+  return blocks;
+}
+
+test("a fronteira de um controle de formulario nunca veste a borda fraca", async () => {
+  // O recorte e estreito de proposito, e e o que separa campo de cartao: uma
+  // superficie de campo (`bg-surface`), com borda inteira em volta e anel de
+  // foco proprio. Cartao nao tem anel; divisoria interna e `border-r` e nao
+  // `border`; amostra de cor e botao de pagina nao tem `bg-surface`. Nenhum
+  // dos tres entra aqui, e todos eles usam o border comum com razao.
+  const weak: string[] = [];
+
+  for await (const file of new Glob("src/components/*.tsx").scan(".")) {
+    const code = await Bun.file(file).text();
+    for (const block of blocksOf(code)) {
+      const isField = block.includes("bg-surface") && /focus-(visible|within):ring-2/.test(block);
+      if (isField && CONTROL_ROOT.test(block)) weak.push(file);
+    }
+  }
+
+  expect(weak).toEqual([]);
 });
