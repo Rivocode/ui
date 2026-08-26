@@ -39,9 +39,12 @@ export function parseDate(text: string): Date | undefined {
  * em oito digits, entao o campo nunca fica num formato que o `parseDate` nao
  * entende.
  */
-export function maskDate(text: string): string {
+export function applyDateMask(text: string): string {
   const digits = text.replace(/\D/g, "").slice(0, 8);
   if (digits.length <= 2) return digits;
   if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
   return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 }
+
+/** @deprecated Use `applyDateMask`, da mesma familia de `applyCurrencyMask`. */
+export const maskDate = applyDateMask;

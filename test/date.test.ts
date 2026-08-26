@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { formatDate, parseDate, maskDate } from "../src/lib/date";
+import { formatDate, parseDate, maskDate, applyDateMask } from "../src/lib/date";
 
 test("formata a data no padrao brasileiro, com zero a esquerda", () => {
   expect(formatDate(new Date(2026, 2, 3))).toBe("03/03/2026");
@@ -46,4 +46,12 @@ test("a mascara ignora letra e para em oito digitos", () => {
 test("apagar a barra apaga o numero junto, sem travar o campo", () => {
   expect(maskDate("03/03/202")).toBe("03/03/202");
   expect(maskDate("03/")).toBe("03");
+});
+
+test("a mascara de data se chama como a de moeda, porque faz a mesma coisa", () => {
+  // `applyCurrencyMask` e `maskDate` devolvem as duas texto pronto, e tinham
+  // dois nomes de familias diferentes. Agora sao a mesma familia: `applyXMask`.
+  expect(applyDateMask("31122026")).toBe("31/12/2026");
+  expect(applyDateMask("311")).toBe("31/1");
+  expect(maskDate("31122026")).toBe(applyDateMask("31122026"));
 });

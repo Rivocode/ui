@@ -6,6 +6,7 @@ import {
   applyPattern,
   toCents,
   phoneMask,
+  phonePatternFor,
   unmask,
 } from "../src/lib/mask";
 
@@ -81,4 +82,21 @@ test("molde escrito na mao com letra literal continua valendo", () => {
   // O que separa molde de nome errado e ter marca dentro - 9, A ou *. Um
   // molde com letra solta no meio ainda e molde.
   expect(applyMask("1430", "99h99")).toBe("14h30");
+});
+
+test("o nome diz a natureza do que volta, e nao so o assunto", () => {
+  // As tres tinham a mesma assinatura `(text: string) => string`, e uma
+  // devolvia coisa de outra natureza: molde, e nao texto pronto. Quem
+  // chamava `phoneMask` esperando o telefone formatado recebia o molde
+  // literal, e o TypeScript nao tinha como acusar - as assinaturas eram
+  // identicas. `applyX` entrega texto; `patternFor` entrega molde.
+  expect(phonePatternFor("11987654321")).toBe("(99) 99999-9999");
+  expect(phonePatternFor("1132654321")).toBe("(99) 9999-9999");
+  expect(applyCurrencyMask("123456")).toBe("1.234,56");
+});
+
+test("o nome antigo continua valendo, para quem ja instalou a 0.5.0", () => {
+  // Renomear sem deixar o apelido quebraria quem atualizou ontem, e por um
+  // motivo que nao muda comportamento nenhum.
+  expect(phoneMask("11987654321")).toBe(phonePatternFor("11987654321"));
 });

@@ -2,7 +2,7 @@
 
 import { useState, type ComponentProps } from "react";
 
-import { applyMask, phoneMask, unmask, type Mask } from "../lib/mask";
+import { applyMask, phonePatternFor, unmask, type Mask } from "../lib/mask";
 import { Input } from "./field";
 
 export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value"> & {
@@ -72,7 +72,7 @@ export function MaskedInput({
  * e o fixo entrava com a pontuacao do celular ate a primeira tecla.
  */
 function patternFor(mask: Mask, text: string): Mask {
-  return mask === "telefone" ? phoneMask(text) : mask;
+  return mask === "telefone" ? phonePatternFor(text) : mask;
 }
 
 /** Moldes que so aceitam digito, para o teclado do celular abrir em numeros. */

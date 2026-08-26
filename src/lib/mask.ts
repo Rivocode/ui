@@ -122,7 +122,17 @@ export function toCents(text: string): number {
 /**
  * O telefone brasileiro tem oito ou nove casas depois do DDD, e o molde muda
  * no meio da digitacao. Sem isto, o fixo fica com a pontuacao do celular.
+ *
+ * O nome diz `patternFor`, e nao `mask`, porque o que volta e o MOLDE - para
+ * entregar ao `applyMask` - e nao o texto pronto. As tres funcoes de mascara
+ * tinham a assinatura `(text: string) => string`, entao quem chamasse esperando
+ * o telefone formatado recebia `(99) 99999-9999` escrito no campo, sem que o
+ * TypeScript pudesse acusar. `applyXMask` devolve texto; `patternFor` devolve
+ * molde.
  */
-export function phoneMask(text: string): string {
+export function phonePatternFor(text: string): Mask {
   return unmask(text).length > 10 ? "(99) 99999-9999" : "(99) 9999-9999";
 }
+
+/** @deprecated Use `phonePatternFor`: o que volta e molde, e nao texto. */
+export const phoneMask = phonePatternFor;

@@ -4,7 +4,7 @@ import { CalendarDays } from "lucide-react";
 import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { formatDate, parseDate, maskDate } from "../lib/date";
+import { formatDate, parseDate, applyDateMask } from "../lib/date";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
@@ -126,7 +126,7 @@ export function DatePicker({
         placeholder={placeholder}
         value={displayText}
         onChange={(event) => {
-          const masked = maskDate(event.target.value);
+          const masked = applyDateMask(event.target.value);
           setText(masked);
           setRawText(true);
 

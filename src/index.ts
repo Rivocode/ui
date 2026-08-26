@@ -93,7 +93,7 @@ export {
   type DateRange,
   type DateRangePickerProps,
 } from "./components/date-range-picker";
-export { formatDate, parseDate, maskDate } from "./lib/date";
+export { formatDate, parseDate, applyDateMask, maskDate } from "./lib/date";
 /*
  * Os formatadores nasceram no subcaminho do grafico, e ali era o lugar errado:
  * formatar dinheiro numa celula de tabela nao e assunto de grafico. Saem
@@ -150,6 +150,7 @@ export {
   applyCurrencyMask,
   applyPattern,
   toCents,
+  phonePatternFor,
   phoneMask,
   unmask,
   MASKS,
