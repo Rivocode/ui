@@ -1,6 +1,6 @@
 import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
 import { BookOpen, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ENTRIES, FAMILIES, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
 import { Logo } from '@/components/logo'
@@ -12,6 +12,7 @@ import { Home } from '@/pages/home'
 import { linkTo, useRoute, type Route } from '@/routes'
 import { CatalogPage } from '@/pages/catalog'
 import { Toc } from '@/components/toc'
+import { revealWithin } from '@/reveal'
 
 function Brand({ navigate }: { navigate: (route: Route) => void }) {
   return (
@@ -37,6 +38,23 @@ function Nav({
   onNavigate?: () => void
 }) {
   const [query, setQuery] = useState('')
+  const list = useRef<HTMLDivElement>(null)
+
+  /*
+   * Quem chega por um link de componente cai numa lista de sessenta e seis
+   * nomes rolada no topo, com o nome que ele esta lendo fora da tela. Nada
+   * dizia onde ele estava na familia, nem que a lista continuava para baixo.
+   *
+   * So na troca de pagina: rolar a lista enquanto a pessoa filtra tiraria a
+   * mao dela do gesto.
+   */
+  const here = route.kind + ('slug' in route ? `:${route.slug}` : '')
+  useEffect(() => {
+    const current = list.current?.querySelector<HTMLElement>('[aria-current="page"]')
+    // A folga maior que a padrao e o titulo da familia, que fica grudado no
+    // topo da lista e cobriria a linha se ela parasse debaixo dele.
+    if (list.current && current) revealWithin(list.current, current, 44)
+  }, [here])
 
   const families = useMemo(() => {
     const term = query.trim().toLowerCase()
@@ -96,7 +114,7 @@ function Nav({
         />
       </div>
 
-      <div className="rc-scroll min-h-0 flex-1 overflow-y-auto pr-2">
+      <div ref={list} className="rc-scroll min-h-0 flex-1 overflow-y-auto pr-2">
         <div className="mb-6">
           <h2 className={headingClass}>Começar</h2>
           <ul className="border-l border-border">
@@ -112,6 +130,7 @@ function Nav({
                       link.onClick(event)
                       onNavigate?.()
                     }}
+                    aria-current={active ? 'page' : undefined}
                     className={rowClass(active)}
                   >
                     {guide.title}
@@ -126,6 +145,7 @@ function Nav({
                   foundationLink.onClick(event)
                   onNavigate?.()
                 }}
+                aria-current={route.kind === 'foundation' ? 'page' : undefined}
                 className={rowClass(route.kind === 'foundation')}
               >
                 Convenções
@@ -147,6 +167,7 @@ function Nav({
                 link.onClick(event)
                 onNavigate?.()
               }}
+              aria-current={route.kind === 'catalog' ? 'page' : undefined}
               className={`${rowClass(route.kind === 'catalog')} mb-4 block border-l border-border`}
             >
               Todas as peças, numa tela
@@ -170,6 +191,7 @@ function Nav({
                         link.onClick(event)
                         onNavigate?.()
                       }}
+                      aria-current={active ? 'page' : undefined}
                       className={`${rowClass(active)} font-mono`}
                     >
                       {entry.name}

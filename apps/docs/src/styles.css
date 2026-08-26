@@ -16,6 +16,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* O cabecalho tem 56px e fica por cima da pagina. Sem esta folga o titulo
+     que o indice aponta encosta nele, e o de cima chega a sumir por baixo.
+     Aqui, e nao num scroll-mt por titulo: o scroll-padding vale para o
+     clique no indice, para o `#` colado na barra de endereco, para o foco
+     que o teclado leva e para o scrollIntoView do proprio indice. */
+  scroll-padding-top: 5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -30,6 +36,10 @@ html {
    the list: a track that is always visible competes with the names, and the
    names are the reason the list exists. */
 .rc-scroll {
+  /* A rolagem para na lista, em vez de continuar na pagina atras dela.
+     Chegar ao fim dos sessenta e seis nomes e ver o texto sair andando
+     sozinho e o mesmo gesto produzindo duas coisas diferentes. */
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
   transition: scrollbar-color 150ms ease;

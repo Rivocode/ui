@@ -58,7 +58,12 @@ export function useRoute() {
     setRoute(target)
     // Changing pages while keeping the old scroll opens the next component
     // halfway down. The browser only handles that for its own navigations.
-    window.scrollTo({ top: 0 })
+    //
+    // `instant` a proposito. A folha define `scroll-behavior: smooth`, e sem
+    // dizer nada aqui a troca de pagina herdava esse suave: quem clicava num
+    // nome da lateral no fim de uma pagina longa via a pagina velha subir
+    // rolando ate o topo antes da nova aparecer.
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
 
   return { route, navigate }

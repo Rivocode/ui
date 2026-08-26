@@ -161,7 +161,7 @@ export function ExampleStage({
               logo depois do `h1` do componente, pulando um nivel em todas as
               66 paginas. Nivel semantico e tamanho visual sao coisas
               diferentes, entao a aparencia nao muda. */}
-          <h2 id={anchor(name)} className="scroll-mt-20 pl-1 font-sans text-sm font-medium text-fg">
+          <h2 id={anchor(name)} className="pl-1 font-sans text-sm font-medium text-fg">
             {title ?? titleOf(name)}
           </h2>
 

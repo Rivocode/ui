@@ -11,7 +11,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
     <section className="mt-12">
       {/* The id is what the right rail links to, and what a pasted address
           lands on. */}
-      <h2 id={anchor(title)} className="scroll-mt-20 font-display text-xl text-fg">
+      <h2 id={anchor(title)} className="font-display text-xl text-fg">
         {title}
       </h2>
       <div className="mt-4">{children}</div>
@@ -112,7 +112,7 @@ export function ComponentPage({ slug }: { slug: string }) {
             {entry.parts.map((part) => (
               <div key={part.name} className="border-l-2 border-border pl-4">
                 <div className="mb-2 flex flex-wrap items-baseline gap-3">
-                  <h3 id={anchor(part.name)} className="scroll-mt-20 font-mono text-base text-fg">
+                  <h3 id={anchor(part.name)} className="font-mono text-base text-fg">
                     {part.name}
                   </h3>
                   <a

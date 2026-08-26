@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { revealWithin } from '@/reveal'
 
 /* ---------------------------------------------------------------------------
  * On this page
@@ -170,17 +171,35 @@ function useActive(items: Item[]) {
   return active
 }
 
+/** Mantém a linha marcada visível dentro do trilho, sem mexer na página. */
+function useFollow(active: string | null) {
+  const rail = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (!active || !rail.current) return
+    // Pelo `data-id`, e não pelo id: um documento pode escrever o mesmo id
+    // duas vezes, e `#id` acharia o primeiro deles em qualquer lugar da
+    // página. Aqui a busca começa no trilho e termina nele.
+    const line = rail.current.querySelector<HTMLElement>(`[data-id="${CSS.escape(active)}"]`)
+    if (line) revealWithin(rail.current, line)
+  }, [active])
+
+  return rail
+}
+
 export function Toc({ watch }: { watch: string }) {
   const items = useHeadings(watch)
   const active = useActive(items)
+  const rail = useFollow(active)
 
   // One heading is not an index of anything.
   if (items.length < 2) return null
 
   return (
     <nav
+      ref={rail}
       aria-label="Nesta página"
-      className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto py-10 pl-6 xl:block"
+      className="rc-scroll sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto py-10 pl-6 xl:block"
     >
       <p className="mb-3 font-mono text-[0.7rem] tracking-widest text-fg-subtle uppercase">
         Nesta página
@@ -202,6 +221,8 @@ export function Toc({ watch }: { watch: string }) {
           <li key={`${index}-${item.id}`}>
             <a
               href={`#${item.id}`}
+              data-id={item.id}
+              aria-current={active === item.id ? 'true' : undefined}
               className={`-ml-px block border-l py-1.5 text-sm leading-snug transition-colors ${
                 item.level === 3 ? 'pr-2 pl-6' : 'pr-2 pl-3'
               } ${
