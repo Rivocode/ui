@@ -75,7 +75,7 @@ a densidade compacta, porque alvo de toque não encolhe em tela de dedo.
 
 ## O catálogo
 
-46 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
+49 peças, por tradução e não por porte: `DataTable` vira `DataList`, `Sheet`
 só conhece o comportamento de baixo, `Select` abre numa folha, e `Sidebar`,
 `Menubar` e `Tooltip` não portam — são idiomas de desktop. A tabela completa
 de tradução está no guia.

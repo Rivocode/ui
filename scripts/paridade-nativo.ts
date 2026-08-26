@@ -340,8 +340,17 @@ const PARITY: Record<string, Row> = {
       "descrição.",
   },
   Indicator: {
-    state: "fila",
-    note: "a contagem por cima do ícone ainda é `View` posicionada na mão",
+    state: "traduz",
+    note: "`label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número",
+    page:
+      "Traduz, e o que muda é quem carrega o nome acessível. No web o número é escondido do " +
+      "leitor e um texto só para ele entra ao lado; no nativo a pastilha inteira é UM elemento " +
+      "de acessibilidade, e o `label` — aqui obrigatório — é o que ele anuncia. O leitor lê o " +
+      "filho (\"Notificações, botão\") e a pastilha em seguida (\"3 notificações\"), e nunca um " +
+      "\"3\" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a " +
+      "leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O " +
+      "anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não " +
+      "existe no React Native, e borda ali ocupa por dentro da caixa.",
   },
   InputGroup: {
     state: "traduz",
@@ -356,8 +365,20 @@ const PARITY: Record<string, Row> = {
       "alvo de toque não encolhe.",
   },
   Item: {
-    state: "fila",
-    note: "a linha de lista é o `renderItem` do `DataList`, escrito à mão",
+    state: "traduz",
+    note: "`title`, `description`, `media` e `actions` como props; o corte com reticências é `numberOfLines`, que lá é prop e não classe",
+    page:
+      "Traduz, e não concorre com o `DataList`: ele resolve os quatro finais de uma consulta e " +
+      "devolve cada linha ao `renderItem` sem opinião sobre o que há dentro dela — o `Item` é " +
+      "esse dentro, e serve igualmente à lista de duas escolhas numa folha, que consulta " +
+      "nenhuma tem. A composição do web (`ItemMedia`, `ItemContent`, `ItemTitle`, " +
+      "`ItemDescription`, `ItemActions`) vira quatro props, pela mesma regra do `PageHeader`: " +
+      "os lugares são sempre os mesmos, e prop nenhuma deixa trocar a ordem das colunas sem " +
+      "querer. Com `onPress` a linha inteira vira alvo, com 44px de altura mínima — mas quando " +
+      "há `actions`, o alvo passa a ser só a área de texto, senão o `Pressable` acessível por " +
+      "cima engoliria o botão da direita como parada do leitor de tela. Dentro de um `DataList` " +
+      "com `onRowPress`, não passe `onPress`: um `Pressable` dentro do outro segura o toque no " +
+      "de dentro, e a linha responderia aqui e nunca lá.",
   },
   Meter: {
     state: "traduz",
@@ -374,8 +395,22 @@ const PARITY: Record<string, Row> = {
     note: "o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo",
   },
   RelativeTime: {
-    state: "fila",
-    note: "o texto é seu, e não há relógio que se atualize sozinho",
+    state: "traduz",
+    note: "o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico",
+    page:
+      "Traduz com relógio e tudo — receber o texto pronto teria sido mais barato de escrever e " +
+      "teria devolvido o problema para a tela, que é de onde ele veio. O passo acompanha a " +
+      "unidade, como no web: trinta segundos enquanto conta minuto, uma hora quando já conta " +
+      "dia, e nunca um segundo. A hora anda de cinco em cinco minutos, e não de um em um: a " +
+      "diferença entre \"há 1 hora\" e \"há 2 horas\" não vale um timer por minuto vezes as " +
+      "linhas montadas. Duas coisas são só daqui. O texto se refaz ao voltar do fundo, porque " +
+      "enquanto o app dorme o timer do JS não corre e a tela reabriria dizendo \"há 2 minutos\" " +
+      "três horas depois. E o texto é sempre numérico: o `Intl.RelativeTimeFormat` não existe " +
+      "no Hermes, o plural vai escrito à mão, e onde o web diz \"ontem\" o nativo diz \"há 1 " +
+      "dia\". O `cutoff` e o `now` são os mesmos, e a data que ele mostra sai no formato do " +
+      "`formatDate`. O que não atravessa é o instante exato: no web ele mora no `title` do " +
+      "`<time>`, e no toque não há `title` nem onde pousar o ponteiro — quando a data exata " +
+      "importa, ela precisa estar escrita na tela.",
   },
   Steps: { state: "fila", note: "a régua de passos e o `useWizard()` não atravessaram" },
   TagsInput: {

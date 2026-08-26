@@ -29,7 +29,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 46 traduzem com o mesmo nome, 3 traduzem com outro, 18 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts` em 2026-08-26:** 49 traduzem com o mesmo nome, 3 traduzem com outro, 15 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -68,10 +68,10 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `Fieldset` | ✔ traduz | `legend` como prop |
 | `FileUpload` | ○ na fila | precisa do `expo-document-picker`; entra quando houver app dono da dependência |
 | `Form` | ○ na fila | o `react-hook-form` roda no nativo; o que falta é o `FormField` que liga o campo ao controle |
-| `Indicator` | ○ na fila | a contagem por cima do ícone ainda é `View` posicionada na mão |
+| `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco — não há `focus-visible` em tela de toque |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
-| `Item` | ○ na fila | a linha de lista é o `renderItem` do `DataList`, escrito à mão |
+| `Item` | ✔ traduz | `title`, `description`, `media` e `actions` como props; o corte com reticências é `numberOfLines`, que lá é prop e não classe |
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `MaskedInput` | ✔ traduz | o valor é só dígitos; a máscara é do campo, o dado não a carrega |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado |
@@ -87,7 +87,7 @@ o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format` |
 | `RadioGroup` | ✔ traduz | `items` na raiz; não existe `Radio` solto para compor |
-| `RelativeTime` | ○ na fila | o texto é seu, e não há relógio que se atualize sozinho |
+| `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe |
 | `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |

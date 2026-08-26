@@ -1,9 +1,11 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, mock, setSystemTime, test } from "bun:test";
 import { Text } from "react-native";
 
-import { Avatar, DataList, EmptyState, Progress, Stat } from "../src";
+import { AppState } from "../../test/react-native-mock";
+import { Avatar, Button, DataList, EmptyState, Indicator, Progress, RelativeTime, Stat } from "../src";
 import { Meter } from "../src/meter";
-import { act, byClass, byRole, render, textOf } from "./helpers";
+import { REFRESH, describeRelative } from "../src/relative-time";
+import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 const ROWS = [
   { id: "1", name: "Clínica São Lucas" },
@@ -226,5 +228,131 @@ describe("Meter", () => {
 
     const bare = render(<Meter value={8} max={15} label="Armazenamento" />);
     expect(textOf(bare)).not.toContain("53%");
+  });
+});
+
+describe("Indicator", () => {
+  test("a contagem fica por cima do filho, e o leitor ouve a frase e nao o numero", () => {
+    const screen = render(
+      <Indicator count={3} label="3 notificações">
+        <Button onPress={() => {}}>Avisos</Button>
+      </Indicator>,
+    );
+
+    expect(textOf(screen)).toContain("3");
+
+    const [pastilha] = byLabel(screen, "3 notificações");
+    expect(pastilha.props.accessible).toBe(true);
+    expect(pastilha.props.accessibilityRole).toBe("text");
+    expect(pastilha.props.className).toContain("absolute");
+
+    // O filho continua sendo botao: a marca nao embrulha o que ela conta,
+    // senao o alvo de dentro sumia para o leitor de tela.
+    expect(byRole(screen, "button").length).toBe(1);
+  });
+
+  test("zero nao desenha nada, e acima do teto sai o teto com mais", () => {
+    const zero = render(
+      <Indicator count={0} label="Nenhum aviso">
+        <Text>Sino</Text>
+      </Indicator>,
+    );
+    expect(byLabel(zero, "Nenhum aviso").length).toBe(0);
+
+    const muitos = render(
+      <Indicator count={140} label="Mais de 99 notificações">
+        <Text>Sino</Text>
+      </Indicator>,
+    );
+    expect(textOf(muitos)).toContain("99+");
+
+    const proprio = render(
+      <Indicator count={12} max={9} label="Mais de 9 notificações">
+        <Text>Sino</Text>
+      </Indicator>,
+    );
+    expect(textOf(proprio)).toContain("9+");
+  });
+
+  test("o ponto marca sem contar, e mesmo assim se anuncia", () => {
+    const screen = render(
+      <Indicator dot label="Há mensagens novas">
+        <Text>Sino</Text>
+      </Indicator>,
+    );
+
+    expect(byLabel(screen, "Há mensagens novas").length).toBe(1);
+    expect(textOf(screen).trim()).toBe("Sino");
+  });
+});
+
+describe("RelativeTime", () => {
+  const AGORA = new Date("2026-08-26T12:00:00");
+  const antes = (ms: number) => new Date(AGORA.getTime() - ms);
+  const texto = (element: Parameters<typeof render>[0]) => textOf(render(element)).trim();
+
+  test("a unidade e o plural, para tras e para frente", () => {
+    expect(texto(<RelativeTime value={antes(30_000)} now={AGORA} />)).toBe("agora");
+    expect(texto(<RelativeTime value={antes(60_000)} now={AGORA} />)).toBe("há 1 minuto");
+    expect(texto(<RelativeTime value={antes(120_000)} now={AGORA} />)).toBe("há 2 minutos");
+    expect(texto(<RelativeTime value={antes(3_600_000)} now={AGORA} />)).toBe("há 1 hora");
+    expect(texto(<RelativeTime value={antes(3 * 86_400_000)} now={AGORA} />)).toBe("há 3 dias");
+    expect(texto(<RelativeTime value={antes(60 * 86_400_000)} now={AGORA} />)).toBe("há 2 meses");
+
+    const depois = new Date(AGORA.getTime() + 3 * 86_400_000);
+    expect(texto(<RelativeTime value={depois} now={AGORA} />)).toBe("em 3 dias");
+
+    // Aceita o que vier: Date, ISO ou milissegundos.
+    expect(texto(<RelativeTime value={antes(120_000).toISOString()} now={AGORA} />)).toBe(
+      "há 2 minutos",
+    );
+    expect(texto(<RelativeTime value={antes(120_000).getTime()} now={AGORA} />)).toBe(
+      "há 2 minutos",
+    );
+  });
+
+  test("cutoff troca o relativo pela data, no formato do formatDate", () => {
+    const velho = new Date("2026-01-05T09:00:00");
+    expect(texto(<RelativeTime value={velho} cutoff="month" now={AGORA} />)).toBe("05/01/2026");
+    // Sem cutoff, continua contando.
+    expect(texto(<RelativeTime value={velho} now={AGORA} />)).toBe("há 8 meses");
+  });
+
+  test("o passo acompanha a distancia, e a data ja passada nao tem passo", () => {
+    expect(describeRelative(antes(90_000), AGORA).step).toBe(REFRESH.minute);
+    expect(describeRelative(antes(5 * 3_600_000), AGORA).step).toBe(REFRESH.hour);
+    expect(describeRelative(antes(3 * 86_400_000), AGORA).step).toBe(REFRESH.day);
+    expect(REFRESH.now).toBeLessThan(REFRESH.minute);
+    expect(REFRESH.minute).toBeLessThan(REFRESH.hour);
+    expect(REFRESH.hour).toBeLessThan(REFRESH.day);
+
+    // Data absoluta de instante passado nunca mais muda: relogio nenhum.
+    const antigo = antes(400 * 86_400_000);
+    expect(describeRelative(antigo, AGORA, "month").step).toBeNull();
+
+    // No futuro a mesma data volta a ser relativa quando chegar perto, entao
+    // ali o relogio continua.
+    const futuro = new Date(AGORA.getTime() + 400 * 86_400_000);
+    expect(describeRelative(futuro, AGORA, "month").step).toBe(REFRESH.year);
+  });
+
+  test("sem now o texto se refaz ao voltar do fundo; com now ele fica parado", () => {
+    setSystemTime(new Date("2026-08-26T12:00:00"));
+
+    const vivo = render(<RelativeTime value={new Date("2026-08-26T11:58:00")} />);
+    const parado = render(<RelativeTime value={new Date("2026-08-26T11:58:00")} now={AGORA} />);
+    expect(textOf(vivo).trim()).toBe("há 2 minutos");
+
+    // O aparelho dormiu uma hora: o timer do JS nao correu enquanto isso, e e
+    // a volta que refaz o texto.
+    setSystemTime(new Date("2026-08-26T13:00:00"));
+    act(() => AppState.setState("background"));
+    act(() => AppState.setState("active"));
+
+    expect(textOf(vivo).trim()).toBe("há 1 hora");
+    expect(textOf(parado).trim()).toBe("há 2 minutos");
+
+    act(() => vivo.unmount());
+    setSystemTime();
   });
 });

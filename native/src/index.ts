@@ -8,6 +8,7 @@ export {
 } from "./provider";
 export { Button, type ButtonProps } from "./button";
 export { Badge, type BadgeProps } from "./badge";
+export { Indicator, type IndicatorProps } from "./indicator";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 export { Stat, type StatProps } from "./stat";
 export { Sparkline, type SparklineProps } from "./sparkline";
@@ -20,6 +21,8 @@ export { Switch, type SwitchProps } from "./switch";
 export { Sheet, type SheetProps } from "./sheet";
 export { useToast } from "./toast";
 export { DataList, type DataListProps } from "./data-list";
+export { Item, type ItemProps } from "./item";
+export { RelativeTime, type RelativeTimeProps, type RelativeUnit } from "./relative-time";
 export {
   Alert,
   Avatar,

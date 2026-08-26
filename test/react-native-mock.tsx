@@ -50,3 +50,27 @@ export const Appearance = {
 };
 
 export const useColorScheme = () => scheme;
+
+/* O AppState de verdade e a ponte com o ciclo de vida do aparelho; aqui e uma
+   variavel mais um emissor, para o teste do RelativeTime poder mandar o app
+   dormir e acordar. O `setState` NAO existe no react-native: o sistema e quem
+   muda o estado la, e aqui e o teste. */
+type AppStateValue = "active" | "background" | "inactive";
+const appStateListeners = new Set<(state: AppStateValue) => void>();
+let appState: AppStateValue = "active";
+
+export const AppState = {
+  get currentState() {
+    return appState;
+  },
+  addEventListener: (type: string, listener: (state: AppStateValue) => void) => {
+    if (type !== "change") return { remove: () => {} };
+    appStateListeners.add(listener);
+    return { remove: () => appStateListeners.delete(listener) };
+  },
+  /** So no duble: empurra a mudanca que o sistema empurraria. */
+  setState: (next: AppStateValue) => {
+    appState = next;
+    for (const listener of appStateListeners) listener(next);
+  },
+};

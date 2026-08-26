@@ -6,14 +6,16 @@ import {
   AccordionItem,
   AspectRatio,
   Badge,
+  Button,
   Collapsible,
   DescriptionItem,
   DescriptionList,
+  Item,
   PageHeader,
   Toggle,
   ToggleGroup,
 } from "../src";
-import { act, byRole, render, textOf } from "./helpers";
+import { act, byClass, byRole, byType, render, textOf } from "./helpers";
 
 describe("Toggle e ToggleGroup", () => {
   test("o toggle anuncia apertado e alterna", () => {
@@ -123,5 +125,82 @@ describe("AspectRatio", () => {
       (node) => typeof node.type === "string" && node.props.style?.aspectRatio === 16 / 9,
     );
     expect(box.length).toBe(1);
+  });
+});
+
+describe("Item", () => {
+  test("arranja midia, texto e acao; so o texto corta, e por prop", () => {
+    const screen = render(
+      <Item
+        media={<Badge>NF</Badge>}
+        title="Clínica São Lucas"
+        description="Nota 4471 · vence amanhã"
+        actions={<Text>R$ 1,2K</Text>}
+      />,
+    );
+
+    const texto = textOf(screen);
+    expect(texto).toContain("Clínica São Lucas");
+    expect(texto).toContain("Nota 4471");
+    expect(texto).toContain("R$ 1,2K");
+
+    // O corte e `numberOfLines`, que no React Native e prop e nao classe -
+    // e ele e do titulo e da descricao, nunca da midia nem da acao.
+    const cortados = byType(screen, "Text").filter((node) => node.props.numberOfLines === 1);
+    expect(cortados.length).toBe(2);
+
+    // Sem onPress a linha nao e botao: papel so onde ha acao, como no DataList.
+    expect(byRole(screen, "button").length).toBe(0);
+  });
+
+  test("com onPress a linha inteira e o alvo, e diz titulo e descricao juntos", () => {
+    const onPress = mock(() => {});
+    const screen = render(
+      <Item title="Transportes Cabo Branco" description="3 notas em aberto" onPress={onPress} />,
+    );
+
+    const [linha] = byRole(screen, "button");
+    expect(linha.props.accessibilityLabel).toBe("Transportes Cabo Branco, 3 notas em aberto");
+    // Uma linha de titulo desenha 37px; o dedo pede 44.
+    expect(linha.props.className).toContain("min-h-11");
+
+    act(() => linha.props.onPress());
+    expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  test("com acao a direita, o alvo e o texto e o botao continua parada propria", () => {
+    const abrir = mock(() => {});
+    const remover = mock(() => {});
+    const screen = render(
+      <Item
+        title="Boleto 88"
+        onPress={abrir}
+        actions={
+          <Button size="sm" variant="ghost" onPress={remover}>
+            Remover
+          </Button>
+        }
+      />,
+    );
+
+    const botoes = byRole(screen, "button");
+    expect(botoes.length).toBe(2);
+
+    // O alvo da linha NAO embrulha o botao: um Pressable dentro do outro
+    // seguraria o toque no de dentro, e a linha nunca abriria.
+    const [linha] = botoes;
+    expect(linha.findAll((node) => node.props?.accessibilityRole === "button").length).toBe(1);
+
+    act(() => botoes[1].props.onPress());
+    expect(remover).toHaveBeenCalledTimes(1);
+    expect(abrir).not.toHaveBeenCalled();
+  });
+
+  test("outline poe moldura propria; plain fica solto", () => {
+    const outline = render(<Item title="Pix" variant="outline" />);
+    expect(byClass(outline, /rounded-lg border border-border bg-surface/).length).toBe(1);
+
+    const plain = render(<Item title="Pix" />);
+    expect(byClass(plain, /border-border/).length).toBe(0);
   });
 });
