@@ -109,10 +109,10 @@ export function TreeSelect({
         <div className="max-h-72 overflow-y-auto">
           <Tree
             items={items}
-            selected={selected}
+            value={selected}
             multiple={multiple}
             filter={busca}
-            onSelectedChange={(ids) => {
+            onValueChange={(ids) => {
               if (!controlled) setInternal(ids);
               onValueChange?.(ids);
             }}

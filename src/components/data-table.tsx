@@ -66,7 +66,7 @@ export type DataTableProps<Row> = {
    * porque "nenhum resultado" transfere para a pessoa o trabalho de descobrir
    * por que, e ela quase nunca descobre.
    */
-  empty?: { title: string; description: string; action?: ReactNode; icon?: ReactNode };
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 
   onRowClick?: (row: Row) => void;
   /** Quantas linhas falsas o carregando mostra. */
@@ -118,8 +118,26 @@ export type DataTableProps<Row> = {
 
   /** Coluna de checkbox a esquerda. As chaves vem do `rowKey`. */
   selectable?: boolean;
-  /** Selecao controlada. Sem ela, a tabela guarda a propria selecao. */
+  /**
+   * As chaves marcadas, quando quem usa controla a selecao. Sem ela, a tabela
+   * guarda a propria.
+   */
+  value?: string[];
+  /** As chaves marcadas de saida, quando a tabela controla a propria selecao. */
+  defaultValue?: string[];
+  onValueChange?: (keys: string[]) => void;
+  /**
+   * Descontinuada: use `value`. Continua funcionando, e sai numa versao maior.
+   *
+   * @deprecated Use `value`.
+   */
   selected?: string[];
+  /**
+   * Descontinuada: use `onValueChange`. Continua funcionando, e sai numa versao
+   * maior.
+   *
+   * @deprecated Use `onValueChange`.
+   */
   onSelectedChange?: (keys: string[]) => void;
 
   /**
@@ -210,18 +228,32 @@ export function DataTable<Row>({
   virtual,
   rowHeight = 44,
   selectable,
+  value,
+  defaultValue,
+  onValueChange,
   selected,
   onSelectedChange,
   classNames,
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
-  const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>({});
 
-  // Controlada quando `selected` veio; interna quando nao. Nos dois casos o
-  // motor enxerga o mesmo formato, e `onSelectedChange` ouve as mudancas.
+  /*
+   * A selecao fala o vocabulario do catalogo - `value`/`onValueChange` - e
+   * atende pelo nome antigo. Eram tres dialetos para o mesmo dado: a tabela
+   * pedia `selected`/`onSelectedChange` opcionais, a `Tree` pedia os mesmos
+   * dois obrigatorios e o `TreeSelect` pedia `value`/`onValueChange`. Quem
+   * escrevia uma tela com os tres reescrevia o binding a cada peca.
+   */
+  const picked = value ?? selected;
+  const [internalSelection, setSelecaoInterna] = useState<RowSelectionState>(() =>
+    Object.fromEntries((defaultValue ?? []).map((key) => [key, true])),
+  );
+
+  // Controlada quando a chave veio de fora; interna quando nao. Nos dois casos
+  // o motor enxerga o mesmo formato, e os dois avisos ouvem as mudancas.
   const selection: RowSelectionState = useMemo(
-    () => (selected ? Object.fromEntries(selected.map((key) => [key, true])) : internalSelection),
-    [selected, internalSelection],
+    () => (picked ? Object.fromEntries(picked.map((key) => [key, true])) : internalSelection),
+    [picked, internalSelection],
   );
 
   // O motor exige `Record`, e a API publica nunca exigiu: o cast fica aqui na
@@ -261,8 +293,10 @@ export function DataTable<Row>({
     },
     onRowSelectionChange: (updater: Updater<RowSelectionState>) => {
       const proxima = typeof updater === "function" ? updater(selection) : updater;
-      if (!selected) setSelecaoInterna(proxima);
-      onSelectedChange?.(keysOf(proxima));
+      if (!picked) setSelecaoInterna(proxima);
+      const keys = keysOf(proxima);
+      onValueChange?.(keys);
+      onSelectedChange?.(keys);
     },
     state: {
       globalFilter: filter || undefined,

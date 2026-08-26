@@ -17,9 +17,27 @@ export type TreeNode = {
 
 export type TreeProps = {
   items: TreeNode[];
-  /** Ids marcados. Pai marcado nao entra aqui: quem vale e a folha. */
-  selected: string[];
-  onSelectedChange: (ids: string[]) => void;
+  /**
+   * Ids marcados, quando quem usa controla o estado. Pai marcado nao entra
+   * aqui: quem vale e a folha.
+   */
+  value?: string[];
+  /** Os ids iniciais, quando a arvore controla o proprio estado. */
+  defaultValue?: string[];
+  onValueChange?: (ids: string[]) => void;
+  /**
+   * Descontinuada: use `value`. Continua funcionando, e sai numa versao maior.
+   *
+   * @deprecated Use `value`.
+   */
+  selected?: string[];
+  /**
+   * Descontinuada: use `onValueChange`. Continua funcionando, e sai numa versao
+   * maior.
+   *
+   * @deprecated Use `onValueChange`.
+   */
+  onSelectedChange?: (ids: string[]) => void;
   /** Sem isto, so uma folha por vez. */
   multiple?: boolean;
   /** Ids abertos. Sem controle, a arvore abre e fecha sozinha. */
@@ -44,6 +62,9 @@ export type TreeProps = {
  */
 export function Tree({
   items,
+  value,
+  defaultValue,
+  onValueChange,
   selected,
   onSelectedChange,
   multiple,
@@ -55,6 +76,29 @@ export function Tree({
   const [abertosInternos, setAbertosInternos] = useState<string[]>([]);
   const abertos = expanded ?? abertosInternos;
   const root = useRef<HTMLUListElement>(null);
+
+  /*
+   * A escolha deixou de ser obrigatoria.
+   *
+   * Ela nascia exigida - `selected` e `onSelectedChange` -, e o `TreeSelect`,
+   * que embrulha esta peca, ja aceitava `value`/`defaultValue`/`onValueChange`
+   * opcionais. Quem trocava o painel pela arvore inline reescrevia o binding
+   * inteiro, e ainda tinha que inventar um `useState` para uma arvore que so
+   * queria abrir e fechar. Agora ela guarda a propria escolha quando ninguem
+   * controla, como todo o resto do catalogo.
+   *
+   * Controlada por qualquer um dos dois nomes: `selected` continua valendo
+   * para nao quebrar quem ja chamava assim.
+   */
+  const controlled = value !== undefined || selected !== undefined;
+  const [internalValue, setInternalValue] = useState<string[]>(defaultValue ?? []);
+  const picked = value ?? selected ?? internalValue;
+
+  function change(ids: string[]) {
+    if (!controlled) setInternalValue(ids);
+    onValueChange?.(ids);
+    onSelectedChange?.(ids);
+  }
 
   const visiveis = useMemo(() => filtrar(items, filter.trim().toLowerCase()), [items, filter]);
 
@@ -73,13 +117,13 @@ export function Tree({
     if (!multiple) {
       // Sem multipla, so folha escolhe, e a escolha troca em vez de somar.
       if (node.children?.length) return;
-      onSelectedChange(selected.includes(node.id) ? [] : [node.id]);
+      change(picked.includes(node.id) ? [] : [node.id]);
       return;
     }
 
-    const allChecked = leaves.every((leaf) => selected.includes(leaf));
-    const withoutLeaves = selected.filter((id) => !leaves.includes(id));
-    onSelectedChange(allChecked ? withoutLeaves : [...withoutLeaves, ...leaves]);
+    const allChecked = leaves.every((leaf) => picked.includes(leaf));
+    const withoutLeaves = picked.filter((id) => !leaves.includes(id));
+    change(allChecked ? withoutLeaves : [...withoutLeaves, ...leaves]);
   }
 
   /**
@@ -131,7 +175,7 @@ export function Tree({
           level={0}
           isFirst={index === 0}
           abertos={searching ? null : abertos}
-          selected={selected}
+          picked={picked}
           multiple={multiple}
           onAlternarAberto={alternarAberto}
           onToggleSelect={toggleSelect}
@@ -146,7 +190,7 @@ function Ramo({
   level,
   isFirst,
   abertos,
-  selected,
+  picked,
   multiple,
   onAlternarAberto,
   onToggleSelect,
@@ -156,7 +200,7 @@ function Ramo({
   isFirst: boolean;
   /** `null` quer dizer tudo aberto, que e o estado da busca. */
   abertos: string[] | null;
-  selected: string[];
+  picked: string[];
   multiple?: boolean;
   onAlternarAberto: (id: string) => void;
   onToggleSelect: (node: TreeNode) => void;
@@ -164,7 +208,7 @@ function Ramo({
   const temFilhos = Boolean(node.children?.length);
   const isOpen = abertos === null || abertos.includes(node.id);
   const leaves = leavesOf(node);
-  const checkedLeaves = leaves.filter((leaf) => selected.includes(leaf)).length;
+  const checkedLeaves = leaves.filter((leaf) => picked.includes(leaf)).length;
   const cheio = checkedLeaves > 0 && checkedLeaves === leaves.length;
   const misto = checkedLeaves > 0 && !cheio;
 
@@ -245,7 +289,7 @@ function Ramo({
               level={level + 1}
               isFirst={false}
               abertos={abertos}
-              selected={selected}
+              picked={picked}
               multiple={multiple}
               onAlternarAberto={onAlternarAberto}
               onToggleSelect={onToggleSelect}

@@ -10,6 +10,7 @@ import { formatDate } from "../lib/date";
 import { Button } from "./button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
+import type { CalendarPassthrough } from "./date-picker";
 import { inputVariants } from "./field";
 
 export type { DateRange };
@@ -17,29 +18,29 @@ export type { DateRange };
 export type DateRangePickerProps = Omit<
   ComponentProps<"button">,
   "value" | "defaultValue" | "onChange"
-> & {
-  /** O intervalo escolhido, quando quem usa controla o estado. */
-  value?: DateRange;
-  /** O intervalo inicial, quando o componente controla o proprio estado. */
-  defaultValue?: DateRange;
-  /** Chamado quando o intervalo muda. Vem incompleto entre o primeiro e o segundo clique. */
-  onValueChange?: (range: DateRange | undefined) => void;
-  /** Texto do gatilho quando nao ha intervalo. */
-  placeholder?: string;
-  /** Tamanho do gatilho, o mesmo vocabulario do Input. */
-  size?: "sm" | "md" | "lg";
-  /** Quantos meses o calendario mostra lado a lado. No celular e sempre um. */
-  numberOfMonths?: number;
-  /** Dias que nao podem ser escolhidos. */
-  disabledDays?: ComponentProps<typeof Calendar>["disabled"];
-  locale?: ComponentProps<typeof Calendar>["locale"];
-  /**
-   * Rodape com Aplicar. Ligado por padrao: filtro de periodo quase sempre
-   * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
-   * primeiro clique e outra no segundo.
-   */
-  confirm?: boolean;
-};
+> &
+  CalendarPassthrough & {
+    /** O intervalo escolhido, quando quem usa controla o estado. */
+    value?: DateRange;
+    /** O intervalo inicial, quando o componente controla o proprio estado. */
+    defaultValue?: DateRange;
+    /** Chamado quando o intervalo muda. Vem incompleto entre o primeiro e o segundo clique. */
+    onValueChange?: (range: DateRange | undefined) => void;
+    /** Texto do gatilho quando nao ha intervalo. */
+    placeholder?: string;
+    /** Tamanho do gatilho, o mesmo vocabulario do Input. */
+    size?: "sm" | "md" | "lg";
+    /** Quantos meses o calendario mostra lado a lado. No celular e sempre um. */
+    numberOfMonths?: number;
+    /** Dias que nao podem ser escolhidos. */
+    disabledDays?: ComponentProps<typeof Calendar>["disabled"];
+    /**
+     * Rodape com Aplicar. Ligado por padrao: filtro de periodo quase sempre
+     * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
+     * primeiro clique e outra no segundo.
+     */
+    confirm?: boolean;
+  };
 
 /**
  * Intervalo de datas, para filtro de relatorio e de listagem.
@@ -65,6 +66,9 @@ export function DateRangePicker({
   disabledDays,
   numberOfMonths = 2,
   locale,
+  startMonth,
+  endMonth,
+  showOutsideDays,
   confirm = true,
   ...props
 }: DateRangePickerProps) {
@@ -156,6 +160,9 @@ export function DateRangePicker({
         numberOfMonths={numberOfMonths}
         disabled={disabledDays}
         locale={locale}
+        startMonth={startMonth}
+        endMonth={endMonth}
+        showOutsideDays={showOutsideDays}
         onSelect={(next) => {
           if (confirm) {
             setRascunho(next);

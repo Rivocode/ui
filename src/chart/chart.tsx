@@ -1,6 +1,13 @@
 "use client";
 
-import { cloneElement, useId, type ComponentProps, type ReactElement, type ReactNode } from "react";
+import {
+  cloneElement,
+  useEffect,
+  useId,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { ResponsiveContainer } from "recharts";
 
 import { Alert, AlertDescription, AlertTitle } from "../components/alert";
@@ -35,9 +42,20 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   /** Sem isto, o erro nao oferece nova tentativa. */
   onRetry?: () => void;
   errorMessage?: ReactNode;
-  /** O que aparece quando a consulta volta sem nenhum ponto. */
-  empty?: { title: string; description: string; icon?: ReactNode };
-  /** Considera vazio tambem quando a serie existe mas nao tem ponto. */
+  /**
+   * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
+   * `DataTable`, `action` inclusive - ela e a saida que o `EmptyState`
+   * considera fortemente recomendada, e faltava so aqui.
+   */
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
+  /**
+   * Os pontos, para a moldura saber contar zero.
+   *
+   * Quase sempre dispensavel: sem ela, a contagem sai do `data` do proprio
+   * grafico da Recharts que vem como filho. Passe a sua quando os pontos nao
+   * moram no filho direto - `<ScatterChart>` com o `data` no `<Scatter>`, por
+   * exemplo - ou quando a serie desenhada nao for a que decide o vazio.
+   */
   data?: readonly unknown[];
 
   /**
@@ -93,6 +111,23 @@ export function ChartContainer({
       return `--color-${key}: ${color};`;
     })
     .join("\n  ");
+
+  /*
+   * De onde sai a contagem de pontos.
+   *
+   * O vazio so aparecia com `empty && data && data.length === 0`: quem passava
+   * o `empty` e esquecia o `data` - que e opcional, e cujo nome ja esta escrito
+   * dentro do `<LineChart data={meses}>` logo abaixo - NUNCA via o estado
+   * vazio, e nada acusava. O grafico simplesmente desenhava eixos sobre o nada,
+   * que e o desenho mais parecido com "carregou e nao ha nada" que existe.
+   *
+   * Agora a moldura le o `data` do proprio filho da Recharts antes de desistir,
+   * e o `data` daqui vira o reforco para os casos em que ele nao mora la. Onde
+   * nem um nem outro existe, o aviso fala em desenvolvimento - falhar seria
+   * derrubar a tela por causa de um estado que talvez nunca ocorra.
+   */
+  const points = data ?? dataOfChild(children);
+  useMissingDataWarning(empty !== undefined && points === undefined);
 
   return (
     <div
@@ -163,9 +198,14 @@ export function ChartContainer({
             )}
           </Alert>
         </StateFrame>
-      ) : empty && data && data.length === 0 ? (
+      ) : empty && points && points.length === 0 ? (
         <StateFrame>
-          <EmptyState title={empty.title} description={empty.description} icon={empty.icon} />
+          <EmptyState
+            title={empty.title}
+            description={empty.description}
+            icon={empty.icon}
+            action={empty.action}
+          />
         </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
@@ -174,6 +214,34 @@ export function ChartContainer({
       )}
     </div>
   );
+}
+
+/** O `data` que o grafico da Recharts recebeu, quando ele o recebeu direto. */
+function dataOfChild(child: ReactElement): readonly unknown[] | undefined {
+  const written = child.props as { data?: unknown };
+  return Array.isArray(written.data) ? written.data : undefined;
+}
+
+/**
+ * O aviso sai num efeito, e nao no meio do render.
+ *
+ * O render de um grafico se repete a cada movimento do ponteiro, e um
+ * `console.warn` solto ali enche o console de copias da mesma linha ate
+ * esconder o proximo erro de verdade. No efeito ele fala uma vez por
+ * componente, quando a configuracao entra no estado que nao funciona - e cala
+ * de novo assim que ela sai dele.
+ */
+function useMissingDataWarning(missing: boolean) {
+  useEffect(() => {
+    if (!missing || process.env.NODE_ENV === "production") return;
+
+    console.warn(
+      "[rivocode/ui] <ChartContainer empty={...}> sem pontos para contar: nem a prop " +
+        "`data` foi passada, nem o grafico filho carrega um `data`. O estado vazio nunca " +
+        "vai aparecer, e o grafico desenha eixos sobre o nada. Passe `data={pontos}` no " +
+        "ChartContainer - e o mesmo array que voce ja entrega ao grafico.",
+    );
+  }, [missing]);
 }
 
 /**

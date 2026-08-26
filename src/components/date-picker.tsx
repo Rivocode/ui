@@ -10,7 +10,15 @@ import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import { Input } from "./field";
 
-type CalendarPassthrough = Pick<
+/**
+ * O que os dois campos de data repassam ao calendario sem reescrever.
+ *
+ * Exportado porque o `DateRangePicker` repassava so o `locale`: filtro de
+ * periodo nao conseguia limitar a escolha aos exercicios abertos, que e
+ * exatamente para o que `startMonth` e `endMonth` existem. Escrever a lista de
+ * novo la seria criar o segundo lugar de onde ela pode envelhecer.
+ */
+export type CalendarPassthrough = Pick<
   ComponentProps<typeof Calendar>,
   "locale" | "startMonth" | "endMonth" | "showOutsideDays"
 >;

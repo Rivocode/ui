@@ -19,10 +19,15 @@ abrir um gráfico inteiro ao lado de cada indicador enche o painel de moldura.
 Por padrão sai no acento do tema, que é a leitura neutra de "isto é um número
 desta tela".
 
-`tone="auto"` pinta de verde ou vermelho conforme suba ou desça do primeiro ao
+`trend="auto"` pinta de verde ou vermelho conforme suba ou desça do primeiro ao
 último ponto. **Use só quando subir for bom.** Em custo, inadimplência ou nota
 vencida, subir é ruim, e a peça não tem como saber disso: inverta os números
 antes de passar, ou fixe a cor pela prop `color`.
+
+Ela se chamava `tone`, e esse é o nome que o catálogo inteiro usa para a escala
+semântica de cor — `success`, `danger`, `warning`, `info` no `Badge`, no
+`Alert`, no `Tracker` e no `Timeline`. Aqui a palavra queria dizer outra coisa,
+e com outros valores. `tone` continua funcionando e sai numa versão maior.
 
 ## Acessibilidade
 

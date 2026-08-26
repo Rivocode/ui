@@ -5,9 +5,15 @@ import { cn } from "../lib/cn";
 export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
   /** Simbolo ou ilustracao. Opcional. */
   icon?: ReactNode;
-  title: string;
+  /**
+   * Aceita no e nao so texto, como o titulo do `PageHeader` e o do `Timeline`.
+   * Era `string`, e por isso um numero formatado ou um `<strong>` no meio da
+   * frase - "Nenhuma nota em **marco**" - nao cabia num estado vazio, cabendo
+   * nas duas irmas.
+   */
+  title: ReactNode;
   /** Por que esta vazio. Obrigatorio: "sem dados" nao explica nada. */
-  description: string;
+  description: ReactNode;
   /** A saida. Sem ela a pessoa fica sabendo do problema e nao da solucao. */
   action?: ReactNode;
 };

@@ -27,9 +27,12 @@ Tudo opt-in, tudo client-side, nada muda para quem não pedir:
   `empty` continua reservado para consulta que voltou vazia.
 - **`pageSize`** — paginação com rodapé: "1–4 de 7" à esquerda, as páginas à
   direita. Filtrar ou reordenar volta para a primeira página.
-- **`selectable`** — coluna de checkbox à esquerda, chaves do `rowKey`,
-  aviso em `onSelectedChange`. Passe `selected` para controlar de fora. O
-  checkbox do cabeçalho marca a página visível, não a lista inteira.
+- **`selectable`** — coluna de checkbox à esquerda, chaves do `rowKey`, aviso
+  em `onValueChange`. Passe `value` para controlar de fora, ou `defaultValue`
+  para só dizer com o que ela começa — o mesmo par do `Tree` e do `TreeSelect`.
+  Os nomes antigos, `selected` e `onSelectedChange`, continuam funcionando e
+  saem numa versão maior. O checkbox do cabeçalho marca a página visível, não a
+  lista inteira.
 
 ## Muita linha: rolagem própria e virtualização
 

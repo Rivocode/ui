@@ -18,6 +18,39 @@ o tema mudar.
 A altura fica com quem usa, por classe: gráfico sem altura definida some,
 porque o contentor mede o pai.
 
+## Os quatro finais de uma consulta
+
+Os mesmos do `DataTable`, e o `empty` é o mesmo objeto: `title`, `description`,
+`action` e `icon`. A ação é fortemente recomendada — um gráfico que só diz
+"sem dados" empurra para a pessoa o trabalho de adivinhar o que fazer.
+
+```tsx
+<ChartContainer
+  config={config}
+  className="h-64"
+  isLoading={query.isLoading}
+  isError={query.isError}
+  onRetry={query.refetch}
+  empty={{
+    title: 'Nenhuma nota em março',
+    description: 'O gráfico começa a desenhar assim que a primeira for emitida.',
+    action: <Button size="sm">Emitir nota</Button>,
+  }}
+>
+  <LineChart data={meses}>{/* ... */}</LineChart>
+</ChartContainer>
+```
+
+**A contagem de pontos sai do próprio gráfico.** A moldura lê o `data` do filho
+da Recharts, então na forma acima não é preciso repeti-lo. Passe `data` aqui só
+quando os pontos não morarem no filho direto — `<ScatterChart>` com o `data` no
+`<Scatter>` — ou quando a série desenhada não for a que decide o vazio.
+
+Antes disso o vazio exigia `empty` **e** `data`, e quem passava só o primeiro
+nunca via o estado que tinha pedido: o gráfico desenhava eixos sobre o nada, sem
+erro nenhum. Onde a moldura ainda não acha ponto para contar, ela avisa no
+console em desenvolvimento em vez de calar.
+
 As peças da Recharts que a biblioteca veste saem pelo mesmo import:
 `LineChart`, `Line`, `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`,
 `Cell`, `XAxis`, `YAxis`, `CartesianGrid` e `ReferenceLine`.
