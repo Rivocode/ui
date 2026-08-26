@@ -200,8 +200,15 @@ function indexForAgents(docs: Doc[]) {
         .sort((a, b) => a.name.localeCompare(b.name))
         .map((doc) => {
           const parent = parentOf(doc.name)
-          const link = `[${doc.name}](/componentes/${doc.slug}.md)`
-          return parent ? `  - ${link} — parte de ${parent}` : `- ${link}`
+          if (!parent) return `- [${doc.name}](/componentes/${doc.slug}.md)`
+
+          // A parte aponta para dentro da pagina de quem a monta, e nao para
+          // um endereco proprio: la ela tem prosa, props E o exemplo que a
+          // monta - sozinha ela nunca teve exemplo, porque nao ha o que
+          // exemplificar sem a peca em volta. Uma busca a menos por peca.
+          const owner = docs.find((item) => item.name === parent)
+          const anchor = `/componentes/${owner?.slug ?? slugify(parent)}.md#${doc.name.toLowerCase()}`
+          return `  - [${doc.name}](${anchor}) — parte de ${parent}`
         })
         .join('\n')
       return `## ${family}\n\n${lines}`
@@ -319,11 +326,33 @@ function rawDocs(): Plugin {
 
       const sources = readAll(docs)
 
+      const names = new Set(docs.map((doc) => doc.name))
+
       for (const doc of docs) {
+        const parent = findParent(doc.name, names)
+
+        /*
+         * Parte nao ganha pagina propria.
+         *
+         * Ela ja e publicada inteira - prosa, props e o exemplo que a monta -
+         * dentro da pagina de quem a compoe, e a versao solta dela nunca teve
+         * exemplo: nao ha o que exemplificar sem a peca em volta. Setenta e
+         * seis dos cento e cinquenta e sete arquivos eram isso, e cada um
+         * custava ao agente uma busca que nao acrescentava nada.
+         *
+         * O endereco antigo continua respondendo, com um bilhete de tres
+         * linhas: agente que guardou o link nao pode encontrar o vazio.
+         */
+        const owner = parent ? docs.find((item) => item.name === parent) : undefined
+
         this.emitFile({
           type: 'asset',
           fileName: `componentes/${doc.slug}.md`,
-          source: buildMarkdown(doc, docs, sources),
+          source: owner
+            ? `# ${doc.name}\n\n${doc.name} é parte de ${parent}, e é documentada na página ` +
+              `dele — com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
+              `[/componentes/${owner.slug}.md](/componentes/${owner.slug}.md#${doc.name.toLowerCase()})\n`
+            : buildMarkdown(doc, docs, sources),
         })
       }
     },

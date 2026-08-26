@@ -38,3 +38,28 @@ test("parte e peca nao se confundem na contagem", () => {
   expect(findParent("DataTable", names)).toBeNull();
   expect(pieces.length).toBeLessThan(names.length);
 });
+
+test("a parte aponta para dentro da pagina de quem a monta", async () => {
+  // Uma parte nao tem exemplo proprio porque nao ha o que exemplificar sem a
+  // peca em volta - e a pagina solta dela dizia isso em voz alta, gastando uma
+  // busca do agente para nao acrescentar nada. Agora o endereco leva a ancora
+  // dentro da peca principal, onde a parte tem prosa, props e o exemplo junto.
+  const index = await Bun.file("apps/docs/dist/llms.txt").text();
+
+  expect(index).toContain("[CardHeader](/componentes/card.md#cardheader) — parte de Card");
+  expect(index).not.toContain("[CardHeader](/componentes/card-header.md)");
+});
+
+test("o endereco antigo da parte continua respondendo, com o caminho", async () => {
+  // Agente que guardou o link nao pode encontrar o vazio.
+  const note = await Bun.file("apps/docs/dist/componentes/card-header.md").text();
+
+  expect(note).toContain("é parte de Card");
+  expect(note).toContain("/componentes/card.md#cardheader");
+});
+
+test("a ancora existe de verdade na pagina de quem monta", async () => {
+  const page = await Bun.file("apps/docs/dist/componentes/card.md").text();
+
+  expect(page).toContain("### CardHeader");
+});
