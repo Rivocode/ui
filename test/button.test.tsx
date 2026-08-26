@@ -64,6 +64,35 @@ test("carregando desabilita, anuncia ocupado e esconde o giro do leitor de tela"
   expect(botao.querySelector('[aria-hidden="true"]')).not.toBeNull();
 });
 
+test("carregando, o botao mantem a variante em vez de virar cinza", () => {
+  // "Excluindo..." e o momento em que a pessoa mais precisa ver que a acao e
+  // destrutiva, e era justo ai que a cor sumia: o disabled do loading disparava
+  // o cinza de desabilitado, e um destrutivo em andamento saia identico a um
+  // secundario desligado.
+  render(
+    <Button variant="destructive" loading>
+      Excluindo
+    </Button>,
+  );
+  const botao = screen.getByRole("button");
+
+  expect(botao.getAttribute("data-loading")).toBe("true");
+  expect(botao.className).toContain("not-data-loading:disabled:bg-surface-raised");
+  expect(botao.className).toContain("bg-danger");
+});
+
+test("desabilitado de verdade continua neutro, e nao se parece com carregando", () => {
+  render(
+    <Button variant="destructive" disabled>
+      Excluir
+    </Button>,
+  );
+  const botao = screen.getByRole("button");
+
+  expect(botao.getAttribute("data-loading")).toBeNull();
+  expect(botao.getAttribute("aria-busy")).toBeNull();
+});
+
 test("o tamanho de icone e quadrado, para o botao de acao da tabela", () => {
   render(
     <Button size="icon" aria-label="Mais acoes">
