@@ -4631,10 +4631,22 @@
         "required": false
       },
       {
+        "name": "segments",
+        "type": "number",
+        "required": false,
+        "note": "Quantos tracinhos, no `segmented`."
+      },
+      {
         "name": "sweep",
         "type": "number",
         "required": false,
         "note": "Onde o arco comeca e termina, em graus."
+      },
+      {
+        "name": "variant",
+        "type": "\"segmented\" | \"solid\"",
+        "required": false,
+        "note": "`solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que e a variacao mais pedida de medidor em painel e custava 42 linhas de SVG no projeto de quem usa - com a cor cravada, entao sem responder ao tema."
       }
     ]
   },

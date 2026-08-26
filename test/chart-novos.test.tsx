@@ -92,3 +92,18 @@ test("sem valor escrito, o meio mostra a porcentagem", () => {
   const { container } = withTheme(<ChartRadial value={41} max={50} />);
   expect(container.textContent).toContain("82%");
 });
+
+test("o medidor segmentado sai de tracinhos, e nao de arco liso", () => {
+  // A variacao mais pedida de medidor em painel custava 42 linhas de SVG no
+  // projeto de quem usa - e aquele SVG nao respondia ao tema sozinho.
+  const { container } = withTheme(
+    <ChartRadial value={82} variant="segmented" label="82% da meta" segments={44} />,
+  );
+
+  const ticks = container.querySelectorAll('[data-rc-tick]');
+  expect(ticks.length).toBe(44);
+  // O que passou do valor fica apagado, e nao ausente: a escala inteira
+  // precisa continuar visivel para o traço aceso significar alguma coisa.
+  expect([...ticks].filter((tick) => tick.getAttribute("data-rc-tick") === "on").length).toBe(36);
+  expect(container.querySelector('[role="img"]')?.getAttribute("aria-label")).toBe("82% da meta");
+});
