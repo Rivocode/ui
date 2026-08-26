@@ -1,7 +1,14 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import { useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useMemo,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import { Checkbox } from "./checkbox";
@@ -15,7 +22,21 @@ export type TreeNode = {
   disabled?: boolean;
 };
 
-export type TreeProps = {
+/*
+ * Duas omissoes, e as duas por colisao com a `<ul>`:
+ *
+ * `defaultValue` existe em `HTMLAttributes` como `string | number | readonly
+ * string[]`, e aqui ele e a lista de ids marcados. Sem o `Omit`, o tipo vira a
+ * interseccao dos dois e o erro cai no ponto de chamada, longe daqui.
+ *
+ * `children` sai porque a arvore desenha os galhos a partir de `items`: filho
+ * escrito por fora seria descartado sem aviso.
+ *
+ * Sem `ref` de proposito: a raiz ja carrega o `ref` interno que a navegacao
+ * por seta usa para achar as linhas, e duas fontes de `ref` no mesmo elemento
+ * so podem apagar uma a outra.
+ */
+export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "children"> & {
   items: TreeNode[];
   /**
    * Ids marcados, quando quem usa controla o estado. Pai marcado nao entra
@@ -57,6 +78,8 @@ export function Tree({
   onExpandedChange,
   filter = "",
   className,
+  onKeyDown: onKeyDownProp,
+  ...rest
 }: TreeProps) {
   const [internalOpenIds, setInternalOpenIds] = useState<string[]>([]);
   const openIds = expanded ?? internalOpenIds;
@@ -112,6 +135,12 @@ export function Tree({
    * navegacao segue o que o olho ve.
    */
   function onKeyDown(event: KeyboardEvent<HTMLUListElement>) {
+    // O handler de quem chama corre primeiro, e desiste da navegacao daqui com
+    // `preventDefault`. Sem isso o espalhamento tinha que escolher um dos dois:
+    // ou o `onKeyDown` de fora apaga as setas da arvore, ou as setas o apagam.
+    onKeyDownProp?.(event);
+    if (event.defaultPrevented) return;
+
     const rows = [...(root.current?.querySelectorAll<HTMLElement>("[role=treeitem]") ?? [])];
     const current = document.activeElement as HTMLElement | null;
     const index = rows.findIndex((row) => row === current);
@@ -143,6 +172,7 @@ export function Tree({
 
   return (
     <ul
+      {...rest}
       ref={root}
       role="tree"
       aria-multiselectable={multiple || undefined}

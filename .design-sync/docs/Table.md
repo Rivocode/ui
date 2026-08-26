@@ -6,13 +6,17 @@ category: Estrutura
 
 Tabela semântica, com `<table>` de verdade.
 
-Compõe com `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead` e
-`TableCell`.
+Compõe com `TableCaption`, `TableHeader`, `TableBody`, `TableFooter`,
+`TableRow`, `TableHead` e `TableCell`.
 
 `selected` na linha marca no `aria-selected` e desenha uma barra de acento na
 lateral. Cor sozinha não é estado.
 
 A moldura rola de lado sozinha, então tabela larga não empurra a página.
+
+O nome da tabela entra pelo `TableCaption`, e não por um `<h3>` acima dela: o
+título vizinho não nomeia elemento nenhum, e o leitor de tela anuncia só
+"tabela, 5 colunas".
 
 A linha de totais entra pelo `TableFooter`, e não por uma `<div>` embaixo da
 tabela: dentro do `<tfoot>` a célula divide a largura com a coluna, e o total

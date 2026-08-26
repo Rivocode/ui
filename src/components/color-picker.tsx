@@ -1,6 +1,13 @@
 "use client";
 
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useId,
+  useRef,
+  useState,
+  type ComponentProps,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -14,7 +21,16 @@ import { Input } from "./field";
  */
 export type ColorSwatch = string | { value: string; label: string };
 
-export type ColorPickerProps = {
+/*
+ * `defaultValue` sai da `<div>` porque a colisao e de significado: em
+ * `HTMLAttributes` ele e `string | number | readonly string[]`, e aqui e a cor
+ * inicial em hexadecimal. Sem o `Omit`, o tipo publicado seria a interseccao
+ * dos dois, e a pagina de props anunciaria uma coisa que nao existe.
+ *
+ * `children` sai porque a peca desenha a grade e o campo a partir de
+ * `swatches`: filho escrito por fora nao apareceria em lugar nenhum.
+ */
+export type ColorPickerProps = Omit<ComponentProps<"div">, "defaultValue" | "children"> & {
   /** A cor escolhida, em hexadecimal de seis digitos. Controlado. */
   value?: string;
   /** A cor inicial de quem nao controla o valor de fora. */
@@ -134,6 +150,7 @@ export function ColorPicker({
   disabled,
   className,
   classNames,
+  ...rest
 }: ColorPickerProps) {
   const labelId = useId();
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
@@ -224,7 +241,7 @@ export function ColorPicker({
   }
 
   return (
-    <div className={cn("flex flex-col gap-2", className)}>
+    <div {...rest} className={cn("flex flex-col gap-2", className)}>
       {label && (
         <span id={labelId} className={cn("font-sans text-sm text-fg", classNames?.label)}>
           {label}

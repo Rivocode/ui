@@ -22259,6 +22259,10 @@
     "forwardsRoot": true,
     "props": []
   },
+  "TableCaption": {
+    "forwardsRoot": true,
+    "props": []
+  },
   "TableCell": {
     "forwardsRoot": true,
     "props": []

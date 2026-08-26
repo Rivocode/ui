@@ -2,7 +2,15 @@
 
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { Search } from "lucide-react";
-import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import { useRivoContext } from "../provider/rivo-provider";
@@ -35,7 +43,16 @@ export type CommandGroup = {
   items: CommandItem[];
 };
 
-export type CommandProps = {
+/*
+ * `title` e a colisao que obriga o `Omit`. Os dois lados sao `string`, entao a
+ * interseccao COMPILARIA - e o valor iria parar em dois lugares ao mesmo
+ * tempo: no `BaseDialog.Title` lido pelo leitor de tela, que e o que este
+ * `title` quer dizer, e na tarja amarela que o navegador desenha a partir do
+ * atributo `title` do painel.
+ *
+ * `children` sai porque a paleta se monta inteira a partir de `groups`.
+ */
+export type CommandProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   groups: CommandGroup[];
@@ -96,6 +113,7 @@ export function Command({
   shortcut = "k",
   title = "Paleta de comandos",
   className,
+  ...rest
 }: CommandProps) {
   const { portalContainer } = useRivoContext();
   const [query, setQuery] = useState("");
@@ -200,6 +218,7 @@ export function Command({
           )}
         />
         <BaseDialog.Popup
+          {...rest}
           className={cn(
             "fixed left-1/2 z-[var(--rc-z-dialog)] w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2",
             // Um pouco acima do meio: a lista cresce para baixo, e centralizada

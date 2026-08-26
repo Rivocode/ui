@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import { ChartTooltipContent } from "./chart-tooltip";
@@ -9,7 +9,13 @@ import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
 import { resolveFormat, type Format } from "../lib/format";
 
-export type ChartDonutProps<Slice> = {
+/*
+ * So `children` sai: a rosca desenha o anel, o miolo e a legenda a partir de
+ * `data`, e filho escrito por fora nao apareceria em lugar nenhum. As demais
+ * props daqui nao existem em `HTMLAttributes` - `data`, `value` e `label` sao
+ * atributos de outros elementos, e nao da `<div>`.
+ */
+export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   data: Slice[];
   /** De onde sai o numero de cada fatia. */
   valueKey: keyof Slice & string;
@@ -85,6 +91,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
   label,
+  ...rest
 }: ChartDonutProps<Slice>) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
@@ -113,7 +120,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const name = label ?? (legend ? undefined : `Rosca de ${sliceNames().join(", ")}`);
 
   return (
-    <div className={cn("w-full", className)}>
+    <div {...rest} className={cn("w-full", className)}>
       <div className="relative h-48 w-full">
         <ResponsiveContainer width="100%" height="100%">
           {/*

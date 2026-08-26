@@ -1,11 +1,19 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 
 import { cn } from "../lib/cn";
 
-export type ChartRadialProps = {
+/*
+ * `color` colide com a `<div>`: `HTMLAttributes` carrega um `color?: string`
+ * herdado do HTML antigo, e aqui ele e a cor do arco. Os dois sao `string`,
+ * entao a interseccao compilaria e o valor iria tambem para o DOM, como
+ * atributo `color` que nenhum navegador le mais.
+ *
+ * `children` sai porque o arco e o miolo se desenham a partir de `value`.
+ */
+export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children"> & {
   /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta. */
   value: number;
   max?: number;
@@ -57,6 +65,7 @@ export function ChartRadial({
   label,
   variant = "solid",
   segments = 44,
+  ...rest
 }: ChartRadialProps) {
   const clamped = Math.max(0, Math.min(value, max));
   const percentage = Math.round((clamped / max) * 100);
@@ -67,10 +76,14 @@ export function ChartRadial({
   const end = start - sweep;
 
   return (
+    // O espalhamento vem DEPOIS do `aria-label`: o rotulo tirado da
+    // porcentagem e padrao, e quem escrever o proprio `aria-label` tem que
+    // vencer. Com o spread antes, ele era engolido sem aviso nenhum.
     <div
       className={cn("relative h-44 w-full", className)}
       role="img"
       aria-label={label ?? `${percentage}%`}
+      {...rest}
     >
       {variant === "segmented" ? (
         <SegmentedArc percentage={percentage} sweep={sweep} segments={segments} color={color} />

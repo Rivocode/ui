@@ -17,6 +17,38 @@ export function Table({ className, ...props }: ComponentPropsWithoutRef<"table">
   );
 }
 
+/**
+ * A legenda da tabela, num <caption> de verdade. E o nome que o leitor de tela
+ * anuncia antes de entrar nas linhas.
+ *
+ * Ela vai DENTRO do <Table>, e como primeiro filho. Escrever o titulo numa <p>
+ * ou num <h3> logo acima da tabela e o instinto, nao quebra nada, e custa o
+ * nome inteiro: o anuncio vira "tabela, 5 colunas, 12 linhas" e mais nada,
+ * porque texto vizinho nao nomeia elemento nenhum.
+ *
+ * E nao ha meio-termo: <caption> nao tem outro pai legal alem de <table>.
+ * Solto ao lado do <Table>, onde o titulo parece caber melhor, o React derruba
+ * com "In HTML, <caption> cannot be a child of <div>. This will cause a
+ * hydration error." - ou e filho da <table>, ou nao e legenda.
+ *
+ * Caber na tela e assunto da classe: `sr-only` da o nome sem ocupar pixel
+ * nenhum, que e o que o DataTable faz com o `caption` dele.
+ */
+export function TableCaption({ className, ...props }: ComponentPropsWithoutRef<"caption">) {
+  return (
+    <caption
+      {...props}
+      className={cn(
+        "caption-top px-[var(--rc-control-pad-md)] py-[var(--rc-control-pad-sm)]",
+        // O navegador centraliza <caption> por conta propria, e a legenda
+        // centralizada nao alinha com nenhuma coluna da tabela que ela nomeia.
+        "text-left text-sm text-fg-muted",
+        className,
+      )}
+    />
+  );
+}
+
 export function TableHeader({ className, ...props }: ComponentPropsWithoutRef<"thead">) {
   return <thead {...props} className={cn("border-b border-border", className)} />;
 }

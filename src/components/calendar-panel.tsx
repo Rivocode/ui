@@ -1,13 +1,22 @@
 "use client";
 
-import type { ReactElement, ReactNode } from "react";
+import type { ComponentProps, ReactElement, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { useMobile } from "../lib/screen";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Sheet, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 
-export type CalendarPanelProps = {
+/*
+ * `title` colide com o atributo de mesmo nome da `<div>`, e os dois sao
+ * `string`: a interseccao compilaria e o texto viraria tambem a tarja amarela
+ * do navegador, em cima de um painel inteiro. Aqui ele e o nome que o leitor
+ * de tela ouve, e vai para o `aria-label` da casca.
+ *
+ * `children` e redeclarado obrigatorio: sem calendario dentro, o painel e uma
+ * casca vazia.
+ */
+export type CalendarPanelProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   open: boolean;
   onOpenChange: (isOpen: boolean) => void;
   /** O elemento que abre. O mesmo nos dois formatos. */
@@ -42,6 +51,7 @@ export function CalendarPanel({
   footer,
   align = "start",
   className,
+  ...rest
 }: CalendarPanelProps) {
   const isMobile = useMobile();
 
@@ -54,7 +64,12 @@ export function CalendarPanel({
          * e o `p-3` de baixo sao o que mais se troca, e o `cn` resolve o grupo
          * de padding pela ordem.
          */}
-        <SheetContent className={cn("p-4", className)} aria-label={title}>
+        {/*
+         * O espalhamento vem DEPOIS do `aria-label`: o nome tirado do `title` e
+         * padrao, e quem passar o proprio `aria-label` tem que vencer. Antes do
+         * spread, o rotulo escrito de fora era engolido sem aviso.
+         */}
+        <SheetContent className={cn("p-4", className)} aria-label={title} {...rest}>
           <SheetHandle />
           <div className="flex justify-center">{children}</div>
           {footer && <div className="mt-4 border-t border-border pt-4">{footer}</div>}
@@ -70,6 +85,7 @@ export function CalendarPanel({
         align={align}
         className={cn("w-auto min-w-0 p-3", className)}
         aria-label={title}
+        {...rest}
       >
         {children}
         {footer && <div className="mt-3 border-t border-border pt-3">{footer}</div>}

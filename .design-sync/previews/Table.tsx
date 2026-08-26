@@ -3,6 +3,7 @@ import {
   Checkbox,
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -89,6 +90,40 @@ export function WithTotals() {
           <TableCell className="text-right font-mono">{currencyShort(total)}</TableCell>
         </TableRow>
       </TableFooter>
+    </Table>
+  )
+}
+
+/** Com legenda */
+export function WithCaption() {
+  const payments = [
+    { id: 'PIX-9021', method: 'Pix', amount: 4200 },
+    { id: 'BOL-4477', method: 'Boleto', amount: 1850 },
+    { id: 'CTC-1180', method: 'Cartão de crédito', amount: 990 },
+  ]
+
+  return (
+    <Table>
+      {/* Primeiro filho da <table>, e não uma <p> acima dela: o título vizinho
+          não nomeia elemento nenhum, e o leitor de tela anuncia só "tabela, 3
+          colunas". */}
+      <TableCaption>Pagamentos recebidos em junho de 2025</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Identificador</TableHead>
+          <TableHead>Meio</TableHead>
+          <TableHead className="text-right">Valor</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {payments.map((payment) => (
+          <TableRow key={payment.id}>
+            <TableCell className="font-mono text-sm text-fg-muted">{payment.id}</TableCell>
+            <TableCell>{payment.method}</TableCell>
+            <TableCell className="text-right font-mono">{currencyShort(payment.amount)}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
     </Table>
   )
 }

@@ -1,14 +1,26 @@
 "use client";
 
 import { ArrowDownRight, ArrowUpRight, Info } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { resolveFormat, type Format } from "../lib/format";
 import { Card, CardContent } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-export type StatProps = {
+/*
+ * O tipo era objeto fechado, e por isso `id`, `data-*` e `aria-*` nao
+ * chegavam ao cartao: quem precisava marcar um Stat para teste ou para
+ * analitica embrulhava a peca numa div so para pendurar o atributo.
+ *
+ * `children` fica de fora: o cartao monta o proprio conteudo a partir de
+ * `label`, `value` e companhia, e filho vindo de fora seria descartado em
+ * silencio pelo JSX de dentro. Nenhuma outra prop daqui colide - `label` e
+ * `value` nao existem em `HTMLAttributes`.
+ *
+ * Sem `ref` porque a raiz e o `Card`, que tambem nao tem.
+ */
+export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /** O que o numero mede: "Faturado em agosto". */
   label: string;
   /** O numero, ja formatado: `currencyShort(246_700)`. */
@@ -89,13 +101,14 @@ export function Stat({
   deltaFormat = "percent",
   deltaVariant = "text",
   className,
+  ...rest
 }: StatProps) {
   const rose = (delta ?? 0) >= 0;
   const good = invert ? !rose : rose;
   const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
 
   return (
-    <Card className={className}>
+    <Card {...rest} className={className}>
       <CardContent className="py-4">
         <div className="flex items-start justify-between gap-3">
           {icon && (

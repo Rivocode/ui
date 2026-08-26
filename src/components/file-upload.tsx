@@ -34,7 +34,15 @@ function matchesAccept(file: File, accept: string) {
   });
 }
 
-export type FileUploadProps = {
+/*
+ * `onSelect` e a colisao de verdade: a `<div>` ja tem um `onSelect`, o evento
+ * de selecao de texto do DOM, com assinatura `(event) => void`. Sem o `Omit`,
+ * o tipo vira a interseccao das duas funcoes - uma que nao da para chamar nem
+ * como uma nem como outra - e o erro sai no ponto de chamada, ilegivel.
+ *
+ * `children` sai porque a area se desenha a partir de `label` e `hint`.
+ */
+export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children"> & {
   /** A frase da área: "Arraste o XML da nota, ou clique para escolher". */
   label: ReactNode;
   /** A letra miúda: formatos e limite, para a pessoa não descobrir na recusa. */
@@ -69,6 +77,7 @@ export function FileUpload({
   onSelect,
   onReject,
   className,
+  ...rest
 }: FileUploadProps) {
   const input = useRef<HTMLInputElement>(null);
   // Contador, e nao booleano: entrar num filho dispara dragleave do pai, e
@@ -103,7 +112,7 @@ export function FileUpload({
   }
 
   return (
-    <div className={className}>
+    <div {...rest} className={className}>
       <button
         type="button"
         disabled={disabled}
