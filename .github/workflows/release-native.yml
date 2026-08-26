@@ -43,8 +43,8 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra so para o `npm publish`: e ele que sabe assinar a
-      # procedencia, e e ele que escreve o .npmrc a partir do segredo.
+      # O Node entra so para o `npm publish`: o bun nao escreve o .npmrc a
+      # partir do segredo, e e esse arquivo que autentica no registro.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
