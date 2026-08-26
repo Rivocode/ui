@@ -2,6 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import { Text } from "react-native";
 
 import { Avatar, DataList, EmptyState, Progress, Stat } from "../src";
+import { Meter } from "../src/meter";
 import { act, byClass, byRole, render, textOf } from "./helpers";
 
 const ROWS = [
@@ -102,5 +103,49 @@ describe("Progress", () => {
     const [bar] = byRole(screen, "progressbar");
     expect(bar.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 100 });
     expect(bar.props.accessibilityLabel).toBe("Meta do mês");
+  });
+});
+
+describe("Meter", () => {
+  test("não é progressbar: medida que sobe e desce não pode anunciar carregando", () => {
+    const screen = render(<Meter value={82} label="Espaço usado" />);
+    expect(byRole(screen, "progressbar").length).toBe(0);
+    const [meter] = byRole(screen, "text");
+    expect(meter.props.accessibilityLabel).toBe("Espaço usado");
+  });
+
+  test("escala própria: 8 de 15 pinta 53% de barra e anuncia o valor cru", () => {
+    const screen = render(<Meter value={8} max={15} label="Armazenamento" />);
+    const [bar] = byClass(screen, /\bbg-accent\b/);
+    expect(bar.props.style.width).toBe("53%");
+
+    const [meter] = byRole(screen, "text");
+    expect(meter.props.accessibilityValue).toEqual({ min: 0, max: 15, now: 8, text: "53%" });
+  });
+
+  test("fora da escala não estoura a barra nos dois sentidos", () => {
+    const over = render(<Meter value={40} max={15} label="Armazenamento" />);
+    expect(byClass(over, /\bbg-accent\b/)[0].props.style.width).toBe("100%");
+    // now acima de max é RangeInfo fora da especificação: o leitor de tela
+    // recebe a escala, o texto na tela é que conta o estouro.
+    expect(byRole(over, "text")[0].props.accessibilityValue.now).toBe(15);
+
+    const under = render(<Meter value={-4} max={15} label="Armazenamento" />);
+    expect(byClass(under, /\bbg-accent\b/)[0].props.style.width).toBe("0%");
+  });
+
+  test("valueLabel escreve a medida na tela e é o que o leitor de tela diz", () => {
+    const screen = render(<Meter value={8} max={15} label="Armazenamento" valueLabel="8 GB de 15 GB" />);
+    expect(textOf(screen)).toContain("Armazenamento");
+    expect(textOf(screen)).toContain("8 GB de 15 GB");
+    expect(byRole(screen, "text")[0].props.accessibilityValue.text).toBe("8 GB de 15 GB");
+  });
+
+  test("showValue escreve a porcentagem, e sem ele a barra vai sozinha", () => {
+    const shown = render(<Meter value={8} max={15} label="Armazenamento" showValue />);
+    expect(textOf(shown)).toContain("53%");
+
+    const bare = render(<Meter value={8} max={15} label="Armazenamento" />);
+    expect(textOf(bare)).not.toContain("53%");
   });
 });
