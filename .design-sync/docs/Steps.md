@@ -48,3 +48,14 @@ const wizard = useWizard(steps)
 `WizardFooter` põe voltar de um lado e avançar do outro, e no celular empilha na
 ordem invertida com os dois ocupando a largura toda — o botão que continua fica
 embaixo, onde o polegar está.
+
+## Quando não usar
+
+Para o que já aconteceu com alguma coisa — a trilha de uma nota, o histórico de
+uma alteração — use `Timeline`. Esta régua é de assistente: olha para a frente,
+sabe quantos passos faltam e existe para conduzir alguém até o fim de um
+formulário. A linha do tempo olha para trás, e ninguém avança nela.
+
+Dois ou três campos não pedem assistente. Quebrar em passos um formulário que
+cabe numa tela troca a rolagem por cliques, e esconde de quem preenche o
+tamanho do que ele aceitou fazer.

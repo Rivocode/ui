@@ -6,10 +6,6 @@ category: Formulário
 
 Chave de liga e desliga, para o que muda na hora.
 
-Não e um `Checkbox` de outro formato. O Checkbox responde uma pergunta que só
-vale quando o formulário for enviado; a chave age no clique. Trocar um pelo
-outro faz a pessoa clicar e não saber se já valeu.
-
 O alvo tem 44px de altura mesmo com o trilho de 24, por respiro invisivel: e a
 medida do dedo.
 
@@ -24,3 +20,11 @@ texto também liga:
 
 Sem filho, sai só a chave. Vale para linha de ajuste onde o texto tem descrição
 embaixo e a chave fica na ponta direita.
+
+## Quando não usar
+
+Dentro de um formulário que tem botão de salvar, use `Checkbox`. **Não é o mesmo
+controle de outro formato**: a chave age no clique e o efeito é imediato; a
+caixa responde uma pergunta que só vale quando o formulário for enviado. Uma
+chave em cima de um Salvar deixa a pessoa sem saber se já valeu — e se ela sair
+da tela sem salvar, a resposta é não.

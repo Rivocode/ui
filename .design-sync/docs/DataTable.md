@@ -34,3 +34,11 @@ Tudo opt-in, tudo client-side, nada muda para quem não pedir:
 Quem ordena, filtra ou pagina **no servidor** já recebe os dados prontos: mostre
 a página que veio e ponha o `Pagination` da casa do lado de fora — e não marque
 `sortable` nem use `filter`, porque duas ordenações discordando é pior que uma.
+
+## Quando não usar
+
+Para a tabela que você desenha linha a linha, use `Table`. Ela compõe com
+`TableRow` e `TableCell` e aceita qualquer arranjo — célula que junta duas
+colunas, linha de total, quadro de um recibo. Esta aqui recebe `columns` e
+`rows`, e essa é a troca: ela cuida dos estados e da ordenação, e em compensação
+o desenho de cada linha passa a caber no que uma coluna sabe fazer.

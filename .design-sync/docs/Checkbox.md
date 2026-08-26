@@ -24,3 +24,13 @@ Sem filho, sai só a caixa, e o arranjo fica com quem monta a tela. Use assim
 quando o rótulo tiver estrutura própria: um título com descrição embaixo, um
 link no meio da frase. Nesse caso, o `<label>` em volta é seu, e é ele que faz
 o clique no texto valer.
+
+## Quando não usar
+
+Para o ajuste que vale na hora — notificação que liga, modo escuro, recurso que
+a conta passa a ter — use `Switch`. A caixa promete um Salvar depois; a chave
+promete que já valeu. Uma caixa de marcar numa tela de preferências sem botão
+de salvar deixa a pessoa esperando por um botão que não existe.
+
+Para escolher uma opção entre várias que se excluem, é `RadioGroup`: caixa que
+desmarca a irmã ao ser marcada é um rádio malfeito.
