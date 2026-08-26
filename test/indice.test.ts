@@ -20,11 +20,15 @@ const pecas = nomes.filter((nome) => !findParent(nome, nomes));
 
 test("a skill diz o mesmo numero de pecas que o catalogo tem", async () => {
   // O numero na skill e a primeira coisa que um agente le, e era o unico
-  // lugar do sistema onde ele estava certo enquanto o indice contava tudo.
+  // lugar do sistema onde ele estava certo enquanto o indice contava tudo. Ele
+  // aparece em dois arquivos, e os dois envelhecem juntos.
   const skill = await Bun.file(".claude/skills/rivocode-ui/SKILL.md").text();
-  const dito = /S[aã]o (\d+)/.exec(skill)?.[1];
+  const escolha = await Bun.file(
+    ".claude/skills/rivocode-ui/reference/components.md",
+  ).text();
 
-  expect(dito).toBe(String(pecas.length));
+  expect(/S[aã]o (\d+)/.exec(skill)?.[1]).toBe(String(pecas.length));
+  expect(/tem (\d+) peças/.exec(escolha)?.[1]).toBe(String(pecas.length));
 });
 
 test("parte e peca nao se confundem na contagem", () => {

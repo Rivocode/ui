@@ -39,7 +39,13 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 3. **Nunca invente prop.** Se o documento não a lista, ela não existe. Um chute
    falha no `tsc` na melhor das hipóteses, e passa despercebido como atributo
-   solto no DOM na pior.
+   solto no DOM na pior. A tabela sai do compilador, então ela é a API inteira,
+   callbacks incluídos — `onValueChange`, `onOpenChange`, `onCheckedChange`.
+
+4. **Toda listagem tem quatro finais**: dados, carregando, erro e vazio. O
+   `DataTable` e o `ChartContainer` recebem os quatro por prop, e entregar só
+   o caminho feliz é entregar metade da tela —
+   [reference/components.md](reference/components.md) tem a ordem certa.
 
 ## O Provider, uma vez, na raiz
 
