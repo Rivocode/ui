@@ -20,9 +20,27 @@ test("a prop carimbada guarda a versao em que apareceu", () => {
   expect(button.since).toBe("0.4.0");
 });
 
-test("a prop nova ainda nao tem carimbo, e e isso que o lancamento carimba", () => {
-  // `classNames` nasceu nesta versao, que ainda nao saiu.
+test("a prop que nasceu nesta versao carrega esta versao", () => {
+  // `classNames` nasceu no 0.5.0, e o carimbo do lancamento a alcancou. O que
+  // este teste guarda e a diferenca entre as duas: uma prop antiga nao pode
+  // ser recarimbada com a versao de hoje, senao o marcador vira ruido.
   const slider = catalog.Slider.props.find((prop: { name: string }) => prop.name === "classNames");
 
-  expect(slider.since).toBeUndefined();
+  expect(slider.since).toBe("0.5.0");
+});
+
+test("toda prop carimbada aponta para uma versao que o CHANGELOG conta", async () => {
+  const changelog = await Bun.file("CHANGELOG.md").text();
+  const versions = new Set(
+    Object.values<any>(catalog).flatMap((piece) =>
+      piece.props.map((prop: { since?: string }) => prop.since).filter(Boolean),
+    ),
+  );
+
+  expect(versions.size).toBeGreaterThan(1);
+  for (const version of versions) {
+    expect(`${version} no CHANGELOG: ${changelog.includes(`## ${version}`)}`).toBe(
+      `${version} no CHANGELOG: true`,
+    );
+  }
 });

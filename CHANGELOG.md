@@ -1,6 +1,6 @@
 # Mudancas
 
-## 0.5.0 (nao publicado)
+## 0.5.0
 
 Uma bancada externa auditou a biblioteca inteira - 258 exports instanciados,
 118 paginas lidas, contraste medido nos dois temas, 12 telas a 390px e 93

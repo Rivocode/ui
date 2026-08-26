@@ -1999,13 +1999,15 @@
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "Quantos aparecem antes do \"+n\"."
+        "note": "Quantos aparecem antes do \"+n\".",
+        "since": "0.5.0"
       },
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\" | null",
         "required": false,
-        "note": "O tamanho vale para a fila inteira, inclusive para o \"+n\"."
+        "note": "O tamanho vale para a fila inteira, inclusive para o \"+n\".",
+        "since": "0.5.0"
       }
     ]
   },
@@ -5455,7 +5457,8 @@
         "name": "segments",
         "type": "number",
         "required": false,
-        "note": "Quantos tracinhos, no `segmented`."
+        "note": "Quantos tracinhos, no `segmented`.",
+        "since": "0.5.0"
       },
       {
         "name": "sweep",
@@ -5468,7 +5471,8 @@
         "name": "variant",
         "type": "\"segmented\" | \"solid\"",
         "required": false,
-        "note": "`solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que e a variacao mais pedida de medidor em painel e custava 42 linhas de SVG no projeto de quem usa - com a cor cravada, entao sem responder ao tema."
+        "note": "`solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que e a variacao mais pedida de medidor em painel e custava 42 linhas de SVG no projeto de quem usa - com a cor cravada, entao sem responder ao tema.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -8251,7 +8255,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"box\" | \"indicator\" | \"label\", string>>",
         "required": false,
-        "note": "Classe por parte: `box`, `indicator`, `label`."
+        "note": "Classe por parte: `box`, `indicator`, `label`.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultChecked",
@@ -8414,51 +8419,60 @@
         "name": "labels",
         "type": "{ copy: string; copied: string; }",
         "required": false,
-        "note": "O que o leitor de tela chama o botao antes e depois de copiar."
+        "note": "O que o leitor de tela chama o botao antes e depois de copiar.",
+        "since": "0.5.0"
       },
       {
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento.",
+        "since": "0.5.0"
       },
       {
         "name": "onCopy",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Chamado depois de copiar, para quem quer disparar um aviso proprio."
+        "note": "Chamado depois de copiar, para quem quer disparar um aviso proprio.",
+        "since": "0.5.0"
       },
       {
         "name": "ref",
         "type": "Ref<HTMLButtonElement>",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "render",
         "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
-        "note": "Troca o elemento renderizado mantendo a aparencia."
+        "note": "Troca o elemento renderizado mantendo a aparencia.",
+        "since": "0.5.0"
       },
       {
         "name": "shape",
         "type": "\"default\" | \"pill\" | null",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "size",
         "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "timeout",
         "type": "number",
         "required": false,
-        "note": "Quanto tempo a confirmacao fica na tela, em ms."
+        "note": "Quanto tempo a confirmacao fica na tela, em ms.",
+        "since": "0.5.0"
       },
       {
         "name": "variant",
         "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       }
     ]
   },
@@ -8473,13 +8487,15 @@
         "name": "copyable",
         "type": "boolean",
         "required": false,
-        "note": "Poe o botao de copiar no canto, com o proprio conteudo do bloco."
+        "note": "Poe o botao de copiar no canto, com o proprio conteudo do bloco.",
+        "since": "0.5.0"
       },
       {
         "name": "lineNumbers",
         "type": "boolean",
         "required": false,
-        "note": "Numera as linhas a esquerda, para quem vai citar uma delas."
+        "note": "Numera as linhas a esquerda, para quem vai citar uma delas.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -8575,60 +8591,70 @@
         "name": "classNames",
         "type": "Partial<Record<\"field\" | \"input\" | \"label\" | \"preview\" | \"swatch\" | \"swatches\", string>>",
         "required": false,
-        "note": "Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`."
+        "note": "Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`.",
+        "since": "0.5.0"
       },
       {
         "name": "columns",
         "type": "number",
         "required": false,
-        "note": "Quantas amostras por linha."
+        "note": "Quantas amostras por linha.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultValue",
         "type": "string",
         "required": false,
-        "note": "A cor inicial de quem nao controla o valor de fora."
+        "note": "A cor inicial de quem nao controla o valor de fora.",
+        "since": "0.5.0"
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "hideInput",
         "type": "boolean",
         "required": false,
-        "note": "Esconde o campo de texto e deixa so a grade."
+        "note": "Esconde o campo de texto e deixa so a grade.",
+        "since": "0.5.0"
       },
       {
         "name": "label",
         "type": "ReactNode",
         "required": false,
-        "note": "Texto acima da grade."
+        "note": "Texto acima da grade.",
+        "since": "0.5.0"
       },
       {
         "name": "onValueChange",
         "type": "((value: string) => void)",
         "required": false,
-        "note": "Avisado com o hexadecimal normalizado, sempre de seis digitos e minusculo."
+        "note": "Avisado com o hexadecimal normalizado, sempre de seis digitos e minusculo.",
+        "since": "0.5.0"
       },
       {
         "name": "swatches",
         "type": "ColorSwatch[]",
         "required": false,
-        "note": "As amostras da grade."
+        "note": "As amostras da grade.",
+        "since": "0.5.0"
       },
       {
         "name": "swatchesLabel",
         "type": "string",
         "required": false,
-        "note": "O que o leitor de tela chama a grade quando nao ha `label`."
+        "note": "O que o leitor de tela chama a grade quando nao ha `label`.",
+        "since": "0.5.0"
       },
       {
         "name": "value",
         "type": "string",
         "required": false,
-        "note": "A cor escolhida, em hexadecimal de seis digitos."
+        "note": "A cor escolhida, em hexadecimal de seis digitos.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -9069,7 +9095,8 @@
         "name": "placeholder",
         "type": "ReactNode",
         "required": false,
-        "note": "The placeholder value to display when no value is selected."
+        "note": "The placeholder value to display when no value is selected.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -9242,7 +9269,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"cell\" | \"footer\" | \"head\" | \"row\" | \"table\", string>>",
         "required": false,
-        "note": "Classe por parte: `table`, `head`, `row`, `cell`, `footer`."
+        "note": "Classe por parte: `table`, `head`, `row`, `cell`, `footer`.",
+        "since": "0.5.0"
       },
       {
         "name": "empty",
@@ -9280,7 +9308,8 @@
         "name": "maxHeight",
         "type": "string | number",
         "required": false,
-        "note": "Altura maxima da tabela."
+        "note": "Altura maxima da tabela.",
+        "since": "0.5.0"
       },
       {
         "name": "onRetry",
@@ -9312,7 +9341,8 @@
         "name": "rowHeight",
         "type": "number",
         "required": false,
-        "note": "A altura de uma linha, em pixel, quando `virtual` esta ligado."
+        "note": "A altura de uma linha, em pixel, quando `virtual` esta ligado.",
+        "since": "0.5.0"
       },
       {
         "name": "selectable",
@@ -9339,7 +9369,8 @@
         "name": "virtual",
         "type": "boolean",
         "required": false,
-        "note": "Desenha so as linhas que cabem na moldura, e o caminho do meio aparece: cem mil linhas com `sortable` e `filter` continuando a funcionar, sem mandar a pessoa para a paginacao no servidor."
+        "note": "Desenha so as linhas que cabem na moldura, e o caminho do meio aparece: cem mil linhas com `sortable` e `filter` continuando a funcionar, sem mandar a pessoa para a paginacao no servidor.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -9350,7 +9381,8 @@
         "name": "confirm",
         "type": "boolean",
         "required": false,
-        "note": "Sem rodape, o clique no dia ja vale e o painel fecha."
+        "note": "Sem rodape, o clique no dia ja vale e o painel fecha.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultValue",
@@ -9431,7 +9463,8 @@
         "name": "confirm",
         "type": "boolean",
         "required": false,
-        "note": "Rodape com Aplicar."
+        "note": "Rodape com Aplicar.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultValue",
@@ -9606,7 +9639,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"backdrop\", string>>",
         "required": false,
-        "note": "Classe por parte: `backdrop`."
+        "note": "Classe por parte: `backdrop`.",
+        "since": "0.5.0"
       },
       {
         "name": "finalFocus",
@@ -9699,34 +9733,40 @@
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "O que o leitor de tela chama o campo enquanto ele esta aberto."
+        "note": "O que o leitor de tela chama o campo enquanto ele esta aberto.",
+        "since": "0.5.0"
       },
       {
         "name": "onValueChange",
         "type": "(value: string) => void",
-        "required": true
+        "required": true,
+        "since": "0.5.0"
       },
       {
         "name": "value",
         "type": "string",
-        "required": true
+        "required": true,
+        "since": "0.5.0"
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"input\" | \"preview\", string>>",
         "required": false,
-        "note": "Classe por parte: `preview`, `input`."
+        "note": "Classe por parte: `preview`, `input`.",
+        "since": "0.5.0"
       },
       {
         "name": "disabled",
         "type": "boolean",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "placeholder",
         "type": "string",
         "required": false,
-        "note": "O que aparece quando o valor esta vazio."
+        "note": "O que aparece quando o valor esta vazio.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -10075,31 +10115,36 @@
         "name": "classNames",
         "type": "Partial<Record<\"badge\", string>>",
         "required": false,
-        "note": "Classe por parte: `badge`."
+        "note": "Classe por parte: `badge`.",
+        "since": "0.5.0"
       },
       {
         "name": "count",
         "type": "number",
         "required": false,
-        "note": "Quantos."
+        "note": "Quantos.",
+        "since": "0.5.0"
       },
       {
         "name": "dot",
         "type": "boolean",
         "required": false,
-        "note": "Sem contagem: so o ponto, para \"tem algo novo aqui\"."
+        "note": "Sem contagem: so o ponto, para \"tem algo novo aqui\".",
+        "since": "0.5.0"
       },
       {
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "O que o leitor de tela ouve."
+        "note": "O que o leitor de tela ouve.",
+        "since": "0.5.0"
       },
       {
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "O teto: acima dele sai \"99+\", em vez de a pastilha esticar."
+        "note": "O teto: acima dele sai \"99+\", em vez de a pastilha esticar.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -10145,7 +10190,8 @@
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
-        "note": "A altura da moldura, que precisa acompanhar a do campo de dentro."
+        "note": "A altura da moldura, que precisa acompanhar a do campo de dentro.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -11874,49 +11920,57 @@
         "name": "closeDelay",
         "type": "number",
         "required": false,
-        "note": "How long to wait before closing the menu that was opened on hover."
+        "note": "How long to wait before closing the menu that was opened on hover.",
+        "since": "0.5.0"
       },
       {
         "name": "delay",
         "type": "number",
         "required": false,
-        "note": "How long to wait before the menu may be opened on hover."
+        "note": "How long to wait before the menu may be opened on hover.",
+        "since": "0.5.0"
       },
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
-        "note": "Whether the component should ignore user interaction."
+        "note": "Whether the component should ignore user interaction.",
+        "since": "0.5.0"
       },
       {
         "name": "handle",
         "type": "MenuHandle<unknown>",
         "required": false,
-        "note": "A handle to associate the trigger with a menu."
+        "note": "A handle to associate the trigger with a menu.",
+        "since": "0.5.0"
       },
       {
         "name": "nativeButton",
         "type": "boolean",
         "required": false,
-        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop."
+        "note": "Whether the component renders a native `<button>` element when replacing it via the `render` prop.",
+        "since": "0.5.0"
       },
       {
         "name": "openOnHover",
         "type": "boolean",
         "required": false,
-        "note": "Whether the menu should also open when the trigger is hovered."
+        "note": "Whether the menu should also open when the trigger is hovered.",
+        "since": "0.5.0"
       },
       {
         "name": "payload",
         "type": "unknown",
         "required": false,
-        "note": "A payload to pass to the menu when it is opened."
+        "note": "A payload to pass to the menu when it is opened.",
+        "since": "0.5.0"
       },
       {
         "name": "render",
         "type": "ComponentRenderFn<HTMLProps, MenuTriggerState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
-        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -12112,7 +12166,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Classe por parte: `label`, `value`, `track`, `indicator`."
+        "note": "Classe por parte: `label`, `value`, `track`, `indicator`.",
+        "since": "0.5.0"
       },
       {
         "name": "format",
@@ -12159,7 +12214,8 @@
         "name": "numberFormat",
         "type": "NumberFormatOptions",
         "required": false,
-        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas.",
+        "since": "0.5.0"
       },
       {
         "name": "render",
@@ -12427,7 +12483,8 @@
         "name": "numberFormat",
         "type": "NumberFormatOptions",
         "required": false,
-        "note": "As opcoes do `Intl.NumberFormat`."
+        "note": "As opcoes do `Intl.NumberFormat`.",
+        "since": "0.5.0"
       },
       {
         "name": "onValueChange",
@@ -12708,36 +12765,42 @@
       {
         "name": "defaultValue",
         "type": "string | number | readonly string[]",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "labels",
         "type": "{ show: string; hide: string; }",
         "required": false,
-        "note": "O que o leitor de tela ouve no botao, antes e depois de revelar."
+        "note": "O que o leitor de tela ouve no botao, antes e depois de revelar.",
+        "since": "0.5.0"
       },
       {
         "name": "onValueChange",
         "type": "((value: string, eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void)",
         "required": false,
-        "note": "Callback fired when the `value` changes."
+        "note": "Callback fired when the `value` changes.",
+        "since": "0.5.0"
       },
       {
         "name": "render",
         "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
-        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
+        "since": "0.5.0"
       },
       {
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "wrapperClassName",
         "type": "string",
         "required": false,
-        "note": "Classe da moldura, quando o campo precisa de largura propria."
+        "note": "Classe da moldura, quando o campo precisa de largura propria.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -16884,7 +16947,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Classe por parte: `label`, `value`, `track`, `indicator`."
+        "note": "Classe por parte: `label`, `value`, `track`, `indicator`.",
+        "since": "0.5.0"
       },
       {
         "name": "format",
@@ -16932,7 +16996,8 @@
         "name": "numberFormat",
         "type": "NumberFormatOptions",
         "required": false,
-        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas.",
+        "since": "0.5.0"
       },
       {
         "name": "render",
@@ -18824,7 +18889,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"indicator\" | \"label\", string>>",
         "required": false,
-        "note": "Classe por parte: `indicator`, `label`."
+        "note": "Classe por parte: `indicator`, `label`.",
+        "since": "0.5.0"
       },
       {
         "name": "disabled",
@@ -19115,19 +19181,22 @@
         "name": "value",
         "type": "string | number | Date",
         "required": true,
-        "note": "O instante que se descreve."
+        "note": "O instante que se descreve.",
+        "since": "0.5.0"
       },
       {
         "name": "cutoff",
         "type": "\"day\" | \"hour\" | \"minute\" | \"month\" | \"week\" | \"year\"",
         "required": false,
-        "note": "A partir de qual unidade parar de contar e mostrar a data."
+        "note": "A partir de qual unidade parar de contar e mostrar a data.",
+        "since": "0.5.0"
       },
       {
         "name": "now",
         "type": "Date",
         "required": false,
-        "note": "O agora, para teste e para renderizacao no servidor."
+        "note": "O agora, para teste e para renderizacao no servidor.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -21017,7 +21086,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"backdrop\" | \"viewport\", string>>",
         "required": false,
-        "note": "Classe por parte: `backdrop`, `viewport`."
+        "note": "Classe por parte: `backdrop`, `viewport`.",
+        "since": "0.5.0"
       },
       {
         "name": "finalFocus",
@@ -21300,7 +21370,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"control\" | \"indicator\" | \"label\" | \"thumb\" | \"track\" | \"value\", string>>",
         "required": false,
-        "note": "Classe por parte: `label`, `value`, `control`, `track`, `indicator`, `thumb`."
+        "note": "Classe por parte: `label`, `value`, `control`, `track`, `indicator`, `thumb`.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultValue",
@@ -21383,7 +21454,8 @@
         "name": "numberFormat",
         "type": "NumberFormatOptions",
         "required": false,
-        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas."
+        "note": "As opcoes do `Intl.NumberFormat`, para quem precisa delas.",
+        "since": "0.5.0"
       },
       {
         "name": "onValueChange",
@@ -21521,53 +21593,62 @@
       {
         "name": "end",
         "type": "ReactNode",
-        "required": true
+        "required": true,
+        "since": "0.5.0"
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "O que o leitor de tela chama a divisoria."
+        "note": "O que o leitor de tela chama a divisoria.",
+        "since": "0.5.0"
       },
       {
         "name": "start",
         "type": "ReactNode",
         "required": true,
-        "note": "O lado que a medida descreve: a esquerda na horizontal, o topo na vertical."
+        "note": "O lado que a medida descreve: a esquerda na horizontal, o topo na vertical.",
+        "since": "0.5.0"
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"end\" | \"handle\" | \"start\", string>>",
         "required": false,
-        "note": "Classe por parte: `start`, `end`, `handle`."
+        "note": "Classe por parte: `start`, `end`, `handle`.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultSize",
         "type": "number",
         "required": false,
-        "note": "Tamanho do primeiro lado, em porcentagem."
+        "note": "Tamanho do primeiro lado, em porcentagem.",
+        "since": "0.5.0"
       },
       {
         "name": "min",
         "type": "number",
         "required": false,
-        "note": "Quanto cada lado precisa ter, em porcentagem."
+        "note": "Quanto cada lado precisa ter, em porcentagem.",
+        "since": "0.5.0"
       },
       {
         "name": "onSizeChange",
         "type": "((size: number) => void)",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "orientation",
         "type": "\"horizontal\" | \"vertical\"",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       },
       {
         "name": "size",
         "type": "number",
         "required": false,
-        "note": "Controlado, quando o app quer guardar a escolha entre sessoes."
+        "note": "Controlado, quando o app quer guardar a escolha entre sessoes.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -21592,7 +21673,8 @@
         "name": "actions",
         "type": "ReactNode",
         "required": false,
-        "note": "O canto direito do cartao: o menu de tres pontos, um botao de acao."
+        "note": "O canto direito do cartao: o menu de tres pontos, um botao de acao.",
+        "since": "0.5.0"
       },
       {
         "name": "chart",
@@ -21619,13 +21701,15 @@
         "name": "deltaVariant",
         "type": "\"pill\" | \"text\"",
         "required": false,
-        "note": "A variacao como pastilha preenchida, que e a convencao dominante em painel, ou como texto com seta, que e o padrao daqui."
+        "note": "A variacao como pastilha preenchida, que e a convencao dominante em painel, ou como texto com seta, que e o padrao daqui.",
+        "since": "0.5.0"
       },
       {
         "name": "footer",
         "type": "ReactNode",
         "required": false,
-        "note": "A faixa de baixo: meta com barra, comparacao, texto de apoio."
+        "note": "A faixa de baixo: meta com barra, comparacao, texto de apoio.",
+        "since": "0.5.0"
       },
       {
         "name": "hint",
@@ -21638,7 +21722,8 @@
         "name": "icon",
         "type": "ReactNode",
         "required": false,
-        "note": "O icone em caixa, a esquerda do rotulo."
+        "note": "O icone em caixa, a esquerda do rotulo.",
+        "since": "0.5.0"
       },
       {
         "name": "invert",
@@ -21688,7 +21773,8 @@
         "name": "classNames",
         "type": "Partial<Record<\"label\" | \"thumb\", string>>",
         "required": false,
-        "note": "Classe por parte: `thumb`, `label`."
+        "note": "Classe por parte: `thumb`, `label`.",
+        "since": "0.5.0"
       },
       {
         "name": "defaultChecked",
@@ -21953,31 +22039,36 @@
       {
         "name": "onValueChange",
         "type": "(value: string[]) => void",
-        "required": true
+        "required": true,
+        "since": "0.5.0"
       },
       {
         "name": "value",
         "type": "string[]",
         "required": true,
-        "note": "As fichas de agora."
+        "note": "As fichas de agora.",
+        "since": "0.5.0"
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"field\" | \"input\" | \"remove\" | \"tag\", string>>",
         "required": false,
-        "note": "Classe por parte: `field`, `tag`, `remove`, `input`."
+        "note": "Classe por parte: `field`, `tag`, `remove`, `input`.",
+        "since": "0.5.0"
       },
       {
         "name": "removeLabel",
         "type": "((tag: string) => string)",
         "required": false,
-        "note": "O que o leitor de tela ouve no botao de cada ficha."
+        "note": "O que o leitor de tela ouve no botao de cada ficha.",
+        "since": "0.5.0"
       },
       {
         "name": "separators",
         "type": "string[]",
         "required": false,
-        "note": "O que fecha uma ficha alem do Enter."
+        "note": "O que fecha uma ficha alem do Enter.",
+        "since": "0.5.0"
       }
     ]
   },
@@ -22024,30 +22115,35 @@
         "name": "at",
         "type": "ReactNode",
         "required": false,
-        "note": "Quando aconteceu."
+        "note": "Quando aconteceu.",
+        "since": "0.5.0"
       },
       {
         "name": "by",
         "type": "ReactNode",
         "required": false,
-        "note": "Quem fez."
+        "note": "Quem fez.",
+        "since": "0.5.0"
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"content\" | \"marker\" | \"meta\" | \"title\", string>>",
         "required": false,
-        "note": "Classe por parte: `marker`, `title`, `meta`, `content`."
+        "note": "Classe por parte: `marker`, `title`, `meta`, `content`.",
+        "since": "0.5.0"
       },
       {
         "name": "pending",
         "type": "boolean | null",
         "required": false,
-        "note": "O que ainda nao aconteceu fica vazado."
+        "note": "O que ainda nao aconteceu fica vazado.",
+        "since": "0.5.0"
       },
       {
         "name": "tone",
         "type": "\"accent\" | \"danger\" | \"neutral\" | \"success\" | \"warning\" | null",
-        "required": false
+        "required": false,
+        "since": "0.5.0"
       }
     ]
   },
@@ -22447,19 +22543,22 @@
       {
         "name": "data",
         "type": "TrackerPoint[]",
-        "required": true
+        "required": true,
+        "since": "0.5.0"
       },
       {
         "name": "label",
         "type": "string",
         "required": true,
-        "note": "O que a faixa mede, dito por extenso para o leitor de tela."
+        "note": "O que a faixa mede, dito por extenso para o leitor de tela.",
+        "since": "0.5.0"
       },
       {
         "name": "classNames",
         "type": "Partial<Record<\"cell\" | \"label\" | \"track\", string>>",
         "required": false,
-        "note": "Classe por parte: `label`, `track`, `cell`."
+        "note": "Classe por parte: `label`, `track`, `cell`.",
+        "since": "0.5.0"
       }
     ]
   },
