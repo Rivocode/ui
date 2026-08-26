@@ -1,5 +1,6 @@
 "use client";
 
+import { Field as BaseField } from "@base-ui/react/field";
 import { X } from "lucide-react";
 import { useState, type ComponentProps, type KeyboardEvent } from "react";
 
@@ -37,6 +38,12 @@ export type TagsInputProps = Omit<
  * vezes diferentes: o Enter fecha a ficha, o Backspace com o campo vazio tira
  * a ultima - e o gesto que todo mundo tenta primeiro - e a repetida nao entra
  * duas vezes, porque marcar duas vezes a mesma coisa nunca e o que se quis.
+ *
+ * O campo de escrever passa pelo `Field.Control`, como o `Input` e o
+ * `Textarea`: e ele, e nao a moldura em volta, que recebe o `id` do rotulo, o
+ * `aria-describedby` da ajuda e do erro, e o `aria-invalid`. Sem isso o
+ * `FieldLabel` apontava para um id que nao existia, o nome do campo caia no
+ * `placeholder` - que some ao digitar - e clicar no rotulo nao focava nada.
  */
 export function TagsInput({
   value,
@@ -86,6 +93,16 @@ export function TagsInput({
         inputVariants(),
         "flex h-auto min-h-[var(--rc-control-md)] flex-wrap items-center gap-1.5",
         "px-[var(--rc-control-pad-md)] py-1.5",
+        // A moldura e uma `div`, e `div` sem foco nunca casa `:focus-visible`:
+        // o anel que o `inputVariants` traz ficava inerte, e o campo focado
+        // nao se pintava de jeito nenhum. Quem manda no anel e o campo de
+        // dentro. E `has-[input:...]`, e nao `focus-within`, porque o xis de
+        // cada ficha tem anel proprio - com `focus-within` acenderiam os dois
+        // ao mesmo tempo, que e a borda dupla que o `InputGroup` evita.
+        "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring",
+        "has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-bg",
+        // O `data-invalid` do `Field` cai no campo de dentro, e nao aqui.
+        "has-[[data-invalid]]:border-danger",
         disabled && "cursor-not-allowed opacity-60",
         classNames?.field,
         className,
@@ -120,8 +137,9 @@ export function TagsInput({
         </span>
       ))}
 
-      <input
+      <BaseField.Control
         {...props}
+        render={<input />}
         value={draft}
         disabled={disabled || full}
         onChange={(event) => setDraft(event.target.value)}

@@ -124,9 +124,7 @@ export function Command({
         items: group.items.filter((item) =>
           normalize(
             `${item.label} ${item.description ?? ""} ${[item.keywords ?? []].flat().join(" ")}`,
-          ).includes(
-            termo,
-          ),
+          ).includes(termo),
         ),
       }))
       .filter((group) => group.items.length > 0);
@@ -165,7 +163,9 @@ export function Command({
 
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActive((current) => (reachable.length ? (current - 1 + reachable.length) % reachable.length : 0));
+      setActive((current) =>
+        reachable.length ? (current - 1 + reachable.length) % reachable.length : 0,
+      );
       return;
     }
 
@@ -211,7 +211,15 @@ export function Command({
               onKeyDown={onFieldKeyDown}
               placeholder={placeholder}
               role="combobox"
-              aria-expanded="true"
+              // O nome do campo caia no `placeholder`, que some ao digitar e
+              // varios leitores de tela nem anunciam: a paleta era um
+              // combobox sem nome. O `title` ja e o nome do conjunto, e e o
+              // mesmo que rotula a lista.
+              aria-label={title}
+              // Era fixo em "true". Com a busca sem resultado, o foco ficava
+              // parado num combobox que afirmava estar expandido enquanto a
+              // lista estava vazia.
+              aria-expanded={reachable.length > 0}
               aria-controls={listId}
               aria-activedescendant={idDoAtivo ? `${listId}-${idDoAtivo}` : undefined}
               className={cn(
@@ -226,12 +234,10 @@ export function Command({
             id={listId}
             role="listbox"
             aria-label={title}
-            className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5"
+            // Sem nenhum item a lista some por inteiro, em vez de deixar a
+            // propria sobra de espaco acima da mensagem de vazio.
+            className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5 empty:hidden"
           >
-            {reachable.length === 0 && (
-              <p className="px-2.5 py-8 text-center text-sm text-fg-subtle">{emptyMessage}</p>
-            )}
-
             {matches.map((group, index) => (
               <div key={group.label ?? index} role="group" aria-label={group.label}>
                 {group.label && (
@@ -284,6 +290,26 @@ export function Command({
                 })}
               </div>
             ))}
+          </div>
+
+          {/*
+           * O aviso de vazio era um `<p>` comum dentro do `role="listbox"`, e
+           * digitar uma busca que nao acha nada produzia silencio: o listbox
+           * nao anuncia filho novo, e o foco continuava no campo. Ele sai da
+           * lista - onde so cabe `option` - e vira regiao viva.
+           *
+           * A contagem entra na mesma regiao, e nao numa segunda: duas regioes
+           * vivas anunciariam o vazio duas vezes. Ela e o que resolve o caso
+           * geral - sem ela, achar tres resultados tambem e silencio.
+           */}
+          <div role="status">
+            {reachable.length === 0 ? (
+              <p className="px-2.5 py-8 text-center text-sm text-fg-subtle">{emptyMessage}</p>
+            ) : (
+              <span className="sr-only">
+                {reachable.length === 1 ? "1 resultado" : `${reachable.length} resultados`}
+              </span>
+            )}
           </div>
         </BaseDialog.Popup>
       </BaseDialog.Portal>

@@ -29,6 +29,13 @@ acha quem já sabe o nome exato, que é justamente quem menos precisa dela.
 Cada abertura começa limpa. Paleta que guarda a busca da vez passada abre
 mostrando o resultado de outra pergunta.
 
+Buscar e não achar nada também precisa ser dito. A contagem de resultados e a
+mensagem de vazio saem numa região `role="status"` fora da lista: sem ela,
+digitar uma busca sem resultado produz silêncio, com o foco parado no campo e
+nenhuma pista de que a lista esvaziou. O `title` é o nome do campo e o da
+lista, e é ele que o leitor de tela anuncia ao abrir — o `placeholder` some ao
+digitar e não serve de rótulo.
+
 ## O atalho
 
 `Ctrl+K`, ou `Cmd+K` no Mac, registrado por ela mesma. Passe `shortcut={null}`

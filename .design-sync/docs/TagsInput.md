@@ -17,6 +17,28 @@ enviar o formulário, e ninguém entende por quê.
 É controlada de propósito: quem guarda a lista é o app, porque é ele que a
 envia.
 
+## O rótulo
+
+Embrulhe num `Field` com `FieldLabel`, como qualquer campo da casa. O campo de
+escrever passa pelo `Field.Control` — é ele, e não a moldura das fichas, que
+recebe o `id` do rótulo, o `aria-describedby` da ajuda e do erro, e o
+`aria-invalid`. Clicar no rótulo foca o campo, e a moldura fica vermelha
+quando o `Field` está inválido.
+
+```tsx
+<Field>
+  <FieldLabel>Marcadores</FieldLabel>
+  <TagsInput value={tags} onValueChange={setTags} placeholder="Escreva e tecle Enter" />
+  <FieldDescription>Enter fecha a ficha.</FieldDescription>
+</Field>
+```
+
+O `placeholder` não é rótulo: ele some no instante em que a pessoa digita, e
+vários leitores de tela não o anunciam. Fora de um `Field`, dê `aria-label`.
+
+O anel de foco é do campo de escrever, e não da moldura. O xis de cada ficha
+tem anel próprio, e os dois nunca acendem juntos.
+
 ## Quando não usar
 
 Quando as opções já existem, use `Combobox` com `multiple` e as fichas: ele
