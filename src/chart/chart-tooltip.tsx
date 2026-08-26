@@ -49,7 +49,7 @@ export function ChartTooltipContent({
       <ul className="flex flex-col gap-1">
         {payload.map((entry) => {
           // Na pizza todas as fatias tem o mesmo `dataKey`, e quem separa e o
-          // `name`. Ver `chaveDaSerie` na legenda: mesma armadilha.
+          // `name`. Ver `seriesKey` na legenda: mesma armadilha.
           const candidates = [entry.dataKey, entry.name].filter((x) => x != null).map(String);
           const key = candidates.find((candidate) => config?.[candidate]) ?? candidates[0] ?? "";
           const name = config?.[key]?.label ?? entry.name ?? key;
