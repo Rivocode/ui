@@ -1,5 +1,54 @@
 # Mudancas
 
+## 0.6.0
+
+Uma releitura do relatorio de bancada sobre a 0.5.0, e um defeito que apareceu
+no caminho. O item de contraste da lista - a fronteira de `Input` e do botao
+`secondary` em 1,28:1 - ja estava fechado na 0.5.0, e o verificador mede 3,54:1
+no claro e 3,30:1 no escuro contra o minimo de 3.
+
+### O nome da mascara passa a dizer a natureza do que ela devolve
+
+As tres tinham a mesma assinatura, `(text: string) => string`, e uma devolvia
+coisa de outra natureza:
+
+```ts
+applyCurrencyMask("123456")  // "1.234,56"        texto
+maskDate("31122026")         // "31/12/2026"      texto
+phoneMask("11987654321")     // "(99) 99999-9999" MOLDE
+```
+
+Quem chamasse `phoneMask` esperando o telefone formatado escrevia o molde
+literal no campo, e o TypeScript nao tinha como acusar. Agora `applyXMask`
+devolve texto pronto e `phonePatternFor` devolve molde - tipado como `Mask`,
+o que o liga ao `applyMask` que o recebe.
+
+Nada quebra: `phoneMask` e `maskDate` continuam exportados como apelido
+marcado `@deprecated`.
+
+### `<li>` dentro de `<li>` na linha com acao
+
+O `SidebarMenuRow` ja e o `<li>` da linha, e o `SidebarMenuItem` abria um
+segundo por dentro. No cliente isso nunca aparece, porque o React monta no a
+no e ninguem passa pelo analisador de HTML. A conta chega no SSR: o navegador
+conserta separando os dois em irmaos, e a arvore consertada nao bate com a que
+o React espera na hidratacao - o caminho comum de quem monta em Next.js, e nao
+o raro.
+
+### A barra encolhida para de sair torta
+
+O `SidebarBrand` centraliza quando a barra encolhe, e o `SidebarFooter` estava
+na outra ponta da mesma barra sem esse tratamento. O rodape esta em campo em
+toda tela de operacao, entao a torta aparecia sempre.
+
+### A verificacao nova
+
+`check:instalacao` acusa um `bun install` solto dentro de `native/`. A pasta
+nao e workspace, entao a instalacao de la cria uma segunda copia do React, e o
+`bun test` da raiz quebra em noventa e oito testes com "Invalid hook call" -
+apontando para codigo que esta certo. A CI nunca ve, porque so instala na raiz.
+
+
 ## 0.5.0
 
 Uma bancada externa auditou a biblioteca inteira - 258 exports instanciados,
