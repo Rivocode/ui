@@ -43,7 +43,7 @@ de onde veio. Saiba antes de começar: **a NativeWind 5 ainda é pré-lançament
 e é o único caminho que o `@rivocode/ui-native` conhece hoje, então ir para
 produção com ele é ir para produção sobre um preview.
 
-Quatro arquivos do app participam, cada um por um motivo que morde:
+Cinco arquivos do app participam, cada um por um motivo que morde:
 
 **1. `metro.config.js`** — o NativeWind entra no build:
 
@@ -88,6 +88,27 @@ npx rivocode-ui-native-css   # lê global.css, escreve generated.css
 O pipeline do metro tropeça em `@import` e `@property` dentro do compilador
 nativo; o comando entrega um arquivo já resolvido, e falha **com o nome da
 var** quando algo não traduziria. Usou uma classe nova, rode de novo.
+
+**5. `nativewind-env.d.ts`** — o TypeScript aprende o `className`:
+
+```ts
+/// <reference types="nativewind/types" />
+```
+
+O sintoma é o projeto novo abrir com uma parede de erro: *Property
+`className` does not exist on type ...* em toda `View`, `Text` e `Pressable`
+que você escreveu, e nas do `@rivocode/ui-native` junto — foram 167 num app
+recém-criado. A causa é que `className` não existe no React Native: quem o
+acrescenta às props é uma declaração de módulo que mora na NativeWind, e ela
+só entra no programa se este arquivo a referenciar. Nada disso aparece em
+runtime — o app roda e as cores estão certas —, então é fácil ler os erros
+como culpa da biblioteca.
+
+O `withNativewind` do passo 1 gera o arquivo na primeira vez que o metro
+sobe, com este nome exato (a opção `typescriptEnvPath` muda o caminho).
+Escreva-o à mão quando o `tsc` roda antes do app — CI, ou o editor num clone
+recém-baixado —, e **não o coloque no `.gitignore`**: sem ele versionado, o
+erro volta a cada clone.
 
 ## O Provider, uma vez, na raiz
 
