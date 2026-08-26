@@ -68,6 +68,17 @@ export function PropsTable({
                       obrigatória
                     </span>
                   )}
+                  {/* Quem tem uma versão velha instalada precisa saber se a
+                      prop existe para ele — e hoje descobre pelo erro de tipo,
+                      ou pior, pelo atributo solto no DOM. */}
+                  {prop.since && (
+                    <span
+                      title={`Existe desde a versão ${prop.since}`}
+                      className="ml-2 font-mono text-[0.65rem] tracking-wide text-fg-subtle"
+                    >
+                      {prop.since}
+                    </span>
+                  )}
                   {prop.note && (
                     <p className="mt-1 max-w-xs text-xs leading-relaxed text-balance text-fg-subtle">
                       {prop.note}

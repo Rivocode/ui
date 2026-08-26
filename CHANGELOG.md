@@ -2,6 +2,18 @@
 
 ## 0.5.0 (nao publicado)
 
+### Cada prop diz em que versao apareceu
+
+As tabelas de props - no site e nos `.md` que um agente le - ganham a coluna
+"Desde". Quem tem uma versao velha instalada precisa saber se a prop que esta
+lendo existe para ele, e ate aqui descobria pelo erro de tipo, ou pior, pelo
+atributo solto no DOM.
+
+O marcador nao e escrito a mao: `bun run gen:props --desde 0.5.0` carimba, no
+lancamento, tudo que ainda nao tem carimbo. Durante o desenvolvimento ninguem
+sabe em que versao a prop vai sair, e adivinhar produz um numero errado que a
+doc publica com confianca. Prop com `—` e prop que ainda nao saiu.
+
 ### O nativo ganha camada 3: tema de cliente
 
 `@rivocode/ui-native` aceita um tema de cliente, gerado do mesmo CSS que veste

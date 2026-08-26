@@ -19,6 +19,8 @@ export type Prop = {
   required: boolean
   /** The doc comment above the prop, when the source carries one. */
   note?: string
+  /** The version this prop first shipped in. Absent means it has not shipped. */
+  since?: string
 }
 
 type Piece = { forwardsRoot: boolean; props: Prop[] }

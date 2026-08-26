@@ -36,6 +36,17 @@ export type CatalogProp = {
   type: string;
   required: boolean;
   note?: string;
+  /**
+   * A versao em que a prop apareceu no catalogo.
+   *
+   * Nao e escrita a mao: `--desde <versao>` carimba, no lancamento, tudo que
+   * ainda nao tem carimbo. Assim a primeira versao em que a prop existiu e a
+   * que fica registrada, e ninguem precisa lembrar de anotar - lembrar e
+   * exatamente o que ninguem faz.
+   *
+   * Prop sem carimbo e prop que ainda nao saiu em versao nenhuma.
+   */
+  since?: string;
 };
 
 export type CatalogPiece = {
@@ -61,6 +72,17 @@ function firstSentence(text: string): string | undefined {
   const period = clean.indexOf(". ");
   return period === -1 ? clean : clean.slice(0, period + 1);
 }
+
+/**
+ * Os carimbos que ja existem, lidos do proprio JSON comitado. Sem isto cada
+ * geracao apagaria a memoria de quando cada prop nasceu.
+ */
+const previous: Record<string, CatalogPiece> = await Bun.file(TARGET)
+  .json()
+  .catch(() => ({}));
+
+const stamped = (piece: string, prop: string) =>
+  previous[piece]?.props.find((current) => current.name === prop)?.since;
 
 async function readCatalog(): Promise<Record<string, CatalogPiece>> {
   const api = new API({ cwd: RAIZ });
@@ -115,11 +137,17 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
           ? (await checker.typeToString(propType)).replace(/\s+/g, " ").trim()
           : "unknown";
 
+        // O carimbo e memoria, e nao derivado do tipo: o compilador nao sabe
+        // quando a prop nasceu, entao ele sobrevive de uma geracao a outra
+        // vindo do proprio JSON comitado.
+        const since = stamped(name, prop.name);
+
         props.push({
           name: prop.name,
           type: withoutUndefined(written, optional),
           required: !optional,
           ...(note ? { note: note } : {}),
+          ...(since ? { since } : {}),
         });
       }
 
@@ -141,6 +169,36 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
 
 if (import.meta.main) {
   const catalog = await readCatalog();
+
+  /*
+   * O carimbo de lancamento.
+   *
+   * `bun run gen:props --desde 0.5.0` escreve a versao em toda prop que ainda
+   * nao tem uma. E o unico momento em que a informacao existe: durante o
+   * desenvolvimento ninguem sabe em que versao a prop vai sair, e adivinhar
+   * produz um numero errado que a doc publica com confianca.
+   */
+  const stampArg = process.argv.indexOf("--desde");
+  if (stampArg !== -1) {
+    const version = process.argv[stampArg + 1];
+    if (!version) {
+      console.error("Falta a versao: bun run gen:props --desde 0.5.0");
+      process.exit(1);
+    }
+
+    let stampedNow = 0;
+    for (const piece of Object.values(catalog)) {
+      for (const prop of piece.props) {
+        if (prop.since) continue;
+        prop.since = version;
+        stampedNow++;
+      }
+    }
+
+    await Bun.write(TARGET, `${JSON.stringify(catalog, null, 2)}\n`);
+    console.log(`${stampedNow} prop(s) carimbada(s) com ${version}.`);
+    process.exit(0);
+  }
   const text = `${JSON.stringify(catalog, null, 2)}\n`;
   const checking = process.argv.includes("--check");
 
