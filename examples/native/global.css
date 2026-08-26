@@ -9,3 +9,35 @@
 
 @source "./App.tsx";
 @source "../../native/src";
+
+/* O scanner do Tailwind le o codigo como TEXTO, e nao como programa: qualquer
+   palavra solta que coincida com o nome de um utilitario vira classe de
+   verdade no CSS gerado. Nenhuma destas quatro foi escrita como className em
+   lugar nenhum - elas nascem do codigo TypeScript das pecas:
+
+     shadow    -> a chave `shadow: ["1", "2", "3"]` da configuracao do cn.ts
+     invert    -> a prop `invert` do Stat, que marca "subir e ruim aqui"
+     filter    -> a prop `filter` do DataList e todo `array.filter(...)`
+     transform -> o `transform: [{ rotate }]` de estilo RN no sparkline
+
+   Nao da para renomear nenhuma: `shadow` e chave da API do tailwind-merge,
+   `invert` e `filter` sao o mesmo nome de prop que o web usa, e `filter` e
+   `transform` ainda seriam achados em metodo de Array e em estilo do proprio
+   React Native. Entao o corte e aqui, no scanner.
+
+   Uma delas nao e so lixo, e explosivo: `.shadow` redeclara `--tw-shadow`,
+   que o build-css.mjs ja declarou no `:root` a partir do @property, e var
+   declarada duas vezes derruba o compilador do react-native-css com aquele
+   erro criptico de sempre, "expected an object-like struct named Specifier,
+   found ()" - o mesmo que `.ring` produz, pela mesma razao. As outras tres passam
+   hoje e sairiam junto na proxima mudanca do Tailwind; caem aqui tambem
+   porque nao ha app de celular que queira `className="filter"`.
+
+   Isto vale para ESTE app. Quem consumir o @rivocode/ui-native de fora do
+   monorepo aponta o proprio @source para node_modules/@rivocode/ui-native/src
+   e reencontra as quatro: a casa definitiva destas linhas e o theme.css do
+   pacote, que hoje e gerado por scripts/gen-native-tokens.ts. */
+@source not inline("shadow");
+@source not inline("invert");
+@source not inline("filter");
+@source not inline("transform");

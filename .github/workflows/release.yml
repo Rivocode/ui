@@ -48,10 +48,6 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # A tag e a versao do package.json precisam contar a mesma historia. Sem
-      # esta conferencia, `git tag v0.4.0` sobre um package.json em 0.3.0
-      # republica silenciosamente a versao velha, ou falha la na frente com um
-      # erro que nao explica nada.
       # O segredo e conferido ANTES de tudo, e nao no ultimo passo.
       #
       # Sem isto, a falta dele so aparece depois do install, do check, do build
@@ -80,6 +76,10 @@ jobs:
           fi
           echo "Segredo presente."
 
+      # A tag e a versao do package.json precisam contar a mesma historia. Sem
+      # esta conferencia, `git tag v0.4.0` sobre um package.json em 0.3.0
+      # republica silenciosamente a versao velha, ou falha la na frente com um
+      # erro que nao explica nada.
       - name: Conferir se a tag bate com a versao
         run: |
           tag="${{ github.event.inputs.tag || github.ref_name }}"
@@ -89,6 +89,52 @@ jobs:
             exit 1
           fi
           echo "Publicando $pkg"
+
+      # A tag pode bater com o package.json e a versao ainda assim ja estar no
+      # registro - basta o numero ter subido a mao antes. O npm so conta isso
+      # no ultimo passo, e ai o gasto ja aconteceu todo.
+      #
+      # Foi exatamente assim que o release-native falhou quatro vezes seguidas:
+      # cada tentativa atravessava install, tipos, testes e empacotamento para
+      # morrer no publish com `403 ... You cannot publish over the previously
+      # published versions` - uma mensagem que fala de permissao e nao diz o
+      # que fazer. Aqui o gasto e maior ainda: o `bun run check` deste pacote
+      # roda dezesseis verificacoes antes de chegar ao build.
+      - name: Conferir se a versao ja esta publicada
+        # O .npmrc que o setup-node escreveu espera esta variavel. Consultar o
+        # registro nao exige credencial, mas com ela ausente o npm le um token
+        # vazio no proprio arquivo de configuracao, e a falha que aparece fala
+        # de autenticacao em vez de falar da versao.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          versao=$(node -p "require('./package.json').version")
+
+          # `npm view` responde 404 tanto para versao inexistente quanto para
+          # pacote inexistente, e os dois casos querem dizer a mesma coisa
+          # aqui: pode publicar. Por isso o erro vira string vazia em vez de
+          # parar o passo.
+          publicada=$(npm view "@rivocode/ui@$versao" version 2>/dev/null || true)
+
+          if [ -n "$publicada" ]; then
+            echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
+            echo
+            echo "O registro nao aceita republicar o mesmo numero - nem com outro"
+            echo "conteudo, nem depois de um unpublish. Publicar de novo exige"
+            echo "uma versao nova."
+            echo
+            echo "O que fazer:"
+            echo "  1. suba a versao em package.json e registre a mudanca em"
+            echo "     CHANGELOG.md;"
+            echo "  2. apague a tag que sobrou, aqui e no remoto:"
+            echo "     git tag -d v$versao && git push origin :v$versao"
+            echo "  3. crie a tag da versao nova, que e quem dispara este workflow."
+            echo
+            echo "No registro hoje: latest $(npm view @rivocode/ui version 2>/dev/null || echo '?')."
+            exit 1
+          fi
+
+          echo "A versao $versao ainda nao existe no registro."
 
       - run: bun run check
       - run: bun run build
@@ -112,6 +158,26 @@ jobs:
             }
             console.log('bin ok:', Object.keys(bin).join(', ') || 'nenhum');
           "
+
+      # O ensaio, antes da estreia.
+      #
+      # O passo acima confere a LISTA de arquivos; este exercita o caminho da
+      # publicacao inteiro - o mesmo empacotamento, as mesmas regras de
+      # `files`, o mesmo `--access public` - e para antes do unico passo que
+      # nao da para desfazer. Os dois nao sao o mesmo passo: um le o tarball,
+      # o outro monta a publicacao.
+      #
+      # Vale mesmo com o publish real logo em seguida: uma quebra de
+      # empacotamento aparece aqui, com a publicacao ainda por fazer, e nao
+      # com metade da versao ja no registro.
+      #
+      # O `--ignore-scripts` acompanha o passo seguinte pela mesma razao dele,
+      # e por mais uma: sem ele o ensaio dispararia o `prepublishOnly` - check
+      # e build de novo - e o ensaio custaria mais que a estreia.
+      - name: Ensaiar a publicacao
+        run: npm publish --access public --ignore-scripts --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # `--ignore-scripts` porque o `prepublishOnly` roda check e build de novo,
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
