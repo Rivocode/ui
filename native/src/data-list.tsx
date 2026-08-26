@@ -15,8 +15,29 @@ export type DataListProps<Row> = {
   isLoading?: boolean;
   isError?: boolean;
   onRetry?: () => void;
+  /**
+   * Uma linha de titulo acima da mensagem de erro. Sem ele, o aviso continua
+   * de uma linha so.
+   *
+   * O nome e o do `DataTable`, mas o padrao NAO: la o titulo e quem diz "Nao
+   * foi possivel carregar" e a mensagem detalha; aqui o aviso nasceu com uma
+   * linha so, e essa linha e a `errorMessage`. Dar padrao ao titulo poria duas
+   * frases quase iguais uma em cima da outra em toda tela que ja usa a peca.
+   * Passe os dois quando a tela carregar mais de uma lista e precisar dizer
+   * qual delas caiu.
+   */
+  errorTitle?: string;
   errorMessage?: string;
   empty?: { title: string; description: string; action?: ReactNode };
+  /**
+   * A linha discreta de quando o `filter` zerou. Sem ela, "Nenhum resultado
+   * para a busca."
+   *
+   * Nao se confunde com o `empty`: filtro que zerou nao e consulta vazia, e o
+   * remedio de um - limpar a busca - nao serve ao outro. O mesmo nome e o
+   * mesmo padrao do `DataTable`.
+   */
+  noResultsMessage?: string;
 
   onRowPress?: (row: Row) => void;
   skeletonRows?: number;
@@ -79,8 +100,10 @@ export function DataList<Row>({
   isLoading,
   isError,
   onRetry,
-  errorMessage = "Nao foi possivel carregar a lista.",
+  errorTitle,
+  errorMessage = "Não foi possível carregar a lista.",
   empty,
+  noResultsMessage = "Nenhum resultado para a busca.",
   onRowPress,
   skeletonRows = 4,
   className,
@@ -104,7 +127,12 @@ export function DataList<Row>({
   if (isError) {
     return (
       <View className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
-        <Text className="text-sm text-danger-text">{errorMessage}</Text>
+        {/* Titulo e mensagem sao uma dupla, e o `gap-3` da caixa e a distancia
+            ate o botao - o mesmo desenho do `Alert`, que separa por `gap-1`. */}
+        <View className="gap-1">
+          {errorTitle && <Text className="text-sm font-medium text-danger-text">{errorTitle}</Text>}
+          <Text className="text-sm text-danger-text">{errorMessage}</Text>
+        </View>
         {onRetry && (
           <Button size="sm" variant="secondary" onPress={onRetry}>
             Tentar de novo
@@ -166,7 +194,7 @@ export function DataList<Row>({
    * buscado nada.
    */
   if (needle && visible.length === 0) {
-    return <Text className="py-8 text-center text-sm text-fg-muted">Nenhum resultado para a busca.</Text>;
+    return <Text className="py-8 text-center text-sm text-fg-muted">{noResultsMessage}</Text>;
   }
 
   return (

@@ -56,6 +56,18 @@ export type ChartContainerProps = {
   /** Sem isto, o erro não oferece nova tentativa. */
   onRetry?: () => void;
   /**
+   * O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar o grafico".
+   *
+   * O mesmo nome e o mesmo papel do `errorTitle` do web: num painel de quatro
+   * graficos, o titulo de sempre repetido quatro vezes nao diz qual deles
+   * caiu, e um produto que nao fala portugues nao diz nada. Ele e a metade de
+   * cima do aviso, e o `errorMessage` a de baixo.
+   *
+   * `string` pelo mesmo motivo do `errorMessage`: o titulo do `Alert` nativo
+   * tambem e um `Text`.
+   */
+  errorTitle?: string;
+  /**
    * `string`, e não `ReactNode` como no web: o corpo do `Alert` nativo é um
    * `Text`, e um nó de React ali não teria onde caber.
    */
@@ -143,6 +155,7 @@ export function ChartContainer({
   isLoading,
   isError,
   onRetry,
+  errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
   empty,
   data,
@@ -199,7 +212,7 @@ export function ChartContainer({
           {/* O botão fica FORA do aviso, ao contrário do web: o `Alert` nativo
               tem título e corpo, e o corpo é um `Text`. */}
           <View className="w-full gap-3">
-            <Alert tone="danger" title="Não foi possível carregar o gráfico">
+            <Alert tone="danger" title={errorTitle}>
               {errorMessage ?? "Tente de novo em alguns minutos."}
             </Alert>
             {onRetry && (

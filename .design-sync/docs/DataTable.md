@@ -93,6 +93,10 @@ Três eram cravados, e nenhum tinha prop:
   que zerou não é consulta vazia, e o remédio de um — limpar a busca — não serve
   ao outro.
 
+Os três nomes valem igual no `DataList` do React Native, com uma diferença de
+padrão: lá o aviso de erro nasceu de uma linha só, então `errorTitle` aparece
+apenas quando você passa um — sem ele, quem fala é a `errorMessage`.
+
 ## Muita linha: rolagem própria e virtualização
 
 Entre "cabe numa página" e "manda para o servidor" existe o caso do meio, que é
@@ -154,4 +158,4 @@ o desenho de cada linha passa a caber no que uma coluna sabe fazer.
 
 ## No React Native
 
-Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados — carregando, erro, vazio, dados — na mesma ordem, com o erro vencendo o carregando e o vazio valendo só after que a resposta chegou. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem` — e por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.
+Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados — carregando, erro, vazio, dados — na mesma ordem, com o erro vencendo o carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se configuram com os nomes do web: `errorTitle`, `errorMessage` e `noResultsMessage`. Só o padrão de `errorTitle` difere — aqui não há, porque o aviso da lista nasceu de uma linha só, e essa linha é a `errorMessage`. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem` — e por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.

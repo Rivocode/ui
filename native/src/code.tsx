@@ -1,6 +1,7 @@
 import { Text, type TextProps } from "react-native";
 
 import { cn } from "./cn";
+import { mono } from "./font";
 
 export type CodeProps = Omit<TextProps, "children" | "className"> & {
   /** O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`. */
@@ -51,12 +52,13 @@ export type CodeProps = Omit<TextProps, "children" | "className"> & {
  * Não é `Kbd`, que não porta: a sombra de tecla promete "aperte isto", e não
  * há teclado para apertar no celular.
  */
-export function Code({ children, className, selectable = true, ...props }: CodeProps) {
+export function Code({ children, className, selectable = true, style, ...props }: CodeProps) {
   return (
     <Text
       {...props}
       selectable={selectable}
-      className={cn("rounded-sm bg-surface-raised px-1.5 font-mono text-fg-muted", className)}
+      style={[{ fontFamily: mono }, style]}
+      className={cn("rounded-sm bg-surface-raised px-1.5 text-fg-muted", className)}
     >
       {children}
     </Text>

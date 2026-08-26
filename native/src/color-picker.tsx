@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { cn } from "./cn";
+import { mono } from "./font";
 import { Input } from "./field";
 
 /**
@@ -294,7 +295,8 @@ export function ColorPicker({
             value={text}
             onChangeText={typeText}
             onBlur={settle}
-            className={cn("flex-1 font-mono", disabled && "opacity-50")}
+            style={{ fontFamily: mono }}
+            className={cn("flex-1", disabled && "opacity-50")}
           />
         </View>
       )}

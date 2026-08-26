@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 
 import { cn } from "./cn";
+import { mono } from "./font";
 
 export type TimelineTone = "neutral" | "accent" | "success" | "warning" | "danger";
 
@@ -139,7 +140,7 @@ export function Timeline({ items, label, className }: TimelineProps) {
               </Text>
 
               {(event.at !== undefined || event.by !== undefined) && (
-                <Text className="font-mono text-xs text-fg-subtle">
+                <Text style={{ fontFamily: mono }} className="text-xs text-fg-subtle">
                   {[event.at, event.by].filter((part) => part !== undefined).join(" · ")}
                 </Text>
               )}

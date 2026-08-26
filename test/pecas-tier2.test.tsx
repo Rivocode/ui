@@ -60,6 +60,97 @@ test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
   expect(screen.getByText("4815 rejeitada")).toBeDefined();
 });
 
+/**
+ * A faixa com `count` periodos, ja com a medida que o happy-dom nao da.
+ *
+ * Ele devolve 0x0 em `getBoundingClientRect`, e a faixa decide o periodo lido
+ * por regra de tres sobre a largura - sem largura, o ponteiro nao le nada e o
+ * teste passaria por engano, com a dica fechada.
+ */
+function tracker(count: number) {
+  const view = withTheme(
+    <Tracker
+      label="Emissões por dia"
+      data={Array.from({ length: count }, (_, index) => ({
+        tone: "success" as const,
+        label: `Dia ${index + 1}`,
+      }))}
+    />,
+  );
+
+  const track = screen.getByRole("group", { name: "Emissões por dia" });
+  track.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect;
+
+  return { ...view, track };
+}
+
+test("a dica e uma so, com cinco periodos ou com um ano deles", () => {
+  // O motivo desta peca ter sido reescrita: cada quadrado montava a propria
+  // raiz de Tooltip, entao um ano de emissoes montava 365 delas para que no
+  // maximo uma aparecesse. O que se prova aqui e que o numero de paineis nao
+  // acompanha mais o numero de pontos - so os quadrados acompanham.
+  const semana = tracker(5);
+  fireEvent.pointerMove(semana.track, { clientX: 50 });
+
+  expect(semana.container.querySelectorAll("[data-rc-track]").length).toBe(5);
+  expect(semana.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
+  expect(document.querySelectorAll('[role="tooltip"]').length).toBe(1);
+  semana.unmount();
+
+  const ano = tracker(365);
+  fireEvent.pointerMove(ano.track, { clientX: 50 });
+
+  expect(ano.container.querySelectorAll("[data-rc-track]").length).toBe(365);
+  expect(ano.container.querySelectorAll("[data-rc-track-cursor]").length).toBe(1);
+  expect(document.querySelectorAll('[role="tooltip"]').length).toBe(1);
+});
+
+test("o ponteiro le o periodo que esta embaixo dele", () => {
+  const { track } = tracker(10);
+
+  fireEvent.pointerMove(track, { clientX: 25 });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 3");
+
+  fireEvent.pointerMove(track, { clientX: 95 });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 10");
+});
+
+test("a dica segue o foco, e nao so o ponteiro", () => {
+  // Antes da dica unica nenhum quadrado era focavel, e ler o texto exato de um
+  // periodo era coisa de quem tem mouse.
+  const { track } = tracker(4);
+  expect(track.tabIndex).toBe(0);
+
+  fireEvent.focus(track);
+  // Comeca no periodo mais recente, que e o da direita.
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 4");
+  // O teclado tambem fala: a dica e desenho, e desenho nao chega a quem ouve.
+  expect(screen.getByRole("status").textContent).toBe("Dia 4");
+
+  fireEvent.keyDown(track, { key: "ArrowLeft" });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 3");
+  expect(screen.getByRole("status").textContent).toBe("Dia 3");
+
+  fireEvent.keyDown(track, { key: "Home" });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
+
+  // Fechar no Escape sem devolver o foco a lugar nenhum: a dica cobre o que
+  // esta embaixo dela, e quem esta no teclado precisa de um jeito de tira-la.
+  fireEvent.keyDown(track, { key: "Escape" });
+  expect(screen.queryByRole("tooltip")).toBeNull();
+});
+
+test("a faixa sem dado nao abre balao nenhum", () => {
+  // O foco cai no periodo mais recente, e numa lista vazia esse indice e -1:
+  // sem guarda, focar a faixa abriria uma dica com texto nenhum dentro.
+  const { track } = tracker(0);
+
+  fireEvent.focus(track);
+  fireEvent.keyDown(track, { key: "ArrowLeft" });
+
+  expect(screen.queryByRole("tooltip")).toBeNull();
+});
+
 /* --- TagsInput ---------------------------------------------------------- */
 
 test("o texto vira ficha no Enter, e a ficha sai no proprio botao", () => {

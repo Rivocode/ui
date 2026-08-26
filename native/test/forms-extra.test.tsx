@@ -21,13 +21,18 @@ describe("RadioGroup", () => {
     { label: "Pix", value: "pix", description: "Cai na hora" },
   ];
 
-  test("papel de radio, selected na escolhida, e o toque escolhe", () => {
+  test("papel de radio, checked na escolhida, e o toque escolhe", () => {
     const onValueChange = mock(() => {});
     const screen = render(<RadioGroup items={items} value="pix" onValueChange={onValueChange} />);
 
     const radios = byRole(screen, "radio");
     expect(radios.length).toBe(2);
-    expect(radios[1].props.accessibilityState.selected).toBe(true);
+    // `checked`, e nao `selected`: e o estado que o papel radio pede, o que o
+    // ColorPicker ja usava e o que o contrato do web nomeia. Com `selected`, o
+    // VoiceOver le a opcao como "selecionada" e nao anuncia marcada.
+    expect(radios[1].props.accessibilityState.checked).toBe(true);
+    expect(radios[0].props.accessibilityState.checked).toBe(false);
+    expect(radios[1].props.accessibilityState.selected).toBeUndefined();
     expect(textOf(screen)).toContain("Cai na hora");
 
     act(() => radios[0].props.onPress());

@@ -45,7 +45,9 @@ Os mesmos do `DataTable`, e o `empty` é o mesmo objeto: `title`, `description`,
 painel de quatro gráficos, "Não foi possível carregar o gráfico" quatro vezes
 não diz qual deles caiu — e num produto que não fala português não diz nada.
 Sem eles, o texto padrão continua o de sempre. Os dois nomes são os mesmos do
-`DataTable`, de propósito.
+`DataTable`, de propósito, e atravessam para o React Native com os mesmos
+padrões — só o tipo estreita para `string`, porque o título do `Alert` nativo é
+um `Text`.
 
 **A contagem de pontos sai do próprio gráfico.** A moldura lê o `data` do filho
 da Recharts, então na forma acima não é preciso repeti-lo. Passe `data` aqui só
@@ -125,7 +127,7 @@ respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
 
 Traduz, no caminho próprio `@rivocode/ui-native/chart` — o mesmo arranjo do formulário, e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app precisa ligar e reconstruir.
 
-**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
+**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
 
 **O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há contentor que meça e não há variável viva — então a moldura mede com `onLayout`, resolve as cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega o `submit`:
 

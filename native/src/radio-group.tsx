@@ -26,7 +26,7 @@ export function RadioGroup({ items, value, onValueChange, disabled, className }:
           <Pressable
             key={item.value}
             accessibilityRole="radio"
-            accessibilityState={{ selected: active, disabled }}
+            accessibilityState={{ checked: active, disabled }}
             disabled={disabled}
             onPress={() => onValueChange(item.value)}
             className={`flex-row items-start gap-2.5 ${disabled ? "opacity-50" : ""}`}

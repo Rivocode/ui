@@ -27,6 +27,23 @@ export const Switch = host("Switch");
 export const Modal = (props: AnyProps & { visible?: boolean }) =>
   props.visible === false ? null : createElement("Modal", props);
 
+/* O Platform de verdade responde pelo aparelho onde o app roda; aqui ele e
+   fixo em iOS, e a fixacao e o ponto. O que se mede sobre o `Platform.select`
+   e a fonte mono (native/src/font.ts): a afirmacao e que a familia deixou de
+   ser generica - `ui-monospace` nao existe instalada em iOS nem em Android -,
+   e nao qual ramo do select respondeu. Fixo, o resultado nao depende de onde a
+   suite roda; sorteado ou lido do processo, um dos dois ramos ficaria sem
+   cobertura e a falha apareceria so na maquina de quem tem o outro OS. */
+export const Platform = {
+  OS: "ios" as const,
+  select: <T,>(spec: {
+    ios?: T;
+    android?: T;
+    native?: T;
+    default?: T;
+  }): T | undefined => spec.ios ?? spec.native ?? spec.default,
+};
+
 /** O Slider so precisa que os handlers existam; gesto nao se testa aqui. */
 export const PanResponder = {
   create: () => ({ panHandlers: {} }),

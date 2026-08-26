@@ -52,7 +52,7 @@ describe("DataList", () => {
   test("erro vence carregando, explica e oferece tentar de novo", () => {
     const onRetry = mock(() => {});
     const screen = render(list({ isError: true, isLoading: true, onRetry }));
-    expect(textOf(screen)).toContain("Nao foi possivel carregar a lista.");
+    expect(textOf(screen)).toContain("Não foi possível carregar a lista.");
     act(() => byRole(screen, "button")[0].props.onPress());
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
