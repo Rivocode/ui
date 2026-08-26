@@ -82,6 +82,18 @@ test("o avatar mostra a inicial quando nao ha foto", () => {
   expect(screen.getByText("EB")).toBeDefined();
 });
 
+test("o avatar nao se veste de superficie, senao ele some dentro do cartao", () => {
+  // No tema claro da casa, --rc-surface e --rc-surface-raised sao os dois
+  // branco puro: 1,00 para 1. O circulo desaparecia e sobrava a inicial solta,
+  // que numa fila sobreposta ainda se recorta. E o mesmo motivo pelo qual o
+  // --rc-skeleton existe, escrito no proprio tema.
+  comTema(<Avatar fallback="EB" />);
+  const circulo = screen.getByText("EB").parentElement!;
+
+  expect(circulo.className).not.toContain("bg-surface");
+  expect(circulo.className).toContain("bg-skeleton");
+});
+
 test("a barra de progresso conta quanto falta", () => {
   comTema(<Progress value={40} label="Enviando" showValue />);
   const barra = screen.getByRole("progressbar");
