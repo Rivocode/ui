@@ -262,6 +262,9 @@ export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export { Clipboard, type ClipboardProps } from "./components/clipboard";
 export { Indicator, type IndicatorProps } from "./components/indicator";
+export { PasswordInput, type PasswordInputProps } from "./components/password-input";
+export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
+export { TagsInput, type TagsInputProps } from "./components/tags-input";
 export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
 export {
   Timeline,

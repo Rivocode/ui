@@ -10756,6 +10756,45 @@
       }
     ]
   },
+  "PasswordInput": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "string | number | readonly string[]",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "{ show: string; hide: string; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve no botao, antes e depois de revelar."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string, eventDetails: { reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }) => void)",
+        "required": false,
+        "note": "Callback fired when the `value` changes."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false
+      },
+      {
+        "name": "wrapperClassName",
+        "type": "string",
+        "required": false,
+        "note": "Classe da moldura, quando o campo precisa de largura propria."
+      }
+    ]
+  },
   "Pie": {
     "forwardsRoot": true,
     "props": [
@@ -18542,6 +18581,40 @@
       }
     ]
   },
+  "TagsInput": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "As fichas de agora."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"field\" | \"input\" | \"remove\" | \"tag\", string>>",
+        "required": false,
+        "note": "Classe por parte: `field`, `tag`, `remove`, `input`."
+      },
+      {
+        "name": "removeLabel",
+        "type": "((tag: string) => string)",
+        "required": false,
+        "note": "O que o leitor de tela ouve no botao de cada ficha."
+      },
+      {
+        "name": "separators",
+        "type": "string[]",
+        "required": false,
+        "note": "O que fecha uma ficha alem do Enter."
+      }
+    ]
+  },
   "Textarea": {
     "forwardsRoot": true,
     "props": [
@@ -18946,6 +19019,28 @@
         "type": "ComponentRenderFn<HTMLProps, TooltipTriggerState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
+  "Tracker": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "data",
+        "type": "TrackerPoint[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que a faixa mede, dito por extenso para o leitor de tela."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"label\" | \"track\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `track`, `cell`."
       }
     ]
   },
