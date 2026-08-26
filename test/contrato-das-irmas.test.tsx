@@ -279,12 +279,13 @@ test("nenhum dos tres desabilita por opacidade", () => {
     expect(`${role}: ${control.className.includes("data-[disabled]:cursor-not-allowed")}`).toBe(
       `${role}: true`,
     );
-    // A borda nao muda com o estado nos tres: `--rc-border` diz de si mesmo que
-    // nao identifica controle, e a 1,30:1 contra o preenchimento o desenho
-    // sumiria. Quem tem preenchimento proprio para trocar troca; a chave ja
-    // nasce na superficie apagada.
-    expect(`${role}: ${control.className.includes("data-[disabled]:border-")}`).toBe(
-      `${role}: false`,
+    // A borda desce um degrau nos tres, e nao dois. Quando este teste nasceu a
+    // decisao era nao mexer nela - `--rc-border` some a 1,30:1 contra o
+    // preenchimento, e `border-strong` deixa travado igual a vivo -, e a saida
+    // era nao ter saida. O `--rc-border-disabled` nasceu para essa faixa do
+    // meio no mesmo dia, entao a regra passa a ser a oposta: quem trava, desce.
+    expect(`${role}: ${control.className.includes("data-[disabled]:border-border-disabled")}`).toBe(
+      `${role}: true`,
     );
     expect(`${role}: ${control.className.includes("data-[disabled]:bg-surface-raised")}`).toBe(
       `${role}: ${role !== "switch"}`,

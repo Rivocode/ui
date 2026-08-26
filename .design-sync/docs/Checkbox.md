@@ -32,10 +32,18 @@ Desabilitado se pinta com token, e não com opacidade: o fundo passa a
 estado misto — antes o `indeterminate` vencia o desabilitado, e a caixa de
 selecionar-todas saía pintada de acento cheio.
 
-A borda não muda com o estado, de propósito. `border-strong` é a fronteira de
-controle nos 3:1 da WCAG 1.4.11, e `border` diz de si mesmo que separa área e
-não identifica controle: medida, ela dá 1,3:1 contra o próprio preenchimento nos
-dois temas, e a caixa travada sumiria em vez de parecer travada.
+A borda desce um degrau, para `border-disabled`. Os dois vizinhos não serviam:
+`border` dá 1,3:1 contra o próprio preenchimento e a caixa travada sumiria, e
+`border-strong` — a fronteira de controle nos 3:1 da WCAG 1.4.11 — deixaria
+travada igual a viva. O token do meio existe para esta faixa, e é o único par da
+casa com teto além de piso: pelo menos 1,6:1 contra o fundo, e a fronteira viva
+pesando 1,4 vez mais. A 1.4.11 dispensa controle inativo dos 3:1, e é essa folga
+que ele ocupa.
+
+Isso importa mais onde não há rótulo. Numa coluna de seleção do `DataTable`, uma
+caixa desmarcada e travada não tem texto apagado ao lado para dizer o estado — e
+`surface` e `surface-raised` são a mesma branca no tema claro, então o
+preenchimento também não diz nada. Sobrava a borda, e ela não dizia.
 
 ## Quando não usar
 

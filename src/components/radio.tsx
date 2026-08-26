@@ -73,9 +73,11 @@ export function Radio({
         // Desabilitado se pinta com token, e nao com `opacity-60`, que era o
         // que estava aqui: o `check:contrast` nao mede opacidade, entao a peca
         // saia da guarda sem ninguem conferir o que o olho ve. A receita e a do
-        // Checkbox, borda inclusive - ela nao muda com o estado, porque
-        // `--rc-border` nao identifica controle e a 1,30:1 o circulo sumiria.
+        // Checkbox, borda inclusive: ela desce para `border-disabled`, a faixa
+        // do meio - `border` sumiria a 1,30:1 e `border-strong` deixaria
+        // travado igual a vivo.
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
+        "data-[disabled]:border-border-disabled",
         "data-[invalid]:border-danger",
         classNames?.circle,
         className,

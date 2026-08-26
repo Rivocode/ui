@@ -67,13 +67,13 @@ export function Switch({
         // saia da guarda sem ninguem conferir o que o olho ve.
         //
         // O trilho ja e o `surface-raised` que as irmas assumem ao travar, e a
-        // borda nao muda com o estado pelo mesmo motivo delas. Entao aqui quem
-        // diz travado e o pino: `fg-muted` -> `fg-disabled` desligado, e o
+        // borda desce para `border-disabled` junto com elas. Aqui quem diz
+        // travado sobretudo e o pino: `fg-muted` -> `fg-disabled` desligado, e o
         // trilho perdendo o acento ligado. Nao vale devolver um `accent-subtle`
         // ao trilho ligado-e-travado para o "ligado" continuar obvio: medido, o
         // pino cai para 2,54:1 sobre ele no tema escuro, abaixo dos 3:1 da WCAG
         // 1.4.11 - e o pino e o unico lugar onde se le a chave.
-        "data-[disabled]:cursor-not-allowed",
+        "data-[disabled]:cursor-not-allowed data-[disabled]:border-border-disabled",
         "data-[invalid]:border-danger",
         "before:absolute before:-inset-y-2.5 before:inset-x-0 before:content-['']",
         className,

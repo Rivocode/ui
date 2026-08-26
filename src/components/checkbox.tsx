@@ -101,12 +101,13 @@ export function Checkbox({
         // uma vez, e o `check:contrast` nao mede opacidade: a peca saia da
         // guarda sem ninguem conferir o que o olho ve.
         //
-        // A borda NAO muda com o estado. `--rc-border` diz de si mesmo que
-        // "separa area, e nao identifica controle", e medido ele da 1,30:1
-        // contra o proprio preenchimento nos dois temas - a caixa travada
-        // sumiria. `--rc-border-strong` e a fronteira de controle nos 3:1 da
-        // WCAG 1.4.11, e travada ela continua sendo uma caixa.
-        "data-[disabled]:cursor-not-allowed",
+        // A borda desce um degrau, e nao dois. `--rc-border` da 1,30:1 contra
+        // o proprio preenchimento e a caixa travada sumiria; `border-strong`
+        // deixa travado igual a vivo, que era o defeito. O
+        // `--rc-border-disabled` existe para essa faixa do meio, e e o unico
+        // par da casa com teto alem de piso: 1,98:1 aqui, com a fronteira viva
+        // pesando 1,67x mais. A 1.4.11 dispensa controle inativo dos 3:1.
+        "data-[disabled]:cursor-not-allowed data-[disabled]:border-border-disabled",
         "data-[disabled]:bg-surface-raised data-[disabled]:text-fg-disabled",
         // WCAG 2.5.8 pede 24x24 de alvo, e o --rc-box desenha 18 (16 na
         // densidade compacta). Sem texto ao lado nao ha nada de onde emprestar
