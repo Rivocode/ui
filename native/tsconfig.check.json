@@ -1,0 +1,35 @@
+{
+  // A passagem de tipos sobre a fonte PUBLICADA.
+  //
+  // O nome NAO e `tsconfig.json` de proposito: o bun le o tsconfig.json mais
+  // proximo do arquivo para resolver import, e o mapa de `paths` abaixo faria
+  // `native/test/` puxar o React do app de exemplo. Duas copias do React no
+  // mesmo processo, e os 57 testes daqui morrem em "Invalid hook call". O pacote exporta ./src/index.ts,
+  // entao o que sai daqui torto vira erro no tsc de quem consome - e o
+  // skipLibCheck deles nao ajuda, porque ele so cobre .d.ts. O tsconfig da raiz
+  // nunca olhou para ca: ele inclui src, test, scripts e demo.
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "types": [],
+    // react e react-native sao peers: nao existem no node_modules da raiz, e
+    // o unico lugar do repositorio onde estao instalados e o app de exemplo.
+    // Apontar para la e o que permite conferir sem duplicar a instalacao.
+    "typeRoots": ["../examples/native/node_modules", "../node_modules/@types"],
+    "paths": {
+      "*": [
+        "../examples/native/node_modules/@types/*",
+        "../examples/native/node_modules/*",
+        "../node_modules/*"
+      ]
+    }
+  },
+  "include": ["src", "nativewind-env.d.ts"]
+}

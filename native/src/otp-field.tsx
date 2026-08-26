@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type ComponentRef } from "react";
 import { Pressable, TextInput, Text, View } from "react-native";
 
 import { cn } from "./cn";
@@ -19,7 +19,13 @@ export type OTPFieldProps = {
  * tela enxergarem um campo so, enquanto o olho ve um digito por caixa.
  */
 export function OTPField({ length = 6, value, onValueChange, onComplete, className }: OTPFieldProps) {
-  const input = useRef<TextInput>(null);
+  // `useRef<TextInput>` parece obvio e e uma armadilha: sob a API estrita de
+  // tipos do React Native o nome `TextInput` e o COMPONENTE, nao a instancia,
+  // entao a ref virava `TextInputType` - sem `focus` - e nem entrava no
+  // `ref=` do proprio campo. Como este pacote publica fonte, os dois erros
+  // caiam no tsc de quem consome. `ComponentRef` pergunta ao componente qual
+  // e a instancia dele, e responde certo nos dois conjuntos de tipos.
+  const input = useRef<ComponentRef<typeof TextInput>>(null);
   const [focused, setFocused] = useState(false);
 
   const handleChange = (text: string) => {
