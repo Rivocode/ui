@@ -53,6 +53,12 @@ export function useSidebar(): SidebarState {
  */
 const FlyoutContext = createContext(false);
 
+// Marca que a linha em volta ja e o <li>. Sem isto, o item abre um segundo por
+// dentro: no cliente o React monta no a no e nada aparece, mas no SSR o
+// navegador recebe o HTML, conserta separando os dois em irmaos, e a arvore
+// consertada nao bate com a que o React espera na hidratacao.
+const RowContext = createContext(false);
+
 export type SidebarProviderProps = ComponentProps<"div"> & {
   /** Comeca aberta na mesa. No celular ela sempre comeca fechada. */
   defaultOpen?: boolean;
@@ -403,6 +409,7 @@ export function SidebarMenuItem({
 }: SidebarMenuItemProps) {
   const { collapsed, isMobile, close } = useSidebar();
   const inFlyout = use(FlyoutContext);
+  const inRow = use(RowContext);
 
   // No celular a barra e uma folha por cima da pagina, entao escolher para
   // onde ir e a hora de sair da frente. Na mesa ela nao cobre nada e fechar
@@ -451,16 +458,19 @@ export function SidebarMenuItem({
     </a>
   );
 
-  if (!collapsed) return <li>{row}</li>;
-
-  return (
-    <li>
-      <Tooltip>
-        <TooltipTrigger render={row} />
-        <TooltipContent side="right">{children}</TooltipContent>
-      </Tooltip>
-    </li>
+  const cell = collapsed ? (
+    <Tooltip>
+      <TooltipTrigger render={row} />
+      <TooltipContent side="right">{children}</TooltipContent>
+    </Tooltip>
+  ) : (
+    row
   );
+
+  // Sozinho dentro do <ul>, o item e o proprio <li> - e a lista precisa disso
+  // para o leitor de tela contar os destinos em voz alta. Dentro de uma
+  // SidebarMenuRow, quem ja e o <li> e a linha.
+  return inRow ? cell : <li>{cell}</li>;
 }
 
 /**
@@ -497,7 +507,11 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
 
 /** Envolve uma linha que tem acao secundaria, para o hover alcancar as duas. */
 export function SidebarMenuRow({ className, ...props }: ComponentProps<"li">) {
-  return <li {...props} className={cn("group/linha relative", className)} />;
+  return (
+    <RowContext value={true}>
+      <li {...props} className={cn("group/linha relative", className)} />
+    </RowContext>
+  );
 }
 
 export type SidebarMenuSubProps = Omit<ComponentProps<"button">, "children"> & {

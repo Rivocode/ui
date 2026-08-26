@@ -318,3 +318,46 @@ test("aberta, o rodape volta a alinhar pela esquerda", () => {
 
   expect(screen.getByTestId("rodape").className).not.toContain("items-center");
 });
+
+test("a linha com acao nao aninha um <li> dentro do outro", () => {
+  // O SidebarMenuRow ja e o <li> da linha. Se o item abrir outro por dentro,
+  // o HTML sai invalido - e a conta so chega no SSR: o navegador recebe o
+  // texto, conserta separando os dois em irmaos, e a arvore consertada nao
+  // bate com a que o React espera na hidratacao.
+  const { container } = withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuRow>
+              <SidebarMenuItem href="#clientes">Clientes</SidebarMenuItem>
+              <SidebarMenuAction aria-label="Opcoes de Clientes" />
+            </SidebarMenuRow>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(container.querySelector("li li")).toBeNull();
+  expect(container.querySelectorAll("li")).toHaveLength(1);
+});
+
+test("sem a linha em volta, o item continua sendo o proprio <li>", () => {
+  // O item sozinho dentro do <ul> precisa continuar entregando o <li>, senao
+  // a lista perde a semantica que o leitor de tela conta em voz alta.
+  const { container } = withTheme(
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem href="#painel">Painel</SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>,
+  );
+
+  expect(container.querySelectorAll("li")).toHaveLength(1);
+  expect(container.querySelector("li > a")).not.toBeNull();
+});
