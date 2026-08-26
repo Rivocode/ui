@@ -31,3 +31,7 @@ campo.
 E não use para navegar. Campo com busca que leva a outra tela é `Command`, a
 paleta — o combobox devolve um valor a um formulário, e quem escolhe nele espera
 que a escolha fique escrita ali, não que a página troque.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Combobox` — a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

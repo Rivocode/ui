@@ -25,3 +25,7 @@ dedo não é gesto que exista.
 Para esconder e mostrar uma área inteira, use `Collapsible` ou a `Sidebar`: o
 splitter existe para quando as duas áreas ficam visíveis ao mesmo tempo e a
 proporção entre elas é a decisão.
+
+## No React Native
+
+Não porta, por decisão — duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

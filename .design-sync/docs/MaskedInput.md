@@ -61,3 +61,7 @@ recibo, o telefone que voltou cru do servidor.
 `phoneMask` devolve um molde, e não um texto: o telefone brasileiro tem oito ou
 nove casas depois do DDD e o molde muda no meio da digitação, então quem formata
 telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern`.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `MaskedInput` — o valor é só dígitos; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

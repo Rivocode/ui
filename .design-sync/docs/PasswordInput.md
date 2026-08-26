@@ -20,3 +20,7 @@ cima do ombro numa mesa compartilhada.
 Para código de verificação de seis dígitos, use `OTPField` — ele separa as
 casas, aceita colar o código inteiro e não esconde nada, porque o código é para
 ser lido em voz alta do celular.
+
+## No React Native
+
+Ainda não portado — o `Input` aceita `secureTextEntry`; o olho que revela e o nome do botão pela ação ainda são seus. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

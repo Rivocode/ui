@@ -19,3 +19,7 @@ nada, que é o contrário do trabalho dela.
 Acima de `max` sai "99+", em vez de a pastilha esticar e empurrar o que está ao
 lado. Com `dot`, sai só o ponto — para "tem algo novo aqui", quando o número
 não importa.
+
+## No React Native
+
+Ainda não portado — a contagem por cima do ícone ainda é `View` posicionada na mão. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

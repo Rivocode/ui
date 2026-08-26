@@ -30,3 +30,7 @@ a combinação inteira no rótulo do grupo. Sem isso o leitor soletra "comando" 
 Para nome de arquivo, comando de terminal ou trecho de código, use `code`. A
 sombra de tecla promete "aperte isto", e prometer errado custa mais do que não
 prometer nada.
+
+## No React Native
+
+Não porta. A peça desenha uma tecla, e o celular não tem teclado físico para a tecla representar — `⌘K` numa tela de toque promete um gesto que não existe. O que no web é atalho, no celular é um botão visível.

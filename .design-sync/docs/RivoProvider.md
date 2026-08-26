@@ -60,3 +60,7 @@ const { theme, density, portalContainer } = useRivoContext()
 
 Fora do provider ele lança erro, com o nome do provider na mensagem. É de
 propósito: o silêncio aqui vira uma tela sem estilo que ninguém sabe explicar.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `RivoProvider` — mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura — alvo de toque não encolhe. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

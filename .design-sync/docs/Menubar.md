@@ -31,3 +31,7 @@ editor e ferramenta, onde o usuário já espera esse arranjo.
 "Exibir". Ele existe separado do `MenuTrigger` porque o MenuTrigger sai sem
 estilo de propósito — o uso comum dele é `render={<Button />}`, e duas fontes de
 estilo brigariam.
+
+## No React Native
+
+Não porta, por decisão — idioma de mesa; navegação nativa é tab bar e drawer do router. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

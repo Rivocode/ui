@@ -27,3 +27,7 @@ some antes de ela chegar na parte em que aquilo importa.
 
 E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
 `FieldError`, onde a pessoa está olhando e pode corrigir.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Alert` — `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

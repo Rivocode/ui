@@ -29,3 +29,7 @@ a data diz.
 
 Quando a data exata é o dado — vencimento, competência, data de emissão. Ali o
 relativo esconde a informação que a pessoa foi buscar; use `formatDate`.
+
+## No React Native
+
+Ainda não portado — o texto é seu, e não há relógio que se atualize sozinho. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

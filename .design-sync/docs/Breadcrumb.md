@@ -21,3 +21,7 @@ const trilha: Crumb[] = [
 ```
 
 A última não é link e leva `aria-current="page"`.
+
+## No React Native
+
+Não porta. O caminho até onde a pessoa está é, no celular, o botão de voltar do router mais o título da tela — desenhar uma trilha por cima disso duplica a navegação e come a largura que o título precisa.

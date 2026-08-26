@@ -19,3 +19,7 @@ para quem enxerga: o que importa é qual dia foi o vermelho.
 
 Quando a grandeza é contínua e a forma da curva importa, use `Sparkline`: o
 tracker conta ocorrências discretas, uma por período, e não desenha tendência.
+
+## No React Native
+
+Ainda não portado — a faixa de quadradinhos por período ainda não porta. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

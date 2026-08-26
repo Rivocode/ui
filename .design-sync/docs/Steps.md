@@ -59,3 +59,7 @@ formulário. A linha do tempo olha para trás, e ninguém avança nela.
 Dois ou três campos não pedem assistente. Quebrar em passos um formulário que
 cabe numa tela troca a rolagem por cliques, e esconde de quem preenche o
 tamanho do que ele aceitou fazer.
+
+## No React Native
+
+Ainda não portado — a régua de passos e o `useWizard()` não atravessaram. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

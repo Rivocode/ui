@@ -42,3 +42,7 @@ Para a tabela que você desenha linha a linha, use `Table`. Ela compõe com
 colunas, linha de total, quadro de um recibo. Esta aqui recebe `columns` e
 `rows`, e essa é a troca: ela cuida dos estados e da ordenação, e em compensação
 o desenho de cada linha passa a caber no que uma coluna sabe fazer.
+
+## No React Native
+
+Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados — carregando, erro, vazio, dados — na mesma ordem, com o erro vencendo o carregando e o vazio valendo só depois que a resposta chegou. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem` — e por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.

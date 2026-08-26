@@ -23,3 +23,7 @@ nada disso virar estado da sua tela.
 Este aqui fica para a tabela que você desenha: o quadro de valores de um
 recibo, a comparação de planos, a linha de totais montada à mão. Quando as
 linhas são um `map` sobre o que a API devolveu, é a outra.
+
+## No React Native
+
+Não porta, por decisão — não há tabela no celular; a consulta vira `DataList`. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

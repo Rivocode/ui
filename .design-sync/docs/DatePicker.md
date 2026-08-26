@@ -33,3 +33,7 @@ vencimentos errados de um sistema de nota fiscal.
 
 Tudo aqui trabalha na data local do navegador de propósito: a pessoa escolheu
 "3 de março" no calendário da tela dela, e não um instante em UTC.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `DatePicker` — abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

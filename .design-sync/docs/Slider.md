@@ -32,3 +32,7 @@ nome, senao o leitor de tela anuncia dois controles iguais:
   thumbLabel={['Valor minimo', 'Valor maximo']}
 />
 ```
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Slider` — anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

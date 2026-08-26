@@ -16,3 +16,7 @@ digitar, e este é para o texto que ela vai ler ou copiar.
 Para bloco — retorno de API, linha de log, trecho de configuração — use
 `CodeBlock`, que rola sozinho. `Code` dentro de um parágrafo com uma linha
 longa estica a página inteira.
+
+## No React Native
+
+Ainda não portado — código em tela estreita quer rolagem horizontal própria, e isso ainda não foi resolvido. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

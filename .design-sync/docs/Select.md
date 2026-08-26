@@ -22,3 +22,7 @@ numa gaveta.
 
 Para duas ou três opções que cabem lado a lado, o `RadioGroup` mostra todas de
 uma vez e economiza o clique de abrir — e para um liga-desliga, o `Switch`.
+
+## No React Native
+
+Traduz, e a forma de escrever é outra. No web o `Select` pede `items` na raiz **e** as quatro partes (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); no nativo ele é uma tag só — `<Select items={…} value={…} onValueChange={…} label="Período" />` —, e a lista abre numa folha de baixo, que é o idioma da plataforma para escolher. O `label` é obrigatório: é por ele que o leitor de tela anuncia o gatilho, papel que no web era do `SelectTrigger`.

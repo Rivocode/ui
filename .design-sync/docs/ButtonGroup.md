@@ -24,3 +24,7 @@ faz uma coisa diferente.
 
 Botões sem relação entre si também não entram: encostados, eles prometem uma
 família que não existe. Para esses, `gap` normal.
+
+## No React Native
+
+Não porta, por decisão — `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

@@ -26,3 +26,7 @@ aquilo abre alguma coisa, e um `div` com `onClick` não diz isso a ninguém.
 Quando a mudança precisa de confirmação explícita — valor, alíquota, qualquer
 campo que o servidor valida e pode recusar. Ali um `Dialog` com Salvar e
 Cancelar diz o que está em jogo; a edição no lugar promete que é barato desfazer.
+
+## No React Native
+
+Ainda não portado — o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

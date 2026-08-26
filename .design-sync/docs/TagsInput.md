@@ -22,3 +22,7 @@ envia.
 Quando as opções já existem, use `Combobox` com `multiple` e as fichas: ele
 mostra o catálogo antes de deixar escolher. O `TagsInput` é para quando a lista
 nasce do que se digita e não há o que sugerir.
+
+## No React Native
+
+Ainda não portado — a ficha que se escreve ainda não tem peça nativa. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

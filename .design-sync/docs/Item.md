@@ -17,3 +17,7 @@ ações ficam do tamanho que têm.
 
 Com `interactive` ganha foco e passagem; use junto com `render` de link ou botão,
 porque cor de passagem em div não vira alvo de teclado.
+
+## No React Native
+
+Ainda não portado — a linha de lista é o `renderItem` do `DataList`, escrito à mão. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

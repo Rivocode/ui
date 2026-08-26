@@ -81,3 +81,7 @@ respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
 `format="currencyShort"` no de valor. Sem eles, cada tela escreve o próprio
 `tickFormatter` e um eixo lê diferente do outro — R$ 12.400 aqui, 12400 ali,
 12,4k na terceira.
+
+## No React Native
+
+Ainda não portado — a Recharts é DOM e não atravessa; a `Sparkline` nativa é o único desenho de dado que existe hoje. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

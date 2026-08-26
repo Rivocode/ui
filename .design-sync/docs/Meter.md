@@ -22,3 +22,7 @@ medida fica parada mostrando um estado que pode subir e descer.
 
 Trocar um pelo outro faz o leitor de tela anunciar "carregando" para algo que
 não carrega, e quem ouve fica esperando o fim de uma operação que não existe.
+
+## No React Native
+
+Ainda não portado. Até lá, `Progress` — sabendo o que se paga por isso: o `Progress` nativo anuncia `progressbar`, e o leitor de tela lê "carregando" para uma medida que não carrega. Espaço em disco a 80% vira uma tarefa que nunca termina. Se a medida é o assunto da tela, escreva o número em texto ao lado da barra: o texto é verdadeiro nos dois mundos.

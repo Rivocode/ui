@@ -30,3 +30,7 @@ ou PDF, até 5 MB" antes de escolher errado.
 nela, com nome, tamanho, `progress` e `error`. Subir é do app: a peça valida na
 entrada e mostra o que o app disser depois — quem controla o envio é quem sabe
 quando ele terminou.
+
+## No React Native
+
+Ainda não portado — precisa do `expo-document-picker`; entra quando houver app dono da dependência. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

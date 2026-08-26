@@ -18,3 +18,7 @@ Quando ha várias secoes que se fecham entre si, o Accordion diz mais.
 
 O painel anima altura sozinho, e para de animar quando o sistema pede menos
 movimento.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `Collapsible` — `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

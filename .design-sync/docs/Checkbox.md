@@ -34,3 +34,7 @@ de salvar deixa a pessoa esperando por um botão que não existe.
 
 Para escolher uma opção entre várias que se excluem, é `RadioGroup`: caixa que
 desmarca a irmã ao ser marcada é um rádio malfeito.
+
+## No React Native
+
+Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é **sempre controlado**. `checked` e `onCheckedChange` são obrigatórios, não há `defaultChecked` e não há `indeterminate` — a caixa de selecionar-todas do web não tem terceiro estado lá. Copiar `<Checkbox defaultChecked>ISS retido</Checkbox>` do web não compila.

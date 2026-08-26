@@ -30,3 +30,7 @@ prometer o que ele não faz — o mesmo argumento que separa `Progress` de `Mete
 
 `TimelineItem` é um ponto: `title`, `at`, `by`, `tone`, `pending`, e conteúdo
 livre como filho. O `at` costuma receber um `RelativeTime`.
+
+## No React Native
+
+Ainda não portado — o que aconteceu, em ordem, ainda é composição sua. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

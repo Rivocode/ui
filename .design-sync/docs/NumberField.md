@@ -21,3 +21,7 @@ chega num valor que o formulário rejeita depois.
   <FieldDescription>De 1 a 12, sem juros.</FieldDescription>
 </Field>
 ```
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `NumberField` — vira stepper — menos, valor, mais —, que é o idioma do toque. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

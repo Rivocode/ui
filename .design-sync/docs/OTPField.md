@@ -16,3 +16,7 @@ escondido que guarda o código inteiro. As casas visíveis só mostram.
 ```tsx
 <OTPField length={6} onValueChange={(codigo) => conferir(codigo)} />
 ```
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `OTPField` — caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

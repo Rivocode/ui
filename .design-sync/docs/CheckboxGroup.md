@@ -40,3 +40,7 @@ mestra com `parent`:
 Sem o `parent` a caixa de cima vira só mais uma opção: ela não lê o grupo, não
 mostra o estado misto, e marcar as três não a marca. É o defeito mais fácil de
 não notar aqui, porque a tela parece certa até alguém marcar metade da lista.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `CheckboxGroup` — `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

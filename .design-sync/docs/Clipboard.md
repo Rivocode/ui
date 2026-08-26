@@ -25,3 +25,7 @@ confirmar: a pessoa cola o que tinha antes e só descobre no destino.
 Para o bloco de código inteiro, `CodeBlock copyable` já traz este botão no
 canto, com o próprio conteúdo. Dois botões de copiar na mesma caixa fazem a
 pessoa escolher entre coisas que ela acha que são diferentes.
+
+## No React Native
+
+Ainda não portado — precisa do `expo-clipboard`, e dependência é escolha do app. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.

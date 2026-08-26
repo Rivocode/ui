@@ -19,3 +19,7 @@ largura e empurra o conteúdo, e a diferença entre plataformas aparece na tela.
 ```
 
 `horizontal` liga a barra de lado também, para tabela larga e fila de cartoes.
+
+## No React Native
+
+Não porta, por decisão — rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

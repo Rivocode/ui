@@ -28,3 +28,7 @@ perder essa navegação.
 esquerda, ao centro, à direita — e o `ToolbarSeparator` separa um grupo do
 outro. Para o leitor de tela, o grupo é o que diz que as três opções são uma
 escolha só.
+
+## No React Native
+
+Não porta, por decisão — superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

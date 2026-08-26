@@ -25,3 +25,7 @@ caixa deixaria um vão que parece defeito de carregamento.
 `aspect-ratio` resolve isto sozinho hoje. A peça existe para a proporção virar um
 número passado por prop, e não mais uma classe arbitrária escrita em cada tela,
 cada uma com um valor ligeiramente diferente.
+
+## No React Native
+
+Traduz: o `@rivocode/ui-native` exporta `AspectRatio` — `ratio` numérico, igual. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
