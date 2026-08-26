@@ -16,7 +16,7 @@ export type ProgressProps = Omit<ComponentProps<typeof BaseProgress.Root>, "chil
  * Barra de progresso de tarefa que tem fim conhecido: enviar arquivo, gerar
  * relatorio.
  *
- * Com `value` indefinido ela vira indeterminada, para espera sem fim previsto.
+ * Com `value={null}` ela vira indeterminada, para espera sem fim previsto.
  * Nesse caso prefira o `Spinner`, que ocupa menos e nao promete um fim que
  * ninguem sabe medir.
  */
@@ -39,6 +39,11 @@ export function Progress({ className, label, showValue, ...props }: ProgressProp
           className={cn(
             "h-full rounded-pill bg-accent",
             "transition-[width] duration-[var(--rc-duration-base)] ease-rc",
+            // Indeterminada, o indicador nao recebe largura da Base UI e
+            // ocuparia a trilha inteira, parado - que e como se le uma barra
+            // em 100%. Um quinto da trilha atravessando diz espera.
+            "data-[indeterminate]:w-1/5 data-[indeterminate]:animate-indeterminate",
+            "motion-reduce:animate-none",
           )}
         />
       </BaseProgress.Track>

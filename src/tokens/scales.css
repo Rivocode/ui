@@ -115,6 +115,20 @@
   }
 }
 
+/* Espera sem fim previsto: a barra atravessa a trilha em vez de ficar cheia e
+   parada, que e como se le uma tarefa concluida. O movimento e o unico sinal
+   que a indeterminada tem, entao ele nao zera com prefers-reduced-motion -
+   quem pediu menos movimento recebe animate-none no componente, e ai a barra
+   fica parcial, que ainda nao mente. */
+@keyframes rc-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
 @keyframes rc-fade {
   from {
     opacity: 0;

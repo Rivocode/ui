@@ -98,4 +98,7 @@
      usa nenhum dos dois. */
   --animate-rise: rc-rise var(--rc-duration-slow) var(--rc-ease) both;
   --animate-fade: rc-fade var(--rc-duration-slow) var(--rc-ease) both;
+  /* A travessia da barra indeterminada. Duracao propria: as do contrato sao
+     de transicao, e uma delas zerada deixaria a barra parada no lugar. */
+  --animate-indeterminate: rc-indeterminate 1.4s var(--rc-ease) infinite;
 }

@@ -89,6 +89,31 @@ test("a barra de progresso conta quanto falta", () => {
   expect(screen.getByText("Enviando")).toBeDefined();
 });
 
+test("a barra indeterminada nao se parece com tarefa concluida", () => {
+  // Sem largura propria o indicador ocupa a trilha inteira e fica parado, que
+  // e exatamente como se le uma barra em 100%. A espera sem fim previsto
+  // precisa parecer espera: um quinto da trilha, atravessando.
+  const { container } = comTema(<Progress value={null} aria-label="Sincronizando" />);
+  // Raiz, trilha e indicador recebem o data-indeterminate; o indicador e o
+  // ultimo, porque e o mais fundo.
+  const marcados = container.querySelectorAll("[data-indeterminate]");
+  const indicador = marcados[marcados.length - 1];
+
+  expect(indicador).toBeDefined();
+  expect(indicador?.className).toContain("data-[indeterminate]:w-1/5");
+  expect(indicador?.className).toContain("data-[indeterminate]:animate-indeterminate");
+  expect(indicador?.className).toContain("motion-reduce:animate-none");
+});
+
+test("a barra em 100% nao carrega a marca da indeterminada", () => {
+  // O que liga a largura parcial e o movimento e o atributo, e nao a classe:
+  // a barra que terminou nao pode receber nenhum dos dois.
+  const { container } = comTema(<Progress value={100} aria-label="Enviado" />);
+
+  expect(container.querySelectorAll("[data-indeterminate]").length).toBe(0);
+  expect(container.querySelectorAll("[data-complete]").length).toBeGreaterThan(0);
+});
+
 test("o giro se anuncia, e da para calar quando ha texto do lado", () => {
   const { rerender } = comTema(<Spinner />);
   expect(screen.getByRole("status")).toBeDefined();
