@@ -1,19 +1,19 @@
 /* ---------------------------------------------------------------------------
- * Formatters: axis, tooltip, and any number a screen prints.
+ * Formatadores: eixo, tooltip, e todo numero que uma tela imprime.
  *
- * Every Brazilian dashboard repeats the same four: currency, percentage,
- * abbreviated number and short month. Without them each screen writes its own
- * `tickFormatter`, and one page's axis reads differently from the next:
- * R$ 12.400 here, 12400 there, 12,4k on the third.
+ * Todo painel brasileiro repete os mesmos quatro: moeda, porcentagem, numero
+ * abreviado e mes curto. Sem eles cada tela escreve o proprio `tickFormatter`,
+ * e o eixo de uma pagina le diferente do eixo da seguinte: R$ 12.400 aqui,
+ * 12400 ali, 12,4k na terceira.
  *
- * `Intl` does the heavy lifting; what lives here is the choice of how a number
- * looks on an axis, which is not how it looks in a sentence: on an axis the
- * space is short and the precision gets in the way.
+ * O `Intl` faz o trabalho pesado; o que mora aqui e a escolha de como um numero
+ * fica num eixo, que nao e como ele fica numa frase: no eixo o espaco e curto e
+ * a precisao atrapalha.
  * ------------------------------------------------------------------------- */
 
 const LOCALE = "pt-BR";
 
-/** Keeps every `Intl` built: instantiating per tick is expensive on an axis. */
+/** Guarda cada `Intl` montado: instanciar por tick sai caro num eixo. */
 const cache = new Map<string, Intl.NumberFormat>();
 
 function numberFormat(options: Intl.NumberFormatOptions) {
@@ -27,8 +27,8 @@ function numberFormat(options: Intl.NumberFormatOptions) {
 }
 
 /**
- * `R$ 2.480,00`. For an axis prefer `currencyShort`: cents on a tick only take
- * width, and an axis is read for order of magnitude.
+ * `R$ 2.480,00`. Num eixo prefira `currencyShort`: centavo em tick so ocupa
+ * largura, e eixo se le por ordem de grandeza.
  */
 export function currency(value: number) {
   return numberFormat({ style: "currency", currency: "BRL" }).format(value);
@@ -86,16 +86,16 @@ export function currencyShortWords(value: number) {
   return `R$ ${compactWords(value)}`;
 }
 
-/** `1.240`, thousands separator, no decimal. */
+/** `1.240`, separador de milhar, sem decimal. */
 export function integer(value: number) {
   return numberFormat({ maximumFractionDigits: 0 }).format(value);
 }
 
 /**
- * `62%`. Takes the number as it appears in the data: `62` becomes `62%`.
+ * `62%`. Recebe o numero como ele esta no dado: `62` vira `62%`.
  *
- * If your data comes as a fraction, multiply first, the alternative would be
- * the formatter guessing from magnitude, and guessing gets 0.8 wrong.
+ * Se o dado vem como fracao, multiplique antes; a alternativa seria o
+ * formatador adivinhar pela grandeza, e adivinhar erra o 0,8.
  */
 export function percent(value: number, digits = 0) {
   return `${numberFormat({ maximumFractionDigits: digits }).format(value)}%`;
@@ -124,12 +124,12 @@ function toDate(date: Date | string | number) {
   return new Date(date);
 }
 
-/** `mar`, `abr`. The most common time axis on a monthly dashboard. */
+/** `mar`, `abr`. O eixo de tempo mais comum num painel mensal. */
 export function monthShort(date: Date | string | number) {
   return new Intl.DateTimeFormat(LOCALE, { month: "short" }).format(toDate(date)).replace(".", "");
 }
 
-/** `12/03`. For a daily series, where the year is the same throughout. */
+/** `12/03`. Para serie diaria, onde o ano e o mesmo do primeiro ao ultimo. */
 export function dayMonth(date: Date | string | number) {
   return new Intl.DateTimeFormat(LOCALE, { day: "2-digit", month: "2-digit" }).format(toDate(date));
 }
@@ -146,10 +146,10 @@ export const formatters = {
   dayMonth,
 } as const;
 
-/** The name of a built-in formatter, for whoever prefers passing a string. */
+/** O nome de um formatador da casa, para quem prefere passar uma string. */
 export type FormatName = keyof typeof formatters;
 
-/** Takes the name of a built-in formatter or a function of your own. */
+/** Recebe o nome de um formatador da casa ou uma funcao propria. */
 export type Format = FormatName | ((value: never) => string);
 
 export function resolveFormat(format: Format | undefined) {

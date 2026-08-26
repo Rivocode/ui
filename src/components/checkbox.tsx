@@ -7,7 +7,7 @@ import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
 
 /** Traco do estado misto: alguns selecionados, nem todos. */
-function TracoMisto() {
+function MixedMark() {
   return (
     <svg viewBox="0 0 12 12" aria-hidden="true" className="size-3">
       <line
@@ -23,7 +23,7 @@ function TracoMisto() {
   );
 }
 
-function Visto() {
+function CheckMark() {
   return (
     <svg viewBox="0 0 12 12" aria-hidden="true" className="size-3">
       <path
@@ -130,7 +130,7 @@ export function Checkbox({
             data-rc-check={state.indeterminate ? "indeterminate" : "checked"}
             className={cn("flex items-center justify-center", classNames?.indicator)}
           >
-            {state.indeterminate ? <TracoMisto /> : <Visto />}
+            {state.indeterminate ? <MixedMark /> : <CheckMark />}
           </span>
         )}
       />

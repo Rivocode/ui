@@ -46,7 +46,7 @@ export function TreeSelect({
   const [internal, setInternal] = useState<string[]>(defaultValue);
   const selected = controlled ? value : internal;
 
-  const [busca, setBusca] = useState("");
+  const [query, setQuery] = useState("");
 
   const names = useMemo(() => namesOf(items, selected), [items, selected]);
   // A conta e sempre sobre as folhas que existem na arvore, e nunca sobre a
@@ -60,7 +60,7 @@ export function TreeSelect({
         : `${names.length} escolhidos`;
 
   return (
-    <Popover onOpenChange={(isOpen) => !isOpen && setBusca("")}>
+    <Popover onOpenChange={(isOpen) => !isOpen && setQuery("")}>
       <PopoverTrigger
         render={
           <button
@@ -97,8 +97,8 @@ export function TreeSelect({
               className="absolute top-1/2 left-2.5 -translate-y-1/2 text-fg-subtle"
             />
             <input
-              value={busca}
-              onChange={(event) => setBusca(event.target.value)}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
               placeholder="Buscar"
               aria-label="Buscar na árvore"
               className={cn(inputVariants({ size: "sm" }), "pl-8")}
@@ -111,7 +111,7 @@ export function TreeSelect({
             items={items}
             value={selected}
             multiple={multiple}
-            filter={busca}
+            filter={query}
             onValueChange={(ids) => {
               if (!controlled) setInternal(ids);
               onValueChange?.(ids);

@@ -1,26 +1,25 @@
 /* ---------------------------------------------------------------------------
- * Where a piece lives, for whoever reads the raw markdown
+ * Onde uma peca mora, para quem le o markdown cru
  *
- * A part does not get a page of its own. It is already published whole - prose,
- * props and the example that assembles it - inside the page of the piece that
- * composes it, and the standalone version never had an example: there is
- * nothing to demonstrate about a `CardHeader` without the `Card` around it.
- * Seventy-six of the hundred and fifty-seven files were that, and each one cost
- * an agent a fetch that added nothing.
+ * Parte nao ganha pagina propria. Ela ja e publicada inteira - prosa, props e o
+ * exemplo que a monta - dentro da pagina da peca que a compoe, e a versao
+ * avulsa nunca teve exemplo: nao ha o que demonstrar sobre um `CardHeader` sem
+ * o `Card` em volta. Setenta e seis dos cento e cinquenta e sete arquivos eram
+ * isso, e cada um custava a um agente um fetch que nao somava nada.
  *
- * These two functions live here, and not inside the plugin, so a test can read
- * them without building the site first. The test that reads `dist/` passes on
- * the machine that just built and fails in CI, which is the worst kind: it
- * looks like a guard and it is a coin toss.
+ * Estas duas funcoes moram aqui, e nao dentro do plugin, para um teste poder
+ * le-las sem construir o site antes. Teste que le `dist/` passa na maquina que
+ * acabou de construir e falha na CI, que e o pior tipo: parece guarda e e cara
+ * ou coroa.
  * ------------------------------------------------------------------------- */
 
-/** `/componentes/card.md#cardheader` — the part, inside whoever assembles it. */
+/** `/componentes/card.md#cardheader` - a parte, dentro de quem a monta. */
 export function addressOf(slug: string, part?: { name: string; ownerSlug: string }) {
   if (!part) return `/componentes/${slug}.md`
   return `/componentes/${part.ownerSlug}.md#${part.name.toLowerCase()}`
 }
 
-/** One line of the index. A part is indented under the piece, and says so. */
+/** Uma linha do indice. Parte fica indentada sob a peca, e diz que e parte. */
 export function indexLine(name: string, slug: string, owner?: { name: string; slug: string }) {
   if (!owner) return `- [${name}](${addressOf(slug)})`
 
@@ -29,11 +28,11 @@ export function indexLine(name: string, slug: string, owner?: { name: string; sl
 }
 
 /**
- * The note left at the part's old address.
+ * O bilhete deixado no endereco antigo da parte.
  *
- * An agent that kept the link cannot be met with emptiness, so the address
- * keeps answering — with three lines that say what this is and where the whole
- * thing lives.
+ * Um agente que guardou o link nao pode ser recebido com o vazio, entao o
+ * endereco continua respondendo - com tres linhas que dizem o que aquilo e e
+ * onde mora a coisa inteira.
  */
 export function partNote(name: string, owner: { name: string; slug: string }) {
   return (

@@ -86,8 +86,8 @@ const trendChart = (data: number[], invert = false) => (
 )
 
 export function Dashboard() {
-  // Clicking a name in the legend hides that series. The state lives here and
-  // not in the legend because hiding it also means not drawing the area.
+  // Clicar num nome da legenda esconde aquela serie. O estado mora aqui e nao
+  // na legenda porque esconder tambem quer dizer nao desenhar a area.
   const series = useSeriesToggle()
   const recent = INVOICES.slice(0, 5)
   const overdue = INVOICES.filter((invoice) => invoice.status === 'overdue').length

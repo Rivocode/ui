@@ -73,7 +73,7 @@ export function DateRangePicker({
   ...props
 }: DateRangePickerProps) {
   const controlled = value !== undefined;
-  const [internalRange, setIntervaloInterno] = useState<DateRange | undefined>(defaultValue);
+  const [internalRange, setInternalRange] = useState<DateRange | undefined>(defaultValue);
   const range = controlled ? value : internalRange;
 
   const [isOpen, setAberto] = useState(false);
@@ -84,7 +84,7 @@ export function DateRangePicker({
   const empty = describe(range) === undefined;
 
   function change(next: DateRange | undefined) {
-    if (!controlled) setIntervaloInterno(next);
+    if (!controlled) setInternalRange(next);
     setRascunho(next);
     onValueChange?.(next);
   }

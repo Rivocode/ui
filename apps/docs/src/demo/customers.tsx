@@ -44,12 +44,13 @@ import { Grid2x2, List, Plus, Users } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * Customers
+ * Clientes
  *
- * The screen the demo was missing. It exists to carry the pieces a dashboard
- * and a listing never reach: a tree for the segments, a combobox for search
- * with free text, a date range, a context menu on the row, a popover with the
- * credit limit, and an empty state that says what to do next.
+ * A tela que faltava na demonstracao. Ela existe para carregar as pecas que um
+ * painel e uma listagem nunca alcancam: uma arvore para os segmentos, um
+ * combobox para busca com texto livre, um intervalo de datas, um menu de
+ * contexto na linha, um popover com o limite de credito, e um estado vazio que
+ * diz o que fazer em seguida.
  * ------------------------------------------------------------------------- */
 
 type Customer = {

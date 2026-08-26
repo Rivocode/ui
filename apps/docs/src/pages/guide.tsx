@@ -7,8 +7,9 @@ import { findGuide } from '@/guides'
 import { ThemePlayground } from '@/components/theme-playground'
 
 /**
- * A prose page. Two of them carry a live demo below the text, because reading
- * about density is not the same as seeing the same screen in both.
+ * Uma pagina de prosa. Duas delas carregam uma demonstracao viva embaixo do
+ * texto, porque ler sobre densidade nao e o mesmo que ver a mesma tela nas
+ * duas.
  */
 export function GuidePage({ slug }: { slug: string }) {
   const guide = findGuide(slug)
@@ -53,7 +54,7 @@ export function GuidePage({ slug }: { slug: string }) {
   )
 }
 
-/** The same form at both densities, side by side. */
+/** O mesmo formulario nas duas densidades, lado a lado. */
 function DensityDemo() {
   const [compact, setCompact] = useState(false)
 

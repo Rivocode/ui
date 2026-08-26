@@ -8,12 +8,12 @@ import { titleOf } from '@/example-source'
 export { titleOf }
 
 /* ---------------------------------------------------------------------------
- * Example stage
+ * O palco do exemplo
  *
- * Preview and code as two tabs, plus a viewport switch. A component library
- * whose docs only ever show the desktop width is documenting half of it, and
- * this one decides mobile behaviour first, so hiding it would bury the part
- * that took the most thought.
+ * Preview e codigo como duas abas, mais a chave de largura. Biblioteca de
+ * componente cuja doc so mostra a largura de desktop esta documentando metade
+ * dela, e esta aqui decide o comportamento de celular primeiro - esconder isso
+ * enterraria justamente a parte que deu mais trabalho de pensar.
  * ------------------------------------------------------------------------- */
 
 const VIEWPORTS = [
@@ -25,13 +25,13 @@ const VIEWPORTS = [
 type ViewportId = (typeof VIEWPORTS)[number]['id']
 
 /* ---------------------------------------------------------------------------
- * One control, two groups
+ * Um controle, dois grupos
  *
- * The width switch and the preview/code switch answer the same question, "show
- * me this example another way", so they read as one segmented control. Before,
- * one was a boxed row of icons and the other an underlined tab strip, and two
- * shapes side by side made the header look like two features stitched
- * together.
+ * A chave de largura e a chave preview/codigo respondem a mesma pergunta,
+ * "mostra este exemplo de outro jeito", entao as duas leem como um unico
+ * controle segmentado. Antes, uma era uma fileira de icones dentro de caixa e a
+ * outra uma faixa de abas sublinhadas, e duas formas lado a lado faziam o
+ * cabecalho parecer dois recursos costurados.
  * ------------------------------------------------------------------------- */
 
 const SEGMENTED = 'flex items-center gap-0.5 rounded-md border border-border bg-bg p-0.5'
@@ -108,13 +108,14 @@ function ViewportSwitch({
 }
 
 /**
- * The width a keep-open story renders at while the switch says desktop.
+ * A largura em que uma historia de keep-open desenha enquanto a chave diz
+ * desktop.
  *
- * It matches the docs column, so the frame reads as inline; the point is the
- * window, not the size: inside the iframe a dialog's overlay ends at the
- * card, instead of opening over the documentation. On a phone the column is
- * narrower than this, and the frame follows the column (`fit`) instead of
- * shrinking a 720px picture to half size.
+ * Ela bate com a coluna da doc, entao a moldura le como se fosse inline; o que
+ * importa e a janela, e nao o tamanho: dentro do iframe a cortina de um dialog
+ * acaba no cartao, em vez de abrir por cima da documentacao. No celular a
+ * coluna e mais estreita que isto, e a moldura acompanha a coluna (`fit`) em
+ * vez de encolher um retrato de 720px para metade.
  */
 const KEEP_OPEN_WIDTH = 720
 const KEEP_OPEN_MIN_HEIGHT = 360
@@ -130,16 +131,16 @@ export function ExampleStage({
   Example: ComponentType
   source: string | null
   title?: string
-  /** A story that is open by design renders in the iframe at every width. */
+  /** Historia aberta de proposito desenha no iframe em qualquer largura. */
   keepOpen?: boolean
 }) {
   const [viewport, setViewport] = useState<ViewportId>('desktop')
   const picked = VIEWPORTS.find((option) => option.id === viewport)?.width ?? null
   const width = picked ?? (keepOpen ? KEEP_OPEN_WIDTH : null)
 
-  // Measured at the moment of the switch, so the frame that replaces the
-  // inline example starts at the height the reader was already looking at,
-  // instead of collapsing to a guess and popping back up.
+  // Medida no instante da troca, para a moldura que substitui o exemplo inline
+  // comecar na altura que a pessoa ja estava olhando, em vez de desabar para um
+  // chute e voltar.
   const preview = useRef<HTMLDivElement>(null)
   const heldHeight = useRef<number | undefined>(undefined)
 
@@ -168,8 +169,9 @@ export function ExampleStage({
           <div className="flex items-center gap-2">
             <ViewportSwitch value={viewport} onChange={switchViewport} />
 
-            {/* Icon and word together: the eye alone is a guess, and the word
-                alone is one more thing to read on a page full of examples. */}
+            {/* Icone e palavra juntos: o olho sozinho e adivinhacao, e a
+                palavra sozinha e mais uma coisa para ler numa pagina cheia de
+                exemplos. */}
             <TabList variant="segmented">
               <Tab value="preview">
                 <Eye size={14} aria-hidden="true" />
@@ -200,11 +202,11 @@ export function ExampleStage({
                 <Example />
               </ExampleFrame>
             ) : (
-              // The width has to be settled before the provider, not inside
-              // it: as a flex item the provider's own box is shrink-to-fit, so
-              // a `w-full` under it resolved against a width that depended on
-              // the content, and a chart asking for 100% of that collapsed to
-              // a sliver.
+              // A largura tem que estar resolvida ANTES do provider, e nao
+              // dentro dele: como item de flex, a caixa do proprio provider e
+              // shrink-to-fit, entao um `w-full` embaixo dele resolvia contra
+              // uma largura que dependia do conteudo, e um grafico pedindo 100%
+              // disso desabava para uma tirinha.
               <div className="w-full">
                 <RivoProvider scope="local" theme="rivocode-dark">
                   <div className="flex min-h-32 w-full items-center justify-center-safe overflow-x-auto rounded-md p-6">

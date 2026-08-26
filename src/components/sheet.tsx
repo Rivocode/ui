@@ -11,7 +11,7 @@ import { useRivoContext } from "../provider/rivo-provider";
 /** De onde a folha entra. */
 export type SheetSide = "bottom" | "left" | "right";
 
-const LadoContext = createContext<SheetSide>("bottom");
+const SideContext = createContext<SheetSide>("bottom");
 
 const SWIPE = { bottom: "down", left: "left", right: "right" } as const;
 
@@ -34,11 +34,11 @@ export type SheetProps = Omit<ComponentProps<typeof BaseDrawer.Root>, "swipeDire
  */
 export function Sheet({ side = "bottom", children, ...props }: SheetProps) {
   return (
-    <LadoContext value={side}>
+    <SideContext value={side}>
       <BaseDrawer.Root swipeDirection={SWIPE[side]} {...props}>
         {children}
       </BaseDrawer.Root>
-    </LadoContext>
+    </SideContext>
   );
 }
 
@@ -88,7 +88,7 @@ export function SheetContent({
   ...props
 }: SheetContentProps) {
   const { portalContainer } = useRivoContext();
-  const side = use(LadoContext);
+  const side = use(SideContext);
 
   return (
     <BaseDrawer.Portal container={portalContainer ?? undefined}>

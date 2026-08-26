@@ -63,10 +63,14 @@ Regras de forma:
   comentario, e titulo da historia: `apps/docs/src/example-source.ts` le esse
   bloco. Nao apague.
 
-Divida pendente: `apps/docs/src/**`, `src/chart/chart-axis.tsx`,
-`src/lib/format.ts` e `scripts/acentuar.ts` estao comentados em ingles, contra
-a regra que `scripts/check-nomes-em-ingles.ts:11` escreve. Nenhuma guarda pega
-isso hoje.
+A regra passou a ter guarda: `bun run check:comentarios` acusa comentario em
+ingles por classe fechada - `the`, `this`, `which`, `because` -, e nao por
+vocabulario, que e ingles de propria vontade em metade do que se escreve aqui.
+Duas dessas palavras no mesmo comentario e o corte.
+
+Divida pendente: `apps/docs/src/pages/home.tsx` e `apps/docs/vite.config.ts`,
+os dois ultimos comentados em ingles. Eles estao escritos no `DEBT` da guarda,
+que so encolhe.
 
 ## Idioma do codigo
 
@@ -102,9 +106,9 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 ## O gate
 
 `bun run check` roda tudo em sequencia e para no primeiro que falhar:
-instalacao, lint, tipos, previews, props, nomes, cor literal, contraste, temas,
-contrato, doc, grupos de classe, fronteira do chart, skill, tokens nativos,
-paridade, contagem de testes, e por fim `bun test`.
+instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
+contraste, temas, contrato, doc, grupos de classe, fronteira do chart, skill,
+tokens nativos, paridade, contagem de testes, e por fim `bun test`.
 
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:

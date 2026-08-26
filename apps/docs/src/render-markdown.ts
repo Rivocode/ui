@@ -2,36 +2,36 @@ import { Marked } from 'marked'
 import { anchor } from './anchor'
 
 /* ---------------------------------------------------------------------------
- * Markdown to HTML, with an address for every heading
+ * Markdown para HTML, com endereco para cada titulo
  *
- * The id of a heading is what the right rail links to, what a pasted `#` lands
- * on, and what identifies the line inside the index. So it has to be unique on
- * the page — and a page is not one document: the piece's doc, and the doc of
- * every part shown under it, are rendered side by side.
+ * O id de um titulo e para onde a coluna da direita aponta, onde um `#` colado
+ * aterrissa, e o que identifica a linha dentro do indice. Entao ele tem que ser
+ * unico na pagina - e uma pagina nao e um documento so: a doc da peca, e a doc
+ * de cada parte mostrada embaixo dela, sao desenhadas lado a lado.
  *
- * `Button` is the case that broke: its doc and `ButtonGroup`'s both write
- * `## No React Native`, so the page carried the same id twice. The `#` could
- * only reach one of them, and the index — keyed by that id — stopped
- * reconciling and started leaving orphan rows behind on every navigation.
+ * O `Button` foi o caso que quebrou: a doc dele e a do `ButtonGroup` escrevem
+ * as duas `## No React Native`, entao a pagina carregava o mesmo id duas vezes.
+ * O `#` so alcancava um deles, e o indice - identificado por esse id - parou de
+ * reconciliar e passou a deixar linhas orfas para tras em cada navegacao.
  * ------------------------------------------------------------------------- */
 
 export type MarkdownOptions = {
-  /** Signs the ids of this document, so two docs on one page cannot collide. */
+  /** Assina os ids deste documento, para duas docs numa pagina nao colidirem. */
   idPrefix?: string
   /**
-   * How far down to push the headings.
+   * Quanto empurrar os titulos para baixo.
    *
-   * A part's doc is rendered under the `h3` that names the part, so its own
-   * `h2` would climb over its owner. Pushed to `h4`, it reads as what it is,
-   * and stops crowding the index, which lists `h2` and `h3`.
+   * A doc de uma parte e desenhada embaixo do `h3` que nomeia a parte, entao o
+   * `h2` dela subiria por cima de quem a compoe. Empurrado para `h4`, ele le
+   * como o que e, e para de lotar o indice, que lista `h2` e `h3`.
    */
   headingOffset?: number
 }
 
 /**
- * The unique id for a heading: prefixed when the document is a guest on
- * someone else's page, and numbered when the same title shows up twice inside
- * the same document.
+ * O id unico de um titulo: com prefixo quando o documento e hospede na pagina
+ * de outro, e numerado quando o mesmo titulo aparece duas vezes dentro do mesmo
+ * documento.
  */
 function idFor(text: string, options: MarkdownOptions, used: Set<string>) {
   const base = options.idPrefix ? `${options.idPrefix}-${anchor(text)}` : anchor(text)
@@ -44,10 +44,10 @@ function idFor(text: string, options: MarkdownOptions, used: Set<string>) {
 }
 
 /**
- * Content comes from files in this repo, never from third-party input.
+ * O conteudo vem de arquivos deste repositorio, nunca de entrada de terceiro.
  *
- * An instance per call, and not the shared `marked`: the renderer carries the
- * ids already handed out, and that set belongs to one document.
+ * Uma instancia por chamada, e nao o `marked` compartilhado: o renderer carrega
+ * os ids ja distribuidos, e esse conjunto pertence a um documento so.
  */
 export function renderMarkdown(source: string, options: MarkdownOptions = {}) {
   const used = new Set<string>()

@@ -1,39 +1,39 @@
 /* ---------------------------------------------------------------------------
- * The raw markdown
+ * O markdown cru
  *
- * What `/componentes/table.md` answers. The prose alone was not enough: an
- * agent that reads it still has to guess the import path, the prop names and
- * which pieces compose the component, and it guesses confidently, which is
- * worse than failing.
+ * O que `/componentes/table.md` responde. So a prosa nao bastava: um agente que
+ * a le ainda tem que adivinhar o caminho de import, os nomes das props e quais
+ * pecas compoem o componente - e ele adivinha com confianca, o que e pior que
+ * falhar.
  *
- * So the file is assembled from the very sources the HTML page renders: the
- * doc, the preview that runs on the page, and the `.d.ts` the build emits.
- * Nothing here is a second copy to maintain, rename a prop and both change.
+ * Entao o arquivo e montado das mesmas fontes que a pagina HTML desenha: a doc,
+ * o preview que roda na pagina, e o `.d.ts` que o build emite. Nada aqui e
+ * segunda copia para manter; renomeie uma prop e os dois mudam.
  * ------------------------------------------------------------------------- */
 
 import type { Prop } from './prop-types'
 
 export type Part = {
   name: string
-  /** The part's own doc, without its title. */
+  /** A doc da propria parte, sem o titulo dela. */
   body: string
   props: Prop[]
 }
 
 export type RenderInput = {
   name: string
-  /** The doc body, still carrying its own `# Name`. */
+  /** O corpo da doc, ainda carregando o proprio `# Nome`. */
   body: string
   importPath: string
   props: Prop[]
   forwardsRootProps: boolean
   stories: Array<{ title: string; code: string }>
   parts: Part[]
-  /** Sibling pieces of the same family, to keep reading. */
+  /** As pecas irmas da mesma familia, para continuar lendo. */
   related: Array<{ name: string; slug: string }>
 }
 
-/** A union type carries `|`, which would end the cell early. */
+/** Tipo de uniao carrega `|`, que encerraria a celula antes da hora. */
 const cell = (text: string) => text.replace(/\|/g, '\\|').replace(/\n+/g, ' ').trim()
 
 function propsTable(props: Prop[]) {
@@ -46,17 +46,16 @@ function propsTable(props: Prop[]) {
     )
     .join('\n')
 
-  // A coluna de versão existe para o agente que lê isto sem saber qual versão
-  // o projeto tem instalada: `—` é prop que ainda não saiu em versão nenhuma.
+  // A coluna de versao existe para o agente que le isto sem saber qual versao o
+  // projeto tem instalada: `—` e prop que ainda nao saiu em versao nenhuma.
   return `| Prop | Tipo | Obrigatória | Desde | O que faz |\n| --- | --- | --- | --- | --- |\n${rows}`
 }
 
 export function renderDoc(input: RenderInput) {
   const blocks: string[] = []
 
-  // The doc opens with its own `# Name` and the prose that explains when the
-  // piece serves, that stays first, because it is what decides whether to
-  // read the rest.
+  // A doc abre com o proprio `# Nome` e com a prosa que explica quando a peca
+  // serve; isso fica primeiro, porque e o que decide se vale ler o resto.
   blocks.push(input.body.trim())
 
   blocks.push(`## Importação\n\n\`\`\`tsx\nimport { ${input.name} } from '${input.importPath}'\n\`\`\``)

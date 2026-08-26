@@ -111,6 +111,24 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "dismissLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao de fechar."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O simbolo a esquerda do texto, com posicao garantida."
+      },
+      {
+        "name": "onDismiss",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o xis que fecha o aviso, no canto direito."
+      },
+      {
         "name": "tone",
         "type": "\"danger\" | \"info\" | \"success\" | \"warning\" | null",
         "required": false,
@@ -4199,6 +4217,12 @@
         "type": "ReactNode",
         "required": false,
         "since": "0.4.0"
+      },
+      {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
       },
       {
         "name": "isError",
@@ -9148,6 +9172,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
         "name": "filter",
         "type": "string",
         "required": false,
@@ -9172,6 +9202,12 @@
         "required": false,
         "note": "Altura maxima da tabela.",
         "since": "0.5.0"
+      },
+      {
+        "name": "noResultsMessage",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A linha discreta de quando a busca nao acha nada."
       },
       {
         "name": "onRetry",
@@ -12977,7 +13013,7 @@
     "props": [
       {
         "name": "onPageChange",
-        "type": "(pagina: number) => void",
+        "type": "(page: number) => void",
         "required": true,
         "since": "0.4.0"
       },
@@ -21994,8 +22030,14 @@
         "name": "delta",
         "type": "number",
         "required": false,
-        "note": "Variacao em pontos percentuais.",
+        "note": "A variacao.",
         "since": "0.4.0"
+      },
+      {
+        "name": "deltaFormat",
+        "type": "Format",
+        "required": false,
+        "note": "Como a variacao e escrita: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria."
       },
       {
         "name": "deltaLabel",
@@ -22218,6 +22260,10 @@
     "props": []
   },
   "TableCell": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "TableFooter": {
     "forwardsRoot": true,
     "props": []
   },

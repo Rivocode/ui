@@ -80,8 +80,8 @@ export function DatePicker({
   ...props
 }: DatePickerProps) {
   const controlled = value !== undefined;
-  const [dataInterna, setDataInterna] = useState<Date | undefined>(defaultValue);
-  const date = controlled ? value : dataInterna;
+  const [internalDate, setInternalDate] = useState<Date | undefined>(defaultValue);
+  const date = controlled ? value : internalDate;
 
   const [text, setText] = useState(() => formatDate(date));
   const [rawText, setRawText] = useState(false);
@@ -98,7 +98,7 @@ export function DatePicker({
   const displayText = rawText ? text : formatDate(date);
 
   function changeDate(nova: Date | undefined) {
-    if (!controlled) setDataInterna(nova);
+    if (!controlled) setInternalDate(nova);
     setRascunho(nova);
     if (nova) setMes(nova);
     onValueChange?.(nova);

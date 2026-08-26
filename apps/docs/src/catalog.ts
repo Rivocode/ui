@@ -5,12 +5,12 @@ import { slugify } from '@/slug'
 export { importPathOf } from '@/parts'
 
 /* ---------------------------------------------------------------------------
- * The catalog
+ * O catalogo
  *
- * Nothing here is written by hand. The docs and the examples already live in
- * the folder that feeds the claude.ai/design sync, and those are the very
- * files this site serves. Documentation kept as a separate copy starts lying
- * on the first renamed prop, and no test breaks to say so.
+ * Nada aqui e escrito a mao. As docs e os exemplos ja moram na pasta que
+ * alimenta o sync do claude.ai/design, e sao exatamente esses arquivos que este
+ * site serve. Documentacao mantida como copia separada comeca a mentir na
+ * primeira prop renomeada, e nenhum teste quebra para avisar.
  * ------------------------------------------------------------------------- */
 
 const DOCS = import.meta.glob('../../../.design-sync/docs/*.md', {
@@ -32,19 +32,19 @@ const EXAMPLE_SOURCES = import.meta.glob('../../../.design-sync/previews/*.tsx',
 
 export type Entry = {
   name: string
-  /** Address of the page: `ToggleGroup` lives at `/componentes/toggle-group`. */
+  /** Endereco da pagina: `ToggleGroup` mora em `/componentes/toggle-group`. */
   slug: string
   family: string
-  /** First sentence of the doc, for the list and for search. */
+  /** A primeira frase da doc, para a lista e para a busca. */
   summary: string
   body: string
-  /** Loads the example module on demand. Absent when there is no preview. */
+  /** Carrega o modulo do exemplo sob demanda. Ausente quando nao ha preview. */
   loadExamples?: () => Promise<Record<string, ComponentType>>
-  /** Example source, shown next to what it draws. */
+  /** A fonte do exemplo, mostrada ao lado do que ela desenha. */
   exampleSource?: string
-  /** Name of the piece this one composes, when it is a part of another. */
+  /** O nome da peca que esta compoe, quando ela e parte de outra. */
   partOf?: string
-  /** The pieces that compose this one, documented on the same page. */
+  /** As pecas que compoem esta, documentadas na mesma pagina. */
   parts?: Entry[]
 }
 
@@ -60,14 +60,14 @@ function splitFrontmatter(raw: string) {
 }
 
 /**
- * The doc opens with its own `# Name`, which the page already prints as the
- * heading. Kept in the raw `.md`, a file served on its own needs a title.
+ * A doc abre com o proprio `# Nome`, que a pagina ja imprime como titulo.
+ * Mantido no `.md` cru: arquivo servido sozinho precisa de titulo.
  */
 function dropLeadingHeading(body: string) {
   return body.replace(/^\s*#\s+\S.*\n+/, '')
 }
 
-/** The first line of prose after the title, stripped of markup. */
+/** A primeira linha de prosa depois do titulo, sem marcacao. */
 function firstSentence(body: string) {
   const line = body
     .split('\n')
@@ -88,14 +88,13 @@ const sourceByName = new Map(
 )
 
 /**
- * Every piece, parts included, in the order the sidebar reads them.
+ * Toda peca, partes incluidas, na ordem em que a barra lateral as le.
  *
- * The doc is what creates the entry, and there is no second source: a piece
- * that shipped with an example and no doc used to land here as its own
- * "Sem documento" family, and that branch is gone because the case can no
- * longer happen. `bun run check:doc` crosses the exports against
- * `.design-sync/docs/` in both directions, so an export without a page fails
- * the gate before it ever reaches the site.
+ * Quem cria a entrada e a doc, e nao ha segunda fonte: peca que saia com
+ * exemplo e sem doc caia aqui numa familia propria, "Sem documento", e esse
+ * ramo sumiu porque o caso nao pode mais acontecer. O `bun run check:doc` cruza
+ * os exports com `.design-sync/docs/` nos dois sentidos, entao export sem
+ * pagina reprova no gate antes de chegar ao site.
  */
 const ALL: Entry[] = Object.entries(DOCS)
   .map(([path, raw]) => {
@@ -124,11 +123,11 @@ for (const entry of ALL) {
   owner.parts = [...(owner.parts ?? []), entry]
 }
 
-/** Top-level pieces only. A part lives inside the page of what composes it. */
+/** So as pecas de topo. Parte mora dentro da pagina de quem a compoe. */
 export const ENTRIES: Entry[] = ALL.filter((entry) => !entry.partOf)
 
-/* Families follow the path of someone building a screen: the frame first,
- * then what goes in it, then what answers back. */
+/* As familias seguem o caminho de quem monta uma tela: primeiro a moldura,
+ * depois o que entra nela, depois o que responde de volta. */
 const FAMILY_ORDER = [
   'Fundação',
   'Ações',
@@ -141,7 +140,7 @@ const FAMILY_ORDER = [
   'Geral',
 ]
 
-/** A family nobody thought to order goes last, never first. */
+/** Familia que ninguem lembrou de ordenar vai por ultimo, nunca primeiro. */
 const rankOf = (family: string) => {
   const index = FAMILY_ORDER.indexOf(family)
   return index === -1 ? FAMILY_ORDER.length : index
@@ -154,16 +153,16 @@ export const FAMILIES = [...new Set(ENTRIES.map((entry) => entry.family))].sort(
 export const entriesOfFamily = (family: string) =>
   ENTRIES.filter((entry) => entry.family === family)
 
-/** Accepts the slug, and the bare component name for links written by hand. */
+/** Aceita o slug, e o nome cru da peca para link escrito a mao. */
 export const findEntry = (address: string) => {
   const wanted = address.toLowerCase()
   const found = ALL.find((entry) => entry.slug === wanted || entry.name.toLowerCase() === wanted)
   if (!found) return undefined
 
-  // A part's address leads to the page of what composes it: that is where it is.
+  // O endereco de uma parte leva a pagina de quem a compoe: e la que ela esta.
   if (found.partOf) return ALL.find((entry) => entry.name === found.partOf)
   return found
 }
 
-/** How many pieces have a running example, not just text. */
+/** Quantas pecas tem exemplo que roda, e nao so texto. */
 export const WITH_EXAMPLE = ENTRIES.filter((entry) => entry.loadExamples).length

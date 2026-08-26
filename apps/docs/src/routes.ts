@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * The router
+ * O roteador
  *
- * Three shapes of address: the home page, the foundation, one component. A
- * routing library brings a route graph, per-route loading and a context:
- * worth it with dozens of screens, expensive with three.
+ * Tres formas de endereco: a capa, a fundacao, um componente. Uma biblioteca de
+ * rotas traz grafo de rota, carregamento por rota e um contexto: vale a pena
+ * com dezenas de telas, sai caro com tres.
  * ------------------------------------------------------------------------- */
 
 export type Route =
@@ -18,7 +18,7 @@ export type Route =
 
 export function readRoute(path = window.location.pathname): Route {
   if (path === '/fundacao' || path === '/fundacao/') return { kind: 'foundation' }
-  // Before the guide pattern below, which would otherwise swallow it.
+  // Antes do padrao de guia la embaixo, que senao engoliria este.
   if (path === '/demonstracao' || path === '/demonstracao/') return { kind: 'demo' }
 
   if (path === '/componentes' || path === '/componentes/') return { kind: 'catalog' }
@@ -56,8 +56,8 @@ export function useRoute() {
 
     window.history.pushState(null, '', href)
     setRoute(target)
-    // Changing pages while keeping the old scroll opens the next component
-    // halfway down. The browser only handles that for its own navigations.
+    // Trocar de pagina mantendo a rolagem velha abre o proximo componente pela
+    // metade. O navegador so cuida disso nas navegacoes dele.
     //
     // `instant` a proposito. A folha define `scroll-behavior: smooth`, e sem
     // dizer nada aqui a troca de pagina herdava esse suave: quem clicava num
@@ -70,11 +70,11 @@ export function useRoute() {
 }
 
 /**
- * A real link: middle click, "open in new tab" and the keyboard all keep
- * working, and a plain click still navigates without a reload.
+ * Um link de verdade: clique do meio, "abrir em nova aba" e o teclado
+ * continuam funcionando, e o clique comum navega sem recarregar.
  *
- * Not a hook. It gets called inside lists, and a `use` prefix would forbid
- * that while buying nothing, there is no state here.
+ * Nao e hook. Ela e chamada dentro de listas, e o prefixo `use` proibiria isso
+ * sem comprar nada - nao ha estado aqui.
  */
 export function linkTo(target: Route, navigate: (route: Route) => void) {
   return {

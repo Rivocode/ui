@@ -1,14 +1,14 @@
 /**
- * Puts the accents back into the Portuguese prose of the docs.
+ * Devolve o acento a prosa em portugues das docs.
  *
- * The catalog was written without diacritics, which reads as sloppy on a page
- * meant for clients. Code is left untouched: fenced blocks, inline spans and
- * anything that looks like an identifier keep their exact bytes, because
- * `nao` inside a prop name is not a typo.
+ * O catalogo foi escrito sem acento, e sem acento ele le como desleixo numa
+ * pagina feita para cliente. O codigo fica intocado: bloco cercado, trecho
+ * entre crases e o que se parece com identificador guardam seus bytes exatos,
+ * porque `nao` dentro de um nome de prop nao e erro de digitacao.
  *
- * The `e` → `é` case cannot be settled by a dictionary, one is a conjunction,
- * the other the verb, so it goes through context rules only, and whatever the
- * rules do not recognise is left alone and reported for a human to read.
+ * O caso `e` -> `é` nao se resolve por dicionario, porque um e conjuncao e o
+ * outro e o verbo. Ele passa so por regra de contexto, e o que a regra nao
+ * reconhece fica como esta e sai reportado para uma pessoa ler.
  */
 
 /**
@@ -310,9 +310,9 @@ export const WORDS: Record<string, string> = {
   independencia: "independência",
 };
 
-/* Onde `e` é o verbo, e não a conjunção. Cada regra descreve um contorno em que
- * a leitura não é ambígua: depois de ponto, antes de artigo, e assim por
- * diante. O que não casar fica como está, errar para menos é recuperável. */
+/* Onde `e` e o verbo, e nao a conjuncao. Cada regra descreve um contorno em que
+ * a leitura nao e ambigua: depois de ponto, antes de artigo, e assim por
+ * diante. O que nao casar fica como esta, errar para menos e recuperavel. */
 const VERB: Array<[RegExp, string]> = [
   [/\bnao e\b/g, "não é"],
   [/\bque e\b/g, "que é"],
@@ -334,7 +334,7 @@ const VERB: Array<[RegExp, string]> = [
   [/\be de proposito\b/g, "é de propósito"],
 ];
 
-/** Applies a function to prose only, leaving code fences and spans untouched. */
+/** Aplica uma funcao so na prosa, deixando bloco e trecho de codigo intocados. */
 function proseOnly(text: string, apply: (chunk: string) => string) {
   // O destino de um link entra na lista de trechos intocados junto com o
   // codigo: acentuar `/instalacao` quebra o endereco em silencio.
@@ -364,7 +364,7 @@ export function addAccents(text: string) {
   });
 }
 
-/** Lines where a bare `e` survived, for a human to read. */
+/** As linhas onde um `e` solto sobreviveu, para uma pessoa ler. */
 export function pendingLines(text: string) {
   const lines: string[] = [];
   proseOnly(text, (chunk) => {

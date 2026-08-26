@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------------
- * The demo's data
+ * Os dados da demonstracao
  *
- * Invented, but shaped like the real thing: Brazilian names, values that fit
- * the currency, dates in one month. A demo filled with "Lorem ipsum" and
- * "Item 1" reads as a mockup, and a mockup does not answer the question the
- * reader came with, which is whether this holds up on a real screen.
+ * Inventados, mas com a forma da coisa real: nomes brasileiros, valores que
+ * cabem na moeda, datas dentro de um mes. Demonstracao cheia de "Lorem ipsum" e
+ * "Item 1" le como maquete, e maquete nao responde a pergunta com que a pessoa
+ * chegou, que e se isto se sustenta numa tela de verdade.
  * ------------------------------------------------------------------------- */
 
 export type Status = 'paid' | 'open' | 'overdue' | 'draft'
@@ -52,8 +52,9 @@ const CUSTOMERS: Array<[string, string]> = [
 const STATUSES: Status[] = ['paid', 'paid', 'open', 'overdue', 'paid', 'open', 'draft', 'paid']
 
 /**
- * Deterministic, and deliberately not random: the same screen on every reload
- * means a bug in the demo is a bug you can point at, not one that moved.
+ * Deterministico, e de proposito nao aleatorio: a mesma tela a cada recarga faz
+ * de um defeito da demonstracao um defeito que da para apontar, e nao um que se
+ * mexeu de lugar.
  */
 export const INVOICES: Invoice[] = Array.from({ length: 48 }, (_, index) => {
   const [customer, document] = CUSTOMERS[index % CUSTOMERS.length]

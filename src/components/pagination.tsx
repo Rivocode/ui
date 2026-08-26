@@ -10,7 +10,7 @@ export type PaginationProps = Omit<ComponentProps<"nav">, "onChange"> & {
   page: number;
   /** Quantas paginas existem. */
   pageCount: number;
-  onPageChange: (pagina: number) => void;
+  onPageChange: (page: number) => void;
   /** Quantos numeros aparecem em volta da pagina atual. */
   siblings?: number;
 };

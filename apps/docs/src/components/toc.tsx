@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * On this page
+ * Nesta pagina
  *
- * The right rail. It reads the headings out of the rendered page instead of
- * being handed a list, because half of what a component page shows arrives
- * late: the examples load on demand, and the parts section is built from the
- * catalog. A list written up front would be missing exactly those.
+ * A coluna da direita. Ela le os titulos da pagina ja desenhada em vez de
+ * receber uma lista pronta, porque metade do que uma pagina de peca mostra
+ * chega atrasada: os exemplos carregam sob demanda, e a secao de partes e
+ * montada a partir do catalogo. Uma lista escrita de antemao ficaria sem
+ * exatamente esses.
  *
  * A coluna nao rola por dentro, e nao sai da tela. Sao os dois lados de um
  * mesmo defeito, e cada um foi visto sozinho antes: presa no topo com a
@@ -21,20 +22,20 @@ import { useEffect, useRef, useState } from 'react'
  * ------------------------------------------------------------------------- */
 
 /**
- * The page on which the reader last moved the scroll themselves.
+ * A pagina em que a pessoa mexeu na rolagem por conta propria pela ultima vez.
  *
- * Module scope, because it has to be listening before the component mounts:
- * the realignment below happens in the first moments, and a scroll in that
- * window has to win.
+ * Escopo de modulo, porque isto precisa estar escutando antes de o componente
+ * montar: o realinhamento la embaixo acontece nos primeiros instantes, e uma
+ * rolagem nessa janela tem que ganhar.
  *
- * It stores the address, not the moment. Comparing timestamps looked like
- * enough and was not: a scroll that happens before this module loads carries a
- * mark older than the mount, and passed for "nobody moved". The address
- * answers the question that matters, which is whether it happened on this
- * page, and still lets a fresh navigation start clean.
+ * Ele guarda o endereco, e nao o momento. Comparar carimbo de tempo parecia
+ * bastar e nao bastava: uma rolagem que acontece antes de este modulo carregar
+ * leva uma marca mais velha que a montagem, e passava por "ninguem mexeu". O
+ * endereco responde a pergunta que importa, que e se aquilo aconteceu NESTA
+ * pagina, e ainda deixa uma navegacao nova comecar limpa.
  *
- * `wheel`, touch and keyboard are the reader's intent. The `scroll` event is
- * not: it also fires for the scrolling we cause ourselves.
+ * `wheel`, toque e teclado sao a intencao de quem le. O evento `scroll` nao e:
+ * ele dispara tambem para a rolagem que nos mesmos causamos.
  */
 let readerMovedOn: string | null = null
 if (typeof window !== 'undefined') {
@@ -48,7 +49,7 @@ if (typeof window !== 'undefined') {
 
 type Item = { id: string; text: string; level: number }
 
-/** Waits for the async pieces of the page before reading its shape. */
+/** Espera as partes assincronas da pagina antes de ler a forma dela. */
 function useHeadings(watch: string) {
   const [items, setItems] = useState<Item[]>([])
 
@@ -57,14 +58,14 @@ function useHeadings(watch: string) {
     if (!main) return
 
     /*
-     * Examples mount after their module resolves, and the page grows under the
-     * anchor: the browser already scrolled to where `#` pointed before the
-     * content arrived, so whoever opened `#api` lands on a section they did not
-     * ask for.
+     * Os exemplos montam depois que o modulo deles resolve, e a pagina cresce
+     * por baixo da ancora: o navegador ja rolou ate onde o `#` apontava antes
+     * de o conteudo chegar, entao quem abriu `#api` cai numa secao que nao
+     * pediu.
      *
-     * They arrive in waves, and each wave pushes the anchor down again, so we
-     * wait for the changes to go quiet and correct once. Realigning on every
-     * wave works too, but the page hops several times on the way there.
+     * Eles chegam em ondas, e cada onda empurra a ancora mais para baixo, entao
+     * esperamos as mudancas silenciarem e corrigimos uma vez so. Realinhar a
+     * cada onda tambem funciona, mas a pagina pula varias vezes no caminho.
      */
     let pending: ReturnType<typeof setTimeout> | undefined
 
@@ -72,16 +73,16 @@ function useHeadings(watch: string) {
       if (!window.location.hash) return
       clearTimeout(pending)
       pending = setTimeout(() => {
-        // The check lives in here, not at scheduling time: what matters is
-        // whether the reader moved by the moment we scroll, not by the moment
-        // we queued it.
+        // A conferencia mora aqui dentro, e nao na hora de agendar: o que
+        // importa e se a pessoa mexeu ate o instante em que rolamos, e nao ate
+        // o instante em que enfileiramos.
         if (readerMovedOn === window.location.pathname) return
         const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
-        // `instant` on purpose. The sheet sets `scroll-behavior: smooth` for
-        // everyone, which turned this correction into half a second of
-        // animation: a reader who scrolled during it saw the page crawling
-        // back, as if arguing with them. This is not navigation, it is fixing
-        // a position, and a fix you can watch happen reads as a defect.
+        // `instant` de proposito. A folha poe `scroll-behavior: smooth` para
+        // todo mundo, o que transformava esta correcao em meio segundo de
+        // animacao: quem rolava durante ela via a pagina rastejando de volta,
+        // como se discutisse. Isto nao e navegacao, e conserto de posicao, e
+        // conserto que da para ver acontecendo le como defeito.
         target?.scrollIntoView({ behavior: 'instant' })
       }, 200)
     }
@@ -104,7 +105,8 @@ function useHeadings(watch: string) {
 
     read()
 
-    // Examples mount after their module resolves, and each one adds a heading.
+    // Os exemplos montam depois que o modulo deles resolve, e cada um soma um
+    // titulo.
     const observer = new MutationObserver(read)
     observer.observe(main, { childList: true, subtree: true })
 
@@ -117,7 +119,7 @@ function useHeadings(watch: string) {
   return items
 }
 
-/** Which heading the reader is on, by the topmost one still above the fold. */
+/** Em que titulo a pessoa esta, pelo ultimo que ainda ficou acima da dobra. */
 function useActive(items: Item[]) {
   const [active, setActive] = useState<string | null>(null)
 
@@ -126,16 +128,16 @@ function useActive(items: Item[]) {
 
     const onScroll = () => {
       /*
-       * At the bottom the scrolling is over, so the last headings never reach
-       * the 96px line and tracking by position stops telling them apart.
+       * No fim a rolagem acabou, entao os ultimos titulos nunca alcancam a
+       * linha dos 96px e acompanhar por posicao para de distinguir um do outro.
        *
-       * Marking the first one still visible solved jumping to an anchor near
-       * the end, but broke on a short page: with every heading on screen the
-       * first one always won, and asking for `#api` lit up "A busca".
+       * Marcar o primeiro ainda visivel resolvia o salto para uma ancora perto
+       * do fim, e quebrava na pagina curta: com todos os titulos na tela o
+       * primeiro ganhava sempre, e pedir `#api` acendia "A busca".
        *
-       * Down there the anchor the reader asked for decides, as long as it is
-       * in view. With no anchor, or one left behind, the last heading wins,
-       * which is where the page actually ended.
+       * La embaixo quem decide e a ancora que a pessoa pediu, desde que ela
+       * esteja a vista. Sem ancora, ou com uma que ficou para tras, ganha o
+       * ultimo titulo, que e onde a pagina de fato terminou.
        */
       const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
 
@@ -158,8 +160,8 @@ function useActive(items: Item[]) {
       for (const item of items) {
         const node = document.getElementById(item.id)
         if (!node) continue
-        // 96px down from the top: the sticky header covers the first 56, and a
-        // heading flush against it does not read as "where I am" yet.
+        // 96px abaixo do topo: o cabecalho grudado cobre os primeiros 56, e um
+        // titulo encostado nele ainda nao le como "onde eu estou".
         if (node.getBoundingClientRect().top <= 96) current = item.id
       }
 
@@ -168,8 +170,8 @@ function useActive(items: Item[]) {
 
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    // Already at the bottom, clicking an item in the index scrolls nothing, so
-    // the scroll event never comes and the mark would sit where it was.
+    // Ja no fim da pagina, clicar num item do indice nao rola nada, entao o
+    // evento de rolagem nunca vem e a marca ficaria onde estava.
     window.addEventListener('hashchange', onScroll)
 
     return () => {
@@ -259,7 +261,7 @@ export function Toc({ watch }: { watch: string }) {
   const active = useActive(items)
   const rail = useRail(items.length)
 
-  // One heading is not an index of anything.
+  // Um titulo so nao e indice de nada.
   if (items.length < 2) return null
 
   return (
@@ -277,14 +279,14 @@ export function Toc({ watch }: { watch: string }) {
 
       <ul className="border-l border-border">
         {/*
-          A chave é a posição, e não o id.
+          A chave e a posicao, e nao o id.
 
-          Esta lista é lida do documento, e um documento pode escrever o mesmo
-          id duas vezes — foi o que a página de `Button` fez. Duas chaves iguais
-          não deixam o React reconciliar a lista: ele passou a abandonar linhas
-          aqui dentro, que sobreviviam à navegação e se somavam às da próxima
-          peça, até a página ser recarregada. A origem está corrigida, mas o
-          índice não tem como garantir o que lê, e o estrago era grande demais
+          Esta lista e lida do documento, e um documento pode escrever o mesmo
+          id duas vezes - foi o que a pagina de `Button` fez. Duas chaves iguais
+          nao deixam o React reconciliar a lista: ele passou a abandonar linhas
+          aqui dentro, que sobreviviam a navegacao e se somavam as da proxima
+          peca, ate a pagina ser recarregada. A origem esta corrigida, mas o
+          indice nao tem como garantir o que le, e o estrago era grande demais
           para depender disso.
         */}
         {items.map((item, index) => (

@@ -2,11 +2,11 @@ import { Badge, Button, Card, CardContent, Input, RivoProvider } from '@rivocode
 import { useEffect, useRef, useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * Theme playground
+ * O laboratorio de tema
  *
- * Same tree, both themes, plus the tokens read from the browser rather than
- * copied into a table. A swatch list typed by hand drifts from the CSS on the
- * first tweak; this one cannot, because it asks the element for its value.
+ * A mesma arvore, os dois temas, mais os tokens lidos do navegador em vez de
+ * copiados para uma tabela. Lista de amostra digitada a mao se afasta do CSS no
+ * primeiro ajuste; esta nao consegue, porque ela pergunta o valor ao elemento.
  * ------------------------------------------------------------------------- */
 
 const ROLES: Array<{ token: string; role: string }> = [
@@ -41,8 +41,8 @@ export function ThemePlayground() {
     const node = stage.current
     if (!node) return
 
-    // Read after paint: the theme attribute has to be on the element before
-    // the computed value means anything.
+    // Lido depois da pintura: o atributo de tema tem que estar no elemento
+    // antes de o valor computado querer dizer alguma coisa.
     const frame = requestAnimationFrame(() => {
       const computed = getComputedStyle(node)
       const read: Record<string, string> = {}

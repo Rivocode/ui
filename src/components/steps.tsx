@@ -50,33 +50,33 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
 
       <ol {...props} className={cn("hidden items-start gap-2 sm:flex", className)}>
         {steps.map((step, index) => {
-          const concluido = index < current;
+          const isDone = index < current;
           const agora = index === current;
-          const podeVoltar = Boolean(onStepClick) && concluido;
+          const canGoBack = Boolean(onStepClick) && isDone;
 
           return (
             <li key={step.id} className="flex min-w-0 flex-1 items-start gap-3">
               <button
                 type="button"
-                disabled={!podeVoltar}
-                onClick={podeVoltar ? () => onStepClick!(index) : undefined}
+                disabled={!canGoBack}
+                onClick={canGoBack ? () => onStepClick!(index) : undefined}
                 aria-current={agora ? "step" : undefined}
                 className={cn(
                   "flex min-w-0 flex-1 items-start gap-3 rounded-md p-1 text-left",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  podeVoltar && "cursor-pointer hover:bg-accent-subtle",
+                  canGoBack && "cursor-pointer hover:bg-accent-subtle",
                 )}
               >
                 <span
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center rounded-pill",
                     "font-mono text-xs",
-                    concluido && "bg-accent text-accent-fg",
+                    isDone && "bg-accent text-accent-fg",
                     agora && "bg-accent-subtle text-accent-text ring-2 ring-accent",
-                    !concluido && !agora && "border border-border text-fg-subtle",
+                    !isDone && !agora && "border border-border text-fg-subtle",
                   )}
                 >
-                  {concluido ? <Check size={13} aria-hidden="true" /> : index + 1}
+                  {isDone ? <Check size={13} aria-hidden="true" /> : index + 1}
                 </span>
 
                 {/*

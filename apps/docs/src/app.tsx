@@ -21,19 +21,19 @@ function Brand({ navigate }: { navigate: (route: Route) => void }) {
       className="flex min-w-0 items-center gap-2 font-display text-sm tracking-wide text-fg"
     >
       <Logo className="h-4 w-auto shrink-0 text-accent" />
-      {/* The wordmark is a flex item of its own so it can shrink with an
-          ellipsis instead of being clipped mid-letter. */}
+      {/* A marca e item de flex proprio para poder encolher com reticencia em
+          vez de sair cortada no meio de uma letra. */}
       <span className="truncate">RIVOCODE</span>
-      {/* The suffix is the first thing to go on a phone: at 320px the header
-          row was 23px wider than the window, and dropping this is the
-          cheapest way to pay for part of it - the name alone still identifies
-          the site. */}
+      {/* O sufixo e a primeira coisa a sair no celular: em 320px a linha do
+          cabecalho ficava 23px mais larga que a janela, e largar isto e o jeito
+          mais barato de pagar parte disso - o nome sozinho ainda identifica o
+          site. */}
       <span className="hidden font-mono text-xs font-normal text-fg-subtle sm:inline">/ui</span>
     </a>
   )
 }
 
-/** The piece list, with a filter. Serves both the sidebar and the phone sheet. */
+/** A lista de pecas, com filtro. Serve a barra lateral e a folha do celular. */
 function Nav({
   route,
   navigate,
@@ -80,34 +80,35 @@ function Nav({
   const foundationLink = linkTo({ kind: 'foundation' }, navigate)
 
   /*
-   * The row, once.
+   * A linha, uma vez so.
    *
-   * Every group hangs off one vertical rule, and the active row replaces its
-   * segment of that rule with the accent. That is what carries "you are here"
-   * down a list of sixty-six names: a filled pill alone reads as hover on the
-   * second glance, and hover is the one thing it must not be confused with.
+   * Todo grupo pende de um mesmo fio vertical, e a linha ativa troca o pedaco
+   * dela desse fio pelo acento. E o que carrega o "voce esta aqui" por uma
+   * lista de sessenta e seis nomes: uma pilula preenchida sozinha le como hover
+   * na segunda olhada, e hover e justamente a unica coisa com que ela nao pode
+   * ser confundida.
    */
   const rowClass = (active: boolean) =>
     [
       'relative block rounded-r-md py-1.5 pr-3 pl-4 text-sm',
       'transition-[color,background-color] duration-[var(--rc-duration-fast)] ease-rc',
-      // The segment of rule this row owns. Transparent by default, so the
-      // group's own line shows through and the list reads as one column.
+      // O pedaco de fio que esta linha possui. Transparente por padrao, para a
+      // linha do proprio grupo aparecer e a lista ler como uma coluna so.
       'before:absolute before:inset-y-0 before:-left-px before:w-px before:transition-colors',
       active
         ? 'bg-accent-subtle text-accent-text before:bg-accent before:w-0.5'
         : 'text-fg-muted before:bg-transparent hover:bg-surface/70 hover:text-fg',
     ].join(' ')
 
-  /* Sticky, so the family a name belongs to is still on screen after
-   * scrolling past its heading. */
+  /* Grudado, para a familia a que um nome pertence continuar na tela depois de
+   * a rolagem passar do titulo dela. */
   const headingClass =
     'sticky top-0 z-[1] -mx-1 bg-bg px-4 pt-2 pb-2 font-mono text-[0.68rem] font-medium tracking-[0.14em] text-fg-subtle uppercase'
 
   return (
-    /* Named landmark: the page has two navs, and the unnamed one was this,
-       the bigger of the two. In a landmark list "navigation" next to
-       "navigation, Nesta página" left the wrong one anonymous. */
+    /* Landmark com nome: a pagina tem dois navs, e o sem nome era este, o maior
+       dos dois. Numa lista de landmarks, "navigation" ao lado de "navigation,
+       Nesta pagina" deixava anonimo justamente o errado. */
     <nav aria-label="Peças e guias" className="flex h-full flex-col gap-4">
       <div className="relative">
         <Search
@@ -218,19 +219,19 @@ function Nav({
 
 export function App() {
   const { route, navigate } = useRoute()
-  // Both of these use the whole window: a 256px list of names beside a page
-  // that is itself a list of names buys nothing.
+  // As duas usam a janela inteira: 256px de lista de nomes ao lado de uma
+  // pagina que ja e uma lista de nomes nao compra nada.
   const fullWidth = route.kind === 'home' || route.kind === 'demo'
 
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
       <div className="min-h-dvh">
-        {/* The sidebar repeats ~90 links on every page, so the first control
-            of an example sat at tab stop #105. A screen reader jumps that by
-            landmark; someone driving with the keyboard alone had no way past
-            it. First focusable element on the page, and it has to *appear*
-            when focused - `sr-only` on its own would leave it invisible under
-            the caret, which is worse than not having it. */}
+        {/* A barra lateral repete uns 90 links em cada pagina, entao o primeiro
+            controle de um exemplo ficava na parada de tab numero 105. Leitor de
+            tela pula isso por landmark; quem dirige so pelo teclado nao tinha
+            saida. Primeiro elemento focavel da pagina, e ele tem que APARECER
+            ao receber foco - `sr-only` sozinho o deixaria invisivel embaixo do
+            cursor, o que e pior que nao ter. */}
         <a
           href="#conteudo"
           className="sr-only rounded-md focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[var(--rc-z-sticky)] focus:m-0 focus:h-auto focus:w-auto focus:overflow-visible focus:border focus:border-accent focus:bg-surface-raised focus:px-3 focus:py-2 focus:font-sans focus:text-sm focus:whitespace-nowrap focus:text-fg focus:shadow-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -239,22 +240,22 @@ export function App() {
         </a>
 
         <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
-          {/* `min-w-0` on the left block is what stops the row overflowing at
-              320px: a flex item defaults to `min-width: auto`, so the drawer
-              button plus the wordmark refused to shrink and pushed the chips
-              23px past the edge of the window on every route - WCAG 1.4.10.
-              The chips keep `shrink-0` so the squeeze lands on the wordmark,
-              which has an ellipsis, and not on the three targets.
+          {/* O `min-w-0` no bloco da esquerda e o que impede a linha de vazar em
+              320px: item de flex nasce com `min-width: auto`, entao o botao da
+              gaveta mais a marca se recusavam a encolher e empurravam as
+              fichas 23px para fora da janela em toda rota - WCAG 1.4.10. As
+              fichas ficam com `shrink-0` para o aperto cair na marca, que tem
+              reticencia, e nao nos tres alvos.
 
-              The tighter gaps and chip padding below `sm` are what stop that
-              ellipsis from ever showing: without them the wordmark fitted
-              with zero slack and flipped to "RIVOCO..." depending on when the
-              display font finished loading. The chips stay well over the
-              24x24 of WCAG 2.5.8. */}
+              As folgas e o padding menores abaixo de `sm` sao o que impedem
+              essa reticencia de aparecer: sem eles a marca cabia com folga zero
+              e virava "RIVOCO..." dependendo de quando a fonte de display
+              terminava de carregar. As fichas continuam bem acima dos 24x24 da
+              WCAG 2.5.8. */}
           <div className="flex h-14 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              {/* On a phone the sidebar becomes a drawer: 256px of fixed menu
-                  inside 390px of screen leaves no page to read. */}
+              {/* No celular a barra lateral vira gaveta: 256px de menu fixo
+                  dentro de 390px de tela nao deixam pagina para ler. */}
               {!fullWidth && (
                 <Sheet side="left">
                   <SheetTrigger
@@ -278,9 +279,9 @@ export function App() {
             </div>
 
             <div className="flex shrink-0 items-center gap-2">
-              {/* The documentation needs its own way in from every page, and
-                  it opens where someone actually starts: installation. From
-                  there the sidebar carries them to any piece. */}
+              {/* A documentacao precisa de uma porta propria em toda pagina, e
+                  ela abre onde alguem de fato comeca: a instalacao. Dali a
+                  barra lateral leva a pessoa a qualquer peca. */}
               <a
                 {...linkTo({ kind: 'guide', slug: 'instalacao' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
@@ -317,16 +318,16 @@ export function App() {
         </header>
 
         {fullWidth ? (
-          /* `tabIndex={-1}` is not decoration: without it Chrome and Safari
-             only scroll, leaving the caret on the skip link, so the next Tab
-             walks straight back into the header. */
+          /* O `tabIndex={-1}` nao e enfeite: sem ele o Chrome e o Safari so
+             rolam, deixando o cursor no link de pular, e o Tab seguinte volta
+             direto para o cabecalho. */
           <main id="conteudo" tabIndex={-1} className="outline-none">
             {route.kind === 'home' ? <Home navigate={navigate} /> : <DemoPage />}
           </main>
         ) : (
-          /* The sidebar sits against the edge of the window, like the header
-             above it. Centring the whole shell left a gap to its left and put
-             the divider in the middle of the screen, which read as a bug. */
+          /* A barra lateral encosta na borda da janela, como o cabecalho acima
+             dela. Centrar a casca inteira deixava um vao a esquerda e punha o
+             divisor no meio da tela, o que lia como defeito. */
           <div className="flex w-full">
             <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-64 shrink-0 border-r border-border py-4 pr-2 pl-4 lg:block xl:w-72 xl:pl-6">
               <Nav route={route} navigate={navigate} />

@@ -1,24 +1,23 @@
 /* ---------------------------------------------------------------------------
- * Example source
+ * A fonte de um exemplo
  *
- * Cutting one story out of a preview file, and naming it. Shared by the page,
- * which renders the story next to the code, and by the plugin that writes the
- * same code into the raw `.md`.
+ * Recortar uma historia de dentro de um arquivo de preview, e dar nome a ela.
+ * Usada pela pagina, que desenha a historia ao lado do codigo, e pelo plugin
+ * que escreve esse mesmo codigo no `.md` cru.
  * ------------------------------------------------------------------------- */
 
 /**
- * The previews open themselves for the camera. Not for a reader.
+ * Os previews se abrem para a camera. Nao para quem le.
  *
- * Every floating piece carries `defaultOpen` in `.design-sync/previews`,
- * because the sync photographs each one and a closed dialog photographs as an
- * empty box. On a page that flag means a modal opens over the docs the moment
- * someone lands on `/componentes/dialog`, and what the reader copies opens by
- * itself in their app too.
+ * Toda peca flutuante carrega `defaultOpen` em `.design-sync/previews`, porque
+ * o sync fotografa cada uma e um dialog fechado fotografa como caixa vazia. Na
+ * pagina essa flag quer dizer que um modal abre por cima da doc no instante em
+ * que alguem cai em `/componentes/dialog`, e o que a pessoa copia abre sozinho
+ * no app dela tambem.
  *
- * Not every `defaultOpen` is that, though. On a sidebar or an accordion the
- * flag is the example: a sidebar that starts collapsed is showing the reader
- * the wrong half. So the strip asks which element the flag belongs to, and
- * these keep it.
+ * Nem todo `defaultOpen` e isso, no entanto. Numa sidebar ou num accordion a
+ * flag E o exemplo: uma sidebar que comeca encolhida mostra a metade errada.
+ * Entao a poda pergunta de qual elemento e a flag, e estes aqui ficam com ela.
  */
 const KEEPS_OPEN = new Set([
   'SidebarProvider',
@@ -30,16 +29,16 @@ const KEEPS_OPEN = new Set([
 ])
 
 /**
- * Opt-out for the story whose whole point is being open.
+ * A saida para a historia cujo assunto e justamente estar aberta.
  *
- * The tag list above cannot reach this case: in one file the "Fechado" story
- * has to stay closed and the "Aberto" one has to open, and both use the same
- * tag. Without a per-story escape, the `Select` example titled "Aberto"
- * rendered closed and still reserved the height of a list that never came,
- * which is an example lying about its own name.
+ * A lista de tags acima nao alcanca este caso: num mesmo arquivo a historia
+ * "Fechado" tem que ficar fechada e a "Aberto" tem que abrir, e as duas usam a
+ * mesma tag. Sem um escape por historia, o exemplo do `Select` chamado "Aberto"
+ * desenhava fechado e ainda reservava a altura de uma lista que nunca vinha -
+ * um exemplo mentindo sobre o proprio nome.
  *
- * The marker is stripped from the code the reader copies: it is documentation
- * scaffolding, not something to carry home.
+ * A marca sai do codigo que a pessoa copia: ela e andaime de documentacao, e
+ * nao coisa para levar para casa.
  */
 const KEEP_OPEN_MARK = String.raw`\s*(?:\{\s*)?\/\*\s*rc-keep-open\s*\*\/(?:\s*\})?`
 
@@ -50,15 +49,15 @@ export function withoutAutoOpen(code: string, mode: 'display' | 'runtime' = 'dis
   )
 
   return code.replace(pattern, (match, space: string, mark: string | undefined, at: number) => {
-    // A story marked keep-open renders inside the iframe, and there
-    // `defaultOpen` is not enough: the popup cannot take focus from the outer
-    // page on mount, and the piece reads that as "focus left, close". On the
-    // page it runs controlled-open, which has no way to close; the reader
-    // still sees and copies `defaultOpen`, which is what belongs in an app.
+    // Historia marcada com keep-open desenha dentro do iframe, e la o
+    // `defaultOpen` nao basta: o popup nao consegue tomar o foco da pagina de
+    // fora na montagem, e a peca le isso como "o foco saiu, fecha". Na pagina
+    // ela roda com `open` controlado, que nao tem como fechar; quem le
+    // continua vendo e copiando `defaultOpen`, que e o que serve num app.
     if (mark !== undefined) return mode === 'runtime' ? `${space}open` : `${space}defaultOpen`
 
-    // Walk back to the tag that owns the attribute: the last `<Name` before
-    // it, as long as no `>` closed that tag first.
+    // Volta ate a tag dona do atributo: o ultimo `<Nome` antes dele, desde que
+    // nenhum `>` tenha fechado essa tag no caminho.
     const before = code.slice(0, at)
     const opened = before.lastIndexOf('<')
     if (opened === -1) return match
@@ -70,8 +69,8 @@ export function withoutAutoOpen(code: string, mode: 'display' | 'runtime' = 'dis
 }
 
 /**
- * `ComoLink` → `Como link`. The export name is a JS identifier; the heading
- * above the example is for a person reading the page.
+ * `ComoLink` -> `Como link`. O nome do export e identificador de JS; o titulo
+ * em cima do exemplo e para quem le a pagina.
  */
 export function titleOf(exportName: string) {
   const spaced = exportName
@@ -82,13 +81,13 @@ export function titleOf(exportName: string) {
 }
 
 /**
- * The heading for a story: the doc comment above it when there is one, the
- * export name turned into words when there is not.
+ * O titulo de uma historia: o bloco de doc acima dela quando existe, e o nome
+ * do export virado em palavras quando nao existe.
  *
- * The export name is a JS identifier and belongs in English like the rest of
- * the code; the heading is read by a person, in Portuguese. Deriving one from
- * the other forced the two to be the same word, so the comment wins when the
- * preview bothers to write one.
+ * O nome do export e identificador de JS e vai em ingles como o resto do
+ * codigo; o titulo e lido por uma pessoa, em portugues. Derivar um do outro
+ * obrigava os dois a serem a mesma palavra, entao o comentario ganha sempre que
+ * o preview se der ao trabalho de escrever um.
  */
 export function titleFromSource(source: string, name: string) {
   const at = source.indexOf(`export function ${name}(`)
@@ -109,18 +108,18 @@ export function titleFromSource(source: string, name: string) {
   return first || titleOf(name)
 }
 
-/** The exported stories of a preview file, in the order they were written. */
+/** As historias exportadas de um preview, na ordem em que foram escritas. */
 export function storyNamesOf(source: string) {
   return [...source.matchAll(/^export function (\w+)\(/gm)].map((match) => match[1])
 }
 
 /**
- * Whether this story asked to stay open on the page.
+ * Se esta historia pediu para ficar aberta na pagina.
  *
- * A story that is open by design cannot render inline: its popup anchors on
- * the page's own window and flies over the neighbouring cards — or, worse, a
- * modal opens over the docs. The stage renders these inside the iframe, where
- * the popup's world ends at the card's edge.
+ * Historia que e aberta de proposito nao pode desenhar inline: o popup dela se
+ * ancora na janela da propria pagina e voa por cima dos cartoes vizinhos - ou,
+ * pior, um modal abre por cima da doc. O palco desenha essas dentro do iframe,
+ * onde o mundo do popup acaba na borda do cartao.
  */
 export function storyKeepsOpen(source: string, name: string) {
   const start = source.indexOf(`export function ${name}(`)
@@ -132,30 +131,31 @@ export function storyKeepsOpen(source: string, name: string) {
 }
 
 /* ---------------------------------------------------------------------------
- * Cutting a story out, with what it stands on
+ * Recortar uma historia junto com aquilo em que ela se apoia
  *
- * A story is rarely alone in its file. `Command.tsx` writes the `GROUPS` it
- * feeds the palette above the story; `Form.tsx` writes the Zod `schema`;
- * `ToastViewport.tsx` writes the tiny component that fires the notice. Taking
- * only the exported function published three examples that do not run: the
- * page showed `groups={GROUPS}` with no `GROUPS` anywhere, and the reader who
- * copied it got a red screen and no clue that the file it came from compiles.
+ * Historia raramente esta sozinha no arquivo. O `Command.tsx` escreve o
+ * `GROUPS` que alimenta a paleta acima dela; o `Form.tsx` escreve o `schema` do
+ * Zod; o `ToastViewport.tsx` escreve o componentezinho que dispara o aviso.
+ * Levar so a funcao exportada publicou tres exemplos que nao rodam: a pagina
+ * mostrava `groups={GROUPS}` sem nenhum `GROUPS` em lugar nenhum, e quem
+ * copiava recebia tela vermelha sem nenhuma pista de que o arquivo de onde
+ * aquilo veio compila.
  *
- * So the cut follows what the story names. Everything at the top level is a
- * candidate; what the body mentions comes along, and what those bring in turn
- * comes too, so a constant built out of another constant does not arrive half
- * written. What nobody mentions stays out — the point of the cut is still to
- * show one story, not the whole file.
+ * Entao o recorte segue o que a historia nomeia. Tudo que esta no topo do
+ * arquivo e candidato; o que o corpo cita vem junto, e o que esses trazem por
+ * sua vez tambem vem, para que uma constante feita de outra constante nao
+ * chegue pela metade. O que ninguem cita fica de fora - o proposito do recorte
+ * continua sendo mostrar uma historia, e nao o arquivo inteiro.
  * ------------------------------------------------------------------------- */
 
 /**
- * The name a top-level statement declares, when it declares one.
+ * O nome que uma declaracao de topo declara, quando ela declara algum.
  *
- * The doc comment above the declaration travels with it, so the name is read
- * past it. Reading from the first character instead returned nothing for every
- * statement that bothered to explain itself — which is most of them, and which
- * is how `ToastViewport` published a story calling a component the reader
- * could not see.
+ * O bloco de doc acima da declaracao viaja junto com ela, entao o nome e lido
+ * depois dele. Ler a partir do primeiro caractere devolvia nada para toda
+ * declaracao que se deu ao trabalho de se explicar - que sao quase todas, e foi
+ * assim que o `ToastViewport` publicou uma historia chamando um componente que
+ * a pessoa nao conseguia ver.
  */
 function declaredName(text: string) {
   const code = text.replace(/^(?:\s*(?:\/\/[^\n]*|\/\*[\s\S]*?\*\/)\s*)+/, '')
@@ -169,7 +169,7 @@ function declaredName(text: string) {
 const OPENS_STATEMENT =
   /^(?:import|export|const|let|var|function|async|class|type|interface|enum)\b|^\/\*|^\/\//
 
-/** Whether everything opened inside this text was closed again. */
+/** Se tudo que este texto abriu foi fechado de novo. */
 function isBalanced(text: string) {
   let depth = 0
   let inBlockComment = false
@@ -202,13 +202,13 @@ const isOnlyComment = (text: string) =>
     .every((line) => line.trim() === '' || /^\s*(?:\/\/|\/\*|\*)/.test(line))
 
 /**
- * The file split into its top-level statements, each with the doc comment
- * written above it.
+ * O arquivo partido nas suas declaracoes de topo, cada uma com o bloco de doc
+ * escrito acima dela.
  *
- * A statement starts at column zero — the previews are formatted, so indented
- * lines are always inside something — and a comment block glues to whatever it
- * introduces, which is what keeps a doc comment from being cut away
- * from the constant it explains.
+ * Declaracao comeca na coluna zero - os previews sao formatados, entao linha
+ * indentada esta sempre dentro de alguma coisa - e bloco de comentario cola no
+ * que ele apresenta, que e o que impede um bloco de doc de ser cortado longe da
+ * constante que ele explica.
  */
 function topLevelStatements(source: string) {
   const statements: string[] = []
@@ -239,7 +239,7 @@ function topLevelStatements(source: string) {
 
 const mentions = (text: string, name: string) => new RegExp(`\\b${name}\\b`).test(text)
 
-/** Cuts one export out of the example file, so only that story is shown. */
+/** Recorta um export do arquivo de exemplo, para so aquela historia aparecer. */
 export function sliceSource(source: string, name: string) {
   const start = source.indexOf(`export function ${name}(`)
   if (start === -1) return null
@@ -248,15 +248,16 @@ export function sliceSource(source: string, name: string) {
   const raw = next === -1 ? source.slice(start) : source.slice(start, next)
 
   /*
-   * The next story's doc comment sits above its `export`, so cutting at the
-   * `export` carried it home: every example but the last one on a page ended
-   * in a stray `/** Vertical *\/` that belongs to the example below it.
+   * O bloco de doc da historia seguinte fica acima do `export` dela, entao
+   * cortar no `export` trazia esse bloco junto: todo exemplo menos o ultimo de
+   * cada pagina terminava num `/** Vertical *\/` solto que e do exemplo de
+   * baixo.
    */
   const body = raw.replace(/(?:\n\s*(?:\/\*[\s\S]*?\*\/|\/\/[^\n]*))+\s*$/, '').trimEnd()
 
-  // An import that lists a dozen pieces wraps over several lines, and taking
-  // only the lines that start with `import` cut it down to a lone `import {`.
-  // The statement runs until the line that carries its `from`.
+  // Um import que lista uma duzia de pecas quebra em varias linhas, e pegar so
+  // as linhas que comecam com `import` reduzia ele a um `import {` sozinho. A
+  // declaracao vai ate a linha que carrega o `from` dela.
   const imports: string[] = []
   const lines = source.split('\n')
 
@@ -272,13 +273,13 @@ export function sliceSource(source: string, name: string) {
   }
 
   /*
-   * The supporting statements, chased until nothing new is named.
+   * As declaracoes de apoio, perseguidas ate nenhum nome novo aparecer.
    *
-   * The story is the seed and every round asks the text gathered so far which
-   * of the remaining declarations it mentions. One pass would not do: a story
-   * that names `GROUPS` and a `GROUPS` built from a `ROWS` above it would
-   * publish the group and leave the rows behind, which is the same broken
-   * example one line further down.
+   * A historia e a semente, e cada rodada pergunta ao texto ja juntado quais
+   * das declaracoes restantes ele cita. Uma passada so nao daria conta: uma
+   * historia que cita `GROUPS` e um `GROUPS` feito de um `ROWS` acima dele
+   * publicariam o grupo e deixariam as linhas para tras - que e o mesmo exemplo
+   * quebrado, uma linha mais abaixo.
    */
   const candidates = topLevelStatements(source)
     .filter((statement) => !statement.startsWith('import '))

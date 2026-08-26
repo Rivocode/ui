@@ -3,11 +3,11 @@ import conventions from '../../../../.design-sync/conventions.md?raw'
 import { Markdown } from '@/components/markdown'
 
 /**
- * The library's usage contract.
+ * O contrato de uso da biblioteca.
  *
- * Same file that ships inside the design bundle and that the agent reads
- * before writing any screen. A second text about the same subject would go
- * stale on the first token change.
+ * O mesmo arquivo que sai dentro do bundle de design e que o agente le antes de
+ * escrever qualquer tela. Um segundo texto sobre o mesmo assunto envelheceria
+ * na primeira troca de token.
  */
 export function FoundationPage() {
   return (

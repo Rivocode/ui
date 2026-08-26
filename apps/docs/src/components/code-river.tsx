@@ -1,17 +1,17 @@
 import { useEffect, useRef } from 'react'
 
 /* ---------------------------------------------------------------------------
- * Code river
+ * O rio de codigo
  *
- * The page background: rows of monospace glyphs drifting sideways in three
- * layers, each at its own speed, every row riding a sine wave so the current
- * visibly bends the text. Sideways and slow is what keeps it reading as a
- * river instead of falling code.
+ * O fundo da pagina: fileiras de glifos monoespacados derivando de lado em tres
+ * camadas, cada uma na sua velocidade, cada fileira montada numa senoide para a
+ * correnteza dobrar o texto de forma visivel. De lado e devagar e o que mantem
+ * a leitura de rio, em vez de codigo caindo.
  *
- * The canvas is fixed behind the page and holds the same opacity from top to
- * bottom, so the whole site reads as one surface. Glyphs are painted
- * once into an atlas and copied from there. A frame is a couple thousand
- * drawImage calls, which is cheap, where the same count of fillText is not.
+ * O canvas fica preso atras da pagina e guarda a mesma opacidade de cima a
+ * baixo, para o site inteiro ler como uma superficie so. Os glifos sao pintados
+ * uma vez num atlas e copiados de la. Um quadro sao alguns milhares de chamadas
+ * de `drawImage`, que sai barato, onde a mesma conta em `fillText` nao sai.
  * ------------------------------------------------------------------------- */
 
 const GLYPHS = '{}()[]<>/\\=+-*;:.,_|#$&%!?01'
@@ -19,36 +19,36 @@ const GLYPHS = '{}()[]<>/\\=+-*;:.,_|#$&%!?01'
 const FG = '#f2f3f0'
 const BRAND = '#d4f34a'
 
-/** Horizontal advance per glyph, as a multiple of its font size. Wider than
- * the font's own advance: spaced-out glyphs read as current, packed ones as
- * a wall of text. */
+/** Avanco horizontal por glifo, em multiplos do tamanho da fonte. Maior que o
+ * avanco da propria fonte: glifo espacado le como correnteza, glifo colado le
+ * como parede de texto. */
 const ADVANCE = 1.8
 
-/** Cell height, as a multiple of font size. Wide enough for descenders. */
+/** Altura da celula, em multiplos do tamanho da fonte. Cabe o que desce. */
 const CELL_H = 1.6
 
-/** Half of a 60Hz budget. The drift is slow enough that nothing steps. */
+/** Metade do orcamento de 60Hz. A deriva e lenta o bastante para nada pular. */
 const FRAME_MS = 1000 / 30
 
 type LayerSpec = {
-  /** Font size in px. */
+  /** Tamanho da fonte, em px. */
   size: number
-  /** Sideways drift, px per second. */
+  /** Deriva lateral, em px por segundo. */
   speed: number
-  /** Opacity of the whole layer. */
+  /** Opacidade da camada inteira. */
   alpha: number
-  /** Wave amplitude in px. */
+  /** Amplitude da onda, em px. */
   amp: number
-  /** Wave frequency per px of width. */
+  /** Frequencia da onda, por px de largura. */
   freq: number
-  /** Row spacing, as a multiple of font size. */
+  /** Espaco entre fileiras, em multiplos do tamanho da fonte. */
   gap: number
-  /** Share of glyphs painted in the brand color. */
+  /** Que fatia dos glifos sai na cor da marca. */
   accent: number
 }
 
-/* Back to front: the far layer is small, slow and faint, the near one is
- * larger, quicker and carries the few lime glyphs that catch the eye. */
+/* Do fundo para a frente: a camada longe e pequena, lenta e apagada; a de perto
+ * e maior, mais rapida e carrega os poucos glifos limao que puxam o olho. */
 const LAYERS: LayerSpec[] = [
   { size: 11, speed: 7, alpha: 0.038, amp: 12, freq: 0.0034, gap: 5.5, accent: 0 },
   { size: 14, speed: 13, alpha: 0.05, amp: 18, freq: 0.0029, gap: 6, accent: 0.009 },
@@ -143,8 +143,9 @@ export function CodeRiver() {
       rows = []
       LAYERS.forEach((layer, index) => {
         const step = layer.size * layer.gap
-        // A generous surplus over what fits on screen: the row wraps around
-        // its own glyphs, and a longer strip pushes the repeat out of sight.
+        // Uma folga generosa sobre o que cabe na tela: a fileira da a volta
+        // nos proprios glifos, e uma tira mais longa empurra a repeticao para
+        // fora do campo de visao.
         const len = Math.ceil(width / (layer.size * ADVANCE)) + 64
 
         for (let y = -step; y < height + step; y += step) {
@@ -253,8 +254,9 @@ export function CodeRiver() {
       }, 150)
     }
 
-    // Pausing while hidden also means the clock would jump on return, which
-    // would teleport the river. Push `start` forward by the time we missed.
+    // Pausar com a aba escondida tambem quer dizer que o relogio saltaria na
+    // volta, e isso teleportaria o rio. Empurre o `start` para a frente pelo
+    // tempo que ficamos fora.
     const onVisibility = () => {
       if (reduced) return
 
@@ -288,8 +290,8 @@ export function CodeRiver() {
       raf = requestAnimationFrame(tick)
     }
 
-    // Building the atlas before JetBrains Mono lands would bake the fallback
-    // font into every glyph, so wait for it.
+    // Montar o atlas antes de a JetBrains Mono chegar assaria a fonte de
+    // reserva em cada glifo, entao espere por ela.
     if (document.fonts) {
       document.fonts.ready.then(init)
     } else {

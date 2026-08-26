@@ -1,14 +1,14 @@
 /* ---------------------------------------------------------------------------
- * Props, for the page
+ * As props, para a pagina
  *
- * The table is generated from the compiler, by `scripts/props-do-catalogo.ts`,
- * and committed as JSON. Hand-written prop tables are the first thing to rot: a
- * prop gets renamed, the table keeps the old name, and the page lies with
- * confidence. What we had before rotted a step earlier - the tables were parsed
- * out of a `.d.ts` snapshot left behind by a bundle sync, stamped 0.1.0, which
- * carried no callback at all.
+ * A tabela e gerada do compilador, pelo `scripts/props-do-catalogo.ts`, e
+ * comitada como JSON. Tabela de prop escrita a mao e a primeira coisa a
+ * apodrecer: renomeia-se uma prop, a tabela guarda o nome velho, e a pagina
+ * mente com confianca. O que havia antes apodrecia um passo antes - as tabelas
+ * eram lidas de um retrato de `.d.ts` deixado por um sync de bundle, carimbado
+ * 0.1.0, que nao trazia callback nenhum.
  *
- * `bun run check:props` fails when this file drifts from the types.
+ * O `bun run check:props` falha quando este arquivo se afasta dos tipos.
  * ------------------------------------------------------------------------- */
 
 import CATALOG from '@/component-props.json'
@@ -22,7 +22,7 @@ export function propsOf(component: string): Prop[] {
   return byName.get(component)?.props ?? []
 }
 
-/** Whether this component forwards the usual root props. */
+/** Se este componente repassa as props de raiz de sempre. */
 export function forwardsRootProps(component: string) {
   return byName.get(component)?.forwardsRoot ?? false
 }

@@ -37,19 +37,19 @@ import {
 import { useState } from 'react'
 
 /* ---------------------------------------------------------------------------
- * The showcase
+ * A vitrine
  *
- * A list of sixty names tells the reader the library is large. It does not
- * tell them whether it is any good. This is one screen of the kind the library
- * was built for, running for real, with the theme and the density switches
- * beside it: the whole argument of the project is that those two switches
- * change everything and no component knows they exist.
+ * Uma lista de sessenta nomes diz a quem le que a biblioteca e grande. Nao diz
+ * se ela presta. Isto aqui e uma tela do tipo para o qual a biblioteca foi
+ * feita, rodando de verdade, com as chaves de tema e de densidade ao lado: o
+ * argumento inteiro do projeto e que essas duas chaves mudam tudo e nenhum
+ * componente sabe que elas existem.
  * ------------------------------------------------------------------------- */
 
 type ShowcaseInvoice = {
   id: string
   customer: string
-  /* Número cru: quem abrevia é o currencyShort, nunca o dedo. */
+  /* Numero cru: quem abrevia e o currencyShort, nunca o dedo. */
   amount: number
   status: 'Paga' | 'Aberta' | 'Vencida'
 }

@@ -3,12 +3,12 @@ import { ENTRIES, FAMILIES, WITH_EXAMPLE, entriesOfFamily } from '@/catalog'
 import { linkTo, type Route } from '@/routes'
 
 /* ---------------------------------------------------------------------------
- * The catalog page
+ * A pagina do catalogo
  *
- * Every piece, on one screen. The sidebar already lists the names, but a
- * list answers "does X exist" and only that; this page answers "what do I
- * have to build with", family by family, with the first sentence of each
- * doc doing the introduction.
+ * Toda peca, numa tela so. A barra lateral ja lista os nomes, mas lista
+ * responde "existe X" e so isso; esta pagina responde "com o que eu tenho para
+ * construir", familia por familia, com a primeira frase de cada doc fazendo a
+ * apresentacao.
  * ------------------------------------------------------------------------- */
 
 export function CatalogPage({ navigate }: { navigate: (route: Route) => void }) {

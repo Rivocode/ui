@@ -1,6 +1,6 @@
 import { forwardsRootProps, propsOf } from '@/props'
 
-/** Splits a union type so long ones wrap as values instead of one long line. */
+/** Parte o tipo de uniao, para o longo quebrar por valor e nao numa linha so. */
 function TypeCell({ type }: { type: string }) {
   const parts = type.split(' | ')
 
@@ -27,7 +27,7 @@ export function PropsTable({
   compact,
 }: {
   component: string
-  /** Inside the "Partes" list, where a full box per part would be noise. */
+  /** Dentro da lista "Partes", onde uma caixa inteira por parte seria ruido. */
   compact?: boolean
 }) {
   const props = propsOf(component)

@@ -9,8 +9,8 @@ import { anchor } from '@/anchor'
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-12">
-      {/* The id is what the right rail links to, and what a pasted address
-          lands on. */}
+      {/* O id e para onde a coluna da direita aponta, e onde um endereco colado
+          aterrissa. */}
       <h2 id={anchor(title)} className="font-display text-xl text-fg">
         {title}
       </h2>

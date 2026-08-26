@@ -6,32 +6,32 @@ import { XAxis, YAxis } from "recharts";
 import { resolveFormat, type Format } from "./format";
 
 /* ---------------------------------------------------------------------------
- * The axes.
+ * Os eixos.
  *
- * Recharts draws an axis the 2015 way: thick line, a tick mark on every value,
- * raw number. Every chart in the library turned those three off by hand, and
- * repeated `tickLine={false} axisLine={false}` on each screen, until someone
- * forgot, and one chart came out different from the rest.
+ * A Recharts desenha eixo do jeito de 2015: fio grosso, um risquinho em cada
+ * valor, numero cru. Todo grafico da biblioteca desligava os tres na mao e
+ * repetia `tickLine={false} axisLine={false}` em cada tela, ate alguem
+ * esquecer, e um grafico sair diferente do resto.
  *
- * Here the default is already right, and what is left is what actually
- * changes: which field the axis reads, and how the number appears.
+ * Aqui o padrao ja nasce certo, e o que sobra e o que muda de verdade: qual
+ * campo o eixo le, e como o numero aparece.
  * ------------------------------------------------------------------------- */
 
 type BaseX = ComponentProps<typeof XAxis>;
 type BaseY = ComponentProps<typeof YAxis>;
 
 export type ChartXAxisProps = Omit<BaseX, "tickFormatter"> & {
-  /** `'monthShort'`, `'dayMonth'`, or a function of your own. */
+  /** `'monthShort'`, `'dayMonth'`, ou uma funcao propria. */
   format?: Format;
 };
 
 export type ChartYAxisProps = Omit<BaseY, "tickFormatter"> & {
-  /** `'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, or a function of your own. */
+  /** `'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, ou uma funcao propria. */
   format?: Format;
 };
 
 /**
- * The bottom axis: category or time.
+ * O eixo de baixo: categoria ou tempo.
  *
  * ```tsx
  * <ChartXAxis dataKey="month" />
@@ -52,17 +52,17 @@ export function ChartXAxis({ format, ...props }: ChartXAxisProps) {
 }
 
 /**
- * The left axis: the magnitude.
+ * O eixo da esquerda: a grandeza.
  *
  * ```tsx
  * <ChartYAxis format="currencyShort" />
  * <ChartYAxis format="percent" domain={[0, 100]} />
  * ```
  *
- * `width` is smaller than Recharts' on purpose: with the number abbreviated by
- * the format, their default width leaves a gap between the axis and the chart
- * area, and everyone compensated with `margin={{ left: -20 }}`. Pass your own
- * when the numbers are longer than a short currency.
+ * O `width` e menor que o da Recharts de proposito: com o numero abreviado pelo
+ * `format`, a largura padrao deles deixa um vao entre o eixo e a area do
+ * grafico, e todo mundo compensava com `margin={{ left: -20 }}`. Passe a sua
+ * quando os numeros forem mais longos que uma moeda curta.
  */
 export function ChartYAxis({ format, ...props }: ChartYAxisProps) {
   return (
@@ -70,10 +70,10 @@ export function ChartYAxis({ format, ...props }: ChartYAxisProps) {
       tickLine={false}
       axisLine={false}
       tickMargin={8}
-      // Wide enough for `R$ 246,7K`, which is what `currencyShort` writes at
-      // the top of a dashboard axis. At 48 the label wrapped onto three lines
-      // and the axis turned into a paragraph. With `currencyShortWords`, which
-      // spells `mil` out, pass a larger `width`.
+      // Largo o bastante para `R$ 246,7K`, que e o que o `currencyShort`
+      // escreve no topo do eixo de um painel. Em 48 o rotulo quebrava em tres
+      // linhas e o eixo virava paragrafo. Com `currencyShortWords`, que
+      // escreve `mil` por extenso, passe um `width` maior.
       width={56}
       tickFormatter={resolveFormat(format)}
       {...props}

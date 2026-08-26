@@ -47,7 +47,7 @@ export function Slider({
   classNames,
   ...props
 }: SliderProps) {
-  const write = resolveFormat(format) as ((valor: number) => string) | undefined;
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
   // uma faixa com um pino so nao deixa mover o outro limite.

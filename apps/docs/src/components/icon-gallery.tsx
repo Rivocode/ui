@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { createElement } from 'react'
 
 /* ---------------------------------------------------------------------------
- * The icon gallery
+ * A galeria de icones
  *
- * Every Lucide icon, searchable, one click from the clipboard. The vector
- * data comes from `virtual:icon-gallery` (see vite.config.ts), a lazy chunk
- * that only this page pays for.
+ * Todo icone da Lucide, com busca, a um clique da area de transferencia. O dado
+ * vetorial vem de `virtual:icon-gallery` (veja o vite.config.ts), um pedaco
+ * preguicoso que so esta pagina paga.
  * ------------------------------------------------------------------------- */
 
 type IconNode = Array<[string, Record<string, string>]>

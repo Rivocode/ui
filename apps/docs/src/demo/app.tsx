@@ -50,16 +50,16 @@ import { NewInvoice } from '@/demo/new-invoice'
 import { Settings } from '@/demo/settings'
 
 /* ---------------------------------------------------------------------------
- * The demo application
+ * A aplicacao de demonstracao
  *
- * Not a grid of components: an application. Sidebar that collapses, command
- * palette on Ctrl+K, a dashboard with real charts, a listing with filters and
- * a details sheet, a four-step form, and settings that change the theme and
- * the density of everything above.
+ * Nao e uma grade de componentes: e uma aplicacao. Barra lateral que encolhe,
+ * paleta de comandos no Ctrl+K, um painel com graficos de verdade, uma listagem
+ * com filtros e uma folha de detalhe, um formulario de quatro passos, e
+ * configuracoes que trocam o tema e a densidade de tudo acima.
  *
- * A card grid answers "does this component exist". Only a screen answers the
- * question someone actually has, which is whether the pieces hold together
- * when they are all on at once.
+ * Grade de cartao responde "este componente existe". So uma tela responde a
+ * pergunta que alguem de fato tem, que e se as pecas se sustentam quando todas
+ * estao ligadas ao mesmo tempo.
  * ------------------------------------------------------------------------- */
 
 type ScreenId = 'dashboard' | 'invoices' | 'new' | 'customers' | 'settings'

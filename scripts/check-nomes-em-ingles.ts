@@ -226,41 +226,21 @@ const PORTUGUESE = [
 const PORTUGUESE_ENDING = /(?:acao|acoes|icao|icoes|ancia|encia|dade|mento|agem|ismo|avel|ivel|veis|inho|inha)$/;
 
 /**
- * A divida que ficou para depois.
+ * A divida que ficou para depois. Hoje: nenhuma.
  *
- * Cada linha e um nome que a guarda ampliada passou a acusar num arquivo que
- * outro agente estava reescrevendo na mesma hora. Deixar a guarda desligada
- * ate a poeira baixar seria perder a guarda; renomear por cima do trabalho
- * alheio seria perder o trabalho. Entao a divida fica escrita, com endereco.
+ * Ela nasceu com 22 linhas - nomes que a guarda ampliada passou a acusar em
+ * arquivos que outro agente estava reescrevendo na mesma hora. Deixar a guarda
+ * desligada ate a poeira baixar seria perder a guarda; renomear por cima do
+ * trabalho alheio seria perder o trabalho. Entao a divida ficou escrita, com
+ * endereco, e foi paga inteira depois.
  *
- * Ela so encolhe: entrada que nao acusa mais e erro, e a guarda manda apagar a
- * linha. E o que impede esta lista de virar o lugar onde os nomes em portugues
- * vao morar.
+ * A lista continua aqui vazia porque o mecanismo e que importa, e nao as
+ * linhas: a proxima colisao entre a guarda e um arquivo em obra tem onde ser
+ * anotada sem que ninguem precise reinventar o acordo. O acordo e que ela SO
+ * ENCOLHE - entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
+ * E o que impede esta lista de virar o lugar onde os nomes em portugues moram.
  */
-const DEBT = new Set([
-  "src/components/alert.tsx urgente",
-  "src/components/checkbox.tsx TracoMisto",
-  "src/components/checkbox.tsx Visto",
-  "src/components/data-table.tsx SEM_PAGINACAO",
-  "src/components/data-table.tsx filtroSemAcento",
-  "src/components/data-table.tsx setSelecaoInterna",
-  "src/components/date-picker.tsx dataInterna",
-  "src/components/date-picker.tsx setDataInterna",
-  "src/components/date-range-picker.tsx setIntervaloInterno",
-  "src/components/pagination.tsx pagina",
-  "src/components/sheet.tsx LadoContext",
-  "src/components/slider.tsx valor",
-  "src/components/steps.tsx concluido",
-  "src/components/steps.tsx podeVoltar",
-  "src/components/tree-select.tsx busca",
-  "src/components/tree-select.tsx setBusca",
-  "src/components/tree.tsx abertos",
-  "src/components/tree.tsx abertosInternos",
-  "src/components/tree.tsx busca",
-  "src/components/tree.tsx misto",
-  "src/components/tree.tsx setAbertosInternos",
-  "src/components/tree.tsx visiveis",
-]);
+const DEBT = new Set<string>([]);
 
 /**
  * Os arquivos que falam SOBRE o portugues.
@@ -439,4 +419,8 @@ if (stale.length > 0) {
   process.exit(1);
 }
 
-console.log(`Todo identificador em ingles, fora as ${DEBT.size} dividas ja declaradas.`);
+console.log(
+  DEBT.size === 0
+    ? "Todo identificador em ingles, e nenhuma divida declarada."
+    : `Todo identificador em ingles, fora as ${DEBT.size} dividas ja declaradas.`,
+);

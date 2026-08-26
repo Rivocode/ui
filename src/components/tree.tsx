@@ -58,8 +58,8 @@ export function Tree({
   filter = "",
   className,
 }: TreeProps) {
-  const [abertosInternos, setAbertosInternos] = useState<string[]>([]);
-  const abertos = expanded ?? abertosInternos;
+  const [internalOpenIds, setInternalOpenIds] = useState<string[]>([]);
+  const openIds = expanded ?? internalOpenIds;
   const root = useRef<HTMLUListElement>(null);
 
   /*
@@ -81,14 +81,14 @@ export function Tree({
     onValueChange?.(ids);
   }
 
-  const visiveis = useMemo(() => filtrar(items, filter.trim().toLowerCase()), [items, filter]);
+  const visible = useMemo(() => filterTree(items, filter.trim().toLowerCase()), [items, filter]);
 
   // Buscando, tudo abre: fechar o caminho ate o resultado esconde o resultado.
   const searching = filter.trim().length > 0;
 
-  function alternarAberto(id: string) {
-    const next = abertos.includes(id) ? abertos.filter((x) => x !== id) : [...abertos, id];
-    if (!expanded) setAbertosInternos(next);
+  function toggleOpen(id: string) {
+    const next = openIds.includes(id) ? openIds.filter((x) => x !== id) : [...openIds, id];
+    if (!expanded) setInternalOpenIds(next);
     onExpandedChange?.(next);
   }
 
@@ -118,7 +118,7 @@ export function Tree({
     if (index < 0) return;
 
     const id = rows[index]!.dataset.id!;
-    const node = achar(visiveis, id);
+    const node = findNode(visible, id);
 
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
@@ -126,13 +126,13 @@ export function Tree({
       next?.focus();
     } else if (event.key === "ArrowRight" && node?.children?.length) {
       event.preventDefault();
-      if (!abertos.includes(id)) alternarAberto(id);
+      if (!openIds.includes(id)) toggleOpen(id);
       else rows[index + 1]?.focus();
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      if (node?.children?.length && abertos.includes(id)) alternarAberto(id);
+      if (node?.children?.length && openIds.includes(id)) toggleOpen(id);
       else {
-        const parent = paiDe(visiveis, id);
+        const parent = parentOf(visible, id);
         if (parent) root.current?.querySelector<HTMLElement>(`[data-id="${parent.id}"]`)?.focus();
       }
     } else if (event.key === " " || event.key === "Enter") {
@@ -149,16 +149,16 @@ export function Tree({
       onKeyDown={onKeyDown}
       className={cn("flex flex-col", className)}
     >
-      {visiveis.map((node, index) => (
-        <Ramo
+      {visible.map((node, index) => (
+        <Branch
           key={node.id}
           node={node}
           level={0}
           isFirst={index === 0}
-          abertos={searching ? null : abertos}
+          openIds={searching ? null : openIds}
           picked={picked}
           multiple={multiple}
-          onAlternarAberto={alternarAberto}
+          onToggleOpen={toggleOpen}
           onToggleSelect={toggleSelect}
         />
       ))}
@@ -166,40 +166,40 @@ export function Tree({
   );
 }
 
-function Ramo({
+function Branch({
   node,
   level,
   isFirst,
-  abertos,
+  openIds,
   picked,
   multiple,
-  onAlternarAberto,
+  onToggleOpen,
   onToggleSelect,
 }: {
   node: TreeNode;
   level: number;
   isFirst: boolean;
   /** `null` quer dizer tudo aberto, que e o estado da busca. */
-  abertos: string[] | null;
+  openIds: string[] | null;
   picked: string[];
   multiple?: boolean;
-  onAlternarAberto: (id: string) => void;
+  onToggleOpen: (id: string) => void;
   onToggleSelect: (node: TreeNode) => void;
 }) {
-  const temFilhos = Boolean(node.children?.length);
-  const isOpen = abertos === null || abertos.includes(node.id);
+  const hasChildren = Boolean(node.children?.length);
+  const isOpen = openIds === null || openIds.includes(node.id);
   const leaves = leavesOf(node);
   const checkedLeaves = leaves.filter((leaf) => picked.includes(leaf)).length;
-  const cheio = checkedLeaves > 0 && checkedLeaves === leaves.length;
-  const misto = checkedLeaves > 0 && !cheio;
+  const full = checkedLeaves > 0 && checkedLeaves === leaves.length;
+  const mixed = checkedLeaves > 0 && !full;
 
   return (
     <li>
       <div
         role="treeitem"
         data-id={node.id}
-        aria-expanded={temFilhos ? isOpen : undefined}
-        aria-selected={cheio}
+        aria-expanded={hasChildren ? isOpen : undefined}
+        aria-selected={full}
         aria-disabled={node.disabled || undefined}
         tabIndex={isFirst && level === 0 ? 0 : -1}
         onClick={() => !node.disabled && onToggleSelect(node)}
@@ -211,14 +211,14 @@ function Ramo({
           node.disabled && "cursor-not-allowed text-fg-disabled hover:bg-transparent",
         )}
       >
-        {temFilhos ? (
+        {hasChildren ? (
           <button
             type="button"
             tabIndex={-1}
             aria-label={isOpen ? "Fechar" : "Abrir"}
             onClick={(event) => {
               event.stopPropagation();
-              onAlternarAberto(node.id);
+              onToggleOpen(node.id);
             }}
             className="flex size-4 shrink-0 items-center justify-center text-fg-subtle"
           >
@@ -237,8 +237,8 @@ function Ramo({
 
         {multiple && (
           <Checkbox
-            checked={cheio}
-            indeterminate={misto}
+            checked={full}
+            indeterminate={mixed}
             disabled={node.disabled}
             tabIndex={-1}
             aria-hidden="true"
@@ -261,18 +261,18 @@ function Ramo({
         </span>
       </div>
 
-      {temFilhos && isOpen && (
+      {hasChildren && isOpen && (
         <ul role="group" className="flex flex-col">
-          {node.children!.map((filho) => (
-            <Ramo
-              key={filho.id}
-              node={filho}
+          {node.children!.map((child) => (
+            <Branch
+              key={child.id}
+              node={child}
               level={level + 1}
               isFirst={false}
-              abertos={abertos}
+              openIds={openIds}
               picked={picked}
               multiple={multiple}
-              onAlternarAberto={onAlternarAberto}
+              onToggleOpen={onToggleOpen}
               onToggleSelect={onToggleSelect}
             />
           ))}
@@ -293,31 +293,31 @@ function text(node: TreeNode): string {
 }
 
 /** Mantem quem casou e o caminho ate ele. */
-function filtrar(items: TreeNode[], busca: string): TreeNode[] {
-  if (!busca) return items;
+function filterTree(items: TreeNode[], query: string): TreeNode[] {
+  if (!query) return items;
 
   return items.flatMap((node) => {
-    const children = node.children ? filtrar(node.children, busca) : [];
-    if (text(node).includes(busca)) return [node];
+    const children = node.children ? filterTree(node.children, query) : [];
+    if (text(node).includes(query)) return [node];
     if (children.length) return [{ ...node, children: children }];
     return [];
   });
 }
 
-function achar(items: TreeNode[], id: string): TreeNode | undefined {
+function findNode(items: TreeNode[], id: string): TreeNode | undefined {
   for (const node of items) {
     if (node.id === id) return node;
-    const dentro = node.children ? achar(node.children, id) : undefined;
-    if (dentro) return dentro;
+    const inside = node.children ? findNode(node.children, id) : undefined;
+    if (inside) return inside;
   }
   return undefined;
 }
 
-function paiDe(items: TreeNode[], id: string, parent?: TreeNode): TreeNode | undefined {
+function parentOf(items: TreeNode[], id: string, parent?: TreeNode): TreeNode | undefined {
   for (const node of items) {
     if (node.id === id) return parent;
-    const dentro = node.children ? paiDe(node.children, id, node) : undefined;
-    if (dentro) return dentro;
+    const inside = node.children ? parentOf(node.children, id, node) : undefined;
+    if (inside) return inside;
   }
   return undefined;
 }

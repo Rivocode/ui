@@ -4,13 +4,12 @@ import { renderMarkdown, type MarkdownOptions } from '@/render-markdown'
 /* ---------------------------------------------------------------------------
  * Markdown
  *
- * The docs were written to be read by an agent, so they are plain markdown:
- * heading, prose, list, code. Styling lives here and not inside the text, so
- * one file serves both the page and the raw `.md` address.
+ * As docs foram escritas para um agente ler, entao elas sao markdown puro:
+ * titulo, prosa, lista, codigo. O estilo mora aqui e nao dentro do texto, para
+ * um mesmo arquivo servir a pagina e o endereco `.md` cru.
  * ------------------------------------------------------------------------- */
 
 const CLASSES = [
-  // Headings
   '[&_h1]:font-display [&_h1]:text-3xl [&_h1]:text-fg [&_h1]:mb-4',
   '[&_h2]:font-display [&_h2]:text-xl [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3',
   '[&_h3]:font-sans [&_h3]:font-medium [&_h3]:text-lg [&_h3]:text-fg [&_h3]:mt-8 [&_h3]:mb-2',
@@ -19,17 +18,14 @@ const CLASSES = [
   '[&_h4]:font-sans [&_h4]:font-medium [&_h4]:text-base [&_h4]:text-fg [&_h4]:mt-6 [&_h4]:mb-2',
   '[&_h5]:font-sans [&_h5]:font-medium [&_h5]:text-sm [&_h5]:text-fg [&_h5]:mt-5 [&_h5]:mb-2',
 
-  // Prose
   '[&_p]:text-base [&_p]:leading-relaxed [&_p]:text-fg-muted [&_p]:my-4',
   '[&_strong]:text-fg [&_strong]:font-medium',
   '[&_a]:text-accent-text [&_a]:underline [&_a]:underline-offset-2',
 
-  // Lists
   '[&_ul]:my-4 [&_ul]:space-y-2 [&_ul]:pl-5 [&_ul]:list-disc [&_ul]:marker:text-accent',
   '[&_ol]:my-4 [&_ol]:space-y-2 [&_ol]:pl-5 [&_ol]:list-decimal [&_ol]:marker:text-fg-subtle',
   '[&_li]:text-base [&_li]:leading-relaxed [&_li]:text-fg-muted',
 
-  // Code
   // `break-words` no codigo entre linhas: um nome como
   // `accessibilityRole/accessibilityState` e uma palavra so, mais larga que a
   // coluna de prosa a 320px, e sem poder quebrar ele empurrava a pagina
@@ -41,7 +37,7 @@ const CLASSES = [
   '[&_pre]:bg-surface [&_pre]:p-4',
   '[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-fg [&_pre_code]:text-sm',
 
-  // Table. A margem vive na moldura, e nao aqui: dentro de um contentor que
+  // A margem da tabela vive na moldura, e nao aqui: dentro de um contentor que
   // rola, ela empurraria o conteudo em vez de separar a tabela da prosa.
   '[&_table]:w-full [&_table]:border-collapse [&_table]:text-sm',
   '[&_th]:border-b [&_th]:border-border [&_th]:py-2 [&_th]:text-left [&_th]:text-fg',

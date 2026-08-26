@@ -3,11 +3,11 @@ import { ExampleStage } from '@/components/example-stage'
 import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/example-source'
 
 /* ---------------------------------------------------------------------------
- * Examples
+ * Os exemplos
  *
- * The same files the claude.ai/design sync photographs, here running for
- * real. A screenshot of a component ages quietly: the prop changes, the image
- * stays. A running example breaks on the spot, and the reader sees the truth.
+ * Os mesmos arquivos que o sync do claude.ai/design fotografa, aqui rodando de
+ * verdade. Retrato de componente envelhece em silencio: a prop muda, a imagem
+ * fica. Exemplo que roda quebra na hora, e quem le ve a verdade.
  * ------------------------------------------------------------------------- */
 
 export function Examples({
@@ -31,9 +31,9 @@ export function Examples({
     }
   }, [load])
 
-  // The module's keys come out alphabetical, so the main example would land
-  // wherever its name happened to sort. The file's own order is the intended
-  // reading order: the plain case first, the corners after it.
+  // As chaves do modulo saem em ordem alfabetica, entao o exemplo principal
+  // cairia onde o nome dele por acaso ordenasse. A ordem do proprio arquivo e a
+  // ordem de leitura pretendida: o caso simples primeiro, os cantos depois.
   const stories = useMemo(() => {
     if (!module) return []
 
