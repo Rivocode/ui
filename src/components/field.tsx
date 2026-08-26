@@ -12,6 +12,16 @@ export const inputVariants = cva(
     // border-strong, que e o papel com a promessa de 3:1 (WCAG 1.4.11).
     "w-full rounded-md border border-border-strong bg-surface text-fg",
     "placeholder:text-fg-subtle",
+    // O Safari do iPhone amplia a pagina inteira ao focar um campo com fonte
+    // abaixo de 16px, e nao desamplia: quem digitou fica preso na tela grande
+    // ate fechar o teclado e pincar de volta. A escala da casa e densa de
+    // proposito - o --rc-text-base e 14px, e o campo medio, que e o padrao,
+    // usava exatamente ela -, entao o gatilho pegava todos os tamanhos.
+    // Sobe so a fonte do controle, e so abaixo de 640px: o resto da escala
+    // fica onde estava e o desktop nao muda. O 16px e literal por ser limite
+    // do navegador e nao medida de design - um token de escala poderia ser
+    // reafinado por um tema e reabrir o defeito sem ninguem perceber.
+    "max-sm:text-[16px]",
     "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
     "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
