@@ -261,6 +261,8 @@ export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export { Clipboard, type ClipboardProps } from "./components/clipboard";
+export { Indicator, type IndicatorProps } from "./components/indicator";
+export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
 export {
   Timeline,
   TimelineItem,

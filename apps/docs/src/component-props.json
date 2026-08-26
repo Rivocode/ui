@@ -1697,6 +1697,23 @@
       }
     ]
   },
+  "AvatarGroup": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Quantos aparecem antes do \"+n\"."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "required": false,
+        "note": "O tamanho vale para a fila inteira, inclusive para o \"+n\"."
+      }
+    ]
+  },
   "Badge": {
     "forwardsRoot": true,
     "props": [
@@ -8451,6 +8468,41 @@
         "name": "label",
         "type": "ReactNode",
         "required": false
+      }
+    ]
+  },
+  "Indicator": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"badge\", string>>",
+        "required": false,
+        "note": "Classe por parte: `badge`."
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "note": "Quantos."
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "note": "Sem contagem: so o ponto, para \"tem algo novo aqui\"."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O teto: acima dele sai \"99+\", em vez de a pastilha esticar."
       }
     ]
   },
@@ -18159,6 +18211,12 @@
         "note": "O numero, ja formatado: `currencyShort(246_700)`."
       },
       {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O canto direito do cartao: o menu de tres pontos, um botao de acao."
+      },
+      {
         "name": "chart",
         "type": "ReactNode",
         "required": false,
@@ -18177,10 +18235,28 @@
         "note": "Contra o que se compara: \"sobre julho\"."
       },
       {
+        "name": "deltaVariant",
+        "type": "\"pill\" | \"text\"",
+        "required": false,
+        "note": "A variacao como pastilha preenchida, que e a convencao dominante em painel, ou como texto com seta, que e o padrao daqui."
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A faixa de baixo: meta com barra, comparacao, texto de apoio."
+      },
+      {
         "name": "hint",
         "type": "string",
         "required": false,
         "note": "Explicacao curta atras de um botao de informacao."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O icone em caixa, a esquerda do rotulo."
       },
       {
         "name": "invert",
