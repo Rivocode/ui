@@ -53,7 +53,8 @@ para `success`, `warning` e `info`.
 
 São cinquenta. Um tema completo declara todos; faltando um, o componente que o
 usa cai no valor do tema anterior, e o sintoma costuma ser uma cor da RivoCode
-isolada no meio do azul do cliente.
+isolada no meio do azul do cliente. Depois deles vêm três papéis de acabamento
+— gradiente, brilho e vidro — que são os únicos opcionais.
 
 ### Superfície
 
@@ -133,7 +134,7 @@ ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
 | Token | O que veste |
 |---|---|
 | `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição — cada uma já carrega o hairline de 1px que separa o flutuante da página |
-| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho |
+| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
 | `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
 | `--rc-text-hero` | Tamanho de herói, em `clamp()` |
 
@@ -141,6 +142,87 @@ Os passos de marketing vivem no tema e não no núcleo de propósito: um sistema
 de operação nunca os usa, e um site de marca quer os seus. O glow segue a mesma
 lógica: no escuro a lima ilumina, no claro quem sombreia é o tom escurecido
 dela, e um tema de cliente decide o próprio brilho.
+
+### Acabamento: gradiente, vidro e brilho
+
+Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
+opcionais** do guia: ausentes, o gesto simplesmente não acontece, e é assim que
+os dois temas da casa nascem — os três declarados como `none`.
+
+| Token | Onde chega | O gesto |
+|---|---|---|
+| `--rc-accent-image` | `background-image` de quem veste `bg-accent` | O acento em gradiente |
+| `--rc-accent-shadow` | `box-shadow` do mesmo `bg-accent` | "Neste tema o primário brilha", sem `shadow-glow` em tela nenhuma |
+| `--rc-overlay-filter` | `backdrop-filter` da tarja, `bg-overlay` | Vidro fosco atrás de diálogo, folha e paleta de comando |
+
+O acabamento viaja junto com o papel, e não com a peça: quem já vestia
+`bg-accent` recebe o gradiente e o brilho, quem já vestia `bg-overlay` recebe o
+vidro. É o que torna a tarja alcançável — ela é um nó interno do portal, e
+`classNames={{ backdrop }}` resolve **uma tela**, enquanto o token resolve o
+tema inteiro, nas quatro peças que têm tarja, de uma vez.
+
+Quatro coisas para saber antes de usar:
+
+- **A classe de quem escreve a tela continua vencendo.** As regras são
+  `:where()`, de especificidade zero: um `bg-none` ou um `shadow-none` no
+  `className` desfaz o acabamento naquela peça, e um `bg-linear-to-r` seu
+  substitui o gradiente do tema.
+- **O gradiente cobre a cor.** `background-image` pinta por cima de
+  `background-color`, então com um gradiente opaco o `hover:bg-accent-hover` do
+  Button acontece embaixo e ninguém vê. Dê alfa ao gradiente e o hover volta a
+  aparecer através dele.
+- **Botão desabilitado fica de fora.** O Button neutraliza o primário morto
+  trocando a cor de fundo, e o gradiente sobreviveria a essa troca; a regra o
+  exclui. Carregando não é desabilitado para esse fim: ali a cor ainda diz qual
+  ação está em andamento.
+- **O alcance é o `bg-accent` escrito direto** — botão primário, barra de
+  progresso. O acento que só chega sob estado, como o `data-[checked]:bg-accent`
+  da caixa de marcar, compila com outro nome de classe e não recebe o
+  acabamento.
+
+No React Native os três não atravessam: gradiente e `backdrop-filter` não são
+propriedades de `View`, e o gerador de tema nativo os ignora em silêncio, como
+já faz com `box-shadow` e `clamp()`. São papéis de web.
+
+#### Um tema futurista, os três de uma vez
+
+```css
+/* tema-neon.css */
+[data-rc-theme="neon"] {
+  color-scheme: dark;
+
+  --rc-bg: oklch(16% 0.02 285);
+  --rc-surface: oklch(21% 0.03 285);
+  --rc-surface-raised: oklch(26% 0.03 285);
+
+  /* Com vidro, a tarja preta de sempre vira lama: ela clareia e desfoca. */
+  --rc-overlay: oklch(14% 0.04 285 / 0.55);
+  --rc-overlay-filter: blur(10px) saturate(130%);
+
+  --rc-accent: oklch(64% 0.21 300);
+  --rc-accent-hover: oklch(70% 0.21 300);
+  --rc-accent-active: oklch(58% 0.21 300);
+  --rc-accent-fg: oklch(99% 0 0);
+
+  /* Alfa de propósito: o gradiente cobre a cor, e sem ele o hover do Button
+     acontece embaixo, invisível. */
+  --rc-accent-image: linear-gradient(
+    135deg,
+    oklch(64% 0.21 300 / 0.92),
+    oklch(72% 0.16 200 / 0.92)
+  );
+
+  /* O brilho deixa de ser enfeite que cada tela liga e vira estado do acento. */
+  --rc-accent-shadow: 0 0 28px oklch(64% 0.21 300 / 0.45);
+
+  /* …e os cinquenta papéis obrigatórios. */
+}
+```
+
+O que muda na tela, sem uma linha de componente ou de página: o botão primário
+sai em degradê violeta→ciano e acende sozinho, e volta ao roxo chapado quando
+desabilita; a tarja do `Dialog`, do `AlertDialog`, do `Sheet` e do `Command`
+vira vidro fosco.
 
 ### Forma e movimento
 

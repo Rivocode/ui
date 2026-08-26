@@ -59,6 +59,13 @@
   /* No claro a lima nao ilumina, mancha: o glow sai do escurecido dela. */
   --rc-glow-accent: 0 0 32px rgb(74 113 0 / 0.18);
 
+  /* Acabamento neutro - ver o tema escuro. Zerar aqui tambem nao e repeticao:
+     e o que faz o tema da casa apagar o gradiente do cliente quando ele veste
+     uma arvore por dentro. */
+  --rc-accent-image: none;
+  --rc-accent-shadow: none;
+  --rc-overlay-filter: none;
+
   color-scheme: light;
 
   /* Serie de grafico, na ordem em que devem ser usadas. */

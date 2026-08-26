@@ -69,6 +69,21 @@
      Nenhum componente liga sozinho. */
   --rc-glow-accent: 0 0 32px rgb(212 243 74 / 0.2);
 
+  /* Acabamento: os tres papeis opcionais, e os unicos que um tema pode
+   * ignorar. Gradiente do acento, brilho do acento e vidro da tarja. Aqui eles
+   * nascem neutros, e `none` e o initial de background-image, box-shadow e
+   * backdrop-filter - a casa continua exatamente como estava.
+   *
+   * Declarar o neutro em vez de omitir e o que impede o vazamento por
+   * heranca: variavel CSS herda, entao um `scope="local"` com o tema da casa
+   * dentro da arvore de um cliente que pinta gradiente sairia com o gradiente
+   * dele. Um tema que quer o brilho aponta o proprio glow:
+   * `--rc-accent-shadow: var(--rc-glow-accent)`, e ai ele deixa de ser enfeite
+   * que cada tela liga com `shadow-glow` e vira estado do acento. */
+  --rc-accent-image: none;
+  --rc-accent-shadow: none;
+  --rc-overlay-filter: none;
+
   color-scheme: dark;
 
   /* Serie de grafico, na ordem em que devem ser usadas. */

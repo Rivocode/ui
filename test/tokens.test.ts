@@ -193,3 +193,68 @@ test("nenhuma peca nativa le o tema direto, sem passar pelo contexto", async () 
 
   expect(offenders).toEqual([]);
 });
+
+test("o acabamento opcional nasce neutro nos dois temas de casa", async () => {
+  // Gradiente de acento, brilho de acento e vidro da tarja sao papeis que o
+  // tema pode preencher, e os dois temas de casa deixam vazios. Vazio aqui e
+  // `none`, e nao a ausencia de valor: `--rc-accent-image: ;` e declaracao
+  // legal em CSS, mas a substituicao produz `background-image: ;`, que e
+  // invalido em tempo de valor computado - a declaracao ainda vence a cascata
+  // e cai em `unset`. Para background-image isso da `none` por sorte, por ela
+  // nao ser herdada; num papel herdado a mesma escrita traria o valor do pai.
+  // `none` diz a mesma coisa e diz em voz alta.
+  //
+  // Os tres tambem precisam existir nos DOIS temas: variavel CSS herda, entao
+  // um `scope="local"` com o tema da casa dentro da arvore de um cliente que
+  // pinta gradiente herdaria o gradiente dele se a casa nao zerasse.
+  const finish = ["--rc-accent-image", "--rc-accent-shadow", "--rc-overlay-filter"];
+
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const css = await read(`src/tokens/themes/${theme}.css`);
+    for (const role of finish) {
+      expect(`${theme} ${role} neutro: ${css.includes(`${role}: none;`)}`).toBe(
+        `${theme} ${role} neutro: true`,
+      );
+    }
+  }
+});
+
+test("o contrato compoe o acabamento por cima do papel, sem roubar o utilitario", async () => {
+  // A composicao vive na camada de contrato porque e ela que traduz papel em
+  // classe. Duas coisas a mantem inofensiva, e as duas sao testadas aqui:
+  //
+  // `@layer utilities` - regra fora de camada vence QUALQUER camada, entao um
+  // `background-image` solto derrubaria ate o `bg-linear-to-r` de quem quisesse
+  // o proprio gradiente.
+  //
+  // `:where()` - especificidade zero, entao dentro da mesma camada qualquer
+  // utilitario de classe (0,1,0) ganha. O tema propoe o acabamento; a classe
+  // de quem escreve a tela desfaz.
+  const contract = await read("src/tokens/contract.css");
+
+  expect(contract).toContain("@layer utilities {");
+  for (const rule of [":where(.bg-accent", ":where(.bg-overlay)"]) {
+    expect(`${rule} em :where: ${contract.includes(rule)}`).toBe(`${rule} em :where: true`);
+  }
+
+  for (const role of ["--rc-accent-image", "--rc-accent-shadow", "--rc-overlay-filter"]) {
+    // Fallback no proprio var(): tema de cliente que ignora os tres nao
+    // precisa declarar nada, e o gesto simplesmente nao acontece.
+    expect(`${role} com fallback: ${contract.includes(`var(${role}, none)`)}`).toBe(
+      `${role} com fallback: true`,
+    );
+  }
+});
+
+test("o acabamento do acento nao pinta o botao desabilitado", async () => {
+  // O Button neutraliza o primario desabilitado de proposito - a lima
+  // desbotada parece defeito - mas ele faz isso trocando background-COLOR. Um
+  // gradiente pintado por cima de `.bg-accent` sobreviveria a essa troca e o
+  // desabilitado voltaria a vestir a marca. O `data-loading` fica de fora da
+  // excecao pelo mesmo motivo que ele fica no Button: carregando tambem
+  // desabilita, e ali a cor precisa continuar sendo a da acao.
+  const contract = await read("src/tokens/contract.css");
+  const rule = contract.slice(contract.indexOf(":where(.bg-accent"));
+
+  expect(rule.slice(0, rule.indexOf(")) {") + 4)).toContain(":disabled:not([data-loading])");
+});
