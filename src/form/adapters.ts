@@ -66,9 +66,9 @@ export type PropsDeCheckbox = CheckedProps;
 export function forDate<V extends FieldValues, N extends FieldPath<V>>(
   field: Field<V, N>,
 ): DateProps {
-  const { onChange, value, name, ...resto } = field;
+  const { onChange, value, name, ...rest } = field;
   return {
-    ...resto,
+    ...rest,
     name,
     value: value as Date | undefined,
     onValueChange: (data) => onChange(data),
@@ -87,9 +87,9 @@ export function forDate<V extends FieldValues, N extends FieldPath<V>>(
 export function forValue<V extends FieldValues, N extends FieldPath<V>>(
   field: Field<V, N>,
 ): ValueProps<Field<V, N>["value"]> {
-  const { onChange, ref: _ref, onBlur: _onBlur, name, ...resto } = field;
+  const { onChange, ref: _ref, onBlur: _onBlur, name, ...rest } = field;
   return {
-    ...resto,
+    ...rest,
     name,
     onValueChange: (value) => onChange(value),
   };
@@ -106,9 +106,9 @@ export function forValue<V extends FieldValues, N extends FieldPath<V>>(
 export function forChecked<V extends FieldValues, N extends FieldPath<V>>(
   field: Field<V, N>,
 ): CheckedProps {
-  const { onChange, value, onBlur: _onBlur, name, ...resto } = field;
+  const { onChange, value, onBlur: _onBlur, name, ...rest } = field;
   return {
-    ...resto,
+    ...rest,
     name,
     checked: Boolean(value),
     onCheckedChange: (checked) => onChange(checked),

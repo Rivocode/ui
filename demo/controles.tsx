@@ -29,10 +29,10 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
+      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{title}</p>
       {children}
     </section>
   );
@@ -47,14 +47,14 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Block titulo="Chave">
+          <Block title="Chave">
             <label className="flex items-center gap-3 text-base text-fg">
               <Switch checked={avisos} onCheckedChange={setAvisos} />
               Avisar por email quando a nota for paga
             </label>
           </Block>
 
-          <Block titulo="Escolha unica">
+          <Block title="Escolha unica">
             <RadioGroup defaultValue="pix">
               {[
                 { value: "pix", label: "Pix" },
@@ -69,7 +69,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </RadioGroup>
           </Block>
 
-          <Block titulo="Varias linhas">
+          <Block title="Varias linhas">
             <Field>
               <FieldLabel>Observacao</FieldLabel>
               <Textarea placeholder="O que o cliente pediu" />
@@ -78,7 +78,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
         </div>
 
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Block titulo="Pessoas">
+          <Block title="Pessoas">
             <div className="flex items-center gap-3">
               <Avatar size="sm" fallback="EB" />
               <Avatar fallback="CS" />
@@ -88,11 +88,11 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </div>
           </Block>
 
-          <Block titulo="Progresso">
+          <Block title="Progresso">
             <Progress value={62} label="Enviando notas" showValue />
           </Block>
 
-          <Block titulo="Modo de exibicao">
+          <Block title="Modo de exibicao">
             <ToggleGroup defaultValue={["esquerda"]}>
               <Toggle value="esquerda" aria-label="Alinhar a esquerda">
                 <AlignLeft size={15} aria-hidden="true" />
@@ -106,7 +106,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </ToggleGroup>
           </Block>
 
-          <Block titulo="Acao sem volta">
+          <Block title="Acao sem volta">
             <AlertDialog defaultOpen={theme === "rivocode-light"}>
               <AlertDialogTrigger render={<Button variant="destructive" />}>
                 Cancelar nota
@@ -130,7 +130,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
         </div>
 
         <div className="w-full max-w-96">
-          <Block titulo="Sanfona">
+          <Block title="Sanfona">
             <Accordion>
               <AccordionItem title="Como emito uma nota?">
                 Pelo botao Emitir nota, no topo da listagem. O rascunho fica salvo se voce sair no

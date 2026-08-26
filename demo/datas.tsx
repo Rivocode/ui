@@ -11,7 +11,7 @@ import {
 } from "../src/index";
 
 function Sample({ theme }: { theme: RivoTheme }) {
-  const [vencimento, setVencimento] = useState<Date | undefined>(new Date(2026, 2, 3));
+  const [dueDate, setDueDate] = useState<Date | undefined>(new Date(2026, 2, 3));
   const [periodo, setPeriodo] = useState<DateRange | undefined>({
     from: new Date(2026, 2, 3),
     to: new Date(2026, 2, 12),
@@ -23,10 +23,10 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-12">
         <div className="w-full max-w-64">
-          <label htmlFor="vencimento" className="mb-1.5 block text-sm font-medium text-fg">
+          <label htmlFor="dueDate" className="mb-1.5 block text-sm font-medium text-fg">
             Vencimento
           </label>
-          <DatePicker id="vencimento" value={vencimento} onValueChange={setVencimento} confirm />
+          <DatePicker id="dueDate" value={dueDate} onValueChange={setDueDate} confirm />
         </div>
 
         <div className="w-full max-w-72">
@@ -38,7 +38,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
       <div className="mt-10 flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-12">
         <div>
           <p className="mb-3 text-sm text-fg-muted">Calendario, data unica</p>
-          <Calendar mode="single" selected={vencimento} month={new Date(2026, 2, 1)} />
+          <Calendar mode="single" selected={dueDate} month={new Date(2026, 2, 1)} />
         </div>
 
         <div>

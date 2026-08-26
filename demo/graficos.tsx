@@ -40,7 +40,7 @@ const MONTHS = [
 
 const INVOICES = { emitidas: { label: "Emitidas" }, pagas: { label: "Pagas" } } satisfies ChartConfig;
 
-const FATURAMENTO = [
+const SALES = [
   { mes: "Mar", servico: 42000, produto: 12000 },
   { mes: "Abr", servico: 51000, produto: 15000 },
   { mes: "Mai", servico: 47000, produto: 11000 },
@@ -69,7 +69,7 @@ function dinheiro(value: number) {
 }
 
 function Sample({ theme }: { theme: RivoTheme }) {
-  const movimento = useChartMotion();
+  const motion = useChartMotion();
 
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[820px] p-8">
@@ -93,14 +93,14 @@ function Sample({ theme }: { theme: RivoTheme }) {
                   stroke="var(--color-emitidas)"
                   strokeWidth={2}
                   dot={false}
-                  {...movimento}
+                  {...motion}
                 />
                 <Line
                   dataKey="pagas"
                   stroke="var(--color-pagas)"
                   strokeWidth={2}
                   dot={false}
-                  {...movimento}
+                  {...motion}
                 />
               </LineChart>
             </ChartContainer>
@@ -113,7 +113,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           </CardHeader>
           <CardContent>
             <ChartContainer config={REVENUE} className="h-64">
-              <BarChart data={FATURAMENTO} margin={{ left: -8, right: 8, top: 8 }}>
+              <BarChart data={SALES} margin={{ left: -8, right: 8, top: 8 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="mes" tickLine={false} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} tickFormatter={dinheiro} />
@@ -131,14 +131,14 @@ function Sample({ theme }: { theme: RivoTheme }) {
                   stackId="a"
                   fill="var(--color-servico)"
                   radius={[0, 0, 4, 4]}
-                  {...movimento}
+                  {...motion}
                 />
                 <Bar
                   dataKey="produto"
                   stackId="a"
                   fill="var(--color-produto)"
                   radius={[4, 4, 0, 0]}
-                  {...movimento}
+                  {...motion}
                 />
               </BarChart>
             </ChartContainer>
@@ -164,7 +164,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
                   fill="var(--color-emitidas)"
                   fillOpacity={0.15}
                   strokeWidth={2}
-                  {...movimento}
+                  {...motion}
                 />
               </AreaChart>
             </ChartContainer>
@@ -185,7 +185,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
                   nameKey="nome"
                   innerRadius={48}
                   strokeWidth={0}
-                  {...movimento}
+                  {...motion}
                 >
                   {STATUS.map((fatia) => (
                     <Cell key={fatia.name} fill={`var(--color-${fatia.name})`} />

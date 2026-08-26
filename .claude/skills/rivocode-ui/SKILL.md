@@ -118,12 +118,12 @@ que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
 
 **Abaixo da raiz, vista a parte pelo nome, com `classNames`.** A trilha do
 `Progress`, o pino do `Slider`, a marca do `Checkbox`, a linha do `DataTable`
-e a tarja do `Dialog` têm nome de fora — os mesmos da seção "Partes" da
+e a tarja do `DialogContent` têm nome de fora — os mesmos da seção "Partes" da
 página:
 
 ```tsx
 <Slider classNames={{ track: 'bg-accent-subtle', thumb: 'shadow-glow' }} />
-<Dialog classNames={{ backdrop: 'backdrop-blur-md' }} />
+<DialogContent classNames={{ backdrop: 'backdrop-blur-md' }} />
 <DataTable classNames={{ row: 'hover:bg-accent-subtle' }} />
 ```
 

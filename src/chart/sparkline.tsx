@@ -54,14 +54,14 @@ export function Sparkline({
   className,
   label,
 }: SparklineProps) {
-  const pontos = data.map((value, index) => ({ i: index, v: value }));
+  const points = data.map((value, index) => ({ i: index, v: value }));
 
-  const subiu = data.length > 1 && data[data.length - 1] >= data[0];
-  const autoColor = subiu ? "var(--rc-success)" : "var(--rc-danger)";
-  const traco = color ?? (tone === "auto" ? autoColor : "var(--rc-accent)");
+  const rising = data.length > 1 && data[data.length - 1] >= data[0];
+  const autoColor = rising ? "var(--rc-success)" : "var(--rc-danger)";
+  const stroke = color ?? (tone === "auto" ? autoColor : "var(--rc-accent)");
 
-  const comum = {
-    data: pontos,
+  const shared = {
+    data: points,
     margin: { top: 2, right: 2, bottom: 2, left: 2 },
   };
 
@@ -74,19 +74,19 @@ export function Sparkline({
     >
       <ResponsiveContainer width="100%" height="100%">
         {variant === "bar" ? (
-          <BarChart {...comum}>
+          <BarChart {...shared}>
             {/* Sem espaco entre as barras alem do minimo: numa faixa de 96px,
                 barra separada por 4px vira tracejado e para de ler como
                 quantidade. */}
-            <Bar dataKey="v" fill={traco} radius={1} isAnimationActive={false} />
+            <Bar dataKey="v" fill={stroke} radius={1} isAnimationActive={false} />
           </BarChart>
         ) : variant === "area" ? (
-          <AreaChart {...comum}>
+          <AreaChart {...shared}>
             <Area
               dataKey="v"
-              stroke={traco}
+              stroke={stroke}
               strokeWidth={1.5}
-              fill={traco}
+              fill={stroke}
               fillOpacity={0.16}
               // Sem ponto e sem animacao: numa altura de 32px o ponto vira
               // ruido, e a animacao chama atencao para o que e so contexto.
@@ -95,10 +95,10 @@ export function Sparkline({
             />
           </AreaChart>
         ) : (
-          <LineChart {...comum}>
+          <LineChart {...shared}>
             <Line
               dataKey="v"
-              stroke={traco}
+              stroke={stroke}
               strokeWidth={1.5}
               dot={false}
               isAnimationActive={false}

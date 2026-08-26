@@ -112,6 +112,23 @@ test("a linha de lista arruma media, texto e acao", () => {
   expect(screen.getByText("Abrir")).toBeDefined();
 });
 
+test("a linha de lista vira link de verdade com render", () => {
+  // O JSDoc mandava usar `render` junto com `interactive` e a prop nao
+  // existia: quem seguiu a documentacao recebeu uma div com cor de passagem,
+  // que o teclado nao alcanca.
+  withTheme(
+    <Item interactive render={<a href="/notas/4813" />}>
+      <ItemContent>
+        <ItemTitle>Nota 4813</ItemTitle>
+      </ItemContent>
+    </Item>,
+  );
+
+  const link = screen.getByRole("link", { name: "Nota 4813" });
+  expect(link.getAttribute("href")).toBe("/notas/4813");
+  expect(link.className).toContain("cursor-pointer");
+});
+
 test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
   withTheme(
     <Breadcrumb
@@ -148,8 +165,8 @@ test("caminho comprido dobra o meio em reticencia", () => {
 
 test("a paginacao anda e trava nas pontas", () => {
   function List() {
-    const [pagina, setPagina] = useState(1);
-    return <Pagination page={pagina} pageCount={3} onPageChange={setPagina} />;
+    const [page, setPage] = useState(1);
+    return <Pagination page={page} pageCount={3} onPageChange={setPage} />;
   }
   withTheme(<List />);
 

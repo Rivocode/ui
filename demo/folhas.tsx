@@ -17,10 +17,10 @@ import {
 } from "../src/index";
 
 const ITEMS = [
-  { icone: LayoutDashboard, label: "Painel", ativo: true },
-  { icone: FileText, label: "Notas fiscais", contagem: 4 },
-  { icone: Users, label: "Clientes" },
-  { icone: Settings, label: "Ajustes" },
+  { icon: LayoutDashboard, label: "Painel", ativo: true },
+  { icon: FileText, label: "Notas fiscais", contagem: 4 },
+  { icon: Users, label: "Clientes" },
+  { icon: Settings, label: "Ajustes" },
 ];
 
 function MenuLateral() {
@@ -30,7 +30,7 @@ function MenuLateral() {
       <SheetContent className="p-4">
         <SheetTitle className="px-2 text-lg">RivoCode</SheetTitle>
         <nav className="mt-4 flex flex-col gap-1">
-          {ITEMS.map(({ icone: Icone, label, ativo, contagem }) => (
+          {ITEMS.map(({ icon: Icon, label, ativo, contagem }) => (
             <a
               key={label}
               href="#"
@@ -41,7 +41,7 @@ function MenuLateral() {
                 (ativo ? "bg-accent-subtle text-fg" : "text-fg-muted")
               }
             >
-              <Icone size={16} aria-hidden="true" />
+              <Icon size={16} aria-hidden="true" />
               <span className="flex-1">{label}</span>
               {contagem && <Badge>{contagem}</Badge>}
             </a>

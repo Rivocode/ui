@@ -14,9 +14,9 @@ export function servir(porta = 0) {
     port: porta,
     async fetch(req) {
       const url = new URL(req.url);
-      const caminho = url.pathname === "/" ? "/index.html" : url.pathname;
+      const path = url.pathname === "/" ? "/index.html" : url.pathname;
       // normalize corta qualquer ../ antes de tocar no disco.
-      const alvo = join(RAIZ, normalize(caminho).replace(/^(\.\.[/\\])+/, ""));
+      const alvo = join(RAIZ, normalize(path).replace(/^(\.\.[/\\])+/, ""));
       const f = file(alvo);
       return (await f.exists()) ? new Response(f) : new Response("nao encontrado", { status: 404 });
     },

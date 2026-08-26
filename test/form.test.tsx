@@ -14,13 +14,13 @@ import { useZodForm } from "../src/form/use-zod-form";
 
 const schema = z.object({
   email: z.email("Escreva um email valido"),
-  vencimento: z.date("Escolha a data"),
+  dueDate: z.date("Escolha a data"),
   aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
 function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schema>) => void }) {
   const form = useZodForm(schema, {
-    defaultValues: { email: "", vencimento: undefined, aceite: false },
+    defaultValues: { email: "", dueDate: undefined, aceite: false },
   });
 
   return (
@@ -30,7 +30,7 @@ function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
           {(field) => <Input {...field} placeholder="voce@empresa.com" />}
         </FormField>
 
-        <FormField name="vencimento" label="Vencimento">
+        <FormField name="dueDate" label="Vencimento">
           {(field) => <DatePicker {...forDatePicker(field)} />}
         </FormField>
 
@@ -113,7 +113,7 @@ test("com tudo preenchido, o onSubmit recebe os valores ja convertidos", async (
     expect(recebido).toBeDefined();
   });
   expect(recebido!.email).toBe("financeiro@rivocode.com");
-  expect(recebido!.vencimento.getDate()).toBe(3);
+  expect(recebido!.dueDate.getDate()).toBe(3);
   expect(recebido!.aceite).toBe(true);
 });
 

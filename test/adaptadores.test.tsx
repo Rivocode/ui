@@ -56,10 +56,10 @@ test("o adaptador de valor veste o grupo de escolha unica", () => {
 });
 
 test("os nomes antigos continuam valendo", async () => {
-  const { forCheckbox, forSelect, forChecked: novo, forValue: novoValor } = await import(
+  const { forCheckbox, forSelect, forChecked: next, forValue: nextValue } = await import(
     "../src/form"
   );
 
-  expect(forCheckbox).toBe(novo);
-  expect(forSelect).toBe(novoValor);
+  expect(forCheckbox).toBe(next);
+  expect(forSelect).toBe(nextValue);
 });

@@ -25,23 +25,23 @@ const PAYMENT_METHODS = [
 
 const schema = z.object({
   email: z.email("Escreva um email valido"),
-  vencimento: z.date("Escolha a data"),
+  dueDate: z.date("Escolha a data"),
   forma: z.string().min(1, "Escolha a forma de pagamento"),
   aceite: z.boolean().refine((checked) => checked, "Aceite para continuar"),
 });
 
 type Entry = z.input<typeof schema>;
 
-function InvoiceForm({ values, comErro }: { values: Partial<Entry>; comErro?: boolean }) {
+function InvoiceForm({ values, withError }: { values: Partial<Entry>; withError?: boolean }) {
   const form = useZodForm(schema, {
-    defaultValues: { email: "", vencimento: undefined, forma: "", aceite: false, ...values },
+    defaultValues: { email: "", dueDate: undefined, forma: "", aceite: false, ...values },
   });
 
   // A vitrine e uma foto: sem disparar a validacao, o estado de erro nunca
   // apareceria no retrato.
   useEffect(() => {
-    if (comErro) form.trigger();
-  }, [comErro, form]);
+    if (withError) form.trigger();
+  }, [withError, form]);
 
   return (
     <Form form={form} onSubmit={() => {}} className="w-full max-w-72">
@@ -49,7 +49,7 @@ function InvoiceForm({ values, comErro }: { values: Partial<Entry>; comErro?: bo
         {(field) => <Input {...field} placeholder="voce@empresa.com" />}
       </FormField>
 
-      <FormField name="vencimento" label="Vencimento">
+      <FormField name="dueDate" label="Vencimento">
         {(field) => <DatePicker {...forDate(field)} />}
       </FormField>
 
@@ -97,7 +97,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           <InvoiceForm
             values={{
               email: "financeiro@rivocode.com",
-              vencimento: new Date(2026, 2, 3),
+              dueDate: new Date(2026, 2, 3),
               forma: "pix",
               aceite: true,
             }}
@@ -106,7 +106,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-4 text-sm text-fg-muted">Com erro do schema</p>
-          <InvoiceForm values={{ email: "financeiro@" }} comErro />
+          <InvoiceForm values={{ email: "financeiro@" }} withError />
         </div>
       </div>
     </RivoProvider>

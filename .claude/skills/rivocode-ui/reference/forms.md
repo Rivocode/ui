@@ -8,7 +8,7 @@ tipo do formulário. O controle vem por função, não por clonagem do filho.
 
 ```tsx
 import { Form, FormField, useZodForm } from '@rivocode/ui/form'
-import { Input } from '@rivocode/ui'
+import { Button, Input } from '@rivocode/ui'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -21,12 +21,9 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 
   return (
     <Form form={form} onSubmit={onIssue}>
-      <FormField
-        name="email"
-        label="E-mail do cliente"
-        description="Para onde vai a nota"
-        render={(field) => <Input {...field} type="email" />}
-      />
+      <FormField name="email" label="E-mail do cliente" description="Para onde vai a nota">
+        {(field) => <Input {...field} type="email" />}
+      </FormField>
       <Button type="submit" loading={form.formState.isSubmitting}>
         Emitir nota
       </Button>

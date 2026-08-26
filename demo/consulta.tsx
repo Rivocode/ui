@@ -17,36 +17,36 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-type Invoice = { id: string; numero: string; cliente: string; value: string; situacao: string };
+type Invoice = { id: string; number: string; cliente: string; value: string; status: string };
 
 const INVOICES: Invoice[] = [
-  { id: "1", numero: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", situacao: "Paga" },
+  { id: "1", number: "4813", cliente: "Clinica Sao Lucas", value: "R$ 2.480,00", status: "Paga" },
   {
     id: "2",
-    numero: "4814",
+    number: "4814",
     cliente: "Transportes Cabo Branco",
     value: "R$ 940,00",
-    situacao: "Aberta",
+    status: "Aberta",
   },
   {
     id: "3",
-    numero: "4815",
+    number: "4815",
     cliente: "Supermercado Tambau",
     value: "R$ 12.300,00",
-    situacao: "Aberta",
+    status: "Aberta",
   },
 ];
 
 const COLUMNS: Column<Invoice>[] = [
-  { key: "numero", header: "Numero" },
+  { key: "number", header: "Numero" },
   { key: "cliente", header: "Cliente" },
   { key: "valor", header: "Valor", align: "right", hideOnMobile: true },
   {
-    key: "situacao",
+    key: "status",
     header: "Situacao",
     align: "right",
     cell: (nota) => (
-      <Badge tone={nota.situacao === "Paga" ? "success" : "neutral"}>{nota.situacao}</Badge>
+      <Badge tone={nota.status === "Paga" ? "success" : "neutral"}>{nota.status}</Badge>
     ),
   },
 ];
@@ -57,10 +57,10 @@ const PASSOS: Step[] = [
   { id: "revisao", title: "Revisao", description: "Conferir e emitir" },
 ];
 
-function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
+      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{title}</p>
       {children}
     </section>
   );
@@ -113,7 +113,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
       <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">{theme}</p>
 
       <div className="flex flex-col gap-10">
-        <Block titulo="Com dados">
+        <Block title="Com dados">
           <DataTable
             data={INVOICES}
             columns={COLUMNS}
@@ -124,7 +124,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div className="flex flex-col gap-10 sm:flex-row sm:gap-x-12">
           <div className="flex-1">
-            <Block titulo="Carregando">
+            <Block title="Carregando">
               <DataTable
                 data={undefined}
                 columns={COLUMNS}
@@ -135,7 +135,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           </div>
 
           <div className="flex-1">
-            <Block titulo="Erro">
+            <Block title="Erro">
               <DataTable
                 data={undefined}
                 isError
@@ -147,7 +147,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </Block>
 
             <div className="mt-8">
-              <Block titulo="Vazio">
+              <Block title="Vazio">
                 <DataTable<Invoice>
                   data={[]}
                   columns={COLUMNS}
@@ -164,7 +164,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           </div>
         </div>
 
-        <Block titulo="Formulario em etapas">
+        <Block title="Formulario em etapas">
           <Wizard />
         </Block>
       </div>

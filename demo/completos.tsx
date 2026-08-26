@@ -29,10 +29,10 @@ import {
   type RivoTheme,
 } from "../src/index";
 
-function Block({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{titulo}</p>
+      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{title}</p>
       {children}
     </section>
   );
@@ -47,7 +47,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
       <div className="flex flex-col gap-10 sm:flex-row sm:flex-wrap sm:gap-x-16">
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Block titulo="Numero com passo">
+          <Block title="Numero com passo">
             <Field>
               <FieldLabel>Parcelas</FieldLabel>
               <NumberField
@@ -59,21 +59,21 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </Field>
           </Block>
 
-          <Block titulo="Faixa">
+          <Block title="Faixa">
             <Slider defaultValue={25} label="Desconto" showValue thumbLabel="Desconto" max={50} />
           </Block>
 
-          <Block titulo="Capacidade">
+          <Block title="Capacidade">
             <Meter value={72} label="Notas do plano" showValue />
           </Block>
 
-          <Block titulo="Codigo de verificacao">
+          <Block title="Codigo de verificacao">
             <OTPField length={6} defaultValue="4813" />
           </Block>
         </div>
 
         <div className="flex w-full max-w-80 flex-col gap-10">
-          <Block titulo="Grupo de campos">
+          <Block title="Grupo de campos">
             <Fieldset>
               <FieldsetLegend>Endereco</FieldsetLegend>
               <Field>
@@ -87,7 +87,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </Fieldset>
           </Block>
 
-          <Block titulo="Grupo de caixas">
+          <Block title="Grupo de caixas">
             <CheckboxGroup defaultValue={["pix"]} aria-label="Formas aceitas">
               {[
                 { value: "pix", label: "Pix" },
@@ -102,7 +102,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </CheckboxGroup>
           </Block>
 
-          <Block titulo="Bloco que esconde">
+          <Block title="Bloco que esconde">
             <Collapsible defaultOpen>
               <CollapsibleTrigger>Dados de quem emite</CollapsibleTrigger>
               <CollapsiblePanel>
@@ -113,7 +113,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
         </div>
 
         <div className="flex w-full max-w-96 flex-col gap-10">
-          <Block titulo="Barra de ferramentas">
+          <Block title="Barra de ferramentas">
             <Toolbar aria-label="Formatacao">
               <ToolbarButton aria-label="Negrito">
                 <Bold size={15} aria-hidden="true" />
@@ -129,7 +129,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </Toolbar>
           </Block>
 
-          <Block titulo="Barra de menus">
+          <Block title="Barra de menus">
             <Menubar aria-label="Principal">
               <span className="px-2 text-base text-fg-muted">Arquivo</span>
               <span className="px-2 text-base text-fg-muted">Editar</span>
@@ -137,7 +137,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </Menubar>
           </Block>
 
-          <Block titulo="Cartao ao pousar">
+          <Block title="Cartao ao pousar">
             <p className="text-base text-fg">
               A nota foi emitida para a{" "}
               <PreviewCard>
@@ -158,7 +158,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
             </p>
           </Block>
 
-          <Block titulo="Area de rolagem">
+          <Block title="Area de rolagem">
             <ScrollArea className="h-32 rounded-md border border-border p-3">
               <div className="flex flex-col gap-2 text-base text-fg-muted">
                 {Array.from({ length: 12 }, (_, index) => (

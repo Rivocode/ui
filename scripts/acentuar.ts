@@ -11,7 +11,16 @@
  * rules do not recognise is left alone and reported for a human to read.
  */
 
-const WORDS: Record<string, string> = {
+/**
+ * O dicionario de acentos do repositorio.
+ *
+ * Exportado porque ha um segundo leitor: a guarda `test/acentos.test.ts`, que
+ * cobra o acento no texto que a biblioteca escreve na TELA. Ela mantinha uma
+ * lista propria de vinte e duas palavras, e uma lista de vinte e duas dentro
+ * de uma casa que ja tinha uma de duzentas e oitenta e uma so podia envelhecer
+ * pior - foi assim que "Navegacao" chegou a interface.
+ */
+export const WORDS: Record<string, string> = {
   nao: "não",
   acao: "ação",
   acoes: "ações",
@@ -32,6 +41,8 @@ const WORDS: Record<string, string> = {
   alem: "além",
   apos: "após",
   atraves: "através",
+  proxima: "próxima",
+  proximo: "próximo",
   proprio: "próprio",
   propria: "própria",
   proprios: "próprios",
@@ -54,6 +65,8 @@ const WORDS: Record<string, string> = {
   icones: "ícones",
   conteudo: "conteúdo",
   area: "área",
+  arvore: "árvore",
+  arvores: "árvores",
   areas: "áreas",
   invalido: "inválido",
   valido: "válido",
@@ -100,6 +113,8 @@ const WORDS: Record<string, string> = {
   variavel: "variável",
   variaveis: "variáveis",
   estavel: "estável",
+  periodo: "período",
+  periodos: "períodos",
   memoria: "memória",
   historia: "história",
   historico: "histórico",

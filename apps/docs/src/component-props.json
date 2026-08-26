@@ -206,6 +206,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"backdrop\", string>>",
+        "required": false,
+        "note": "Classe por parte: `backdrop`."
+      },
+      {
         "name": "finalFocus",
         "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => void | boolean | HTMLElement | null)",
         "required": false,
@@ -8943,6 +8949,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "align",
+        "type": "Align",
+        "required": false,
+        "note": "Alinhamento no eixo do lado escolhido."
+      },
+      {
         "name": "emptyMessage",
         "type": "ReactNode",
         "required": false,
@@ -8969,6 +8981,18 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      },
+      {
+        "name": "side",
+        "type": "Side",
+        "required": false,
+        "note": "Lado preferido do gatilho."
+      },
+      {
+        "name": "sideOffset",
+        "type": "number | OffsetFunction",
+        "required": false,
+        "note": "Distancia entre o gatilho e o painel, em pixels."
       }
     ]
   },
@@ -9006,6 +9030,12 @@
   "ComboboxInput": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"wrapper\", string>>",
+        "required": false,
+        "note": "Classe por parte: `wrapper`, `input`."
+      },
       {
         "name": "clearable",
         "type": "boolean",
@@ -10211,6 +10241,12 @@
         "type": "boolean | null",
         "required": false,
         "since": "0.4.0"
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo a aparencia: `<Item render={<a href=\"...\" />}>`."
       },
       {
         "name": "variant",
@@ -11978,6 +12014,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "align",
+        "type": "Align",
+        "required": false,
+        "note": "Alinhamento no eixo do lado escolhido."
+      },
+      {
         "name": "finalFocus",
         "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => void | boolean | HTMLElement | null)",
         "required": false,
@@ -11990,6 +12032,18 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      },
+      {
+        "name": "side",
+        "type": "Side",
+        "required": false,
+        "note": "Lado preferido do gatilho."
+      },
+      {
+        "name": "sideOffset",
+        "type": "number | OffsetFunction",
+        "required": false,
+        "note": "Distancia entre o gatilho e o painel, em pixels."
       }
     ]
   },
@@ -16723,14 +16777,14 @@
         "name": "side",
         "type": "Side",
         "required": false,
-        "note": "Lado preferido.",
+        "note": "Lado preferido do gatilho.",
         "since": "0.4.0"
       },
       {
         "name": "sideOffset",
         "type": "number | OffsetFunction",
         "required": false,
-        "note": "Distancia entre o gatilho e o painel.",
+        "note": "Distancia entre o gatilho e o painel, em pixels.",
         "since": "0.4.0"
       }
     ]
@@ -20658,6 +20712,12 @@
         "required": false,
         "note": "O atalho que abre ou foca a busca, mostrado num `Kbd` dentro do campo: `\"mod+k\"`.",
         "since": "0.4.0"
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "A altura do campo."
       }
     ]
   },
@@ -20824,6 +20884,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "align",
+        "type": "Align",
+        "required": false,
+        "note": "Alinhamento no eixo do lado escolhido."
+      },
+      {
         "name": "finalFocus",
         "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => void | boolean | HTMLElement | null)",
         "required": false,
@@ -20836,6 +20902,18 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      },
+      {
+        "name": "side",
+        "type": "Side",
+        "required": false,
+        "note": "Lado preferido do gatilho."
+      },
+      {
+        "name": "sideOffset",
+        "type": "number | OffsetFunction",
+        "required": false,
+        "note": "Distancia entre o gatilho e o painel, em pixels."
       }
     ]
   },
@@ -22468,6 +22546,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "align",
+        "type": "Align",
+        "required": false,
+        "note": "Alinhamento no eixo do lado escolhido."
+      },
+      {
         "name": "render",
         "type": "ComponentRenderFn<HTMLProps, TooltipPopupState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
         "required": false,
@@ -22478,8 +22562,14 @@
         "name": "side",
         "type": "Side",
         "required": false,
-        "note": "Lado preferido.",
+        "note": "Lado preferido do gatilho.",
         "since": "0.4.0"
+      },
+      {
+        "name": "sideOffset",
+        "type": "number | OffsetFunction",
+        "required": false,
+        "note": "Distancia entre o gatilho e o painel, em pixels."
       }
     ]
   },

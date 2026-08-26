@@ -32,13 +32,13 @@ if (wanted.size === 0) {
  * aparecia; virou workspace, a instalacao mudou de forma, e o build passou a
  * terminar dizendo que dezesseis fontes nao existem.
  */
-const disponivel = new Map<string, string>();
+const available = new Map<string, string>();
 const pastas = ["node_modules/@fontsource*/**/files/*", "node_modules/.bun/**/files/*"];
 
 for (const padrao of pastas) {
   for await (const file of new Glob(padrao).scan({ cwd: ".", followSymlinks: true })) {
     const name = file.split("/").pop()!;
-    if (!disponivel.has(name)) disponivel.set(name, file);
+    if (!available.has(name)) available.set(name, file);
   }
 }
 
@@ -47,7 +47,7 @@ let copiados = 0;
 const missing: string[] = [];
 
 for (const name of wanted) {
-  const source = disponivel.get(name);
+  const source = available.get(name);
   if (!source) {
     missing.push(name);
     continue;

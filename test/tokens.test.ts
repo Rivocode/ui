@@ -60,12 +60,12 @@ test("nenhum componente do catalogo usa medida de controle fixa em pixel", async
   const { Glob } = await import("bun");
   const suspeitos: string[] = [];
 
-  for await (const caminho of new Glob("src/components/*.tsx").scan(".")) {
-    const fonte = await Bun.file(caminho).text();
+  for await (const path of new Glob("src/components/*.tsx").scan(".")) {
+    const fonte = await Bun.file(path).text();
     // Altura de controle, lado de caixa de marcar e respiro de painel devem
     // sair de token. Pixel solto aqui e densidade que nao chega.
     if (/size-\[(1[6-9]|2\d)px\]|h-\[(3[0-9]|4[0-8])px\]/.test(fonte)) {
-      suspeitos.push(caminho);
+      suspeitos.push(path);
     }
   }
 

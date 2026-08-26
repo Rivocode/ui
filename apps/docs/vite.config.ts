@@ -23,7 +23,6 @@ const CONVENTIONS = here('../../.design-sync/conventions.md')
  * e justamente a que precisa estar certa.
  */
 const SKILL_DIR = here('../../.claude/skills/rivocode-ui')
-const SKILL = `${SKILL_DIR}/SKILL.md`
 const GUIDES_DIR = here('./src/content')
 
 /** Os arquivos da skill, na ordem em que o corpo dela os cita. */

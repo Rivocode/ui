@@ -18,10 +18,10 @@ import {
 } from "../src/index";
 
 const ITEMS = [
-  { icone: LayoutDashboard, label: "Painel", ativo: true },
-  { icone: FileText, label: "Notas fiscais", contagem: 4 },
-  { icone: Users, label: "Clientes" },
-  { icone: Settings, label: "Ajustes" },
+  { icon: LayoutDashboard, label: "Painel", ativo: true },
+  { icon: FileText, label: "Notas fiscais", contagem: 4 },
+  { icon: Users, label: "Clientes" },
+  { icon: Settings, label: "Ajustes" },
 ];
 
 function ScreenWithSidebar({ theme, isOpen }: { theme: RivoTheme; isOpen: boolean }) {
@@ -36,12 +36,12 @@ function ScreenWithSidebar({ theme, isOpen }: { theme: RivoTheme; isOpen: boolea
           <SidebarContent>
             <SidebarGroup label="Operacao">
               <SidebarMenu>
-                {ITEMS.map(({ icone: Icone, label, ativo, contagem }) => (
+                {ITEMS.map(({ icon: Icon, label, ativo, contagem }) => (
                   <SidebarMenuItem
                     key={label}
                     href="#"
                     active={ativo}
-                    icon={<Icone size={16} aria-hidden="true" />}
+                    icon={<Icon size={16} aria-hidden="true" />}
                     badge={contagem ? <Badge>{contagem}</Badge> : undefined}
                   >
                     {label}

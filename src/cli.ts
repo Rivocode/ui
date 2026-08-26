@@ -66,10 +66,10 @@ function install(global: boolean) {
   console.log("O agente carrega sozinho quando você pedir uma tela.");
 }
 
-const [command, ...resto] = process.argv.slice(2);
+const [command, ...rest] = process.argv.slice(2);
 
 if (command === "skill") {
-  install(resto.includes("--global") || resto.includes("-g"));
+  install(rest.includes("--global") || rest.includes("-g"));
 } else if (command === "--help" || command === "-h" || command === undefined) {
   console.log(HELP.trim());
 } else {
