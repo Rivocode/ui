@@ -28,9 +28,8 @@ editor e ferramenta, onde o usuário já espera esse arranjo.
 ## As partes
 
 `MenubarTrigger` é o gatilho de cada menu da barra: "Arquivo", "Editar",
-"Exibir". Ele existe separado do `MenuTrigger` porque o MenuTrigger sai sem
-estilo de propósito — o uso comum dele é `render={<Button />}`, e duas fontes de
-estilo brigariam.
+"Exibir". Ele já vem vestido, inclusive com o anel de foco — dentro da barra é
+ele que se usa, e não um `MenuTrigger` com classe na mão.
 
 ## No React Native
 

@@ -3,6 +3,7 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ReactNode } from "react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
+import { CalendarPanel, Command } from "../src/index";
 import * as pkg from "../src/index";
 import * as chart from "../src/chart/index";
 import * as form from "../src/form/index";
@@ -86,19 +87,17 @@ const NO_ROOT_ELEMENT: Record<string, string> = {
   ZAxis: "Eixo da Recharts repassado inteiro: configura a escala, nao desenha caixa.",
 };
 
-/**
- * Lacuna conhecida, e nao excecao de projeto.
+/*
+ * A guarda nasceu com duas lacunas nomeadas numa lista: `Command` e
+ * `CalendarPanel` pintavam DOM proprio com tipo escrito a mao sem `className`,
+ * e fecha-las era mexer em arquivo de outra rodada. As duas foram fechadas - a
+ * paleta repassa a classe ao painel, e a casca do calendario a repassa a folha
+ * ou ao painel, conforme o corte - e a lista saiu junto.
  *
- * As duas pintam DOM proprio e tem tipo escrito a mao sem `className` - a
- * mesma especie de defeito que esta guarda nasceu para pegar. Ficam nomeadas
- * aqui, e nao caladas: fecha-las mexe em `command.tsx` e `calendar-panel.tsx`,
- * fora da rodada que escreveu este arquivo.
+ * Ela nao vira lista vazia esperando a proxima: enquanto existisse, seria o
+ * unico lugar do arquivo onde caberia escrever "esta peca ainda nao" sem
+ * precisar justificar por que a raiz dela nao existe.
  */
-const KNOWN_GAP: Record<string, string> = {
-  CalendarPanel:
-    "Monta Popover na mesa e Sheet no celular, e nenhuma das duas cascas recebe classe de fora.",
-  Command: "A paleta monta o proprio painel dentro do portal, sem porta para a classe.",
-};
 
 /**
  * Partes que a Base UI recusa a montar sem o pai, e o pai que falta.
@@ -251,7 +250,7 @@ const pieces = Object.entries(surface)
   .map(([name]) => name)
   .sort();
 
-const excused = (name: string) => NO_ROOT_ELEMENT[name] ?? KNOWN_GAP[name];
+const excused = (name: string) => NO_ROOT_ELEMENT[name];
 
 /**
  * Monta a peca sozinha, dentro de um no proprio.
@@ -311,7 +310,6 @@ test("as excecoes nomeiam pecas que ainda existem", () => {
   // proxima peca a nascer com aquele nome ja vem dispensada da regra.
   const names = [
     ...Object.keys(NO_ROOT_ELEMENT),
-    ...Object.keys(KNOWN_GAP),
     ...Object.keys(REQUIRES_PARENT),
     ...Object.keys(PAINTS_NOTHING_ALONE),
     ...Object.keys(NOT_A_COMPONENT),
@@ -326,9 +324,7 @@ test("as excecoes nomeiam pecas que ainda existem", () => {
 test("quem esta dispensado do className continua sem ele no tipo", () => {
   // O contrario do teste acima: a peca que ganhar `className` sai da lista, em
   // vez de a lista so crescer.
-  const solved = [...Object.keys(NO_ROOT_ELEMENT), ...Object.keys(KNOWN_GAP)].filter(
-    (name) => catalog[name]?.forwardsRoot,
-  );
+  const solved = Object.keys(NO_ROOT_ELEMENT).filter((name) => catalog[name]?.forwardsRoot);
 
   expect(solved).toEqual([]);
 });
@@ -364,6 +360,45 @@ test("toda peca montavel leva ao DOM o className de quem a chama", () => {
   }
 
   expect(dropped).toEqual([]);
+});
+
+/*
+ * O ponto cego que a segunda camada deixa, coberto a mao para as duas pecas
+ * que acabaram de ganhar `className`.
+ *
+ * `Command` e `CalendarPanel` tem prop obrigatoria, entao a varredura nao as
+ * monta - e o defeito que sobra depois de o tipo estar certo e justamente o
+ * que so montar revela: desestruturar a prop e esquecer de repassa-la. As
+ * duas nao pintam a raiz no lugar obvio (a paleta pinta dentro do portal, e a
+ * casca do calendario troca de casca no corte do celular), que e por que elas
+ * ficaram sem `className` por tantas versoes.
+ */
+test("a paleta de comandos leva a classe ao painel dentro do portal", () => {
+  render(
+    <RivoProvider scope="local">
+      <Command open onOpenChange={() => {}} groups={[]} className={MARK} />
+    </RivoProvider>,
+  );
+
+  expect(document.querySelector(`.${MARK}`)).not.toBeNull();
+});
+
+test("a casca do calendario leva a classe ao painel da mesa", () => {
+  render(
+    <RivoProvider scope="local">
+      <CalendarPanel
+        open
+        onOpenChange={() => {}}
+        trigger={<button type="button">Abrir</button>}
+        title="Vencimento"
+        className={MARK}
+      >
+        <p>Conteudo</p>
+      </CalendarPanel>
+    </RivoProvider>,
+  );
+
+  expect(document.querySelector(`.${MARK}`)).not.toBeNull();
 });
 
 test("quem esta na lista de parte de fato nao monta sozinha", () => {

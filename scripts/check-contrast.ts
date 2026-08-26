@@ -124,6 +124,31 @@ const BOUNDARIES: Array<[string, string, number]> = [
 ];
 
 /**
+ * A fronteira de um controle TRAVADO: o unico par da casa com teto, e nao so
+ * com piso.
+ *
+ * Um controle desmarcado, desabilitado e sem rotulo ao lado - a coluna de
+ * selecao do DataTable e o caso real - nao tem de onde tirar o sinal a nao ser
+ * da propria linha. O preenchimento do travado e `surface-raised`, e o guia de
+ * temas garante por escrito que ele PODE ser igual a `surface`: no tema claro
+ * da casa os dois sao branco puro (1,00:1) e no escuro param em 1,03:1. Como
+ * `surface-raised` tambem e fundo de cartao levantado, de menu e de dica, la
+ * dentro o preenchimento travado empata com o proprio fundo em 1,00:1 para
+ * qualquer valor - subir o token nao e saida, e sim outra pintura.
+ *
+ * Dai as duas medidas. O piso impede a linha de sumir como o `--rc-border` some
+ * (1,23:1 medido). O teto impede o defeito oposto, que era o estado anterior:
+ * vestindo `border-strong` nos dois estados, o controle travado ficava
+ * IDENTICO ao vivo, e "sem sinal nenhum" e o que este par existe para pegar. A
+ * WCAG 1.4.11 dispensa componente inativo dos 3:1, e e essa folga que o token
+ * ocupa de proposito.
+ */
+const MIN_DISABLED = 1.6;
+/** Quantas vezes a fronteira viva precisa pesar mais que a travada. */
+const LIVE_OVER_DISABLED = 1.4;
+const DISABLED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
+
+/**
  * Cor de serie de grafico nao carrega texto, entao ela nao entra na regra de
  * 4,5:1. A norma pede 3:1 para objeto grafico que precisa ser percebido, e e
  * essa que vale aqui: uma linha de grafico que some no fundo nao e legivel de
@@ -193,6 +218,30 @@ if (import.meta.main) {
       if (!ok) failed++;
       console.log(
         `  ${ok ? "ok   " : "FALHA"} ${line} sobre ${over}  ${ratio.toFixed(2)}:1 (min ${min}, 1.4.11)`,
+      );
+    }
+
+    // A fronteira travada, contra a viva. Duas contas por fundo, porque este
+    // par e o unico que pode errar para os dois lados.
+    for (const over of DISABLED_OVER) {
+      const disabled = tokens["--rc-border-disabled"];
+      const live = tokens["--rc-border-strong"];
+      const background = tokens[over];
+      if (!disabled || !live || !background) {
+        console.log(`  FALTA  --rc-border-disabled sobre ${over}`);
+        failed++;
+        continue;
+      }
+
+      const ratio = contrastRatio(compose(disabled, background), background);
+      const liveRatio = contrastRatio(compose(live, background), background);
+      const visible = ratio >= MIN_DISABLED;
+      const weaker = liveRatio / ratio >= LIVE_OVER_DISABLED;
+      if (!visible || !weaker) failed++;
+      console.log(
+        `  ${visible && weaker ? "ok   " : "FALHA"} --rc-border-disabled sobre ${over}` +
+          `  ${ratio.toFixed(2)}:1 (min ${MIN_DISABLED}, e a viva pesa` +
+          ` ${(liveRatio / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`,
       );
     }
 

@@ -23,6 +23,7 @@
   --color-skeleton: light-dark(rgba(15,17,19,0.08), rgba(255,255,255,0.08));
   --color-border: light-dark(rgba(15,17,19,0.1), rgba(255,255,255,0.09));
   --color-border-strong: light-dark(rgba(15,17,19,0.48), rgba(255,255,255,0.38));
+  --color-border-disabled: light-dark(rgba(15,17,19,0.3), rgba(255,255,255,0.22));
   --color-line-hover: light-dark(rgba(15,17,19,0.62), rgba(255,255,255,0.5));
   --color-ring: light-dark(#4a7100, #d4f34a);
   --color-success: light-dark(#0f766e, #3ddc97);

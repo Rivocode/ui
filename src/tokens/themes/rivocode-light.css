@@ -28,6 +28,24 @@
      1.4.11), e e o que campo, caixa, chave e botao secundario vestem: 3,29
      sobre a pagina e 3,32 sobre o cartao. */
   --rc-border-strong: rgb(15 17 19 / 0.48);
+  /* A fronteira de um controle TRAVADO.
+   *
+   * Ela existe porque o preenchimento nao consegue dizer isso. O desabilitado
+   * pinta `surface-raised`, e o guia de temas garante por escrito que
+   * `surface` e `surface-raised` PODEM ser a mesma cor - aqui as duas sao
+   * branco puro, 1,00:1, e no escuro param em 1,03:1. Pior: `surface-raised`
+   * tambem e o fundo do cartao levantado, do menu e da dica, entao dentro
+   * deles o preenchimento travado empata com o proprio fundo em 1,00:1, para
+   * qualquer valor que o token assumisse. Subir `surface-raised` nao resolveria
+   * nada disso, e repintaria as dezesseis pecas que o vestem.
+   *
+   * Entao quem carrega o sinal e a linha, e ela precisa de teto e de piso.
+   * Medida sobre a pagina da 1,98:1 e sobre o cartao 1,99:1 - acima do
+   * `--rc-border`, que a 1,23 desaparece, e abaixo do `--rc-border-strong`, que
+   * a 3,30 deixa o travado IDENTICO ao vivo, que era o defeito. A WCAG 1.4.11
+   * dispensa componente inativo dos 3:1, e e essa folga que o token ocupa de
+   * proposito. `check:contrast` mede as duas pontas. */
+  --rc-border-disabled: rgb(15 17 19 / 0.3);
   --rc-line-hover: rgb(15 17 19 / 0.62);
   --rc-ring: var(--rc-p-lima-700);
 

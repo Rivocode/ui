@@ -206,20 +206,14 @@ const FOCUS_PAINTS =
 const OUT_OF_TAB_ORDER =
   /(Popup|Positioner|Portal|Backdrop|Viewport|floatingPanel)$|^input$|Input$|ContextMenu\.Trigger$/;
 
-/**
- * A divida que este trabalho nao podia tocar.
- *
- * O `PopoverTrigger` tem o mesmo defeito que o `MenuTrigger` tinha, na mesma
- * forma - `cn("outline-none", className)` - e o conserto e a mesma linha. Ele
- * ficou de fora porque `src/components/popover.tsx` pertencia a outro trabalho
- * em curso na mesma arvore.
- *
- * A lista so encolhe: consertado o arquivo, esta guarda passa a falhar
- * pedindo que a linha saia daqui.
+/*
+ * A guarda nasceu com uma divida declarada numa lista: o `PopoverTrigger`
+ * repetia a forma do `MenuTrigger` - `cn("outline-none", className)` - e o
+ * arquivo pertencia a outro trabalho em curso na mesma arvore. Ele foi
+ * consertado, a lista esvaziou e saiu junto: lista de excecao que sobrevive a
+ * ultima excecao nao guarda nada, so ensina que ha um lugar onde se pode
+ * escrever o proximo `outline-none` nu.
  */
-const PENDING = [
-  "src/components/popover.tsx:18  <BasePopover.Trigger> apaga o contorno do foco e nao repoe nenhum",
-];
 
 test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
   const naked: string[] = [];
@@ -244,10 +238,7 @@ test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
     }
   }
 
-  // Igualdade nos dois sentidos: um `outline-none` novo sem anel falha, e um
-  // da lista que foi consertado tambem - a divida tem que sair daqui quando
-  // deixa de existir, senao a lista vira desculpa permanente.
-  expect(naked).toEqual(PENDING);
+  expect(naked).toEqual([]);
 });
 
 /* ---------------------------------------------------------------------------

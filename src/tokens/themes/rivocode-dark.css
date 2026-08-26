@@ -30,6 +30,10 @@
   --rc-border: rgb(255 255 255 / 0.09);
   /* A fronteira de controle, nos 3:1 da WCAG 1.4.11 - ver o tema claro. */
   --rc-border-strong: rgb(255 255 255 / 0.38);
+  /* A fronteira de um controle travado - ver o tema claro. O alfa e outro
+     porque a base e outra: 0,22 aqui da 1,94:1 sobre a pagina e 2,03:1 sobre o
+     cartao levantado, a mesma faixa que 0,30 produz la. */
+  --rc-border-disabled: rgb(255 255 255 / 0.22);
   --rc-line-hover: rgb(255 255 255 / 0.5);
   --rc-ring: var(--rc-p-lima-500);
 

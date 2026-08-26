@@ -15,7 +15,22 @@ export function PopoverTrigger({
   className,
   ...props
 }: ComponentProps<typeof BasePopover.Trigger>) {
-  return <BasePopover.Trigger {...props} className={cn("outline-none", className)} />;
+  return (
+    <BasePopover.Trigger
+      {...props}
+      className={cn(
+        // Mesma receita do MenuTrigger, pelo mesmo motivo: ele sai sem PELE de
+        // proposito - o uso comum e `render={<Button />}`, e duas fontes de
+        // estilo brigariam -, mas foco nao e pele. `outline-none` sozinho nao e
+        // "sem estilo", e a remocao ativa do unico sinal que o navegador da de
+        // graca. Quando o gatilho e escrito na mao, o anel daqui e o unico que
+        // existe; quando ele vem de um Button, e o mesmo anel e as classes se
+        // fundem sem dobrar.
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        className,
+      )}
+    />
+  );
 }
 
 export type PopoverContentProps = ComponentProps<typeof BasePopover.Popup> & FloatingPositionProps;

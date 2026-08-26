@@ -91,6 +91,7 @@ isolada no meio do azul do cliente. Depois deles vêm três papéis de acabament
 |---|---|---|
 | `--rc-border` | `border-border` | A linha comum |
 | `--rc-border-strong` | `border-border-strong` | A borda de um controle, que precisa se ver |
+| `--rc-border-disabled` | `border-border-disabled` | A borda de um controle travado, que precisa se ver **menos** |
 | `--rc-line-hover` |, | A borda com o ponteiro em cima |
 | `--rc-ring` | `ring-ring` | O anel de foco do teclado |
 | `--rc-selected` | `bg-selected` | Linha escolhida numa tabela. Área grande pede alfa baixo |
@@ -254,13 +255,14 @@ A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
 
 ## O que o tema precisa garantir
 
-Os papéis não são independentes. Estas relações precisam valer, e as três
+Os papéis não são independentes. Estas relações precisam valer, e as quatro
 primeiras são medidas por `bun run check` — um tema que as quebra falha no CI,
 e não na tela do cliente:
 
 | Invariante | Por quê |
 |---|---|
 | `--rc-border-strong` a 3:1 da superfície | É a fronteira que identifica o controle (WCAG 1.4.11). Abaixo disso o campo não se distingue da página |
+| `--rc-border-disabled` acima de 1,6:1 da superfície, e a 1,4× **abaixo** de `--rc-border-strong` | É o único papel com teto além de piso. Muito fraca, o controle travado some; igual à viva, ele fica idêntico ao controle que ainda responde — e a WCAG 1.4.11 dispensa componente inativo dos 3:1 justamente para abrir essa faixa |
 | `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
 | `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
 | `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
@@ -268,7 +270,10 @@ e não na tela do cliente:
 `--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor — no tema claro
 da casa as duas são branco puro, e cartão branco sobre página cinza é o padrão
 de nove entre dez painéis. Componente nenhum pode depender dessa diferença para
-existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`.
+existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`, e quem
+precisa dizer "travado" veste `--rc-border-disabled`. Os dois tokens existem pelo
+mesmo motivo: são a saída de quem tropeçou em branco sobre branco e tentou
+resolver subindo a superfície.
 
 ## O que **não** entra no tema
 

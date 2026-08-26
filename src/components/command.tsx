@@ -49,6 +49,15 @@ export type CommandProps = {
   shortcut?: string | null;
   /** Titulo lido pelo leitor de tela. A paleta nao tem titulo visivel. */
   title?: string;
+  /**
+   * Veste o PAINEL, e nao a tarja atras dele - largura, canto, altura maxima.
+   *
+   * A paleta nao recebe filho nem tem `*Content` proprio, entao ela era a peca
+   * sem porta nenhuma para a classe de quem a chama: o jeito de alargar era
+   * alcancar o portal por seletor de descendente, que acopla a tela a arvore
+   * interna daqui.
+   */
+  className?: string;
 };
 
 /** Tira acento e caixa, para "Notas" achar "notas" e "Sao" achar "são". */
@@ -86,6 +95,7 @@ export function Command({
   emptyMessage = "Nada com esse nome",
   shortcut = "k",
   title = "Paleta de comandos",
+  className,
 }: CommandProps) {
   const { portalContainer } = useRivoContext();
   const [query, setQuery] = useState("");
@@ -198,6 +208,9 @@ export function Command({
             "overflow-hidden rounded-xl border border-border bg-surface shadow-3",
             "font-sans text-fg outline-none",
             "max-sm:top-0 max-sm:left-0 max-sm:w-full max-sm:translate-x-0 max-sm:rounded-none",
+            // Por ultimo, para a classe de quem chama vencer a da peca - e o
+            // `w-[min(36rem,...)]` daqui e justamente o que mais se troca.
+            className,
           )}
         >
           <BaseDialog.Title className="sr-only">{title}</BaseDialog.Title>
