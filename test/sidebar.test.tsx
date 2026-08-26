@@ -4,7 +4,9 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import {
   Sidebar,
+  SidebarBrand,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarInput,
   SidebarMenu,
@@ -283,4 +285,36 @@ test("o nome escrito por quem monta vence o padrao", () => {
   );
 
   expect(screen.getByRole("button", { name: "Opções de Clientes" })).toBeDefined();
+});
+
+function sidebarWithFooter(defaultOpen: boolean) {
+  return render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={defaultOpen}>
+        <Sidebar>
+          <SidebarBrand mark={<span>R</span>}>RivoCode</SidebarBrand>
+          <SidebarFooter data-testid="rodape">
+            <span>EB</span>
+          </SidebarFooter>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+}
+
+test("encolhida, o rodape centraliza como a marca ja centraliza", () => {
+  // Com a marca centrada no topo e o rodape encostado a esquerda, a coluna
+  // encolhida fica torta - o mesmo sintoma que o comentario do SidebarBrand
+  // descreve, so que na outra ponta da barra.
+  sidebarWithFooter(false);
+
+  expect(screen.getByTestId("rodape").className).toContain("items-center");
+});
+
+test("aberta, o rodape volta a alinhar pela esquerda", () => {
+  // Centralizar sempre trocaria um defeito por outro: com a barra larga, o
+  // bloco do usuario ficaria boiando no meio da coluna.
+  sidebarWithFooter(true);
+
+  expect(screen.getByTestId("rodape").className).not.toContain("items-center");
 });

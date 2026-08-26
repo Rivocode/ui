@@ -254,10 +254,21 @@ export function SidebarContent({ className, ...props }: ComponentProps<"div">) {
 }
 
 export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
+  const { collapsed } = useSidebar();
+
   return (
     <div
       {...props}
-      className={cn("mt-auto flex flex-col gap-1 border-t border-border pt-2", className)}
+      className={cn(
+        "mt-auto flex flex-col gap-1 border-t border-border pt-2",
+        // Encolhida, o rodape centra pelo mesmo motivo que a marca centra: numa
+        // coluna de icones, o bloco do usuario alinhado a esquerda deixa a
+        // barra visivelmente torta - e o rodape esta sempre em campo, em toda
+        // tela de operacao. Larga, alinhar pela esquerda de novo, senao o bloco
+        // fica boiando no meio.
+        collapsed && "items-center",
+        className,
+      )}
     />
   );
 }
