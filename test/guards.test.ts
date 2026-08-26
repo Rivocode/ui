@@ -46,3 +46,31 @@ test("a versao escrita no codigo e a mesma do pacote", async () => {
 
   expect(index).toContain(`export const version = "${pkg.version}";`);
 });
+
+test("cada pacote tem CHANGELOG proprio, e ele viaja junto", async () => {
+  // O nativo publica FONTE e ja trocou tres nomes de prop. Sem o CHANGELOG
+  // dentro do tarball, quem tem a versao velha instalada nao tem de onde
+  // partir - e o agent de migracao, que le exatamente esse arquivo, tambem
+  // nao.
+  for (const dir of [".", "native"]) {
+    const pkg = await Bun.file(`${dir}/package.json`).json();
+    expect(`${pkg.name} declara CHANGELOG: ${pkg.files.includes("CHANGELOG.md")}`).toBe(
+      `${pkg.name} declara CHANGELOG: true`,
+    );
+    expect(`${pkg.name} tem CHANGELOG: ${await Bun.file(`${dir}/CHANGELOG.md`).exists()}`).toBe(
+      `${pkg.name} tem CHANGELOG: true`,
+    );
+  }
+});
+
+test("a tag de cada pacote aponta para a versao dele", async () => {
+  // Dois pacotes, dois gatilhos: `v*` e do web e `native-v*` e do nativo. Sem
+  // o prefixo, uma tag publicaria o pacote errado - ou pior, o certo com o
+  // numero do outro.
+  const web = await Bun.file(".github/workflows/release.yml").text();
+  const native = await Bun.file(".github/workflows/release-native.yml").text();
+
+  expect(web).toContain('tags: ["v*"]');
+  expect(native).toContain('tags: ["native-v*"]');
+  expect(native).toContain("native/package.json");
+});

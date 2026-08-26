@@ -1,0 +1,121 @@
+name: release-native
+
+# Publica o @rivocode/ui-native quando uma tag `native-v*` sobe.
+#
+# Workflow proprio, e nao um passo do outro, porque os dois pacotes andam em
+# velocidades diferentes: o web esta em 0.5 e o nativo em 0.2, e amarrar as
+# duas versoes obrigaria a publicar um sem ter o que dizer sobre ele.
+#
+# O prefixo da tag e o que separa os dois gatilhos: `v0.5.0` e do web, e
+# `native-v0.2.0` e daqui. Sem o prefixo, uma tag publicaria o pacote errado -
+# ou pior, publicaria o certo com o numero do outro.
+on:
+  push:
+    tags: ["native-v*"]
+  # Permite repetir uma publicacao que falhou no meio, sem criar outra tag.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag ja existente para publicar, como native-v0.2.0"
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Exigido pelo `--provenance`: e o que deixa o npm assinar de onde o
+      # pacote saiu. Sem isto o publish falha, e nao apenas perde o selo.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # O Node entra so para o `npm publish`: e ele que sabe assinar a
+      # procedencia, e e ele que escreve o .npmrc a partir do segredo.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - run: bun install --frozen-lockfile
+
+      # react e react-native sao peers, e o unico lugar do repositorio onde
+      # estao instalados e o app de exemplo - que nao e workspace. Sem esta
+      # instalacao o `check:native:types` nao teria tipos para conferir, e
+      # passaria por engano.
+      - run: bun install --frozen-lockfile
+        working-directory: examples/native
+
+      - name: Conferir se a tag bate com a versao
+        run: |
+          tag="${{ github.event.inputs.tag || github.ref_name }}"
+          pkg="native-v$(node -p "require('./native/package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "A tag $tag nao bate com a versao do native/package.json ($pkg)."
+            exit 1
+          fi
+          echo "Publicando $pkg"
+
+      # Este pacote publica FONTE - `exports` aponta para ./src/index.ts, e o
+      # Metro compila no app de quem usa. Erro de tipo daqui nao fica aqui: ele
+      # aparece dentro do node_modules de quem consome, e o skipLibCheck de la
+      # nao ajuda, porque so cobre .d.ts. Por isso a passagem de tipos e
+      # condicao de publicacao, e nao cortesia.
+      - run: bun run check:native:types
+
+      # Os tokens do nativo sao DERIVADOS do CSS do web. Publicar com eles
+      # fora de sincronia entrega uma cor que nenhum tema declara.
+      - run: bun run check:native
+
+      # A tabela de paridade e lida por quem planeja tela de celular. Publicar
+      # com ela desatualizada e mandar usar substituto para peca que ja portou.
+      - run: bun run check:paridade
+
+      - run: bun test native/
+
+      # O tarball precisa levar o CLI: `bin` sem o arquivo publicado passa como
+      # aviso, e nao como erro, entao a versao sobe quebrada e so descobrimos
+      # quando alguem roda o comando. Ja aconteceu aqui uma vez, no outro
+      # pacote.
+      - name: Conferir o que vai no pacote
+        working-directory: native
+        run: |
+          npm pack --dry-run --json > /tmp/pack.json
+          node -e "
+            const [meta] = require('/tmp/pack.json');
+            const files = meta.files.map((file) => file.path);
+            const pkg = require('./package.json');
+
+            for (const target of Object.values(pkg.bin ?? {})) {
+              const path = target.replace(/^\.\//, '');
+              if (!files.includes(path)) {
+                console.error('Falta no tarball o bin ' + path);
+                process.exit(1);
+              }
+            }
+
+            // O pacote e a fonte: se o ponto de entrada nao viajar, o app de
+            // quem instalar quebra no primeiro import, e nao no build.
+            for (const entry of Object.values(pkg.exports)) {
+              const path = String(entry).replace(/^\.\//, '');
+              if (!files.includes(path)) {
+                console.error('Falta no tarball a entrada ' + path);
+                process.exit(1);
+              }
+            }
+
+            console.log('entradas e bin ok:', files.length, 'arquivos');
+          "
+
+      - name: Publicar
+        working-directory: native
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
