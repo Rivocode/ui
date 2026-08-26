@@ -1,271 +1,241 @@
 # Onde paramos
 
-Atualizado em 24/08/2026, no meio de um sync com o claude.ai/design. **Leia a
-secao "Sync em andamento" antes de qualquer coisa**: ha trabalho na arvore que
-nao esta commitado e um processo que talvez ainda esteja rodando.
+Atualizado em 26/08/2026. Este arquivo e o "onde paramos" do repositorio: serve
+a quem chega frio, humano ou agente, e responde tres coisas — o que existe, o
+que falta de verdade, e o que esta parado esperando uma pessoa.
+
+Todo numero aqui foi medido no dia, com comando. A secao **Como conferir cada
+numero** no fim diz qual comando, para que a proxima pessoa nao precise
+acreditar em nada: mede de novo. Numero em documento envelhece calado, e a
+versao anterior deste arquivo passou dois dias afirmando que o site de
+documentacao nao existia.
 
 ## O que existe hoje
 
-| Peca                        | Onde                                                           | Estado                                                                  |
-| --------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| Biblioteca `@rivocode/ui`   | `Rivocode/ui` (este repo), privado                             | 55 componentes + subcaminhos `/form` e `/chart`, 213 testes, tudo verde |
-| Sync com o claude.ai/design | projeto `RivoCode`, `ee82ac5d-bfc0-4f2f-959a-5e371dddee8b`     | 52 componentes, **atras de 26 novos**                                   |
-| Migracao da landing         | branch `design-system/migracao-landing` no repo `rivocode.com` | Pronta, **nao publicada**                                               |
-| Site de documentacao        | nao existe                                                     | Pendente                                                                |
+| Peca                         | Onde                                       | Estado                                                        |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| `@rivocode/ui`               | este repo, `src/`                          | **0.6.1**, publicado no npm, 82 pecas no catalogo             |
+| `@rivocode/ui-native`        | este repo, `native/`                       | **0.2.0**, publicado no npm, 46 das 83 pecas traduzidas       |
+| Site de documentacao         | `apps/docs/`, no ar em `ds.rivocode.com.br` | **Publicado por CI desde hoje**, 158 paginas cruas            |
+| Landing                      | repo `rivocode.com`, na `main`             | Migrada e consumindo o pacote do npm, presa no `^0.2.0`       |
+| Sync com o claude.ai/design  | projeto `RivoCode`                         | **Parado desde 24/08**, e provavelmente nao vale mais retomar |
 
-**Catalogo atual**, por familia:
+O gate do repo esta verde: `bun run check` passa inteiro — quinze verificacoes
+mais **552 testes em 68 arquivos**, sendo 453 do web e 99 do nativo.
 
-- **Acao:** Button, Toggle, ToggleGroup
-- **Campo:** Field, Input, Textarea, MaskedInput, InputGroup, Checkbox, Radio,
-  Switch, Select, Combobox, TreeSelect, DatePicker, DateRangePicker, Calendar
-- **Flutuante:** Dialog, AlertDialog, Sheet, Popover, Tooltip, Menu, Toast
-- **Navegacao:** Sidebar, Tabs, Breadcrumb, Pagination, Steps
-- **Dado:** Table, DataTable, Item, Tree, Badge, Avatar
-- **Estado:** Alert, Skeleton, Spinner, Progress, EmptyState
-- **Estrutura:** Card, Separator, Accordion, Collapsible, Fieldset, ScrollArea,
-  RivoProvider
-- **Grafico:** subcaminho `/chart`, com ChartContainer, ChartTooltip,
-  ChartLegend e a paleta de oito series
+### O catalogo, por familia
 
-Mais os utilitarios: `useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`,
-`formatarData`, `aplicarMascara` e os adaptadores de formulario.
+Sao **82 pecas** e **158 documentos** em `.design-sync/docs/`. Os dois numeros
+sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
+**parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
+dentro de outra coisa, e as 76 partes moram na pagina de quem as monta, com
+ancora propria. Quem conta os 158 arquivos como catalogo passa a gastar
+contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
+esta em `apps/docs/src/parts.ts` e a guarda que a segura em
+`test/indice.test.ts`.
+
+| Familia      | Pecas | Quais                                                                                                                                                                                                                          |
+| ------------ | ----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Formulario   |    28 | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, Tree, TreeSelect |
+| Estrutura    |    14 | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table                                                                                     |
+| Feedback     |    10 | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, Skeleton, Spinner, ToastViewport                                                                                                                                       |
+| Navegacao    |     9 | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                              |
+| Sobreposicao |     7 | AlertDialog, ContextMenu, Dialog, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                            |
+| Acoes        |     5 | Button, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                  |
+| Grafico      |     4 | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                               |
+| Dados        |     4 | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                            |
+| Fundacao     |     1 | RivoProvider                                                                                                                                                                                                                     |
+
+Os nomes de familia saem do `category` do proprio documento, e o site os escreve
+com acento. Nenhuma peca esta sem documento hoje: as 78 que tem exemplo
+executavel tem doc tambem, e a lista "Sem documento" do site esta vazia.
+
+Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
+`@rivocode/ui/chart`, cada um com dependencia de par opcional — quem nao usa
+React Hook Form ou Recharts nao carrega nada deles. Mais os utilitarios:
+`useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`, `formatDate` e
+`applyMask`.
 
 **Fundacao:** tokens em tres camadas, temas `rivocode-dark` e `rivocode-light`,
-densidade confortavel e compacta, guarda de cor literal e guarda de contraste
-com 40 pares medidos.
+densidade confortavel e compacta, guarda de cor literal e guarda de contraste.
 
-## Sync em andamento, 24/08/2026
+## A publicacao do site, que mudou hoje
 
-O upload **nao aconteceu**. O material esta pronto e o repo esta verde (213
-testes), mas a ultima etapa nao rodou.
+Ate hoje, o que estava no ar em `ds.rivocode.com.br` vinha de `vercel deploy`
+rodado na mao. O workflow `docs` existia desde 25/08 e **nunca tinha publicado
+uma vez** — foram dezesseis falhas seguidas.
 
-### Onde exatamente parou
+A causa nao era a que a mensagem de erro dizia. O `VERCEL_TOKEN` do repositorio
+era um token sem dono: a API o aceitava em tudo que se perguntasse por ela, e
+por isso ele parecia certo em qualquer conferencia. Mas o CLI da Vercel carrega
+o dono do token **antes de qualquer comando**, e parava com "Not able to load
+user … User not found". Um erro que fala de usuario, num passo que fala de
+projeto, com um token que passa em todos os testes de acesso. O token foi
+trocado hoje por um criado como pessoa, com escopo no time dono do projeto.
 
-A terceira rodada do driver (`resync.mjs`) **terminou limpa**: 160 componentes,
-`ok: true`, ancora ok, nenhum learnings pendente. Ela deixou 57 folhas de
-revisao em `ds-bundle/_screenshots/review/` e 57 componentes esperando nota.
+**A primeira publicacao por CI foi o run `32978401957`**, em 26/08/2026 as
+14:08 UTC, disparado a mao pelo `workflow_dispatch`. O run seguinte,
+`32979630565`, ja saiu do push normal na `main` e publicou 158 paginas cruas.
+Os dois terminam com `Aliased https://ds.rivocode.com.br`.
 
-Duas falhas ficaram, e ja tem conserto na arvore: `ChartTooltipContent` e
-`ChartLegendContent` devolvem `null` sem props, entao o cartao de piso deles
-saia vazio. Os previews dos dois foram autorados **depois** que essa rodada
-comecou, entao a proxima rodada e que vai fotografa-los. Sao 59 previews
-autorados agora, todos compilando por `bun run check:previews`.
+Como funciona: no push para a `main`, o workflow confere os tres segredos, faz
+`vercel pull`, `vercel build --prod` e `vercel deploy --prebuilt --prod`. Nao ha
+passo de alias — o dominio ja pertence ao projeto na Vercel, entao a
+publicacao de producao o assume sozinha. O site e construido **aqui** e sobe
+pronto, porque a Vercel construindo por conta propria exigiria plano Pro para
+ler um repositorio privado de organizacao.
 
-### O que falta, em ordem
+Antes de publicar, o workflow confere o que vai ao ar: `llms.txt`, `index.html`
+e as paginas cruas de componente, com piso de cem. O site existe para ser lido
+por agente, e um build sem o indice sobe bonito e inutil.
 
-```sh
-# 1. rodada final do driver (build, diff, validate, captura)
-node .ds-sync/resync.mjs --config .design-sync/config.json \
-  --node-modules ./node_modules --entry ./dist/index.js \
-  --out ./ds-bundle --remote .design-sync/.cache/remote-sync.json
-```
+## O React Native
 
-2. **Dar nota nas 59 folhas** em `ds-bundle/_screenshots/review/`, na regua
-   absoluta (estilizado, completo, plausivel). Verdicts vao em
-   `.design-sync/.cache/review/<Nome>.grade.json`, no formato
-   `{"cells": {"<Celula>": {"verdict": "good", "note": "…"}}}`. Os nomes de
-   celula estao no proprio `<Nome>.json` da mesma pasta.
+O `@rivocode/ui-native` esta na 0.2.0 no npm, publicado em 26/08. A tabela de
+paridade em `.claude/skills/rivocode-ui/reference/native.md` mede peca por peca
+contra o `native/src/index.ts`, e o `bun run check:paridade` a segura — ela nao
+pode dizer que uma peca falta depois que ela chegou.
 
-3. **Subir**, caminho atomico: `finalize_plan` com `localDir: "./ds-bundle"` →
-   sentinela `_ds_needs_recompile` → todos os arquivos → deletes → sentinela de
-   novo → `_ds_sync.json` **por ultimo, sozinho**.
+| No React Native      | Quantas | O que significa                                                            |
+| -------------------- | ------: | ------------------------------------------------------------------------- |
+| Traduz, mesmo nome   |      43 | mesma peca, mesmo nome de prop — a assinatura muda, veja abaixo            |
+| Traduz, outro nome   |       3 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast` |
+| `○ na fila`          |      21 | falta escrever; **e a pendencia real do nativo**                           |
+| `✕ nao porta`        |      16 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque           |
 
-4. **Commitar** o duravel: `config.json`, `conventions.md`, `previews/`,
-   `docs/`, mais as mudancas de `src/chart`, README e demo.
+As 21 na fila: `ChartContainer`, `ChartDonut`, `ChartRadial`, `Clipboard`,
+`Code`, `ColorPicker`, `DateRangePicker`, `Editable`, `FileUpload`, `Form`,
+`Indicator`, `InputGroup`, `Item`, `PasswordInput`, `RelativeTime`, `Steps`,
+`TagsInput`, `Timeline`, `Tracker`, `Tree`, `TreeSelect`.
 
-### Se algo dessa etapa ja tiver rodado
+Tres delas nao dependem so de escrever codigo: `Clipboard` e `FileUpload` pedem
+uma dependencia do Expo, e dependencia e escolha do app, nao da biblioteca. Os
+tres graficos dependem de um motor de desenho nativo que ainda nao existe — a
+Recharts e DOM e nao atravessa.
 
-Um projeto sem `_ds_sync.json` atualizado apenas re-verifica tudo no proximo
-sync. Nada apodrece em silencio. O que **nao** pode acontecer e a ancora subir
-antes dos arquivos: ela promete o que ainda nao chegou.
+**Aviso que vale mais que a tabela:** nome igual nao e API igual. No nativo tudo
+e controlado (sem `defaultValue`) e a lista vem por `items`, nao por
+composicao. Nunca prometa que a tela do web vai rodar no celular: o que se
+reaproveita e o vocabulario de classes, o token e a escolha da peca. O JSX se
+reescreve.
 
-## O que este sync mudou no proprio pacote
+## O que esta pendente de verdade
 
-Tres coisas sairam do sync e viraram codigo, porque eram furos de verdade:
+1. **As 21 pecas na fila do nativo**, acima. E a maior lacuna aberta do
+   repositorio, e a unica em que o trabalho e so escrever a peca.
 
-- **`@rivocode/ui/chart` reexporta as pecas da Recharts** que a biblioteca
-  veste. Sem isso, quem recebia o `ChartContainer` tinha a moldura e nada para
-  por dentro: as marcas e os eixos vivem na Recharts. `Tooltip` e `Legend` dela
-  ficam de fora, porque os nossos ja embrulham os dois e o nome colidiria.
+2. **O workflow `release-native` nunca publicou.** As quatro tentativas
+   falharam, e a ultima falhou com `E403 ... You cannot publish over the
+   previously published versions: 0.2.0` — ou seja, a 0.2.0 que esta no npm
+   subiu pela mao, e o caminho automatico segue sem prova de que funciona. Ele
+   so vai ser exercitado de verdade na `native-v0.3.0`. O workflow `release`
+   do web, esse ja publicou por CI: a 0.6.1 saiu da tag.
 
-- **Os dois subcaminhos entram no bundle do design**, por `extraEntries`. Sem
-  isso o agent de design nao enxergava `Form`, `FormField` nem nada de
-  grafico.
+3. **A landing esta presa no `^0.2.0`.** O repo `rivocode.com` ja consome o
+   pacote publicado, entao o bloqueio antigo acabou, mas ela esta quatro
+   versoes menores atras da 0.6.1. Subir e trabalho de migracao de ponto de
+   chamada, nao de publicacao.
 
-- **Componente de subcaminho precisa de `componentSrcMap`.** O conversor
-  descobre componentes pelo `.d.ts` da entrada principal; `ChartContainer` e
-  `Form` estavam no global mas sem contrato, sem doc e sem cartao. Cinco
-  entradas resolvem, e cada um ganhou documento.
+4. **O sync com o claude.ai/design esta parado desde 24/08.** A ultima rodada do
+   driver foi as 13:19 daquele dia, e nada tocou naquela pasta desde entao. O
+   `ds-bundle/` e o `.design-sync/.cache/` continuam na arvore, nao versionados,
+   com o material daquele dia. Vale registrar a duvida em vez de esconde-la:
+   aquele sync existia para dar ao agente de design um catalogo que ele nao
+   tinha, e desde entao o site cru em `ds.rivocode.com.br` passou a entregar a
+   mesma coisa por HTTP, com `llms.txt` de indice. Provavelmente a pendencia
+   deve ser fechada como abandonada, e nao retomada. Ninguem decidiu isso
+   ainda.
 
-## Pergunta aberta: site de documentacao guiado por IA
+## O que esta bloqueado esperando acao humana
 
-Ideia do Emanuel, ainda **nao decidida**: `https://ds.rivocode.com.br/<nome>.md`
-entrega markdown cru para qualquer IA, mais `/llms.txt` de indice, mais uma
-skill enviada dentro do pacote.
+Hoje, nada. Os dois bloqueios que este arquivo listava cairam:
 
-O padrao e comprovado: a propria Base UI envia a documentacao inteira dentro do
-pacote, em `node_modules/@base-ui/react/docs/react/components/*.md`, e foi assim
-que o `Sheet` foi construido nesta sessao sem chutar API.
+- **Publicar no npm** — resolvido. Os dois pacotes estao no registro, e a conta
+  desta maquina esta autenticada (`npm whoami` responde `emanuelbacalhau`). A
+  nota anterior, de que `npm login` travava a publicacao do `ui-native`, nao
+  vale mais: a 0.2.0 subiu em 26/08 as 05:06 UTC.
+- **Publicar o site** — resolvido hoje, com a troca do token, acima.
 
-Metade do material ja existe: 92 documentos em `.design-sync/docs/`, os
-`.prompt.md` gerados, 59 previews que sao exemplos reais, e o `conventions.md`.
-O trabalho e de montagem e de gerador unico, nao de escrita. **Recomendacao:
-neste repo**, como `apps/docs`, porque doc em repo separado mente na primeira
-prop renomeada e nenhum teste quebra.
+O que continua valendo como restricao, e nao como bloqueio: **o repositorio e
+privado**, entao o npm recusa `--provenance` com 422, e por isso os dois
+workflows de release publicam sem assinatura. Tornar o repositorio publico e o
+que devolve a procedencia. Esta escrito nos dois workflows, no lugar onde
+alguem tentaria "consertar".
 
-## Regra que vale para todo componente novo
+## Decisoes que continuam valendo
 
-**Mobile primeiro.** Decidir o que acontece em 390px antes de desenhar o
-desktop. Painel flutuante nao encosta na borda, calendario cai para um mes,
-dialogo vira folha de baixo, tabela rola dentro da propria moldura.
+- **Mobile primeiro.** Decidir o que acontece em 390px antes de desenhar o
+  desktop. Painel flutuante nao encosta na borda, calendario cai para um mes,
+  dialogo vira folha de baixo, tabela rola dentro da propria moldura.
+- **A TanStack Table entrou, como motor interno.** A decisao de 24/08 era
+  deixa-la de fora; a spec do mesmo dia
+  (`docs/superpowers/specs/2026-08-24-datatable-tanstack-design.md`) a reviu, e
+  hoje o `DataTable` importa `@tanstack/react-table` v9 mais a
+  `@tanstack/react-virtual` (`src/components/data-table.tsx`,
+  `package.json:82`). O que a decisao protegia continua protegido, e e essa a
+  parte que nao muda: nenhum tipo de terceiro vaza para a assinatura publica. A
+  `Coluna<Linha>` continua nossa, a API e colunas mais tres booleanos, e
+  ordenacao, filtro, paginacao e selecao entram por opcao.
+- **React Query fica de fora.** E arquitetura de aplicacao, nao de design. O que
+  cabe ao design system e a apresentacao dos estados que uma consulta produz, e
+  isso o `DataTable` ja faz por `isLoading`, `isError` e `onRetry` — funciona
+  igual com `fetch` na mao, com SWR ou com server component.
+- **Receitas de tela inteira** (login, painel, listagem pronta) continuam de
+  fora, porque receita nao versiona como componente e ninguem decidiu se elas
+  moram aqui ou num pacote separado.
 
-O `bun run shot` tira dois retratos de cada pagina, um de mesa e um de celular.
-O de celular sai de dentro de um iframe em `demo/celular.html`, e nao do
-tamanho da janela: o Chrome no macOS nao abre janela abaixo de 500px, e pedir
-390 devolvia um retrato cortado em 390 com layout de 500. Parecia certo e
-escondia o que quebrou.
+## Um numero que diverge, de proposito ou nao
 
-## O que esta travado, e em quem
-
-**A publicacao do pacote.** O site consome por `bun link`, que funciona so na
-maquina do Emanuel. Sem publicar, a migracao da landing nao pode subir e nenhum
-projeto de cliente pode instalar.
-
-Depende de um token do GitHub com `write:packages`, que so o Emanuel pode criar
-em `github.com/settings/tokens`. Depois disso:
-
-```sh
-bun publish            # neste repo
-# e no repo do site, trocar o bun link por dependencia de verdade
-```
-
-## O que o Emanuel pediu em seguida
-
-Ele quer "deixar bem redondo": seletor de data, formularios com Zod e React
-Hook Form, e integracao com React Query.
-
-Abaixo esta a analise de cada um.
-
-### Seletor de data, **feito**
-
-**A Base UI nao tem seletor de data.** Este e o primeiro componente que precisa
-de outra fundacao, e e o mais dificil do catalogo: locale, teclado, intervalo,
-mascara de digitacao e fuso sao todos armadilhas conhecidas.
-
-Saiu assim: `Popover` primeiro, depois `Calendar` sobre a `react-day-picker`
-10, e sobre ele o `DatePicker` e o `DateRangePicker`.
-
-Nenhuma folha de estilo da react-day-picker e importada: o desenho todo vem
-dos nossos tokens pelo `classNames`. Ela entra so como motor, e trocar de
-motor um dia nao mexe no visual.
-
-O `DatePicker` digita e escolhe: mascara `dd/mm/aaaa`, texto pela metade nao
-vira data, e ao sair do campo o que nao virou data volta para a ultima valida.
-Com `name`, sai um campo escondido em `aaaa-mm-dd` para o formulario nativo.
-
-O `DateRangePicker` nao digita, so escolhe, e o gatilho mostra
-`03/03/2026, 12/03/2026`. Mascara de intervalo pede duas datas num campo so,
-e o custo de acertar teclado, colagem e ordem invertida nao se paga.
-
-O formato mora em `src/lib/data.ts`, com `formatarData`, `lerData` e
-`mascararData` exportados. Sao 30 linhas no lugar de uma dependencia de data
-na API publica.
-
-**Falta:** o `DatePicker` ainda nao conversa com o nosso `Field`, entao label,
-descricao e erro nao se ligam sozinhos. Isso entra junto com a onda de
-formularios, que e onde o assunto vive.
-
-### Formularios com Zod e React Hook Form, **feito**
-
-Saiu em `@rivocode/ui/form`, subcaminho separado, com `react-hook-form`, `zod`
-e `@hookform/resolvers` como dependencias de par opcionais. Projeto que nao usa
-RHF nao carrega nada disso.
-
-Pecas: `Form` (o `<form>` e o contexto numa coisa so, com `noValidate`),
-`FormField` (rotulo, controle, ajuda e erro numa linha), `useZodForm` (o
-`useForm` ja ligado ao Zod) e tres adaptadores, `paraDatePicker`, `paraSelect`
-e `paraCheckbox`.
-
-A ponte com o `Field` saiu mais barata do que o esperado: a Base UI ja liga
-rotulo, `aria-describedby` e `aria-invalid` a qualquer controle dela que esteja
-dentro do `Field.Root`. Bastou o `DatePicker` passar a renderizar pelo
-`Field.Control` em vez de um input cru, e o fio se ligou sozinho. O `FormField`
-nao inventa id nenhum.
-
-O `Select` e o `Checkbox` ganharam a borda de invalido, que faltava.
-
-### React Query, **nao comecado**
-
-Aqui eu discordo em parte, e vale discutir antes de construir.
-
-React Query e arquitetura de aplicacao, nao de design. Um design system que
-depende dele obriga todo projeto de cliente a usa-lo, e amarra a biblioteca a
-decisoes que nao sao dela.
-
-O que **e** trabalho do design system e a **apresentacao dos estados** que uma
-consulta produz, e isso ja existe: `Skeleton` para carregando, `Alert` para
-erro, `EmptyState` para vazio. O que falta e a peca que amarra os tres:
-
-```tsx
-<DataTable
-  data={query.data}
-  isLoading={query.isLoading}
-  isError={query.isError}
-  onRetry={query.refetch}
-  columns={...}
-/>
-```
-
-Isso da a integracao que ele quer, sem a biblioteca conhecer o React Query.
-Funciona igual com `fetch` na mao, com SWR ou com server component.
-
-Se depois disso ele ainda quiser acoplamento direto, o lugar e um subcaminho
-`@rivocode/ui/query`, opcional e com dependencia de par.
+O catalogo do site conta **82** pecas; a tabela de paridade do nativo conta
+**83**. A diferenca inteira e o `ButtonGroup`: o nome comeca por `Button`, e a
+regra de prefixo do `parts.ts` o trata como parte do `Button` — ele nao esta na
+lista `STANDALONE`, onde `CheckboxGroup`, `InputGroup` e `ToggleGroup` estao. A
+tabela de paridade o conta como peca inteira. As duas guardas passam, cada uma
+consistente consigo mesma. Se alguem for uniformizar, o lugar e o `STANDALONE`,
+e vai mexer nos dois numeros de uma vez.
 
 ## Como retomar
 
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # lint, guarda de cor, guarda de contraste, testes
+bun run check        # quinze verificacoes mais os 552 testes
 bun run shot         # gera a vitrine em demo/dist/
+cd apps/docs && bun run dev   # o site de documentacao, local
 ```
 
-O spec e o plano da fundacao estao em `docs/`. As notas do sync com o
-claude.ai/design, incluindo quatro armadilhas que custaram tempo, estao em
-`.design-sync/NOTES.md`.
+O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
+`ds.rivocode.com.br/convencoes.md`. A skill que um agente le esta em
+`.claude/skills/rivocode-ui/`, e vai dentro do pacote publicado (`skill/`,
+gerado por `bun run build:skill`). As notas do sync com o claude.ai/design estao
+em `.design-sync/NOTES.md`. O spec da fundacao esta nos outros dois arquivos
+desta pasta.
 
-## O que ficou de fora, e por que
+## Como conferir cada numero
 
-- **Command, a paleta de busca por atalho.** Cabe sobre o Combobox, mas o
-  padrao de lista sem painel ancorado precisa de um teste de mesa antes.
-- **Receitas de tela inteira** (login, painel, listagem pronta). E o que mais
-  aproxima de "redondo", e depende de decidir se elas moram aqui ou num pacote
-  separado, porque receita nao versiona igual a componente.
-- ~~**Graficos**~~ feito, sobre a Recharts, em `@rivocode/ui/chart`.
-- **Site de documentacao.** Continua pendente, e a vitrine em `demo/` faz as
-  vezes.
-- **TanStack Table.** Decidido em 24/08/2026 **ficar de fora por enquanto**, e
-  entrar como melhoria futura. A `Coluna<Linha>` do `DataTable` continua nossa:
-  trocar por `ColumnDef` poria a biblioteca de terceiro na assinatura publica e
-  obrigaria todo projeto de cliente a importa-la so para declarar quatro
-  colunas de listagem. Quando entrar, o lugar e um subcaminho `@rivocode/ui/
-  datagrid` com dependencia de par opcional, vestindo os primitivos `Table*`,
-  como ja foi feito com a Recharts em `/chart` e o React Hook Form em `/form`.
-  Ela ganha em ordenacao no cliente, filtro por coluna, agrupamento, coluna
-  fixa e redimensionavel e virtualizacao, nada que o `DataTable` faca hoje.
-  Atencao ao calendario da propria biblioteca: a v8 e `useReactTable`, e a v9
-  troca para `useTable` mais `tableFeatures()`, movendo os row models para
-  dentro disso. O passo barato antes dela e ordenacao por coluna no proprio
-  `DataTable`, com `sortable` na coluna e `onSortChange` por fora, que serve a
-  paginacao no servidor sem custar dependencia.
+```sh
+ls src/components | wc -l                          # 76 arquivos (peca != arquivo)
+ls .design-sync/docs/*.md | wc -l                  # 158 documentos
+bun test                                           # 552 pass, 68 arquivos
+bun test ./test                                    # 453 do web, 59 arquivos
+bun test native/test                               # 99 do nativo, 9 arquivos
+bun run check:paridade                             # confere as 83 linhas da tabela
+npm view @rivocode/ui version                      # 0.6.1
+npm view @rivocode/ui-native version               # 0.2.0
+gh run list --workflow=docs --limit 5              # a publicacao do site
+gh run list --workflow=release-native --limit 5    # as quatro falhas
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, text/plain
+```
 
-## Ordem sugerida
+As 82 pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
+parte. O caminho curto e `curl -s https://ds.rivocode.com.br/llms.txt | head`,
+que abre dizendo o numero. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
 
-1. Publicar o pacote e destravar a landing (depende do token)
-2. ~~`Popover`~~ feito
-3. ~~`Calendar`, `DatePicker` e `DateRangePicker`~~ feito
-4. ~~`@rivocode/ui/form` com RHF e Zod, e a ponte do `DatePicker` com o `Field`~~ feito
-5. ~~`DataTable` com os estados de consulta~~ feito
-6. Site de documentacao
-7. Sync com o claude.ai/design, que esta atras de vinte e seis componentes
+## O que nao foi medido
+
+- **Se a landing publicada esta com o pacote do npm ou com uma build antiga.**
+  Foi medido o `package.json` e o `node_modules` do repo `rivocode.com` local
+  — os dois dizem 0.2.0 —, mas nao o que esta servido em producao.
+- **Se o sync com o claude.ai/design chegou a subir alguma coisa naquele dia.**
+  O que se sabe e a data do ultimo log local. O estado do lado de la nao foi
+  consultado.
