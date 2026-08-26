@@ -14,13 +14,24 @@ export type Crumb = {
 export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
   items: Crumb[];
   /** Quantas migalhas cabem antes de o meio virar reticencia. */
+  max?: number;
+  /**
+   * O nome antigo do teto.
+   *
+   * `max` e como o resto do catalogo chama o teto de uma lista - `Indicator`,
+   * `AvatarGroup` e `TagsInput` ja o chamavam assim, e so a trilha divergia.
+   * Quem ja escreveu `maxItems` continua valendo: a prop segue lida, e `max`
+   * vence quando as duas vierem juntas.
+   *
+   * @deprecated Use `max`.
+   */
   maxItems?: number;
 };
 
 /**
  * O caminho ate onde o usuario esta.
  *
- * Encolhe sozinho: passando de `maxItems`, o meio vira reticencia e sobram a
+ * Encolhe sozinho: passando de `max`, o meio vira reticencia e sobram a
  * primeira e as duas ultimas. No celular sobram so as duas ultimas, porque
  * caminho comprido rola para fora da tela e ninguem le o comeco mesmo.
  *
@@ -28,8 +39,12 @@ export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
  * ja esta, e link que nao leva a lugar nenhum e ruido para quem navega por
  * teclado.
  */
-export function Breadcrumb({ className, items, maxItems = 4, ...props }: BreadcrumbProps) {
-  const folded = items.length > maxItems;
+export function Breadcrumb({ className, items, max, maxItems, ...props }: BreadcrumbProps) {
+  // O padrao mora aqui, e nao na desestruturacao, porque sao duas portas para
+  // o mesmo teto: com `maxItems = 4` no parametro, quem passasse so `max`
+  // ainda receberia o 4 do nome antigo e teria de saber que a ordem importa.
+  const limit = max ?? maxItems ?? 4;
+  const folded = items.length > limit;
   const visiveis: (Crumb | "reticencia")[] = folded
     ? [items[0]!, "reticencia", ...items.slice(-2)]
     : items;

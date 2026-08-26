@@ -601,12 +601,19 @@ export function SidebarMenuSub({
   );
 }
 
+export type SidebarMenuSkeletonProps = Omit<ComponentProps<"ul">, "children"> & {
+  /** Quantas linhas de marca de lugar. O padrao cobre uma navegacao curta. */
+  count?: number;
+};
+
 /** Marca de lugar enquanto a navegacao vem do servidor. */
-export function SidebarMenuSkeleton({ count = 5 }: { count?: number }) {
+export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarMenuSkeletonProps) {
   const { collapsed } = useSidebar();
 
   return (
-    <ul aria-busy="true" className="flex flex-col gap-0.5">
+    // O `aria-busy` vem depois do spread: ele e a razao de a peca existir, e
+    // quem chama nao deve conseguir desligar o aviso de "ainda carregando".
+    <ul {...props} aria-busy="true" className={cn("flex flex-col gap-0.5", className)}>
       {Array.from({ length: count }, (_, index) => (
         <li key={index} className="flex h-[var(--rc-control-md)] items-center gap-3 px-2">
           <Skeleton className="size-4 shrink-0 rounded-sm" />

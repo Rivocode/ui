@@ -25,6 +25,12 @@ import { DataTable, type Column } from "../src/components/data-table";
  * biblioteca quebra a tela de alguem sem aviso e sem erro.
  *
  * Os nomes das partes sao os mesmos da secao "Partes" de cada pagina.
+ *
+ * A raiz nao se prova aqui. Este arquivo cuida do que fica **abaixo** dela, que
+ * e caso a caso por natureza - cada peca tem as suas partes. O `className` da
+ * raiz, que vale para o catalogo inteiro, e varrido export a export em
+ * `classe-da-raiz.test.tsx`: foi a falta dessa varredura que deixou
+ * `ToastViewport` e `SidebarMenuSkeleton` passarem sem aceitar `className`.
  */
 
 function withTheme(node: React.ReactNode) {

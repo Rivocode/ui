@@ -1,7 +1,7 @@
 "use client";
 
 import { Toast as BaseToast } from "@base-ui/react/toast";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -148,7 +148,8 @@ function List({ position }: { position: ToastPosition }) {
   ));
 }
 
-export type ToastViewportProps = {
+export type ToastViewportProps = ComponentProps<typeof BaseToast.Viewport> & {
+  /** Onde o portal ancora. O RivoProvider passa o container que leva o tema. */
   container: HTMLElement | null;
   /**
    * Onde os avisos aparecem. Padrao `bottom-right`, que e o canto que menos
@@ -166,14 +167,23 @@ export type ToastViewportProps = {
  * Montada pelo RivoProvider, entao raramente e usada direto. Para escolher o
  * canto, passe `toastPosition` ao provider.
  */
-export function ToastViewport({ container, position = "bottom-right" }: ToastViewportProps) {
+export function ToastViewport({
+  className,
+  container,
+  position = "bottom-right",
+  ...props
+}: ToastViewportProps) {
   return (
     <BaseToast.Portal container={container ?? undefined}>
       <BaseToast.Viewport
+        {...props}
+        // A raiz da area e a Viewport, e nao o Portal: o Portal nao pinta nada.
+        // Quem quiser mexer na largura ou no respiro da pilha veste aqui.
         className={cn(
           "fixed z-[var(--rc-z-toast)]",
           ANCHOR[position],
           "flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2 outline-none",
+          className,
         )}
       >
         <List position={position} />

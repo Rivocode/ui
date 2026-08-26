@@ -50,6 +50,23 @@ teclado.
 `SidebarBrand` é a marca no topo, e encolhe junto com a barra: aberta mostra o
 nome ao lado do símbolo, na coluna de ícones mostra só o símbolo.
 
+### `title` e `label` dizem coisas diferentes
+
+Quatro peças da família recebem um texto, e dois nomes de prop dão conta dos
+quatro porque são quatro papéis:
+
+- `Sidebar` tem `title`: o título que só o leitor de tela ouve, no celular,
+  onde a barra vira folha e perde o contexto. É o mesmo papel — e o mesmo nome
+  — de `CalendarPanel` e `Command`.
+- `SidebarGroup` tem `label`: o cabeçalho visível de um grupo de itens, como em
+  `MenuGroup` e nos grupos do `Command`.
+- `SidebarInput` tem `label`: o nome acessível de um campo sem rótulo visível,
+  como em `Editable`, `Splitter` e `Progress`.
+- `SidebarMenuSub` tem `label`: o texto da própria linha, como em `Tree` e nos
+  itens do `Command`.
+
+Vale a pena saber disso ao procurar a prop: o nome segue o papel, e não a peça.
+
 
 ## O celular já vem resolvido
 

@@ -18,6 +18,7 @@ export function Path() {
 export function Folded() {
   return (
     <Breadcrumb
+      max={4}
       items={[
         { label: 'Início', href: '#' },
         { label: 'Clientes', href: '#' },
