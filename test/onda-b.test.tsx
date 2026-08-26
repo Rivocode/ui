@@ -51,6 +51,24 @@ test("o telefone troca de molde entre o fixo e o celular", () => {
   expect(field.value).toBe("(83) 98811-2233");
 });
 
+test("o telefone fixo que chega pronto ja entra com o molde certo", () => {
+  // Formulario de edicao chega preenchido do servidor, e era ai que aparecia:
+  // o onChange escolhia o molde com phoneMask, e o estado inicial nao. Saia
+  // "(83) 88112-233", com a pontuacao do celular num numero de oito casas. E
+  // se corrigia sozinho na primeira tecla, o que torna dificil reproduzir.
+  comTema(<MaskedInput mask="telefone" defaultValue="8388112233" placeholder="Telefone" />);
+  const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;
+
+  expect(field.value).toBe("(83) 8811-2233");
+});
+
+test("o celular que chega pronto continua com nove casas", () => {
+  comTema(<MaskedInput mask="telefone" defaultValue="83988112233" placeholder="Celular" />);
+  const field = screen.getByPlaceholderText("Celular") as HTMLInputElement;
+
+  expect(field.value).toBe("(83) 98811-2233");
+});
+
 test("o campo de dinheiro enche da direita para a esquerda", () => {
   comTema(<MaskedInput mask="moeda" placeholder="Valor" />);
   const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
