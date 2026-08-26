@@ -5,6 +5,7 @@ import { Markdown } from '@/components/markdown'
 import { PropsTable } from '@/components/props-table'
 import { findEntry, importPathOf, type Entry } from '@/catalog'
 import { anchor } from '@/anchor'
+import { useText } from '@/use-text'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -29,6 +30,33 @@ function Section({ title, children }: { title: string; children: React.ReactNode
  */
 function examplesOf(entry: Entry) {
   return [entry, ...(entry.parts ?? [])].filter((item) => item.loadExamples)
+}
+
+/**
+ * A prosa da peca, que chega depois do resto da pagina.
+ *
+ * O corpo das docs saiu do chunk de entrada, entao ele e uma requisicao a
+ * parte. O lugar dele fica reservado enquanto isso: sem a barra, o titulo da
+ * secao seguinte subia e descia quando o texto chegava.
+ */
+function Body({
+  entry,
+  idPrefix,
+  headingOffset,
+}: {
+  entry: Entry
+  idPrefix?: string
+  headingOffset?: number
+}) {
+  const body = useText(entry.loadBody)
+
+  if (body === null) {
+    return <div className="h-24 animate-pulse rounded-md bg-surface" />
+  }
+
+  if (!body.trim()) return null
+
+  return <Markdown source={body} idPrefix={idPrefix} headingOffset={headingOffset} />
 }
 
 export function ComponentPage({ slug }: { slug: string }) {
@@ -70,7 +98,7 @@ export function ComponentPage({ slug }: { slug: string }) {
       {shown.length > 0 && (
         <section className="mb-10 space-y-4">
           {shown.map((item) => (
-            <Examples key={item.name} load={item.loadExamples!} source={item.exampleSource} />
+            <Examples key={item.name} load={item.loadExamples!} loadSource={item.loadSource} />
           ))}
         </section>
       )}
@@ -85,7 +113,7 @@ export function ComponentPage({ slug }: { slug: string }) {
       </div>
 
       <Section title="Quando usar">
-        <Markdown source={entry.body} />
+        <Body entry={entry} />
       </Section>
 
       <Section title="API">
@@ -114,17 +142,15 @@ export function ComponentPage({ slug }: { slug: string }) {
                   </a>
                 </div>
 
-                {part.body && (
-                  <div className="mb-3">
-                    {/* A parte é convidada nesta página: os títulos dela
-                        assinam com o nome dela e descem para dentro do `h3`
-                        acima. Sem isso, o `## No React Native` do ButtonGroup
-                        disputava o endereço `#no-react-native` com o do
-                        Button, e o índice da direita, que identifica cada
-                        linha pelo id, parava de se reconciliar. */}
-                    <Markdown source={part.body} idPrefix={anchor(part.name)} headingOffset={2} />
-                  </div>
-                )}
+                <div className="mb-3">
+                  {/* A parte é convidada nesta página: os títulos dela
+                      assinam com o nome dela e descem para dentro do `h3`
+                      acima. Sem isso, o `## No React Native` do ButtonGroup
+                      disputava o endereço `#no-react-native` com o do
+                      Button, e o índice da direita, que identifica cada
+                      linha pelo id, parava de se reconciliar. */}
+                  <Body entry={part} idPrefix={anchor(part.name)} headingOffset={2} />
+                </div>
 
                 <PropsTable component={part.name} compact />
               </div>

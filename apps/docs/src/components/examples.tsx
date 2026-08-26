@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react'
 import { ExampleStage } from '@/components/example-stage'
+import { useText } from '@/use-text'
 import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/example-source'
 
 /* ---------------------------------------------------------------------------
@@ -12,13 +13,16 @@ import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/ex
 
 export function Examples({
   load,
-  source,
+  loadSource,
 }: {
   load: () => Promise<Record<string, ComponentType>>
-  source?: string
+  loadSource?: () => Promise<string>
 }) {
   const [module, setModule] = useState<Record<string, ComponentType> | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // A fonte vem do mesmo arquivo do exemplo, por outro caminho: ela e texto que
+  // o leitor le, e ele e modulo que o React monta.
+  const source = useText(loadSource)
 
   useEffect(() => {
     let alive = true

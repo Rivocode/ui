@@ -1,8 +1,7 @@
 import { Badge, Button } from '@rivocode/ui'
 import { ArrowRight, Bot, Check, Copy, Layers, Palette, Ruler, Smartphone, Sparkles } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { CodeRiver } from '@/components/code-river'
-import { Showcase } from '@/components/showcase'
 import { ENTRIES, FAMILIES, WITH_EXAMPLE, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
 import { NATIVE_PIECES } from '@/native-parity'
@@ -10,13 +9,24 @@ import { Logo } from '@/components/logo'
 import { linkTo, type Route } from '@/routes'
 import { version } from '../../../../package.json'
 
-/* ---------------------------------------------------------------------------
- * The front page
+/*
+ * A vitrine chega depois do resto da capa.
  *
- * Someone lands here to decide whether to adopt this, and that decision is
- * made by looking, not by reading. So the running screen comes before the
- * prose, each of the three ideas that make the library different gets a
- * picture, and the catalog is the last thing rather than the first.
+ * Ela monta uma tela inteira - DataTable, Select, abas e um grafico -, e o
+ * Recharts sozinho passa de 250 KB. Enquanto ela era import estatico, esse peso
+ * ficava entre quem abre o site e o titulo da pagina, que e o que decide se a
+ * pessoa fica. O lugar dela fica reservado para a rolagem nao pular quando ela
+ * chega.
+ */
+const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ default: mod.Showcase })))
+
+/* ---------------------------------------------------------------------------
+ * A capa
+ *
+ * Quem chega aqui esta decidindo se adota a biblioteca, e decide olhando, e nao
+ * lendo. Por isso a tela que roda vem antes da prosa, cada uma das tres ideias
+ * que fazem a biblioteca diferente ganha figura, e o catalogo fica no fim, e
+ * nao no comeco.
  * ------------------------------------------------------------------------- */
 
 /*
@@ -35,7 +45,7 @@ import { version } from '../../../../package.json'
  * Conta a suíte da raiz inteira — `test/` e `native/test/` —, que é o que o
  * rótulo ao lado promete.
  */
-const TESTS = 801
+const TESTS = 867
 
 const INSTALL = 'npm install @rivocode/ui'
 
@@ -118,7 +128,6 @@ function Stat({ value, label }: { value: string; label: string }) {
   )
 }
 
-/** A section that argues one point, with its own picture beside the words. */
 function Argument({
   icon,
   eyebrow,
@@ -156,7 +165,6 @@ function Argument({
   )
 }
 
-/** The three token layers, drawn instead of described. */
 function TokenLayers() {
   const layers = [
     { code: '--rc-p-lime-400', hint: 'a cor crua, sem opinião' },
@@ -260,7 +268,11 @@ function BothWorlds() {
   )
 }
 
-/** Both densities at once, driven by the token and not by a hard-coded height. */
+/**
+ * As duas densidades ao mesmo tempo, com a altura vinda do token. Cravar um
+ * valor aqui nao quebra nada: a figura continua bonita e passa a mentir, porque
+ * as duas caixas ficam iguais e a secao esta justamente dizendo que mudam.
+ */
 function DensityFigure() {
   return (
     <div className="space-y-4 rounded-lg border border-border bg-surface/70 p-6 backdrop-blur-sm">
@@ -298,8 +310,8 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
     <div className="relative">
       <CodeRiver />
 
-      {/* A glow behind the headline. The river alone is texture; this is what
-          gives the top of the page a centre of gravity. */}
+      {/* O brilho atras do titulo. O rio sozinho e textura; e isto que da ao
+          topo da pagina um centro de gravidade. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-[38rem] opacity-70"
@@ -354,9 +366,10 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
         </div>
       </section>
 
-      {/* The argument, running, before any of the prose about it. */}
       <section className="relative mx-auto max-w-6xl px-6 pb-24">
-        <Showcase />
+        <Suspense fallback={<div className="min-h-[34rem] rounded-lg border border-border bg-surface" />}>
+          <Showcase />
+        </Suspense>
       </section>
 
       <section className="relative mx-auto max-w-6xl space-y-24 px-6 pb-24">

@@ -1,4 +1,6 @@
 import type { ComponentType } from 'react'
+import { DOC_INDEX } from 'virtual:catalog-index'
+import { dropLeadingHeading, splitFrontmatter } from '@/doc-text'
 import { findParent } from '@/parts'
 import { slugify } from '@/slug'
 
@@ -11,13 +13,18 @@ export { importPathOf } from '@/parts'
  * alimenta o sync do claude.ai/design, e sao exatamente esses arquivos que este
  * site serve. Documentacao mantida como copia separada comeca a mentir na
  * primeira prop renomeada, e nenhum teste quebra para avisar.
+ *
+ * O que entra no chunk de entrada e so o indice - nome, familia e lede -, que
+ * e o que a lista lateral desenha. Corpo e fonte de exemplo sao glob PREGUICOSO
+ * de proposito: com `eager: true` os cento e cinquenta e sete corpos mais as
+ * fontes dos previews viravam 1,77 MB de entrada, e a capa so pintava depois de
+ * o navegador parsear todos eles. Ver o `catalogIndex` em `vite.config.ts`.
  * ------------------------------------------------------------------------- */
 
-const DOCS = import.meta.glob('../../../.design-sync/docs/*.md', {
+const DOC_BODIES = import.meta.glob('../../../.design-sync/docs/*.md', {
   query: '?raw',
   import: 'default',
-  eager: true,
-}) as Record<string, string>
+}) as Record<string, () => Promise<string>>
 
 const EXAMPLES = import.meta.glob('../../../.design-sync/previews/*.tsx') as Record<
   string,
@@ -27,8 +34,7 @@ const EXAMPLES = import.meta.glob('../../../.design-sync/previews/*.tsx') as Rec
 const EXAMPLE_SOURCES = import.meta.glob('../../../.design-sync/previews/*.tsx', {
   query: '?raw',
   import: 'default',
-  eager: true,
-}) as Record<string, string>
+}) as Record<string, () => Promise<string>>
 
 export type Entry = {
   name: string
@@ -37,11 +43,12 @@ export type Entry = {
   family: string
   /** A primeira frase da doc, para a lista e para a busca. */
   summary: string
-  body: string
+  /** Carrega a prosa da doc sob demanda: so a pagina aberta precisa dela. */
+  loadBody: () => Promise<string>
   /** Carrega o modulo do exemplo sob demanda. Ausente quando nao ha preview. */
   loadExamples?: () => Promise<Record<string, ComponentType>>
-  /** A fonte do exemplo, mostrada ao lado do que ela desenha. */
-  exampleSource?: string
+  /** Carrega a fonte do exemplo, mostrada ao lado do que ela desenha. */
+  loadSource?: () => Promise<string>
   /** O nome da peca que esta compoe, quando ela e parte de outra. */
   partOf?: string
   /** As pecas que compoem esta, documentadas na mesma pagina. */
@@ -50,41 +57,19 @@ export type Entry = {
 
 const fileName = (path: string) => path.split('/').pop()!.replace(/\.(md|tsx)$/, '')
 
-function splitFrontmatter(raw: string) {
-  const front = /^---\n([\s\S]*?)\n---\n/.exec(raw)
-  if (!front) return { family: 'Geral', body: raw }
-  return {
-    family: /category:\s*(.+)/.exec(front[1])?.[1].trim() ?? 'Geral',
-    body: raw.slice(front[0].length),
-  }
-}
-
-/**
- * A doc abre com o proprio `# Nome`, que a pagina ja imprime como titulo.
- * Mantido no `.md` cru: arquivo servido sozinho precisa de titulo.
- */
-function dropLeadingHeading(body: string) {
-  return body.replace(/^\s*#\s+\S.*\n+/, '')
-}
-
-/** A primeira linha de prosa depois do titulo, sem marcacao. */
-function firstSentence(body: string) {
-  const line = body
-    .split('\n')
-    .map((text) => text.trim())
-    .find((text) => text.length > 0 && !text.startsWith('#') && !text.startsWith('```'))
-
-  if (!line) return ''
-  const clean = line.replace(/`([^`]+)`/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1')
-  return clean.length > 160 ? `${clean.slice(0, 157)}…` : clean
-}
+const bodyByName = new Map(
+  Object.entries(DOC_BODIES).map(([path, load]) => [
+    fileName(path),
+    async () => dropLeadingHeading(splitFrontmatter(await load()).body),
+  ]),
+)
 
 const exampleByName = new Map(
   Object.entries(EXAMPLES).map(([path, load]) => [fileName(path), load]),
 )
 
 const sourceByName = new Map(
-  Object.entries(EXAMPLE_SOURCES).map(([path, source]) => [fileName(path), source]),
+  Object.entries(EXAMPLE_SOURCES).map(([path, load]) => [fileName(path), load]),
 )
 
 /**
@@ -96,21 +81,18 @@ const sourceByName = new Map(
  * os exports com `.design-sync/docs/` nos dois sentidos, entao export sem
  * pagina reprova no gate antes de chegar ao site.
  */
-const ALL: Entry[] = Object.entries(DOCS)
-  .map(([path, raw]) => {
-    const name = fileName(path)
-    const { family, body } = splitFrontmatter(raw)
-    return {
-      name,
-      slug: slugify(name),
-      family,
-      body: dropLeadingHeading(body),
-      summary: firstSentence(body),
-      loadExamples: exampleByName.get(name),
-      exampleSource: sourceByName.get(name),
-    }
-  })
-  .sort((a, b) => a.name.localeCompare(b.name))
+const ALL: Entry[] = DOC_INDEX.map((doc) => ({
+  name: doc.name,
+  slug: slugify(doc.name),
+  family: doc.family,
+  summary: doc.summary,
+  // O indice sai do mesmo `readdirSync` que este glob ve, entao a falta seria
+  // um arquivo apagado entre o build e o request: a pagina abre sem prosa em
+  // vez de estourar.
+  loadBody: bodyByName.get(doc.name) ?? (async () => ''),
+  loadExamples: exampleByName.get(doc.name),
+  loadSource: sourceByName.get(doc.name),
+})).sort((a, b) => a.name.localeCompare(b.name))
 
 const NAMES = new Set(ALL.map((entry) => entry.name))
 

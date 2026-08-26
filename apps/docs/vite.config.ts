@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
+import { dropLeadingHeading, firstSentence, splitFrontmatter } from './src/doc-text'
 import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
 import { GUIDE_LIST } from './src/guide-list'
 import { indexLine, partNote } from './src/agent-address'
@@ -36,31 +37,27 @@ function skillFiles(): string[] {
 
 type Doc = { name: string; slug: string; family: string; body: string }
 
-/** Reads the component docs, taking the family from the frontmatter. */
 function readDocs(): Doc[] {
   return readdirSync(DOCS_DIR)
     .filter((file) => file.endsWith('.md'))
     .map((file) => {
-      const raw = readFileSync(`${DOCS_DIR}/${file}`, 'utf8')
-      const front = /^---\n([\s\S]*?)\n---\n/.exec(raw)
-      const family = front ? (/category:\s*(.+)/.exec(front[1])?.[1].trim() ?? 'Geral') : 'Geral'
+      const { family, body } = splitFrontmatter(readFileSync(`${DOCS_DIR}/${file}`, 'utf8'))
       return {
         name: file.replace(/\.md$/, ''),
         slug: slugify(file.replace(/\.md$/, '')),
         family,
-        body: front ? raw.slice(front[0].length) : raw,
+        body,
       }
     })
 }
 
 /**
- * The prose guides, by slug, with their title.
+ * Os guias em prosa, por slug, com o titulo.
  *
- * They are served raw like the component docs are. A guide is where the
- * reasoning lives - how a theme is written, why density is one attribute - and
- * that is exactly what an agent needs before it writes the first line. Leaving
- * them HTML-only meant the only way to hand someone the theme contract was to
- * paste it.
+ * Sao servidos crus como as paginas de peca. O guia e onde mora o porque - como
+ * se escreve um tema, por que densidade e um atributo so -, e e disso que um
+ * agente precisa antes da primeira linha. Enquanto eles eram so HTML, entregar
+ * o contrato de tema a alguem era colar o texto na conversa.
  */
 const GUIDE_TITLES: Record<string, string> = Object.fromEntries(
   GUIDE_LIST.map((guide) => [guide.slug, guide.title]),
@@ -73,14 +70,13 @@ function readGuides() {
     try {
       guides.set(slug, { title, body: readFileSync(`${GUIDES_DIR}/${slug}.md`, 'utf8') })
     } catch {
-      // A guide listed here but not written yet simply does not get served.
+      // Guia listado aqui e ainda nao escrito simplesmente nao e servido.
     }
   }
 
   return guides
 }
 
-/** The preview file of each piece, by component name. */
 function readPreviews() {
   const sources = new Map<string, string>()
   for (const file of readdirSync(PREVIEWS_DIR)) {
@@ -91,9 +87,9 @@ function readPreviews() {
 }
 
 /**
- * The `.d.ts` of every piece, by name, from the file the extraction script
- * writes. The file is generated from the compiler by
- * `scripts/props-do-catalogo.ts`, and `check:props` fails when it drifts.
+ * O `.d.ts` de cada peca, por nome, lido do arquivo que a extracao escreve. Ele
+ * sai do compilador em `scripts/props-do-catalogo.ts`, e o `check:props` falha
+ * quando o comitado diverge da fonte.
  */
 type Piece = { forwardsRoot: boolean; props: Prop[] }
 
@@ -103,15 +99,15 @@ function readTypes() {
       Object.entries(JSON.parse(readFileSync(PROPS_FILE, 'utf8')) as Record<string, Piece>),
     )
   } catch {
-    // Not generated yet: the tables come out empty, the page still serves.
+    // Ainda nao gerado: as tabelas saem vazias, e a pagina serve assim mesmo.
     return new Map<string, Piece>()
   }
 }
 
 /**
- * Read once per request, and once per build — not once per document. Walking
- * `ds-bundle` a hundred and six times to write a hundred and six files is the
- * kind of waste that only shows up as a slow build nobody can explain.
+ * Uma leitura por request, e uma por build - e nao uma por documento. Varrer o
+ * `ds-bundle` cento e seis vezes para escrever cento e seis arquivos e o
+ * desperdicio que so aparece como build lento que ninguem sabe explicar.
  */
 function readAll(docs: Doc[]) {
   const previews = readPreviews()
@@ -121,10 +117,7 @@ function readAll(docs: Doc[]) {
 
 type Sources = ReturnType<typeof readAll>
 
-/**
- * Everything `/componentes/<slug>.md` needs, assembled from the same files the
- * page reads: the doc, the preview, the types, and the parts that compose it.
- */
+/** O corpo de `/componentes/<slug>.md`, dos mesmos arquivos que a pagina le. */
 function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Sources) {
   const partOf = (name: string) => findParent(name, names)
 
@@ -150,7 +143,7 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
   const parts: Part[] = partNames
     .map((name) => ({
       name,
-      body: (docs.find((item) => item.name === name)?.body ?? '').replace(/^\s*#\s+\S.*\n+/, ''),
+      body: dropLeadingHeading(docs.find((item) => item.name === name)?.body ?? ''),
       props: types.get(name)?.props ?? [],
     }))
 
@@ -172,13 +165,13 @@ function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Source
 }
 
 /*
- * The index an agent reads.
+ * O indice que o agente le.
  *
- * A part is listed under the piece it composes, not beside it. Forty-five of
- * the entries here are parts - CardHeader, DialogFooter, SelectItem - and
- * listing them at the same level makes an agent count a hundred and twenty-six
- * pieces, spend context opening CardTitle.md as if it stood alone, and miss
- * the one thing that matters about it: that it only exists inside Card.
+ * Parte entra debaixo da peca que ela compoe, e nao ao lado. Quarenta e cinco
+ * das entradas daqui sao partes - CardHeader, DialogFooter, SelectItem -, e
+ * lista-las no mesmo nivel faz o agente contar cento e vinte e seis pecas,
+ * gastar contexto abrindo CardTitle.md como se ela existisse sozinha, e perder
+ * a unica coisa que importa sobre ela: que so existe dentro do Card.
  */
 function indexForAgents(docs: Doc[]) {
   const names = new Set(docs.map((doc) => doc.name))
@@ -231,11 +224,11 @@ ${sections}
 }
 
 /**
- * Serves the docs raw.
+ * Serve a documentacao crua.
  *
- * The whole site exists for people; an agent reading `/Button.md` does not
- * want the HTML shell around it. These are the same files the pages render,
- * so nothing is duplicated and nothing ages on its own.
+ * O site inteiro existe para gente; o agente que le `/Button.md` nao quer o
+ * HTML em volta. Sao os mesmos arquivos que as paginas renderizam, entao nada
+ * e duplicado e nada envelhece por conta propria.
  */
 function rawDocs(): Plugin {
   return {
@@ -351,13 +344,13 @@ function rawDocs(): Plugin {
 }
 
 /**
- * The same strip, for the module that actually runs on the page. `sliceSource`
- * already cleans the code the reader sees; this cleans the code React mounts.
+ * A mesma limpeza, para o modulo que roda de fato na pagina. O `sliceSource` ja
+ * limpa o codigo que o leitor le; isto limpa o codigo que o React monta.
  *
- * `pre`, and only `pre`: after the JSX is compiled the flag no longer looks
- * like an attribute, it looks like `defaultOpen: true` inside a props object,
- * and cutting the name out of that leaves `{ : true }` — a syntax error, and
- * every example on the page replaced by a red box.
+ * `pre`, e so `pre`: depois de o JSX ser compilado a flag deixa de parecer
+ * atributo e vira `defaultOpen: true` dentro de um objeto de props, e cortar o
+ * nome dali deixa `{ : true }` - erro de sintaxe, e todo exemplo da pagina
+ * substituido por uma caixa vermelha.
  */
 function previewsClosed(): Plugin {
   return {
@@ -368,6 +361,67 @@ function previewsClosed(): Plugin {
       if (!id.includes('/.design-sync/previews/') || id.includes('?')) return null
       const cleaned = withoutAutoOpen(code, 'runtime')
       return cleaned === code ? null : { code: cleaned, map: null }
+    },
+  }
+}
+
+/**
+ * O indice do catalogo, como modulo virtual.
+ *
+ * A lista lateral precisa do nome, da familia e da lede de cento e cinquenta e
+ * sete documentos antes de a primeira peca ser aberta - e so disso. Enquanto o
+ * `catalog.ts` lia os `.md` com `eager: true`, o corpo INTEIRO de cada um, mais
+ * a fonte de cada preview, entrava no chunk de entrada: 1,1 MB de texto virava
+ * 1,77 MB de string escapada que o navegador tinha que baixar e parsear antes
+ * de pintar o primeiro pixel da capa. O Lighthouse media 4,6s de FCP, LCP e
+ * Speed Index - os tres iguais, que e a assinatura de pagina que so aparece
+ * quando o JS termina.
+ *
+ * O corpo continua vindo dos mesmos arquivos, agora sob demanda, na pagina que
+ * o mostra. Se alguem devolver o `eager: true` la, o custo volta inteiro aqui.
+ */
+function catalogIndex(): Plugin {
+  const VIRTUAL = 'virtual:catalog-index'
+
+  return {
+    name: 'rivocode-indice-do-catalogo',
+
+    resolveId(id) {
+      return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
+    },
+
+    load(id) {
+      if (id !== `\0${VIRTUAL}`) return undefined
+
+      const index = readDocs().map((doc) => ({
+        name: doc.name,
+        family: doc.family,
+        summary: firstSentence(doc.body),
+      }))
+
+      /*
+       * As duas formas de estar presente contam: `traduz` e a peca com o mesmo
+       * nome, `vira` e a que chegou com outro. A conta sai da tabela de
+       * paridade, que `scripts/paridade-nativo.ts` gera e `check:paridade`
+       * segura - numero derivado dela nasce honesto. Ela era feita no
+       * navegador, e so por isso o guia inteiro precisava estar carregado.
+       */
+      const parity = readFileSync(`${GUIDES_DIR}/react-native.md`, 'utf8')
+      const native = (parity.match(/^\| `[^`]+` \| ✔/gm) ?? []).length
+
+      return `export const DOC_INDEX = ${JSON.stringify(index)}
+export const NATIVE_PIECES = ${native}
+`
+    },
+
+    handleHotUpdate({ file, server }) {
+      if (!file.endsWith('.md')) return
+      const found = server.moduleGraph.getModuleById(`\0${VIRTUAL}`)
+      if (!found) return
+      // Documento novo ou lede reescrita mexe na lista lateral inteira, e o
+      // modulo virtual nao tem como se atualizar em pedaco.
+      server.moduleGraph.invalidateModule(found)
+      server.ws.send({ type: 'full-reload' })
     },
   }
 }
@@ -406,11 +460,11 @@ function iconGallery(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), iconGallery()],
+  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), catalogIndex(), iconGallery()],
   resolve: {
-    // The library resolves to source, not to `dist`: the docs then reflect
-    // what is written right now, with no build step first, and HMR reaches the
-    // components while they are edited.
+    // A biblioteca resolve para a fonte, e nao para `dist`: a doc passa a
+    // refletir o que esta escrito agora, sem build antes, e o HMR alcanca os
+    // componentes enquanto eles sao editados.
     alias: {
       '@rivocode/ui/form': here('../../src/form/index.ts'),
       '@rivocode/ui/chart': here('../../src/chart/index.ts'),
@@ -420,8 +474,8 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   server: {
-    // Library source and docs live above this folder, and Vite blocks
-    // anything outside the project root by default.
+    // A fonte da biblioteca e a doc moram acima desta pasta, e a Vite bloqueia
+    // por padrao tudo que esta fora da raiz do projeto.
     fs: { allow: [here('../..')] },
   },
 })

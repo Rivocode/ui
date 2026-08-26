@@ -1,18 +1,40 @@
 import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
 import { BookOpen, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { ENTRIES, FAMILIES, entriesOfFamily } from '@/catalog'
 import { GUIDES } from '@/guides'
 import { Logo } from '@/components/logo'
-import { ComponentPage } from '@/pages/component'
-import { FoundationPage } from '@/pages/foundation'
-import { GuidePage } from '@/pages/guide'
-import { DemoPage } from '@/pages/demo'
 import { Home } from '@/pages/home'
 import { linkTo, useRoute, type Route } from '@/routes'
-import { CatalogPage } from '@/pages/catalog'
 import { Toc } from '@/components/toc'
 import { revealWithin } from '@/reveal'
+
+/*
+ * Uma rota, um chunk.
+ *
+ * A capa fica junto da casca porque e onde quase todo mundo chega. As outras
+ * cinco arrastavam para o chunk de entrada tudo que elas montam - a galeria de
+ * icones, o Recharts da fundacao, a tela inteira da demonstracao - e nada disso
+ * aparece na capa. Enquanto elas eram import estatico, a Vite ainda escrevia um
+ * `modulepreload` para cada dependencia delas no `index.html`: oitenta linhas
+ * de preload disputando banda com o que a primeira tela precisava.
+ */
+const CatalogPage = lazy(() =>
+  import('@/pages/catalog').then((mod) => ({ default: mod.CatalogPage })),
+)
+const ComponentPage = lazy(() =>
+  import('@/pages/component').then((mod) => ({ default: mod.ComponentPage })),
+)
+const DemoPage = lazy(() => import('@/pages/demo').then((mod) => ({ default: mod.DemoPage })))
+const FoundationPage = lazy(() =>
+  import('@/pages/foundation').then((mod) => ({ default: mod.FoundationPage })),
+)
+const GuidePage = lazy(() => import('@/pages/guide').then((mod) => ({ default: mod.GuidePage })))
+
+/** O lugar da pagina enquanto o chunk dela chega. */
+function PageFallback() {
+  return <div className="min-h-[60vh]" />
+}
 
 function Brand({ navigate }: { navigate: (route: Route) => void }) {
   return (
@@ -322,7 +344,13 @@ export function App() {
              rolam, deixando o cursor no link de pular, e o Tab seguinte volta
              direto para o cabecalho. */
           <main id="conteudo" tabIndex={-1} className="outline-none">
-            {route.kind === 'home' ? <Home navigate={navigate} /> : <DemoPage />}
+            {route.kind === 'home' ? (
+              <Home navigate={navigate} />
+            ) : (
+              <Suspense fallback={<PageFallback />}>
+                <DemoPage />
+              </Suspense>
+            )}
           </main>
         ) : (
           /* A barra lateral encosta na borda da janela, como o cabecalho acima
@@ -335,10 +363,12 @@ export function App() {
 
             <div className="flex min-w-0 flex-1 justify-center">
               <main id="conteudo" tabIndex={-1} className="min-w-0 flex-1 outline-none xl:max-w-3xl">
-                {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
-                {route.kind === 'foundation' && <FoundationPage />}
-                {route.kind === 'guide' && <GuidePage slug={route.slug} />}
-                {route.kind === 'component' && <ComponentPage slug={route.slug} />}
+                <Suspense fallback={<PageFallback />}>
+                  {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
+                  {route.kind === 'foundation' && <FoundationPage />}
+                  {route.kind === 'guide' && <GuidePage slug={route.slug} />}
+                  {route.kind === 'component' && <ComponentPage slug={route.slug} />}
+                </Suspense>
               </main>
 
               <Toc watch={`${route.kind}:${'slug' in route ? route.slug : ''}`} />

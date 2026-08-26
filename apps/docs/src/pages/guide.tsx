@@ -5,6 +5,7 @@ import { IconGallery } from '@/components/icon-gallery'
 import { Markdown } from '@/components/markdown'
 import { findGuide } from '@/guides'
 import { ThemePlayground } from '@/components/theme-playground'
+import { useText } from '@/use-text'
 
 /**
  * Uma pagina de prosa. Duas delas carregam uma demonstracao viva embaixo do
@@ -13,6 +14,9 @@ import { ThemePlayground } from '@/components/theme-playground'
  */
 export function GuidePage({ slug }: { slug: string }) {
   const guide = findGuide(slug)
+  // O corpo do guia carrega sob demanda, como o das pecas. O hook vem antes do
+  // desvio do 404 porque hook nao aceita condicao.
+  const body = useText(guide?.loadBody)
 
   if (!guide) {
     return (
@@ -45,7 +49,13 @@ export function GuidePage({ slug }: { slug: string }) {
         </div>
       </header>
 
-      <Markdown source={guide.body} />
+      {body === null ? (
+        // A altura reservada e o que impede a demonstracao la embaixo de subir
+        // ate o cabecalho e descer de volta quando o texto chega.
+        <div className="h-64 animate-pulse rounded-md bg-surface" />
+      ) : (
+        <Markdown source={body} />
+      )}
 
       {slug === 'temas' && <ThemePlayground />}
       {slug === 'densidade' && <DensityDemo />}

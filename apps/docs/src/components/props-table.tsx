@@ -1,4 +1,5 @@
-import { forwardsRootProps, propsOf } from '@/props'
+import { useEffect, useState } from 'react'
+import { forwardsRootProps, pieceOf, propsOf, type Piece } from '@/props'
 
 /** Parte o tipo de uniao, para o longo quebrar por valor e nao numa linha so. */
 function TypeCell({ type }: { type: string }) {
@@ -30,7 +31,29 @@ export function PropsTable({
   /** Dentro da lista "Partes", onde uma caixa inteira por parte seria ruido. */
   compact?: boolean
 }) {
-  const props = propsOf(component)
+  const [piece, setPiece] = useState<Piece | undefined>()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    let alive = true
+    setReady(false)
+    pieceOf(component).then((found) => {
+      if (!alive) return
+      setPiece(found)
+      setReady(true)
+    })
+    return () => {
+      alive = false
+    }
+  }, [component])
+
+  const props = propsOf(piece)
+
+  // A tabela e a parte mais alta da pagina; sem o lugar reservado, a secao de
+  // partes subia ate o cabecalho e descia de volta quando o JSON chegava.
+  if (!ready) {
+    return <div className="h-40 animate-pulse rounded-lg border border-border bg-surface" />
+  }
 
   if (props.length === 0) {
     const toast = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'
@@ -94,7 +117,7 @@ export function PropsTable({
         </table>
       </div>
 
-      {forwardsRootProps(component) && (
+      {forwardsRootProps(piece) && (
         <p className="border-t border-border bg-surface px-4 py-3 text-xs text-fg-subtle">
           Além destas, a peça aceita <code className="font-mono">className</code>,{' '}
           <code className="font-mono">style</code>, <code className="font-mono">id</code> e{' '}
