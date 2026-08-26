@@ -116,21 +116,22 @@ jobs:
             -H "Authorization: Bearer $VERCEL_TOKEN" \
             https://api.vercel.com/v2/user) || conta=000
 
-          # Quem responde se o token vale e o projeto, la embaixo, e nao esta
-          # consulta: um token preso a um time nao alcanca o recurso pessoal e
-          # responde 404 aqui estando perfeito. So o "forbidden" e conclusivo,
-          # porque a Vercel usa esse codigo para token expirado ou revogado.
+          # O CLI carrega o dono do token antes de qualquer comando, e para
+          # com "Not able to load user ... User not found" quando nao ha dono.
+          # Nem todo token que a API aceita tem um: os de integracao e os
+          # presos a um time respondem pelos recursos do time e nao respondem
+          # por pessoa nenhuma. Eles passam em tudo que se pergunte pela API e
+          # nao servem para publicar - foi assim que este workflow nasceu
+          # quebrado, com um erro que falava de permissao.
+          dono="sim"
           if [ "$conta" = "200" ]; then
             echo "Token da conta $(jq -r '.user.username // .user.email // "?"' /tmp/conta.json)."
           elif [ "$(jq -r '.error.code // ""' /tmp/conta.json)" = "forbidden" ]; then
             erro "A Vercel recusou o token (HTTP $conta): $(jq -r '.error.message // "?"' /tmp/conta.json)"
-            echo "Ele expirou ou foi revogado. Gere outro em vercel.com/account/tokens"
-            echo "e regrave VERCEL_TOKEN. No formulario, ESCOPO = o time dono do projeto,"
-            echo "e nao a conta pessoal."
+            echo "Ele expirou ou foi revogado. Gere outro em vercel.com/account/tokens."
             exit 1
           else
-            echo "O token nao diz de quem e (HTTP $conta), o que e normal quando ele"
-            echo "nasceu preso a um time. Segue para a pergunta que decide."
+            dono="nao"
           fi
 
           alvo=$(curl -sS -o /tmp/projeto.json -w '%{http_code}' \
@@ -140,13 +141,23 @@ jobs:
           if [ "$alvo" = "200" ]; then
             echo "O token enxerga o projeto $(jq -r '.name' /tmp/projeto.json) dentro de $VERCEL_ORG_ID."
 
+            if [ "$dono" = "nao" ]; then
+              erro "...e mesmo assim ele nao serve: nao tem dono (HTTP $conta em /v2/user)."
+              echo "O CLI recusa antes de olhar o projeto, com \"User not found\"."
+              echo
+              echo "O que resolve: em vercel.com/account/tokens, logado como a pessoa,"
+              echo "criar um token com ESCOPO no time dono do projeto e regravar"
+              echo "VERCEL_TOKEN. Um token de integracao, ou preso ao time sem pessoa"
+              echo "atras, chega ate aqui inteiro e morre no primeiro comando."
+              exit 1
+            fi
+
             # O apelido do time, para o CLI.
             #
-            # Aqui em cima a pergunta carrega o teamId e e respondida. O CLI,
-            # sem `--scope`, pergunta a mesma coisa pela conta pessoal do dono
-            # do token - e um token preso a um time nao tem conta pessoal para
-            # olhar. Era esse o "Could not retrieve Project Settings": nao
-            # falta de acesso, e sim pergunta feita no lugar errado.
+            # A conferencia acima carrega o teamId; o CLI, sem `--scope`,
+            # resolve o projeto pelo time padrao de quem esta logado, que nao
+            # e necessariamente este. Com o escopo escrito, os tres comandos
+            # falam do mesmo projeto que acabou de ser conferido.
             slug=$(curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" \
               "https://api.vercel.com/v2/teams/$VERCEL_ORG_ID" | jq -r '.slug // empty')
             # Sem o apelido, o proprio id serve de escopo.
