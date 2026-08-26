@@ -4,6 +4,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 import { floatingPanel } from "./menu";
 
@@ -17,28 +18,21 @@ export function PopoverTrigger({
   return <BasePopover.Trigger {...props} className={cn("outline-none", className)} />;
 }
 
-export type PopoverContentProps = ComponentProps<typeof BasePopover.Popup> & {
-  /** Distancia entre o gatilho e o painel. */
-  sideOffset?: ComponentProps<typeof BasePopover.Positioner>["sideOffset"];
-  /** Lado preferido. A Base UI vira sozinha quando nao cabe. */
-  side?: ComponentProps<typeof BasePopover.Positioner>["side"];
-  /** Alinhamento no eixo do lado escolhido. */
-  align?: ComponentProps<typeof BasePopover.Positioner>["align"];
-};
+export type PopoverContentProps = ComponentProps<typeof BasePopover.Popup> & FloatingPositionProps;
 
 /**
  * O painel flutuante de conteudo livre. Divide a casca do Menu e do Select,
  * mas troca o `p-1` de lista por respiro de leitura: aqui entra texto, campo e
  * botao, nao item de menu.
  *
- * O `side`, o `align` e o `sideOffset` sobem para ca porque quem escreve a tela
- * pensa neles junto com o conteudo, e nao deveria precisar conhecer o
- * `Positioner` para mover o painel um pouco.
+ * O `side`, o `align` e o `sideOffset` moram aqui, e nao no `Positioner`,
+ * porque quem escreve a tela pensa neles junto com o conteudo - e as cinco
+ * pecas que flutuam falam a mesma lingua, pelo `FloatingPositionProps`.
  */
 export function PopoverContent({
   className,
   children,
-  sideOffset = 8,
+  sideOffset = FLOATING_SIDE_OFFSET,
   side,
   align,
   ...props

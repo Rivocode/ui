@@ -2,6 +2,7 @@ export const version = "0.6.1";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useMobile } from "./lib/screen";
+export type { FloatingPositionProps } from "./lib/positioning";
 export {
   RivoProvider,
   useRivoContext,
@@ -72,10 +73,18 @@ export {
   MenuSeparator,
   MenuTrigger,
   menuItemVariants,
+  type MenuContentProps,
   type MenuGroupProps,
   type MenuItemProps,
 } from "./components/menu";
-export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./components/select";
+export {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  type SelectContentProps,
+} from "./components/select";
 export {
   Popover,
   PopoverClose,

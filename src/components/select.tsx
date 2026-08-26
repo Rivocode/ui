@@ -4,6 +4,7 @@ import { Select as BaseSelect } from "@base-ui/react/select";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 import { floatingPanel } from "./menu";
 
@@ -46,17 +47,37 @@ export function SelectTrigger({
   );
 }
 
+export type SelectContentProps = ComponentProps<typeof BaseSelect.Popup> & FloatingPositionProps;
+
+/**
+ * A lista flutuante, com o mesmo vocabulario de posicionamento das outras
+ * quatro pecas que flutuam.
+ *
+ * Pedir lado, alinhamento ou distancia desliga o `alignItemWithTrigger` da
+ * Base UI, que por padrao sobrepoe o painel ao gatilho para casar o item
+ * escolhido com o texto dele. Os dois nao cabem juntos: naquele modo o
+ * posicionador responde `data-side="none"` e ignora a folga, entao expor as
+ * props sem desligar o modo seria entregar tres props que nao fazem nada. Quem
+ * nao pede nada continua com o comportamento de sempre.
+ */
 export function SelectContent({
   className,
   children,
+  sideOffset,
+  side,
+  align,
   ...props
-}: ComponentProps<typeof BaseSelect.Popup>) {
+}: SelectContentProps) {
   const { portalContainer } = useRivoContext();
+  const positioned = side !== undefined || align !== undefined || sideOffset !== undefined;
 
   return (
     <BaseSelect.Portal container={portalContainer ?? undefined}>
       <BaseSelect.Positioner
-        sideOffset={6}
+        sideOffset={sideOffset ?? FLOATING_SIDE_OFFSET}
+        side={side}
+        align={align}
+        alignItemWithTrigger={positioned ? false : undefined}
         collisionPadding={8}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >

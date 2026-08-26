@@ -39,6 +39,10 @@ export function DialogContent({
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
+          // Sem os dois estados a transicao nao tem de onde sair nem para onde
+          // ir, e o escurecimento entra e sai de estalo: a folha e a
+          // confirmacao ja faziam certo, e o dialogo era o unico que piscava.
+          "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
           classNames?.backdrop,
         )}
       />
@@ -87,5 +91,19 @@ export function DialogDescription({
 }
 
 export function DialogFooter({ className, ...props }: ComponentProps<"div">) {
-  return <div {...props} className={cn("mt-6 flex items-center justify-end gap-3", className)} />;
+  return (
+    <div
+      {...props}
+      className={cn(
+        "mt-6 flex items-center justify-end gap-3",
+        // O mesmo do AlertDialogFooter, e pelo mesmo motivo: o painel ja
+        // encosta embaixo no celular, e duas acoes lado a lado ali saem
+        // estreitas demais. Empilhadas, `flex-col-reverse` sobe a ultima da
+        // marcacao - a que confirma - para o alto da pilha, e deixa a saida
+        // rente ao polegar.
+        "max-sm:flex-col-reverse max-sm:[&>*]:w-full",
+        className,
+      )}
+    />
+  );
 }

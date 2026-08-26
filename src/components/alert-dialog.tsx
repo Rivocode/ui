@@ -5,6 +5,7 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { InertBackground } from "../lib/inert-background";
+import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const AlertDialog = BaseAlertDialog.Root;
@@ -13,6 +14,11 @@ export const AlertDialogClose = BaseAlertDialog.Close;
 
 export type AlertDialogContentProps = ComponentProps<typeof BaseAlertDialog.Popup> & {
   children: ReactNode;
+  /**
+   * Classe por parte: `backdrop`. A tarja e irma do painel dentro do portal,
+   * entao nem `className` nem variante de descendente alcancam ela.
+   */
+  classNames?: Slots<"backdrop">;
 };
 
 /**
@@ -23,7 +29,12 @@ export type AlertDialogContentProps = ComponentProps<typeof BaseAlertDialog.Popu
  * foco comeca no botao de cancelar. Quem esta prestes a apagar algo tem que
  * dizer que sim de proposito, e nao esbarrar num clique.
  */
-export function AlertDialogContent({ className, children, ...props }: AlertDialogContentProps) {
+export function AlertDialogContent({
+  className,
+  children,
+  classNames,
+  ...props
+}: AlertDialogContentProps) {
   const { portalContainer } = useRivoContext();
 
   return (
@@ -33,6 +44,7 @@ export function AlertDialogContent({ className, children, ...props }: AlertDialo
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "transition-opacity duration-[var(--rc-duration-base)] ease-rc",
           "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+          classNames?.backdrop,
         )}
       />
       <BaseAlertDialog.Popup
@@ -89,7 +101,9 @@ export function AlertDialogFooter({ className, ...props }: ComponentProps<"div">
       className={cn(
         "mt-6 flex items-center justify-end gap-3",
         // No celular os botoes empilham e ficam de largura cheia: alvo grande e
-        // ordem clara valem mais do que a linha bonita.
+        // ordem clara valem mais do que a linha bonita. O `flex-col-reverse`
+        // sobe a ultima da marcacao - a que confirma - para o alto da pilha, e
+        // deixa cancelar rente ao polegar.
         "max-sm:flex-col-reverse max-sm:[&>*]:w-full",
         className,
       )}

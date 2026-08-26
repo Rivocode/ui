@@ -5,6 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const Menu = BaseMenu.Root;
@@ -26,17 +27,24 @@ export const floatingPanel = cn(
   "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",
 );
 
+export type MenuContentProps = ComponentProps<typeof BaseMenu.Popup> & FloatingPositionProps;
+
 export function MenuContent({
   className,
   children,
+  sideOffset = FLOATING_SIDE_OFFSET,
+  side,
+  align,
   ...props
-}: ComponentProps<typeof BaseMenu.Popup>) {
+}: MenuContentProps) {
   const { portalContainer } = useRivoContext();
 
   return (
     <BaseMenu.Portal container={portalContainer ?? undefined}>
       <BaseMenu.Positioner
-        sideOffset={6}
+        sideOffset={sideOffset}
+        side={side}
+        align={align}
         collisionPadding={8}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >

@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 
 /**
@@ -90,12 +91,16 @@ export function TooltipTrigger<Payload = unknown>({
   return <BaseTooltip.Trigger aria-describedby={ids || undefined} {...props} />;
 }
 
-export type TooltipContentProps = ComponentProps<typeof BaseTooltip.Popup> & {
-  /** Lado preferido. A Base UI vira sozinha quando nao cabe. */
-  side?: ComponentProps<typeof BaseTooltip.Positioner>["side"];
-};
+export type TooltipContentProps = ComponentProps<typeof BaseTooltip.Popup> & FloatingPositionProps;
 
-export function TooltipContent({ className, children, side, ...props }: TooltipContentProps) {
+export function TooltipContent({
+  className,
+  children,
+  sideOffset = FLOATING_SIDE_OFFSET,
+  side,
+  align,
+  ...props
+}: TooltipContentProps) {
   const { portalContainer } = useRivoContext();
   const description = use(DescriptionContext);
   // A dica montada fora de uma raiz nossa continua tendo papel e `id`; o que
@@ -105,8 +110,9 @@ export function TooltipContent({ className, children, side, ...props }: TooltipC
   return (
     <BaseTooltip.Portal container={portalContainer ?? undefined}>
       <BaseTooltip.Positioner
-        sideOffset={6}
+        sideOffset={sideOffset}
         side={side}
+        align={align}
         collisionPadding={8}
         className="z-[var(--rc-z-tooltip)] outline-none"
       >

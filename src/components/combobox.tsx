@@ -5,6 +5,8 @@ import { Check, ChevronDown, X } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
+import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 import { inputVariants } from "./field";
 import { floatingPanel } from "./menu";
@@ -15,6 +17,12 @@ export const ComboboxGroupLabel = BaseCombobox.GroupLabel;
 export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
   /** Mostra o botao de limpar quando ha escolha. */
   clearable?: boolean;
+  /**
+   * Classe por parte: `wrapper`, `input`. O `className` veste a raiz, que aqui
+   * e a moldura que segura o campo e os dois botoes - entao vestir o `<input>`
+   * de dentro so era possivel por variante de descendente.
+   */
+  classNames?: Slots<"wrapper" | "input">;
 };
 
 /**
@@ -24,11 +32,18 @@ export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
  * demais para caber na cabeca de quem escolhe, ou quando ela vem do servidor.
  * Com cinco opcoes fixas, o `Select` custa menos e nao pede digitacao.
  */
-export function ComboboxInput({ className, clearable = true, ...props }: ComboboxInputProps) {
+export function ComboboxInput({
+  className,
+  classNames,
+  clearable = true,
+  ...props
+}: ComboboxInputProps) {
   return (
-    <BaseCombobox.InputGroup className={cn("relative flex w-full items-center", className)}>
+    <BaseCombobox.InputGroup
+      className={cn("relative flex w-full items-center", className, classNames?.wrapper)}
+    >
       {/* O texto para antes dos botoes, senao ele passa por baixo deles. */}
-      <BaseCombobox.Input {...props} className={cn(inputVariants(), "pr-16")} />
+      <BaseCombobox.Input {...props} className={cn(inputVariants(), "pr-16", classNames?.input)} />
 
       <span className="absolute right-1.5 flex items-center gap-0.5">
         {clearable && (
@@ -61,15 +76,19 @@ export function ComboboxInput({ className, clearable = true, ...props }: Combobo
   );
 }
 
-export type ComboboxContentProps = ComponentProps<typeof BaseCombobox.Popup> & {
-  /** O que aparece quando a busca nao acha nada. */
-  emptyMessage?: ReactNode;
-};
+export type ComboboxContentProps = ComponentProps<typeof BaseCombobox.Popup> &
+  FloatingPositionProps & {
+    /** O que aparece quando a busca nao acha nada. */
+    emptyMessage?: ReactNode;
+  };
 
 export function ComboboxContent({
   className,
   children,
   emptyMessage = "Nada encontrado.",
+  sideOffset = FLOATING_SIDE_OFFSET,
+  side,
+  align,
   ...props
 }: ComboboxContentProps) {
   const { portalContainer } = useRivoContext();
@@ -77,7 +96,9 @@ export function ComboboxContent({
   return (
     <BaseCombobox.Portal container={portalContainer ?? undefined}>
       <BaseCombobox.Positioner
-        sideOffset={6}
+        sideOffset={sideOffset}
+        side={side}
+        align={align}
         collisionPadding={8}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >

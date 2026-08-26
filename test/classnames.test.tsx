@@ -9,7 +9,9 @@ import { Checkbox } from "../src/components/checkbox";
 import { Switch } from "../src/components/switch";
 import { Radio, RadioGroup } from "../src/components/radio";
 import { Dialog, DialogContent } from "../src/components/dialog";
+import { AlertDialog, AlertDialogContent } from "../src/components/alert-dialog";
 import { Sheet, SheetContent } from "../src/components/sheet";
+import { Combobox, ComboboxInput } from "../src/components/combobox";
 import { DataTable, type Column } from "../src/components/data-table";
 
 /*
@@ -119,6 +121,20 @@ test("o dialogo deixa vestir a tarja, que e irma do painel no portal", () => {
   wears(container, "tarja-d", "bg-overlay");
 });
 
+test("a confirmacao deixa vestir a tarja, como as duas irmas ja deixavam", () => {
+  // O AlertDialogContent so aceitava `children`: a tarja dele era a unica das
+  // tres inalcancavel de fora, e a peca em que mais se quer mexer nela - a
+  // confirmacao destrutiva e onde um `backdrop-blur` ou um escuro mais fundo
+  // costuma ser pedido.
+  const { container } = withTheme(
+    <AlertDialog open>
+      <AlertDialogContent classNames={{ backdrop: "tarja-a" }}>Corpo</AlertDialogContent>
+    </AlertDialog>,
+  );
+
+  wears(container, "tarja-a", "bg-overlay");
+});
+
 test("a folha lateral deixa vestir a tarja tambem", () => {
   const { container } = withTheme(
     <Sheet open>
@@ -129,9 +145,9 @@ test("a folha lateral deixa vestir a tarja tambem", () => {
   wears(container, "tarja-f", "bg-overlay");
 });
 
-type Invoice = { id: string; numero: string };
-const COLUMNS: Column<Invoice>[] = [{ key: "numero", header: "Numero" }];
-const INVOICES: Invoice[] = [{ id: "1", numero: "4813" }];
+type Invoice = { id: string; number: string };
+const COLUMNS: Column<Invoice>[] = [{ key: "number", header: "Numero" }];
+const INVOICES: Invoice[] = [{ id: "1", number: "4813" }];
 
 test("a tabela deixa vestir linha, celula e cabecalho", () => {
   // O contorno de hoje e [&_tbody_tr:hover]:bg-accent-subtle, que so funciona
@@ -149,4 +165,39 @@ test("a tabela deixa vestir linha, celula e cabecalho", () => {
   wears(container, "linha-t", "border-b");
   wears(container, "celula-t", "align-middle");
   expect(screen.getByText("4813")).toBeDefined();
+});
+
+const CUSTOMERS = ["Clinica Sao Lucas"];
+
+test("o campo de busca separa a moldura do proprio input", () => {
+  // O `className` do ComboboxInput sempre caiu na moldura, e o `<input>` de
+  // dentro nao tinha alvo nenhum - enquanto o AutocompleteInput, que a doc
+  // apresenta como a peca irma, veste o input direto. Quem escrevia as duas
+  // telas com a mesma classe via uma funcionar e a outra nao.
+  const { container } = withTheme(
+    <Combobox items={CUSTOMERS}>
+      <ComboboxInput
+        placeholder="Buscar cliente"
+        className="moldura-c"
+        classNames={{ input: "campo-c" }}
+      />
+    </Combobox>,
+  );
+
+  wears(container, "moldura-c", "relative");
+  wears(container, "campo-c", "h-[var(--rc-control-md)]");
+  expect(container.ownerDocument.querySelector(".campo-c")!.tagName).toBe("INPUT");
+  // O contrato antigo continua de pe: `className` veste a raiz, que aqui e a
+  // moldura, e nao o input.
+  expect(container.ownerDocument.querySelector("input")!.className).not.toContain("moldura-c");
+});
+
+test("a moldura tem nome proprio, alem do className da raiz", () => {
+  const { container } = withTheme(
+    <Combobox items={CUSTOMERS}>
+      <ComboboxInput placeholder="Buscar cliente" classNames={{ wrapper: "moldura-w" }} />
+    </Combobox>,
+  );
+
+  wears(container, "moldura-w", "relative");
 });
