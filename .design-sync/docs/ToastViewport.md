@@ -60,7 +60,8 @@ provider, e não com CSS por cima:
 ```
 
 Os seis cantos são `top-left`, `top-center`, `top-right`, `bottom-left`,
-`bottom-center` e `bottom-right`.
+`bottom-center` e `bottom-right`; o tipo `ToastPosition` é essa união, para
+quando o canto vem de uma configuração e não de uma constante.
 
 O aviso entra sempre pela borda mais próxima do canto escolhido. Um aviso
 ancorado à esquerda que deslizasse da direita atravessaria a tela inteira para

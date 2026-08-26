@@ -100,18 +100,19 @@ mesmo global:
   | `ChartRadial` | O arco de uma medida so: meta, cota, conversao |
   | `Sparkline` | A linha miuda que cabe dentro de um indicador |
 
-  Os formatadores: `currency`, `currencyShort`, `compact`, `integer`,
-  `percent`, `monthShort`, `dayMonth`. O `format` dos eixos aceita o nome de um
-  deles, ou uma funcao sua.
+  O `useChartMotion()` liga a animacao da Recharts a preferencia de "reduzir
+  movimento" do sistema. O resto do catalogo resolve isso por token - o
+  `--rc-duration-*` vai a zero e toda transicao para -, mas a Recharts
+  interpola em JS e nenhum token a alcanca. Espalhe o que ele devolve na marca:
 
-  `compact` abrevia com simbolo, `12,4K`, que e a convencao de painel e cabe em
-  menos pixel. `compactWords` e `currencyShortWords` escrevem `12,4 mil`, que
-  le melhor em texto corrido. **Nao misture as duas na mesma tela.**
+  ```tsx
+  const movimento = useChartMotion()
 
-  **Dinheiro sai abreviado.** Use `currencyShort` em indicador, tabela, eixo,
-  legenda e dica. O `currency`, que escreve `R$ 2.480,00` por extenso, fica
-  para o lugar onde o centavo e o assunto: o valor que a pessoa confirma antes
-  de emitir, e o comprovante depois.
+  <Line dataKey="pagas" stroke="var(--color-pagas)" {...movimento} />
+  ```
+
+  Os formatadores do eixo e da dica sao os mesmos do resto da biblioteca, e
+  estao logo abaixo.
 
   As pecas da Recharts que saem por aqui: `Area`, `AreaChart`, `Bar`,
   `BarChart`, `Line`, `LineChart`, `Pie`, `PieChart`, `Cell`, `Scatter`,
@@ -126,6 +127,77 @@ mesmo global:
 vem antes da classe de propriedade: a folha que voce recebe e a compilada, e
 uma classe utilitaria que nenhum componente usa nao existe nela. A variavel
 sempre resolve.
+
+### Formatar o numero
+
+Um vocabulario so, para o eixo, a dica, o indicador, a celula da tabela e o
+rotulo de um controle. Eles nasceram no subcaminho do grafico e saem hoje
+**tambem pela raiz**, porque formatar dinheiro numa celula nunca foi assunto de
+grafico:
+
+```tsx
+import { currencyShort, percent, formatters } from '@rivocode/ui'
+```
+
+| Formatador | Escreve |
+|---|---|
+| `currency` | `R$ 2.480,00` |
+| `currencyShort` | `R$ 2,5K` |
+| `currencyShortWords` | `R$ 2,5 mil` |
+| `compact` | `12,4K` |
+| `compactWords` | `12,4 mil` |
+| `integer` | `1.240` |
+| `percent` | `62%`, do numero como ele esta no dado |
+| `monthShort` | `mar` |
+| `dayMonth` | `12/03` |
+
+`compact` abrevia com simbolo, que e a convencao de painel e cabe em menos
+pixel. `compactWords` e `currencyShortWords` escrevem por extenso, que le melhor
+em texto corrido. **Nao misture as duas na mesma tela.**
+
+**Dinheiro sai abreviado.** Use `currencyShort` em indicador, tabela, eixo,
+legenda e dica. O `currency`, que escreve por extenso, fica para o lugar onde o
+centavo e o assunto: o valor que a pessoa confirma antes de emitir, e o
+comprovante depois.
+
+**A prop `format` aceita o nome de um deles, ou uma funcao sua.** Ela existe no
+`Meter`, no `Progress`, no `Slider`, no `ChartXAxis`, no `ChartYAxis` e no
+`ChartDonut` - o tipo e `Format`, e `FormatName` e so o nome. O objeto
+`formatters` reune os nove, para quem monta a escolha em runtime:
+
+```tsx
+<Meter value={72} format="percent" />
+<ChartYAxis format="currencyShort" />
+<Slider defaultValue={25} max={50} format={(valor) => `${valor} dias`} />
+```
+
+Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
+`maskDate` para `dd/mm/aaaa`, e `applyMask`, `applyPattern`,
+`applyCurrencyMask`, `unmask`, `toCents` e `phoneMask` para os moldes de
+`MASKS`. Formatar CPF numa celula de tabela nao precisa de um campo por perto.
+
+### O que o CSS nao alcanca
+
+`useMobile()` e verdadeiro abaixo do `sm` do Tailwind, no mesmo corte que a
+barra lateral usa para virar folha e o calendario para mostrar um mes so. Ele
+existe exportado para a aplicacao decidir junto, em vez de escrever o proprio
+`640` num canto: quando cada tela guarda o seu numero, uma delas muda e as duas
+metades passam a discordar sobre o que e celular.
+
+```tsx
+const isMobile = useMobile()
+
+return isMobile ? <Sheet>{filtros}</Sheet> : <aside>{filtros}</aside>
+```
+
+`useMediaQuery(query)` e o geral, para qualquer outra pergunta que so o JS
+responde. **Layout continua sendo trabalho de classe utilitaria**: trocar
+`grid-cols-3` por `grid-cols-1` e assunto de `sm:`, e nao de hook. O hook e para
+o que muda de peca, e nao de tamanho. No servidor ele devolve `false`, e nao um
+palpite.
+
+Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
+valor, e evita um segundo assinante da mesma media query.
 
 ### Onde esta a verdade
 

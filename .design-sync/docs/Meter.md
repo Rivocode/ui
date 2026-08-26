@@ -14,5 +14,6 @@ faz o leitor de tela anunciar "carregando" para algo que não carrega.
 <Meter value={72} max={100} label="Espaco de arquivos" showValue />
 ```
 
-`showValue` mostra a porcentagem ao lado do rótulo. Sem rótulo visível, passe
-`aria-label`.
+`showValue` mostra o valor ao lado do rótulo, e `format` diz como ele é escrito:
+o nome de um formatador da casa — `percent`, `currencyShort`, `compact` — ou uma
+função sua. Sem rótulo visível, passe `aria-label`.
