@@ -1,11 +1,10 @@
 import { Button, EmptyState, RivoProvider } from '@rivocode/ui'
 import { FileCode2, FileText } from 'lucide-react'
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { IconGallery } from '@/components/icon-gallery'
 import { Markdown } from '@/components/markdown'
-import { findGuide } from '@/guides'
+import { findGuide, type Guide } from '@/guides'
 import { ThemePlayground } from '@/components/theme-playground'
-import { useText } from '@/use-text'
 
 /**
  * Uma pagina de prosa. Duas delas carregam uma demonstracao viva embaixo do
@@ -14,9 +13,6 @@ import { useText } from '@/use-text'
  */
 export function GuidePage({ slug }: { slug: string }) {
   const guide = findGuide(slug)
-  // O corpo do guia carrega sob demanda, como o das pecas. O hook vem antes do
-  // desvio do 404 porque hook nao aceita condicao.
-  const body = useText(guide?.loadBody)
 
   if (!guide) {
     return (
@@ -49,19 +45,18 @@ export function GuidePage({ slug }: { slug: string }) {
         </div>
       </header>
 
-      {body === null ? (
-        // A altura reservada e o que impede a demonstracao la embaixo de subir
-        // ate o cabecalho e descer de volta quando o texto chega.
-        <div className="h-64 animate-pulse rounded-md bg-surface" />
-      ) : (
-        <Markdown source={body} />
-      )}
+      <Prose guide={guide} />
 
       {slug === 'temas' && <ThemePlayground />}
       {slug === 'densidade' && <DensityDemo />}
       {slug === 'icones' && <IconGallery />}
     </article>
   )
+}
+
+/** O texto do guia, que suspende a pagina ate chegar. Ver o `Body` da peca. */
+function Prose({ guide }: { guide: Guide }) {
+  return <Markdown source={use(guide.loadBody())} />
 }
 
 /** O mesmo formulario nas duas densidades, lado a lado. */

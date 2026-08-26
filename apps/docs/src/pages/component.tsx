@@ -5,7 +5,7 @@ import { Markdown } from '@/components/markdown'
 import { PropsTable } from '@/components/props-table'
 import { findEntry, importPathOf, type Entry } from '@/catalog'
 import { anchor } from '@/anchor'
-import { useText } from '@/use-text'
+import { use } from 'react'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -33,11 +33,13 @@ function examplesOf(entry: Entry) {
 }
 
 /**
- * A prosa da peca, que chega depois do resto da pagina.
+ * A prosa da peca.
  *
  * O corpo das docs saiu do chunk de entrada, entao ele e uma requisicao a
- * parte. O lugar dele fica reservado enquanto isso: sem a barra, o titulo da
- * secao seguinte subia e descia quando o texto chegava.
+ * parte - e ela SUSPENDE a pagina inteira, em vez de reservar um lugar e
+ * preenche-lo depois. Esqueleto que vira texto de outra altura empurra tudo
+ * que esta embaixo: a pagina de peca marcava 0,44 de CLS assim, e o limite do
+ * bom e 0,1. Suspendendo, a pagina aparece uma vez, ja no tamanho final.
  */
 function Body({
   entry,
@@ -48,11 +50,7 @@ function Body({
   idPrefix?: string
   headingOffset?: number
 }) {
-  const body = useText(entry.loadBody)
-
-  if (body === null) {
-    return <div className="h-24 animate-pulse rounded-md bg-surface" />
-  }
+  const body = use(entry.loadBody())
 
   if (!body.trim()) return null
 

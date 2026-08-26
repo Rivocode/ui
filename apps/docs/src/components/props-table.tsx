@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { forwardsRootProps, pieceOf, propsOf, type Piece } from '@/props'
+import { use } from 'react'
+import { forwardsRootProps, pieceOf, propsOf } from '@/props'
 
 /** Parte o tipo de uniao, para o longo quebrar por valor e nao numa linha so. */
 function TypeCell({ type }: { type: string }) {
@@ -31,29 +31,11 @@ export function PropsTable({
   /** Dentro da lista "Partes", onde uma caixa inteira por parte seria ruido. */
   compact?: boolean
 }) {
-  const [piece, setPiece] = useState<Piece | undefined>()
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    let alive = true
-    setReady(false)
-    pieceOf(component).then((found) => {
-      if (!alive) return
-      setPiece(found)
-      setReady(true)
-    })
-    return () => {
-      alive = false
-    }
-  }, [component])
-
+  // A tabela e a parte mais alta da pagina, entao ela suspende junto com o
+  // resto em vez de chegar depois: o JSON tem 520 KB, e o salto de altura ao
+  // fim do download era a maior parte do CLS da pagina de peca.
+  const piece = use(pieceOf(component))
   const props = propsOf(piece)
-
-  // A tabela e a parte mais alta da pagina; sem o lugar reservado, a secao de
-  // partes subia ate o cabecalho e descia de volta quando o JSON chegava.
-  if (!ready) {
-    return <div className="h-40 animate-pulse rounded-lg border border-border bg-surface" />
-  }
 
   if (props.length === 0) {
     const toast = 'Sem prop própria: repassa ao elemento de baixo o que você mandar.'

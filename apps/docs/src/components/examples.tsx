@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState, type ComponentType } from 'react'
+import { use, useMemo, type ComponentType } from 'react'
 import { ExampleStage } from '@/components/example-stage'
-import { useText } from '@/use-text'
 import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/example-source'
 
 /* ---------------------------------------------------------------------------
@@ -9,6 +8,12 @@ import { sliceSource, storyKeepsOpen, storyNamesOf, titleFromSource } from '@/ex
  * Os mesmos arquivos que o sync do claude.ai/design fotografa, aqui rodando de
  * verdade. Retrato de componente envelhece em silencio: a prop muda, a imagem
  * fica. Exemplo que roda quebra na hora, e quem le ve a verdade.
+ *
+ * Eles suspendem a pagina em vez de aparecerem depois dela: uma caixa de 8rem
+ * que vira um exemplo de 30rem empurra a doc inteira para baixo, e era o outro
+ * lado do CLS que a pagina de peca marcava. Quem cuida da falha e a fronteira
+ * em `components/boundary.tsx` - chunk que nao chega e deploy novo por baixo
+ * de aba velha, e nao erro de quem le.
  * ------------------------------------------------------------------------- */
 
 export function Examples({
@@ -18,29 +23,15 @@ export function Examples({
   load: () => Promise<Record<string, ComponentType>>
   loadSource?: () => Promise<string>
 }) {
-  const [module, setModule] = useState<Record<string, ComponentType> | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const module = use(load())
   // A fonte vem do mesmo arquivo do exemplo, por outro caminho: ela e texto que
   // o leitor le, e ele e modulo que o React monta.
-  const source = useText(loadSource)
-
-  useEffect(() => {
-    let alive = true
-    load().then(
-      (loaded) => alive && setModule(loaded),
-      (failure: unknown) => alive && setError(String(failure)),
-    )
-    return () => {
-      alive = false
-    }
-  }, [load])
+  const source = loadSource ? use(loadSource()) : null
 
   // As chaves do modulo saem em ordem alfabetica, entao o exemplo principal
   // cairia onde o nome dele por acaso ordenasse. A ordem do proprio arquivo e a
   // ordem de leitura pretendida: o caso simples primeiro, os cantos depois.
   const stories = useMemo(() => {
-    if (!module) return []
-
     const written = source ? storyNamesOf(source) : []
     const rank = (name: string) => {
       const at = written.indexOf(name)
@@ -51,18 +42,6 @@ export function Examples({
       .filter(([, value]) => typeof value === 'function')
       .sort(([a], [b]) => rank(a) - rank(b))
   }, [module, source])
-
-  if (error) {
-    return (
-      <p className="rounded-md border border-danger bg-danger-subtle p-4 text-sm text-danger-text">
-        O exemplo não carregou: {error}
-      </p>
-    )
-  }
-
-  if (!module) {
-    return <div className="h-32 animate-pulse rounded-lg border border-border bg-surface" />
-  }
 
   return (
     <div className="space-y-4">

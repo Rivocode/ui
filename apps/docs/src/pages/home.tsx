@@ -519,7 +519,7 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
             <div key={family}>
               <h3 className="flex items-baseline gap-2 font-mono text-xs tracking-widest text-fg-subtle uppercase">
                 {family}
-                <span className="text-fg-subtle/70">{entriesOfFamily(family).length}</span>
+                <span className="text-fg-subtle">{entriesOfFamily(family).length}</span>
               </h3>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {entriesOfFamily(family).map((entry) => (

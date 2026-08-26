@@ -16,9 +16,14 @@ test("o atalho sai uma tecla por parte, e o leitor de tela ouve a combinacao", (
   withTheme(<Kbd keys="mod+k" />);
 
   // O rotulo diz a combinacao inteira; as teclas em si ficam escondidas, senao
-  // o leitor soletraria "comando" e "K" como dois textos soltos.
-  const group = screen.getByLabelText("mod mais k");
+  // o leitor soletraria "comando" e "K" como dois textos soltos. O nome falado
+  // e o da tecla que existe no teclado - `mod` nao e tecla, e era o que o
+  // rotulo dizia.
+  const group = screen.getByLabelText("Control mais K");
   expect(group.querySelectorAll("kbd").length).toBe(2);
+  // Nome em `span` generico e descartado pelo leitor: o papel e o que segura o
+  // rotulo de pe.
+  expect(group.getAttribute("role")).toBe("img");
 });
 
 test("o grupo de botoes junta as bordas sem cada botao saber disso", () => {

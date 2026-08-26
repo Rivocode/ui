@@ -33,8 +33,16 @@ function catalog() {
   return pending
 }
 
-export async function pieceOf(component: string): Promise<Piece | undefined> {
-  return (await catalog()).get(component)
+/*
+ * Uma promessa por peca, e nao uma por render: e por essa identidade que o
+ * `use()` reconhece o dado que ja chegou.
+ */
+const byComponent = new Map<string, Promise<Piece | undefined>>()
+
+export function pieceOf(component: string): Promise<Piece | undefined> {
+  const found = byComponent.get(component) ?? catalog().then((all) => all.get(component))
+  byComponent.set(component, found)
+  return found
 }
 
 export function propsOf(piece: Piece | undefined): Prop[] {

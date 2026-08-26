@@ -6,6 +6,7 @@ import { GUIDES } from '@/guides'
 import { Logo } from '@/components/logo'
 import { Home } from '@/pages/home'
 import { linkTo, useRoute, type Route } from '@/routes'
+import { PageBoundary } from '@/components/boundary'
 import { Toc } from '@/components/toc'
 import { revealWithin } from '@/reveal'
 
@@ -31,9 +32,16 @@ const FoundationPage = lazy(() =>
 )
 const GuidePage = lazy(() => import('@/pages/guide').then((mod) => ({ default: mod.GuidePage })))
 
-/** O lugar da pagina enquanto o chunk dela chega. */
+/**
+ * O lugar da pagina enquanto os pedacos dela chegam.
+ *
+ * Uma janela inteira de altura, e nao meia: o rodape tem que ficar FORA da
+ * tela ate a pagina existir. Aparecendo antes, ele desce quando o conteudo
+ * chega, e essa descida e layout shift - a metrica que a categoria de
+ * navegacao agentica do Lighthouse cobra junto com a arvore de acessibilidade.
+ */
 function PageFallback() {
-  return <div className="min-h-[60vh]" />
+  return <div className="min-h-dvh" />
 }
 
 function Brand({ navigate }: { navigate: (route: Route) => void }) {
@@ -304,7 +312,13 @@ export function App() {
               {/* A documentacao precisa de uma porta propria em toda pagina, e
                   ela abre onde alguem de fato comeca: a instalacao. Dali a
                   barra lateral leva a pessoa a qualquer peca. */}
+              {/* O rotulo repete o texto que so aparece a partir de `sm`: abaixo
+                  disso o link ficava com um icone e nada mais, e link sem nome
+                  acessivel e link que agente e leitor de tela nao sabem para
+                  onde vai. Sao as mesmas palavras da tela de proposito - nome
+                  que difere do visivel quebra o comando de voz (WCAG 2.5.3). */}
               <a
+                aria-label="documentação"
                 {...linkTo({ kind: 'guide', slug: 'instalacao' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'guide' || route.kind === 'component' || route.kind === 'foundation'
@@ -317,6 +331,7 @@ export function App() {
               </a>
 
               <a
+                aria-label="demonstração"
                 {...linkTo({ kind: 'demo' }, navigate)}
                 className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'demo'
@@ -329,6 +344,7 @@ export function App() {
               </a>
 
               <a
+                aria-label="/llms.txt"
                 href="/llms.txt"
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1.5 sm:px-2.5 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
               >
@@ -347,9 +363,11 @@ export function App() {
             {route.kind === 'home' ? (
               <Home navigate={navigate} />
             ) : (
-              <Suspense fallback={<PageFallback />}>
-                <DemoPage />
-              </Suspense>
+              <PageBoundary>
+                <Suspense fallback={<PageFallback />}>
+                  <DemoPage />
+                </Suspense>
+              </PageBoundary>
             )}
           </main>
         ) : (
@@ -363,12 +381,17 @@ export function App() {
 
             <div className="flex min-w-0 flex-1 justify-center">
               <main id="conteudo" tabIndex={-1} className="min-w-0 flex-1 outline-none xl:max-w-3xl">
-                <Suspense fallback={<PageFallback />}>
-                  {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
-                  {route.kind === 'foundation' && <FoundationPage />}
-                  {route.kind === 'guide' && <GuidePage slug={route.slug} />}
-                  {route.kind === 'component' && <ComponentPage slug={route.slug} />}
-                </Suspense>
+                {/* A `key` reseta a fronteira na troca de pagina: sem ela, uma
+                    falha deixaria a mensagem no lugar de toda peca aberta
+                    depois, e so recarregar tiraria. */}
+                <PageBoundary key={`${route.kind}:${'slug' in route ? route.slug : ''}`}>
+                  <Suspense fallback={<PageFallback />}>
+                    {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
+                    {route.kind === 'foundation' && <FoundationPage />}
+                    {route.kind === 'guide' && <GuidePage slug={route.slug} />}
+                    {route.kind === 'component' && <ComponentPage slug={route.slug} />}
+                  </Suspense>
+                </PageBoundary>
               </main>
 
               <Toc watch={`${route.kind}:${'slug' in route ? route.slug : ''}`} />

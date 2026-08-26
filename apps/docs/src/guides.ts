@@ -24,9 +24,15 @@ export type Guide = {
   loadBody: () => Promise<string>
 }
 
+/** A mesma promessa em toda chamada: ver o `once` do `catalog.ts`. */
+function once(load: () => Promise<string>) {
+  let pending: Promise<string> | null = null
+  return () => (pending ??= load())
+}
+
 export const GUIDES: Guide[] = GUIDE_LIST.map((guide) => ({
   ...guide,
-  loadBody: CONTENT[`./content/${guide.slug}.md`] ?? (async () => ''),
+  loadBody: once(CONTENT[`./content/${guide.slug}.md`] ?? (async () => '')),
 }))
 
 export const findGuide = (slug: string) => GUIDES.find((guide) => guide.slug === slug)

@@ -61,6 +61,45 @@ const OTHERS: Record<string, string> = {
 };
 
 /**
+ * Como o leitor de tela pronuncia cada tecla.
+ *
+ * Nem o simbolo desenhado nem o token servem. `⌘` sai como o nome Unicode dele
+ * - "place of interest sign" -, e o token cru saia pior ainda: o rotulo do
+ * atalho era "mod mais k", e `mod` nao e o nome de tecla nenhuma. Quem ouve
+ * precisa da tecla que existe no teclado dele, entao a tabela segue a mesma
+ * bifurcacao do desenho.
+ */
+const SPOKEN_MAC: Record<string, string> = {
+  mod: "Command",
+  cmd: "Command",
+  meta: "Command",
+  ctrl: "Control",
+  alt: "Option",
+  option: "Option",
+};
+
+const SPOKEN_OTHERS: Record<string, string> = {
+  mod: "Control",
+  cmd: "Control",
+  meta: "Control",
+  ctrl: "Control",
+  alt: "Alt",
+  option: "Alt",
+};
+
+const SPOKEN: Record<string, string> = {
+  shift: "Shift",
+  enter: "Enter",
+  backspace: "Backspace",
+  esc: "Esc",
+  tab: "Tab",
+  up: "seta para cima",
+  down: "seta para baixo",
+  left: "seta para a esquerda",
+  right: "seta para a direita",
+};
+
+/**
  * Verdadeiro num Mac.
  *
  * Le a plataforma uma vez, no modulo, e nao por render: ela nao muda no meio
@@ -75,6 +114,13 @@ export function keyName(key: string) {
   const token = key.toLowerCase();
   const table = NO_MAC ? MAC : OTHERS;
   return table[token] ?? (key.length === 1 ? key.toUpperCase() : key);
+}
+
+/** O mesmo nome, dito em voz alta. */
+function spokenName(key: string) {
+  const token = key.toLowerCase();
+  const platform = NO_MAC ? SPOKEN_MAC : SPOKEN_OTHERS;
+  return platform[token] ?? SPOKEN[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 
 export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
@@ -103,7 +149,18 @@ export function Kbd({ className, size, keys, children, ...props }: KbdProps) {
     const parts = keys.split("+").map((part) => part.trim());
 
     return (
-      <span className="inline-flex items-center gap-1" aria-label={parts.join(" mais ")}>
+      /*
+       * `role="img"`: um `span` cru e generico, e o ARIA proibe dar nome a
+       * generico - o rotulo era simplesmente descartado por parte dos leitores,
+       * e o atalho saia mudo, ja que cada tecla esta escondida. A auditoria de
+       * navegacao agentica do Lighthouse 13 reprovava a pagina por isto.
+       * `img` e o que o grupo e: um desenho unico, que se le de uma vez.
+       */
+      <span
+        role="img"
+        aria-label={parts.map(spokenName).join(" mais ")}
+        className="inline-flex items-center gap-1"
+      >
         {parts.map((part, index) => (
           <kbd
             key={`${part}-${index}`}

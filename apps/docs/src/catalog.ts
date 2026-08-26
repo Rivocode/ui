@@ -36,6 +36,18 @@ const EXAMPLE_SOURCES = import.meta.glob('../../../.design-sync/previews/*.tsx',
   import: 'default',
 }) as Record<string, () => Promise<string>>
 
+/**
+ * Uma promessa por arquivo, e nao uma por chamada.
+ *
+ * O `use()` do React reencontra o mesmo dado pela identidade da promessa: com
+ * uma nova a cada render, a pagina suspendia, montava, pedia de novo e
+ * suspendia outra vez, sem nunca assentar.
+ */
+function once<T>(load: () => Promise<T>) {
+  let pending: Promise<T> | null = null
+  return () => (pending ??= load())
+}
+
 export type Entry = {
   name: string
   /** Endereco da pagina: `ToggleGroup` mora em `/componentes/toggle-group`. */
@@ -60,16 +72,16 @@ const fileName = (path: string) => path.split('/').pop()!.replace(/\.(md|tsx)$/,
 const bodyByName = new Map(
   Object.entries(DOC_BODIES).map(([path, load]) => [
     fileName(path),
-    async () => dropLeadingHeading(splitFrontmatter(await load()).body),
+    once(async () => dropLeadingHeading(splitFrontmatter(await load()).body)),
   ]),
 )
 
 const exampleByName = new Map(
-  Object.entries(EXAMPLES).map(([path, load]) => [fileName(path), load]),
+  Object.entries(EXAMPLES).map(([path, load]) => [fileName(path), once(load)]),
 )
 
 const sourceByName = new Map(
-  Object.entries(EXAMPLE_SOURCES).map(([path, load]) => [fileName(path), load]),
+  Object.entries(EXAMPLE_SOURCES).map(([path, load]) => [fileName(path), once(load)]),
 )
 
 /**
@@ -89,7 +101,7 @@ const ALL: Entry[] = DOC_INDEX.map((doc) => ({
   // O indice sai do mesmo `readdirSync` que este glob ve, entao a falta seria
   // um arquivo apagado entre o build e o request: a pagina abre sem prosa em
   // vez de estourar.
-  loadBody: bodyByName.get(doc.name) ?? (async () => ''),
+  loadBody: bodyByName.get(doc.name) ?? once(async () => ''),
   loadExamples: exampleByName.get(doc.name),
   loadSource: sourceByName.get(doc.name),
 })).sort((a, b) => a.name.localeCompare(b.name))
