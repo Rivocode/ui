@@ -26,4 +26,10 @@ pagava um `useState` para existir.
 
 ## No React Native
 
-Ainda não portado — hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe. É ausência de agora, e não decisão: a [tabela de paridade](/react-native) separa as duas.
+Traduz, e a regra sobrevive inteira: **quem vale é a folha**. Marcar um galho marca todas as folhas debaixo dele, e o que sai em `onValueChange` é sempre uma lista de folhas.
+
+**O desenho é que não porta.** No web os níveis abertos aparecem ao mesmo tempo, um recuo por nível; a 390px o terceiro nível começa depois do meio da tela e o nome do nó cabe em quatro letras — a peça fica ilegível justamente onde ela é mais útil. Aqui é **um nível por vez**: tocar num galho empurra o nível de dentro, e o cabeçalho mostra o caminho ("Financeiro › Contas a pagar", cortado pela frente, porque o pedaço que importa é o último) e volta um nível.
+
+Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a caixa ao lado marca o galho inteiro — com um alvo só não havia como marcar "Financeiro" sem visitar as sete folhas de dentro. E **não há estado misto na caixa**, porque o `Checkbox` nativo não tem: o galho meio marcado aparece com a caixa vazia e um "2 de 7 escolhidos" embaixo do nome — texto, que se lê e se ouve, no lugar de um tracinho que só se vê.
+
+Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada com busca já é o `Combobox`), `expanded`/`onExpandedChange` (não há aberto e fechado, há o nível onde o dedo está) e o `label` do nó, que aqui é `string` — ele é montado dentro do rótulo falado e do caminho, e de um `ReactNode` não há como ler o texto de volta.

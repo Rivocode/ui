@@ -124,7 +124,6 @@ const PAI: Record<string, string> = {
 };
 
 const PARITY: Record<string, Row> = {
-  // ---------------------------------------------------------------- traduzem
   Accordion: {
     state: "traduz",
     note: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada",
@@ -165,7 +164,7 @@ const PARITY: Record<string, Row> = {
       "pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só " +
       "bytes, é módulo nativo que o app precisa ligar e reconstruir.\n\n" +
       "**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, " +
-      "`errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
+      "`errorTitle`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
       "as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora " +
       "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
       "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de " +
@@ -375,7 +374,6 @@ const PARITY: Record<string, Row> = {
     note: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
   },
 
-  // ------------------------------------------------ traduzem com outro nome
   Autocomplete: {
     state: "vira",
     native: "Combobox",
@@ -394,7 +392,10 @@ const PARITY: Record<string, Row> = {
     page:
       "Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de " +
       "estados — carregando, erro, vazio, dados — na mesma ordem, com o erro vencendo o " +
-      "carregando e o vazio valendo só after que a resposta chegou. Dos quatro opt-in " +
+      "carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se " +
+      "configuram com os nomes do web: `errorTitle`, `errorMessage` e `noResultsMessage`. Só o " +
+      "padrão de `errorTitle` difere — aqui não há, porque o aviso da lista nasceu de uma linha " +
+      "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
       "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não " +
       "portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem " +
       "cabeçalho, e no celular ordenar é um `Menu` de \"ordenar por\" que a tela monta em " +
@@ -407,7 +408,6 @@ const PARITY: Record<string, Row> = {
     note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo",
   },
 
-  // ------------------------------------------------------------------ na fila
   Clipboard: {
     state: "traduz",
     note:
@@ -503,8 +503,27 @@ const PARITY: Record<string, Row> = {
       "gesto de desistir e não pode valer como aplicar.",
   },
   Editable: {
-    state: "fila",
-    note: "o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado",
+    state: "traduz",
+    note:
+      "quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível — " +
+      "sair do campo não salva, ao contrário do web",
+    page:
+      "Traduz, com os dois gestos trocados — e os dois eram a peça inteira no web, então vale ler " +
+      "antes de portar a tela.\n\n" +
+      "**Quem abre é o toque longo**, e não o toque. É o gesto que o sistema já usa para agir " +
+      "sobre um texto, e a escolha é defensiva: num painel de leitura o dedo encosta em tudo " +
+      "enquanto rola, e com o toque curto abrindo o campo o teclado subia sozinho a cada " +
+      "esbarrão. Para quem usa leitor de tela o gesto não existe, então a peça declara também " +
+      "uma ação de acessibilidade `longpress` chamada \"Editar\", que aparece no rotor.\n\n" +
+      "**Sair do campo não salva.** No web, clicar fora confirma; aqui não há clicar fora — há o " +
+      "teclado que se esconde, e o próprio `Cancelar` tira o foco do campo antes de rodar, então " +
+      "um `blur` que salvasse salvaria o rascunho no caminho de cancelá-lo. Nada sai daqui sem " +
+      "confirmação explícita (o botão de retorno do teclado) e nada se perde sem o `Cancelar`, " +
+      "que é visível ao lado do campo porque sem Escape não existe saída invisível.\n\n" +
+      "O resto é o contrato de sempre: `value` e `onValueChange` **obrigatórios**, sem " +
+      "`defaultValue`, e `label` obrigatório — fechada, a peça anuncia `label` e valor juntos, " +
+      "porque \"Nome do cliente\" sozinho manda a pessoa abrir a edição só para descobrir o que " +
+      "há lá dentro.",
   },
   FileUpload: {
     state: "traduz",
@@ -698,15 +717,16 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string`",
     page:
-      "Traduz, e o que **não** atravessa é a dica por quadrado — nem poderia. No web cada " +
-      "ponto monta um `Tooltip`, e um tooltip é um portal: 365 dias seriam 365 portais " +
-      "montados para que no máximo um apareça. E mesmo de graça eles não serviriam, porque " +
-      "dica se abre ao pousar o ponteiro. Trocar cada quadrado por um `Pressable` também não " +
-      "resolve: 90 períodos em 358px dão 4px por quadrado, seis vezes menos que o alvo de " +
-      "toque mínimo.\n\n" +
-      "**No lugar, a faixa inteira vira um alvo só.** O dedo pousa e arrasta sobre ela, uma " +
-      "marca fina acompanha, e o texto do período lido aparece numa linha fixa embaixo — que " +
-      "é onde o rótulo da dica passa a morar. A linha existe desde o primeiro quadro, " +
+      "Traduz, e os dois lados chegaram ao mesmo desenho: **a faixa inteira é um alvo só**. " +
+      "O nativo chegou primeiro por necessidade, e o web o seguiu — lá cada ponto montava um " +
+      "`Tooltip`, e tooltip é portal: 365 dias eram 365 portais montados para que no máximo um " +
+      "aparecesse. Aqui nem essa saída existia, porque dica se abre ao pousar o ponteiro, e " +
+      "trocar cada quadrado por um `Pressable` também não resolveria: 90 períodos em 358px dão " +
+      "4px por quadrado, seis vezes menos que o alvo de toque mínimo.\n\n" +
+      "**O que não atravessa é o balão.** No web a leitura sai num `Tooltip` único que segue " +
+      "ponteiro e teclado; aqui ela mora numa linha fixa embaixo da faixa. O dedo pousa e " +
+      "arrasta, uma marca fina acompanha, e o período lido aparece nessa linha, que existe desde " +
+      "o primeiro quadro, " +
       "mostrando o período mais recente: o espaço fica reservado, a tela não pula no primeiro " +
       "toque, e o mais recente é o que a pergunta \"piorou ontem?\" quer ler primeiro.\n\n" +
       "A leitura de tela também muda de forma. A lista escondida com os 365 textos, que no " +
@@ -717,15 +737,51 @@ const PARITY: Record<string, Row> = {
       "acessível da faixa, e de um `ReactNode` não há como ler o texto de volta.",
   },
   Tree: {
-    state: "fila",
-    note: "hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe",
+    state: "traduz",
+    note:
+      "um nível por vez, empilhado: tocar num galho empurra o nível de dentro e o cabeçalho " +
+      "mostra o caminho e volta; sem recuo, sem busca",
+    page:
+      "Traduz, e a regra sobrevive inteira: **quem vale é a folha**. Marcar um galho marca todas " +
+      "as folhas debaixo dele, e o que sai em `onValueChange` é sempre uma lista de folhas.\n\n" +
+      "**O desenho é que não porta.** No web os níveis abertos aparecem ao mesmo tempo, um recuo " +
+      "por nível; a 390px o terceiro nível começa depois do meio da tela e o nome do nó cabe em " +
+      "quatro letras — a peça fica ilegível justamente onde ela é mais útil. Aqui é **um nível " +
+      "por vez**: tocar num galho empurra o nível de dentro, e o cabeçalho mostra o caminho " +
+      "(\"Financeiro › Contas a pagar\", cortado pela frente, porque o pedaço que importa é o " +
+      "último) e volta um nível.\n\n" +
+      "Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a " +
+      "caixa ao lado marca o galho inteiro — com um alvo só não havia como marcar \"Financeiro\" " +
+      "sem visitar as sete folhas de dentro. E **não há estado misto na caixa**, porque o " +
+      "`Checkbox` nativo não tem: o galho meio marcado aparece com a caixa vazia e um \"2 de 7 " +
+      "escolhidos\" embaixo do nome — texto, que se lê e se ouve, no lugar de um tracinho que só " +
+      "se vê.\n\n" +
+      "Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada " +
+      "com busca já é o `Combobox`), `expanded`/`onExpandedChange` (não há aberto e fechado, há " +
+      "o nível onde o dedo está) e o `label` do nó, que aqui é `string` — ele é montado dentro do " +
+      "rótulo falado e do caminho, e de um `ReactNode` não há como ler o texto de volta.",
   },
   TreeSelect: {
-    state: "fila",
-    note: "escolher dentro de árvore vira folha com níveis; até lá, dois `Select` encadeados",
+    state: "traduz",
+    note:
+      "o `Tree` dentro de uma folha, com a contagem do rascunho e o `Aplicar` no rodapé; sair " +
+      "pela lateral desiste",
+    page:
+      "Traduz: é o `Tree` nativo dentro da folha de baixo, com a mesma navegação por níveis — e " +
+      "por isso ele resolve o que os dois `Select` encadeados, que esta página mandava usar, " +
+      "nunca resolveram: a profundidade não é fixa, e o segundo `Select` só sabia existir depois " +
+      "que alguém escolhia no primeiro.\n\n" +
+      "**O rodapé é a metade que o web não precisa ter.** No desktop o painel fica ao lado do " +
+      "gatilho, e o gatilho conta quantos foram; sob uma folha não há gatilho à vista, então a " +
+      "contagem vive no rodapé, junto do `Aplicar` — e ela conta o **rascunho**, que é o único " +
+      "número que responde \"quantos eu já marquei?\" enquanto a pessoa ainda está marcando. O " +
+      "texto sai do mesmo resumo do `Select` e do `Combobox`, de propósito.\n\n" +
+      "**Sair pela lateral desiste**, e o `Aplicar` é a única porta que confirma — a mesma " +
+      "divisão do `DateRangePicker`: o toque no fundo escurecido é o gesto de quem se " +
+      "arrependeu, e ele não pode valer como aplicar. Sem `searchable`, pela razão que está na " +
+      "página do `Tree`.",
   },
 
-  // --------------------------------------------------------------- não portam
   Breadcrumb: {
     state: "nao",
     note: "o caminho de volta é o botão de voltar do router",

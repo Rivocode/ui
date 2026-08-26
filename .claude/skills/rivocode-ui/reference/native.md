@@ -50,7 +50,7 @@ módulo nativo, que o app instala e liga ao projeto só se desenhar gráfico
 (`npx expo install react-native-svg`).
 
 ```tsx
-import { ChartContainer, ChartDonut } from '@rivocode/ui-native/chart'
+import { ChartContainer, ChartDonut, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
 ```
 
 Três coisas mordem. **A moldura mede e entrega**: `children` como função recebe
@@ -58,7 +58,15 @@ Três coisas mordem. **A moldura mede e entrega**: `children` como função rece
 `var(--color-série)` — e a medida chega zerada no primeiro quadro. **No toque
 não há dica**: a legenda da rosca é o controle, e tocar a linha acende a fatia
 e leva nome e valor para o meio. **Cor de série é papel de token** (`chart-1` a
-`chart-8`), nunca hexadecimal, senão a peça fica surda ao tema do cliente.
+`chart-8`), nunca hexadecimal, senão a peça fica surda ao tema do cliente: no
+web a mesma prop aceita qualquer cor de CSS porque lá ela vira
+`var(--color-série)`, e aqui o que a peça recebe já é o valor final que vai
+para o desenho.
+
+A `PALETTE` é essa lista dos oito papéis, na ordem em que devem ser usados:
+série sem `color` no `config` recebe o próximo dela, e é ela que o
+`ChartDonut` percorre fatia a fatia. Importe-a quando o seu desenho à mão
+precisar da mesma ordem, em vez de escrever `chart-1` de novo num canto.
 
 A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
 `chart` do `Stat`, e o `Stat` sai da raiz.
@@ -92,7 +100,7 @@ com `uri` local — `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-26:** 61 traduzem com o mesmo nome, 3 traduzem com outro, 3 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
+**83 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-26:** 64 traduzem com o mesmo nome, 3 traduzem com outro, 0 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar — a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -125,7 +133,7 @@ com `uri` local — `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
 | `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger` |
-| `Editable` | ○ na fila | o texto que vira campo depende de foco e de Escape; no toque ele quer outro gesto, ainda não desenhado |
+| `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível — sair do campo não salva, ao contrário do web |
 | `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web |
 | `Field` | ✔ traduz | `label`, `description` e `error` como props; o erro vence a descrição, como no web |
 | `Fieldset` | ✔ traduz | `legend` como prop |
@@ -177,8 +185,8 @@ com `uri` local — `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Toolbar` | ✕ não porta | superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem |
 | `Tooltip` | ✕ não porta | hover não existe no toque; o rótulo precisa estar na tela |
 | `Tracker` | ✔ traduz | a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string` |
-| `Tree` | ○ na fila | hierarquia em tela estreita quer navegação por níveis, e a peça que faz isso ainda não existe |
-| `TreeSelect` | ○ na fila | escolher dentro de árvore vira folha com níveis; até lá, dois `Select` encadeados |
+| `Tree` | ✔ traduz | um nível por vez, empilhado: tocar num galho empurra o nível de dentro e o cabeçalho mostra o caminho e volta; sem recuo, sem busca |
+| `TreeSelect` | ✔ traduz | o `Tree` dentro de uma folha, com a contagem do rascunho e o `Aplicar` no rodapé; sair pela lateral desiste |
 
 ## Como esta tabela se mantém
 
