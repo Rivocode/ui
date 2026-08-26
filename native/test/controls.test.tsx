@@ -16,16 +16,50 @@ describe("Button", () => {
     expect(textOf(screen)).toContain("Emitir nota");
   });
 
-  test("desabilitado repassa o disabled ao Pressable", () => {
+  test("desabilitado repassa o disabled ao Pressable E anuncia o estado", () => {
     const screen = render(<Button disabled>Emitir</Button>);
-    expect(byRole(screen, "button")[0].props.disabled).toBe(true);
+    const [button] = byRole(screen, "button");
+    expect(button.props.disabled).toBe(true);
+    // Escurecer com opacity-50 nao chega ao leitor de tela: sem isto ele
+    // anuncia um botao ativo que nao responde ao toque.
+    expect(button.props.accessibilityState).toEqual({ disabled: true, busy: false });
+  });
+
+  test("carregando trava o toque, anuncia busy e poe a espera antes do rotulo", () => {
+    const onPress = mock(() => {});
+    const screen = render(
+      <Button loading onPress={onPress}>
+        Emitir
+      </Button>,
+    );
+    const [button] = byRole(screen, "button");
+    expect(button.props.disabled).toBe(true);
+    expect(button.props.accessibilityState).toEqual({ disabled: true, busy: true });
+    expect(textOf(screen)).toContain("Emitir");
+
+    const [indicator] = screen.root.findAllByType("ActivityIndicator" as never);
+    expect(indicator).toBeDefined();
+    // O rodinha e enfeite: quem conta que esta ocupado e o accessibilityState,
+    // como no web, onde ele sai com aria-hidden.
+    expect(indicator.props.accessibilityElementsHidden).toBe(true);
+  });
+
+  test("o alvo de toque respeita o minimo das duas plataformas", () => {
+    // 44pt e o minimo da Apple, 48dp o do Android: md e lg tem que passar nos
+    // dois, senao a decisao de nao encolher alvo de toque nao vale nada.
+    expect(byRole(render(<Button size="md">x</Button>), "button")[0].props.className).toContain(
+      "h-11",
+    );
+    expect(byRole(render(<Button size="lg">x</Button>), "button")[0].props.className).toContain(
+      "h-12",
+    );
   });
 
   test("a classe de quem usa vence a da peca, para o wrapper de cliente", () => {
     const screen = render(<Button className="h-14 rounded-pill">x</Button>);
     const root = byRole(screen, "button")[0].props.className as string;
     expect(root).toContain("h-14");
-    expect(root).not.toContain("h-10");
+    expect(root).not.toContain("h-11");
     expect(root).toContain("rounded-pill");
     expect(root).not.toContain("rounded-md");
   });
