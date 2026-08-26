@@ -24,14 +24,6 @@ export type PageHeaderProps = Omit<ComponentProps<"header">, "title"> & {
   actions?: ReactNode;
 };
 
-/**
- * O topo que toda rota reescreve um pouco diferente: trilha, titulo,
- * descricao e as acoes da tela, na mesma hierarquia em todas as paginas.
- *
- * O titulo sai num `h1`, que e o certo para o topo de uma rota. Quando o
- * cabecalho nao e o topo - o shell da aplicacao ja tem o `h1`, ou a peca esta
- * dentro de uma regiao -, `titleAs` baixa o nivel sem mexer no desenho.
- */
 export function PageHeader({
   title,
   titleAs: Title = "h1",
@@ -47,10 +39,6 @@ export function PageHeader({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          {/*
-           * Nivel semantico e tamanho visual sao coisas diferentes: o titulo
-           * mantem o mesmo desenho em qualquer nivel, e so a tag muda.
-           */}
           <Title className="font-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg">
             {title}
           </Title>

@@ -4,12 +4,6 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 
-/* ---------------------------------------------------------------------------
- * As pecas pequenas que traduzem direto: separador, espera, progresso,
- * avatar e o aviso que fica na tela. Cada uma e um arquivo no web; aqui
- * dividem um, porque nenhuma passa de trinta linhas.
- * ------------------------------------------------------------------------- */
-
 export function Separator({ className }: { className?: string }) {
   return <View accessibilityRole="none" className={`h-px bg-border ${className ?? ""}`} />;
 }
@@ -87,7 +81,6 @@ export type AlertProps = {
   className?: string;
 };
 
-/** O aviso que fica na tela - o que precisa continuar visivel nunca e Toast. */
 export function Alert({ tone = "info", title, children, className }: AlertProps) {
   const styles = ALERT_TONE[tone];
   return (

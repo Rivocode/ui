@@ -10,14 +10,6 @@ import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import { Input } from "./field";
 
-/**
- * O que os dois campos de data repassam ao calendario sem reescrever.
- *
- * Exportado porque o `DateRangePicker` repassava so o `locale`: filtro de
- * periodo nao conseguia limitar a escolha aos exercicios abertos, que e
- * exatamente para o que `startMonth` e `endMonth` existem. Escrever a lista de
- * novo la seria criar o segundo lugar de onde ela pode envelhecer.
- */
 export type CalendarPassthrough = Pick<
   ComponentProps<typeof Calendar>,
   "locale" | "startMonth" | "endMonth" | "showOutsideDays"
@@ -45,22 +37,6 @@ export type DatePickerProps = Omit<
     confirm?: boolean;
   };
 
-/**
- * Campo de data: da para digitar e da para escolher no calendario, e os dois
- * caminhos escrevem o mesmo estado.
- *
- * Digitar vem primeiro de proposito. Quem preenche formulario o dia inteiro
- * digita `03032026` mais rapido do que navega tres meses para tras, e o
- * calendario existe para quem nao sabe a data de cabeca.
- *
- * O texto e a data vivem separados porque `03/03/2` e um estado legitimo no
- * meio da digitacao, e nao ha data nenhuma para guardar ainda. Ao sair do
- * campo, texto que nao virou data volta para a ultima data valida.
- *
- * Com `confirmar`, o clique no dia vira rascunho e so o Aplicar escreve o
- * valor: fechar por fora descarta. A digitacao continua valendo na hora,
- * porque quem digita a data inteira ja disse o que queria.
- */
 export function DatePicker({
   value,
   defaultValue,
@@ -87,14 +63,11 @@ export function DatePicker({
   const [rawText, setRawText] = useState(false);
   const [isOpen, setAberto] = useState(false);
 
-  // O rascunho so existe com rodape. Sem ele, o clique no dia ja e a escolha.
   const [draft, setRascunho] = useState<Date | undefined>(date);
   const picked = confirm && isOpen ? draft : date;
 
   const [mes, setMes] = useState<Date>(() => date ?? new Date());
 
-  // Enquanto ninguem digita, o campo espelha a data. Isso mantem o campo certo
-  // quando a data muda de fora, sem apagar o que esta sendo digitado agora.
   const displayText = rawText ? text : formatDate(date);
 
   function changeDate(nova: Date | undefined) {
@@ -139,8 +112,6 @@ export function DatePicker({
           setRawText(true);
 
           const lida = parseDate(masked);
-          // Campo esvaziado limpa a data; texto pela metade ainda nao diz nada,
-          // entao a data anterior fica de pe ate o campo perder o foco.
           if (lida || masked === "") changeDate(lida);
         }}
         onBlur={(event) => {
@@ -154,8 +125,6 @@ export function DatePicker({
         open={isOpen}
         onOpenChange={(abrir) => {
           setAberto(abrir);
-          // Abrir sempre parte da data escolhida, e nao do mes que sobrou de
-          // uma navegacao anterior. Fechar por fora descarta o rascunho.
           if (abrir) {
             setRascunho(date);
             if (date) setMes(date);
@@ -214,8 +183,6 @@ export function DatePicker({
         />
       </CalendarPanel>
 
-      {/* O formulario nativo precisa de um valor que o servidor entenda, e
-          `dd/mm/aaaa` nao e. Vai como `aaaa-mm-dd`, o mesmo do input de date. */}
       {name && (
         <input
           type="hidden"

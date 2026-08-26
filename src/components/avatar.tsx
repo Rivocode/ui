@@ -9,11 +9,6 @@ import { cn } from "../lib/cn";
 export const avatarVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-pill",
-    // O corpo do avatar nao pode ser uma superficie: no tema claro da casa,
-    // surface e surface-raised sao os dois branco puro, e o circulo sumiria
-    // dentro do cartao. O --rc-skeleton existe justamente para contrastar com
-    // a superficie sem ser outra superficie, e e o unico papel do tema com
-    // essa promessa.
     "bg-skeleton align-middle font-sans font-medium text-fg-muted select-none",
   ),
   {
@@ -37,12 +32,6 @@ export type AvatarProps = ComponentProps<typeof BaseAvatar.Root> &
     fallback?: string;
   };
 
-/**
- * Foto de pessoa, com letra por tras.
- *
- * A letra nao aparece de imediato: a Base UI espera um instante antes de
- * mostra-la, para a foto que carrega rapido nao piscar a inicial antes.
- */
 export function Avatar({ className, size, src, alt = "", fallback, ...props }: AvatarProps) {
   return (
     <BaseAvatar.Root {...props} className={cn(avatarVariants({ size }), className)}>

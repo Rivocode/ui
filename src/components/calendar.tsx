@@ -10,7 +10,6 @@ import { useMobile } from "../lib/screen";
 
 export type CalendarProps = ComponentProps<typeof DayPicker>;
 
-/** As setas da navegacao e das listas de mes e ano, no nosso traco. */
 const CHEVRONS = {
   left: ChevronLeft,
   right: ChevronRight,
@@ -18,20 +17,6 @@ const CHEVRONS = {
   down: ChevronDown,
 } as const;
 
-/**
- * O calendario cru, sem gatilho e sem painel. Serve para quem quer o mes na
- * propria tela, e e o miolo do DatePicker.
- *
- * A Base UI nao tem calendario, entao esta e a unica peca do catalogo com
- * fundacao de fora. A react-day-picker entra so como motor: nenhuma folha de
- * estilo dela e importada, todo desenho vem dos nossos tokens pelo
- * `classNames`. Trocar o motor um dia nao mexe no visual.
- *
- * O locale padrao e `pt-BR`, e nao o `en-US` da biblioteca, porque toda tela
- * que essa biblioteca serve hoje e em portugues. Passe `locale` para trocar.
- *
- * Em largura de celular ele mostra um mes so, mesmo quando pedem mais.
- */
 export function Calendar({
   className,
   classNames,
@@ -43,8 +28,6 @@ export function Calendar({
   formatters,
   ...props
 }: CalendarProps) {
-  // Dois meses no celular viram uma coluna de 700px de altura e o segundo fica
-  // fora da tela. Um mes so, e a navegacao cobre o resto.
   const isMobile = useMobile();
 
   return (
@@ -55,10 +38,6 @@ export function Calendar({
       startMonth={startMonth}
       endMonth={endMonth}
       formatters={{
-        // Uma letra por dia, como todo calendario de papel. "Seg" e "Sex"
-        // comecam igual, e o cabecalho vira leitura em vez de referencia; a
-        // coluna ja diz qual dia e, e o leitor de tela recebe o nome inteiro
-        // pelo `aria-label` da celula.
         formatWeekdayName: (dia, options, lib) =>
           lib
             ? lib.format(dia, "EEEEE", options).toUpperCase()
@@ -72,9 +51,6 @@ export function Calendar({
         months: "flex flex-col gap-4 sm:flex-row",
         month: "flex flex-col gap-3",
 
-        // A navegacao flutua sobre a legenda do mes: a Base UI monta o `nav`
-        // antes dos meses, e so o posicionamento absoluto deixa as setas na
-        // mesma linha do titulo sem duplicar o cabecalho por mes.
         nav: "absolute inset-x-0 top-0 flex h-8 items-center justify-between",
         button_previous: cn(
           "inline-flex size-8 items-center justify-center rounded-md",
@@ -92,8 +68,6 @@ export function Calendar({
         ),
 
         month_caption: "flex h-8 items-center justify-center px-10",
-        // A seta mora dentro do rotulo, e o Tailwind poe `display:block` em
-        // todo svg, entao sem o flex aqui ela cai para a linha de baixo.
         caption_label: cn(
           "inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap",
           "text-fg capitalize",
@@ -106,9 +80,6 @@ export function Calendar({
           "hover:bg-accent-subtle",
           "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
         ),
-        // A lista de verdade fica por cima, invisivel: o texto embaixo e o
-        // nosso, e o menu que abre e o nativo do sistema, que no celular ja
-        // vem com a roda de rolar que ninguem quer reescrever.
         dropdown: "absolute inset-0 cursor-pointer opacity-0",
 
         month_grid: "w-full border-collapse",
@@ -117,8 +88,6 @@ export function Calendar({
         weeks: "",
         week: "mt-1 flex w-full",
 
-        // 44px no celular e 36 na mesa: alvo de dedo tem medida propria, e no
-        // toque a diferenca entre acertar o dia e o vizinho e essa.
         day: "relative size-11 p-0 text-center sm:size-[var(--rc-day)]",
         day_button: cn(
           "size-11 rounded-md text-base text-fg sm:size-[var(--rc-day)]",
@@ -128,10 +97,6 @@ export function Calendar({
           "disabled:pointer-events-none",
         ),
 
-        // A cor de hoje so vale enquanto o dia nao esta selecionado. As duas
-        // regras pintavam o texto com a mesma especificidade, entao o vencedor
-        // era a ordem do CSS, e dava acento sobre acento: o numero de hoje
-        // sumia dentro do proprio destaque ao ser escolhido.
         today: cn(
           "[&>button]:font-medium",
           "[&:not(.rc-day-selected)>button]:text-accent-text",
@@ -140,11 +105,7 @@ export function Calendar({
         disabled: "[&>button]:text-fg-disabled",
         hidden: "invisible",
 
-        // A selecao pinta o botao, nao a celula, para o cantinho arredondado
-        // acompanhar o dia. O intervalo e a excecao: ali a celula pinta o miolo
-        // para a faixa nao ter buraco entre um dia e o outro.
         selected: cn(
-          // Marca sem estilo proprio, so para o `today` acima saber se calar.
           "rc-day-selected",
           "[&>button]:bg-accent [&>button]:text-accent-fg",
           "[&>button]:hover:bg-accent-hover",

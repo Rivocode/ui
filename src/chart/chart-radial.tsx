@@ -5,14 +5,6 @@ import { PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer } from "
 
 import { cn } from "../lib/cn";
 
-/*
- * `color` colide com a `<div>`: `HTMLAttributes` carrega um `color?: string`
- * herdado do HTML antigo, e aqui ele e a cor do arco. Os dois sao `string`,
- * entao a interseccao compilaria e o valor iria tambem para o DOM, como
- * atributo `color` que nenhum navegador le mais.
- *
- * `children` sai porque o arco e o miolo se desenham a partir de `value`.
- */
 export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children"> & {
   /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta. */
   value: number;
@@ -38,22 +30,6 @@ export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children">
   segments?: number;
 };
 
-/**
- * O arco de uma medida so: meta batida, uso de cota, taxa de conversao.
- *
- * Escolha entre ele e o `Meter` pelo espaco, nao pelo gosto: a barra do `Meter`
- * cabe numa linha de formulario e le mais rapido, e o arco pede um cartao
- * inteiro. O arco ganha quando o numero e o assunto do cartao, e nao um detalhe
- * dentro dele.
- *
- * ```tsx
- * <ChartRadial value={82} centerLabel="da meta do mes" />
- * ```
- *
- * Ele nao e `Progress`: o progresso anda para o fim e termina, e esta medida
- * sobe e desce enquanto o mes corre. Por isso sai como `img` com rotulo, e nao
- * como barra de carregamento.
- */
 export function ChartRadial({
   value,
   max = 100,
@@ -70,15 +46,10 @@ export function ChartRadial({
   const clamped = Math.max(0, Math.min(value, max));
   const percentage = Math.round((clamped / max) * 100);
 
-  // O arco comeca no topo e anda no sentido do relogio. Com `sweep` de 270 ele
-  // deixa a base aberta, que e onde o rotulo de baixo respira.
   const start = 90 + sweep / 2;
   const end = start - sweep;
 
   return (
-    // O espalhamento vem DEPOIS do `aria-label`: o rotulo tirado da
-    // porcentagem e padrao, e quem escrever o proprio `aria-label` tem que
-    // vencer. Com o spread antes, ele era engolido sem aviso nenhum.
     <div
       className={cn("relative h-44 w-full", className)}
       role="img"
@@ -96,18 +67,9 @@ export function ChartRadial({
             innerRadius="72%"
             outerRadius="100%"
             barSize={14}
-            // O `<svg>` da Recharts nasce com `tabindex="0"` e
-            // `role="application"`. Aqui os dois sao ruido: o arco e uma medida
-            // so, quem nomeia ja e o `div` acima como `img`, e nao ha nada para
-            // andar com as setas. Sem isto sobrava uma parada de tabulacao sem
-            // contorno e sem funcao dentro de um elemento que o leitor de tela ja
-            // trata como figura.
             tabIndex={-1}
             aria-hidden="true"
           >
-            {/* O eixo escondido e o que prende o arco a escala: sem ele a
-             * Recharts normaliza pelo maior valor da serie, e um unico ponto
-             * sempre daria a volta inteira. */}
             <PolarAngleAxis type="number" domain={[0, max]} angleAxisId={0} tick={false} />
             <RadialBar
               dataKey="value"
@@ -122,8 +84,6 @@ export function ChartRadial({
       )}
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        {/* Preso a largura do miolo, como na rosca: um total longo escapando
-            por cima do arco e o defeito classico desta peca. */}
         <span className="max-w-[62%] text-center font-display text-2xl leading-tight text-balance text-fg">
           {centerValue ?? `${percentage}%`}
         </span>
@@ -137,17 +97,6 @@ export function ChartRadial({
   );
 }
 
-/**
- * O arco em tracinhos.
- *
- * E SVG puro e nao Recharts: a Recharts desenha barra radial, e o que separa
- * um tracinho do outro aqui e o espaco vazio - pedir isso a ela seria uma
- * serie de 44 pontos com valor igual, que e mais codigo e menos controle.
- *
- * Os tracos acesos e apagados sao os mesmos elementos, so com cor diferente:
- * esconder o que passou do valor tiraria a escala da tela, e sem escala um
- * traco aceso nao significa nada.
- */
 function SegmentedArc({
   percentage,
   sweep,
@@ -180,9 +129,6 @@ function SegmentedArc({
             stroke={on ? color : "var(--rc-skeleton)"}
             strokeWidth={2.4}
             strokeLinecap="round"
-            // Cada traco e o mesmo desenho girado em volta do centro: assim a
-            // espessura e o comprimento nao mudam com o angulo, que e o que
-            // acontece quando se calcula ponta a ponta com seno e cosseno.
             transform={`rotate(${angle})`}
           />
         );

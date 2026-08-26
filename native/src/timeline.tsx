@@ -5,11 +5,6 @@ import { mono } from "./font";
 
 export type TimelineTone = "neutral" | "accent" | "success" | "warning" | "danger";
 
-/**
- * O tom pinta o marcador, e só ele. É por evento de propósito: numa nota
- * fiscal, o ponto do cancelamento é vermelho e os outros não, e é esse ponto
- * que a pessoa procura quando abre a trilha.
- */
 const TONE: Record<TimelineTone, string> = {
   neutral: "bg-border-strong",
   accent: "bg-accent",
@@ -55,7 +50,6 @@ export type TimelineProps = {
   className?: string;
 };
 
-/** "3 de 5: Nota autorizada, há 2 minutos, por Ana Duarte." */
 function describe(event: TimelineEvent, position: number, total: number) {
   if (event.accessibilityLabel !== undefined) return event.accessibilityLabel;
 
@@ -68,43 +62,6 @@ function describe(event: TimelineEvent, position: number, total: number) {
   return event.description === undefined ? sentence : `${sentence}. ${event.description}`;
 }
 
-/**
- * O que aconteceu com uma coisa, em ordem: a nota emitida, autorizada,
- * enviada, paga, cancelada, com carimbo de tempo e autor em cada ponto.
- *
- * Não é `Steps`. O `Steps` é assistente — olha para a frente, sabe quantos
- * passos faltam e só deixa voltar. Esta olha para trás, e ninguém "avança"
- * nela.
- *
- * **A composição do web não atravessa.** Lá cada ponto é um `TimelineItem`
- * escrito à mão; aqui a lista vem por `items`, pela mesma regra do
- * `RadioGroup` e do `Select` — e por uma razão a mais, que é a de baixo: o
- * texto de cada evento precisa ser legível de volta para montar o rótulo, e
- * num nó não há como lê-lo.
- *
- * **A leitura de tela é a metade do desenho que mais muda.** No web o `<ol>`
- * entrega "lista de 5 itens" e a ordem de graça. Aqui o papel `list` só tem
- * efeito no Android, e não existe papel de item de lista nenhum — então cada
- * evento é uma parada só do leitor de tela, e a posição vai escrita no rótulo:
- * "3 de 5: Nota autorizada, há 2 minutos, por Ana Duarte". Uma frase por
- * parada, com o que mudou, quando e por quem, é o que a trilha existe para
- * dizer; quebrada em título, carimbo e autor, ela viraria três paradas de
- * VoiceOver por evento e nenhuma delas diria o assunto.
- *
- * **O título e o carimbo empilham**, em vez de dividirem a linha como no web.
- * Lá eles só cabem lado a lado no monitor: abaixo de 640px o `flex-wrap` já
- * os empilhava, e 390px é sempre abaixo de 640px. Empilhar aqui é chegar
- * direto no que o web faz nesta largura, sem pagar o cálculo de quebra.
- *
- * **A linha vertical é desenhada evento a evento**, e o último não desenha a
- * dele — senão sobra um rabo de linha pendurado embaixo do último ponto. No
- * web isso é `last:`, um seletor de irmão; aqui é o índice, porque seletor de
- * filho não existe no React Native.
- *
- * Nada aqui é tocável, e é assim de propósito: uma trilha se lê. Quem precisa
- * abrir o detalhe de um evento põe um `Item` com `onPress` embaixo dela — o
- * marcador é um ponto de 9px e nunca seria um alvo de dedo.
- */
 export function Timeline({ items, label, className }: TimelineProps) {
   if (items.length === 0) return null;
 
@@ -121,9 +78,6 @@ export function Timeline({ items, label, className }: TimelineProps) {
             className="w-full flex-row gap-3"
             key={index}
           >
-            {/* A calha: o ponto em cima, o fio descendo até o ponto seguinte.
-                O fio estica porque a coluna acompanha a altura da linha, e um
-                evento mais alto que os outros continua ligado ao próximo. */}
             <View className="w-2.5 items-center">
               <View
                 className={cn(

@@ -18,11 +18,6 @@ export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
   action?: ReactNode;
 };
 
-/**
- * Estado vazio. A descricao e obrigatoria e a acao e fortemente recomendada:
- * uma tela que so diz "nenhum resultado" transfere para a pessoa o trabalho de
- * adivinhar o que fazer em seguida.
- */
 export function EmptyState({
   className,
   icon,

@@ -43,15 +43,6 @@ export type CommandGroup = {
   items: CommandItem[];
 };
 
-/*
- * `title` e a colisao que obriga o `Omit`. Os dois lados sao `string`, entao a
- * interseccao COMPILARIA - e o valor iria parar em dois lugares ao mesmo
- * tempo: no `BaseDialog.Title` lido pelo leitor de tela, que e o que este
- * `title` quer dizer, e na tarja amarela que o navegador desenha a partir do
- * atributo `title` do painel.
- *
- * `children` sai porque a paleta se monta inteira a partir de `groups`.
- */
 export type CommandProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -77,7 +68,6 @@ export type CommandProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   className?: string;
 };
 
-/** Tira acento e caixa, para "Notas" achar "notas" e "Sao" achar "são". */
 function normalize(text: string) {
   return text
     .normalize("NFD")
@@ -85,25 +75,6 @@ function normalize(text: string) {
     .toLowerCase();
 }
 
-/**
- * A paleta de comandos: um campo, uma lista e o teclado.
- *
- * Ela existe para quem trabalha o dia inteiro na mesma tela e ja sabe para
- * onde quer ir. Navegar por menu custa tres cliques e a memoria de onde a
- * opcao mora; aqui custa o nome da coisa.
- *
- * ```tsx
- * <Command
- *   open={aberta}
- *   onOpenChange={setAberta}
- *   groups={[{ label: "Ir para", items: [{ id: "notas", label: "Notas fiscais", onSelect: ir }] }]}
- * />
- * ```
- *
- * A busca ignora acento e caixa, e le tambem as `keywords` do item. Sem isso a
- * paleta so serve para quem escreve o rotulo exato, que e justamente quem
- * menos precisa dela.
- */
 export function Command({
   open,
   onOpenChange,
@@ -133,8 +104,6 @@ export function Command({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [shortcut, open, onOpenChange]);
 
-  // Cada abertura comeca limpa. Uma paleta que guarda a busca da vez passada
-  // abre mostrando o resultado de outra pergunta.
   useEffect(() => {
     if (open) {
       setQuery("");
@@ -158,7 +127,6 @@ export function Command({
       .filter((group) => group.items.length > 0);
   }, [groups, query]);
 
-  /** A lista achatada, que e a ordem em que a seta anda. */
   const reachable = useMemo(
     () => matches.flatMap((group) => group.items).filter((item) => !item.disabled),
     [matches],
@@ -168,7 +136,6 @@ export function Command({
     setActive((current) => Math.min(current, Math.max(0, reachable.length - 1)));
   }, [reachable.length]);
 
-  // Traz o item escolhido para a vista quando a seta passa dele.
   useEffect(() => {
     const picked = reachable[active];
     if (!picked || !list.current) return;
@@ -221,14 +188,10 @@ export function Command({
           {...rest}
           className={cn(
             "fixed left-1/2 z-[var(--rc-z-dialog)] w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2",
-            // Um pouco acima do meio: a lista cresce para baixo, e centralizada
-            // de verdade ela empurra o campo para fora do olhar a cada letra.
             "top-[12vh]",
             "overflow-hidden rounded-xl border border-border bg-surface shadow-3",
             "font-sans text-fg outline-none",
             "max-sm:top-0 max-sm:left-0 max-sm:w-full max-sm:translate-x-0 max-sm:rounded-none",
-            // Por ultimo, para a classe de quem chama vencer a da peca - e o
-            // `w-[min(36rem,...)]` daqui e justamente o que mais se troca.
             className,
           )}
         >
@@ -243,14 +206,7 @@ export function Command({
               onKeyDown={onFieldKeyDown}
               placeholder={placeholder}
               role="combobox"
-              // O nome do campo caia no `placeholder`, que some ao digitar e
-              // varios leitores de tela nem anunciam: a paleta era um
-              // combobox sem nome. O `title` ja e o nome do conjunto, e e o
-              // mesmo que rotula a lista.
               aria-label={title}
-              // Era fixo em "true". Com a busca sem resultado, o foco ficava
-              // parado num combobox que afirmava estar expandido enquanto a
-              // lista estava vazia.
               aria-expanded={reachable.length > 0}
               aria-controls={listId}
               aria-activedescendant={idDoAtivo ? `${listId}-${idDoAtivo}` : undefined}
@@ -266,8 +222,6 @@ export function Command({
             id={listId}
             role="listbox"
             aria-label={title}
-            // Sem nenhum item a lista some por inteiro, em vez de deixar a
-            // propria sobra de espaco acima da mensagem de vazio.
             className="max-h-[min(24rem,60vh)] overflow-y-auto p-1.5 empty:hidden"
           >
             {matches.map((group, index) => (
@@ -324,16 +278,6 @@ export function Command({
             ))}
           </div>
 
-          {/*
-           * O aviso de vazio era um `<p>` comum dentro do `role="listbox"`, e
-           * digitar uma busca que nao acha nada produzia silencio: o listbox
-           * nao anuncia filho novo, e o foco continuava no campo. Ele sai da
-           * lista - onde so cabe `option` - e vira regiao viva.
-           *
-           * A contagem entra na mesma regiao, e nao numa segunda: duas regioes
-           * vivas anunciariam o vazio duas vezes. Ela e o que resolve o caso
-           * geral - sem ela, achar tres resultados tambem e silencio.
-           */}
           <div role="status">
             {reachable.length === 0 ? (
               <p className="px-2.5 py-8 text-center text-sm text-fg-subtle">{emptyMessage}</p>

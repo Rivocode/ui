@@ -173,7 +173,6 @@ describe("Tracker", () => {
     );
     expect(byRole(screen, "adjustable").length).toBe(1);
 
-    // Um quadrado por periodo, cada um com o tom que o dado pediu.
     expect(byClass(screen, /bg-success/).length).toBe(1);
     expect(byClass(screen, /bg-danger/).length).toBe(1);
     expect(byClass(screen, /bg-warning/).length).toBe(1);

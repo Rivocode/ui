@@ -20,10 +20,6 @@ const snap = (raw: number, min: number, max: number, step: number) => {
   return Math.min(max, Math.max(min, stepped));
 };
 
-/**
- * O controle de arrastar para um valor continuo. Quantidade exata continua
- * sendo NumberField; o slider e para o ajuste em que o dedo ve o efeito.
- */
 export function Slider({
   value,
   onValueChange,
@@ -70,8 +66,6 @@ export function Slider({
         widthRef.current = event.nativeEvent.layout.width;
         setWidth(event.nativeEvent.layout.width);
       }}
-      // A area de toque e mais alta que o trilho: 44 pontos de alvo, como
-      // manda a tela de dedo.
       className={cn("h-11 justify-center", disabled && "opacity-50", className)}
       {...(disabled ? {} : pan.panHandlers)}
     >

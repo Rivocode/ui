@@ -17,18 +17,6 @@ export type TabListProps = ComponentProps<typeof BaseTabs.List> & {
   variant?: TabVariant;
 };
 
-/**
- * A fila de abas. Rola de lado quando nao cabe, em vez de espremer ou quebrar
- * linha: aba em duas linhas vira menu disfarcado, e no celular quase nenhuma
- * fila de aba cabe inteira.
- *
- * A barra de rolagem fica escondida de proposito. O gesto continua valendo, e
- * no desktop a aba ativa se traz para a vista sozinha pelo foco do teclado.
- *
- * As duas formas dizem coisas diferentes. O risco embaixo diz "esta parte da
- * pagina"; a caixinha diz "a mesma coisa, de outro jeito". Trocar uma pela
- * outra faz o controle prometer o que ele nao faz.
- */
 export function TabList({ className, variant = "underline", ...props }: TabListProps) {
   const segmented = variant === "segmented";
 
@@ -45,13 +33,6 @@ export function TabList({ className, variant = "underline", ...props }: TabListP
         className,
       )}
     >
-      {/* O risco, ou a caixinha, que corre ate a aba ativa. A Base UI entrega a
-       * posicao em variaveis de CSS, entao ele desliza sem nenhuma medicao
-       * nossa.
-       *
-       * Vem antes das abas no documento de proposito: as duas coisas sao
-       * posicionadas, e sem empilhamento declarado quem vem depois pinta por
-       * cima. Assim o rotulo fica sobre a caixinha sem `z-index` nenhum. */}
       <BaseTabs.Indicator
         className={cn(
           "absolute left-0 w-[var(--active-tab-width)] translate-x-[var(--active-tab-left)]",
@@ -71,8 +52,6 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
     <BaseTabs.Tab
       {...props}
       className={cn(
-        // `relative` poe o rotulo acima da caixinha do indicador, que e irma
-        // dele e vem antes no documento.
         "relative flex shrink-0 items-center gap-1.5 px-3 font-sans font-medium",
         "h-[var(--rc-control-lg)] text-base text-fg-muted",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
@@ -80,8 +59,6 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         "data-[active]:text-accent-text",
         "data-[disabled]:cursor-not-allowed data-[disabled]:text-fg-disabled",
-        // Na forma de caixinha a aba e menor, porque ela mora dentro de um
-        // cabecalho e nao no lugar de um titulo.
         "group-data-[variante=segmented]/abas:h-7",
         "group-data-[variante=segmented]/abas:rounded-sm",
         "group-data-[variante=segmented]/abas:px-2.5",
@@ -101,14 +78,6 @@ export function TabPanel({ className, ...props }: ComponentProps<typeof BaseTabs
       {...props}
       className={cn(
         "pt-4 outline-none",
-        // O painel da Base UI e focavel mesmo tendo filho focavel - e o que o
-        // WAI-ARIA manda para o conteudo que o Tab alcanca depois da fila de
-        // abas. Como ele apagava o contorno e nao repunha nada, cada pagina de
-        // documentacao tinha uma parada de tabulacao invisivel por painel (doze
-        // so na do DataTable): o foco sumia da tela e reaparecia depois.
-        //
-        // O anel vai por dentro porque o painel ocupa a largura toda do
-        // conteudo, e por fora ele seria cortado pelo que o embrulha.
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         className,
       )}

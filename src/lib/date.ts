@@ -1,13 +1,3 @@
-/**
- * Formatar e ler `dd/mm/aaaa` sem trazer uma biblioteca de data para a API
- * publica. O DatePicker so precisa deste formato, e a react-day-picker fica
- * escondida como motor do calendario.
- *
- * Tudo aqui trabalha com a data local do navegador de proposito: o usuario
- * escolhe "3 de marco" no calendario da tela dele, nao um instante em UTC.
- */
-
-/** `dd/mm/aaaa`, ou string vazia quando nao ha data. */
 export function formatDate(data: Date | undefined): string {
   if (!data || Number.isNaN(data.getTime())) return "";
   const dia = String(data.getDate()).padStart(2, "0");
@@ -15,11 +5,6 @@ export function formatDate(data: Date | undefined): string {
   return `${dia}/${mes}/${data.getFullYear()}`;
 }
 
-/**
- * Le `dd/mm/aaaa`. Devolve `undefined` para texto incompleto e para data que
- * nao existe: `31/02/2026` vira `undefined`, e nao 3 de marco, que e o que o
- * `new Date` faria sozinho.
- */
 export function parseDate(text: string): Date | undefined {
   const parts = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(text.trim());
   if (!parts) return undefined;
@@ -34,11 +19,6 @@ export function parseDate(text: string): Date | undefined {
   return existe ? data : undefined;
 }
 
-/**
- * A mascara enquanto se digita. So aceita numero, poe as barras sozinha e para
- * em oito digits, entao o campo nunca fica num formato que o `parseDate` nao
- * entende.
- */
 export function applyDateMask(text: string): string {
   const digits = text.replace(/\D/g, "").slice(0, 8);
   if (digits.length <= 2) return digits;

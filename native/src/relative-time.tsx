@@ -4,15 +4,6 @@ import { AppState, Text, type TextProps } from "react-native";
 import { formatDate } from "./calendar";
 import { cn } from "./cn";
 
-/**
- * As faixas, da maior para a menor, com o plural escrito à mão. A primeira que
- * couber decide a unidade, que é como uma pessoa faria: "há 2 meses" e não
- * "há 63 dias".
- *
- * O plural vai aqui porque o `Intl.RelativeTimeFormat` não existe no Hermes -
- * é a mesma razão pela qual o `Meter` nativo não tem `format`. São seis
- * palavras; carregar o ICU de um celular por elas seria caro pelo avesso.
- */
 const UNITS = [
   { unit: "year", seconds: 31_536_000, one: "ano", many: "anos" },
   { unit: "month", seconds: 2_592_000, one: "mês", many: "meses" },
@@ -24,17 +15,6 @@ const UNITS = [
 
 export type RelativeUnit = (typeof UNITS)[number]["unit"];
 
-/**
- * De quanto em quanto tempo o texto se refaz, por unidade em que ele está.
- *
- * O passo acompanha a distância, e nunca é um segundo: um relógio de segundo
- * em segundo por linha de lista é o jeito mais fácil de acordar o aparelho
- * sem motivo e comer bateria com o que ninguém está olhando.
- *
- * A hora anda de cinco em cinco minutos, e não de minuto em minuto como no
- * web: a diferença entre "há 1 hora" e "há 2 horas" não vale um timer por
- * minuto vezes as linhas que a lista tem montadas.
- */
 export const REFRESH: Record<RelativeUnit | "now", number> = {
   now: 15_000,
   minute: 30_000,
@@ -45,25 +25,16 @@ export const REFRESH: Record<RelativeUnit | "now", number> = {
   year: 3_600_000,
 };
 
-/** A data local em ISO, para o `formatDate` - `toISOString` devolveria UTC. */
 const isoLocal = (date: Date) => {
   const pad = (part: number) => String(part).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 
-/**
- * O texto e de quanto em quanto tempo ele se refaz. `step` nulo quer dizer
- * "não se refaz mais" - o único caso é a data absoluta de um instante PASSADO,
- * que só se afasta. No futuro a mesma data ainda vai voltar a ser relativa
- * quando chegar perto, e por isso ali o relógio continua.
- */
 export function describeRelative(value: Date, now: Date, cutoff?: RelativeUnit) {
   const seconds = Math.round((value.getTime() - now.getTime()) / 1000);
   const size = Math.abs(seconds);
   const past = seconds <= 0;
 
-  // Abaixo de um minuto, contar segundo por segundo é ruído: quem lê não
-  // distingue "há 12 segundos" de "há 40", e o texto pisca a cada leitura.
   if (size < 60) return { text: "agora", step: REFRESH.now };
 
   const cutIndex = cutoff ? UNITS.findIndex((range) => range.unit === cutoff) : -1;
@@ -102,27 +73,6 @@ export type RelativeTimeProps = Omit<TextProps, "children" | "className"> & {
   className?: string;
 };
 
-/**
- * "há 2 minutos", "em 3 dias".
- *
- * Nenhuma biblioteca de fora entrega isto, porque é decisão de idioma e de
- * produto: onde cortar entre "agora" e "há 1 minuto", quando parar de contar e
- * mostrar a data, como o plural se escreve.
- *
- * **O relógio porta, e é ele que faz a peça valer a tradução.** Receber o
- * texto pronto teria sido mais barato de escrever e teria devolvido o
- * problema para a tela - que é onde ele já estava. O passo acompanha a
- * unidade (trinta segundos enquanto conta minuto, uma hora quando já conta
- * dia), então uma lista de vinte linhas montadas custa vinte timers lentos, e
- * não vinte por segundo. Quem não quer relógio nenhum passa `now`.
- *
- * Duas coisas são só daqui. O texto se refaz ao voltar do fundo: enquanto o
- * app dorme, o timer do JS não corre, e sem isso a tela reabre dizendo "há 2
- * minutos" três horas depois - o caso que no web quase não existe, porque a
- * aba fica viva. E o instante exato não vai junto: no web ele mora no `title`
- * do `<time>`, e no toque não há `title` nem onde pousar o ponteiro. Quando a
- * data exata importa, ela precisa estar escrita na tela, com o `formatDate`.
- */
 export function RelativeTime({ value, cutoff, now, className, ...props }: RelativeTimeProps) {
   const date = value instanceof Date ? value : new Date(value);
   const [tick, setTick] = useState(0);
@@ -143,9 +93,6 @@ export function RelativeTime({ value, cutoff, now, className, ...props }: Relati
       clearTimeout(timer);
       subscription.remove();
     };
-    // `tick` na lista é o que rearma o passo seguinte: sem ele o efeito não
-    // roda de novo quando o texto sai igual, e o relógio para na primeira
-    // batida que não muda nada na tela.
   }, [now, step, tick]);
 
   return (

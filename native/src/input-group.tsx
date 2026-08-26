@@ -34,10 +34,6 @@ export type InputGroupProps = Omit<
   inputClassName?: string;
 };
 
-/**
- * O encosto: texto simples vira `Text`, e qualquer outra coisa entra como
- * veio - quem passa ícone já sabe pintá-lo.
- */
 function Affix({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <View className={cn("h-full shrink-0 flex-row items-center justify-center px-3", className)}>
@@ -50,22 +46,6 @@ function Affix({ children, className }: { children: ReactNode; className?: strin
   );
 }
 
-/**
- * A moldura que encosta texto ou botão no campo: `R$` antes, `,00` depois, o
- * olho da senha, o copiar do código.
- *
- * A tradução muda a forma antes de mudar a API. No web a moldura é composição
- * - `InputGroup` por fora, `Input`, `InputPrefix` e `InputAction` por dentro -
- * e ela desarma a borda do campo com um seletor de descendente. Esse seletor
- * não existe no React Native, então quem escrevesse a mesma árvore aqui
- * ganharia duas bordas encaixadas, uma dentro da outra, e nenhum jeito de
- * apagar a de dentro pelo lado de fora. Por isso a moldura desenha o campo:
- * `prefix`, `suffix` e `actions` são props, e a borda e o foco moram num
- * lugar só.
- *
- * Sem `size`: altura de controle é única no nativo, porque alvo de toque não
- * encolhe.
- */
 export function InputGroup({
   value,
   onValueChange,
@@ -118,7 +98,6 @@ export function InputGroup({
           accessibilityState={{ disabled: action.disabled === true }}
           disabled={action.disabled}
           onPress={action.onPress}
-          // 48px de largura por botão: o dedo não mira num ícone de 16.
           className={cn(
             "h-full w-12 shrink-0 items-center justify-center border-l border-border",
             action.disabled ? "opacity-40" : "active:bg-selected",

@@ -8,12 +8,6 @@ import { cn } from "../lib/cn";
 
 export const Collapsible = BaseCollapsible.Root;
 
-/**
- * Esconde e mostra um bloco.
- *
- * E o `Accordion` de um item so, sem a moldura e sem a coordenacao entre
- * irmaos. Quando ha varias secoes que se fecham entre si, o Accordion diz mais.
- */
 export function CollapsibleTrigger({
   className,
   children,
@@ -53,8 +47,6 @@ export function CollapsiblePanel({
     <BaseCollapsible.Panel
       {...props}
       className={cn(
-        // A altura vem medida pela Base UI, entao ele anima com conteudo de
-        // qualquer tamanho sem ninguem chutar um valor.
         "h-[var(--collapsible-panel-height)] overflow-hidden",
         "transition-[height] duration-[var(--rc-duration-base)] ease-rc",
         "data-[starting-style]:h-0 data-[ending-style]:h-0",

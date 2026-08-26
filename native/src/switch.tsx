@@ -13,10 +13,6 @@ export type SwitchProps = {
   className?: string;
 };
 
-/**
- * O interruptor nativo da plataforma, vestido com o acento do tema. Liga
- * agora, sem confirmar - a mesma regra de escolha do web.
- */
 export function Switch({ checked, onCheckedChange, children, disabled, className }: SwitchProps) {
   const { colors } = useRivo();
   
@@ -25,9 +21,6 @@ export function Switch({ checked, onCheckedChange, children, disabled, className
       value={checked}
       onValueChange={onCheckedChange}
       disabled={disabled}
-      // Trilho desligado em border-strong, nunca em superficie: superficie
-      // sobre superficie sumia no escuro do Android. O polegar segue a mesma
-      // logica do botao: escuro sobre o acento, claro sobre o trilho apagado.
       trackColor={{ false: colors["border-strong"], true: colors.accent }}
       thumbColor={checked ? colors["accent-fg"] : colors["fg-muted"]}
       ios_backgroundColor={colors["border-strong"]}

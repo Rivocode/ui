@@ -8,12 +8,6 @@ import { cn } from "../lib/cn";
 
 export type ToggleGroupProps = ComponentProps<typeof BaseToggleGroup>;
 
-/**
- * Barra de botoes que ficam apertados. Serve para escolha que muda a vista na
- * hora: alinhamento, modo de exibicao, filtro rapido.
- *
- * Com `toggleMultiple` vira selecao multipla. Sem ele, um de cada vez.
- */
 export function ToggleGroup({ className, ...props }: ToggleGroupProps) {
   return (
     <BaseToggleGroup

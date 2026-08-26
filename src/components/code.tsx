@@ -5,14 +5,6 @@ import { Clipboard } from "./clipboard";
 
 export type CodeProps = ComponentProps<"code">;
 
-/**
- * Codigo dentro de uma frase: nome de arquivo, comando de terminal, chave de
- * um JSON, nome de prop.
- *
- * Nao e `Kbd`. A sombra de tecla promete "aperte isto", e prometer errado
- * custa mais do que nao prometer nada - o `Kbd` e para a combinacao que a
- * pessoa vai digitar, e este e para o texto que ela vai ler ou copiar.
- */
 export function Code({ className, ...props }: CodeProps) {
   return (
     <code
@@ -36,18 +28,6 @@ export type CodeBlockProps = Omit<ComponentProps<"pre">, "children"> & {
   title?: ReactNode;
 };
 
-/**
- * Codigo em bloco: retorno de API, linha de log, trecho de configuracao.
- *
- * A rolagem e propria de proposito. JSON nao quebra linha, e sem
- * `overflow-x-auto` a linha longa empurra a largura da pagina inteira - e o
- * vazamento horizontal so aparece no celular de quem usa, nunca no monitor de
- * quem escreveu.
- *
- * Sem realce de sintaxe: destacar palavra-chave exige uma gramatica por
- * linguagem, e isso e peso que toda tela paga para o que poucas usam. Quem
- * precisa traz o seu e passa o resultado como filho.
- */
 export function CodeBlock({
   children,
   className,
@@ -78,9 +58,6 @@ export function CodeBlock({
           {lineNumbers
             ? lines.map((line, index) => (
                 <span key={index} className="grid grid-cols-[2.5ch_1fr] gap-3">
-                  {/* O numero fica fora da selecao: copiar o bloco com os
-                      numeros colados no codigo e o classico que obriga a
-                      pessoa a limpar linha por linha. */}
                   <span className="text-right text-fg-subtle select-none">{index + 1}</span>
                   <span>{line}</span>
                 </span>

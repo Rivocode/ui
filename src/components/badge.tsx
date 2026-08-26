@@ -29,10 +29,6 @@ export const badgeVariants = cva(
 
 export type BadgeProps = ComponentPropsWithoutRef<"span"> & VariantProps<typeof badgeVariants>;
 
-/**
- * O selo e a unica peca em pilula por padrao. Pilula em botao de formulario
- * parece brinquedo, mas selo em canto reto parece etiqueta de sistema antigo.
- */
 export function Badge({ className, tone, size, ...props }: BadgeProps) {
   return <span {...props} className={cn(badgeVariants({ tone, size }), className)} />;
 }

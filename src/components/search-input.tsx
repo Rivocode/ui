@@ -24,20 +24,12 @@ export type SearchInputProps = Omit<ComponentProps<"input">, "size" | "type"> & 
   onClear?: () => void;
 };
 
-/** Altura, fonte e respiro a direita por tamanho, dos tokens que o Input usa. */
 const SIZE = {
   sm: "h-[var(--rc-control-sm)] pr-[var(--rc-control-pad-sm)] text-sm",
   md: "h-[var(--rc-control-md)] pr-[var(--rc-control-pad-md)] text-base",
   lg: "h-[var(--rc-control-lg)] pr-[var(--rc-control-pad-lg)] text-md",
 } as const;
 
-/**
- * O campo de busca com a lupa no lugar: o arranjo que toda listagem montava
- * na mao com `position: absolute`.
- *
- * Sai como `<input type="search">`, entao o leitor de tela anuncia "busca" e
- * o teclado ganha o Esc para limpar.
- */
 export function SearchInput({
   className,
   size = "md",
@@ -66,22 +58,14 @@ export function SearchInput({
         {...props}
         onKeyDown={handleKeyDown}
         className={cn(
-          // A fronteira do campo veste o border-strong, que e o papel com a
-          // promessa de 3:1 do WCAG 1.4.11 - o border comum some no escuro.
           "w-full rounded-md border border-border-strong bg-surface",
           SIZE[size],
-          // O max-sm:text-[16px] e o mesmo do inputVariants, repetido porque
-          // este campo desenha o proprio controle em vez de herda-lo: abaixo
-          // de 16px o Safari do iPhone amplia a pagina ao focar e nao volta.
           "pl-8 font-sans max-sm:text-[16px] text-fg placeholder:text-fg-subtle",
-          // Depois do SIZE, para o respiro do atalho vencer o do tamanho.
           shortcut && "pr-16",
           "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
           "disabled:cursor-not-allowed disabled:opacity-60",
-          // O X nativo do WebKit sai: o Esc ja limpa, e o botaozinho cinza
-          // nao responde ao tema.
           "[&::-webkit-search-cancel-button]:hidden",
           className,
         )}

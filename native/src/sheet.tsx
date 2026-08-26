@@ -13,21 +13,10 @@ export type SheetProps = {
   className?: string;
 };
 
-/**
- * A folha que encosta embaixo - o comportamento estreito do web e o unico
- * que existe aqui. Modal nativo por baixo: foco, back do Android e o gesto
- * de fechar vem da plataforma.
- */
 export function Sheet({ open, onOpenChange, title, description, children, className }: SheetProps) {
   return (
     <Modal visible={open} transparent animationType="slide" onRequestClose={() => onOpenChange(false)}>
-      {/* accessibilityViewIsModal prende o leitor de tela na folha; sem ele o
-          VoiceOver segue lendo a tela que ficou atras. */}
       <View accessibilityViewIsModal className="flex-1 justify-end">
-        {/* O fundo escurece e fecha no toque, como o overlay do web - e e IRMA
-            do painel, nao mae dele: embrulhando a folha inteira, ela virava um
-            botao "Fechar" gigante e sem papel, a primeira e maior parada do
-            leitor de tela. Fora do caminho, o stopPropagation nao serve mais. */}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Fechar"

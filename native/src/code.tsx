@@ -20,38 +20,6 @@ export type CodeProps = Omit<TextProps, "children" | "className"> & {
   className?: string;
 };
 
-/**
- * Código dentro de uma frase: nome de arquivo, comando de terminal, chave de
- * um JSON, nome de prop.
- *
- * ```tsx
- * <Text className="text-base text-fg">
- *   Abra o <Code>app.json</Code> e troque a chave <Code>slug</Code>.
- * </Text>
- * ```
- *
- * **Ele não rola de lado, e isso não é uma pendência: é o que separa esta peça
- * do `CodeBlock`.** Um trecho dentro de uma frase quebra linha junto com a
- * frase, e uma barra de rolagem dentro de um parágrafo seria uma armadilha —
- * o dedo que rola a tela pararia dentro dela. Quem tem retorno de API, linha
- * de log ou trecho de configuração quer o `CodeBlock`, que é bloco, tem a
- * rolagem própria e ainda não portou: lá quebrar um JSON no meio muda o que
- * está escrito, e aqui quebrar um caminho longo no meio é o comportamento
- * certo, porque a alternativa é esticar a tela inteira.
- *
- * **O corpo da letra não é escrito, é herdado.** No web ele é `0.9em`,
- * relativo ao texto que o cerca; no React Native não há unidade relativa, e o
- * `Text` aninhado já herda o tamanho do `Text` de fora — que é a mesma ideia,
- * pela via da herança. Sozinho, fora de uma frase, ele sai no corpo padrão.
- *
- * A folga lateral e o canto arredondado só aparecem quando ele está sozinho:
- * dentro de uma frase o React Native o trata como um pedaço da linha, e pedaço
- * de linha não recebe folga. O que identifica o trecho nos dois casos é o
- * fundo e a letra.
- *
- * Não é `Kbd`, que não porta: a sombra de tecla promete "aperte isto", e não
- * há teclado para apertar no celular.
- */
 export function Code({ children, className, selectable = true, style, ...props }: CodeProps) {
   return (
     <Text

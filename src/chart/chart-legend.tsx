@@ -24,24 +24,11 @@ export type ChartLegendContentProps = {
   onToggle?: (key: string) => void;
 };
 
-/**
- * Qual nome procurar no `config`.
- *
- * Em grafico de linha e de barra a serie e o `dataKey`. Na pizza nao: todas as
- * fatias dividem o mesmo `dataKey` (`valor`), e quem separa uma da outra e o
- * `name`. Olhar so o `dataKey` faz a pizza inteira cair no mesmo nome.
- */
 function seriesKey(dataKey: unknown, value: unknown, config: ChartConfig | undefined): string {
   const candidates = [dataKey, value].filter((x) => x != null).map(String);
   return candidates.find((candidate) => config?.[candidate]) ?? candidates[0] ?? "";
 }
 
-/**
- * A legenda, com o nome que o `config` deu a cada serie.
- *
- * Sem ela a Recharts mostra a chave crua do dado, `qtd_emitidas` em vez de
- * "Emitidas". A chave e nome de campo, e nome de campo nao e texto de tela.
- */
 export function ChartLegendContent({
   payload,
   config,
@@ -87,9 +74,6 @@ export function ChartLegendContent({
               onClick={() => onToggle(key)}
               aria-pressed={!escondida}
               className={cn(
-                // `min-h-6` sao os 24px que a norma pede de alvo: com o
-                // padding sozinho o botao fechava em 23, e um pixel abaixo do
-                // minimo e reprovado igual a dez.
                 "flex min-h-6 items-center gap-2 rounded-sm px-1 py-0.5",
                 "font-sans text-sm text-fg-muted",
                 "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
@@ -105,18 +89,6 @@ export function ChartLegendContent({
   );
 }
 
-/**
- * O estado de quais series estao escondidas.
- *
- * Vive aqui e nao dentro da legenda porque quem esconde a serie tambem precisa
- * deixar de desenhar a linha dela, e isso acontece no grafico, um nivel acima.
- *
- * ```tsx
- * const series = useSeriesToggle()
- * <ChartLegend content={<ChartLegendContent config={CONFIG} {...series} />} />
- * {!series.isHidden('pagas') && <Line dataKey="pagas" />}
- * ```
- */
 export function useSeriesToggle(initial: readonly string[] = []) {
   const [hidden, setHidden] = useState<readonly string[]>(initial);
 

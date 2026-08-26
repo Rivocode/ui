@@ -11,8 +11,6 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/* --- Clipboard ---------------------------------------------------------- */
-
 test("copiar leva o valor e confirma no proprio botao", async () => {
   const written: string[] = [];
   // O happy-dom entrega um navigator.clipboard somente-leitura, entao a
@@ -46,8 +44,6 @@ test("o texto copiado volta ao normal sozinho", async () => {
 
   expect(screen.getByRole("button", { name: "Copiar" })).toBeDefined();
 });
-
-/* --- RelativeTime ------------------------------------------------------- */
 
 const NOW = new Date("2026-08-25T12:00:00Z");
 
@@ -90,8 +86,6 @@ test("o futuro tambem se escreve", () => {
   expect(container.querySelector("time")!.textContent).toBe("em 3 dias");
 });
 
-/* --- Code --------------------------------------------------------------- */
-
 test("o codigo em linha sai num code, com a fonte mono do sistema", () => {
   const { container } = withTheme(<Code>npx rivocode-ui skill</Code>);
   const code = container.querySelector("code")!;
@@ -114,8 +108,6 @@ test("o bloco numera as linhas quando se pede", () => {
 
   expect(screen.getByText("3")).toBeDefined();
 });
-
-/* --- Timeline ----------------------------------------------------------- */
 
 test("a linha do tempo sai como lista ordenada, porque a ordem e o dado", () => {
   const { container } = withTheme(

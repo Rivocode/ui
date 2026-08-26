@@ -23,22 +23,8 @@ export type SplitterProps = Omit<ComponentProps<"div">, "onChange"> & {
   classNames?: Slots<"start" | "end" | "handle">;
 };
 
-/** O passo da seta. Pequeno o bastante para ajustar, grande para chegar. */
 const STEP = 2;
 
-/**
- * Duas areas com uma divisoria que se arrasta: lista a esquerda e detalhe a
- * direita, arvore e conteudo, tabela e inspetor.
- *
- * A divisoria e um `separator` de verdade, com valor, minimo e maximo, e anda
- * pelas setas. Arrastar com o mouse e metade da peca: sem teclado, quem nao
- * usa ponteiro fica preso na proporcao que o desenvolvedor escolheu, e essa
- * proporcao costuma ser a que serve para a tela de quem escreveu.
- *
- * No celular os dois lados empilham e a divisoria some. Duas colunas de 190px
- * nao sao duas colunas: sao duas listas ilegiveis, e o gesto de arrastar uma
- * borda de 4px com o dedo nao existe.
- */
 export function Splitter({
   start,
   end,
@@ -67,9 +53,6 @@ export function Splitter({
     const box = frame.current?.getBoundingClientRect();
     if (!box) return;
 
-    // O ponteiro e capturado pela propria divisoria: sem isso, arrastar rapido
-    // solta o gesto no meio do caminho, porque o mouse sai da faixa de 4px
-    // antes do proximo evento chegar.
     event.currentTarget.setPointerCapture(event.pointerId);
 
     const onMove = (pointer: PointerEvent) => {
@@ -132,8 +115,6 @@ export function Splitter({
           "hover:bg-line-hover focus-visible:bg-accent",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           vertical ? "h-px w-full cursor-row-resize" : "w-px cursor-col-resize max-md:hidden",
-          // A linha desenha 1px e o alvo tem 12: uma divisoria facil de pegar
-          // e a diferenca entre a peca funcionar e a pessoa desistir dela.
           vertical
             ? "after:absolute after:inset-x-0 after:-inset-y-1.5"
             : "after:absolute after:inset-y-0 after:-inset-x-1.5",

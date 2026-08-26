@@ -19,17 +19,6 @@ export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
   onStepClick?: (index: number) => void;
 };
 
-/**
- * A regua de passos de um formulario longo.
- *
- * No celular ela vira uma linha de texto com a barra de progresso, e nao a
- * regua inteira: quatro bolinhas com rotulo em 390px viram quatro palavras
- * cortadas, e o que importa ali e saber quanto falta.
- *
- * So da para voltar, nunca pular para frente. Step adiante costuma depender
- * do que o anterior validou, e um clique que atravessa isso leva a pessoa a
- * uma tela que nao sabe se preencher.
- */
 export function Steps({ className, steps, current, onStepClick, ...props }: StepsProps) {
   const step = steps[current];
 
@@ -79,18 +68,6 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                   {isDone ? <Check size={13} aria-hidden="true" /> : index + 1}
                 </span>
 
-                {/*
-                  * O `truncate` segura o texto dentro da moldura, mas quem
-                  * enxerga fica sem o resto: o passo chega pronto em `steps`,
-                  * a peca e que decide a largura da faixa, e nao ha nenhum
-                  * outro lugar na tela onde o titulo inteiro apareca.
-                  *
-                  * So `title`, e nunca `aria-label` junto: o texto completo
-                  * continua no DOM, o leitor de tela ja o le por inteiro, e
-                  * repetir no atributo faria ele ler duas vezes. O `title`
-                  * cobre o mouse - no toque e no teclado ele nao aparece, e
-                  * essa e a limitacao aceita aqui, nao um descuido.
-                  */}
                 <span className="flex min-w-0 flex-col">
                   <span
                     title={step.title}
@@ -110,9 +87,6 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
               </button>
 
               {index < steps.length - 1 && (
-                /* Largura fixa: com `flex-1` o fio dividia a linha com o
-                   rotulo e comia metade dela, cortando "Cliente" em "Clie…"
-                   antes de o desenho ficar apertado de verdade. */
                 <span aria-hidden="true" className="mt-4 h-px w-8 shrink-0 bg-border" />
               )}
             </li>
@@ -138,10 +112,6 @@ export type WizardState = {
   goTo: (index: number) => void;
 };
 
-/**
- * O estado de um formulario em etapas. So conta e valida a passagem; o
- * desenho fica com o `Steps` e o conteudo com quem usa.
- */
 export function useWizard(steps: Step[], initial = 0): WizardState {
   const [step, setStep] = useState(initial);
 
@@ -172,7 +142,6 @@ export function useWizard(steps: Step[], initial = 0): WizardState {
   };
 }
 
-/** O rodape de um assistente: voltar de um lado, avancar do outro. */
 export function WizardFooter({ className, ...props }: { className?: string; children: ReactNode }) {
   return (
     <div

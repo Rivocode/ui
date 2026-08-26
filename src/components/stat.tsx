@@ -8,18 +8,6 @@ import { resolveFormat, type Format } from "../lib/format";
 import { Card, CardContent } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
-/*
- * O tipo era objeto fechado, e por isso `id`, `data-*` e `aria-*` nao
- * chegavam ao cartao: quem precisava marcar um Stat para teste ou para
- * analitica embrulhava a peca numa div so para pendurar o atributo.
- *
- * `children` fica de fora: o cartao monta o proprio conteudo a partir de
- * `label`, `value` e companhia, e filho vindo de fora seria descartado em
- * silencio pelo JSX de dentro. Nenhuma outra prop daqui colide - `label` e
- * `value` nao existem em `HTMLAttributes`.
- *
- * Sem `ref` porque a raiz e o `Card`, que tambem nao tem.
- */
 export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /** O que o numero mede: "Faturado em agosto". */
   label: string;
@@ -80,13 +68,6 @@ export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   className?: string;
 };
 
-/**
- * O numero de painel: rotulo, valor, variacao e tendencia, na hierarquia que
- * todo painel reinventa na mao.
- *
- * O valor chega formatado porque formatar e decisao de dominio: dinheiro sai
- * abreviado do `currencyShort`, contagem sai crua, percentual traz o sinal.
- */
 export function Stat({
   label,
   value,
@@ -122,9 +103,6 @@ export function Stat({
               {icon}
             </span>
           )}
-          {/* As acoes ficam no canto e fora do fluxo do rotulo: um menu de
-              tres pontos empurrando o texto muda a largura do rotulo de um
-              cartao para o outro, e a fila de cartoes perde o alinhamento. */}
           {actions && <span className="-mt-1 -mr-1 ml-auto shrink-0">{actions}</span>}
         </div>
 
@@ -137,9 +115,6 @@ export function Stat({
                   <button
                     type="button"
                     aria-label={`Sobre ${label.toLowerCase()}`}
-                    /* O icone tem 13px, mas o alvo precisa de 24. A margem
-                       negativa devolve o espaco que o botao maior tomaria,
-                       para a linha do rotulo nao crescer com ele. */
                     className={cn(
                       "-my-1 flex size-6 items-center justify-center rounded-sm text-fg-subtle",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -175,21 +150,14 @@ export function Stat({
             ) : (
               <ArrowDownRight size={13} aria-hidden="true" />
             )}
-            {/* A cor e a seta contam para o olho; o texto conta para o ouvido. */}
             <span className="sr-only">{rose ? "alta de" : "queda de"} </span>
             {writeDelta(Math.abs(delta))}
             {deltaLabel ? ` ${deltaLabel}` : ""}
           </p>
         )}
 
-        {/* Embaixo do numero e de ponta a ponta, nao ao lado: lado a lado o
-            cartao tinha que escolher entre mostrar a tendencia e mostrar o
-            valor inteiro, e o valor e a razao do cartao. */}
         {chart && <div className="mt-3">{chart}</div>}
 
-        {/* O rodape depois da tendencia, separado por uma linha: ele costuma
-            trazer outra medida - meta, comparacao - e sem a divisoria as duas
-            se leem como uma coisa so. */}
         {footer && (
           <div className="mt-3 border-t border-border pt-3 text-xs text-fg-muted">{footer}</div>
         )}

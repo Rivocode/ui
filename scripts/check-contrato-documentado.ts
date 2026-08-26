@@ -7,8 +7,13 @@
  * contrato. O agente entao escrevia grafico com a API velha, ou inventava.
  *
  * Componente do pacote principal nao entra aqui: o indice em `/llms.txt` ja
- * enumera os 66, e ele e gerado. O que precisa de vigia e o texto escrito a
- * mao, e dele so a parte que promete uma lista.
+ * os enumera, e ele e gerado. O que precisa de vigia e o texto escrito a mao,
+ * e dele so a parte que promete uma lista.
+ *
+ * Havia um "os 66" nesta frase, escrito quando o catalogo tinha 66 pecas. Ele
+ * envelheceu calado ate virar 83 e ninguem viu, porque numero em comentario
+ * nao tem guarda. Nao devolva o digito: ele nao carrega o argumento, e a unica
+ * coisa que faz e mentir depois.
  */
 import { readdirSync, readFileSync } from "node:fs";
 

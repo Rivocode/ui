@@ -24,13 +24,6 @@ export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
   classNames?: Slots<"wrapper" | "input">;
 };
 
-/**
- * O campo de busca com a seta e o limpar encostados.
- *
- * Combobox nao e Select com busca por acaso: use quando a lista e longa
- * demais para caber na cabeca de quem escolhe, ou quando ela vem do servidor.
- * Com cinco opcoes fixas, o `Select` custa menos e nao pede digitacao.
- */
 export function ComboboxInput({
   className,
   classNames,
@@ -41,7 +34,6 @@ export function ComboboxInput({
     <BaseCombobox.InputGroup
       className={cn("relative flex w-full items-center", className, classNames?.wrapper)}
     >
-      {/* O texto para antes dos botoes, senao ele passa por baixo deles. */}
       <BaseCombobox.Input {...props} className={cn(inputVariants(), "pr-16", classNames?.input)} />
 
       <span className="absolute right-1.5 flex items-center gap-0.5">
@@ -109,10 +101,6 @@ export function ComboboxContent({
             className,
           )}
         >
-          {/* O Empty fica montado sempre, para anunciar a mudanca ao leitor de
-              tela. O recheio e que aparece so na lista vazia, entao o espaco
-              mora no filho: no proprio Empty ele viraria uma faixa morta no
-              topo de todo painel. */}
           <BaseCombobox.Empty>
             <div className="px-2.5 py-6 text-center text-sm text-fg-subtle">{emptyMessage}</div>
           </BaseCombobox.Empty>
@@ -155,15 +143,6 @@ export function ComboboxGroup({ className, ...props }: ComponentProps<typeof Bas
   return <BaseCombobox.Group {...props} className={cn("flex flex-col", className)} />;
 }
 
-/**
- * O cabecalho de um `ComboboxGroup`. Vive dentro dele: e o grupo que aponta o
- * `aria-labelledby` para ca, e um titulo escrito por fora nao nomeia nada.
- *
- * Ele saia daqui como a peca crua da Base UI, sem estilo nenhum: o cabecalho
- * do grupo tinha o mesmo tamanho e a mesma cor dos itens, e lia-se como mais
- * uma opcao da lista. Agora e o mesmo titulo do `MenuGroup` e do
- * `SelectGroup`.
- */
 export function ComboboxGroupLabel({
   className,
   ...props
@@ -171,14 +150,6 @@ export function ComboboxGroupLabel({
   return <BaseCombobox.GroupLabel {...props} className={cn(floatingGroupLabel, className)} />;
 }
 
-/**
- * A linha entre dois grupos da lista.
- *
- * Ela sai com `role="presentation"`, e nao com o `role="separator"` do
- * `MenuSeparator`: dentro de uma lista de opcoes, um no com papel proprio
- * entra na contagem que o leitor de tela anuncia ("opcao 3 de 12") e quebra a
- * conta. Quem ouve recebe a fronteira pelo nome do grupo.
- */
 export function ComboboxSeparator({
   className,
   ...props
@@ -186,14 +157,6 @@ export function ComboboxSeparator({
   return <BaseCombobox.Separator {...props} className={cn("my-1 h-px bg-border", className)} />;
 }
 
-/**
- * O valor escolhido, para as fichas saberem o que desenhar.
- *
- * Nao renderiza elemento nenhum: recebe uma funcao e devolve o que ela montar.
- * E a peca que faltava para o ComboboxChips servir para alguma coisa - sem
- * ela, a escolha multipla com ficha so era possivel importando direto da
- * Base UI.
- */
 export const ComboboxValue = BaseCombobox.Value;
 
 export type ComboboxChipProps = ComponentProps<typeof BaseCombobox.Chip> & {
@@ -205,7 +168,6 @@ export type ComboboxChipProps = ComponentProps<typeof BaseCombobox.Chip> & {
   labels?: { remove?: (label: string) => string };
 };
 
-/** As fichas da escolha multipla, dentro do proprio campo. */
 export function ComboboxChips({ className, ...props }: ComponentProps<typeof BaseCombobox.Chips>) {
   return (
     <BaseCombobox.Chips {...props} className={cn("flex flex-wrap items-center gap-1", className)} />
@@ -215,15 +177,6 @@ export function ComboboxChips({ className, ...props }: ComponentProps<typeof Bas
 export function ComboboxChip({ className, children, labels = {}, ...props }: ComboboxChipProps) {
   const { remove = (label: string) => (label ? `Remover ${label}` : "Remover") } = labels;
 
-  /*
-   * O xis dizia "Remover" e nada mais, cravado: nao havia como traduzir nem
-   * como dizer o que se remove, e uma fila de tres fichas se anunciava
-   * "Remover, Remover, Remover" - a WCAG 2.4.6 pede que o nome distinga.
-   *
-   * O conteudo da ficha e o proprio nome dela no caso comum, entao o padrao sai
-   * pronto sem pedir nada a quem monta a tela; o `aria-label` cobre a ficha que
-   * nao e texto - um `Avatar` com o nome ao lado, um `Badge` de situacao.
-   */
   const text =
     typeof children === "string" || typeof children === "number"
       ? String(children)
@@ -242,11 +195,6 @@ export function ComboboxChip({ className, children, labels = {}, ...props }: Com
         aria-label={remove(text)}
         className={cn(
           "text-fg-subtle transition-colors hover:text-fg",
-          // O menor alvo da biblioteca: 12x12, o tamanho do proprio icone,
-          // contra os 24x24 que a WCAG 2.5.8 pede. O pseudo-elemento leva o
-          // alvo a 24 sem engordar a ficha, que precisa caber varias por linha
-          // dentro do campo. Seis pixels e tambem o px-1.5 da ficha, entao o
-          // halo termina rente a borda dela e nao invade a ficha vizinha.
           "relative after:absolute after:-inset-1.5",
         )}
       >

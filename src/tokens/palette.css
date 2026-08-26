@@ -1,41 +1,27 @@
-/* ---------------------------------------------------------------------------
- * Camada 1: valores crus. Nenhum componente le daqui, so os arquivos de tema.
- * Um cliente com marca propria traz a paleta dele e ignora esta.
- * ------------------------------------------------------------------------- */
-
 :root {
-  /* Lima, a marca */
   --rc-p-lima-300: #e6ff7a;
   --rc-p-lima-500: #d4f34a;
   --rc-p-lima-600: #bfdd3a;
   --rc-p-lima-700: #4a7100;
 
-  /* Grafite, as superficies escuras. O 950 e o chao da pagina: um passo mais
-     fundo que o cartao, para a escada bg -> surface -> raised ter tres degraus
-     visiveis em vez de dois quase iguais. */
   --rc-p-graphite-950: #0b0d0f;
   --rc-p-graphite-900: #0f1113;
   --rc-p-graphite-800: #14171a;
   --rc-p-graphite-700: #171a1d;
 
-  /* Papel, as superficies claras */
   --rc-p-white: #ffffff;
   --rc-p-paper: #fbfbfa;
 
-  /* Cinzas de texto */
   --rc-p-gray-100: #f2f3f0;
   --rc-p-gray-300: #b9bfc6;
   --rc-p-gray-500: #8b9199;
   --rc-p-gray-600: #6c737b;
   --rc-p-gray-700: #5b6169;
 
-  /* Estados. O sucesso puxa para o teal para nao competir com a lima. */
   --rc-p-teal-400: #3ddc97;
   --rc-p-teal-700: #0f766e;
   --rc-p-amber-400: #f2b21c;
   --rc-p-amber-700: #a15c00;
-  /* Um degrau mais escuro, para o texto de aviso se ler sobre o proprio fundo
-     de aviso no tema claro: em amber-700 o par dava 4,39. */
   --rc-p-amber-800: #8f5200;
   --rc-p-red-400: #ff6b6b;
   --rc-p-red-600: #dc2626;
@@ -43,8 +29,6 @@
   --rc-p-blue-400: #6aa9ff;
   --rc-p-blue-700: #1d4ed8;
 
-  /* Serie de grafico. Nao carregam texto, entao a regra e outra: cada uma
-     precisa de 3:1 contra a superficie e ser distinguivel das vizinhas. */
   --rc-p-violet-400: #b78cff;
   --rc-p-violet-700: #6d3fc4;
   --rc-p-cyan-400: #4fd8e8;

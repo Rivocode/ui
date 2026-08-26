@@ -21,14 +21,6 @@ export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "onChange
   size?: "sm" | "md" | "lg";
 };
 
-/**
- * Escolha dentro de uma arvore: setor e equipe, categoria e subcategoria,
- * conta e centro de custo.
- *
- * O gatilho resume em vez de listar. Com muitas folhas marcadas, os nomes nao
- * cabem, e uma linha cortada no meio de um nome diz menos do que "7
- * escolhidos". Ate tres, os nomes aparecem, porque ai eles cabem e dizem mais.
- */
 export function TreeSelect({
   items,
   value,
@@ -49,9 +41,6 @@ export function TreeSelect({
   const [query, setQuery] = useState("");
 
   const names = useMemo(() => namesOf(items, selected), [items, selected]);
-  // A conta e sempre sobre as folhas que existem na arvore, e nunca sobre a
-  // lista crua: id que sobrou de uma arvore antiga contaria como escolha e o
-  // gatilho mentiria o numero.
   const label =
     names.length === 0
       ? placeholder
@@ -76,12 +65,6 @@ export function TreeSelect({
           />
         }
       >
-        {/*
-          * Ate tres escolhas o gatilho mostra os nomes, que vem de `items` e
-          * cortam num campo estreito. O `title` devolve a lista inteira; acima
-          * de tres o rotulo ja e "N escolhidos", que nao corta e nao merece
-          * dica, e vazio e placeholder do desenvolvedor.
-          */}
         <span title={names.length > 0 && names.length <= 3 ? label : undefined} className="truncate">
           {label}
         </span>
@@ -123,7 +106,6 @@ export function TreeSelect({
   );
 }
 
-/** Os nomes das folhas marcadas, na ordem em que aparecem na arvore. */
 function namesOf(items: TreeNode[], ids: string[]): string[] {
   const output: string[] = [];
 

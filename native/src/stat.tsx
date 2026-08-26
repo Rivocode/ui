@@ -17,7 +17,6 @@ export type StatProps = {
   className?: string;
 };
 
-/** O numero de painel, na mesma hierarquia do web: rotulo, valor, variacao. */
 export function Stat({ label, value, delta, deltaLabel, invert, chart, className }: StatProps) {
   const rose = (delta ?? 0) >= 0;
   const good = invert ? !rose : rose;

@@ -42,19 +42,6 @@ export type DateRangePickerProps = Omit<
     confirm?: boolean;
   };
 
-/**
- * Intervalo de datas, para filtro de relatorio e de listagem.
- *
- * Aqui nao ha digitacao, e essa e a diferenca de proposito para o DatePicker.
- * Mask de intervalo pede duas datas num campo so, e o custo de acertar
- * teclado, colagem e ordem invertida nao se paga: quem escolhe periodo quase
- * sempre esta comparando semanas na tela, nao repetindo uma data que sabe de
- * cabeca.
- *
- * O intervalo chega incompleto no `onValueChange` entre o primeiro e o segundo
- * clique, com `from` e sem `to`. E de proposito: a tela que mostra o resumo do
- * filtro precisa acompanhar a escolha enquanto ela acontece.
- */
 export function DateRangePicker({
   value,
   defaultValue,
@@ -101,12 +88,6 @@ export function DateRangePicker({
         className,
       )}
     >
-      {/*
-        * Duas datas por extenso num gatilho `sm` cortam, e o periodo escolhido
-        * e justamente o que a pessoa precisa reler antes de confiar no filtro.
-        * O `title` sai do proprio intervalo; vazio e o placeholder, texto do
-        * desenvolvedor, que nao ganha dica.
-        */}
       <span title={empty ? undefined : label} className="truncate">
         {label}
       </span>
@@ -139,8 +120,6 @@ export function DateRangePicker({
             </Button>
             <Button
               size="sm"
-              // So com o intervalo fechado: aplicar com meia escolha mandaria
-              // para a listagem um periodo que comeca e nao termina.
               disabled={!draft?.from || !draft.to}
               onClick={() => {
                 change(draft);
@@ -176,7 +155,6 @@ export function DateRangePicker({
   );
 }
 
-/** `undefined` quando nao ha nada para mostrar, para o gatilho cair no placeholder. */
 function describe(range: DateRange | undefined): string | undefined {
   if (!range?.from) return undefined;
   const start = formatDate(range.from);

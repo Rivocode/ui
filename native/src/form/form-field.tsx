@@ -10,17 +10,6 @@ import {
 
 import { Field } from "../field";
 
-/**
- * O que o controle recebe: o campo do React Hook Form, mais as duas coisas
- * que no web chegariam sozinhas pelo contexto do `Field` da Base UI.
- *
- * Lá o `Field` liga rótulo, ajuda e erro a qualquer controle dela que esteja
- * dentro — `for`, `aria-describedby` e `aria-invalid` aparecem sem ninguém
- * escrever. Aqui não existe contexto nenhum: o `Field` nativo desenha um
- * `Text` em cima e outro embaixo, e o controle do meio não fica sabendo de
- * nada. Então as duas informações viajam **no campo**, e os adaptadores as
- * põem no controle.
- */
 export type FormFieldRow<
   Values extends FieldValues = FieldValues,
   Name extends FieldPath<Values> = FieldPath<Values>,
@@ -51,23 +40,6 @@ export type FormFieldProps<Values extends FieldValues, Name extends FieldPath<Va
   children: (row: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement;
 };
 
-/**
- * Uma linha de formulário: rótulo, controle, ajuda e erro, ligados entre si.
- *
- * O controle vem por função, e não por clonagem do filho, pelo mesmo motivo do
- * web: cada controle do catálogo recebe valor de um jeito, e adivinhar qual
- * falha na tela e não no tipo.
- *
- * ```tsx
- * <FormField name="email" label="E-mail" description="Para onde vai a nota">
- *   {(row) => <Input {...forText(row)} keyboardType="email-address" />}
- * </FormField>
- * ```
- *
- * A mensagem de erro é a do schema, e ela vence a descrição — regra que o
- * `Field` nativo já tinha antes deste arquivo existir, e que é a mesma dos
- * dois lados.
- */
 export function FormField<Values extends FieldValues, Name extends FieldPath<Values>>({
   name,
   label,
@@ -81,8 +53,6 @@ export function FormField<Values extends FieldValues, Name extends FieldPath<Val
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        // O `error` é string ou nada: o `Field` nativo mostra a descrição
-        // quando não há erro, e troca por ele quando há.
         <Field
           label={label}
           description={description}

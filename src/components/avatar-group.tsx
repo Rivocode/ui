@@ -10,21 +10,6 @@ export type AvatarGroupProps = ComponentProps<"div"> & {
   size?: AvatarProps["size"];
 };
 
-/**
- * A fila de pessoas de um lugar: quem participa da conversa, quem assinou,
- * quem tem acesso.
- *
- * Duas decisoes moram aqui para nao serem tomadas cinco vezes diferentes.
- *
- * A primeira: a sobreposicao corta a inicial. Com duas letras, o avatar de
- * cima cobre a segunda letra do de baixo e o que sobra e um borrao - entao a
- * fila usa uma letra so, e a peca faz isso sozinha em vez de pedir que quem
- * chama saiba disso.
- *
- * A segunda: o excedente vira "+n" e nao some. Uma fila de tres com mais dez
- * escondidos mente sobre o tamanho do grupo, e o numero e justamente o que a
- * pessoa procura ali.
- */
 export function AvatarGroup({ className, max, size, children, ...props }: AvatarGroupProps) {
   const all = Children.toArray(children).filter(isValidElement) as ReactElement<AvatarProps>[];
   const shown = max ? all.slice(0, max) : all;
@@ -33,8 +18,6 @@ export function AvatarGroup({ className, max, size, children, ...props }: Avatar
   return (
     <div
       {...props}
-      // O da esquerda por cima: a leitura vai da esquerda para a direita, e o
-      // primeiro rosto e o que fica inteiro.
       className={cn("flex items-center -space-x-2", className)}
     >
       {shown.map((child, index) =>

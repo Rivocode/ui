@@ -14,21 +14,10 @@ export type DialogProps = {
   className?: string;
 };
 
-/**
- * O modal centrado. Fecha no toque fora e no back do Android; o que NAO pode
- * ser dispensado assim e AlertDialog.
- */
 export function Dialog({ open, onOpenChange, title, description, children, className }: DialogProps) {
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={() => onOpenChange(false)}>
-      {/* accessibilityViewIsModal prende o leitor de tela aqui dentro: sem
-          ele o VoiceOver continua andando pela tela que ficou atras. */}
       <View accessibilityViewIsModal className="flex-1 items-center justify-center p-6">
-        {/* A tarja e IRMA do painel, nao mae dele. Enquanto o dialogo inteiro
-            morava dentro deste Pressable, a primeira parada do VoiceOver era um
-            botao gigante chamado "Fechar" que embrulhava titulo, corpo e acoes
-            - e nem papel de botao ele anunciava. Como irma, ela cobre o fundo
-            sem engolir nada, e o stopPropagation deixa de ser preciso. */}
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Fechar"
@@ -58,10 +47,6 @@ export type AlertDialogProps = {
   cancelLabel?: string;
 };
 
-/**
- * A confirmacao destrutiva: exige resposta, nao fecha no toque fora. O
- * overlay aqui nao e Pressable de proposito.
- */
 export function AlertDialog({
   open,
   onOpenChange,

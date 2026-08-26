@@ -14,7 +14,6 @@ export type CheckboxGroupProps = {
   className?: string;
 };
 
-/** Varios sim-ou-nao da mesma familia, cada linha um Checkbox de verdade. */
 export function CheckboxGroup({
   items,
   value,

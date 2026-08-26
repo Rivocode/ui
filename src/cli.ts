@@ -1,23 +1,11 @@
 #!/usr/bin/env node
 
-/* ---------------------------------------------------------------------------
- * A linha de comando do pacote.
- *
- * Faz uma coisa so: instalar a skill que ensina esta biblioteca a um agente.
- *
- * Ela poderia ser um `curl` do site, e continua sendo, mas o comando tem uma
- * vantagem que o `curl` nao tem: ele copia a skill que veio **dentro da versao
- * instalada**. Um projeto preso no `0.2.0` recebe a skill do `0.2.0`, e nao a
- * do site, que fala de pecas que aquele projeto ainda nao tem.
- * ------------------------------------------------------------------------- */
-
 import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 
-/** A skill viaja no pacote, ao lado do `dist`; o agent, na pasta irma. */
 const SKILL_SOURCE = resolve(HERE, "../skill");
 const AGENT = resolve(HERE, "../agent/rivocode-ui.md");
 
@@ -43,8 +31,6 @@ function install(global: boolean) {
 
   try {
     mkdirSync(target, { recursive: true });
-    // A pasta inteira, e nao so o SKILL.md: o corpo da skill aponta para
-    // `reference/`, e sem esses arquivos os links levam a lugar nenhum.
     cpSync(SKILL_SOURCE, target, { recursive: true });
   } catch (error) {
     console.error(`Não consegui escrever em ${target}.`);
@@ -52,8 +38,6 @@ function install(global: boolean) {
     process.exit(1);
   }
 
-  // O agent e o especialista que carrega a skill sozinho: quem delega uma
-  // tela para ele nao precisa lembrar de pedir "use a skill".
   if (existsSync(AGENT)) {
     const agentsDir = join(root, ".claude", "agents");
     mkdirSync(agentsDir, { recursive: true });

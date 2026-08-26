@@ -189,7 +189,6 @@ describe("Select", () => {
     );
     act(() => option!.props.onPress());
     expect(onValueChange).toHaveBeenCalledWith(["servico", "produto"]);
-    // A folha continua aberta: escolher três é o motivo de multiple existir.
     expect(textOf(screen)).toContain("Frete");
   });
 

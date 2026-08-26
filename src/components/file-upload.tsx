@@ -6,7 +6,6 @@ import { useRef, useState, type ComponentProps, type DragEvent, type ReactNode }
 import { cn } from "../lib/cn";
 import { Button } from "./button";
 
-/** "48,2 KB", "1,2 MB": o tamanho sai formatado, nunca digitado. */
 const UNIT = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
 function fileSize(bytes: number) {
@@ -21,7 +20,6 @@ export type Rejection = {
   reason: string;
 };
 
-/** A mesma regra do seletor nativo: extensão com ponto, MIME, ou `tipo/*`. */
 function matchesAccept(file: File, accept: string) {
   const wanted = accept.split(",").map((token) => token.trim().toLowerCase());
   const name = file.name.toLowerCase();
@@ -34,14 +32,6 @@ function matchesAccept(file: File, accept: string) {
   });
 }
 
-/*
- * `onSelect` e a colisao de verdade: a `<div>` ja tem um `onSelect`, o evento
- * de selecao de texto do DOM, com assinatura `(event) => void`. Sem o `Omit`,
- * o tipo vira a interseccao das duas funcoes - uma que nao da para chamar nem
- * como uma nem como outra - e o erro sai no ponto de chamada, ilegivel.
- *
- * `children` sai porque a area se desenha a partir de `label` e `hint`.
- */
 export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children"> & {
   /** A frase da área: "Arraste o XML da nota, ou clique para escolher". */
   label: ReactNode;
@@ -60,13 +50,6 @@ export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children
   className?: string;
 };
 
-/**
- * A área de anexar: clique abre o seletor, arrastar acende, soltar valida.
- *
- * A peça não conhece rede, de propósito, como o `DataTable` não conhece React
- * Query: fetch, progresso e retry são do app. Ela entrega `File` validado e
- * apresenta o estado que o app informar nos itens.
- */
 export function FileUpload({
   label,
   hint,
@@ -80,8 +63,6 @@ export function FileUpload({
   ...rest
 }: FileUploadProps) {
   const input = useRef<HTMLInputElement>(null);
-  // Contador, e nao booleano: entrar num filho dispara dragleave do pai, e
-  // com booleano a borda piscava a cada texto atravessado.
   const [dragDepth, setDragDepth] = useState(0);
 
   function deliver(list: FileList | File[] | null) {
@@ -142,8 +123,6 @@ export function FileUpload({
         {hint && <span className="text-sm text-fg-subtle">{hint}</span>}
       </button>
 
-      {/* O input de verdade, escondido: e ele que abre o seletor nativo e
-          carrega accept e multiple, entao o dialogo do sistema ja filtra. */}
       <input
         ref={input}
         type="file"
@@ -153,7 +132,6 @@ export function FileUpload({
         disabled={disabled}
         onChange={(event) => {
           deliver(event.target.files);
-          // O mesmo arquivo de novo dispara change de novo.
           event.target.value = "";
         }}
         tabIndex={-1}
@@ -202,12 +180,6 @@ export function FileUploadItem({
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-3">
-          {/*
-            * Nome de arquivo e o caso classico do corte: chega do disco, pode
-            * ter setenta caracteres, e sem `title` quem enxerga nao tem como
-            * conferir se removeu o arquivo certo. Sem `aria-label` - o nome
-            * continua inteiro no DOM e o leitor de tela ja o le dali.
-            */}
           <span title={name} className="truncate font-sans text-sm text-fg">
             {name}
           </span>

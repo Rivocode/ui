@@ -12,11 +12,6 @@ export type RadioGroupProps = {
   className?: string;
 };
 
-/**
- * Uma escolha entre poucas, todas visiveis - a mesma regra do web: acima de
- * meia duzia de opcoes, a peca certa e o Select. O ponto marcado e um circulo
- * preenchido, nunca glyph de fonte.
- */
 export function RadioGroup({ items, value, onValueChange, disabled, className }: RadioGroupProps) {
   return (
     <View accessibilityRole="radiogroup" className={cn("gap-3", className)}>

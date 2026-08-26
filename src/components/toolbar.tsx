@@ -9,16 +9,6 @@ export const Toolbar = BaseToolbar.Root;
 
 export type ToolbarProps = ComponentProps<typeof BaseToolbar.Root>;
 
-/**
- * Barra de ferramentas: os controles ficam numa parada de tabulacao so, e as
- * setas andam entre eles.
- *
- * E isso que a diferencia de uma `div` com botoes: dez botoes soltos sao dez
- * paradas de Tab entre o campo anterior e o proximo. Numa barra, e uma.
- *
- * Use `ToolbarButton` com `render` para vestir `Button`, `Toggle` ou `Select`
- * sem perder essa navegacao.
- */
 export function ToolbarRoot({ className, ...props }: ToolbarProps) {
   return (
     <BaseToolbar.Root

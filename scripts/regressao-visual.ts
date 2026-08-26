@@ -146,8 +146,6 @@ function signatureOf({ width, height, channels, pixels }: Image): number[] {
   return cells;
 }
 
-/* ------------------------------------------------------------------------- */
-
 const accept = process.argv.includes("--aceitar");
 const stored: Record<string, number[]> = await Bun.file(SIGNATURES)
   .json()

@@ -24,10 +24,6 @@ export type CheckboxProps = {
   className?: string;
 };
 
-/**
- * Caixa de marcar controlada. O visto e desenhado com borda, nao com fonte:
- * glyph de texto muda de corpo entre iOS e Android, e o traco nao.
- */
 export function Checkbox({
   checked,
   onCheckedChange,
@@ -53,8 +49,6 @@ export function Checkbox({
         }`}
       >
         {checked && (
-          // Margem, e nao translate: a shorthand `translate` com as vars
-          // --tw-translate-* e mais um caso que derruba o compilador nativo.
           <View className="mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-accent-fg" />
         )}
       </View>

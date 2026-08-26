@@ -9,70 +9,60 @@ Isto e a REGRA. O estado do repositorio - o que existe, o que falta, os numeros
 
 ## Comentario
 
-**O teste:** um comentario fica quando explica uma decisao ou uma armadilha que
-o codigo nao mostra; sai quando descreve o que a linha ja diz.
+**A regra:** fica SOMENTE o JSDoc preso a uma prop publica. Todo o resto sai.
 
-O que "o codigo nao mostra" costuma ser: por que a escolha obvia esta errada,
-que erro criptico ela produz, quanto ja se pagou por descobrir isso, e o que
-acontece se alguem desfizer. Escreva o custo, e nao a intencao.
+Prop publica e membro de um `type` ou `interface` de props exportada - o bloco
+cujo proximo token e um nome seguido de `:`. Esse texto nao e comentario, e
+DADO: `bun run gen:props` o extrai para o campo `note` de
+`apps/docs/src/component-props.json`, que e a tabela de props publicada em
+`ds.rivocode.com.br`. Apaga-lo apaga documentacao do site, e nenhum teste
+acusa - a guarda e `bun run check:props`, que fica vermelho se o JSON divergir.
 
-Fica - `.github/workflows/release.yml:23`, sobre a falta de `id-token`: diz que
-o registro recusa `--provenance` de repositorio privado, cita o 422 e a
-mensagem exata, e avisa que devolver a flag so recria a falha no ultimo passo.
-Sem isso, o proximo a "consertar" o workflow refaz a falha inteira. O mesmo
-padrao em `examples/native/global.css:13`, `native/scripts/build-css.mjs:71` e
-`src/components/data-table.tsx:380`.
+```ts
+export type ButtonProps = {
+  /** O tamanho do alvo de toque. Combina com a densidade do provider. */
+  size?: "sm" | "md";
+};
+```
 
-Sai - `apps/docs/src/components/markdown.tsx:13,22,27,32,39`: `// Headings`,
-`// Prose`, `// Lists`, `// Code`, `// Table` em cima de `[&_h1]`, `[&_p]`,
-`[&_ul]`, `[&_code]`, `[&_table]`. O seletor ja e o rotulo. Note que no MESMO
-arquivo, na linha 17, ha um comentario que fica: ele explica por que o `h4`
-desce de nivel sem encolher junto.
+Sai todo o resto, sem excecao: JSDoc acima de `export function`, `export
+const`, `type` e `interface`; cabecalho `/* ---- */` de topo de arquivo; toda
+linha `//`; todo `{/* */}` dentro de JSX; todo `/* */` nos `.css`. **Inclusive
+comentario que conta incidente, armadilha ou custo.** Essa parte doi e e a
+decisao: o porque de uma escolha mora no `git log`, nos dois CHANGELOGs e em
+`docs/ESTADO.md`, e nao espalhado pelo codigo.
 
-Mais duas formas de comentario que sai:
+Preserve o que NAO e prosa: `@deprecated`, `@internal`, `eslint-disable`,
+`oxlint-disable`, `@ts-expect-error`, `@ts-ignore`. Sao diretivas, e mudam
+compilacao ou lint. Se uma delas estiver dentro de um bloco que sai, mantenha
+so a tag num bloco minimo.
 
-- **Obsoleto.** Comentario que cita nome que a renomeacao levou embora e pior
-  que nenhum: manda procurar o que nao ha. O `chart-tooltip.tsx` mandou ver
-  `chaveDaSerie` na legenda por meses depois de a funcao virar `seriesKey`, e
-  nada acusa - grep por nome citado em comentario nao e coisa que se faca de
-  propria vontade. Ao renomear, procure o nome antigo em comentario tambem.
-- **Rotulo decorativo dentro de dado.** `scripts/paridade-nativo.ts:103, 266,
-  298, 438` separam a tabela com `// ---- traduzem`, `// ---- na fila`. Cada
-  entrada ja carrega `state: "traduz"` / `"fila"`.
+Duas excecoes, e as duas sao funcionais:
 
-Cuidado com o falso positivo desta regra: `src/lib/mask.ts:133` PARECE os dois
-casos acima - cita `patternFor` e `applyXMask`, que nao sao funcoes, e tem um
-`@deprecated` logo abaixo dizendo o mesmo em uma linha. Mas os dois nomes sao o
-PADRAO, e nao referencias, e o paragrafo conta a armadilha que o `@deprecated`
-nao cabe: as tres funcoes de mascara tinham a mesma assinatura, entao quem
-chamasse esperando texto formatado recebia o molde escrito no campo, sem o
-TypeScript poder acusar. Comentario que explica o custo fica, mesmo quando a
-forma se parece com a do que sai.
+- **`.design-sync/previews/*`**. O `/** */` acima de cada `export function` la
+  NAO e comentario, e o TITULO da historia: `apps/docs/src/example-source.ts`
+  le esse bloco para montar o site. Apagar quebra a pagina. Nao se toca.
+- **`scripts/check-*.ts`**. Cada um abre com o JSDoc do incidente que o fez
+  existir. Sem ele, a proxima pessoa remove a guarda por parecer paranoia, e o
+  incidente volta. A pasta segue a regra antiga: comentario fica quando explica
+  uma decisao ou uma armadilha que o codigo nao mostra.
 
-Regras de forma:
+Regras de forma que continuam valendo:
 
-- Comentario e JSDoc em portugues, **sem acento**. O texto que vai para a tela
-  ou para a doc publicada leva acento (`test/acentos.test.ts` cobra).
-- Divisor `/* ---- */` no topo de arquivo e o cabecalho da casa - so vale se
-  carregar prosa embaixo, como em `src/lib/screen.ts` ou `apps/docs/src/parts.ts`.
-- JSDoc de peca: a primeira frase e a mesma lede da pagina em
-  `.design-sync/docs/<Peca>.md`. O detalhe mora la, nao duplicado aqui.
+- JSDoc em portugues, **sem acento**. O texto que vai para a tela ou para a doc
+  publicada leva acento (`test/acentos.test.ts` cobra, nos DOIS pacotes).
 - JSDoc de prop diz o que o TIPO nao diz: unidade, o que muda na tela, com o
   que se combina. Nunca a assinatura.
-- `/** */` acima de cada `export function` em `.design-sync/previews/*` NAO e
-  comentario, e titulo da historia: `apps/docs/src/example-source.ts` le esse
-  bloco. Nao apague.
+- `bun run check:comentarios` continua guardando o IDIOMA, e nao a presenca:
+  acusa comentario em ingles por classe fechada (`the`, `this`, `which`,
+  `because`), duas no mesmo comentario e o corte. A lista `DEBT` dele esta
+  vazia, e o acordo e que ela so encolhe.
 
-A regra passou a ter guarda: `bun run check:comentarios` acusa comentario em
-ingles por classe fechada - `the`, `this`, `which`, `because` -, e nao por
-vocabulario, que e ingles de propria vontade em metade do que se escreve aqui.
-Duas dessas palavras no mesmo comentario e o corte.
-
-A lista `DEBT` da guarda esta VAZIA, e o mecanismo fica: e onde a proxima
-colisao entre a guarda e um arquivo em obra se anota, sem ninguem reinventar o
-acordo. O acordo e que ela SO ENCOLHE - entrada que nao acusa mais e erro, e a
-guarda manda apagar a linha. E o que impede a lista de virar o lugar onde o
-ingles mora.
+Historico: ate 26/08/2026 a regra era "fica quando explica uma decisao ou uma
+armadilha que o codigo nao mostra". Ela foi trocada pela de cima por decisao do
+dono, e o corte removeu 5086 linhas. Se voce esta lendo um arquivo com
+comentario de prosa fora das duas excecoes, ele e anterior a essa data ou
+escapou - e para sair, nao para ser imitado.
 
 ## Idioma do codigo
 

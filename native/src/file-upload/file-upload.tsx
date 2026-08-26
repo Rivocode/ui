@@ -6,16 +6,6 @@ import { Progress } from "../basics";
 import { cn } from "../cn";
 import { mono } from "../font";
 
-/**
- * Um arquivo escolhido.
- *
- * O tipo é nosso, e não o `DocumentPickerAsset` do Expo, por duas razões. A
- * primeira é de contrato: o tipo deles carrega `file?: File` e `base64?`, que
- * são do passe web e não existem no telefone — reexportá-los prometeria ao app
- * campos que ele nunca vai receber. A segunda é de instalação: um tipo
- * reexportado obriga quem só lê a assinatura a ter o peer instalado para o
- * `tsc` fechar.
- */
 export type PickedFile = {
   /** O endereço local do arquivo. É com ele que o app sobe o conteúdo. */
   uri: string;
@@ -35,13 +25,6 @@ export type Rejection = {
   reason: string;
 };
 
-/**
- * "48,2 KB", "1,2 MB" — a vírgula do pt-BR escrita à mão.
- *
- * O web usa `Intl.NumberFormat`, e aqui não: é a mesma decisão do `Meter`
- * nativo sem `format` e do `RelativeTime` sempre numérico — carregar o `Intl`
- * no bundle do celular por causa de uma casa decimal não se paga.
- */
 function decimal(value: number) {
   return String(Math.round(value * 10) / 10).replace(".", ",");
 }
@@ -52,14 +35,12 @@ export function fileSize(bytes: number) {
   return `${decimal(bytes / (1024 * 1024))} MB`;
 }
 
-/** `accept` sempre em lista, venha como string única ou já em lista. */
 function tokensOf(accept: string | string[] | undefined) {
   if (accept === undefined) return [];
   const raw = Array.isArray(accept) ? accept : accept.split(",");
   return raw.map((token) => token.trim().toLowerCase()).filter(Boolean);
 }
 
-/** A mesma regra do web: extensão com ponto, MIME, ou `tipo/*`. */
 function matchesAccept(file: PickedFile, tokens: string[]) {
   const name = file.name.toLowerCase();
   const type = (file.mimeType ?? "").toLowerCase();
@@ -95,7 +76,6 @@ export type FileUploadProps = {
   className?: string;
 };
 
-/** A seta para cima sobre a base, desenhada com `View`. */
 function UploadIcon() {
   return (
     <View className="h-4 w-4 items-center justify-end">
@@ -106,39 +86,6 @@ function UploadIcon() {
   );
 }
 
-/**
- * A área de anexar — que aqui **não é uma área**.
- *
- * A peça não conhece rede, de propósito, como no web: ela valida `accept` e
- * `maxSize` na entrada, entrega os aceitos em `onSelect` e os recusados em
- * `onReject`. Subir o arquivo — fetch, progresso real, nova tentativa — é do
- * app, que sabe o endereço e a autenticação.
- *
- * ## O que substitui a área de soltar
- *
- * Um botão, e só. No celular não há arrastar: nada pode ser solto em lugar
- * nenhum, e o retângulo tracejado de 96px de altura do web é, letra por letra,
- * o idioma de "solte aqui" — desenhá-lo numa tela de toque promete um gesto
- * que o aparelho não tem. Tirado o soltar, o que sobra daquela caixa é um
- * botão com muito espaço vazio em volta: **o espaço era o alvo de soltar, e
- * não a affordance**. A affordance é o botão, e ele cabe numa altura de
- * controle.
- *
- * A conta fecha do outro lado também. Numa tela de 390px, aquela caixa comia
- * um quarto da altura útil para dizer uma frase — e o que importa nesta tela é
- * a **lista**, que é onde o arquivo aparece, sobe, falha e é removido. O botão
- * devolve esse espaço para ela.
- *
- * O `hint` continua fazendo o trabalho que faz no web, e por isso ele entra no
- * nome falado do botão: quem ouve a tela precisa saber "XML ou PDF, até 5 MB"
- * **antes** de abrir o seletor, não depois de ser recusado.
- *
- * ## Desistir não é um final
- *
- * Fechar o seletor do sistema devolve `canceled` e **nenhum callback dispara**
- * — como no web, onde fechar a janela do seletor não avisa ninguém. Uma tela
- * que precise saber disso está querendo um estado que a peça não tem.
- */
 export function FileUpload({
   label,
   hint,
@@ -151,8 +98,6 @@ export function FileUpload({
   className,
 }: FileUploadProps) {
   const tokens = tokensOf(accept);
-  // Só o que o diálogo do sistema entende. Sobrando nada, ele abre sem
-  // restrição - e a validação de volta continua valendo do mesmo jeito.
   const mimes = tokens.filter((token) => !token.startsWith("."));
 
   function deliver(
@@ -174,8 +119,6 @@ export function FileUpload({
       } else if (maxSize !== undefined && file.size !== undefined && file.size > maxSize) {
         rejected.push({ file, reason: `maior que ${fileSize(maxSize)}` });
       } else {
-        // Tamanho que o aparelho não informou passa: recusar o que não se
-        // conseguiu medir barraria um arquivo bom por falta de dado nosso.
         accepted.push(file);
       }
     }
@@ -193,22 +136,9 @@ export function FileUpload({
       result = await getDocumentAsync({
         type: mimes.length > 0 ? mimes : undefined,
         multiple,
-        // O padrão do Expo, escrito à mão porque é uma decisão e não um acaso:
-        // o app recebe o `uri` para subir o conteúdo, e sem a cópia no cache
-        // metade dos endereços do Android não abre depois que o seletor fecha.
         copyToCacheDirectory: true,
       });
     } catch {
-      /*
-       * O seletor recusar abrir vale como não ter escolhido nada.
-       *
-       * As duas formas de ele rejeitar - um segundo toque enquanto o primeiro
-       * diálogo ainda está no ar, no Android, e a activity morrer por baixo -
-       * terminam no mesmo lugar que o `canceled`: nenhum arquivo. E sem este
-       * `catch` a promessa morreria solta, porque o `onPress` do `Pressable`
-       * não espera o retorno de ninguém - uma rejeição não tratada por um
-       * toque duplo.
-       */
       return;
     }
 
@@ -220,8 +150,6 @@ export function FileUpload({
     <View className={className}>
       <Pressable
         accessibilityRole="button"
-        // O `hint` entra no nome pela mesma razão do web, onde ele mora dentro
-        // do `<button>`: quem ouve a tela decide antes de abrir o seletor.
         accessibilityLabel={hint ? `${label}. ${hint}` : label}
         accessibilityState={{ disabled: Boolean(disabled) }}
         disabled={disabled}
@@ -238,7 +166,6 @@ export function FileUpload({
 
       {hint && (
         <Text
-          // Já foi dito no nome do botão; lido duas vezes vira ruído.
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           className="mt-1.5 text-xs text-fg-subtle"
@@ -255,14 +182,6 @@ export type FileUploadListProps = {
   className?: string;
 };
 
-/**
- * A lista do que já entrou.
- *
- * É uma `View` com espaçamento, e não uma `FlatList`: quem anexa anexa
- * poucos, e virtualizar meia dúzia de linhas custa mais do que rende — além
- * de a lista quase sempre morar dentro de um `ScrollView` de formulário, onde
- * uma lista rolável aninhada é o defeito clássico.
- */
 export function FileUploadList({ children, className }: FileUploadListProps) {
   return <View className={cn("mt-3 gap-2", className)}>{children}</View>;
 }
@@ -280,7 +199,6 @@ export type FileUploadItemProps = {
   className?: string;
 };
 
-/** O xis do remover, com duas barras giradas. */
 function CloseIcon() {
   return (
     <View className="h-4 w-4 items-center justify-center">
@@ -290,12 +208,6 @@ function CloseIcon() {
   );
 }
 
-/**
- * Um arquivo na lista, com o estado que o app informar.
- *
- * O `error` vence o `progress`, como no web — uma barra andando embaixo de uma
- * mensagem de falha diz duas coisas contrárias ao mesmo tempo.
- */
 export function FileUploadItem({
   name,
   size,
@@ -314,10 +226,6 @@ export function FileUploadItem({
     >
       <View className="min-w-0 flex-1 gap-1">
         <View className="flex-row items-baseline justify-between gap-3">
-          {/* Nome de arquivo é o caso clássico do corte: chega do aparelho e
-              pode ter setenta caracteres. O corte é `numberOfLines`, que no RN
-              é prop e não classe - e o texto inteiro continua no nó, então o
-              leitor de tela lê o nome completo. */}
           <Text numberOfLines={1} className="min-w-0 flex-1 text-sm text-fg">
             {name}
           </Text>
@@ -351,7 +259,6 @@ export function FileUploadItem({
         accessibilityRole="button"
         accessibilityLabel={`Remover ${name}`}
         onPress={onRemove}
-        // O xis desenha 16px; o hitSlop leva o alvo aos 44 sem alargar a linha.
         hitSlop={14}
       >
         <CloseIcon />

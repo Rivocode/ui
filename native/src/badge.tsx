@@ -18,7 +18,6 @@ export type BadgeProps = {
   className?: string;
 };
 
-/** A etiqueta de situacao, nos mesmos tons do web: fundo sutil, texto que le. */
 export function Badge({ children, tone = "neutral", className }: BadgeProps) {
   const styles = TONE[tone];
   return (

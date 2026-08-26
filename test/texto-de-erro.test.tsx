@@ -45,8 +45,6 @@ function chart(props: Partial<React.ComponentProps<typeof ChartContainer>> = {})
   );
 }
 
-/* --- DataTable ----------------------------------------------------------- */
-
 test("sem errorTitle, o titulo do erro continua o de sempre", () => {
   table({ isError: true, data: undefined });
   expect(screen.getByText("Não foi possível carregar")).toBeDefined();
@@ -85,8 +83,6 @@ test("a busca vazia nao vira estado vazio: o empty fica reservado para o banco",
 
   expect(screen.queryByText("Nenhuma nota por aqui")).toBeNull();
 });
-
-/* --- ChartContainer ------------------------------------------------------ */
 
 test("sem errorTitle, o grafico continua com o titulo de sempre", () => {
   chart({ isError: true });

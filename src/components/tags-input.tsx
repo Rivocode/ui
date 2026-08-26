@@ -28,31 +28,6 @@ export type TagsInputProps = Omit<
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
 };
 
-/**
- * Lista de marcadores que a pessoa escreve: etiquetas de uma nota, palavras de
- * um filtro, emails de um convite.
- *
- * Nao e `Combobox`. O combobox escolhe de uma lista que existe; aqui a lista
- * nasce do que se digita, e nao ha o que sugerir. Quando as duas coisas valem
- * - escolher do catalogo ou criar na hora - o `Combobox` com fichas diz mais,
- * porque mostra o que ja existe antes de deixar inventar.
- *
- * Tres gestos que a peca resolve de uma vez, para nao serem resolvidos cinco
- * vezes diferentes: o Enter fecha a ficha, o Backspace com o campo vazio tira
- * a ultima - e o gesto que todo mundo tenta primeiro - e a repetida nao entra
- * duas vezes, porque marcar duas vezes a mesma coisa nunca e o que se quis.
- *
- * Guarda a propria lista quando so recebe `defaultValue`, e obedece a de fora
- * quando recebe `value` - o mesmo par das cinco irmas de formulario. Ate aqui
- * ela era a unica que exigia estado do lado de fora, e um filtro de tela, que
- * nao envia nada e nao guarda nada, pagava um `useState` para existir.
- *
- * O campo de escrever passa pelo `Field.Control`, como o `Input` e o
- * `Textarea`: e ele, e nao a moldura em volta, que recebe o `id` do rotulo, o
- * `aria-describedby` da ajuda e do erro, e o `aria-invalid`. Sem isso o
- * `FieldLabel` apontava para um id que nao existia, o nome do campo caia no
- * `placeholder` - que some ao digitar - e clicar no rotulo nao focava nada.
- */
 export function TagsInput({
   value,
   defaultValue = [],
@@ -94,8 +69,6 @@ export function TagsInput({
     if (event.defaultPrevented) return;
 
     if (event.key === "Enter" || separators.includes(event.key)) {
-      // O Enter aqui fecha a ficha, e nao envia o formulario: dentro de um
-      // <form>, sem isto, escrever a primeira etiqueta manda a nota embora.
       event.preventDefault();
       add(draft);
       return;
@@ -112,15 +85,8 @@ export function TagsInput({
         inputVariants(),
         "flex h-auto min-h-[var(--rc-control-md)] flex-wrap items-center gap-1.5",
         "px-[var(--rc-control-pad-md)] py-1.5",
-        // A moldura e uma `div`, e `div` sem foco nunca casa `:focus-visible`:
-        // o anel que o `inputVariants` traz ficava inerte, e o campo focado
-        // nao se pintava de jeito nenhum. Quem manda no anel e o campo de
-        // dentro. E `has-[input:...]`, e nao `focus-within`, porque o xis de
-        // cada ficha tem anel proprio - com `focus-within` acenderiam os dois
-        // ao mesmo tempo, que e a borda dupla que o `InputGroup` evita.
         "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring",
         "has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-bg",
-        // O `data-invalid` do `Field` cai no campo de dentro, e nao aqui.
         "has-[[data-invalid]]:border-danger",
         disabled && "cursor-not-allowed opacity-60",
         classNames?.field,
@@ -144,8 +110,6 @@ export function TagsInput({
             onClick={() => change(tags.filter((current) => current !== tag))}
             className={cn(
               "relative text-fg-subtle transition-colors hover:text-fg",
-              // O alvo de toque cresce sem o desenho crescer, como no chip do
-              // Combobox: 12px de icone nao alcancam os 24 da norma.
               "after:absolute after:-inset-1.5",
               "outline-none focus-visible:ring-2 focus-visible:ring-ring",
               classNames?.remove,
@@ -163,8 +127,6 @@ export function TagsInput({
         disabled={disabled || full}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={handleKeyDown}
-        // Sair do campo fecha o que estava escrito: texto digitado e nao
-        // fechado some ao enviar o formulario, e ninguem entende por que.
         onBlur={(event) => {
           add(draft);
           props.onBlur?.(event);

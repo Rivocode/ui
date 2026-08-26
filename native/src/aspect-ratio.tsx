@@ -10,10 +10,6 @@ export type AspectRatioProps = {
   className?: string;
 };
 
-/**
- * A caixa que guarda a proporcao antes de o conteudo chegar: imagem, mapa,
- * video. Reservar o espaco e o que impede a tela de pular no carregamento.
- */
 export function AspectRatio({ ratio, children, className }: AspectRatioProps) {
   return (
     <View

@@ -10,14 +10,6 @@ export type ScrollAreaProps = ComponentProps<typeof BaseScrollArea.Root> & {
   horizontal?: boolean;
 };
 
-/**
- * Area de rolagem com barra propria.
- *
- * Serve para quando a barra do sistema atrapalha o desenho: no Windows ela
- * ocupa largura e empurra o conteudo, e a diferenca entre plataformas aparece
- * na tela. Para rolagem comum de pagina, `overflow-y-auto` continua sendo mais
- * barato.
- */
 export function ScrollArea({ className, horizontal, children, ...props }: ScrollAreaProps) {
   return (
     <BaseScrollArea.Root {...props} className={cn("relative", className)}>

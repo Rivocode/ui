@@ -19,19 +19,6 @@ export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy"> & {
   onCopy?: (value: string) => void;
 };
 
-/**
- * Copiar um dado para levar a outro lugar: chave de acesso, CNPJ, id de
- * rastro, codigo Pix, numero da nota.
- *
- * A confirmacao e parte da peca, e nao enfeite. Copiar e uma acao sem
- * resultado visivel - nada muda na tela - entao sem a confirmacao a pessoa
- * clica de novo por duvida, e quem nao ve o icone mudar nao soube que
- * aconteceu. Por isso o proprio nome acessivel do botao muda: o leitor de tela
- * anuncia "Copiado" onde antes anunciava "Copiar".
- *
- * A confirmacao volta sozinha depois de `timeout`, senao o botao fica preso
- * num estado que ja passou.
- */
 export function Clipboard({
   value,
   children,
@@ -43,25 +30,17 @@ export function Clipboard({
   className,
   ...props
 }: ClipboardProps) {
-  // Cada nome tem o proprio padrao, e nao o objeto inteiro: trocar so o verbo
-  // obrigava a reescrever a confirmacao junto, e quem esquecia perdia o
-  // "Copiado" sem o TypeScript acusar.
   const { copy: copyLabel = "Copiar", copied: copiedLabel = "Copiado" } = labels;
 
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // O timer nao pode sobreviver ao componente: um clique seguido de navegacao
-  // deixaria um setState em pe atras de uma tela que ja saiu.
   useEffect(() => () => clearTimeout(timer.current), []);
 
   async function copy() {
     try {
       await navigator.clipboard.writeText(value);
     } catch {
-      // Sem permissao ou fora de contexto seguro, copiar nao acontece. Mentir
-      // que aconteceu e pior do que nao confirmar: a pessoa cola o que tinha
-      // antes e so descobre no destino.
       return;
     }
 

@@ -1,15 +1,4 @@
-/* ---------------------------------------------------------------------------
- * Escalas: tipografia, empilhamento, foco e densidade.
- *
- * O que esta aqui e estrutura, e nao marca: e igual em todo tema porque
- * mudar deixaria de ser tema e passaria a ser outro produto. Canto, movimento
- * e espacamento de letra saiam daqui e foram para `forma.css`, que o tema pode
- * redefinir - raio nao tem nada a ver com densidade, e estava do lado errado
- * da fronteira.
- * ------------------------------------------------------------------------- */
-
 :root {
-  /* Tipografia de produto, densa e previsivel. */
   --rc-text-xs: 12px;
   --rc-text-sm: 13px;
   --rc-text-base: 14px;
@@ -27,7 +16,6 @@
   --rc-font-display: "Poppins", "Manrope Variable", sans-serif;
   --rc-font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
-  /* Empilhamento. Definir isto agora e o que evita o z-index 9999 depois. */
   --rc-z-base: 0;
   --rc-z-sticky: 100;
   --rc-z-dropdown: 200;
@@ -37,12 +25,10 @@
   --rc-z-toast: 600;
   --rc-z-tooltip: 700;
 
-  /* Foco */
   --rc-ring-width: 2px;
   --rc-ring-offset: 2px;
 }
 
-/* Densidade confortavel, o padrao. */
 :root,
 [data-rc-density="comfortable"] {
   --rc-control-sm: 32px;
@@ -52,22 +38,16 @@
   --rc-control-pad-md: 14px;
   --rc-control-pad-lg: 18px;
 
-  /* Medidas que nao sao altura de controle mas encolhem junto com ele:
-     respiro de painel, altura de item de lista, lado da caixa de marcar e
-     lado do dia no calendario. Sem elas a densidade compacta parava nos
-     quatro componentes que usam --rc-control-*, e a tela saia meio compacta. */
   --rc-pad-panel: 24px;
   --rc-pad-panel-sm: 16px;
   --rc-item-y: 6px;
   --rc-box: 18px;
   --rc-day: 36px;
 
-  /* Barra lateral: aberta e encolhida ate a coluna de icones. */
   --rc-sidebar: 16rem;
   --rc-sidebar-icon: 3.5rem;
 }
 
-/* Densidade compacta, para tela de operacao. */
 [data-rc-density="compact"] {
   --rc-control-sm: 28px;
   --rc-control-md: 32px;

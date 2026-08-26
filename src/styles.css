@@ -1,12 +1,5 @@
-/* `source(none)` desliga a varredura automatica. Sem ela o Tailwind varre o
-   repositorio inteiro a partir do diretorio de trabalho, e nao apenas o que os
-   `@source` abaixo pedem: entrava documentacao, demo e preview no CSS
-   publicado. Pior, um `z-[var(--rc-z-*)]` escrito como exemplo dentro de um
-   texto virava `z-index: var(--rc-z-*)` de verdade no arquivo, que e CSS
-   invalido e quebrava o build de quem importasse o styles.css. */
 @import "tailwindcss" source(none);
 
-/* O Tailwind precisa varrer os componentes para gerar as classes que eles usam. */
 @source './chart';
 @source './components';
 @source './form';

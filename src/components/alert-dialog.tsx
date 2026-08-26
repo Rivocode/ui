@@ -21,14 +21,6 @@ export type AlertDialogContentProps = ComponentProps<typeof BaseAlertDialog.Popu
   classNames?: Slots<"backdrop">;
 };
 
-/**
- * A confirmacao de coisa que nao volta atras: excluir, cancelar nota, sair sem
- * salvar.
- *
- * Parece o `Dialog` e nao e: este nao fecha com Esc nem com clique fora, e o
- * foco comeca no botao de cancelar. Quem esta prestes a apagar algo tem que
- * dizer que sim de proposito, e nao esbarrar num clique.
- */
 export function AlertDialogContent({
   className,
   children,
@@ -63,8 +55,6 @@ export function AlertDialogContent({
         {children}
       </BaseAlertDialog.Popup>
 
-      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
-          aplicado pelo gerenciador de foco que mora dentro do popup. */}
       <InertBackground container={portalContainer} />
     </BaseAlertDialog.Portal>
   );
@@ -100,10 +90,6 @@ export function AlertDialogFooter({ className, ...props }: ComponentProps<"div">
       {...props}
       className={cn(
         "mt-6 flex items-center justify-end gap-3",
-        // No celular os botoes empilham e ficam de largura cheia: alvo grande e
-        // ordem clara valem mais do que a linha bonita. O `flex-col-reverse`
-        // sobe a ultima da marcacao - a que confirma - para o alto da pilha, e
-        // deixa cancelar rente ao polegar.
         "max-sm:flex-col-reverse max-sm:[&>*]:w-full",
         className,
       )}

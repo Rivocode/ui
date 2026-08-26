@@ -1,7 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
 
-/* Direto do arquivo, e nao do indice: o indice muda por outras maos enquanto
-   a fila do nativo esta sendo portada. */
 import { RivoProvider } from "../src/provider";
 import { Tree, leavesOf, type TreeNode } from "../src/tree";
 import { act, byLabel, byRole, render, textOf } from "./helpers";

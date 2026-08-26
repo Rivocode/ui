@@ -1,6 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
 
-/* Direto do arquivo, e nao do indice, como as irmas desta leva. */
 import { Editable } from "../src/editable";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 

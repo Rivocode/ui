@@ -15,22 +15,10 @@ import {
 
 import { cn } from "../lib/cn";
 
-/** Os dois temas de casa. Um tema de cliente e um nome fora desta uniao. */
 export type RivoTheme = "rivocode-dark" | "rivocode-light";
 
-/**
- * O que a prop `theme` aceita: os dois de casa, `system`, ou o nome do tema de
- * um cliente.
- *
- * O `string & {}` mantem o autocomplete dos nomes conhecidos e ainda deixa
- * passar "acme". Sem ele, o guia de personalizacao terminava num erro de tipo,
- * e quem veste um cliente comecava o projeto escrevendo `as` no ponto de
- * entrada do sistema - que e o pior lugar possivel para ensinar que casting e
- * normal.
- */
 export type RivoThemeSetting = RivoTheme | "system" | (string & {});
 
-/** O tema ja resolvido: `system` virou um dos dois de casa. */
 export type RivoResolvedTheme = RivoTheme | (string & {});
 export type RivoDensity = "comfortable" | "compact";
 
@@ -115,14 +103,6 @@ export function RivoProvider({
     return () => query.removeEventListener("change", update);
   }, [theme]);
 
-  /**
-   * O documento onde o provider de fato vive, e nao o `document` global.
-   *
-   * Sao coisas diferentes dentro de um iframe: o codigo roda no contexto da
-   * pagina, mas a arvore renderiza no documento do frame. Criar o container
-   * de portal no global fazia todo popup de um provider dentro de iframe
-   * aparecer orfao no canto da pagina de fora.
-   */
   const probe = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -158,8 +138,6 @@ export function RivoProvider({
     [resolved, density, portalContainer],
   );
 
-  // O provedor de dica mora aqui de proposito: quem usa a biblioteca nao
-  // deveria precisar montar provedor so para uma dica aparecer.
   return (
     <RivoContext.Provider value={value}>
       <DirectionProvider direction={dir}>
@@ -177,8 +155,6 @@ export function RivoProvider({
             ) : (
               children
             )}
-            {/* Invisivel e sem caixa: existe so para responder "em qual
-                documento estou". */}
             <span ref={probe} hidden />
             <ToastViewport container={portalContainer} position={toastPosition} />
           </ToastProvider>

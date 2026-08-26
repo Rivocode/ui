@@ -4,7 +4,6 @@ export {
   forChecked,
   forDate,
   forValue,
-  // Os nomes de antes, que continuam valendo.
   forCheckbox,
   forDatePicker,
   forSelect,

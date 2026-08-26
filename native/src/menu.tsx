@@ -21,11 +21,6 @@ export type MenuProps = {
   className?: string;
 };
 
-/**
- * O menu de acoes sobre uma coisa: no celular ele e uma folha de baixo,
- * nao um popup ancorado - o idioma da plataforma para "o que dá para
- * fazer com isto". Escolher um VALOR continua sendo Select.
- */
 export function Menu({ open, onOpenChange, title, actions, className }: MenuProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>

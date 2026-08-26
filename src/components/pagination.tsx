@@ -15,17 +15,6 @@ export type PaginationProps = Omit<ComponentProps<"nav">, "onChange"> & {
   siblings?: number;
 };
 
-/**
- * Navegacao entre paginas de uma listagem.
- *
- * A lista de numeros encolhe sozinha: a primeira, a ultima, a atual e os
- * vizinhos, com reticencia no lugar do que sobra. Assim ela ocupa a mesma
- * largura com dez ou com dez mil paginas.
- *
- * No celular os numeros somem e ficam so as setas com "3 de 12". Alvo de dedo
- * em numero de 32px erra o vizinho, e a pessoa quase sempre quer a proxima,
- * nao a setima.
- */
 export function Pagination({
   className,
   page,
@@ -114,10 +103,6 @@ function Step({ label, children, ...props }: ComponentProps<"button"> & { label:
   );
 }
 
-/**
- * Primeira, ultima, a atual e os vizinhos. A reticencia so entra quando pula
- * mais de uma pagina, senao ela ocuparia o lugar de um numero que caberia.
- */
 function buildPages(current: number, total: number, siblings: number): (number | "reticencia")[] {
   if (total <= 1) return total === 1 ? [1] : [];
 

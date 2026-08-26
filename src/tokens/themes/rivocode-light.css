@@ -1,5 +1,3 @@
-/* Camada 3: o tema claro da RivoCode. */
-
 [data-rc-theme="rivocode-light"] {
   --rc-bg: var(--rc-p-paper);
   --rc-surface: var(--rc-p-white);
@@ -11,40 +9,17 @@
   --rc-fg-subtle: var(--rc-p-gray-600);
   --rc-fg-disabled: var(--rc-p-gray-500);
 
-  /* A lima preenche, com texto escuro por cima: 15,06 para 1. */
   --rc-accent: var(--rc-p-lima-500);
   --rc-accent-hover: var(--rc-p-lima-300);
   --rc-accent-active: var(--rc-p-lima-600);
   --rc-accent-fg: var(--rc-p-graphite-900);
-  /* Como texto a lima daria 1,6 para 1, entao aqui ela e escurecida. */
   --rc-accent-text: var(--rc-p-lima-700);
   --rc-accent-subtle: rgb(212 243 74 / 0.22);
   --rc-selected: rgb(212 243 74 / 0.16);
   --rc-skeleton: rgb(15 17 19 / 0.08);
 
-  /* A divisoria decorativa: separa area, e nao identifica controle. */
   --rc-border: rgb(15 17 19 / 0.1);
-  /* A fronteira de controle. A norma pede 3:1 contra o que esta atras (WCAG
-     1.4.11), e e o que campo, caixa, chave e botao secundario vestem: 3,29
-     sobre a pagina e 3,32 sobre o cartao. */
   --rc-border-strong: rgb(15 17 19 / 0.48);
-  /* A fronteira de um controle TRAVADO.
-   *
-   * Ela existe porque o preenchimento nao consegue dizer isso. O desabilitado
-   * pinta `surface-raised`, e o guia de temas garante por escrito que
-   * `surface` e `surface-raised` PODEM ser a mesma cor - aqui as duas sao
-   * branco puro, 1,00:1, e no escuro param em 1,03:1. Pior: `surface-raised`
-   * tambem e o fundo do cartao levantado, do menu e da dica, entao dentro
-   * deles o preenchimento travado empata com o proprio fundo em 1,00:1, para
-   * qualquer valor que o token assumisse. Subir `surface-raised` nao resolveria
-   * nada disso, e repintaria as dezesseis pecas que o vestem.
-   *
-   * Entao quem carrega o sinal e a linha, e ela precisa de teto e de piso.
-   * Medida sobre a pagina da 1,98:1 e sobre o cartao 1,99:1 - acima do
-   * `--rc-border`, que a 1,23 desaparece, e abaixo do `--rc-border-strong`, que
-   * a 3,30 deixa o travado IDENTICO ao vivo, que era o defeito. A WCAG 1.4.11
-   * dispensa componente inativo dos 3:1, e e essa folga que o token ocupa de
-   * proposito. `check:contrast` mede as duas pontas. */
   --rc-border-disabled: rgb(15 17 19 / 0.3);
   --rc-line-hover: rgb(15 17 19 / 0.62);
   --rc-ring: var(--rc-p-lima-700);
@@ -69,24 +44,18 @@
   --rc-text-display: clamp(32px, 4.2vw, 54px);
   --rc-text-hero: clamp(44px, 6.6vw, 88px);
 
-  /* No claro o hairline e um fio de sombra, nao de luz. */
   --rc-shadow-1: 0 0 0 1px rgb(15 17 19 / 0.05), 0 1px 2px rgb(15 17 19 / 0.06);
   --rc-shadow-2: 0 0 0 1px rgb(15 17 19 / 0.06), 0 8px 24px rgb(15 17 19 / 0.09);
   --rc-shadow-3: 0 0 0 1px rgb(15 17 19 / 0.07), 0 16px 48px rgb(15 17 19 / 0.14);
 
-  /* No claro a lima nao ilumina, mancha: o glow sai do escurecido dela. */
   --rc-glow-accent: 0 0 32px rgb(74 113 0 / 0.18);
 
-  /* Acabamento neutro - ver o tema escuro. Zerar aqui tambem nao e repeticao:
-     e o que faz o tema da casa apagar o gradiente do cliente quando ele veste
-     uma arvore por dentro. */
   --rc-accent-image: none;
   --rc-accent-shadow: none;
   --rc-overlay-filter: none;
 
   color-scheme: light;
 
-  /* Serie de grafico, na ordem em que devem ser usadas. */
   --rc-chart-1: var(--rc-p-lima-800);
   --rc-chart-2: var(--rc-p-teal-700);
   --rc-chart-3: var(--rc-p-blue-700);

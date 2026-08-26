@@ -5,12 +5,6 @@ import { cn } from "./cn";
 import { mono } from "./font";
 import { Sheet } from "./sheet";
 
-/* ---------------------------------------------------------------------------
- * Calendario e DatePicker, sem biblioteca de datas: um mes e uma conta de
- * Date, e o valor anda como ISO (aaaa-mm-dd) - sem fuso, sem hora, sem
- * surpresa de meia-noite.
- * ------------------------------------------------------------------------- */
-
 const WEEKDAYS = ["D", "S", "T", "Q", "Q", "S", "S"];
 
 const MONTHS = [
@@ -31,7 +25,6 @@ const MONTHS = [
 const toISO = (year: number, month: number, day: number) =>
   `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-/** `2026-08-25` vira `25/08/2026`, o formato que o olho daqui espera. */
 export const formatDate = (iso: string) => {
   const [year, month, day] = iso.split("-");
   return `${day}/${month}/${year}`;
@@ -46,7 +39,6 @@ export type CalendarProps = {
   max?: string;
 };
 
-/** Um chevron desenhado com borda, porque glyph muda de corpo entre OS. */
 function Chevron({ left }: { left?: boolean }) {
   return (
     <View
@@ -55,7 +47,6 @@ function Chevron({ left }: { left?: boolean }) {
   );
 }
 
-/** Como um dia se pinta. `edge` so vale quando ha faixa. */
 export type DayPaint = {
   /** Ponta da escolha: a pastilha de acento com o numero em cima. */
   chosen: boolean;
@@ -77,15 +68,6 @@ export type MonthViewProps = {
   onDayPress: (iso: string) => void;
 };
 
-/**
- * Um mes desenhado, sem opiniao sobre o que e "escolhido".
- *
- * Ele existe separado porque o `Calendar` e o `DateRangePicker` precisam do
- * MESMO mes - o mesmo primeiro dia da semana, a mesma conta de dias, o mesmo
- * alvo de 40px, a mesma regra de limite. Escrito duas vezes, o dia em que um
- * dos dois ganhasse "semana comeca na segunda" o outro continuaria no domingo,
- * e ninguem descobriria qual dos dois estava errado.
- */
 export function MonthView({
   year,
   month,
@@ -122,8 +104,6 @@ export function MonthView({
         >
           <Chevron left />
         </Pressable>
-        {/* Capitalizar em JS, so o mes: a classe capitalize do Tailwind
-            capitaliza cada palavra e escrevia "Agosto De 2026". */}
         <Text className="text-base font-medium text-fg">
           {MONTHS[month][0].toUpperCase() + MONTHS[month].slice(1)} de {year}
         </Text>
@@ -162,10 +142,6 @@ export function MonthView({
           return (
             <View
               key={iso}
-              /* A faixa do intervalo pinta a CELULA, e nao a pastilha: e o
-                 unico jeito de o meio do periodo sair continuo, porque a
-                 pastilha tem 40px dentro de uma celula de 14,28% da largura e
-                 sempre sobraria vao dos dois lados. */
               className={cn(
                 "w-[14.28%] items-center py-0.5",
                 (paint.within === true || paint.edge !== undefined) && "bg-selected",
@@ -176,10 +152,6 @@ export function MonthView({
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={formatDate(iso)}
-                /* Anunciado como escolhido tambem no MEIO do intervalo: o dia
-                   12 faz parte do periodo mesmo sem ser ponta, e quem ouve a
-                   grade so tem este estado para saber disso - a faixa pintada
-                   nao existe para ele. */
                 accessibilityState={{
                   selected: active || paint.within === true,
                   disabled: blocked,
@@ -206,7 +178,6 @@ export function MonthView({
   );
 }
 
-/** O mes em que um calendario abre: o do valor, ou o de hoje. */
 export function useMonthOf(iso: string | null | undefined) {
   const anchor = iso ? new Date(`${iso}T12:00:00`) : new Date();
   const [year, setYear] = useState(anchor.getFullYear());
@@ -248,7 +219,6 @@ export type DatePickerProps = {
   className?: string;
 };
 
-/** O campo de data: gatilho como o Select, calendario numa folha de baixo. */
 export function DatePicker({
   value,
   onValueChange,

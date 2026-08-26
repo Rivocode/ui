@@ -1,8 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { Text } from "react-native";
 
-/* Direto do arquivo, e não do índice: as duas peças estão sendo escritas
-   enquanto o índice muda por outras mãos. */
 import { Code } from "../src/code";
 import { Timeline, type TimelineEvent } from "../src/timeline";
 import { byClass, byLabel, byRole, byType, render, textOf } from "./helpers";

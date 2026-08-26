@@ -20,13 +20,6 @@ export type FormProps<Entry extends FieldValues, Saida extends FieldValues> = Om
   onSubmit: SubmitHandler<Saida>;
 };
 
-/**
- * O `<form>` e o contexto do React Hook Form numa peca so, para o `FormField`
- * achar o `control` sozinho.
- *
- * Vai com `noValidate`: quem valida e o schema, e o balao nativo do navegador
- * apareceria em ingles, fora do tema, e antes da nossa mensagem.
- */
 export function Form<Entry extends FieldValues, Saida extends FieldValues>({
   form,
   onSubmit,

@@ -72,7 +72,6 @@ test("com rotulo o alvo continua sendo o label inteiro, sem halo por cima do tex
   // camada sobre o texto do proprio rotulo.
   expect(box.className).not.toContain("after:absolute");
 
-  // E o texto continua marcando, que e o que faz o label ser o alvo.
   fireEvent.click(screen.getByText("ISS retido na fonte"));
   expect(box.getAttribute("data-checked")).not.toBeNull();
 });

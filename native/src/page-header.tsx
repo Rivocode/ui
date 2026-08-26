@@ -14,7 +14,6 @@ export type PageHeaderProps = {
   className?: string;
 };
 
-/** O topo de toda tela: titulo, contexto e a acao principal no mesmo lugar. */
 export function PageHeader({ title, description, badge, actions, className }: PageHeaderProps) {
   return (
     <View className={cn("flex-row items-start justify-between gap-3", className)}>

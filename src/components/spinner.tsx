@@ -22,16 +22,6 @@ export type SpinnerProps = ComponentProps<"svg"> &
     label?: string;
   };
 
-/**
- * Giro de espera sem fim previsto.
- *
- * Quando da para medir o progresso, `Progress` diz mais. E quando a espera vai
- * preencher uma tela inteira, o `Skeleton` mostra o formato do que vem, que
- * assusta menos do que um giro no vazio.
- *
- * Ele para de girar quando o sistema pede menos movimento, e continua no
- * lugar: sumir com o aviso deixaria a tela parecendo travada.
- */
 export function Spinner({ className, size, label = "Carregando", ...props }: SpinnerProps) {
   return (
     <svg

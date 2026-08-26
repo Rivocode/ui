@@ -23,10 +23,6 @@ export function useToast() {
   return value;
 }
 
-/**
- * A fiacao de aviso que o RivoProvider monta por dentro, como no web.
- * O aviso e passageiro por definicao: quatro segundos e sai sozinho.
- */
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const nextId = useRef(0);

@@ -25,30 +25,6 @@ export type EditableProps = Omit<
   classNames?: Slots<"preview" | "input">;
 };
 
-/**
- * Edicao no lugar: o texto vira campo ao ser clicado, e volta a ser texto ao
- * ser confirmado.
- *
- * E o gesto que separa painel de leitura de painel de operacao. Corrigir o
- * nome de um cliente sem abrir uma tela de edicao, sem perder a posicao na
- * lista e sem esperar duas navegacoes e a diferenca entre a pessoa corrigir e
- * a pessoa deixar errado.
- *
- * Duas decisoes que a peca toma, e que sao a razao de ela existir:
- *
- * O Escape desfaz. Sair pela lateral e o gesto de quem se arrependeu, e
- * salvar ali transforma um clique errado numa edicao que ninguem pediu.
- *
- * Sair do campo salva. E o oposto do Escape de proposito: quem clicou fora
- * seguiu adiante, e obrigar um Enter depois de ja ter ido embora perde o que
- * foi escrito sem avisar.
- *
- * Fechado, o texto e um `button`: quem navega pelo teclado precisa saber que
- * aquilo abre alguma coisa, e um `div` com `onClick` nao diz isso a ninguem.
- *
- * Guarda o proprio valor quando so recebe `defaultValue`, e obedece ao de fora
- * quando recebe `value` - o mesmo par das cinco irmas de formulario.
- */
 export function Editable({
   value,
   defaultValue = "",
@@ -70,8 +46,6 @@ export function Editable({
   useEffect(() => {
     if (!editing) return;
     field.current?.focus();
-    // O texto ja vem selecionado: quem abre para trocar o valor inteiro - que e
-    // o caso comum - digita por cima, e quem quer ajustar uma letra clica.
     field.current?.select();
   }, [editing]);
 
@@ -94,9 +68,6 @@ export function Editable({
           type="button"
           disabled={disabled}
           onClick={open}
-          // O valor e o registro em si, e fechado ele mora numa linha que
-          // corta. `text || undefined` de proposito: vazio mostra o
-          // placeholder, que e texto do desenvolvedor e nao vira dica.
           title={text || undefined}
           className={cn(
             "min-w-0 truncate rounded-sm px-1 py-0.5 text-left text-base text-fg",

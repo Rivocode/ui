@@ -1,5 +1,3 @@
-/* Camada 3: o tema escuro da RivoCode, o padrao. */
-
 [data-rc-theme="rivocode-dark"] {
   --rc-bg: var(--rc-p-graphite-950);
   --rc-surface: var(--rc-p-graphite-800);
@@ -17,22 +15,11 @@
   --rc-accent-fg: var(--rc-p-graphite-900);
   --rc-accent-text: var(--rc-p-lima-500);
   --rc-accent-subtle: rgb(212 243 74 / 0.14);
-  /* Linha escolhida numa tabela. Area grande pede alfa baixo: no escuro a
-   * lima a 0.14 suja a linha inteira de oliva. A barra lateral e que carrega
-   * o sinal, o fundo so acompanha. */
   --rc-selected: rgb(212 243 74 / 0.05);
-  /* Marca de lugar do carregamento. Precisa contrastar com a superficie, e
-   * nao ser outra superficie: no tema claro surface-raised e branco puro,
-   * igual ao cartao, e o esqueleto sumia por completo. */
   --rc-skeleton: rgb(255 255 255 / 0.08);
 
-  /* A divisoria decorativa: separa area, e nao identifica controle. */
   --rc-border: rgb(255 255 255 / 0.09);
-  /* A fronteira de controle, nos 3:1 da WCAG 1.4.11 - ver o tema claro. */
   --rc-border-strong: rgb(255 255 255 / 0.38);
-  /* A fronteira de um controle travado - ver o tema claro. O alfa e outro
-     porque a base e outra: 0,22 aqui da 1,94:1 sobre a pagina e 2,03:1 sobre o
-     cartao levantado, a mesma faixa que 0,30 produz la. */
   --rc-border-disabled: rgb(255 255 255 / 0.22);
   --rc-line-hover: rgb(255 255 255 / 0.5);
   --rc-ring: var(--rc-p-lima-500);
@@ -45,9 +32,6 @@
   --rc-warning-fg: var(--rc-p-graphite-900);
   --rc-warning-text: var(--rc-p-amber-400);
   --rc-warning-subtle: rgb(242 178 28 / 0.14);
-  /* O perigo e o unico estado que vira botao solido, e um botao de excluir
-   * precisa pesar. Por isso ele escurece e recebe texto branco, enquanto os
-   * outros preenchem claro com texto escuro. */
   --rc-danger: var(--rc-p-red-600);
   --rc-danger-fg: var(--rc-p-white);
   --rc-danger-text: var(--rc-p-red-400);
@@ -57,40 +41,21 @@
   --rc-info-text: var(--rc-p-blue-400);
   --rc-info-subtle: rgb(106 169 255 / 0.14);
 
-  /* Passos de marketing. Vivem no tema da marca, nao no nucleo: um sistema de
-   * gestao nao deveria nem enxergar um titulo de 88 pixels. */
   --rc-text-display: clamp(32px, 4.2vw, 54px);
   --rc-text-hero: clamp(44px, 6.6vw, 88px);
 
-  /* No escuro a mancha preta mal aparece; o que separa o flutuante da pagina
-     e o fio de luz na borda. Cada sombra carrega o proprio hairline, entao
-     popover e dialog ganham o acabamento sem uma classe a mais. */
   --rc-shadow-1: 0 0 0 1px rgb(255 255 255 / 0.04), 0 1px 2px rgb(0 0 0 / 0.4);
   --rc-shadow-2: 0 0 0 1px rgb(255 255 255 / 0.06), 0 8px 24px rgb(0 0 0 / 0.5);
   --rc-shadow-3: 0 0 0 1px rgb(255 255 255 / 0.07), 0 16px 48px rgb(0 0 0 / 0.6);
 
-  /* Lanterna do acento, opt-in: hero de landing e CTA que merece cerimonia.
-     Nenhum componente liga sozinho. */
   --rc-glow-accent: 0 0 32px rgb(212 243 74 / 0.2);
 
-  /* Acabamento: os tres papeis opcionais, e os unicos que um tema pode
-   * ignorar. Gradiente do acento, brilho do acento e vidro da tarja. Aqui eles
-   * nascem neutros, e `none` e o initial de background-image, box-shadow e
-   * backdrop-filter - a casa continua exatamente como estava.
-   *
-   * Declarar o neutro em vez de omitir e o que impede o vazamento por
-   * heranca: variavel CSS herda, entao um `scope="local"` com o tema da casa
-   * dentro da arvore de um cliente que pinta gradiente sairia com o gradiente
-   * dele. Um tema que quer o brilho aponta o proprio glow:
-   * `--rc-accent-shadow: var(--rc-glow-accent)`, e ai ele deixa de ser enfeite
-   * que cada tela liga com `shadow-glow` e vira estado do acento. */
   --rc-accent-image: none;
   --rc-accent-shadow: none;
   --rc-overlay-filter: none;
 
   color-scheme: dark;
 
-  /* Serie de grafico, na ordem em que devem ser usadas. */
   --rc-chart-1: var(--rc-p-lima-500);
   --rc-chart-2: var(--rc-p-teal-400);
   --rc-chart-3: var(--rc-p-blue-400);

@@ -24,13 +24,6 @@ export type MeterProps = Omit<ComponentProps<typeof BaseMeter.Root>, "format"> &
   classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };
 
-/**
- * Medida de quanto de uma capacidade esta em uso: espaco, cota, limite.
- *
- * Parece o `Progress` e nao e. O progresso anda para o fim e termina; a medida
- * fica parada mostrando um estado que pode subir e descer. Trocar um pelo outro
- * faz o leitor de tela anunciar "carregando" para algo que nao carrega.
- */
 export function Meter({
   className,
   label,

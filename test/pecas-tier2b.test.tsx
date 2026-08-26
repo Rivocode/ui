@@ -9,8 +9,6 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/* --- Splitter ----------------------------------------------------------- */
-
 test("a divisoria e um separator que o teclado move", () => {
   // Arrastar com o mouse e metade da peca: sem teclado, quem nao usa ponteiro
   // fica preso na proporcao que o desenvolvedor escolheu.
@@ -62,8 +60,6 @@ test("no celular os dois lados empilham, em vez de espremer", () => {
   expect(splitter.className).toContain("max-md:flex-col");
   expect(screen.getByRole("separator").className).toContain("max-md:hidden");
 });
-
-/* --- Editable ----------------------------------------------------------- */
 
 test("o texto vira campo no clique e volta no Enter", () => {
   let saved = "";

@@ -11,10 +11,6 @@ export type TabsProps = {
   className?: string;
 };
 
-/**
- * A caixinha segmentada: ver a mesma coisa de outro jeito. Secao de pagina
- * e trabalho do router nativo, nao desta peca - a mesma divisao do web.
- */
 export function Tabs({ items, value, onValueChange, className }: TabsProps) {
   return (
     <View className={cn("flex-row rounded-md border border-border bg-bg p-0.5", className)}>

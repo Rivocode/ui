@@ -38,13 +38,6 @@ export type TimelineItemProps = ComponentProps<"li"> &
     classNames?: Slots<"marker" | "title" | "meta" | "content">;
   };
 
-/**
- * Um ponto da linha do tempo.
- *
- * O tom e por item de proposito: numa nota fiscal, a linha do cancelamento e
- * vermelha e as outras nao, e e essa linha que a pessoa procura quando abre a
- * trilha.
- */
 export function TimelineItem({
   className,
   title,
@@ -61,9 +54,6 @@ export function TimelineItem({
       {...props}
       className={cn(
         "relative flex gap-3 pb-5 last:pb-0",
-        // A linha e desenhada por item, e nao pelo <ol>: assim o ultimo ponto
-        // nao deixa um rabo de linha pendurado embaixo dele, e a peca continua
-        // funcionando quando um item e mais alto que os outros.
         "before:absolute before:top-4 before:bottom-0 before:left-[0.3125rem] before:w-px",
         "before:bg-border last:before:hidden",
         className,
@@ -101,22 +91,6 @@ export function TimelineItem({
 
 export type TimelineProps = ComponentProps<"ol">;
 
-/**
- * O que aconteceu com uma coisa, em ordem.
- *
- * Nao e `Steps`. O Steps e assistente: olha para a frente, sabe quantos passos
- * faltam e so deixa voltar. Uma nota fiscal olha para tras - emitida,
- * autorizada, enviada, paga, cancelada - com carimbo de tempo e autor em cada
- * ponto, e ninguem "avanca" nela. Trocar uma pela outra faz o controle
- * prometer o que ele nao faz, que e o mesmo argumento que separa `Progress` de
- * `Meter`.
- *
- * Sai como `<ol>` porque a ordem e o dado: um leitor de tela que anuncia "lista
- * de 5 itens" na ordem certa ja entregou metade do que a linha desenha.
- *
- * A linha vertical e desenhada por item, e nao por aqui: o ultimo ponto esconde
- * a propria linha, senao sobra um rabo pendurado embaixo dele.
- */
 export function Timeline({ className, ...props }: TimelineProps) {
   return <ol {...props} className={cn("flex flex-col", className)} />;
 }

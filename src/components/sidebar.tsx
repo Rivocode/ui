@@ -47,16 +47,8 @@ export function useSidebar(): SidebarState {
   return state;
 }
 
-/**
- * Verdadeiro quando o item esta sendo desenhado dentro do menu que salta da
- * barra encolhida, e nao na propria barra.
- */
 const FlyoutContext = createContext(false);
 
-// Marca que a linha em volta ja e o <li>. Sem isto, o item abre um segundo por
-// dentro: no cliente o React monta no a no e nada aparece, mas no SSR o
-// navegador recebe o HTML, conserta separando os dois em irmaos, e a arvore
-// consertada nao bate com a que o React espera na hidratacao.
 const RowContext = createContext(false);
 
 export type SidebarProviderProps = ComponentProps<"div"> & {
@@ -68,17 +60,6 @@ export type SidebarProviderProps = ComponentProps<"div"> & {
   shortcut?: string | null;
 };
 
-/**
- * O estado da barra lateral, compartilhado entre a barra, o gatilho e o
- * conteudo da pagina.
- *
- * Na mesa, fechada quer dizer encolhida ate a coluna de icones, e a pagina
- * ganha a largura de volta. No celular, fechada quer dizer fora da tela: 16rem
- * de barra em 390 de largura nao deixam pagina nenhuma.
- *
- * O atalho e Ctrl+B, ou Cmd+B no Mac, o mesmo do editor. Quem trabalha o dia
- * inteiro numa tela de operacao abre e fecha isso dezenas de vezes.
- */
 export function SidebarProvider({
   defaultOpen = true,
   open,
@@ -90,10 +71,6 @@ export function SidebarProvider({
 }: SidebarProviderProps) {
   const isMobile = useMobile();
   const controlled = open !== undefined;
-  // Duas memorias, e nao uma. `defaultOpen` fala da coluna da mesa, onde
-  // aberta e o estado util e a pagina continua inteira ao lado. No celular a
-  // mesma barra e uma folha por cima de tudo: comecar aberta tapa justamente a
-  // tela que a pessoa veio ver, e obriga a fechar antes de comecar.
   const [deskOpen, setDeskOpen] = useState(defaultOpen);
   const [sheetOpen, setSheetOpen] = useState(false);
   const isOpen = controlled ? open : isMobile ? sheetOpen : deskOpen;
@@ -154,10 +131,6 @@ export type SidebarProps = ComponentProps<"aside"> & {
   side?: "left" | "right";
 };
 
-/**
- * A barra em si. Na mesa e uma coluna que encolhe; no celular, uma folha que
- * entra pela lateral, com o gesto de arrastar que a folha ja tem.
- */
 export function Sidebar({
   className,
   children,
@@ -197,13 +170,6 @@ export function Sidebar({
   );
 }
 
-/**
- * O topo da barra.
- *
- * `overflow-hidden` nao e detalhe: encolhida, a coluna tem 3,5rem, e qualquer
- * texto solto aqui vaza por baixo da pagina em vez de ser cortado. Para a
- * marca, prefira o `SidebarBrand`, que troca o nome pelo simbolo.
- */
 export function SidebarHeader({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
@@ -218,13 +184,6 @@ export type SidebarBrandProps = ComponentProps<"div"> & {
   mark?: ReactNode;
 };
 
-/**
- * A marca no topo, que sabe encolher.
- *
- * Cortar o nome no meio da palavra e o defeito classico da barra que encolhe:
- * "RivoCode" vira "Rivo" e parece bug, nao decisao. Aqui o nome some inteiro e
- * fica o simbolo, que e o que uma coluna de 3,5rem comporta.
- */
 export function SidebarBrand({ className, mark, children, ...props }: SidebarBrandProps) {
   const { collapsed } = useSidebar();
 
@@ -232,10 +191,6 @@ export function SidebarBrand({ className, mark, children, ...props }: SidebarBra
     <div
       {...props}
       className={cn(
-        // `w-full` importa: sem ela a marca encolhe ate o tamanho do simbolo e
-        // encosta na esquerda, enquanto todos os icones abaixo ficam centrados
-        // na coluna. A diferenca de uns poucos pixels e o bastante para a
-        // barra encolhida parecer torta.
         "flex h-[var(--rc-control-md)] w-full items-center gap-2 overflow-hidden",
         collapsed ? "justify-center px-0" : "px-1",
         className,
@@ -249,7 +204,6 @@ export function SidebarBrand({ className, mark, children, ...props }: SidebarBra
   );
 }
 
-/** O miolo que rola quando a lista passa da altura da tela. */
 export function SidebarContent({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
@@ -267,11 +221,6 @@ export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
       {...props}
       className={cn(
         "mt-auto flex flex-col gap-1 border-t border-border pt-2",
-        // Encolhida, o rodape centra pelo mesmo motivo que a marca centra: numa
-        // coluna de icones, o bloco do usuario alinhado a esquerda deixa a
-        // barra visivelmente torta - e o rodape esta sempre em campo, em toda
-        // tela de operacao. Larga, alinhar pela esquerda de novo, senao o bloco
-        // fica boiando no meio.
         collapsed && "items-center",
         className,
       )}
@@ -279,7 +228,6 @@ export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
   );
 }
 
-/** A linha entre blocos da barra. */
 export function SidebarSeparator({ className, ...props }: ComponentProps<"div">) {
   return <div {...props} role="separator" className={cn("mx-1 my-1 h-px bg-border", className)} />;
 }
@@ -289,13 +237,6 @@ export type SidebarInputProps = Omit<ComponentProps<"input">, "size"> & {
   label?: string;
 };
 
-/**
- * A busca dentro da barra.
- *
- * Encolhida, ela vira o icone da lupa que abre a barra de volta: um campo de
- * texto de 3,5rem nao aceita nem uma palavra, e deixar ele ali so faz a pessoa
- * clicar e nao conseguir digitar.
- */
 export function SidebarInput({ className, label = "Buscar", ...props }: SidebarInputProps) {
   const { collapsed, toggle } = useSidebar();
 
@@ -352,9 +293,6 @@ export type SidebarGroupProps = ComponentProps<"div"> & {
 };
 
 export function SidebarGroup({ className, label, children, ...props }: SidebarGroupProps) {
-  // Encolhida, o titulo sairia cortado no meio da palavra. Sumir diz menos,
-  // mas mentir sobre o nome do grupo diz errado. Quem decide e o estado, e nao
-  // um seletor de CSS, que e como o resto do arquivo resolve o colapso.
   const { collapsed } = useSidebar();
 
   return (
@@ -373,7 +311,6 @@ export function SidebarMenu({ className, ...props }: ComponentProps<"ul">) {
   return <ul {...props} className={cn("flex flex-col gap-0.5", className)} />;
 }
 
-/** A classe de uma linha da barra, compartilhada entre item e submenu. */
 const rowClass = cn(
   "flex h-[var(--rc-control-md)] w-full items-center gap-3 rounded-md px-2",
   "font-sans text-base text-fg-muted",
@@ -391,13 +328,6 @@ export type SidebarMenuItemProps = ComponentProps<"a"> & {
   badge?: ReactNode;
 };
 
-/**
- * Uma linha de navegacao.
- *
- * Com a barra encolhida sobra so o icone, e o nome vira dica ao passar o
- * mouse. Sem a dica, a coluna de icones vira adivinhacao, e e por isso que
- * tanta barra encolhida so serve para quem ja decorou o sistema.
- */
 export function SidebarMenuItem({
   className,
   icon,
@@ -411,16 +341,11 @@ export function SidebarMenuItem({
   const inFlyout = use(FlyoutContext);
   const inRow = use(RowContext);
 
-  // No celular a barra e uma folha por cima da pagina, entao escolher para
-  // onde ir e a hora de sair da frente. Na mesa ela nao cobre nada e fechar
-  // sozinha so faria a pessoa reabrir a cada passo.
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     onClick?.(event);
     if (isMobile) close();
   }
 
-  // Dentro do menu que salta da barra encolhida, a linha e um item de menu:
-  // teclado, foco e fechamento ao escolher ja vem prontos de la.
   if (inFlyout) {
     return (
       <MenuItem
@@ -434,13 +359,6 @@ export function SidebarMenuItem({
     );
   }
 
-  // Encolhida, o nome sai da tela e sobra um `<a>` com um icone dentro. A dica
-  // conta isso para o olho e nao para a arvore de acessibilidade, entao o que
-  // o leitor de tela encontra e uma coluna de doze "link" sem nome nenhum - no
-  // estado que e o padrao de toda tela de operacao. O nome ja esta aqui na
-  // mao: quando `children` e texto ele vira `aria-label`, que e o nome mais
-  // limpo possivel; quando vem estruturado nao ha string para virar atributo,
-  // e ai o proprio texto continua na arvore, escondido so para o olho.
   const label = typeof children === "string" ? children : undefined;
 
   const row = (
@@ -467,18 +385,9 @@ export function SidebarMenuItem({
     row
   );
 
-  // Sozinho dentro do <ul>, o item e o proprio <li> - e a lista precisa disso
-  // para o leitor de tela contar os destinos em voz alta. Dentro de uma
-  // SidebarMenuRow, quem ja e o <li> e a linha.
   return inRow ? cell : <li>{cell}</li>;
 }
 
-/**
- * O botao secundario de uma linha: o "..." que abre opcoes daquele item.
- *
- * Fica escondido ate o ponteiro chegar na linha, e aparece sempre para quem
- * navega por teclado, senao ele viraria um destino invisivel no `Tab`.
- */
 export function SidebarMenuAction({ className, ...props }: ComponentProps<"button">) {
   const { collapsed } = useSidebar();
   if (collapsed) return null;
@@ -486,10 +395,6 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
   return (
     <button
       type="button"
-      // Um botao de icone sem nome e um "botao" anunciado pelo leitor de tela,
-      // e nada mais. O padrao vem antes do espalhamento de proposito: quem
-      // escreve "Opcoes de Clientes" diz mais do que este generico, e continua
-      // mandando - mas o silencio deixa de ser o padrao.
       aria-label="Mais opções"
       {...props}
       className={cn(
@@ -505,7 +410,6 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
   );
 }
 
-/** Envolve uma linha que tem acao secundaria, para o hover alcancar as duas. */
 export function SidebarMenuRow({ className, ...props }: ComponentProps<"li">) {
   return (
     <RowContext value={true}>
@@ -524,14 +428,6 @@ export type SidebarMenuSubProps = Omit<ComponentProps<"button">, "children"> & {
   active?: boolean;
 };
 
-/**
- * Um item que abre outros.
- *
- * Larga, ele e uma linha com seta que abre a lista abaixo, indentada. Encolhida
- * a barra, a lista **salta como menu ao lado**: indentar dentro de 3,5rem nao
- * cabe, e esconder os filhos deixaria uma parte do sistema sem caminho nenhum
- * enquanto a barra estivesse fechada.
- */
 export function SidebarMenuSub({
   className,
   label,
@@ -591,8 +487,6 @@ export function SidebarMenuSub({
       </button>
 
       {open && (
-        // A linha a esquerda e que amarra os filhos ao pai. So indentar deixa
-        // a lista solta assim que ela passa de tres itens.
         <ul className="mt-0.5 ml-4 flex flex-col gap-0.5 border-l border-border pl-2">
           {children}
         </ul>
@@ -606,20 +500,15 @@ export type SidebarMenuSkeletonProps = Omit<ComponentProps<"ul">, "children"> & 
   count?: number;
 };
 
-/** Marca de lugar enquanto a navegacao vem do servidor. */
 export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarMenuSkeletonProps) {
   const { collapsed } = useSidebar();
 
   return (
-    // O `aria-busy` vem depois do spread: ele e a razao de a peca existir, e
-    // quem chama nao deve conseguir desligar o aviso de "ainda carregando".
     <ul {...props} aria-busy="true" className={cn("flex flex-col gap-0.5", className)}>
       {Array.from({ length: count }, (_, index) => (
         <li key={index} className="flex h-[var(--rc-control-md)] items-center gap-3 px-2">
           <Skeleton className="size-4 shrink-0 rounded-sm" />
           {!collapsed && (
-            // Larguras diferentes por linha: cinco barras do mesmo tamanho
-            // parecem tabela, e nao uma lista de nomes que ainda vai chegar.
             <Skeleton className="h-3" style={{ width: `${45 + ((index * 17) % 40)}%` }} />
           )}
         </li>
@@ -628,7 +517,6 @@ export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarM
   );
 }
 
-/** O botao que abre e fecha. Fica no cabecalho da pagina, nao dentro da barra. */
 export function SidebarTrigger({ className, ...props }: ComponentProps<"button">) {
   const { toggle, open } = useSidebar();
 
@@ -652,14 +540,6 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<"button">
   );
 }
 
-/**
- * A faixa fina na borda da barra, que abre e fecha ao ser clicada.
- *
- * O alvo tem 1rem de largura e a linha visivel tem 1px: quem mira com o mouse
- * acerta uma faixa, e quem olha ve so a divisao entre a barra e a pagina.
- * Escondida do teclado de proposito, porque o `SidebarTrigger` ja faz o mesmo
- * e dois destinos para a mesma acao so alongam o `Tab`.
- */
 export function SidebarRail({ className, ...props }: ComponentProps<"button">) {
   const { toggle, isMobile } = useSidebar();
   if (isMobile) return null;
@@ -682,7 +562,6 @@ export function SidebarRail({ className, ...props }: ComponentProps<"button">) {
   );
 }
 
-/** A area da pagina, ao lado da barra. */
 export function SidebarInset({ className, ...props }: ComponentProps<"main">) {
   return <main {...props} className={cn("flex min-w-0 flex-1 flex-col", className)} />;
 }

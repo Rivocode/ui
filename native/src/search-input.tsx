@@ -11,11 +11,6 @@ export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText"> & 
   className?: string;
 };
 
-/**
- * O campo de busca: lupa na frente, limpar atras quando ha o que limpar.
- * Os dois icones sao desenhados com borda, nunca glyph de fonte - fonte
- * muda de corpo entre iOS e Android, o traco nao.
- */
 export function SearchInput({
   value,
   onValueChange,
@@ -35,7 +30,6 @@ export function SearchInput({
         className,
       )}
     >
-      {/* A lupa: um circulo e um cabo a 45 graus. */}
       <View className="size-4 items-center justify-center" accessibilityElementsHidden>
         <View className="size-3 rounded-pill border-[1.5px] border-fg-subtle" />
         <View className="absolute right-0 bottom-0 h-[7px] w-[1.5px] rotate-45 rounded-pill bg-fg-subtle" />
@@ -66,7 +60,6 @@ export function SearchInput({
           hitSlop={8}
           className="size-4 items-center justify-center"
         >
-          {/* O xis: duas linhas cruzadas. */}
           <View className="absolute h-[1.5px] w-3.5 rotate-45 rounded-pill bg-fg-subtle" />
           <View className="absolute h-[1.5px] w-3.5 -rotate-45 rounded-pill bg-fg-subtle" />
         </Pressable>

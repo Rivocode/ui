@@ -21,29 +21,18 @@ type ComboboxBaseProps = {
   className?: string;
 };
 
-/** A mesma uniao do `Select`, pelo mesmo motivo: `multiple` decide o tipo do valor. */
 export type ComboboxProps = ComboboxBaseProps &
   (
     | { multiple?: false; value: string | null; onValueChange: (value: string) => void }
     | { multiple: true; value: string[]; onValueChange: (value: string[]) => void }
   );
 
-/* Busca sem acento: "clinica" acha "Clínica", como no DataTable do web. */
 const fold = (text: string) =>
   text
     .normalize("NFD")
     .replace(/[̀-ͯ]/g, "")
     .toLowerCase();
 
-/**
- * A lista longa, ou vinda do servidor: abre numa folha com busca em cima.
- * Poucas opcoes fixas continuam sendo Select - a mesma divisao do web.
- *
- * Com `multiple`, e aqui que a prop mais rende: escolher tres categorias entre
- * vinte e o caso que nao tinha peca nenhuma no nativo - o `CheckboxGroup` faz
- * escolha multipla, mas e uma lista de caixas empilhadas, e a vigesima fica
- * tres rolagens abaixo sem nenhum jeito de buscar por nome.
- */
 export function Combobox(props: ComboboxProps) {
   const {
     items,
@@ -69,12 +58,6 @@ export function Combobox(props: ComboboxProps) {
 
   const choose = (value: string) => {
     if (props.multiple) {
-      /*
-       * A busca fica escrita de proposito. Quem marca tres clientes costuma
-       * marcar dois vizinhos da mesma consulta; limpar o campo a cada toque
-       * jogaria a lista inteira de volta na tela e obrigaria a redigitar o
-       * mesmo termo entre um e outro.
-       */
       props.onValueChange(toggleValue(props.value, value));
       return;
     }
@@ -120,8 +103,6 @@ export function Combobox(props: ComboboxProps) {
                   return (
                     <Pressable
                       key={item.value}
-                      /* O papel segue o gesto, como no Select: alternar sem
-                         fechar e caixa de marcar, decidir e fechar e botao. */
                       accessibilityRole={props.multiple ? "checkbox" : "button"}
                       accessibilityState={
                         props.multiple ? { checked: active } : { selected: active }
@@ -142,8 +123,6 @@ export function Combobox(props: ComboboxProps) {
             )}
           </ScrollView>
 
-          {/* Fora da rolagem: com vinte opcoes o botao de terminar ficaria
-              abaixo da lista, e so quem rolasse ate o fim o encontraria. */}
           {props.multiple && (
             <Button variant="secondary" onPress={() => close(false)}>
               Concluir

@@ -24,15 +24,6 @@ export type IndicatorProps = ComponentProps<"span"> & {
   classNames?: Slots<"badge">;
 };
 
-/**
- * A contagem por cima de outra coisa: avisos no sino, itens na aba, mensagens
- * no menu.
- *
- * Existe como peca porque a alternativa e cada tela posicionar um `Badge` com
- * `absolute` na mao, e as cinco telas acabam com cinco deslocamentos
- * diferentes - e todas com o mesmo defeito, que e a contagem existir so para
- * quem ve.
- */
 export function Indicator({
   children,
   count,
@@ -56,8 +47,6 @@ export function Indicator({
           className={cn(
             "pointer-events-none absolute -top-1 -right-1 z-[var(--rc-z-base)]",
             "flex items-center justify-center rounded-pill bg-danger text-danger-fg",
-            // O anel da cor do fundo separa a pastilha do que esta embaixo:
-            // sem ele, um numero claro sobre um icone claro some na borda.
             "ring-2 ring-bg",
             dot ? "size-2.5" : "h-4 min-w-4 px-1 font-mono text-[0.65rem] leading-none",
             classNames?.badge,
@@ -67,8 +56,6 @@ export function Indicator({
         </span>
       )}
 
-      {/* A contagem precisa ser dita, e nao so vista: o numero na pastilha e
-          escondido do leitor e o texto inteiro entra aqui. */}
       {show && label && <span className="sr-only">{label}</span>}
     </span>
   );

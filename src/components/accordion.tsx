@@ -14,17 +14,6 @@ export type AccordionItemProps = Omit<ComponentProps<typeof BaseAccordion.Item>,
   children: ReactNode;
 };
 
-/**
- * Um item da sanfona: cabecalho, gatilho e painel numa peca so.
- *
- * As tres partes vem juntas porque a Base UI exige a ordem exata entre elas, e
- * expor cada uma separada so criaria um jeito de montar errado que quebra na
- * tela e nao no tipo. E a mesma decisao do `MenuGroup`.
- *
- * O painel anima pela altura que a Base UI mede sozinha, em
- * `--accordion-panel-height`, entao ele funciona com conteudo de tamanho
- * qualquer sem ninguem chutar um valor.
- */
 export function AccordionItem({ className, title, children, ...props }: AccordionItemProps) {
   return (
     <BaseAccordion.Item {...props} className={cn("border-b border-border", className)}>

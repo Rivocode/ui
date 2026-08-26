@@ -11,7 +11,6 @@ export type FieldsetProps = {
   className?: string;
 };
 
-/** Campos que pertencem um ao outro, com o titulo que explica o conjunto. */
 export function Fieldset({ legend, description, children, className }: FieldsetProps) {
   return (
     <View className={cn("gap-4", className)}>

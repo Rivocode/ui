@@ -53,14 +53,6 @@ export type AlertProps = ComponentPropsWithoutRef<"div"> &
     dismissLabel?: string;
   };
 
-/**
- * Aviso que fica na tela, ao contrario do Toast, que passa.
- *
- * Erro e atencao usam `role="alert"`, que interrompe o leitor de tela na hora.
- * Sucesso e informacao usam `role="status"`, que espera a pessoa terminar a
- * frase. Interromper alguem para dizer "salvo com sucesso" e falta de educacao
- * com quem depende do leitor.
- */
 export function Alert({
   className,
   tone,
@@ -78,18 +70,12 @@ export function Alert({
       role={isUrgent ? "alert" : "status"}
       className={cn(alertVariants({ tone }), className)}
     >
-      {/* `mt-0.5` alinha o icone com a maiuscula da primeira linha, e nao com
-          o topo da caixa de texto: sem isso ele flutua alto demais sobre um
-          titulo de 16px. */}
       {icon && (
         <span aria-hidden="true" className="mt-0.5 shrink-0">
           {icon}
         </span>
       )}
 
-      {/* A coluna de texto e sempre a mesma, com ou sem icone: e ela que
-          segura o `flex-col` que o titulo e a descricao esperam, e o
-          `min-w-0` que impede um texto longo de empurrar o xis para fora. */}
       <div className="flex min-w-0 flex-1 flex-col gap-1">{children}</div>
 
       {onDismiss && (
@@ -98,13 +84,8 @@ export function Alert({
           aria-label={dismissLabel}
           onClick={onDismiss}
           className={cn(
-            // O alvo tem 24px com o respiro do padding, e a margem negativa
-            // devolve o espaco para o texto nao encolher por causa dele.
             "-my-1 -mr-1 shrink-0 rounded-sm p-1 outline-none",
             "transition-opacity duration-[var(--rc-duration-fast)]",
-            // Sem cor propria: ele herda o tom da raiz, como o titulo faz. Uma
-            // cor fixa aqui sairia cinza sobre o fundo tenue de quatro tons
-            // diferentes, e em dois deles nao teria contraste.
             "opacity-70 hover:opacity-100",
             "focus-visible:ring-2 focus-visible:ring-ring",
           )}

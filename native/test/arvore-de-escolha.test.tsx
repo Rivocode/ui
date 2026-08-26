@@ -1,6 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
 
-/* Direto do arquivo, e nao do indice, como as irmas desta leva. */
 import type { TreeNode } from "../src/tree";
 import { TreeSelect } from "../src/tree-select";
 import { act, byLabel, byRole, render, textOf } from "./helpers";

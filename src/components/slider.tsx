@@ -29,14 +29,6 @@ export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format">
   classNames?: Slots<"label" | "value" | "control" | "track" | "indicator" | "thumb">;
 };
 
-/**
- * Escolha de valor numa faixa: desconto, prazo, tolerancia.
- *
- * So vale quando o numero exato nao importa. Se importa, o `NumberField` diz
- * mais e nao pede pontaria; arrastar um pino ate 37 e trabalho, digitar 37 nao.
- *
- * Com dois valores no `defaultValue`, vira faixa de dois pinos.
- */
 export function Slider({
   className,
   label,
@@ -49,8 +41,6 @@ export function Slider({
 }: SliderProps) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
-  // Um pino por valor: a Base UI so desenha os pinos que existem no markup, e
-  // uma faixa com um pino so nao deixa mover o outro limite.
   const values = props.value ?? props.defaultValue;
   const count = Array.isArray(values) ? values.length : 1;
   const labels = Array.from({ length: count }, (_, index) =>
@@ -90,14 +80,6 @@ export function Slider({
               aria-label={label}
               className={cn(
                 "size-4 rounded-pill border border-accent bg-surface select-none",
-                // WCAG 2.5.8 pede 24x24 e o pino desenha 16. Ele nao pode
-                // crescer: um pino gordo cobre a propria trilha e a faixa
-                // deixa de mostrar onde o valor esta. Entao quem cresce e so o
-                // alvo, num pseudo-elemento transparente de seis pixels para
-                // cada lado. Ele nao mexe no layout porque o pino ja e
-                // posicionado com `position: absolute` pela Base UI - o
-                // `relative` daqui perde para o estilo inline de hoje e fica
-                // como rede para o dia em que esse posicionamento mudar.
                 "relative after:absolute after:-inset-1.5",
                 "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
                 "has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",

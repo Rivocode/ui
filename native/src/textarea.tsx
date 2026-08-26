@@ -10,10 +10,6 @@ export type TextareaProps = TextInputProps & {
   rows?: number;
 };
 
-/**
- * O campo de texto longo: o mesmo Input, mais alto e multilinha. A borda
- * acende no foco pela mesma razao - e o anel de foco de uma tela de toque.
- */
 export function Textarea({
   invalid,
   rows = 4,

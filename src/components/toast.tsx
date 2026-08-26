@@ -14,19 +14,6 @@ export type ToastApi = {
   promise: Manager["promise"];
 };
 
-/**
- * Cria e fecha avisos. O provedor, o portal e a area de exibicao ja vivem
- * dentro do RivoProvider, entao usar isto e a unica coisa que o app faz.
- *
- * O `type` do aviso escolhe o tom, no mesmo vocabulario do Alert: `info`,
- * `success`, `warning` e `danger` - `error`, que e o que o `promise` usa
- * sozinho, veste o mesmo que `danger`. Sem `type`, o aviso e neutro.
- *
- * O objeto devolvido tem identidade estavel de proposito. O gerenciador da
- * Base UI devolve um objeto novo a cada renderizacao, e um `useEffect` que
- * dependa dele entra em laco infinito. Absorver isso e trabalho da biblioteca,
- * nao de quem a usa.
- */
 export function useToast(): ToastApi {
   const manager = BaseToast.useToastManager();
   const current = useRef(manager);
@@ -67,7 +54,6 @@ export type ToastPosition =
   | "bottom-center"
   | "bottom-right";
 
-/** Onde a area de avisos encosta na janela. */
 const ANCHOR: Record<ToastPosition, string> = {
   "top-left": "top-4 left-4",
   "top-center": "top-4 left-1/2 -translate-x-1/2",
@@ -77,13 +63,6 @@ const ANCHOR: Record<ToastPosition, string> = {
   "bottom-right": "bottom-4 right-4",
 };
 
-/**
- * De onde o aviso entra, e para onde sai.
- *
- * Sempre pela borda mais proxima. Um aviso ancorado a esquerda que desliza da
- * direita atravessa a tela inteira para chegar ao lugar, e o olho segue o
- * movimento errado ate perceber que o texto ja estava la.
- */
 const ENTER: Record<ToastPosition, string> = {
   "top-left": "data-[starting-style]:-translate-x-4 data-[ending-style]:-translate-x-4",
   "top-center": "data-[starting-style]:-translate-y-4 data-[ending-style]:-translate-y-4",
@@ -93,14 +72,6 @@ const ENTER: Record<ToastPosition, string> = {
   "bottom-right": "data-[starting-style]:translate-x-4 data-[ending-style]:translate-x-4",
 };
 
-/**
- * O tom do aviso, no mesmo vocabulario do Alert.
- *
- * A Base UI carrega um `type` livre no objeto do aviso, e o promise dela usa
- * `loading`, `success` e `error` sozinho. Aqui os dois vocabularios se
- * encontram: `error` e `danger` sao a mesma cor, e `loading` fica neutro, que
- * e o que uma espera deve parecer.
- */
 const TOM: Record<string, string> = {
   info: "bg-info-subtle text-info-text",
   success: "bg-success-subtle text-success-text",
@@ -109,7 +80,6 @@ const TOM: Record<string, string> = {
   error: "bg-danger-subtle text-danger-text",
 };
 
-/** Sem tom, o aviso e neutro - que continua sendo o padrao. */
 const NEUTRO = "bg-surface-raised text-fg";
 
 function List({ position }: { position: ToastPosition }) {
@@ -130,7 +100,6 @@ function List({ position }: { position: ToastPosition }) {
       )}
     >
       <BaseToast.Content className="flex min-w-0 flex-col gap-1">
-        {/* Sem cor propria: o titulo herda o tom da raiz, como no Alert. */}
         <BaseToast.Title className="text-base font-medium" />
         <BaseToast.Description className="text-sm text-fg-muted" />
       </BaseToast.Content>
@@ -161,12 +130,6 @@ export type ToastViewportProps = ComponentProps<typeof BaseToast.Viewport> & {
   position?: ToastPosition;
 };
 
-/**
- * A area onde os avisos aparecem.
- *
- * Montada pelo RivoProvider, entao raramente e usada direto. Para escolher o
- * canto, passe `toastPosition` ao provider.
- */
 export function ToastViewport({
   className,
   container,
@@ -177,8 +140,6 @@ export function ToastViewport({
     <BaseToast.Portal container={container ?? undefined}>
       <BaseToast.Viewport
         {...props}
-        // A raiz da area e a Viewport, e nao o Portal: o Portal nao pinta nada.
-        // Quem quiser mexer na largura ou no respiro da pilha veste aqui.
         className={cn(
           "fixed z-[var(--rc-z-toast)]",
           ANCHOR[position],

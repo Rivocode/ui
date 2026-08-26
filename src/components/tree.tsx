@@ -22,20 +22,6 @@ export type TreeNode = {
   disabled?: boolean;
 };
 
-/*
- * Duas omissoes, e as duas por colisao com a `<ul>`:
- *
- * `defaultValue` existe em `HTMLAttributes` como `string | number | readonly
- * string[]`, e aqui ele e a lista de ids marcados. Sem o `Omit`, o tipo vira a
- * interseccao dos dois e o erro cai no ponto de chamada, longe daqui.
- *
- * `children` sai porque a arvore desenha os galhos a partir de `items`: filho
- * escrito por fora seria descartado sem aviso.
- *
- * Sem `ref` de proposito: a raiz ja carrega o `ref` interno que a navegacao
- * por seta usa para achar as linhas, e duas fontes de `ref` no mesmo elemento
- * so podem apagar uma a outra.
- */
 export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "children"> & {
   items: TreeNode[];
   /**
@@ -56,18 +42,6 @@ export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "c
   className?: string;
 };
 
-/**
- * Arvore de escolha.
- *
- * A regra que organiza tudo: **quem vale e a folha**. Marcar um pai marca
- * todas as folhas debaixo dele, e o pai passa a mostrar o estado das filhas,
- * cheio ou misto. Guardar o pai junto criaria dois jeitos de dizer a mesma
- * coisa, e quem consome teria que descobrir se "financeiro" quer dizer o setor
- * ou todo mundo dentro dele.
- *
- * A busca nao esconde pai de quem casou: sem o caminho, o resultado aparece
- * solto e ninguem sabe de onde ele veio.
- */
 export function Tree({
   items,
   value,
@@ -85,16 +59,6 @@ export function Tree({
   const openIds = expanded ?? internalOpenIds;
   const root = useRef<HTMLUListElement>(null);
 
-  /*
-   * A escolha deixou de ser obrigatoria.
-   *
-   * Ela nascia exigida, e o `TreeSelect`, que embrulha esta peca, ja aceitava
-   * `value`/`defaultValue`/`onValueChange` opcionais. Quem trocava o painel
-   * pela arvore inline reescrevia o binding inteiro, e ainda tinha que
-   * inventar um `useState` para uma arvore que so queria abrir e fechar. Agora
-   * ela guarda a propria escolha quando ninguem controla, como todo o resto do
-   * catalogo.
-   */
   const controlled = value !== undefined;
   const [internalValue, setInternalValue] = useState<string[]>(defaultValue ?? []);
   const picked = value ?? internalValue;
@@ -106,7 +70,6 @@ export function Tree({
 
   const visible = useMemo(() => filterTree(items, filter.trim().toLowerCase()), [items, filter]);
 
-  // Buscando, tudo abre: fechar o caminho ate o resultado esconde o resultado.
   const searching = filter.trim().length > 0;
 
   function toggleOpen(id: string) {
@@ -119,7 +82,6 @@ export function Tree({
     const leaves = leavesOf(node);
 
     if (!multiple) {
-      // Sem multipla, so folha escolhe, e a escolha troca em vez de somar.
       if (node.children?.length) return;
       change(picked.includes(node.id) ? [] : [node.id]);
       return;
@@ -130,14 +92,7 @@ export function Tree({
     change(allChecked ? withoutLeaves : [...withoutLeaves, ...leaves]);
   }
 
-  /**
-   * Setas andam pelas linhas que estao na tela, e nao pela arvore inteira: a
-   * navegacao segue o que o olho ve.
-   */
   function onKeyDown(event: KeyboardEvent<HTMLUListElement>) {
-    // O handler de quem chama corre primeiro, e desiste da navegacao daqui com
-    // `preventDefault`. Sem isso o espalhamento tinha que escolher um dos dois:
-    // ou o `onKeyDown` de fora apaga as setas da arvore, ou as setas o apagam.
     onKeyDownProp?.(event);
     if (event.defaultPrevented) return;
 
@@ -277,12 +232,6 @@ function Branch({
           />
         )}
 
-        {/*
-          * O nome do no chega em `items` e ainda perde largura para cada nivel
-          * de indentacao, entao o corte aparece cedo. O `title` e a unica
-          * saida para quem enxerga - nada mais na tela mostra o nome inteiro.
-          * Sem `aria-label`: o texto segue no DOM e o leitor de tela ja o le.
-          */}
         <span
           title={typeof node.label === "string" ? node.label : undefined}
           className="min-w-0 flex-1 truncate"
@@ -312,7 +261,6 @@ function Branch({
   );
 }
 
-/** Todas as folhas debaixo de um no. Um no sem filhos e a propria folha. */
 export function leavesOf(node: TreeNode): string[] {
   if (!node.children?.length) return [node.id];
   return node.children.flatMap(leavesOf);
@@ -322,7 +270,6 @@ function text(node: TreeNode): string {
   return (node.search ?? (typeof node.label === "string" ? node.label : "")).toLowerCase();
 }
 
-/** Mantem quem casou e o caminho ate ele. */
 function filterTree(items: TreeNode[], query: string): TreeNode[] {
   if (!query) return items;
 

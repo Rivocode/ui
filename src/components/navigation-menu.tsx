@@ -10,17 +10,6 @@ import { useRivoContext } from "../provider/rivo-provider";
 export const NavigationMenu = BaseNavigationMenu.Root;
 export const NavigationMenuItem = BaseNavigationMenu.Item;
 
-/**
- * A navegacao de topo de site, com painel por secao.
- *
- * Nao e `Menu`: aquele lista acoes que se executam, este lista lugares para
- * onde ir, e o painel pode ter texto, imagem e varias colunas. O leitor de tela
- * anuncia os dois de formas diferentes, e trocar um pelo outro faz o menu de
- * acoes prometer navegacao que nao existe.
- *
- * Em tela de aplicacao, `Sidebar` costuma servir melhor. Este e para pagina de
- * marketing e portal.
- */
 export function NavigationMenuList({
   className,
   ...props
@@ -86,10 +75,6 @@ export function NavigationMenuContent({
   return <BaseNavigationMenu.Content {...props} className={cn("w-64 p-2", className)} />;
 }
 
-/**
- * O painel unico onde todo conteudo aparece. Fica fora da lista, uma vez so: e
- * ele que desliza de uma secao para a outra em vez de piscar entre painéis.
- */
 export function NavigationMenuViewport({ className }: { className?: string }) {
   const { portalContainer } = useRivoContext();
 

@@ -8,7 +8,6 @@ import { InertBackground } from "../lib/inert-background";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
-/** De onde a folha entra. */
 export type SheetSide = "bottom" | "left" | "right";
 
 const SideContext = createContext<SheetSide>("bottom");
@@ -21,17 +20,6 @@ export type SheetProps = Omit<ComponentProps<typeof BaseDrawer.Root>, "swipeDire
   children: ReactNode;
 };
 
-/**
- * Painel que desliza da borda da tela.
- *
- * E a peca de navegacao no celular e o menu lateral no desktop, e por isso o
- * lado mora na raiz: o gesto de fechar tem que concordar com a direcao de
- * onde ela entrou, e deixar isso solto so cria folha que fecha para o lado
- * errado.
- *
- * Fecha por gesto, por Esc, por clique fora e pelo `SheetClose`. O gesto vem
- * da Base UI e acompanha o dedo, entao a folha nao precisa de altura fixa.
- */
 export function Sheet({ side = "bottom", children, ...props }: SheetProps) {
   return (
     <SideContext value={side}>
@@ -95,8 +83,6 @@ export function SheetContent({
       <BaseDrawer.Backdrop
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
-          // A tarja clareia junto com o dedo: puxar a folha pela metade mostra
-          // metade do que esta atras, e o gesto deixa de ser um salto.
           "opacity-[calc(1-var(--drawer-swipe-progress))]",
           "transition-opacity duration-[var(--rc-duration-sheet)] ease-rc-sheet",
           "data-[swiping]:duration-0",
@@ -115,8 +101,6 @@ export function SheetContent({
             "p-[var(--rc-pad-panel)]",
             "font-sans text-fg outline-none",
             "transition-transform duration-[var(--rc-duration-sheet)] ease-rc-sheet",
-            // Enquanto o dedo esta na tela o painel segue o dedo sem transicao,
-            // senao ele chega atrasado e parece emperrado.
             "data-[swiping]:select-none data-[swiping]:duration-0",
             PANEL_SIDE[side],
             className,
@@ -126,17 +110,11 @@ export function SheetContent({
         </BaseDrawer.Popup>
       </BaseDrawer.Viewport>
 
-      {/* Depois do painel de proposito: o `aria-hidden` que ele espelha e
-          aplicado pelo gerenciador de foco que mora dentro do popup. */}
       <InertBackground container={portalContainer} />
     </BaseDrawer.Portal>
   );
 }
 
-/**
- * A barrinha de pegar, so na folha de baixo. E o unico aviso de que da para
- * arrastar, e sem ela o gesto existe mas ninguem descobre.
- */
 export function SheetHandle({ className, ...props }: ComponentProps<"div">) {
   return (
     <div

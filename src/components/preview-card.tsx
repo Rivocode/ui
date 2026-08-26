@@ -9,17 +9,6 @@ import { useRivoContext } from "../provider/rivo-provider";
 export const PreviewCard = BasePreviewCard.Root;
 export const PreviewCardTrigger = BasePreviewCard.Trigger;
 
-/**
- * O cartao que aparece ao pousar sobre um link: quem e o cliente, o que e
- * aquela nota, o resumo do termo.
- *
- * Nao e `Tooltip`. A dica explica um botao em poucas palavras e some ao sair; o
- * cartao mostra conteudo que da para ler com calma, e por isso ele espera antes
- * de abrir e demora a fechar, para o ponteiro chegar ate ele.
- *
- * Nada que so exista aqui e alcancavel por toque, entao o cartao nunca pode ser
- * o unico caminho para uma informacao.
- */
 export function PreviewCardContent({
   className,
   children,

@@ -18,10 +18,6 @@ export type NumberFieldProps = {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
-/**
- * Numero com passo: menos, o valor, mais. No toque o stepper e o idioma -
- * teclado numerico para quem preferir digitar direto no meio.
- */
 export function NumberField({
   value,
   onValueChange,
@@ -67,10 +63,6 @@ export function NumberField({
         }}
         editable={!disabled}
         placeholderTextColor={colors["fg-subtle"]}
-        // textAlign como PROP, nunca centralizar por classe: o runtime nativo
-        // mapeia esse estilo de TextInput para a prop com um caminho que nao
-        // e string, e quebra ao aplicar. Bordas explicitas em vez do atalho
-        // logico pela mesma familia de motivo (border-inline nao existe la).
         textAlign="center"
         className="h-12 flex-1 border-l border-r border-border text-base text-fg"
       />

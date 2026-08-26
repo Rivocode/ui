@@ -31,40 +31,12 @@ export type TrackerProps = {
   className?: string;
 };
 
-/**
- * A faixa de quadradinhos por período: as últimas 90 emissões, a
- * disponibilidade do mês, a fila dos últimos dias.
- *
- * **O que não porta é a dica por quadrado, e não é por preguiça: é por
- * aritmética.** No web cada quadrado monta um `Tooltip`, e um tooltip é um
- * portal; 365 dias seriam 365 portais montados para que no máximo um apareça.
- * E mesmo que fossem de graça, eles não funcionariam: dica se abre ao pousar o
- * ponteiro, e no toque não há pousar. Nem adiantaria trocar cada quadrado por
- * um `Pressable` — 90 períodos em 358px dão 4px por quadrado, seis vezes menos
- * que o alvo de toque mínimo, e um alvo desse tamanho é uma promessa que o
- * dedo não cumpre.
- *
- * **O que entra no lugar é a faixa inteira como um alvo só.** O dedo pousa e
- * arrasta sobre ela, a marca acompanha, e o texto do período lido aparece numa
- * linha fixa embaixo — que é onde o rótulo da dica passa a morar. A linha
- * existe desde o primeiro quadro, mostrando o período mais recente: reservar o
- * espaço evita a tela pular no primeiro toque, e o período mais recente é o
- * que a pergunta "piorou ontem?" quer ler primeiro.
- *
- * **E a leitura de tela anda ponto a ponto.** O web põe uma lista escondida
- * com os 365 textos, o que no celular seriam 365 paradas de VoiceOver dentro
- * de um cartão. Aqui a faixa é uma parada só, do tipo ajustável — o mesmo
- * contrato do `Slider`: arrastar para cima e para baixo caminha pelos
- * períodos, e cada passo anuncia o texto daquele período. Nenhum dado fica
- * inalcançável, e nenhum deles vira obstáculo.
- */
 export function Tracker({ data, label, className }: TrackerProps) {
   const [width, setWidth] = useState(0);
   const widthRef = useRef(0);
   const countRef = useRef(data.length);
   countRef.current = data.length;
 
-  // Começa no período mais recente, que é o da direita.
   const [index, setIndex] = useState(data.length - 1);
   const at = Math.min(Math.max(index, 0), Math.max(data.length - 1, 0));
   const point = data[at];
@@ -107,8 +79,6 @@ export function Tracker({ data, label, className }: TrackerProps) {
           widthRef.current = event.nativeEvent.layout.width;
           setWidth(event.nativeEvent.layout.width);
         }}
-        // 28px de faixa mais o resto até 44: a altura do alvo é a da linha
-        // inteira, ainda que o desenho continue com a mesma barra do web.
         className="h-11 w-full flex-row items-center gap-0.5"
         {...pan.panHandlers}
       >
@@ -119,9 +89,6 @@ export function Tracker({ data, label, className }: TrackerProps) {
           />
         ))}
 
-        {/* A marca do que está sendo lido. Ela é um fio de 2px por cima, e não
-            uma borda no quadrado: num quadrado de 4px a borda ocuparia o
-            quadrado inteiro e trocaria a cor do dado pela cor da marca. */}
         {width > 0 && (
           <View
             className="absolute h-9 w-0.5 rounded-pill bg-fg"
@@ -130,9 +97,6 @@ export function Tracker({ data, label, className }: TrackerProps) {
         )}
       </View>
 
-      {/* O rótulo do período lido. Escondido do leitor de tela porque a faixa
-          acima já o anuncia como valor: aqui ele seria a mesma frase, dita
-          duas vezes seguidas. */}
       <Text
         numberOfLines={1}
         accessibilityElementsHidden

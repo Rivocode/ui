@@ -10,8 +10,6 @@ function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
 }
 
-/* --- PasswordInput ------------------------------------------------------ */
-
 test("a senha comeca escondida e o olho a revela", () => {
   withTheme(<PasswordInput aria-label="Senha" defaultValue="segredo" />);
   const field = screen.getByLabelText("Senha") as HTMLInputElement;
@@ -37,8 +35,6 @@ test("o campo de senha nao guarda o texto revelado ao perder o foco", () => {
   fireEvent.blur(field);
   expect(field.type).toBe("password");
 });
-
-/* --- Tracker ------------------------------------------------------------ */
 
 test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
   const { container } = withTheme(
@@ -150,8 +146,6 @@ test("a faixa sem dado nao abre balao nenhum", () => {
 
   expect(screen.queryByRole("tooltip")).toBeNull();
 });
-
-/* --- TagsInput ---------------------------------------------------------- */
 
 test("o texto vira ficha no Enter, e a ficha sai no proprio botao", () => {
   let current: string[] = ["nf-e"];

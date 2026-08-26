@@ -16,23 +16,6 @@ export type PasswordInputProps = Omit<InputProps, "type"> & {
   size?: ComponentProps<typeof InputGroup>["size"];
 };
 
-/**
- * Campo de senha com o olho que revela.
- *
- * Existe como peca porque todo projeto reconstroi este par - e reconstroi com
- * o mesmo defeito, que e o botao dizer o estado em vez da acao: "senha
- * visivel" nao diz o que acontece ao clicar, e quem navega por leitor de tela
- * decide pelo verbo.
- *
- * Revelar e um gesto momentaneo: sair do campo esconde de novo. Deixar a senha
- * na tela depois que a pessoa foi para outro lugar e o que faz alguem ser lido
- * por cima do ombro numa mesa compartilhada.
- *
- * O `className` veste o campo, e nao a moldura: e a unica peca do catalogo em
- * que a raiz nao e o alvo dele. Mudar isso agora trocaria em silencio a largura
- * de toda tela de login que ja existe, entao a moldura ganhou nome proprio -
- * `classNames.wrapper` - e o `className` continua onde sempre esteve.
- */
 export function PasswordInput({
   labels = {},
   classNames,
@@ -41,8 +24,6 @@ export function PasswordInput({
   onBlur,
   ...props
 }: PasswordInputProps) {
-  // Cada nome com o proprio padrao: trocar so o verbo de revelar obrigava a
-  // reescrever o de esconder junto.
   const { show = "Mostrar senha", hide = "Esconder senha" } = labels;
 
   const [visible, setVisible] = useState(false);
@@ -60,7 +41,6 @@ export function PasswordInput({
         }}
       />
       <InputAction
-        // O nome diz a acao, e nao o estado: e o verbo que a pessoa escolhe.
         aria-label={visible ? hide : show}
         onClick={() => setVisible((current) => !current)}
         className={cn("border-l-0", classNames?.action)}

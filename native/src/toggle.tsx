@@ -11,10 +11,6 @@ export type ToggleProps = {
   className?: string;
 };
 
-/**
- * O botao que fica apertado: negrito ligado, filtro ativo. Liga uma
- * preferencia com efeito imediato? E Switch. Confirma uma acao? E Button.
- */
 export function Toggle({ pressed, onPressedChange, children, disabled, className }: ToggleProps) {
   return (
     <Pressable
@@ -54,7 +50,6 @@ export type ToggleGroupProps = {
   className?: string;
 };
 
-/** Filtros lado a lado. Ver a mesma coisa de OUTRO jeito e Tabs, nao isto. */
 export function ToggleGroup({
   items,
   value,

@@ -66,33 +66,12 @@ export type DataListProps<Row> = {
   onSelectedChange?: (keys: string[]) => void;
 };
 
-/** Caixa e acento fora: "otica" acha "Ótica" e vice-versa, como no DataTable. */
 const flatten = (text: unknown) =>
   String(text ?? "")
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase();
 
-/**
- * A traducao do DataTable: tabela nao existe no celular, mas os quatro
- * finais de uma consulta - carregando, erro, vazio, dados - sao os mesmos,
- * na mesma ordem: erro vence carregando, e vazio so vale depois que a
- * consulta voltou. Tres booleanos, nenhuma biblioteca de dados.
- *
- * Dos quatro opt-in do `DataTable`, dois porta e dois nao.
- *
- * Portam `filter` e `selectable`, com o mesmo nome de prop: buscar dentro de
- * uma lista de notas e MAIS necessario no celular que no desktop, onde cabe
- * mais linha na tela de uma vez, e marcar varias para agir em lote e gesto de
- * celular antes de ser de mouse.
- *
- * NAO portam `pageSize` nem ordenacao, e isso e decisao, nao pendencia. No
- * celular ordenar e um `Menu` de "ordenar por", que a tela monta em cima da
- * lista, e paginar e rolagem que carrega mais no fim - dois desenhos
- * diferentes, com estado que nao mora aqui. Reusar os nomes do web para
- * entregar esses dois seria paridade de fachada: a prop combinaria e o gesto,
- * nao.
- */
 export function DataList<Row>({
   data,
   renderItem,
@@ -114,8 +93,6 @@ export function DataList<Row>({
   onSelectedChange,
 }: DataListProps<Row>) {
   const [internalSelection, setInternalSelection] = useState<string[]>([]);
-  // Controlada quando `selected` veio, interna quando nao - a mesma divisao do
-  // web, e nos dois casos `onSelectedChange` ouve a mudanca.
   const selection = selected ?? internalSelection;
 
   const toggle = (key: string, checked: boolean) => {
@@ -127,8 +104,6 @@ export function DataList<Row>({
   if (isError) {
     return (
       <View className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
-        {/* Titulo e mensagem sao uma dupla, e o `gap-3` da caixa e a distancia
-            ate o botao - o mesmo desenho do `Alert`, que separa por `gap-1`. */}
         <View className="gap-1">
           {errorTitle && <Text className="text-sm font-medium text-danger-text">{errorTitle}</Text>}
           <Text className="text-sm text-danger-text">{errorMessage}</Text>
@@ -149,8 +124,6 @@ export function DataList<Row>({
       <View className="gap-3">
         {Array.from({ length: skeletonRows }, (_, index) => (
           <View key={index} className="flex-row items-center gap-3">
-            {/* A caixa falsa reserva o lugar da de verdade: sem ela a lista
-                inteira desliza para a direita quando os dados chegam. */}
             {selectable && <Skeleton className="size-5 rounded-sm" />}
             <View className="flex-1 gap-1.5">
               <Skeleton className="h-4 w-3/4" />
@@ -166,13 +139,6 @@ export function DataList<Row>({
     return <EmptyState title={empty.title} description={empty.description} action={empty.action} />;
   }
 
-  /*
-   * A chave sai do indice ORIGINAL, antes do filtro. Com `keyExtractor` por
-   * indice - que o web ja avisa ser fragil, e que continua sendo o que se
-   * escreve com pressa - filtrar renumerava as linhas: a terceira nota, a
-   * marcada, virava a primeira no instante em que alguem digitasse na busca, e
-   * a selecao passava para outra linha sem ninguem tocar nela.
-   */
   const rows = data.map((row, index) => ({ row, key: keyExtractor(row, index) }));
   const needle = flatten(filter);
   const visible = needle
@@ -183,16 +149,6 @@ export function DataList<Row>({
       )
     : rows;
 
-  /*
-   * Filtro que zerou nao e consulta vazia: o `empty` continua reservado para
-   * quando nao ha o que buscar. Trocar um pelo outro faz a tela dizer "emita a
-   * primeira nota" para quem tem trinta e errou uma letra na busca.
-   *
-   * A frase depende do `needle`, e nao so da lista vazia: quem nao passa
-   * `empty` sempre viu a lista sumir em silencio quando nao havia dados, e sem
-   * essa condicao passaria a ler "nenhum resultado para a busca" sem nunca ter
-   * buscado nada.
-   */
   if (needle && visible.length === 0) {
     return <Text className="py-8 text-center text-sm text-fg-muted">{noResultsMessage}</Text>;
   }
@@ -218,18 +174,10 @@ export function DataList<Row>({
           <View key={key} className="flex-row items-center gap-3">
             <Checkbox
               accessibilityLabel="Selecionar linha"
-              /* A caixa sozinha desenha 20px. Doze de cada lado a levam aos 44
-                 da Apple, que e a mesma conta que o `sm` do Button faz - e aqui
-                 ela pesa mais, porque numa selecao em lote a pessoa acerta a
-                 caixa varias vezes seguidas, com o polegar, rolando a lista. */
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               checked={selection.includes(key)}
               onCheckedChange={(checked) => toggle(key, checked)}
             />
-            {/* A caixa e um Pressable DENTRO do Pressable da linha, e no React
-                Native isso basta: o responder e de quem esta mais fundo e o
-                toque nao sobe. O web precisa do `closest` para o clique na
-                caixa nao abrir a linha junto; aqui nao ha o que interceptar. */}
             {content}
           </View>
         );

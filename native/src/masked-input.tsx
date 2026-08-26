@@ -25,10 +25,6 @@ const applyMask = (mask: string, digits: string) => {
   return out;
 };
 
-/**
- * O campo com molde: CNPJ, CPF, telefone. Quem digita ve a pontuacao
- * aparecer; quem le o valor recebe so os digitos, prontos para a API.
- */
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
   const capacity = mask.split("#").length - 1;
 

@@ -261,7 +261,6 @@ test("virtualizada, ela continua sendo uma <table> de verdade", () => {
 
   expect(container.querySelectorAll("table").length).toBe(1);
   const body = container.querySelector("tbody")!;
-  // Nenhum filho do tbody que nao seja tr, e nenhuma celula fora de uma tr.
   expect([...body.children].every((child) => child.tagName === "TR")).toBe(true);
   for (const row of bodyRows(container)) {
     expect(row.querySelector("td")).toBeTruthy();

@@ -7,12 +7,6 @@ import { cn } from "../lib/cn";
 
 export type SeparatorProps = ComponentProps<typeof BaseSeparator>;
 
-/**
- * Linha que separa. Sai com `role="separator"` de proposito: quando ela divide
- * assunto, e nao so enfeite, o leitor de tela precisa saber que ali termina um
- * bloco. Para risco puramente decorativo, uma borda no proprio elemento sai
- * mais barata.
- */
 export function Separator({ className, orientation = "horizontal", ...props }: SeparatorProps) {
   return (
     <BaseSeparator

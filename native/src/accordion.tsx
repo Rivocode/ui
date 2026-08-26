@@ -3,7 +3,6 @@ import { Pressable, Text, View } from "react-native";
 
 import { cn } from "./cn";
 
-/** O chevron desenhado com borda, apontando para onde o painel vai. */
 function Chevron({ open }: { open: boolean }) {
   return (
     <View
@@ -21,10 +20,6 @@ export type AccordionItemProps = {
   className?: string;
 };
 
-/**
- * Um item do acordeao, dono do proprio aberto-ou-fechado: perguntas
- * frequentes, detalhes que nao precisam todos abertos ao mesmo tempo.
- */
 export function AccordionItem({ title, children, defaultOpen = false, className }: AccordionItemProps) {
   const [open, setOpen] = useState(defaultOpen);
 
@@ -44,7 +39,6 @@ export function AccordionItem({ title, children, defaultOpen = false, className 
   );
 }
 
-/** A pilha de AccordionItem, com a borda de cima que fecha a moldura. */
 export function Accordion({ children, className }: { children: ReactNode; className?: string }) {
   return <View className={cn("border-t border-border", className)}>{children}</View>;
 }
@@ -57,7 +51,6 @@ export type CollapsibleProps = {
   className?: string;
 };
 
-/** Um unico mostra-esconde, sem moldura - o irmao solto do acordeao. */
 export function Collapsible({ label, children, defaultOpen = false, className }: CollapsibleProps) {
   const [open, setOpen] = useState(defaultOpen);
 

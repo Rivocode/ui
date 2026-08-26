@@ -22,12 +22,6 @@ export type NumberFieldProps = Omit<ComponentProps<typeof BaseNumberField.Root>,
   numberFormat?: Intl.NumberFormatOptions;
 };
 
-/**
- * A altura por tamanho, do mesmo token que o Input usa. Ela mora na moldura e
- * nao no campo porque o `h-full` do input de dentro derruba a altura que o
- * `inputVariants` traz: com a altura cravada aqui, `size="sm"` mudava fonte e
- * respiro e a caixa continuava media. Mesma solucao do `InputGroup`.
- */
 const HEIGHT = {
   sm: "h-[var(--rc-control-sm)]",
   md: "h-[var(--rc-control-md)]",
@@ -43,25 +37,11 @@ const STEP = cn(
   "data-[disabled]:hover:bg-transparent",
 );
 
-/**
- * Campo de numero com mais e menos.
- *
- * Use quando o valor tem passo e limite conhecidos: quantidade, parcelas, dias
- * de prazo. Para dinheiro, o `MaskedInput` com molde de moeda diz mais, porque
- * ali o que importa e a pontuacao e nao o passo.
- *
- * O `Input` cru continua servindo para numero solto. A diferenca aqui e que
- * seta do teclado, rolagem e os botoes respeitam `min`, `max` e `step`, e o
- * campo nunca chega num valor que o formulario rejeita depois.
- */
 export function NumberField({
   className,
   placeholder,
   size = "md",
   numberFormat,
-  // O nome pertence ao campo, e nao a caixa em volta dele. Espalhado no
-  // `Root`, que e um `div`, o `aria-label` nao rotulava nada e o input ficava
-  // sem nome: nao dava para rotular um NumberField sem embrulhar num `Field`.
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   ...props
@@ -70,8 +50,6 @@ export function NumberField({
     <BaseNumberField.Root {...props} format={numberFormat} className={cn("w-full", className)}>
       <BaseNumberField.Group
         className={cn(
-          // A fronteira do campo veste o border-strong, que e o papel com a
-          // promessa de 3:1 do WCAG 1.4.11 - o border comum some no escuro.
           "flex w-full items-stretch overflow-hidden rounded-md border border-border-strong bg-surface",
           HEIGHT[size],
           "font-sans text-base text-fg",

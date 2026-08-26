@@ -9,19 +9,9 @@ export const buttonVariants = cva(
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
     "font-sans font-medium",
     "transition duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
-    // O afundar de meio por cento no clique e o retorno tatil do botao. Quem
-    // pediu menos movimento nao ve o botao encolher.
     "motion-safe:active:scale-[0.985]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
     "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-    // Desabilitado vira neutro de proposito. Desbotar a cor da marca produz
-    // um verde sujo que parece defeito, nao estado.
-    //
-    // Carregando tambem desabilita, para nao enviar duas vezes, mas nao pode
-    // virar esse cinza: quem esta excluindo precisa continuar vendo que a acao
-    // e destrutiva. Entao o neutro fica atras do not-data-loading, e o
-    // andamento se veste com a propria variante, mais clara e com o cursor de
-    // espera.
     "disabled:pointer-events-none not-data-loading:disabled:border-transparent",
     "not-data-loading:disabled:bg-surface-raised not-data-loading:disabled:text-fg-disabled",
     "not-data-loading:disabled:shadow-none",
@@ -33,9 +23,6 @@ export const buttonVariants = cva(
         primary: "bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
         secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-raised",
         ghost: "text-fg-muted hover:bg-accent-subtle hover:text-fg",
-        // Contorno grosso, sem preenchimento. E a chamada secundaria de pagina
-        // de marketing, que precisa pesar ao lado da primaria sem competir com
-        // ela.
         outline: cn(
           "border-2 border-border-strong bg-transparent text-fg",
           "hover:border-line-hover hover:bg-accent-subtle",
@@ -46,13 +33,7 @@ export const buttonVariants = cva(
         sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
         md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
         lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
-        // Quadrado, para botao que so tem icone. Tabela vive cheio deles, e
-        // botao de icone com padding de texto fica torto.
         icon: "size-[var(--rc-control-md)] p-0",
-        // Chamada para acao de marketing: maior e em negrito, com medida
-        // propria em vez de altura de controle. Botao de landing e botao de
-        // formulario tem trabalhos diferentes, e forcar um no outro estraga
-        // os dois.
         cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-bold",
         iconSm: "size-[var(--rc-control-sm)] p-0",
       },
@@ -79,10 +60,6 @@ export type ButtonProps = ComponentPropsWithoutRef<"button"> &
     ref?: Ref<HTMLButtonElement>;
   };
 
-/**
- * Botao nativo de proposito. A Base UI nao entra aqui: `<button>` ja traz a
- * semantica e o teclado corretos, e embrulhar isso so adicionaria peso.
- */
 export function Button({
   className,
   variant,
@@ -102,9 +79,6 @@ export function Button({
           className={cn(
             "size-4 animate-spin rounded-pill border-2 border-current",
             "border-t-transparent",
-            // Quem pediu menos movimento no sistema ve o anel parado: era a
-            // unica animacao da biblioteca sem a guarda, e girar sem parar e
-            // exatamente o que dispara enjoo em quem e sensivel a isso.
             "motion-reduce:animate-none",
           )}
         />
