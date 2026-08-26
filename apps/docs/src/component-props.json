@@ -8186,6 +8186,44 @@
       }
     ]
   },
+  "Editable": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela chama o campo enquanto ele esta aberto."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"preview\", string>>",
+        "required": false,
+        "note": "Classe por parte: `preview`, `input`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O que aparece quando o valor esta vazio."
+      }
+    ]
+  },
   "EmptyState": {
     "forwardsRoot": true,
     "props": [
@@ -18243,6 +18281,62 @@
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\" | null",
         "required": false
+      }
+    ]
+  },
+  "Splitter": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "end",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela chama a divisoria."
+      },
+      {
+        "name": "start",
+        "type": "ReactNode",
+        "required": true,
+        "note": "O lado que a medida descreve: a esquerda na horizontal, o topo na vertical."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"end\" | \"handle\" | \"start\", string>>",
+        "required": false,
+        "note": "Classe por parte: `start`, `end`, `handle`."
+      },
+      {
+        "name": "defaultSize",
+        "type": "number",
+        "required": false,
+        "note": "Tamanho do primeiro lado, em porcentagem."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "note": "Quanto cada lado precisa ter, em porcentagem."
+      },
+      {
+        "name": "onSizeChange",
+        "type": "((size: number) => void)",
+        "required": false
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "note": "Controlado, quando o app quer guardar a escolha entre sessoes."
       }
     ]
   },

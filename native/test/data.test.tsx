@@ -55,6 +55,78 @@ describe("DataList", () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
+  test("filter estreita a lista sem caixa e sem acento, como no DataTable", () => {
+    const screen = render(list({ filter: "clinica" }));
+    expect(textOf(screen)).toContain("Clínica São Lucas");
+    expect(textOf(screen)).not.toContain("Transportes Cabo Branco");
+  });
+
+  test("filtro que zerou não é consulta vazia: o EmptyState fica reservado", () => {
+    const empty = { title: "Nenhuma nota por aqui", description: "Emita a primeira." };
+    const screen = render(list({ filter: "zzz", empty }));
+    expect(textOf(screen)).toContain("Nenhum resultado para a busca.");
+    expect(textOf(screen)).not.toContain("Nenhuma nota por aqui");
+
+    // Banco vazio de verdade continua sendo EmptyState, mesmo com busca escrita.
+    const nothing = render(list({ data: [], filter: "zzz", empty }));
+    expect(textOf(nothing)).toContain("Nenhuma nota por aqui");
+  });
+
+  test("sem filterValue a busca vê o campo todo da linha, com filterValue só o escolhido", () => {
+    // O id é campo da linha: "1" acha a linha 1 quando ninguém diz o contrário.
+    expect(textOf(render(list({ filter: "1" })))).toContain("Clínica São Lucas");
+
+    const named = render(list({ filter: "1", filterValue: (row) => row.name }));
+    expect(textOf(named)).toContain("Nenhum resultado para a busca.");
+  });
+
+  test("selectable põe uma caixa por linha e devolve as chaves do keyExtractor", () => {
+    const onSelectedChange = mock(() => {});
+    const screen = render(list({ selectable: true, selected: [], onSelectedChange }));
+    const boxes = byRole(screen, "checkbox");
+    expect(boxes.length).toBe(2);
+    act(() => boxes[1].props.onPress());
+    expect(onSelectedChange).toHaveBeenCalledWith(["2"]);
+  });
+
+  test("selected manda no que está marcado, e desmarcar tira só aquela chave", () => {
+    const onSelectedChange = mock(() => {});
+    const screen = render(list({ selectable: true, selected: ["1", "2"], onSelectedChange }));
+    expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(true);
+    act(() => byRole(screen, "checkbox")[0].props.onPress());
+    expect(onSelectedChange).toHaveBeenCalledWith(["2"]);
+  });
+
+  test("sem selected a lista guarda a própria seleção", () => {
+    const screen = render(list({ selectable: true }));
+    expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(false);
+    act(() => byRole(screen, "checkbox")[0].props.onPress());
+    expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(true);
+  });
+
+  test("a caixa alcança os 44pt do dedo, que ela sozinha não tem", () => {
+    const screen = render(list({ selectable: true }));
+    const slop = byRole(screen, "checkbox")[0].props.hitSlop;
+    expect(slop.left + 20 + slop.right).toBeGreaterThanOrEqual(44);
+    expect(slop.top + 20 + slop.bottom).toBeGreaterThanOrEqual(44);
+  });
+
+  test("a chave sai do índice original: filtrar não renumera a seleção", () => {
+    const onSelectedChange = mock(() => {});
+    const screen = render(
+      list({
+        filter: "transportes",
+        selectable: true,
+        selected: [],
+        onSelectedChange,
+        keyExtractor: (_row, index) => String(index),
+      }),
+    );
+    act(() => byRole(screen, "checkbox")[0].props.onPress());
+    // Ela é a segunda linha do conjunto, e continua sendo com o filtro ligado.
+    expect(onSelectedChange).toHaveBeenCalledWith(["1"]);
+  });
+
   test("vazio só vale depois que a consulta voltou, e diz o porquê", () => {
     const empty = {
       title: "Nenhuma nota por aqui",

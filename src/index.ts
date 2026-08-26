@@ -265,6 +265,8 @@ export { Indicator, type IndicatorProps } from "./components/indicator";
 export { PasswordInput, type PasswordInputProps } from "./components/password-input";
 export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
 export { TagsInput, type TagsInputProps } from "./components/tags-input";
+export { Splitter, type SplitterProps } from "./components/splitter";
+export { Editable, type EditableProps } from "./components/editable";
 export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
 export {
   Timeline,
