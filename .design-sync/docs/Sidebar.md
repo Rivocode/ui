@@ -47,6 +47,9 @@ abre e fecha ao ser clicada, e `SidebarTrigger` é o botão que faz o mesmo pelo
 teclado.
 
 `SidebarInset` é a área da página, ao lado da barra.
+`SidebarBrand` é a marca no topo, e encolhe junto com a barra: aberta mostra o
+nome ao lado do símbolo, na coluna de ícones mostra só o símbolo.
+
 
 ## O celular já vem resolvido
 

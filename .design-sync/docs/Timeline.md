@@ -25,3 +25,8 @@ Para um formulário longo em etapas, use `Steps`. O `Steps` é assistente: olha
 para a frente, sabe quantos passos faltam e só deixa voltar. A `Timeline` olha
 para trás e ninguém "avança" nela. Trocar uma pela outra faz o controle
 prometer o que ele não faz — o mesmo argumento que separa `Progress` de `Meter`.
+
+## As partes
+
+`TimelineItem` é um ponto: `title`, `at`, `by`, `tone`, `pending`, e conteúdo
+livre como filho. O `at` costuma receber um `RelativeTime`.

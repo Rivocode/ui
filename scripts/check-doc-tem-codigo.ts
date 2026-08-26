@@ -15,8 +15,6 @@
  */
 import { Glob } from "bun";
 
-import { findParent } from "../apps/docs/src/parts";
-
 const DOCS = ".design-sync/docs";
 const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
 
@@ -63,16 +61,21 @@ for await (const file of new Glob("*.md").scan(DOCS)) {
 const promised = documented.filter((name) => !exported.has(name));
 /*
  * Parte nao precisa de pagina propria: `CardHeader` e documentado na pagina do
- * `Card`, e e assim que o indice para agents lista as duas. A regra do que e
- * parte e a mesma que o site usa, e nao uma segunda copia dela.
+ * `Card`, e e assim que o indice para agents lista as duas. O que ela precisa
+ * e estar dita em algum lugar - `SidebarMenuItem` na pagina da Sidebar, o
+ * `MASKS` na do MaskedInput. A pergunta que importa nao e "tem pagina", e sim
+ * "quem procurar acha".
  */
-const names = [...new Set([...documented, ...exported])];
-const silent = [...exported].filter((name) => {
-  if (NOT_A_PIECE(name) || documented.includes(name)) return false;
+const prose = (
+  await Promise.all(documented.map((name) => Bun.file(`${DOCS}/${name}.md`).text()))
+).join("\n");
 
-  const parent = findParent(name, names);
-  return !(parent && documented.includes(parent));
-});
+const silent = [...exported].filter(
+  (name) =>
+    !NOT_A_PIECE(name) &&
+    !documented.includes(name) &&
+    !new RegExp(`\\b${name}\\b`).test(prose),
+);
 
 if (promised.length > 0) {
   console.error(`${promised.length} pagina(s) documentando peca que nao existe:\n`);
@@ -81,20 +84,14 @@ if (promised.length > 0) {
   process.exit(1);
 }
 
-/*
- * O segundo lado ainda nao entra no `check`: sao 13 pecas sem pagina, e ligar
- * a trava antes de escrever as paginas so ensinaria a todo mundo a rodar o
- * check com a trava desligada. `--sem-pagina` lista o que falta, e a trava
- * liga quando a lista zerar.
- */
-if (silent.length > 0 && process.argv.includes("--sem-pagina")) {
+if (silent.length > 0) {
   console.error(`${silent.length} peca(s) exportada(s) e sem pagina:\n`);
   for (const name of silent.sort()) console.error(`  ${name}`);
-  console.error(`\nEscreva ${DOCS}/<Peca>.md, ou a peca so existe para quem le o .d.ts.`);
+  console.error(
+    `\nEscreva ${DOCS}/<Peca>.md, ou cite a peca na pagina de quem a compoe -` +
+      "\nsem isso ela so existe para quem le o .d.ts.",
+  );
   process.exit(1);
 }
 
-console.log(
-  `${documented.length} paginas, todas com codigo por tras.` +
-    (silent.length > 0 ? ` ${silent.length} peca(s) ainda sem pagina.` : ""),
-);
+console.log(`${documented.length} paginas, todas com codigo por tras, e nenhuma peca muda.`);

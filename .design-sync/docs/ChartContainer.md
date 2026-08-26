@@ -73,3 +73,11 @@ deles.
 A lista é curada, e não um `export *`. O `Tooltip` e o `Legend` da Recharts
 **não** saem por aqui: os nossos já embrulham os dois, e o nome colidiria com o
 `Tooltip` do catálogo.
+
+## Os eixos
+
+`ChartXAxis` e `ChartYAxis` embrulham os da Recharts com a cor, a fonte e o
+respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
+`format="currencyShort"` no de valor. Sem eles, cada tela escreve o próprio
+`tickFormatter` e um eixo lê diferente do outro — R$ 12.400 aqui, 12400 ali,
+12,4k na terceira.

@@ -24,3 +24,10 @@ editor e ferramenta, onde o usuário já espera esse arranjo.
   </Menu>
 </Menubar>
 ```
+
+## As partes
+
+`MenubarTrigger` é o gatilho de cada menu da barra: "Arquivo", "Editar",
+"Exibir". Ele existe separado do `MenuTrigger` porque o MenuTrigger sai sem
+estilo de propósito — o uso comum dele é `render={<Button />}`, e duas fontes de
+estilo brigariam.

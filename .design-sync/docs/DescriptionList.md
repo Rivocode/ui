@@ -17,3 +17,9 @@ lado dele.
 
 Vive bem dentro de `Sheet` e `Dialog` de detalhes, e ao lado de um
 `Separator` quando a folha tem mais de um bloco.
+
+## As partes
+
+`DescriptionItem` é uma linha: `label` de um lado, filho do outro. O valor
+aceita o que for — `Badge` para situação, `font-mono` para número de nota,
+`Clipboard` para o que a pessoa vai levar embora.
