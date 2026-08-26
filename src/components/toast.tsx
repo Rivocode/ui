@@ -18,6 +18,10 @@ export type ToastApi = {
  * Cria e fecha avisos. O provedor, o portal e a area de exibicao ja vivem
  * dentro do RivoProvider, entao usar isto e a unica coisa que o app faz.
  *
+ * O `type` do aviso escolhe o tom, no mesmo vocabulario do Alert: `info`,
+ * `success`, `warning` e `danger` - `error`, que e o que o `promise` usa
+ * sozinho, veste o mesmo que `danger`. Sem `type`, o aviso e neutro.
+ *
  * O objeto devolvido tem identidade estavel de proposito. O gerenciador da
  * Base UI devolve um objeto novo a cada renderizacao, e um `useEffect` que
  * dependa dele entra em laco infinito. Absorver isso e trabalho da biblioteca,
@@ -89,6 +93,25 @@ const ENTER: Record<ToastPosition, string> = {
   "bottom-right": "data-[starting-style]:translate-x-4 data-[ending-style]:translate-x-4",
 };
 
+/**
+ * O tom do aviso, no mesmo vocabulario do Alert.
+ *
+ * A Base UI carrega um `type` livre no objeto do aviso, e o promise dela usa
+ * `loading`, `success` e `error` sozinho. Aqui os dois vocabularios se
+ * encontram: `error` e `danger` sao a mesma cor, e `loading` fica neutro, que
+ * e o que uma espera deve parecer.
+ */
+const TOM: Record<string, string> = {
+  info: "bg-info-subtle text-info-text",
+  success: "bg-success-subtle text-success-text",
+  warning: "bg-warning-subtle text-warning-text",
+  danger: "bg-danger-subtle text-danger-text",
+  error: "bg-danger-subtle text-danger-text",
+};
+
+/** Sem tom, o aviso e neutro - que continua sendo o padrao. */
+const NEUTRO = "bg-surface-raised text-fg";
+
 function List({ position }: { position: ToastPosition }) {
   const { toasts } = BaseToast.useToastManager();
 
@@ -98,7 +121,8 @@ function List({ position }: { position: ToastPosition }) {
       toast={toast}
       className={cn(
         "relative flex items-start gap-3 rounded-lg border border-border",
-        "bg-surface-raised p-4 shadow-3 font-sans",
+        "p-4 shadow-3 font-sans",
+        TOM[toast.type ?? ""] ?? NEUTRO,
         "transition-[opacity,transform] duration-[var(--rc-duration-base)]",
         "ease-[var(--rc-ease)]",
         "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
@@ -106,7 +130,8 @@ function List({ position }: { position: ToastPosition }) {
       )}
     >
       <BaseToast.Content className="flex min-w-0 flex-col gap-1">
-        <BaseToast.Title className="text-base font-medium text-fg" />
+        {/* Sem cor propria: o titulo herda o tom da raiz, como no Alert. */}
+        <BaseToast.Title className="text-base font-medium" />
         <BaseToast.Description className="text-sm text-fg-muted" />
       </BaseToast.Content>
       <BaseToast.Close
