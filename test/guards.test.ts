@@ -36,3 +36,13 @@ test("o pacote publicado leva o CHANGELOG junto", async () => {
   expect(pkg.files).toContain("CHANGELOG.md");
   expect(await Bun.file("CHANGELOG.md").exists()).toBe(true);
 });
+
+test("a versao escrita no codigo e a mesma do pacote", async () => {
+  // `version` sai na API publica, e um numero errado ali e pior que numero
+  // nenhum: quem depura por ele conclui a coisa errada sobre o que tem
+  // instalado. Sao dois arquivos, e os dois envelhecem juntos.
+  const pkg = await Bun.file("package.json").json();
+  const index = await Bun.file("src/index.ts").text();
+
+  expect(index).toContain(`export const version = "${pkg.version}";`);
+});

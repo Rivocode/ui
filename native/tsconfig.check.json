@@ -1,6 +1,14 @@
 {
   // A passagem de tipos sobre a fonte PUBLICADA.
   //
+  // Ela NAO entra no `bun run check`, e a razao e onde os tipos moram: react e
+  // react-native sao peers, e o unico lugar do repositorio onde estao
+  // instalados e `examples/native`, que nao e workspace - `bun install
+  // --frozen-lockfile` nunca o instala. No CI e na publicacao o check rodaria
+  // sobre um mundo sem react-native e falharia em toda linha, e a tag de
+  // release cairia junto. Ela roda no job proprio do CI, que instala o
+  // exemplo antes.
+  //
   // O nome NAO e `tsconfig.json` de proposito: o bun le o tsconfig.json mais
   // proximo do arquivo para resolver import, e o mapa de `paths` abaixo faria
   // `native/test/` puxar o React do app de exemplo. Duas copias do React no
