@@ -6955,6 +6955,12 @@
         "note": "Whether the checkbox is currently ticked."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"box\" | \"indicator\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `box`, `indicator`, `label`."
+      },
+      {
         "name": "defaultChecked",
         "type": "boolean",
         "required": false,
@@ -7692,6 +7698,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"footer\" | \"head\" | \"row\" | \"table\", string>>",
+        "required": false,
+        "note": "Classe por parte: `table`, `head`, `row`, `cell`, `footer`."
+      },
+      {
         "name": "empty",
         "type": "{ title: string; description: string; action?: ReactNode; icon?: ReactNode; }",
         "required": false,
@@ -7988,6 +8000,12 @@
   "DialogContent": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"backdrop\", string>>",
+        "required": false,
+        "note": "Classe por parte: `backdrop`."
+      },
       {
         "name": "finalFocus",
         "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => void | boolean | HTMLElement | null)",
@@ -10018,6 +10036,12 @@
         "type": "string",
         "required": false,
         "note": "A string value that provides a user-friendly name for `aria-valuenow`, the current value of the meter."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value`, `track`, `indicator`."
       },
       {
         "name": "format",
@@ -14016,6 +14040,12 @@
         "note": "A string value that provides a user-friendly name for `aria-valuenow`, the current value of the progress bar."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value`, `track`, `indicator`."
+      },
+      {
         "name": "format",
         "type": "NumberFormatOptions",
         "required": false,
@@ -15643,6 +15673,12 @@
         "type": "unknown",
         "required": true,
         "note": "The unique identifying value of the radio in a group."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `indicator`, `label`."
       },
       {
         "name": "disabled",
@@ -17488,6 +17524,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"backdrop\" | \"viewport\", string>>",
+        "required": false,
+        "note": "Classe por parte: `backdrop`, `viewport`."
+      },
+      {
         "name": "finalFocus",
         "type": "boolean | RefObject<HTMLElement | null> | ((closeType: InteractionType) => void | boolean | HTMLElement | null)",
         "required": false,
@@ -17739,6 +17781,12 @@
   "Slider": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"control\" | \"indicator\" | \"label\" | \"thumb\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value`, `control`, `track`, `indicator`, `thumb`."
+      },
       {
         "name": "defaultValue",
         "type": "number | readonly number[]",
@@ -17995,6 +18043,12 @@
         "type": "boolean",
         "required": false,
         "note": "Whether the switch is currently active."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\" | \"thumb\", string>>",
+        "required": false,
+        "note": "Classe por parte: `thumb`, `label`."
       },
       {
         "name": "defaultChecked",

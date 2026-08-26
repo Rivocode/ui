@@ -4,6 +4,7 @@ import { Switch as BaseSwitch } from "@base-ui/react/switch";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children"> & {
   /**
@@ -11,8 +12,13 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
    * no texto tambem liga e desliga.
    */
   children?: ReactNode;
-  /** Classe do `<label>` de fora, quando ha texto. */
+  /**
+   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
+   * `classNames.label`, e continua valendo.
+   */
   labelClassName?: string;
+  /** Classe por parte: `thumb`, `label`. */
+  classNames?: Slots<"thumb" | "label">;
 };
 
 /**
@@ -25,7 +31,13 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
  * O alvo tem 44px de altura mesmo com o trilho de 24, pelo respiro invisivel:
  * e a medida do dedo, e sem ela a chave so funciona bem no mouse.
  */
-export function Switch({ className, children, labelClassName, ...props }: SwitchProps) {
+export function Switch({
+  className,
+  children,
+  labelClassName,
+  classNames,
+  ...props
+}: SwitchProps) {
   const key = (
     <BaseSwitch.Root
       {...props}
@@ -47,6 +59,7 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
           "size-4 rounded-pill bg-fg-muted",
           "transition-[transform,background-color] duration-[var(--rc-duration-base)] ease-rc",
           "data-[checked]:translate-x-5 data-[checked]:bg-accent-fg",
+          classNames?.thumb,
         )}
       />
     </BaseSwitch.Root>
@@ -63,6 +76,7 @@ export function Switch({ className, children, labelClassName, ...props }: Switch
         // borda e fazer o clique valer a dez centimetros do texto.
         "flex w-fit cursor-pointer items-center gap-3 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        classNames?.label,
         labelClassName,
       )}
     >

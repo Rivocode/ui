@@ -110,6 +110,22 @@ o wrapper de cliente — um arquivo no projeto dele, com token e nunca cor
 literal — em vez de fork. Nas peças em camadas, a documentação da prop diz o
 que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
 
+**Abaixo da raiz, vista a parte pelo nome, com `classNames`.** A trilha do
+`Progress`, o pino do `Slider`, a marca do `Checkbox`, a linha do `DataTable`
+e a tarja do `Dialog` têm nome de fora — os mesmos da seção "Partes" da
+página:
+
+```tsx
+<Slider classNames={{ track: 'bg-accent-subtle', thumb: 'shadow-glow' }} />
+<Dialog classNames={{ backdrop: 'backdrop-blur-md' }} />
+<DataTable classNames={{ row: 'hover:bg-accent-subtle' }} />
+```
+
+Nunca alcance a parte por variante de descendente (`[&_tbody_tr]`): isso
+acopla a tela à árvore interna da peça, e uma `div` que vira `span` dentro da
+biblioteca quebra a tela sem aviso e sem erro. A regra da cor é a mesma do
+`className`: token, nunca cor literal.
+
 **Preencher e escrever texto são tokens diferentes.** `bg-danger` preenche e
 recebe `text-danger-fg` por cima; `text-danger-text` é o vermelho que se lê
 sobre o fundo da página. Nenhuma cor serve para as duas funções.

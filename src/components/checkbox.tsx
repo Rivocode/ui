@@ -4,6 +4,7 @@ import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 /** Traco do estado misto: alguns selecionados, nem todos. */
 function TracoMisto() {
@@ -47,11 +48,22 @@ export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "chil
    * link no meio da frase.
    */
   children?: ReactNode;
-  /** Classe do `<label>` de fora, quando ha texto. */
+  /**
+   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
+   * `classNames.label`, e continua valendo.
+   */
   labelClassName?: string;
+  /** Classe por parte: `box`, `indicator`, `label`. */
+  classNames?: Slots<"box" | "indicator" | "label">;
 };
 
-export function Checkbox({ className, children, labelClassName, ...props }: CheckboxProps) {
+export function Checkbox({
+  className,
+  children,
+  labelClassName,
+  classNames,
+  ...props
+}: CheckboxProps) {
   const box = (
     <BaseCheckbox.Root
       {...props}
@@ -67,6 +79,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
         "data-[indeterminate]:text-accent-fg",
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[disabled]:text-fg-disabled",
+        classNames?.box,
         className,
       )}
     >
@@ -75,7 +88,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
           <span
             {...indicatorProps}
             data-rc-check={state.indeterminate ? "indeterminate" : "checked"}
-            className="flex items-center justify-center"
+            className={cn("flex items-center justify-center", classNames?.indicator)}
           >
             {state.indeterminate ? <TracoMisto /> : <Visto />}
           </span>
@@ -95,6 +108,7 @@ export function Checkbox({ className, children, labelClassName, ...props }: Chec
         // borda e fazer o clique valer a dez centimetros do texto.
         "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
+        classNames?.label,
         labelClassName,
       )}
     >

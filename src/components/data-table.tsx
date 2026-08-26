@@ -21,6 +21,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 import { useMemo, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
@@ -90,6 +91,12 @@ export type DataTableProps<Row> = {
   /** Selecao controlada. Sem ela, a tabela guarda a propria selecao. */
   selected?: string[];
   onSelectedChange?: (keys: string[]) => void;
+
+  /**
+   * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
+   * `[&_tbody_tr]`, que acopla a tela de quem usa a arvore interna da peca.
+   */
+  classNames?: Slots<"table" | "head" | "row" | "cell" | "footer">;
 };
 
 /*
@@ -172,6 +179,7 @@ export function DataTable<Row>({
   selectable,
   selected,
   onSelectedChange,
+  classNames,
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
   const [selecaoInterna, setSelecaoInterna] = useState<RowSelectionState>({});
@@ -286,13 +294,13 @@ export function DataTable<Row>({
 
   return (
     <div className={className}>
-      <Table>
+      <Table className={classNames?.table}>
         {caption && <caption className="sr-only">{caption}</caption>}
 
         <TableHeader>
           <TableRow>
             {selectable && (
-              <TableHead className="w-10">
+              <TableHead className={cn("w-10", classNames?.head)}>
                 <Checkbox
                   aria-label="Selecionar todas as linhas da página"
                   checked={table.getIsAllPageRowsSelected()}
@@ -315,6 +323,7 @@ export function DataTable<Row>({
                   className={cn(
                     column.align === "right" && "text-right",
                     column.hideOnMobile && "max-sm:hidden",
+                    classNames?.head,
                   )}
                 >
                   {column.sortable && engineColumn ? (
@@ -386,11 +395,11 @@ export function DataTable<Row>({
                     ? (event) => openRow(event, linha.original as unknown as Row)
                     : undefined
                 }
-                className={cn(onRowClick && "cursor-pointer")}
+                className={cn(onRowClick && "cursor-pointer", classNames?.row)}
                 data-selected={linha.getIsSelected() || undefined}
               >
                 {selectable && (
-                  <TableCell className="w-10">
+                  <TableCell className={cn("w-10", classNames?.cell)}>
                     <Checkbox
                       aria-label="Selecionar linha"
                       checked={linha.getIsSelected()}
@@ -404,6 +413,7 @@ export function DataTable<Row>({
                     className={cn(
                       column.align === "right" && "text-right",
                       column.hideOnMobile && "max-sm:hidden",
+                      classNames?.cell,
                     )}
                   >
                     {column.cell
@@ -418,7 +428,12 @@ export function DataTable<Row>({
       </Table>
 
       {pageSize !== undefined && !loading && totalFiltrado > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3">
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-3 pt-3",
+            classNames?.footer,
+          )}
+        >
           <p className="text-sm text-fg-muted">
             {inicio}–{fim} de {totalFiltrado}
           </p>
