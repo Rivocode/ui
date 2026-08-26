@@ -116,14 +116,22 @@ jobs:
             -H "Authorization: Bearer $VERCEL_TOKEN" \
             https://api.vercel.com/v2/user) || conta=000
 
-          if [ "$conta" != "200" ]; then
-            erro "A Vercel recusou o token (HTTP $conta)."
+          # Quem responde se o token vale e o projeto, la embaixo, e nao esta
+          # consulta: um token preso a um time nao alcanca o recurso pessoal e
+          # responde 404 aqui estando perfeito. So o "forbidden" e conclusivo,
+          # porque a Vercel usa esse codigo para token expirado ou revogado.
+          if [ "$conta" = "200" ]; then
+            echo "Token da conta $(jq -r '.user.username // .user.email // "?"' /tmp/conta.json)."
+          elif [ "$(jq -r '.error.code // ""' /tmp/conta.json)" = "forbidden" ]; then
+            erro "A Vercel recusou o token (HTTP $conta): $(jq -r '.error.message // "?"' /tmp/conta.json)"
             echo "Ele expirou ou foi revogado. Gere outro em vercel.com/account/tokens"
             echo "e regrave VERCEL_TOKEN. No formulario, ESCOPO = o time dono do projeto,"
             echo "e nao a conta pessoal."
             exit 1
+          else
+            echo "O token nao diz de quem e (HTTP $conta), o que e normal quando ele"
+            echo "nasceu preso a um time. Segue para a pergunta que decide."
           fi
-          echo "Token da conta $(jq -r '.user.username // .user.email // "?"' /tmp/conta.json)."
 
           alvo=$(curl -sS -o /tmp/projeto.json -w '%{http_code}' \
             -H "Authorization: Bearer $VERCEL_TOKEN" \
@@ -135,6 +143,7 @@ jobs:
           fi
 
           erro "O token nao chega ao projeto (HTTP $alvo): $(jq -r '.error.code // "?"' /tmp/projeto.json)"
+          echo "Resposta: $(jq -c '.error // .' /tmp/projeto.json)"
           echo "Procurado: projeto $VERCEL_PROJECT_ID no time $VERCEL_ORG_ID."
           echo
           echo "O que este token alcanca hoje:"
