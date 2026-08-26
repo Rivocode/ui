@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { contrastRatio, readTokens } from "../scripts/check-contrast";
+import { compose, contrastRatio, readTokens } from "../scripts/check-contrast";
 
 const read = (p: string) => Bun.file(p).text();
 
@@ -65,4 +65,20 @@ test("nenhum componente do catalogo usa medida de controle fixa em pixel", async
   }
 
   expect(suspeitos).toEqual([]);
+});
+
+test("o aviso se le sobre o proprio fundo de aviso, e nao so sobre a pagina", async () => {
+  // O Alert pinta <estado>-subtle sobre a pagina e escreve <estado>-text em
+  // cima. O par que a pessoa le e esse, e nao o texto contra --rc-bg: sem
+  // compor o alfa antes de medir, o tema claro passava com 4,39.
+  const shared = await base();
+
+  for (const tema of ["rivocode-light", "rivocode-dark"]) {
+    const t = readTokens(shared + (await read(`src/tokens/themes/${tema}.css`)));
+    for (const estado of ["info", "success", "warning", "danger"]) {
+      const fundo = compose(t[`--rc-${estado}-subtle`]!, t["--rc-bg"]!);
+      const razao = contrastRatio(t[`--rc-${estado}-text`]!, fundo);
+      expect(`${tema} ${estado} ${razao >= 4.5}`).toBe(`${tema} ${estado} true`);
+    }
+  }
 });

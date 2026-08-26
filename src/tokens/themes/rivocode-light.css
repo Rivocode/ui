@@ -33,7 +33,7 @@
   --rc-success-subtle: rgb(15 118 110 / 0.1);
   --rc-warning: var(--rc-p-amber-700);
   --rc-warning-fg: var(--rc-p-white);
-  --rc-warning-text: var(--rc-p-amber-700);
+  --rc-warning-text: var(--rc-p-amber-800);
   --rc-warning-subtle: rgb(161 92 0 / 0.1);
   --rc-danger: var(--rc-p-red-700);
   --rc-danger-fg: var(--rc-p-white);

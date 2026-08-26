@@ -31,7 +31,7 @@
   --color-success-subtle: light-dark(rgba(15,118,110,0.1), rgba(61,220,151,0.14));
   --color-warning: light-dark(#a15c00, #f2b21c);
   --color-warning-fg: light-dark(#ffffff, #0f1113);
-  --color-warning-text: light-dark(#a15c00, #f2b21c);
+  --color-warning-text: light-dark(#8f5200, #f2b21c);
   --color-warning-subtle: light-dark(rgba(161,92,0,0.1), rgba(242,178,28,0.14));
   --color-danger: light-dark(#c0261f, #dc2626);
   --color-danger-fg: #ffffff;

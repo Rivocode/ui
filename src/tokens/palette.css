@@ -34,6 +34,9 @@
   --rc-p-teal-700: #0f766e;
   --rc-p-amber-400: #f2b21c;
   --rc-p-amber-700: #a15c00;
+  /* Um degrau mais escuro, para o texto de aviso se ler sobre o proprio fundo
+     de aviso no tema claro: em amber-700 o par dava 4,39. */
+  --rc-p-amber-800: #8f5200;
   --rc-p-red-400: #ff6b6b;
   --rc-p-red-600: #dc2626;
   --rc-p-red-700: #c0261f;

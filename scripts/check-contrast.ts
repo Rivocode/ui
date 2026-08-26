@@ -22,6 +22,27 @@ export function contrastRatio(a: string, b: string): number {
 }
 
 /**
+ * Compoe uma cor com alfa sobre o fundo em que ela e desenhada.
+ *
+ * Os papeis `-subtle` sao alfa por cima da superficie, e medir o RGB cru deles
+ * responde a pergunta errada: o que o olho ve e a mistura. Sem compor, o par
+ * "texto de aviso sobre fundo de aviso" nem entra na conta.
+ */
+export function compose(value: string, background: string): string {
+  const rgba = /^rgba?\(\s*(\d+)\s+(\d+)\s+(\d+)\s*\/\s*([\d.]+)\s*\)$/.exec(value.trim());
+  if (!rgba) return value;
+
+  const [r, g, b, alpha] = [+rgba[1]!, +rgba[2]!, +rgba[3]!, +rgba[4]!];
+  const base = background.replace("#", "");
+  const [br, bg, bb] = [0, 2, 4].map((i) => parseInt(base.slice(i, i + 2), 16));
+  const mistura = (cor: number, fundo: number) => Math.round(alpha * cor + (1 - alpha) * fundo);
+
+  return `#${[mistura(r, br!), mistura(g, bg!), mistura(b, bb!)]
+    .map((c) => c.toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
+/**
  * Le `--rc-x: valor` e resolve um nivel de var(). Recebe a paleta concatenada
  * com o tema, porque o tema aponta para a paleta e ela vive em outro arquivo.
  */
@@ -60,6 +81,27 @@ const PAIRS: Array<[string, string, number]> = [
   ["--rc-warning-fg", "--rc-warning", MIN_TEXT],
   ["--rc-danger-fg", "--rc-danger", MIN_TEXT],
   ["--rc-info-fg", "--rc-info", MIN_TEXT],
+];
+
+/**
+ * Os pares em que o fundo e alfa e precisa ser composto antes de medir.
+ *
+ * O Alert pinta `<estado>-subtle` por cima da pagina ou do cartao e escreve
+ * `<estado>-text` em cima. Medir esse texto contra `--rc-bg` - que e o que os
+ * pares acima fazem - responde outra pergunta, e deixa passar o par que a
+ * pessoa realmente le.
+ */
+const PARES_COMPOSTOS: Array<[string, string, string, number]> = [
+  ["--rc-info-text", "--rc-info-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-info-text", "--rc-info-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-success-text", "--rc-success-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-success-text", "--rc-success-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-warning-text", "--rc-warning-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-warning-text", "--rc-warning-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-danger-text", "--rc-danger-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-danger-text", "--rc-danger-subtle", "--rc-surface", MIN_TEXT],
+  ["--rc-accent-text", "--rc-accent-subtle", "--rc-bg", MIN_TEXT],
+  ["--rc-accent-text", "--rc-accent-subtle", "--rc-surface", MIN_TEXT],
 ];
 
 /**
@@ -113,6 +155,26 @@ if (import.meta.main) {
       if (!ok) failed++;
       console.log(
         `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${bg}  ${ratio.toFixed(2)}:1 (min ${min})`,
+      );
+    }
+
+    // Os pares de alfa: compoe o fundo antes de medir.
+    for (const [fg, subtle, under, min] of PARES_COMPOSTOS) {
+      const texto = tokens[fg];
+      const fundoAlfa = tokens[subtle];
+      const embaixo = tokens[under];
+      if (!texto || !fundoAlfa || !embaixo) {
+        console.log(`  FALTA  ${fg} sobre ${subtle}`);
+        failed++;
+        continue;
+      }
+
+      const fundo = compose(fundoAlfa, embaixo);
+      const ratio = contrastRatio(texto, fundo);
+      const ok = ratio >= min;
+      if (!ok) failed++;
+      console.log(
+        `  ${ok ? "ok   " : "FALHA"} ${fg} sobre ${subtle} em ${under}  ${ratio.toFixed(2)}:1 (min ${min})`,
       );
     }
   }
