@@ -4214,6 +4214,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do desenho."
+      },
+      {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
@@ -4271,6 +4277,12 @@
         "required": false,
         "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria.",
         "since": "0.4.0"
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do desenho."
       },
       {
         "name": "legend",
@@ -12778,6 +12790,12 @@
         "required": false,
         "note": "Uma frase sobre o que a tela mostra.",
         "since": "0.4.0"
+      },
+      {
+        "name": "titleAs",
+        "type": "\"h1\" | \"h2\" | \"h3\"",
+        "required": false,
+        "note": "Em que nivel o titulo sai."
       }
     ]
   },

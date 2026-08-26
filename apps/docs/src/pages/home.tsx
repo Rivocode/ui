@@ -35,7 +35,7 @@ import { version } from '../../../../package.json'
  * Conta a suíte da raiz inteira — `test/` e `native/test/` —, que é o que o
  * rótulo ao lado promete.
  */
-const TESTS = 586
+const TESTS = 602
 
 const INSTALL = 'npm install @rivocode/ui'
 
