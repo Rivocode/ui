@@ -208,6 +208,100 @@ vazar de `src/chart/`) e `test/classe-da-raiz`, que varre as 230 pecas dos tres
 indices atras de quem nao aceita `className` na raiz ou aceita e nao repassa -
 ela ja nasceu achando `Command` e `CalendarPanel`.
 
+### Uma mudanca de saida que nao tem nome novo
+
+`delta={12.5}` no `Stat` imprimia "12.5%" e passa a imprimir "alta de 13%". O
+`deltaFormat` chegou com padrao `percent`, e o `percent` da casa arredonda para
+zero casas. Nenhuma prop mudou de nome, o `tsc` nao acha, e a tela continua
+compilando - so o numero fica diferente. Quem precisa da casa decimal escreve
+`deltaFormat={(value) => percent(value, 1)}`.
+
+E a unica quebra desta versao que se descobre olhando, e por isso esta separada
+das outras dez.
+
+### A tabela ganha o rodape de totais
+
+`TableFooter` entra no indice, e no `DataTable` basta uma coluna declarar
+`total` para o `<tfoot>` existir:
+
+```tsx
+{ key: 'amount', header: 'Valor',
+  total: (rows) => currencyShort(rows.reduce((sum, row) => sum + row.amount, 0)) }
+```
+
+**O total soma o que a busca deixou, e nao a pagina.** O total de uma busca e o
+total da busca, e virar de pagina nao muda quanto se deve. Antes disso, um
+total morava numa `<div>` embaixo da tabela: sem largura de coluna, ele nunca
+alinhava com o numero que somava.
+
+Junto vem o `TableCaption`, para quem monta a `Table` a mao. Ele e o nome
+acessivel da tabela - o instinto oposto, um `<h3>` acima dela, nao quebra nada
+e custa o nome inteiro. E `<caption>` nao tem outro pai legal alem de
+`<table>`: solto ao lado, o React derruba com "cannot be a child of `<div>`".
+
+### Os quatro finais ganham texto proprio
+
+`errorTitle` e `noResultsMessage` no `DataTable`, `errorTitle` no
+`ChartContainer`. Num painel com quatro consultas, "Nao foi possivel carregar"
+quatro vezes nao diz qual delas caiu.
+
+O `Alert` acompanha com `icon` e `onDismiss`, e a base do `alertVariants`
+mudou junto: o icone entrava como filho, no meio do texto, e agora tem lugar -
+com `mt-0.5`, que o alinha com a maiuscula da primeira linha e nao com o centro
+dela.
+
+### Nove pecas voltam a aceitar `id`, `data-*` e `aria-*`
+
+`Stat`, `Tree`, `ColorPicker`, `Command`, `FileUpload`, `CalendarPanel`,
+`ChartDonut` e `ChartRadial` tinham tipo de objeto fechado em vez de estender
+`ComponentProps`, entao um `id` ou um `aria-label` escrito de fora nao chegava
+ao DOM - e nao havia erro, o atributo simplesmente sumia.
+
+Quatro colisoes tiveram que ser omitidas do tipo herdado, e a pior e silenciosa:
+o `title` do `Command` e do `CalendarPanel` e `string` dos dois lados, entao a
+intersecao COMPILAVA e mandava o valor para o titulo da peca **e** para a tarja
+amarela do navegador.
+
+Onde a peca escreve um `aria-label` padrao, o espalhamento vai depois dele,
+para o rotulo de quem chama vencer. Antes disso, um rotulo escrito de fora era
+engolido em silencio.
+
+### O `Tracker` deixa de montar um portal por ponto
+
+Cada quadrado montava um `Tooltip`, e tooltip e portal: um ano de dados eram
+365 portais montados para que no maximo um aparecesse. Agora a faixa inteira e
+o alvo, ha um balao so, e o indice lido sai de uma regra de tres sobre o
+retangulo da faixa - nao mede quadrado a quadrado, que custaria um layout por
+movimento do mouse.
+
+A acessibilidade subiu junto, e nao apenas nao regrediu: nada ali era focavel
+antes, entao a leitura exata de um periodo era so de quem tem mouse. A faixa
+agora e uma parada de tabulacao, as setas caminham, `Home` e `End` vao as
+pontas, e um `role="status"` anuncia o periodo lido pelo teclado - calado no
+ponteiro, que e o mesmo contrato do `ChartContainer`.
+
+O quadrado continua fora da ordem de tabulacao de proposito: 365 paradas dentro
+de um cartao seriam obstaculo, e a lista escondida ja entrega os 365 textos.
+
+### Tres guardas que estavam olhando para o lado errado
+
+- **`check:contrato` so conhecia o web.** Os quatro subcaminhos do pacote
+  nativo nunca entraram nele. Na primeira vez que rodou completo, achou sete
+  nomes que existiam no pacote e em texto nenhum.
+- **A guarda de acento so varria `src/`.** O `DataList` nativo serviu "Nao foi
+  possivel carregar a lista." por versoes, acentuada do lado web e crua no
+  aparelho. A varredura agora cobre os dois pacotes - e ganhou piso de arquivo,
+  porque a primeira tentativa de junta-los num padrao so varreu ZERO arquivo em
+  silencio e ficou verde por nao olhar nada.
+- **`check:comentarios` tinha divida declarada.** As duas ultimas linhas do
+  `DEBT` foram pagas, e a lista esta vazia.
+
+Sairam quatro scripts de `scripts/`: `acentos-previews`, `exports-ingles`,
+`rodar-acentos` e `titulos-previews`. Eram mutacoes de uma vez so, ja
+aplicadas, e o que faziam uma vez hoje e cobrado a cada `check`. Um deles
+deixou rastro: `Apos` virou `After` dentro de uma frase em portugues na fonte da
+tabela de paridade, e a palavra ficou la por versoes.
+
 ### Como migrar
 
 Busca e troca por palavra inteira resolve oito dos dez. Os dois de forma -

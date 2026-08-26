@@ -1,5 +1,133 @@
 # Mudancas
 
+## 0.3.0
+
+A fila chega a zero. Das 83 pecas do catalogo do web, 67 tem par no celular -
+64 com o mesmo nome, 3 com outro - e as 16 que faltam nao estao atrasadas: sao
+idioma de mesa, e a decisao de cada uma esta escrita na tabela de paridade.
+Nenhuma peca nova vai entrar por ali sem que alguem mude de ideia sobre o que
+um dedo faz.
+
+Junto vem o que o pacote ganhou depois da 0.2.0 e nunca foi registrado aqui:
+quatro subcaminhos, dezesseis pecas, e uma letra que a biblioteca prometia e
+nao entregava desde o comeco.
+
+### Quebras: dois nomes e um acento
+
+| Antes | Agora | Peca |
+|---|---|---|
+| `tone` | `trend` | `Sparkline` |
+| `accessibilityState.selected` | `accessibilityState.checked` | `RadioGroup` |
+
+O `tone` da `Sparkline` acompanha o web, que fez a mesma troca na 0.7.0 - o
+nome nao pode significar coisas diferentes nos dois lados. O `tsc` acha.
+
+O `RadioGroup` e conserto de acessibilidade, e nao gosto: o papel `radio` pede
+`checked`, e com `selected` o VoiceOver le "selecionada" em vez de anunciar
+marcada. Quem tinha teste afirmando sobre `selected` precisa reescrever a
+afirmacao; quem so usa a peca nao muda uma linha, e passa a ser anunciado
+direito.
+
+A terceira quebra nao aparece em nome nenhum e muda o que sai na tela: o padrao
+de `errorMessage` do `DataList` era `"Nao foi possivel carregar a lista."`, sem
+acento, enquanto o web escrevia a mesma frase acentuada havia versoes. A guarda
+que cobra acento em texto de tela so varria `src/`, entao ninguem acusava.
+Agora ela varre os dois pacotes, e o padrao saiu corrigido. Quem comparava essa
+string ao pe da letra - num teste de ponta a ponta, digamos - compara a versao
+acentuada.
+
+### `font-mono` nunca chegou ao aparelho
+
+Seis pecas pediam letra de codigo e nenhuma recebia: `Code`, `Timeline`,
+`Calendar`, `ColorPicker`, `ChartDonut` e `FileUpload`. A classe compilava para
+`{ fontFamily: "ui-monospace" }`, o react-native-css guarda so a PRIMEIRA
+familia da lista, e `ui-monospace` e generica de CSS - nao existe instalada no
+iOS nem no Android. O sistema caia calado na letra padrao, e como o texto
+aparecia, ninguem percebia.
+
+O conserto e um modulo escrito a mao, `native/src/font.ts`, com
+`Platform.select({ ios: "Menlo", android: "monospace" })`. Nao saiu dos tokens
+de proposito: `native/tokens.ts` e gerado do CSS, e familia de fonte por
+plataforma nao sai de CSS - sairia `ui-monospace` outra vez.
+
+**O efeito e visivel.** Chave de acesso de NF-e, valor hexadecimal de cor e
+tamanho de arquivo passam a alinhar em coluna, que e a unica razao de a letra
+ser monoespacada. Se a sua tela contava com a largura da letra proporcional,
+ela muda.
+
+Ha guarda: um teste varre `native/src/` inteiro e falha se `font-mono` voltar a
+aparecer numa classe. A classe morta nao acusa sozinha, e foi assim que ela
+durou.
+
+### Quatro subcaminhos, e a regra que os separa
+
+`@rivocode/ui-native/form`, `/chart`, `/clipboard` e `/file-upload`. Cada um
+existe porque tem um peer OPCIONAL atras, e no celular peer nao e byte: modulo
+do Expo e do `react-native-svg` custa build, e quem so quer um `Button` nao
+pode pagar isso.
+
+A regra que sai daqui e **um subcaminho por peer, e nao um por assunto**.
+`clipboard` e `file-upload` poderiam dividir uma porta chamada `/expo`, e a
+conta de quem instala diz que nao: quem poe um botao de copiar ao lado da chave
+de acesso de uma NF-e nao anexa arquivo nenhum, e um indice comum arrastaria o
+`expo-document-picker` para o projeto dele. E o peer que cobra a instalacao,
+entao e ele que decide onde a porta fica.
+
+`bun run check:contrato` passou a conferir os quatro: o que eles exportam tem
+que estar citado no contrato E na skill. Na primeira vez que rodou, achou sete
+nomes que existiam no pacote e em texto nenhum.
+
+### As pecas
+
+Da 0.2.0 para ca entraram, alem das tres de hoje: `Steps`, `DateRangePicker`,
+`Form`, `Tracker`, `InputGroup`, `PasswordInput`, `TagsInput`, `Indicator`,
+`Item`, `RelativeTime`, `Timeline`, `Code`, `ColorPicker`, `Clipboard`,
+`FileUpload` e as tres de grafico - `ChartContainer`, `ChartDonut` e
+`ChartRadial`.
+
+As tres ultimas da fila fecham o catalogo, e as tres esperavam decisao de
+gesto, nao codigo:
+
+- **`Tree`** empilha um nivel por vez. Tocar num galho empurra o nivel de
+  dentro; o cabecalho mostra o caminho e volta um nivel. Indentacao de arvore
+  inteira e ilegivel no terceiro nivel a 390px. O galho tem dois alvos - a
+  caixa marca o galho inteiro, o nome entra no nivel -, porque com um alvo so
+  nao havia como marcar "Financeiro" sem visitar as sete folhas.
+- **`TreeSelect`** e a mesma navegacao dentro de uma folha, com a contagem do
+  rascunho e `Aplicar` no rodape. A regra do web sobrevive: quem vale e a
+  folha, e marcar um pai marca todas as folhas debaixo. Galho meio marcado sai
+  com a caixa vazia e um `"2 de 7 escolhidos"` embaixo do nome - o `Checkbox`
+  nativo nao tem estado misto, e texto se le e se ouve.
+- **`Editable`** entra em edicao por toque LONGO, que e o gesto que o sistema
+  usa para agir sobre um texto. Toque curto nao faz nada, senao o teclado subia
+  a cada esbarrao numa lista que rola. **Sair do campo NAO salva**: o proprio
+  `Cancelar` tira o foco antes de rodar, entao um blur que salvasse salvaria o
+  rascunho no caminho de cancela-lo. E ha `accessibilityActions` de toque
+  longo, porque quem usa VoiceOver nao segura o dedo - sem isso a peca nao
+  tinha porta nenhuma para essa pessoa.
+
+### Os quatro finais falam a lingua do web
+
+`ChartContainer` e `DataList` cravavam os textos de erro. Agora aceitam
+`errorTitle`, `errorMessage` e `noResultsMessage`, com os mesmos nomes e os
+mesmos padroes do `@rivocode/ui`.
+
+Uma diferenca de padrao, e e decisao: o `errorTitle` do `DataList` nasce vazio.
+No web o titulo e quem diz "Nao foi possivel carregar" e a mensagem detalha;
+aqui o aviso da lista sempre teve uma linha so, e essa linha e a
+`errorMessage`. Dar padrao ao titulo poria duas frases quase iguais uma em cima
+da outra em toda tela que ja usa a peca.
+
+### Como migrar
+
+Busca e troca resolve as duas renomeacoes, e o `tsc` aponta a da `Sparkline`. A
+do `RadioGroup` so aparece em teste que afirma sobre `accessibilityState`. O
+acento do `DataList` e o unico que nao ha como o compilador achar: procure a
+string antiga em teste de ponta a ponta.
+
+Se alguma tela contava com a letra proporcional onde a biblioteca pedia
+monoespacada, ela muda de largura nesta versao.
+
 ## 0.2.0
 
 A primeira versao depois de uma auditoria externa que instalou o pacote,
