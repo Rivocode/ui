@@ -1,5 +1,25 @@
 # Mudancas
 
+## 0.6.1
+
+### O molde do telefone volta para dentro do `applyMask`
+
+```ts
+applyMask("8388112233", "telefone")  // "(83) 88112-233"
+```
+
+O fixo saia vestindo a pontuacao do celular. O `MASKS.telefone` guarda um
+molde so, e quem cumpria a promessa de trocar entre fixo e celular era o
+`MaskedInput`, escolhendo o molde por fora antes de chamar - qualquer outro
+chamador recebia o embolado.
+
+Contorno em quem usa e uma segunda fonte de verdade: a regra so vale onde
+alguem lembrou de repeti-la. A moeda ja era decidida dentro do `applyMask`
+pelo mesmo motivo, e o telefone e o outro molde que depende do que ja foi
+digitado. Agora os dois moram no mesmo lugar, e o componente anda pelo mesmo
+caminho que qualquer um que chame o utilitario direto.
+
+
 ## 0.6.0
 
 Uma releitura do relatorio de bancada sobre a 0.5.0, e um defeito que apareceu
