@@ -10,6 +10,16 @@ Compõe com `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` e
 `MenuSeparator`. O título de grupo e a propriedade `label` do `MenuGroup`, não
 uma peça separada.
 
+O menu também escolhe, e não só age: `MenuCheckboxItem` liga e desliga uma opção
+sem fechar o painel — o "quais colunas mostrar" de uma listagem —, e
+`MenuRadioGroup` com `MenuRadioItem` faz a escolha única, o "ordenar por". Os
+dois trazem o `aria-checked` de item de menu e a navegação por seta e por
+primeira letra, que um `Popover` com `Checkbox` dentro não tem.
+
+Quando um ramo merece painel próprio, `MenuSubmenu` com `MenuSubmenuTrigger`
+abre ao lado. E o item que navega é `MenuLinkItem`, que sai como `<a>` de
+verdade.
+
 `tone="danger"` no item que apaga. Renderiza em portal, então exige o
 `RivoProvider`.
 

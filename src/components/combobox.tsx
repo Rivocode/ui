@@ -9,10 +9,9 @@ import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positio
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 import { inputVariants } from "./field";
-import { floatingPanel } from "./menu";
+import { floatingGroupLabel, floatingPanel } from "./menu";
 
 export const Combobox = BaseCombobox.Root;
-export const ComboboxGroupLabel = BaseCombobox.GroupLabel;
 
 export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
   /** Mostra o botao de limpar quando ha escolha. */
@@ -154,6 +153,37 @@ export function ComboboxItem({
 
 export function ComboboxGroup({ className, ...props }: ComponentProps<typeof BaseCombobox.Group>) {
   return <BaseCombobox.Group {...props} className={cn("flex flex-col", className)} />;
+}
+
+/**
+ * O cabecalho de um `ComboboxGroup`. Vive dentro dele: e o grupo que aponta o
+ * `aria-labelledby` para ca, e um titulo escrito por fora nao nomeia nada.
+ *
+ * Ele saia daqui como a peca crua da Base UI, sem estilo nenhum: o cabecalho
+ * do grupo tinha o mesmo tamanho e a mesma cor dos itens, e lia-se como mais
+ * uma opcao da lista. Agora e o mesmo titulo do `MenuGroup` e do
+ * `SelectGroup`.
+ */
+export function ComboboxGroupLabel({
+  className,
+  ...props
+}: ComponentProps<typeof BaseCombobox.GroupLabel>) {
+  return <BaseCombobox.GroupLabel {...props} className={cn(floatingGroupLabel, className)} />;
+}
+
+/**
+ * A linha entre dois grupos da lista.
+ *
+ * Ela sai com `role="presentation"`, e nao com o `role="separator"` do
+ * `MenuSeparator`: dentro de uma lista de opcoes, um no com papel proprio
+ * entra na contagem que o leitor de tela anuncia ("opcao 3 de 12") e quebra a
+ * conta. Quem ouve recebe a fronteira pelo nome do grupo.
+ */
+export function ComboboxSeparator({
+  className,
+  ...props
+}: ComponentProps<typeof BaseCombobox.Separator>) {
+  return <BaseCombobox.Separator {...props} className={cn("my-1 h-px bg-border", className)} />;
 }
 
 /**

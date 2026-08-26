@@ -1,14 +1,19 @@
-import { Download, MoreHorizontal, Trash2 } from "lucide-react";
+import { Columns3, Download, MoreHorizontal, SlidersHorizontal, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
   Button,
   Menu,
+  MenuCheckboxItem,
   MenuContent,
   MenuItem,
   MenuGroup,
+  MenuRadioGroup,
+  MenuRadioItem,
   MenuSeparator,
+  MenuSubmenu,
+  MenuSubmenuTrigger,
   MenuTrigger,
   Popover,
   PopoverClose,
@@ -19,7 +24,10 @@ import {
   RivoProvider,
   Select,
   SelectContent,
+  SelectGroup,
+  SelectGroupLabel,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
   Tooltip,
@@ -35,6 +43,15 @@ const STATUS = [
   { label: "Pagas", value: "pagas" },
   { label: "Vencidas", value: "vencidas" },
 ];
+
+const NATURES = [
+  { label: "Venda de mercadoria", value: "5102", flow: "Saida" },
+  { label: "Remessa para conserto", value: "5915", flow: "Saida" },
+  { label: "Devolucao de venda", value: "1202", flow: "Entrada" },
+  { label: "Compra para revenda", value: "1102", flow: "Entrada" },
+];
+
+const COLUMNS = ["Numero", "Cliente", "Emissao", "Valor"];
 
 function EntryToast() {
   const toast = useToast();
@@ -94,6 +111,84 @@ function Sample({ theme }: { theme: RivoTheme }) {
               </MenuItem>
             </MenuContent>
           </Menu>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm text-fg-muted">Colunas</p>
+          <Menu defaultOpen>
+            <MenuTrigger render={<Button variant="secondary" size="sm" />}>
+              <Columns3 size={15} aria-hidden="true" />
+              Colunas
+            </MenuTrigger>
+            <MenuContent>
+              <MenuGroup label="Mostrar na listagem">
+                {COLUMNS.map((column) => (
+                  <MenuCheckboxItem
+                    key={column}
+                    defaultChecked={column !== "Valor"}
+                    disabled={column === "Numero"}
+                  >
+                    {column}
+                  </MenuCheckboxItem>
+                ))}
+              </MenuGroup>
+            </MenuContent>
+          </Menu>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm text-fg-muted">Ordenar por</p>
+          <Menu defaultOpen>
+            <MenuTrigger render={<Button variant="secondary" size="sm" />}>
+              <SlidersHorizontal size={15} aria-hidden="true" />
+              Ordenar
+            </MenuTrigger>
+            <MenuContent>
+              <MenuRadioGroup defaultValue="emissao" label="Ordenar por">
+                <MenuRadioItem value="emissao">Data de emissao</MenuRadioItem>
+                <MenuRadioItem value="valor">Valor</MenuRadioItem>
+                <MenuRadioItem value="cliente" disabled>
+                  Cliente
+                </MenuRadioItem>
+              </MenuRadioGroup>
+              <MenuSeparator />
+              <MenuSubmenu defaultOpen>
+                <MenuSubmenuTrigger>Exportar</MenuSubmenuTrigger>
+                <MenuContent>
+                  <MenuItem>XML da NF-e</MenuItem>
+                  <MenuItem>PDF do DANFE</MenuItem>
+                </MenuContent>
+              </MenuSubmenu>
+            </MenuContent>
+          </Menu>
+        </div>
+
+        <div>
+          <p className="mb-2 text-sm text-fg-muted">Natureza da operacao</p>
+          <Select items={NATURES} defaultValue="5102" defaultOpen>
+            <SelectTrigger aria-label="Natureza da operacao" className="min-w-64">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectGroupLabel>Saida</SelectGroupLabel>
+                {NATURES.filter((n) => n.flow === "Saida").map((n) => (
+                  <SelectItem key={n.value} value={n.value}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+              <SelectSeparator />
+              <SelectGroup>
+                <SelectGroupLabel>Entrada</SelectGroupLabel>
+                {NATURES.filter((n) => n.flow === "Entrada").map((n) => (
+                  <SelectItem key={n.value} value={n.value}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
 
         <div>

@@ -7,6 +7,8 @@ category: Formulário
 Escolha única em lista.
 
 Compõe com `SelectTrigger`, `SelectValue`, `SelectContent` e `SelectItem`.
+Lista com famílias de verdade ganha `SelectGroup` com `SelectGroupLabel`, e
+`SelectSeparator` entre uma família e outra.
 
 **Passe `items` com `{ label, value }` na raiz.** Sem isso o gatilho mostra o
 valor cru em vez do rótulo, e essa é a armadilha mais fácil de cair aqui.

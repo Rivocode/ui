@@ -6,7 +6,7 @@ import type { ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
-import { floatingPanel } from "./menu";
+import { floatingGroupLabel, floatingPanel } from "./menu";
 
 /**
  * Passe `items` com `{ label, value }` para o gatilho mostrar o rotulo. Sem
@@ -127,4 +127,45 @@ export function SelectItem({
       <BaseSelect.ItemText className="col-start-2">{children}</BaseSelect.ItemText>
     </BaseSelect.Item>
   );
+}
+
+/**
+ * Uma familia dentro da lista, com o `SelectGroupLabel` de cabecalho.
+ *
+ * O desenho e o do `ComboboxGroup`, e nao o do `MenuGroup`, porque a irma e
+ * ela: as duas listam opcoes de formulario, e quem troca uma pela outra ao
+ * descobrir que a lista cresceu nao deveria ter que reescrever a arvore.
+ *
+ * Agrupar so paga quando as familias sao de verdade - natureza de operacao por
+ * tipo, UF por regiao, plano de contas. Grupo de dois itens acrescenta um
+ * cabecalho e nao tira trabalho nenhum de quem procura.
+ */
+export function SelectGroup({ className, ...props }: ComponentProps<typeof BaseSelect.Group>) {
+  return <BaseSelect.Group {...props} className={cn("flex flex-col", className)} />;
+}
+
+/**
+ * O cabecalho de um `SelectGroup`. Vive dentro dele: e o grupo que aponta o
+ * `aria-labelledby` para ca, e um titulo escrito por fora nao nomeia nada.
+ */
+export function SelectGroupLabel({
+  className,
+  ...props
+}: ComponentProps<typeof BaseSelect.GroupLabel>) {
+  return <BaseSelect.GroupLabel {...props} className={cn(floatingGroupLabel, className)} />;
+}
+
+/**
+ * A linha entre dois grupos da lista.
+ *
+ * Ela sai com `role="presentation"`, e nao com o `role="separator"` do
+ * `MenuSeparator`: dentro de uma lista de opcoes, um no com papel proprio
+ * entra na contagem que o leitor de tela anuncia ("opcao 3 de 12") e quebra a
+ * conta. Quem ouve recebe a fronteira pelo nome do grupo.
+ */
+export function SelectSeparator({
+  className,
+  ...props
+}: ComponentProps<typeof BaseSelect.Separator>) {
+  return <BaseSelect.Separator {...props} className={cn("my-1 h-px bg-border", className)} />;
 }

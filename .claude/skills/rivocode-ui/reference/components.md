@@ -19,6 +19,9 @@ exemplos que rodam e a tabela de props.
 | Escolha entre poucas opções fixas | `Select` | O `Combobox` pede digitação sem precisar |
 | Lista longa, ou vinda do servidor | `Combobox` | Não cabe na cabeça de quem escolhe |
 | Liga agora, sem confirmar | `Switch` | O `Checkbox` só vale quando o formulário for enviado |
+| Quais colunas a listagem mostra | `MenuCheckboxItem` | Dentro do `Menu`: traz `aria-checked` e a navegação de menu, que `Popover` com `Checkbox` dentro não tem |
+| Ordenar por, dentro do menu | `MenuRadioGroup` + `MenuRadioItem` | Uma ordem de cada vez; passe `closeOnClick` para o menu fechar ao escolher |
+| Lista de opções com famílias de verdade | `SelectGroup` + `SelectGroupLabel` | Se agrupar é para domar lista grande demais, o remédio é o `Combobox`, que busca |
 | Marcar uma opção entre várias | `ToggleGroup` | Guarda estado e diz isso no aria |
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
 | Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |

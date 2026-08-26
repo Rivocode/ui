@@ -1,4 +1,15 @@
-import { Field, FieldLabel, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@rivocode/ui'
+import {
+  Field,
+  FieldLabel,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectGroupLabel,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from '@rivocode/ui'
 
 const PERIODOS = [
   { label: 'Ultimos 30 dias', value: '30' },
@@ -56,5 +67,49 @@ export function InsideAField() {
         </SelectContent>
       </Select>
     </Field>
+  )
+}
+
+const NATUREZAS = [
+  { label: 'Venda de mercadoria', value: '5102', flow: 'Saída' },
+  { label: 'Remessa para conserto', value: '5915', flow: 'Saída' },
+  { label: 'Devolução de venda', value: '1202', flow: 'Entrada' },
+  { label: 'Compra para revenda', value: '1102', flow: 'Entrada' },
+]
+
+/** Agrupado por família */
+export function Grouped() {
+  return (
+    <div className="min-h-72">
+      {/* O `items` continua sendo a lista INTEIRA e plana: e por ele que o
+          gatilho traduz o valor guardado no rotulo que a pessoa leu. O grupo
+          arruma a lista aberta, e nao o que o gatilho mostra. */}
+      <Select items={NATUREZAS} defaultValue="5102" defaultOpen /* rc-keep-open */>
+        <SelectTrigger aria-label="Natureza da operação" className="min-w-64">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectGroupLabel>Saída</SelectGroupLabel>
+            {NATUREZAS.filter((n) => n.flow === 'Saída').map((n) => (
+              <SelectItem key={n.value} value={n.value}>
+                {n.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+
+          <SelectSeparator />
+
+          <SelectGroup>
+            <SelectGroupLabel>Entrada</SelectGroupLabel>
+            {NATUREZAS.filter((n) => n.flow === 'Entrada').map((n) => (
+              <SelectItem key={n.value} value={n.value}>
+                {n.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   )
 }
