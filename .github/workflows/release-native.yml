@@ -53,6 +53,34 @@ jobs:
       - run: bun install --frozen-lockfile
         working-directory: examples/native
 
+      # O segredo e conferido ANTES de tudo, e nao no ultimo passo.
+      #
+      # Sem isto, a falta dele so aparece depois do install, do check, do build
+      # e do empacotamento - o `npm publish` morre com ENEEDAUTH e a unica
+      # coisa que restou do gasto e uma tag ja publicada no historico apontando
+      # para uma versao que nunca subiu.
+      #
+      # Duas causas comuns, e a segunda nao se parece com um problema de
+      # segredo: o NPM_TOKEN nao existe no repositorio; ou ele existe como
+      # segredo da ORGANIZACAO, e repositorio privado em plano gratuito nao
+      # enxerga segredo de organizacao. Nos dois casos o valor chega vazio.
+      - name: Conferir o segredo do npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "O segredo NPM_TOKEN chegou vazio."
+            echo
+            echo "Confira em Settings > Secrets and variables > Actions:"
+            echo "  - ele existe como segredo do REPOSITORIO (e nao so da organizacao)?"
+            echo "  - repositorio privado em plano gratuito nao le segredo de organizacao."
+            echo
+            echo "Depois de corrigir, republique sem criar tag nova:"
+            echo "  Actions > este workflow > Run workflow, com a tag existente."
+            exit 1
+          fi
+          echo "Segredo presente."
+
       - name: Conferir se a tag bate com a versao
         run: |
           tag="${{ github.event.inputs.tag || github.ref_name }}"

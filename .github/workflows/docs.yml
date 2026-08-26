@@ -1,0 +1,83 @@
+name: docs
+
+# Publica ds.rivocode.com.br a cada subida na main.
+#
+# A Vercel constroi sozinha quando ela mesma le o repositorio - e e ai que o
+# plano Hobby barra: repositorio privado de organizacao exige Pro. Este
+# workflow tira o repositorio da conta: o site e construido AQUI e sobe pronto,
+# entao a Vercel nunca olha para o codigo nem para quem e o dono dele. E o
+# caminho que a propria documentacao dela indica para quando a integracao com o
+# Git nao esta disponivel.
+#
+# O que nao muda: o projeto, o dominio e o vercel.json. O `vercel build` le o
+# mesmo arquivo e produz as mesmas regras - o rewrite que faz a navegacao
+# funcionar e, principalmente, os headers que entregam `.md` como markdown e
+# `llms.txt` como texto. Sem eles o navegador baixa o arquivo em vez de mostrar,
+# e um agente recebe HTML onde esperava markdown.
+on:
+  push:
+    branches: [main]
+  # Para republicar sem um commit novo - quando so o segredo ou o dominio muda.
+  workflow_dispatch:
+
+# Uma publicacao por vez: duas subidas seguidas na main disputariam o mesmo
+# dominio, e a que terminasse por ultimo venceria, mesmo sendo a mais velha.
+concurrency:
+  group: docs
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # O CLI da Vercel roda em Node, e o build do site roda em bun. Os dois
+      # precisam existir: o `vercel build` chama o `buildCommand` do
+      # vercel.json, que e `cd apps/docs && bun run build`.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: bun install --frozen-lockfile
+
+      # O `.vercel/` nao e versionado - e conta local, e nao configuracao de
+      # projeto. Os dois identificadores chegam por segredo, e sao eles que
+      # dizem qual projeto receber o resultado.
+      - name: Construir
+        run: npx vercel@latest build --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      # A conferencia que a integracao da Vercel nunca fez: o site existe para
+      # ser lido por agente, e o indice e a porta. Se o build sair sem
+      # `llms.txt` ou sem as paginas cruas, ele sobe bonito e inutil - e o
+      # sintoma so aparece quando alguem pede a peca errada a um agente.
+      - name: Conferir o que vai ao ar
+        run: |
+          out=.vercel/output/static
+          for arquivo in "$out/llms.txt" "$out/index.html" "$out/componentes/button.md"; do
+            if [ ! -f "$arquivo" ]; then
+              echo "Falta no build: $arquivo"
+              exit 1
+            fi
+          done
+          paginas=$(find "$out/componentes" -name '*.md' | wc -l)
+          echo "$paginas paginas cruas, llms.txt e index no lugar"
+          if [ "$paginas" -lt 100 ]; then
+            echo "Paginas de menos: o catalogo tem mais de cem."
+            exit 1
+          fi
+
+      - name: Publicar
+        run: npx vercel@latest deploy --prebuilt --prod --token "$VERCEL_TOKEN"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
