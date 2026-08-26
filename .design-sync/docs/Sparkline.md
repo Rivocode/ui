@@ -31,3 +31,7 @@ número não tem o que ler em voz alta, e o número ao lado dela já foi lido.
 
 Passe `label` quando ela for a única informação ali, e ela vira `role="img"` com
 o texto que você escrever.
+
+`variant="bar"` conta ocorrência por período — emissões por dia, chamados por
+semana — em vez de tendência contínua. É a única variante que atravessa para o
+`@rivocode/ui-native`: a área pede polígono preenchido, que sem SVG não sai.

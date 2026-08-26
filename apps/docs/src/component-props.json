@@ -18262,9 +18262,9 @@
       },
       {
         "name": "variant",
-        "type": "\"area\" | \"line\"",
+        "type": "\"area\" | \"bar\" | \"line\"",
         "required": false,
-        "note": "`line` para tendencia pura; `area` quando o volume tambem conta."
+        "note": "`line` para tendencia pura, `area` quando o volume tambem conta, `bar` para contagem por periodo - emissoes por dia, chamados por semana."
       }
     ]
   },

@@ -3,6 +3,7 @@ export { Button, type ButtonProps } from "./button";
 export { Badge, type BadgeProps } from "./badge";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 export { Stat, type StatProps } from "./stat";
+export { Sparkline, type SparklineProps } from "./sparkline";
 export { Skeleton } from "./skeleton";
 export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { Field, Input, type FieldProps, type InputProps } from "./field";

@@ -107,3 +107,22 @@ test("o medidor segmentado sai de tracinhos, e nao de arco liso", () => {
   expect([...ticks].filter((tick) => tick.getAttribute("data-rc-tick") === "on").length).toBe(36);
   expect(container.querySelector('[role="img"]')?.getAttribute("aria-label")).toBe("82% da meta");
 });
+
+test("a sparkline em barra existe nos dois mundos, com o mesmo nome", () => {
+  // O nativo desenha barra e nao area - area pede poligono preenchido, que
+  // com View nao sai. Alinhar pelo web custa uma variante e evita a
+  // divergencia de nome que ja mordeu Avatar, OTPField e ToggleGroup: `bar`
+  // passa a significar a mesma coisa nos dois, e so `area` fica de fora, que e
+  // limitacao de plataforma e nao vocabulario diferente.
+  // O desenho em si nao da para conferir aqui: o ResponsiveContainer mede
+  // 0x0 no jsdom e o recharts nao emite nada. Quem guarda o desenho e o
+  // `bun run visual`; aqui fica o contrato - a variante existe, e a peca
+  // continua se anunciando certo com ela.
+  const { container } = withTheme(
+    <Sparkline data={[3, 9, 5, 12]} variant="bar" label="Emissões por dia" />,
+  );
+  const box = container.querySelector('[role="img"]');
+
+  expect(box?.getAttribute("aria-label")).toBe("Emissões por dia");
+  expect(box?.getAttribute("aria-hidden")).toBeNull();
+});
