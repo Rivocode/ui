@@ -30,9 +30,18 @@ idioma da plataforma antes de atravessar.
 Num app Expo:
 
 ```sh
-npx expo install nativewind react-native-css tailwindcss @tailwindcss/postcss postcss
+npx expo install nativewind@preview react-native-css tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 ```
+
+O `@preview` não é enfeite: no npm a tag `latest` do NativeWind ainda é a
+4.2.6, e este pacote pede a 5 (`nativewind: ">=5.0.0-preview.1"` no peer).
+Sem a tag você instala a v4, e aí o `metro.config.js` logo abaixo nem carrega
+— a v5 exporta `withNativewind`, a v4 exporta `withNativeWind`, com W
+maiúsculo, e o erro que sai é um `undefined is not a function` que não conta
+de onde veio. Saiba antes de começar: **a NativeWind 5 ainda é pré-lançamento**
+e é o único caminho que o `@rivocode/ui-native` conhece hoje, então ir para
+produção com ele é ir para produção sobre um preview.
 
 Quatro arquivos do app participam, cada um por um motivo que morde:
 
