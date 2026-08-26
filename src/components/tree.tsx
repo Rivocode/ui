@@ -222,7 +222,18 @@ function Ramo({
           />
         )}
 
-        <span className="min-w-0 flex-1 truncate">{node.label}</span>
+        {/*
+          * O nome do no chega em `items` e ainda perde largura para cada nivel
+          * de indentacao, entao o corte aparece cedo. O `title` e a unica
+          * saida para quem enxerga - nada mais na tela mostra o nome inteiro.
+          * Sem `aria-label`: o texto segue no DOM e o leitor de tela ja o le.
+          */}
+        <span
+          title={typeof node.label === "string" ? node.label : undefined}
+          className="min-w-0 flex-1 truncate"
+        >
+          {node.label}
+        </span>
       </div>
 
       {temFilhos && isOpen && (

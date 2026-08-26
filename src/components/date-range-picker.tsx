@@ -97,7 +97,15 @@ export function DateRangePicker({
         className,
       )}
     >
-      <span className="truncate">{label}</span>
+      {/*
+        * Duas datas por extenso num gatilho `sm` cortam, e o periodo escolhido
+        * e justamente o que a pessoa precisa reler antes de confiar no filtro.
+        * O `title` sai do proprio intervalo; vazio e o placeholder, texto do
+        * desenvolvedor, que nao ganha dica.
+        */}
+      <span title={empty ? undefined : label} className="truncate">
+        {label}
+      </span>
       <CalendarDays size={16} aria-hidden="true" className="shrink-0 text-fg-muted" />
     </button>
   );

@@ -39,6 +39,14 @@ export function Breadcrumb({ className, items, maxItems = 4, ...props }: Breadcr
       <ol className="flex items-center gap-1.5">
         {visiveis.map((crumb, index) => {
           const isLast = index === visiveis.length - 1;
+          // A migalha quase sempre carrega nome de registro vindo do servidor,
+          // e o `truncate` corta sem deixar saida para quem enxerga. O `title`
+          // devolve o texto inteiro ao mouse; nao vai `aria-label` junto,
+          // porque o texto continua no DOM e o leitor de tela ja o le - o
+          // atributo so faria ele ler duas vezes. Fica de fora quando o rotulo
+          // e ReactNode: `title` e string, e nao ha o que colocar nele.
+          const fullLabel =
+            crumb !== "reticencia" && typeof crumb.label === "string" ? crumb.label : undefined;
           // No celular so as duas ultimas ficam. A penultima e a que da
           // contexto; o resto e caminho que ninguem le no aperto.
           const wideOnly = index < visiveis.length - 2;
@@ -59,6 +67,7 @@ export function Breadcrumb({ className, items, maxItems = 4, ...props }: Breadcr
                 ) : crumb.href && !isLast ? (
                   <a
                     href={crumb.href}
+                    title={fullLabel}
                     className={cn(
                       "truncate rounded-sm text-fg-muted",
                       // A migalha mede 58x18: a largura passa, a altura de uma
@@ -79,7 +88,11 @@ export function Breadcrumb({ className, items, maxItems = 4, ...props }: Breadcr
                     {crumb.label}
                   </a>
                 ) : (
-                  <span aria-current={isLast ? "page" : undefined} className="truncate text-fg">
+                  <span
+                    aria-current={isLast ? "page" : undefined}
+                    title={fullLabel}
+                    className="truncate text-fg"
+                  >
                     {crumb.label}
                   </span>
                 )}

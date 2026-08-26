@@ -78,6 +78,10 @@ export function Editable({
           type="button"
           disabled={disabled}
           onClick={open}
+          // O valor e o registro em si, e fechado ele mora numa linha que
+          // corta. `value || undefined` de proposito: vazio mostra o
+          // placeholder, que e texto do desenvolvedor e nao vira dica.
+          title={value || undefined}
           className={cn(
             "min-w-0 truncate rounded-sm px-1 py-0.5 text-left text-base text-fg",
             "transition-colors duration-[var(--rc-duration-fast)] ease-rc",

@@ -79,8 +79,21 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                   {concluido ? <Check size={13} aria-hidden="true" /> : index + 1}
                 </span>
 
+                {/*
+                  * O `truncate` segura o texto dentro da moldura, mas quem
+                  * enxerga fica sem o resto: o passo chega pronto em `steps`,
+                  * a peca e que decide a largura da faixa, e nao ha nenhum
+                  * outro lugar na tela onde o titulo inteiro apareca.
+                  *
+                  * So `title`, e nunca `aria-label` junto: o texto completo
+                  * continua no DOM, o leitor de tela ja o le por inteiro, e
+                  * repetir no atributo faria ele ler duas vezes. O `title`
+                  * cobre o mouse - no toque e no teclado ele nao aparece, e
+                  * essa e a limitacao aceita aqui, nao um descuido.
+                  */}
                 <span className="flex min-w-0 flex-col">
                   <span
+                    title={step.title}
                     className={cn(
                       "truncate font-sans text-sm",
                       agora ? "font-medium text-fg" : "text-fg-muted",
@@ -89,7 +102,9 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                     {step.title}
                   </span>
                   {step.description && (
-                    <span className="truncate text-xs text-fg-subtle">{step.description}</span>
+                    <span title={step.description} className="truncate text-xs text-fg-subtle">
+                      {step.description}
+                    </span>
                   )}
                 </span>
               </button>

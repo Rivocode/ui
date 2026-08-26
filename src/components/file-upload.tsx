@@ -193,7 +193,15 @@ export function FileUploadItem({
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-3">
-          <span className="truncate font-sans text-sm text-fg">{name}</span>
+          {/*
+            * Nome de arquivo e o caso classico do corte: chega do disco, pode
+            * ter setenta caracteres, e sem `title` quem enxerga nao tem como
+            * conferir se removeu o arquivo certo. Sem `aria-label` - o nome
+            * continua inteiro no DOM e o leitor de tela ja o le dali.
+            */}
+          <span title={name} className="truncate font-sans text-sm text-fg">
+            {name}
+          </span>
           <span className="shrink-0 font-mono text-xs text-fg-subtle">{fileSize(size)}</span>
         </div>
 

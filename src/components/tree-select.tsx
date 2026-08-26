@@ -76,7 +76,15 @@ export function TreeSelect({
           />
         }
       >
-        <span className="truncate">{label}</span>
+        {/*
+          * Ate tres escolhas o gatilho mostra os nomes, que vem de `items` e
+          * cortam num campo estreito. O `title` devolve a lista inteira; acima
+          * de tres o rotulo ja e "N escolhidos", que nao corta e nao merece
+          * dica, e vazio e placeholder do desenvolvedor.
+          */}
+        <span title={names.length > 0 && names.length <= 3 ? label : undefined} className="truncate">
+          {label}
+        </span>
         <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-fg-subtle" />
       </PopoverTrigger>
 

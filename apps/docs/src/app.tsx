@@ -18,11 +18,17 @@ function Brand({ navigate }: { navigate: (route: Route) => void }) {
   return (
     <a
       {...linkTo({ kind: 'home' }, navigate)}
-      className="flex items-center gap-2 font-display text-sm tracking-wide text-fg"
+      className="flex min-w-0 items-center gap-2 font-display text-sm tracking-wide text-fg"
     >
-      <Logo className="h-4 w-auto text-accent" />
-      RIVOCODE
-      <span className="font-mono text-xs font-normal text-fg-subtle">/ui</span>
+      <Logo className="h-4 w-auto shrink-0 text-accent" />
+      {/* The wordmark is a flex item of its own so it can shrink with an
+          ellipsis instead of being clipped mid-letter. */}
+      <span className="truncate">RIVOCODE</span>
+      {/* The suffix is the first thing to go on a phone: at 320px the header
+          row was 23px wider than the window, and dropping this is the
+          cheapest way to pay for part of it - the name alone still identifies
+          the site. */}
+      <span className="hidden font-mono text-xs font-normal text-fg-subtle sm:inline">/ui</span>
     </a>
   )
 }
@@ -99,7 +105,10 @@ function Nav({
     'sticky top-0 z-[1] -mx-1 bg-bg px-4 pt-2 pb-2 font-mono text-[0.68rem] font-medium tracking-[0.14em] text-fg-subtle uppercase'
 
   return (
-    <nav className="flex h-full flex-col gap-4">
+    /* Named landmark: the page has two navs, and the unnamed one was this,
+       the bigger of the two. In a landmark list "navigation" next to
+       "navigation, Nesta página" left the wrong one anonymous. */
+    <nav aria-label="Peças e guias" className="flex h-full flex-col gap-4">
       <div className="relative">
         <Search
           size={14}
@@ -216,9 +225,34 @@ export function App() {
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
       <div className="min-h-dvh">
+        {/* The sidebar repeats ~90 links on every page, so the first control
+            of an example sat at tab stop #105. A screen reader jumps that by
+            landmark; someone driving with the keyboard alone had no way past
+            it. First focusable element on the page, and it has to *appear*
+            when focused - `sr-only` on its own would leave it invisible under
+            the caret, which is worse than not having it. */}
+        <a
+          href="#conteudo"
+          className="sr-only rounded-md focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[var(--rc-z-sticky)] focus:m-0 focus:h-auto focus:w-auto focus:overflow-visible focus:border focus:border-accent focus:bg-surface-raised focus:px-3 focus:py-2 focus:font-sans focus:text-sm focus:whitespace-nowrap focus:text-fg focus:shadow-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Pular para o conteúdo
+        </a>
+
         <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur-md">
-          <div className="flex h-14 items-center justify-between gap-4 px-4 sm:px-6">
-            <div className="flex items-center gap-3">
+          {/* `min-w-0` on the left block is what stops the row overflowing at
+              320px: a flex item defaults to `min-width: auto`, so the drawer
+              button plus the wordmark refused to shrink and pushed the chips
+              23px past the edge of the window on every route - WCAG 1.4.10.
+              The chips keep `shrink-0` so the squeeze lands on the wordmark,
+              which has an ellipsis, and not on the three targets.
+
+              The tighter gaps and chip padding below `sm` are what stop that
+              ellipsis from ever showing: without them the wordmark fitted
+              with zero slack and flipped to "RIVOCO..." depending on when the
+              display font finished loading. The chips stay well over the
+              24x24 of WCAG 2.5.8. */}
+          <div className="flex h-14 items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
               {/* On a phone the sidebar becomes a drawer: 256px of fixed menu
                   inside 390px of screen leaves no page to read. */}
               {!fullWidth && (
@@ -243,13 +277,13 @@ export function App() {
               <Brand navigate={navigate} />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               {/* The documentation needs its own way in from every page, and
                   it opens where someone actually starts: installation. From
                   there the sidebar carries them to any piece. */}
               <a
                 {...linkTo({ kind: 'guide', slug: 'instalacao' }, navigate)}
-                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'guide' || route.kind === 'component' || route.kind === 'foundation'
                     ? 'border-accent text-fg'
                     : 'border-border text-fg-subtle'
@@ -261,7 +295,7 @@ export function App() {
 
               <a
                 {...linkTo({ kind: 'demo' }, navigate)}
-                className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
                   route.kind === 'demo'
                     ? 'border-accent text-fg'
                     : 'border-border text-fg-subtle'
@@ -273,7 +307,7 @@ export function App() {
 
               <a
                 href="/llms.txt"
-                className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1.5 sm:px-2.5 font-mono text-xs text-fg-subtle transition-colors hover:border-accent hover:text-fg"
               >
                 <Bot size={13} />
                 <span className="hidden sm:inline">/llms.txt</span>
@@ -283,11 +317,12 @@ export function App() {
         </header>
 
         {fullWidth ? (
-          route.kind === 'home' ? (
-            <Home navigate={navigate} />
-          ) : (
-            <DemoPage />
-          )
+          /* `tabIndex={-1}` is not decoration: without it Chrome and Safari
+             only scroll, leaving the caret on the skip link, so the next Tab
+             walks straight back into the header. */
+          <main id="conteudo" tabIndex={-1} className="outline-none">
+            {route.kind === 'home' ? <Home navigate={navigate} /> : <DemoPage />}
+          </main>
         ) : (
           /* The sidebar sits against the edge of the window, like the header
              above it. Centring the whole shell left a gap to its left and put
@@ -298,7 +333,7 @@ export function App() {
             </aside>
 
             <div className="flex min-w-0 flex-1 justify-center">
-              <main className="min-w-0 flex-1 xl:max-w-3xl">
+              <main id="conteudo" tabIndex={-1} className="min-w-0 flex-1 outline-none xl:max-w-3xl">
                 {route.kind === 'catalog' && <CatalogPage navigate={navigate} />}
                 {route.kind === 'foundation' && <FoundationPage />}
                 {route.kind === 'guide' && <GuidePage slug={route.slug} />}
