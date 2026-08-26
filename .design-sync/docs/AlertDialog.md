@@ -7,6 +7,9 @@ category: Sobreposição
 A confirmacao de coisa que não volta atrás: excluir, cancelar nota, sair sem
 salvar.
 
+Compõe com `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogTitle`,
+`AlertDialogDescription`, `AlertDialogFooter` e `AlertDialogClose`.
+
 Não fecha com Esc nem com clique fora, e o foco começa no botão de cancelar.
 Quem esta prestes a apagar algo tem que dizer que sim de propósito, e não
 esbarrar num clique.
