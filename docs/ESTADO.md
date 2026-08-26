@@ -1,6 +1,6 @@
 # Onde paramos
 
-Atualizado em 26/08/2026. Este arquivo e o "onde paramos" do repositorio: serve
+Atualizado em 26/08/2026, ao fim do dia. Este arquivo e o "onde paramos" do repositorio: serve
 a quem chega frio, humano ou agente, e responde tres coisas — o que existe, o
 que falta de verdade, e o que esta parado esperando uma pessoa.
 
@@ -14,14 +14,14 @@ documentacao nao existia.
 
 | Peca                         | Onde                                       | Estado                                                        |
 | ---------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
-| `@rivocode/ui`               | este repo, `src/`                          | **0.6.1**, publicado no npm, 83 pecas no catalogo             |
-| `@rivocode/ui-native`        | este repo, `native/`                       | **0.2.0**, publicado no npm, 46 das 83 pecas traduzidas       |
+| `@rivocode/ui`               | este repo, `src/`                          | **0.7.0** na arvore; no npm ainda a 0.6.1, falta a tag        |
+| `@rivocode/ui-native`        | este repo, `native/`                       | **0.2.0** no npm, 64 das 83 pecas traduzidas       |
 | Site de documentacao         | `apps/docs/`, no ar em `ds.rivocode.com.br` | **Publicado por CI desde hoje**, 158 paginas cruas            |
 | Landing                      | repo `rivocode.com`, na `main`             | Migrada e consumindo o pacote do npm, presa no `^0.2.0`       |
 | Sync com o claude.ai/design  | projeto `RivoCode`                         | **Parado desde 24/08**, e provavelmente nao vale mais retomar |
 
-O gate do repo esta verde: `bun run check` passa inteiro — quinze verificacoes
-mais **552 testes em 68 arquivos**, sendo 453 do web e 99 do nativo.
+O gate do repo esta verde: `bun run check` passa inteiro — dezenove verificacoes
+mais **801 testes em 85 arquivos**.
 
 ### O catalogo, por familia
 
@@ -123,34 +123,110 @@ reescreve.
 
 ## O que esta pendente de verdade
 
-1. **As 21 pecas na fila do nativo**, acima. E a maior lacuna aberta do
-   repositorio, e a unica em que o trabalho e so escrever a peca.
+Em ordem de quanto atrapalha quem chegar depois.
 
-2. **O workflow `release-native` nunca publicou.** As quatro tentativas
-   falharam, e a ultima falhou com `E403 ... You cannot publish over the
-   previously published versions: 0.2.0` — ou seja, a 0.2.0 que esta no npm
-   subiu pela mao, e o caminho automatico segue sem prova de que funciona. Ele
-   so vai ser exercitado de verdade na `native-v0.3.0`. O workflow `release`
-   do web, esse ja publicou por CI: a 0.6.1 saiu da tag.
+### Documento que mente hoje
 
-3. **A landing esta presa no `^0.2.0`.** O repo `rivocode.com` ja consome o
-   pacote publicado, entao o bloqueio antigo acabou, mas ela esta quatro
-   versoes menores atras da 0.6.1. Subir e trabalho de migracao de ponto de
-   chamada, nao de publicacao.
+1. **O CHANGELOG da 0.7.0 esta incompleto.** Ele foi escrito no meio do dia e
+   nao registra o que veio depois: `TableFooter` mais `columns[].total`, o
+   `deltaFormat` do Stat - que MUDA saida, `delta={12.5}` imprimia "12.5%" e
+   passa a imprimir "13%" -, o `icon`/`onDismiss` do Alert com a base do
+   `alertVariants` alterada, o `errorTitle`/`noResultsMessage`, e as cinco
+   pecas nativas novas. E o arquivo que o agent `migracao` le: incompleto ali
+   e surpresa na tela de quem migra.
 
-4. **O sync com o claude.ai/design esta parado desde 24/08.** A ultima rodada do
-   driver foi as 13:19 daquele dia, e nada tocou naquela pasta desde entao. O
-   `ds-bundle/` e o `.design-sync/.cache/` continuam na arvore, nao versionados,
-   com o material daquele dia. Vale registrar a duvida em vez de esconde-la:
-   aquele sync existia para dar ao agente de design um catalogo que ele nao
-   tinha, e desde entao o site cru em `ds.rivocode.com.br` passou a entregar a
-   mesma coisa por HTTP, com `llms.txt` de indice. Provavelmente a pendencia
-   deve ser fechada como abandonada, e nao retomada. Ninguem decidiu isso
-   ainda.
+### Achados que agentes deixaram anotados e ninguem pegou
+
+2. **`font-mono` nao chega ao aparelho, em peca nenhuma.** `.font-mono` compila
+   para `{ fontFamily: "ui-monospace" }` - o react-native-css pega so a
+   primeira familia da lista, e `ui-monospace` e generica de CSS, nao existe
+   instalada no iOS nem no Android. `native/src/calendar.tsx`,
+   `native/src/chart/chart-donut.tsx` e `native/src/code.tsx` usam achando que
+   funciona. O conserto e de token: `Platform.select({ ios: "Menlo", android:
+   "monospace" })`, e exige `Platform` no duble `test/react-native-mock.tsx`.
+
+3. **`errorTitle` so existe no web.** `native/src/chart/chart.tsx:202` e
+   `native/src/data-list.tsx:169` ainda cravam os textos.
+
+4. **`check:contrato` so conhece os subcaminhos do web.** Os quatro nativos -
+   `chart`, `form`, `clipboard`, `file-upload` - nunca entraram nele.
+
+5. **`native/src/radio-group.tsx` usa `accessibilityState.selected`** onde o
+   papel `radio` pede `checked`, que e o que o ColorPicker usa e o que o
+   contrato do web nomeia.
+
+6. **`native/CHANGELOG.md` nao tem entrada** para nenhum dos quatro
+   subcaminhos nem para as pecas novas.
+
+7. **O `Tracker` do WEB monta um Tooltip por ponto** - 365 portais num ano. O
+   nativo ja resolveu isso com uma faixa de alvo unico; o web nao.
+
+8. **Sete pecas nao aceitam `id`, `data-*` nem `aria-*`**, porque o tipo e
+   objeto fechado em vez de estender `ComponentProps`: Stat, Tree, ColorPicker,
+   Command, FileUpload, CalendarPanel e as tres de grafico.
+
+9. **`TableCaption` nao existe.** Quem monta `Table` a mao com rodape de
+   totais ainda escreve o `<caption>` na mao.
+
+10. **Duas dividas de comentario em ingles**, declaradas na guarda nova:
+    `apps/docs/src/pages/home.tsx` e `apps/docs/vite.config.ts`.
+
+### A fila do nativo: tres pecas
+
+`Tree`, `TreeSelect` e `Editable`. As tres esperam DECISAO DE GESTO, e o
+desenho ja foi proposto e aprovado:
+
+- **Tree**: folha que empilha niveis. Tocar num galho empurra o proximo nivel;
+  o cabecalho mostra o caminho ("Financeiro > Contas a pagar") e volta um
+  nivel. Indentacao de arvore inteira e ilegivel no terceiro nivel a 390px.
+- **TreeSelect**: a mesma navegacao, dentro de uma folha, com o valor no
+  rodape ("12 escolhidos") e Aplicar. A regra do web sobrevive: quem vale e a
+  folha, e marcar um pai marca todas as folhas debaixo.
+- **Editable**: toque LONGO entra em edicao - o gesto que o sistema usa para
+  agir sobre um texto -, teclado abre com o texto selecionado, confirmacao no
+  botao de retorno. Cancelar visivel ao lado, porque sem Escape nao ha saida
+  invisivel. E a de maior risco de ficar estranha: vale prototipo antes.
+
+### Pecas novas que a auditoria propos e ninguem fez
+
+Em ordem de valor sobre custo, todas com caso de uso escrito na auditoria:
+`TimeField`/`TimePicker` (agendamento, ponto eletronico, janela de entrega),
+`FilterBar`/`FilterChip` (a barra de filtros que toda listagem remonta),
+`QueryBoundary` (os quatro finais como peca, hoje so DataTable e
+ChartContainer os tem), `Popconfirm` (excluir uma linha sem o peso do
+AlertDialog), `VirtualList` (o virtualizador ja esta pago pelo DataTable) e o
+`Calendar` de agenda - este ultimo grande, e o unico que nao se apoia em nada
+pronto.
+
 
 ## O que esta bloqueado esperando acao humana
 
-Hoje, nada. Os dois bloqueios que este arquivo listava cairam:
+Tres coisas, e nenhuma e trabalho de codigo:
+
+1. **A tag `v0.7.0`.** A arvore esta em 0.7.0, o gate passa, e o npm continua
+   servindo a 0.6.1. A tag dispara o workflow que publica, e publicacao nao se
+   desfaz - por isso ela nao foi criada sozinha. Antes dela, feche o CHANGELOG
+   (pendencia 1 acima), porque e ele que sai com a versao.
+
+2. **O ensaio do `release-native`.** O workflow ganhou modo de ensaio hoje:
+   `gh workflow run release-native --field ensaio=true` roda o caminho inteiro
+   sem publicar. Ele NUNCA publicou de verdade em quatro tentativas, e o
+   primeiro lancamento nativo continua sendo voo cego ate alguem rodar isso.
+
+3. **A landing (`rivocode.com`), e o gerenciador de pacotes ANTES do bump.**
+   Ela consome `^0.2.0` e nao quebra uma linha de codigo ao subir para 0.7.0 -
+   usa cinco botoes, um import de CSS e dois atributos no `<html>`. O problema
+   e outro: a arvore dela tem `pnpm-lock.yaml` e `pnpm-workspace.yaml` NAO
+   RASTREADOS, com uma excecao de `minimumReleaseAge` escrita a mao. O
+   repositorio versiona `bun.lock`, a producao usa bun, e a maquina usa pnpm.
+   Enquanto isso nao for decidido e comitado, qualquer quebra no bump vem sem
+   etiqueta: nao se sabe se foi a biblioteca nova ou o gerenciador que a
+   producao nem usa. Ha ainda um risco especifico nao testado: o
+   `@source '../../node_modules/@rivocode/ui/dist'` do CSS passa por symlink
+   sob pnpm, e se o scanner do Tailwind nao atravessar, a landing sai sem
+   estilo - so localmente.
+
+Os dois bloqueios que este arquivo listava de manha cairam:
 
 - **Publicar no npm** — resolvido. Os dois pacotes estao no registro, e a conta
   desta maquina esta autenticada (`npm whoami` responde `emanuelbacalhau`). A
@@ -201,7 +277,7 @@ voltou a ter pagina propria em vez de morar dentro da do `Button`.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # quinze verificacoes mais os 552 testes
+bun run check        # dezenove verificacoes mais os 801 testes
 bun run shot         # gera a vitrine em demo/dist/
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
@@ -218,11 +294,10 @@ desta pasta.
 ```sh
 ls src/components | wc -l                          # 76 arquivos (peca != arquivo)
 ls .design-sync/docs/*.md | wc -l                  # 158 documentos
-bun test                                           # 552 pass, 68 arquivos
-bun test ./test                                    # 453 do web, 59 arquivos
-bun test native/test                               # 99 do nativo, 9 arquivos
+bun test                                           # 801 pass, 85 arquivos
+bun test native/test                               # a metade nativa
 bun run check:paridade                             # confere as 83 linhas da tabela
-npm view @rivocode/ui version                      # 0.6.1
+npm view @rivocode/ui version                      # 0.6.1 (a arvore ja e 0.7.0)
 npm view @rivocode/ui-native version               # 0.2.0
 gh run list --workflow=docs --limit 5              # a publicacao do site
 gh run list --workflow=release-native --limit 5    # as quatro falhas
