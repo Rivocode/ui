@@ -45,7 +45,11 @@ const skill = [
 function exportsOf(file: string) {
   const source = readFileSync(file, "utf8");
   const withoutRecharts = source
-    .replace(/export \{[\s\S]*?\} from "recharts";/g, "")
+    // `[^}]` e nao `[\s\S]*?`: o nao-guloso comecava no primeiro `export {` do
+    // arquivo e apagava src/chart/index.ts inteiro antes de contar - o check
+    // saia verde havia versoes com useChartMotion, ChartLegend e
+    // ChartLegendContent fora da skill.
+    .replace(/export \{[^}]*\} from "recharts";/g, "")
     // Comentario dentro do bloco de export nao e nome de export: sem tirar,
     // "// os nomes de antes" virava uma peca que a doc precisaria citar.
     .replace(/\/\*[\s\S]*?\*\//g, "")
