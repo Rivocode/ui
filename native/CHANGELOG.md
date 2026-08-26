@@ -133,6 +133,10 @@ const [ready] = useFonts({ Manrope: ..., Poppins: ..., JetBrainsMono: ... });
 />
 ```
 
+O `Text` e o `TextInput` do pacote passam a ser publicos, e sao a porta de quem
+usa: `<Text font="mono">` pede o papel e o provider responde. Sem eles a
+biblioteca vestia as proprias pecas e o texto do app ficava de fora.
+
 `sans` veste o corrido, `display` os titulos, `mono` o de largura fixa.
 `display` omitida cai em `sans`; `mono` omitida mantem Menlo no iOS e monospace
 no Android. **Nada declarado e o comportamento de antes, byte a byte** - sem
