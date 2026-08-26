@@ -27,15 +27,15 @@ const AJUDA = `
   rivocode-ui skill            instala a skill neste projeto, em .claude/skills
   rivocode-ui skill --global   instala para todos os seus projetos, em ~/.claude
 
-A skill ensina a biblioteca a um agente: o contrato, a escolha entre as pecas
-parecidas, e os enderecos da documentacao crua.
+A skill ensina a biblioteca a um agente: o contrato, a escolha entre as peças
+parecidas, e os endereços da documentação crua.
 `;
 
 function instalar(global: boolean) {
   const root = global ? process.env.HOME : process.cwd();
 
   if (!root) {
-    console.error("Nao consegui descobrir a sua pasta pessoal. Rode sem --global.");
+    console.error("Não consegui descobrir a sua pasta pessoal. Rode sem --global.");
     process.exit(1);
   }
 
@@ -47,7 +47,7 @@ function instalar(global: boolean) {
     // `reference/`, e sem esses arquivos os links levam a lugar nenhum.
     cpSync(ORIGEM, destino, { recursive: true });
   } catch (erro) {
-    console.error(`Nao consegui escrever em ${destino}.`);
+    console.error(`Não consegui escrever em ${destino}.`);
     console.error(erro instanceof Error ? erro.message : erro);
     process.exit(1);
   }
@@ -63,7 +63,7 @@ function instalar(global: boolean) {
   const onde = global ? "para todos os seus projetos" : "neste projeto";
   console.log(`Skill instalada ${onde}, em ${destino}`);
   console.log(`Agent instalado em ${join(root, ".claude", "agents", "rivocode-ui.md")}`);
-  console.log("O agente carrega sozinho quando voce pedir uma tela.");
+  console.log("O agente carrega sozinho quando você pedir uma tela.");
 }
 
 const [command, ...resto] = process.argv.slice(2);
@@ -73,7 +73,7 @@ if (command === "skill") {
 } else if (command === "--help" || command === "-h" || command === undefined) {
   console.log(AJUDA.trim());
 } else {
-  console.error(`Nao conheco "${command}".`);
+  console.error(`Não conheço "${command}".`);
   console.log(AJUDA.trim());
   process.exit(1);
 }

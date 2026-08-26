@@ -129,7 +129,7 @@ export function ChartContainer({
       ) : isError ? (
         <StateFrame>
           <Alert tone="danger" className="w-full">
-            <AlertTitle>Nao foi possivel carregar o grafico</AlertTitle>
+            <AlertTitle>Não foi possível carregar o gráfico</AlertTitle>
             <AlertDescription>
               {errorMessage ?? "Tente de novo em alguns minutos."}
             </AlertDescription>

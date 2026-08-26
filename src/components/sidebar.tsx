@@ -155,7 +155,7 @@ export type SidebarProps = ComponentProps<"aside"> & {
 export function Sidebar({
   className,
   children,
-  title = "Navegacao",
+  title = "Navegação",
   side = "left",
   ...props
 }: SidebarProps) {

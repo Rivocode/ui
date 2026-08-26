@@ -161,7 +161,7 @@ export function DataTable<Row>({
   isLoading,
   isError,
   onRetry,
-  errorMessage = "Nao foi possivel carregar a lista.",
+  errorMessage = "Não foi possível carregar a lista.",
   empty,
   onRowClick,
   skeletonRows = 5,
@@ -250,7 +250,7 @@ export function DataTable<Row>({
   if (isError) {
     return (
       <Alert tone="danger" className={className}>
-        <AlertTitle>Nao foi possivel carregar</AlertTitle>
+        <AlertTitle>Não foi possível carregar</AlertTitle>
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
@@ -294,7 +294,7 @@ export function DataTable<Row>({
             {selectable && (
               <TableHead className="w-10">
                 <Checkbox
-                  aria-label="Selecionar todas as linhas da pagina"
+                  aria-label="Selecionar todas as linhas da página"
                   checked={table.getIsAllPageRowsSelected()}
                   indeterminate={table.getIsSomePageRowsSelected()}
                   onCheckedChange={() =>
