@@ -7093,6 +7093,82 @@
       }
     ]
   },
+  "Clipboard": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "labels",
+        "type": "{ copy: string; copied: string; }",
+        "required": false,
+        "note": "O que o leitor de tela chama o botao antes e depois de copiar."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "onCopy",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado depois de copiar, para quem quer disparar um aviso proprio."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo a aparencia."
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "timeout",
+        "type": "number",
+        "required": false,
+        "note": "Quanto tempo a confirmacao fica na tela, em ms."
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
+      }
+    ]
+  },
+  "Code": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "CodeBlock": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "copyable",
+        "type": "boolean",
+        "required": false,
+        "note": "Poe o botao de copiar no canto, com o proprio conteudo do bloco."
+      },
+      {
+        "name": "lineNumbers",
+        "type": "boolean",
+        "required": false,
+        "note": "Numera as linhas a esquerda, para quem vai citar uma delas."
+      }
+    ]
+  },
   "Collapsible": {
     "forwardsRoot": true,
     "props": [
@@ -15993,6 +16069,29 @@
         "type": "number",
         "required": false,
         "note": "Z-Index of this component and its children."
+      }
+    ]
+  },
+  "RelativeTime": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number | Date",
+        "required": true,
+        "note": "O instante que se descreve."
+      },
+      {
+        "name": "cutoff",
+        "type": "\"day\" | \"hour\" | \"minute\" | \"month\" | \"week\" | \"year\"",
+        "required": false,
+        "note": "A partir de qual unidade parar de contar e mostrar a data."
+      },
+      {
+        "name": "now",
+        "type": "Date",
+        "required": false,
+        "note": "O agora, para teste e para renderizacao no servidor."
       }
     ]
   },

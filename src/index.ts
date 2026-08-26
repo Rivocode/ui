@@ -260,6 +260,13 @@ export { NumberField, type NumberFieldProps } from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
+export { Clipboard, type ClipboardProps } from "./components/clipboard";
+export { Code, CodeBlock, type CodeProps, type CodeBlockProps } from "./components/code";
+export {
+  RelativeTime,
+  type RelativeTimeProps,
+  type RelativeUnit,
+} from "./components/relative-time";
 export {
   ToolbarButton,
   ToolbarGroup,

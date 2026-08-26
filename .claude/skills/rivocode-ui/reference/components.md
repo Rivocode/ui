@@ -23,6 +23,10 @@ exemplos que rodam e a tabela de props.
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
 | Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
 | Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
+| Nome de arquivo, comando ou chave de JSON no texto | `Code` | O `Kbd` promete "aperte isto"; este é para ler ou copiar |
+| Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
+| Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
+| "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
 | Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
 | Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
