@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 
-import { compose, contrastRatio, readTokens } from "../scripts/check-contrast";
+import { compose, contrastRatio, readTokens } from "../src/lib/contrast";
 
 const read = (p: string) => Bun.file(p).text();
 

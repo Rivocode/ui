@@ -1,6 +1,6 @@
 {
   "name": "@rivocode/ui-native",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "As peças do design system da RivoCode em React Native: o mesmo vocabulário de classes do web, via NativeWind, sobre os mesmos tokens.",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,8 @@
     "directory": "native"
   },
   "bin": {
-    "rivocode-ui-native-css": "scripts/build-css.mjs"
+    "rivocode-ui-native-css": "scripts/build-css.mjs",
+    "rivocode-ui-native-theme": "scripts/build-theme.mjs"
   },
   "files": [
     "src",
@@ -30,6 +31,7 @@
     "./clipboard": "./src/clipboard/index.ts",
     "./file-upload": "./src/file-upload/index.ts",
     "./tokens": "./tokens.ts",
+    "./contrast": "./scripts/contrast.mjs",
     "./theme.css": "./theme.css"
   },
   "publishConfig": {

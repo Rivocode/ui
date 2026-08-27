@@ -440,6 +440,55 @@ Ela mede todos os pares que carregam texto e falha se algum ficar abaixo de
 4,5 para 1, ou de 7 para 1 no texto principal. Ela existe para transformar
 "acho que está legível" em número.
 
+### `rivocode-ui check-theme`, no seu projeto
+
+A guarda acima roda **aqui dentro**. O tema que você escreve roda **aí**, e
+nenhuma guarda desta pasta o alcança. Para o seu lado da fronteira existe um
+comando, e ele viaja no pacote:
+
+```sh
+npx rivocode-ui check-theme src/tema-acme.css
+npx rivocode-ui check-theme src/temas/*.css --json   # a mesma coisa, para o CI
+npx rivocode-ui check-theme acme.theme.ts            # o mapa do React Native
+```
+
+Ele lê os arquivos que você passar, junta as declarações por seletor de tema, e
+cobra os 55 papéis obrigatórios. Sai com código 1 se faltar algum, então uma
+linha no seu pipeline segura a quebra antes do deploy.
+
+**E então mede o contraste, com a mesma conta e a mesma tabela de pares da
+guarda acima.** É por isso que ela existe nesta seção duas vezes: a matemática
+mora em um módulo do pacote, e não em `scripts/`, então o seu tema é medido pelo
+código que mede o nosso — 76 pares por tema, com o alfa composto sobre o fundo
+em que ele é desenhado antes de medir. Enquanto essa conta ficou fora do pacote,
+quem quis medir o próprio tema escreveu 220 linhas no app: os nomes de papel, os
+pares, os mínimos e a composição de alfa. A cópia envelheceu calada, com um
+`compose` que não enxergava duas das três sintaxes de alfa e devolvia `NaN`.
+
+A ordem das duas perguntas não é detalhe: papel faltando primeiro, porque medir
+o contraste de um papel que não existe cai no valor herdado e devolve um número
+bonito por acidente. Se falta papel, o comando para ali e não mede.
+
+**A extensão diz qual forma de tema você escreveu.** `.css` é a camada 3 do web.
+`.ts`, `.mjs` e `.js` é o mapa com `light` e `dark` que o `RivoProvider` do
+`@rivocode/ui-native` recebe — o arquivo que `bun run gen:native --tema`
+escreve. São dois formatos do mesmo tema, e um comando só para os dois: dois
+CLIs divergiriam na primeira correção que só um deles recebesse. Quem prefere
+medir por código importa `checkThemeMap` de `@rivocode/ui-native/contrast`.
+
+**A mensagem diz o que acontece na tela, e não só qual token falta.** Faltar
+`--rc-font-sans` não é erro de compilação: o `tsc` passa, o Vite passa, e a
+página inteira renderiza na fonte do navegador. Foi assim que a mudança da
+0.7.0, que levou `--rc-font-*` da camada global para dentro do seletor de tema,
+chegou calada em quem tinha tema escrito para a 0.6.x. O comando separa as
+faltas em duas listas, quebra calada e quebra visível, e avisa quando o papel
+que falta **nasceu numa versão nova** - que é o momento em que dá para
+consertar, no upgrade, e não meses depois.
+
+Os três papéis de acabamento (`--rc-accent-image`, `--rc-accent-shadow` e
+`--rc-overlay-filter`) são os únicos opcionais e não entram na conta. Os tokens
+de forma também não: eles têm valor de `:root` por baixo.
+
 ## Desenvolvimento
 
 ```sh

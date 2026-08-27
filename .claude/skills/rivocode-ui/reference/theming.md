@@ -6,6 +6,7 @@
 - Por que escrever meio tema falha em silêncio
 - A fonte também é papel de tema
 - Os pares que precisam passar no contraste
+- No React Native o tema de cliente é build, não runtime
 - Onde está a lista completa
 
 ## As três camadas
@@ -72,6 +73,51 @@ Lembre da regra do `design.md`: a cor que preenche e a cor que se escreve nunca
 são a mesma. Um tema que aponta `--rc-accent-text` para o mesmo valor de
 `--rc-accent` produz texto invisível sobre o próprio acento.
 
+## No React Native o tema de cliente é build, não runtime
+
+O mesmo arquivo CSS veste as duas plataformas, mas o **momento** em que a cor é
+decidida muda, e é aqui que se perde um dia.
+
+No celular o compilador do `react-native-css` resolve o token em build e crava o
+valor dentro da regra: `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, e no
+CSS compilado não sobra uma ocorrência de `--`. Então
+`<RivoProvider theme={{ light, dark }}>` **não troca cor de classe nenhuma**.
+
+Ele trocava só quem lê a cor por JS: `ChartDonut`, `ChartRadial`, o giro do
+`Button` e do `Spinner`, o trilho do `Switch`, a `Sparkline`, o texto de dica dos
+campos. Fundo, cartão, botão, selo e borda continuavam com a cor da RivoCode, e o
+resultado na tela **não era a marca ausente: era a tela misturada**, donut de um
+tema e botão de outro.
+
+**O mapa está descontinuado, e agora é inerte.** O provider resolve os 45 papéis
+lendo o CSS compilado, uma classe `bg-` por papel, e publica no contexto que as
+peças já liam: contexto e classe dizem sempre a mesma cor. Passar `theme={{
+light, dark }}` não veste nada, e `RivoNativeThemeMap` está marcado como
+descontinuado. A prop `scheme` continua escolhendo claro ou escuro.
+
+O caminho que funciona é sobrescrever os papéis num `@theme` do `global.css` do
+app, depois do `@rivocode/ui-native/theme.css`, e pré-compilar de novo com
+`npx rivocode-ui-native-css`:
+
+```css
+@import "@rivocode/ui-native/theme.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+  --color-accent: #2563eb;
+  --color-accent-fg: #ffffff;
+  --color-bg: light-dark(#f7f8fa, #0d1220);
+  /* …e os outros papéis que a marca troca. */
+}
+```
+
+Isto sozinho veste a tela inteira: a classe pinta a cor nova, e a peça que lê
+cor por JS lê a mesma cor do mesmo CSS. Não passe mapa nenhum na prop `theme`.
+
+**E há um teto de arquitetura: dois temas por build.** `light-dark()` tem duas
+vagas, uma clara e uma escura. Um cliente por app cabe folgado; uma vitrine de
+cinco temas, como a do web, pede cinco bundles.
+
 ## Onde está a lista completa
 
 <https://ds.rivocode.com.br/temas.md> traz os cinquenta papéis, o que cada um
@@ -79,3 +125,25 @@ veste, o esqueleto pronto para copiar e como aplicar por `data-rc-theme`.
 
 Leia esse arquivo antes de escrever um tema. Não deduza nome de papel: eles são
 verificados por uma guarda, e um nome inventado simplesmente não pinta nada.
+
+## Depois de escrever, confira
+
+```bash
+npx rivocode-ui check-theme caminho/do/tema.css
+```
+
+O comando vem no pacote e roda no projeto que consome. Ele cobra os cinquenta e
+cinco papéis obrigatórios, sai com código 1 se faltar algum, e a mensagem diz o
+que acontece **na tela** sem cada um. Rode também depois de subir a versão da
+biblioteca: papel novo numa versão nova é a quebra que ninguém vê, e foi assim
+que `--rc-font-*` pegou quem tinha tema escrito para a 0.6.x.
+
+Depois da completude ele **mede o contraste** — 76 pares por tema, com a mesma
+conta e a mesma tabela que a biblioteca cobra de si mesma, e com o alfa composto
+sobre o fundo em que ele é desenhado. A ordem importa: papel faltando primeiro,
+porque medir o que não existe devolve um número bonito por acidente.
+
+A extensão diz qual forma de tema é: `.css` para a camada 3 do web, e `.ts`,
+`.mjs` ou `.js` para o mapa com `light` e `dark` do React Native. No projeto
+nativo a mesma tabela está em `@rivocode/ui-native/contrast`, exportando
+`checkThemeMap`, `contrastRatio` e `compose` — não porte a conta a mão.

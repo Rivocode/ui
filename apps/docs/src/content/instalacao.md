@@ -132,3 +132,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 | Erro de contexto ao abrir diálogo ou menu | árvore fora do `RivoProvider`                                            |
 | Dois Reacts na página                     | React como dependência direta da biblioteca em vez de par, verifique o lockfile |
 | Flutuante sem tema, solto no fim da página | `scope="local"` sem o container de portal do Provider                    |
+| Tudo estilizado, e a página inteira na fonte do sistema | tema de cliente sem `--rc-font-sans`: rode `npx rivocode-ui check-theme` no CSS do seu tema |
+
+O último não dá erro em lugar nenhum, e por isso tem comando próprio. O
+`rivocode-ui check-theme` lê os arquivos de tema do seu projeto e cobra papel
+faltando, dizendo o que acontece na tela sem cada um. Detalhes em
+[Temas e personalização](/temas).

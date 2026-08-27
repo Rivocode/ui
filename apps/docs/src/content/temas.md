@@ -82,7 +82,7 @@ isolada no meio do azul do cliente. Depois deles vêm três papéis de acabament
 | `--rc-accent-hover` | - | O mesmo com o ponteiro em cima |
 | `--rc-accent-active` | - | O mesmo no instante do clique |
 | `--rc-accent-fg` | `text-accent-fg` | O que se lê **sobre** o acento |
-| `--rc-accent-text` | `text-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo |
+| `--rc-accent-text` | `text-accent-text`, `bg-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo, trilho da chave ligada |
 | `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
 
 ### Linha, foco e estado de linha
@@ -295,7 +295,7 @@ A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
 
 ## O que o tema precisa garantir
 
-Os papéis não são independentes. Estas relações precisam valer, e as quatro
+Os papéis não são independentes. Estas relações precisam valer, e as cinco
 primeiras são medidas por `bun run check`. Um tema que as quebra falha no CI,
 e não na tela do cliente:
 
@@ -305,6 +305,7 @@ e não na tela do cliente:
 | `--rc-border-disabled` acima de 1,6:1 da superfície, e a 1,4× **abaixo** de `--rc-border-strong` | É o único papel com teto além de piso. Muito fraca, o controle travado some; igual à viva, ele fica idêntico ao controle que ainda responde, e a WCAG 1.4.11 dispensa componente inativo dos 3:1 justamente para abrir essa faixa |
 | `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
 | `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
+| `--rc-accent-text` a 3:1 sobre `--rc-skeleton` **composto** no fundo | É o preenchimento e a borda do pino do `Slider` contra o trilho vazio (WCAG 1.4.11). Empatados, o trilho cheio pesa o mesmo que o vazio e ninguém lê quanto já foi. O trilho carrega alfa, então o cinza medido é o que sobra dele sobre a página e sobre o cartão |
 | `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
 
 `--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor: no tema claro
@@ -392,57 +393,220 @@ O `color-scheme` na primeira linha não é enfeite: sem ele o navegador desenha
 barra de rolagem, campo de data e menu nativo no esquema errado, e nenhum token
 alcança essas peças.
 
-## O mesmo tema no React Native
+**4. Confira que não falta papel:**
 
-O arquivo que você acabou de escrever veste as duas plataformas. **A fonte é
-uma só de propósito**: um segundo lugar para manter a cor de um cliente é como
-a promessa se quebra na prática, não por decisão, por divergência silenciosa
-seis meses depois.
-
-**1. Gere o mapa nativo a partir do mesmo CSS:**
-
-```sh
-bun run gen:native --tema tema-acme.css --saida acme.theme.ts
+```bash
+npx rivocode-ui check-theme src/tema-acme.css
 ```
 
-Ele lê os blocos `[data-rc-theme="acme-light"]` e `[data-rc-theme="acme-dark"]`
-(um seletor sozinho serve aos dois esquemas) e emite um `RivoNativeThemeMap`.
-**Se faltar um papel, ele falha e diz quais**: um tema incompleto herda a cor da
-RivoCode em peças isoladas, e isso só aparece na tela do cliente.
+O comando vem no pacote e roda no **seu** projeto, que é onde o tema mora. Ele
+lê os arquivos que você passar, junta as declarações por seletor de tema, e
+cobra os cinquenta e cinco papéis obrigatórios. Se faltar algum ele sai com
+código 1, então uma linha no CI segura a quebra antes do deploy:
 
-**2. Vista a árvore:**
+```yaml
+- run: npx rivocode-ui check-theme src/temas/*.css
+```
+
+Passe **todos** os arquivos que formam o tema de uma vez. Se você separou cor e
+tipografia em dois arquivos, o comando só junta os dois se os dois estiverem na
+mesma chamada; o que ele não leu conta como faltando. Com `--json` a saída vira
+um objeto com `ok` e a lista de papéis, para o seu pipeline ler sem regex.
+
+**5. E deixe ele medir o contraste.** Depois da completude, o mesmo comando mede
+os 76 pares por tema: o texto sobre os três fundos, a fronteira de controle de
+3:1 da WCAG 1.4.11, o anel de foco, as oito cores de série, o trilho do `Switch`
+ligado e os pares em que o fundo é alfa e precisa ser composto antes de medir. É
+a mesma conta e a mesma tabela que o design system cobra de si mesmo — ela mora
+num módulo do pacote, e não numa pasta de scripts que o npm não leva.
+
+A ordem das duas perguntas é decisão: papel faltando primeiro, porque medir o
+contraste de um papel que não existe cai no valor herdado e devolve um número
+bonito por acidente. Se falta papel, o comando para antes de medir.
+
+**A conta lê os espaços de cor modernos, e converte tudo para sRGB antes de
+medir.** Hexadecimal de 3, 4, 6 e 8 dígitos, `rgb()`, `rgba()`, `hsl()`,
+`hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()` e `color()` nos
+espaços predefinidos do CSS. A paleta do Tailwind 4 é escrita em `oklch()`,
+então cor copiada de lá entra direto, sem passar por conversor — que era o
+caminho mais comum de vestir um cliente e o único que saía **sem medida**.
+
+Ficam de fora duas coisas, e as duas por não terem medida possível:
+`color-mix()`, que não é uma cor e sim uma conta cujo resultado depende do
+espaço de interpolação e do método de matiz; e nome de cor da CSS, como
+`rebeccapurple`, porque o pacote não carrega a tabela de nomes. Essas saem sem
+medida e o comando reprova, em vez de ficar verde sem ter olhado — o que não se
+mede não se promete.
+
+**Cor que o sRGB não alcança é medida no valor que a tela mostra.** Quase um
+terço da paleta do Tailwind 4 — 82 das 286 cores nomeadas — descreve tom fora do
+gamut do sRGB: `red-500`, `blue-500` e companhia estão nessa faixa. O navegador
+corta o excedente canal por canal na hora de pintar, e é esse pixel cortado que
+a pessoa vê e que a conta mede. O comando diz quais papéis caíram ali, e para
+qual valor:
+
+```
+nota   2 papéis descrevem tom fora do sRGB. A tela corta o excedente canal por
+       canal, e é o valor cortado que foi medido — o mesmo pixel que o navegador
+       pinta: accent (oklch(63.7% 0.237 25.331) → #fb2c36), ring (…)
+```
+
+Recusar seria mais fácil e diria menos: fecharia a porta justamente para as
+cores mais copiadas que existem, e o número que interessa — o contraste do que
+está na tela — é o do valor cortado.
+
+**O mapa do React Native entra pelo mesmo comando.** A extensão separa as duas
+formas: `.css` é a camada 3 do web, e `.ts`, `.mjs` ou `.js` é o objeto com
+`light` e `dark` que o `RivoProvider` do `@rivocode/ui-native` recebe — o arquivo
+que `bun run gen:native --tema` escreve.
+
+```bash
+npx rivocode-ui check-theme acme.theme.ts
+```
+
+No projeto nativo a mesma tabela de pares está em
+`@rivocode/ui-native/contrast`, para medir por código sem instalar o pacote web.
+
+### O que ele diz, e por que não é só o nome do token
+
+"Falta `--rc-font-sans`" não faz ninguém consertar nada. O que faz é a linha de
+baixo:
+
+```
+[data-rc-theme="neon"]   (src/tema-neon.css)
+  52 dos 55 papéis. Faltam 3.
+
+  QUEBRA CALADA, e é por isso que ninguém reporta:
+
+    --rc-font-sans
+      A página inteira cai na fonte do navegador. Não há valor de `:root` por
+      baixo para segurar a queda, e isso é de propósito: o `tsc` compila, o
+      Vite constrói, e a única coisa errada é a tela.
+      Papel novo na 0.7.0: as três famílias saíram de `src/tokens/scales.css`,
+      que é camada global, e passaram para dentro do seletor de tema. Um tema
+      escrito para a 0.6.x compila, constrói e renderiza sem família nenhuma.
+```
+
+Três coisas que ele decide, e o motivo de cada uma:
+
+- **Ele cobra os papéis de cor também, e não só os que quebram calados.** Um
+  tema sem `--rc-accent` sai obviamente errado; um sem `--rc-font-sans`, não. Os
+  dois falham, e a diferença fica na apresentação: as faltas vêm separadas em
+  quebra calada e quebra visível. "Visível" quer dizer visível **na tela que usa
+  o papel**, e não na que você abriu para conferir. Um `--rc-warning-subtle`
+  ausente só aparece na tela que tem `Alert tone="warning"`, e ela pode não ser
+  nenhuma das três que você olhou. Cobrar só a fonte ensinaria que o resto é
+  opcional, e o resto não é.
+- **Ele avisa quando o papel nasceu numa versão nova.** É o caso da fonte na
+  0.7.0 e o do `--rc-border-disabled` na mesma versão: quem escreveu o tema para
+  a versão anterior não tem como saber que passou a faltar alguma coisa, porque
+  nada no upgrade avisa. Rodar o comando logo depois de subir a versão é o
+  momento barato de descobrir.
+- **A saída serve às duas leituras.** Texto para quem vai consertar, `--json`
+  para quem vai automatizar, e o código de saída para os dois: 0 quando todo
+  tema está completo, 1 quando falta papel, e também 1 quando nenhum bloco de
+  tema foi encontrado nos arquivos passados, para o comando não passar verde por
+  não ter olhado nada.
+
+Os três papéis de acabamento são os únicos que ele não cobra, porque são os
+únicos opcionais. Os tokens de forma também ficam de fora: eles têm valor de
+`:root` por baixo, e faltar um deles não deixa nada sem valor.
+
+## O mesmo tema no React Native
+
+O arquivo que você acabou de escrever veste as duas plataformas, e **a fonte é
+uma só de propósito**: um segundo lugar para manter a cor de um cliente é como a
+promessa se quebra na prática, não por decisão, por divergência silenciosa seis
+meses depois.
+
+O que muda é **quando** a cor é decidida. No web a camada 3 é lida em runtime, e
+`<RivoProvider theme="acme">` troca a página inteira com ela aberta. No React
+Native o compilador do `react-native-css` resolve o token **em build** e crava o
+valor dentro da regra: `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, literal,
+e nos 56 KB de CSS compilado não sobra **uma ocorrência de `--`**. Não existe
+variável viva para redefinir depois.
+
+Escrito de uma vez, para quem está decidindo agora: **tema de cliente no nativo
+é geração de CSS, e não troca em runtime.** O que troca em runtime lá são os dois
+temas de casa, porque eles nasceram dentro do `light-dark()` que o compilador
+entende.
+
+### O caminho que funciona: sobrescrever os papéis antes de compilar
+
+Um `@theme` seu no `global.css` do app, depois do `theme.css` do pacote, com os
+papéis que a marca troca. É a mesma camada 3 de sempre, escrita no vocabulário
+`--color-*` que o compilador nativo lê:
+
+```css
+@import "tailwindcss/theme.css" layer(theme);
+@import "@rivocode/ui-native/theme.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+  --color-accent: #2563eb;
+  --color-accent-hover: #3b82f6;
+  --color-accent-fg: #ffffff;
+  --color-bg: light-dark(#f7f8fa, #0d1220);
+  --color-surface: light-dark(#ffffff, #141b2d);
+  /* …e os outros papéis que a marca troca. */
+}
+
+@source "./App.tsx";
+@source "./node_modules/@rivocode/ui-native/src";
+```
+
+Depois `npx rivocode-ui-native-css`, e o app importa o `generated.css` como
+sempre. Daí em diante a tela é do cliente onde a classe pinta: fundo, cartão,
+botão, selo, borda, série de gráfico.
+
+**E este caminho tem um teto: dois temas por build.** Cada papel sai como
+`light-dark(claro, escuro)`, e `light-dark()` tem duas vagas, uma clara e uma
+escura. Um app de um cliente cabe folgado, e é o caso normal. Uma vitrine de
+cinco temas, como a que este site tem no web, **não cabe**: são cinco bundles.
+É teto de arquitetura, e não pendência.
+
+### O `@theme` do app agora veste a tela INTEIRA, inclusive o gráfico
+
+Até 27/08/2026 este caminho vestia só metade: a cor pintada por classe seguia a
+marca, e a cor que a peça lê por JS - a fatia do `ChartDonut`, o trilho do
+`Switch`, o giro do `Button` - continuava saindo do mapa de tokens da RivoCode.
+O sintoma **não era a marca ausente: era a tela misturada**, e era isso que
+custava um dia de depuração.
+
+Não custa mais. O `RivoProvider` resolve os 45 papéis **lendo o CSS compilado**,
+uma classe `bg-` por papel, e publica o resultado no contexto que as peças já
+liam. Então o que você sobrescreve no `@theme` chega aos dois lados de uma vez:
+classe e contexto dizem sempre a mesma cor.
+
+### A prop `theme` com um mapa está descontinuada
 
 ```tsx
-import { RivoProvider } from '@rivocode/ui-native'
-import { acmeTheme } from './acme.theme'
-
 <RivoProvider theme={acmeTheme} scheme="system">
 ```
 
-Com tema de casa, quem decide claro e escuro é o próprio nome do tema; com tema
-de cliente, é a prop `scheme`.
+**O mapa não veste mais nada.** Ele nunca alcançou a cor pintada por classe, e
+manter uma metade que discorda da outra era pior do que não ter nenhuma: o
+provider avisa em `__DEV__` e o tipo `RivoNativeThemeMap` está marcado como
+descontinuado. A prop `scheme` continua valendo: com um mapa passado, é ela que
+escolhe entre claro e escuro.
 
-### O que isso custa, e o que não custa
-
-Os dois temas de casa continuam compilados como `light-dark(claro, escuro)`, que
-o runtime de CSS nativo avalia sozinho: trocar entre eles acontece **no mesmo
-frame, sem re-renderização**. Nada disso muda.
-
-O tema de cliente não cabe nesse caminho (os valores dele não existem em build),
-então ele entra pelo `VariableContextProvider`, que redefine as variáveis para
-a árvore abaixo. O custo é **uma re-renderização quando o tema ou o esquema
-mudam**, e só é pago por quem veste um cliente.
-
-Em troca, ele aninha: um provider de tema escuro dentro de uma tela clara veste
-só a sua árvore, que é o mesmo que o `scope="local"` faz no web.
+O gerador continua emitindo o mapa - `bun run gen:native --tema tema-acme.css` -
+porque ele é o plano de queda e a fonte de conferência de papel faltando. Para
+vestir a tela, use o `@theme` de cima.
 
 ### A regra que as peças seguem
 
 Peça que pinta por fora da classe (o trilho do `Switch`, o giro do `Button`, a
-cor da `Sparkline`) lê os papéis do contexto (`useRivo().colors`), e nunca de
-`tokens.themes`. Lendo o mapa direto ela pegaria sempre o tema de casa, e a tela
-do cliente sairia com metade das cores dele e metade da lima da RivoCode. Há um
+cor da `Sparkline`, a fatia do `ChartDonut`) lê os papéis do contexto
+(`useRivo().colors`), e nunca de `tokens.themes`. O contexto agora É o CSS
+compilado, então ler dali é ler a mesma cor que a classe pinta. Lendo
+`tokens.themes` direto a peça voltaria a discordar da tela do cliente, e há
 teste que falha se alguém voltar a ler direto.
+
+No `react-native-web` - a bancada onde se inspeciona a árvore e se tira retrato
+sem simulador - a leitura sai do `getComputedStyle` do documento, e não do
+`useCssElement`: lá a classe vira `className` no DOM, e é o navegador quem
+resolve `var()` e `light-dark()`. Mesma cor, mesma fonte, outro leitor.
 
 ## Como pedir isto a um agente
 

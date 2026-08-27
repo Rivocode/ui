@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { Glob } from "bun";
 
-import { contrastRatio, readTokens } from "../scripts/check-contrast";
+import { contrastRatio, readTokens } from "../src/lib/contrast";
 
 test("branco sobre preto da o maximo de 21 para 1", () => {
   expect(contrastRatio("#ffffff", "#000000")).toBeCloseTo(21, 1);
