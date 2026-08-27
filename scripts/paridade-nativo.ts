@@ -37,7 +37,7 @@
  * nota desta tabela aparece na pagina de cada peca.
  */
 import { readFileSync, writeFileSync } from "node:fs";
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 const DOCS = ".design-sync/docs";
 /**
@@ -377,13 +377,17 @@ const PARITY: Record<string, Row> = {
       "para mostrar hora e duracao. Em 44,8px ela mostra um retangulo colorido, que e o que a " +
       "`month` ja faz melhor e mais barato. O web tomou a mesma decisao para a propria tela " +
       'estreita: abaixo de `sm` a `week` some do seletor e `view="week"` resolve para `agenda`.\n\n' +
-      "O que falta e decisao de gesto, e por isso a linha esta em `FILA_DECLARADA`: arrastar para " +
-      "mudar de semana, tocar e segurar para criar, e o que acontece quando o dedo pousa em cima " +
-      "de dois eventos que se sobrepoem. Nenhuma dessas tem resposta no web, porque no web sao " +
-      "ponteiro e teclado.\n\n" +
+      "O que falta e decisao de gesto, e por isso a linha esta em `FILA_DECLARADA`: o que o dedo " +
+      "faz para trocar de periodo, o que ele faz quando pousa em cima de dois eventos que se " +
+      "sobrepoem, e se toque longo cria. Nenhuma dessas tem resposta no web, porque no web sao " +
+      "ponteiro e teclado. O desenho esta escrito em " +
+      "`docs/2026-08-27-event-calendar-nativo-desenho.md`, e as perguntas que sobraram estao " +
+      "listadas la.\n\n" +
       "O calculo de layout ja nasceu pronto para atravessar: `src/lib/event-layout.ts` e funcao " +
-      "pura sem DOM, e nao ha mecanismo no repositorio para compartilhar codigo puro entre os " +
-      "dois pacotes. Esse mecanismo e o que a peca vai cobrar primeiro.",
+      "pura sem DOM, sem import e sem global de plataforma. O mecanismo para compartilhar codigo " +
+      "puro entre os dois pacotes passou a existir em 27/08/2026 - `src/shared/`, o espelho em " +
+      "`native/src/shared/` e o `check:compartilhado` no gate -, entao a peca nativa nao pode " +
+      "copiar essas funcoes: copia nao declarada deixa a guarda vermelha.",
   },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
   Input: {
@@ -1175,11 +1179,9 @@ const FILA_DECLARADA: Record<string, string> = {
 };
 
 async function catalogPieces() {
-  const pages: string[] = [];
-  for await (const file of new Glob("*.md").scan(DOCS)) {
-    pages.push(file.replace(/\.md$/, ""));
-  }
-  pages.sort();
+  const pages = (await scanAtLeast("*.md", 150, { cwd: DOCS })).map((file) =>
+    file.replace(/\.md$/, ""),
+  );
 
   const parte = (nome: string) => {
     if (AUTONOMAS.has(nome) || PARTS_THAT_ARE_PIECES.has(nome)) return false;
