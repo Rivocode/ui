@@ -50,6 +50,17 @@ export const tokens = {
     "leading-relaxed": 1.7,
     "ring-width": 2,
     "ring-offset": 2,
+    "control-sm": 32,
+    "control-md": 40,
+    "control-lg": 48,
+    "control-pad-sm": 10,
+    "control-pad-md": 14,
+    "control-pad-lg": 18,
+    "pad-panel": 24,
+    "pad-panel-sm": 16,
+    "item-y": 6,
+    "box": 18,
+    "day": 36,
     "radius-sm": 6,
     "radius-md": 8,
     "radius-lg": 12,
@@ -59,34 +70,6 @@ export const tokens = {
     "duration-base": 200,
     "duration-slow": 320,
     "duration-sheet": 450
-  },
-  "densities": {
-    "comfortable": {
-      "control-sm": 32,
-      "control-md": 40,
-      "control-lg": 48,
-      "control-pad-sm": 10,
-      "control-pad-md": 14,
-      "control-pad-lg": 18,
-      "pad-panel": 24,
-      "pad-panel-sm": 16,
-      "item-y": 6,
-      "box": 18,
-      "day": 36
-    },
-    "compact": {
-      "control-sm": 28,
-      "control-md": 32,
-      "control-lg": 38,
-      "control-pad-sm": 8,
-      "control-pad-md": 10,
-      "control-pad-lg": 14,
-      "pad-panel": 16,
-      "pad-panel-sm": 12,
-      "item-y": 4,
-      "box": 16,
-      "day": 32
-    }
   },
   "themes": {
     "rivocode-dark": {

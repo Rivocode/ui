@@ -2,6 +2,7 @@ import { act, create, type ReactTestInstance, type ReactTestRenderer } from "rea
 import type { ReactElement } from "react";
 
 import { RivoProvider, type RivoProviderProps } from "../src";
+import { declaredColor, variableDeclarations } from "./css-compilado";
 
 /** Monta dentro do provider, como todo app monta. */
 export function render(
@@ -77,4 +78,12 @@ export function renderError(element: ReactElement): string {
   return "";
 }
 
-export { act };
+export function paintedColor(
+  node: ReactTestInstance,
+  property: string,
+  scheme: "light" | "dark",
+): string | undefined {
+  return declaredColor(String(node.props?.className ?? "").split(/\s+/), property, scheme);
+}
+
+export { act, variableDeclarations };

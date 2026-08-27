@@ -92,7 +92,7 @@ export function RelativeTime({ value, cutoff, now, className, ...props }: Relati
 
     return () => {
       clearTimeout(timer);
-      subscription.remove();
+      subscription?.remove();
     };
   }, [now, step, tick]);
 

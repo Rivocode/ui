@@ -2,7 +2,6 @@ export {
   RivoProvider,
   useRivo,
   type RivoProviderProps,
-  type RivoDensity,
   type RivoNativeColors,
   type RivoNativeThemeMap,
 } from "./provider";

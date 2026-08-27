@@ -9,6 +9,46 @@ Os componentes vivem em `native/src` e o app de exemplo em `examples/native`
 (`bunx expo start --ios`). O CSS do app é pré-compilado:
 `node scripts/build-css.mjs` dentro do app: mudou classe nova, rode de novo.
 
+## Tema: os dois de casa trocam em runtime, o do cliente é build
+
+`theme="rivocode-dark" | "rivocode-light" | "system"` troca a tela inteira em
+runtime, porque essas cores foram compiladas como `light-dark()` e o provider só
+gira o `Appearance`. **Tema de cliente não funciona assim, e supor que funciona
+custa um dia.**
+
+- **A cor de classe só muda em BUILD.** O compilador do `react-native-css` crava
+  o valor dentro da regra (`.bg-accent` vira `{"backgroundColor":"#d4f34a"}`), e
+  no CSS compilado não sobra uma ocorrência de `--`. Logo
+  `<RivoProvider theme={{ light, dark }}>` **não troca cor de classe nenhuma**.
+- **O mapa está DESCONTINUADO, e agora é inerte.** Ele alcançava só quem lê cor
+  por JS (`ChartDonut`, `ChartRadial`, o giro do `Button` e do `Spinner`, o
+  trilho do `Switch`, a `Sparkline`, o texto de dica dos campos), e o sintoma era
+  tela MISTURADA: donut de um tema e botão de outro, lado a lado. O provider
+  passou a resolver os 45 papéis lendo o CSS compilado, uma classe `bg-` por
+  papel, então contexto e classe dizem sempre a mesma cor. `RivoNativeThemeMap`
+  está marcado como descontinuado; a prop `scheme` continua valendo.
+- **O teto é de dois temas por build.** `light-dark()` tem duas vagas. Um
+  cliente por app cabe; uma vitrine de cinco temas pede cinco bundles.
+
+O caminho que funciona: sobrescrever os papéis num `@theme` do `global.css` do
+app, depois do `@rivocode/ui-native/theme.css`, e pré-compilar de novo.
+
+```css
+@import "@rivocode/ui-native/theme.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+  --color-accent: #2563eb;
+  --color-accent-fg: #ffffff;
+  --color-bg: light-dark(#f7f8fa, #0d1220);
+  /* …e os outros papéis que a marca troca. */
+}
+```
+
+Isto sozinho veste a tela inteira, gráfico incluído: a classe pinta a cor nova,
+e a peça que lê cor por JS lê a mesma cor do mesmo CSS. Não passe mapa nenhum na
+prop `theme`, e nunca prometa troca de marca em runtime numa tela nativa.
+
 ## Mesmo nome não é mesma API
 
 Onde o nome da peça é o mesmo, o nome da prop também é (`Avatar fallback`,
@@ -164,7 +204,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
-| `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura (alvo de toque não encolhe); e ganha `fonts`, que o web não tem |
+| `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
 | `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
@@ -221,12 +261,14 @@ Portou peça nova no native? Rode o script e comite o que ele reescrever.
   `translate`. Altura de controle é fixa por tamanho até o fix upstream.
 - Remover o `browserslist` moderno do `package.json` do app: sem ele, o passe
   web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars que
-  mata a compilação. É ele que sustenta a troca de tema em runtime: o
+  mata a compilação. É ele que sustenta a troca entre os dois temas de casa: o
   `RivoProvider` aceita `rivocode-dark`, `rivocode-light` e `system`, e trocar
   a prop troca a tela inteira via `Appearance.setColorScheme()`.
-- Densidade compacta: não porta de propósito. Alvo de toque não encolhe em
-  tela de dedo; `density` existe na API por paridade, mas `comfortable` é a
-  única altura.
+- Prometer tema de cliente em runtime, ou escrever `theme={{ light, dark }}`
+  como se ele vestisse a tela: ele veste só quem lê cor por JS, e a tela sai
+  misturada. Cor de classe é build, e o caminho está na seção de tema acima.
+- Escrever `density` numa tela nativa: a prop **não existe** no pacote. Alvo de
+  toque não encolhe em tela de dedo, e `comfortable` é a única altura.
 - Glyph de texto como ícone de estado (o visto do Checkbox é borda
   rotacionada, porque fonte muda de corpo entre iOS e Android).
 - Esquecer `accessibilityRole`/`accessibilityState` em controle custom.

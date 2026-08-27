@@ -326,6 +326,18 @@ import { Clipboard } from '@rivocode/ui-native/clipboard'
 import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
 
+**Tema de cliente aqui é decisão de BUILD, e não prop de runtime.** Os dois
+temas de casa trocam com a tela aberta, porque foram compilados como
+`light-dark()` e o provider só gira o `Appearance`. A cor de um cliente, não: o
+compilador do `react-native-css` crava o valor do token dentro da classe, e
+`<RivoProvider theme={{ light, dark }}>` alcança só quem lê cor por JS (os
+gráficos, o giro do `Button`, o trilho do `Switch`), deixando fundo, cartão,
+botão, selo e borda com a cor da casa - a tela sai **misturada**, e não sem
+marca. Vista o cliente sobrescrevendo os papéis num `@theme` do CSS do app antes
+de compilar, e passe o mapa de tema junto para a metade de JS concordar. São
+**dois temas por build**, porque `light-dark()` tem duas vagas. O passo a passo
+está em <https://ds.rivocode.com.br/temas.md>.
+
 O resto da paridade (o que traduz, o que muda de nome e o que não porta por
 decisão) está em <https://ds.rivocode.com.br/react-native.md>.
 

@@ -17,8 +17,17 @@ GlobalRegistrator.register();
 mock.module("react-native", () => reactNativeMock);
 
 // O nativewind so existe no app de exemplo, e o provider importa dele o
-// VariableContextProvider que veste o tema de cliente. O duble guarda as
-// variaveis onde o teste consegue le-las.
+// useCssElement, que le a cor de cada papel no CSS compilado. O duble resolve
+// pelo mesmo CSS, e o esquema entra por injecao porque o react-native daqui
+// tambem e duble e so passa a valer na linha de cima.
+nativewindMock.connectColorScheme({
+  get: () => reactNativeMock.Appearance.getColorScheme(),
+  subscribe: (listener: () => void) => {
+    const subscription = reactNativeMock.Appearance.addChangeListener(() => listener());
+    return () => subscription.remove();
+  },
+});
+
 mock.module("nativewind", () => nativewindMock);
 
 // Desmonta o que cada teste montou. Sem isto, um Provider deixa atributo e

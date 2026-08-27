@@ -27,6 +27,13 @@ describe("RivoProvider", () => {
     expect(Appearance.getColorScheme()).toBe(null);
   });
 
+  test("não há densidade: alvo de toque não encolhe, e o contexto não carrega escala nenhuma", () => {
+    function Probe() {
+      return <Text>{Object.keys(useRivo()).sort().join(",")}</Text>;
+    }
+    expect(textOf(render(<Probe />)).trim()).toBe("colors,theme");
+  });
+
   test("quem lê cor por fora das classes recebe o tema resolvido", () => {
     function Probe() {
       const { theme } = useRivo();

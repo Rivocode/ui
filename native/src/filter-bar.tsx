@@ -185,7 +185,7 @@ export function FilterBar({
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
   const empty = labels.empty ?? applied(0);
 
-  const rtl = I18nManager.isRTL;
+  const rtl = I18nManager.getConstants().isRTL;
 
   const frame = useRef(0);
   const content = useRef(0);

@@ -1,7 +1,9 @@
 O `@rivocode/ui-native` leva o design system para o celular falando o **mesmo
 vocabulário de classes** do web (`bg-bg`, `text-fg-muted`, `rounded-pill`)
 via NativeWind, sobre os mesmos tokens. Nenhum componente conhece a cor da
-marca: ele pede um papel semântico e o tema responde, inclusive em runtime.
+marca: ele pede um papel semântico e o tema responde. Entre os dois temas de
+casa a troca acontece em runtime; vestir a cor de um cliente é decisão de build,
+e há uma seção inteira abaixo sobre o que isso muda.
 
 O catálogo nasce por **tradução, não por porte**: cada peça web foi julgada no
 idioma da plataforma antes de atravessar. Isso tem duas consequências, e a
@@ -218,7 +220,7 @@ recusa o que conseguiu medir.
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
-| `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura (alvo de toque não encolhe); e ganha `fonts`, que o web não tem |
+| `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
 | `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
@@ -288,7 +290,7 @@ module.exports = withNativewind(getDefaultConfig(__dirname));
 Não é sobre navegador nenhum: o Expo roda um passe web no CSS antes do
 compilador nativo, e sem esse campo ele reescreve o `light-dark()` dos tokens
 num polyfill de vars órfãs que mata a compilação. É esta linha que sustenta a
-troca de tema em runtime.
+troca entre os dois temas de casa em runtime.
 
 **3. `app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
 aparência no claro e o tema escuro nunca chega.
@@ -351,12 +353,245 @@ export default function App() {
 ```
 
 - `theme`: `rivocode-dark` (padrão), `rivocode-light` ou `system`, que segue o
-  aparelho. **Trocar a prop troca a tela inteira em runtime**: as cores foram
-  compiladas como `light-dark()`, e o provider só gira o esquema de cor do
-  Appearance.
-- `density`: existe por paridade de API, mas `comfortable` é a única altura.
-  Alvo de toque não encolhe em tela de dedo.
+  aparelho. **Entre os dois temas de casa, trocar a prop troca a tela inteira em
+  runtime**: essas cores foram compiladas como `light-dark()`, e o provider só
+  gira o esquema de cor do Appearance. A prop aceita também o mapa de um tema de
+  cliente, e aí a história é outra: leia a seção abaixo antes.
+- `density`: **não existe no pacote nativo.** Alvo de toque não encolhe em tela
+  de dedo, e `comfortable` é a única altura.
 - O `useToast` já vem ligado, como no web: nenhum provedor extra para montar.
+
+## Tema de cliente: é decisão de build, não prop de runtime
+
+Esta é a diferença mais cara entre os dois pacotes, e a que mais se supõe
+errado. No web a camada 3 é lida em runtime, e `<RivoProvider theme="acme">`
+troca a página inteira com ela aberta. Aqui não.
+
+**A cor de classe só muda em build.** O compilador do `react-native-css`
+resolve o token e crava o valor dentro da regra: `.bg-accent` vira
+`{"backgroundColor":"#d4f34a"}`, literal, e nos 56 KB de CSS compilado não sobra
+**uma ocorrência de `--`**. Não há variável viva no aparelho para redefinir, e
+por isso `<RivoProvider theme={{ light, dark }}>` **não troca cor de classe
+nenhuma**.
+
+**O mapa de tema está descontinuado, e agora é inerte.** Ele alcançava quem lê a
+cor por JS, do contexto - `ChartDonut`, `ChartRadial`, o giro do `Button` e do
+`Spinner`, o trilho do `Switch`, a `Sparkline`, o texto de dica dos campos -, e
+não alcançava fundo, cartão, botão, selo e borda, que são classe: dava donut de
+um tema e botão de outro na mesma tela, sem nada vermelho no console além do
+aviso em `__DEV__`.
+
+Uma metade que discorda da outra é pior do que nenhuma. O provider passou a
+resolver os 45 papéis **lendo o CSS compilado**, uma classe `bg-` por papel, e
+publica no mesmo contexto que as peças já liam: contexto e classe dizem sempre a
+mesma cor. `RivoNativeThemeMap` está marcado como descontinuado; a prop `scheme`
+continua escolhendo claro ou escuro.
+
+### O caminho que funciona
+
+Sobrescreva os papéis num `@theme` seu no `global.css`, depois do `theme.css` do
+pacote, e pré-compile de novo. É a mesma camada 3, no vocabulário `--color-*`
+que o compilador nativo lê:
+
+```css
+@import "tailwindcss/theme.css" layer(theme);
+@import "@rivocode/ui-native/theme.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+  --color-accent: #2563eb;
+  --color-accent-hover: #3b82f6;
+  --color-accent-fg: #ffffff;
+  --color-bg: light-dark(#f7f8fa, #0d1220);
+  --color-surface: light-dark(#ffffff, #141b2d);
+  /* …e os outros papéis que a marca troca. */
+}
+
+@source "./App.tsx";
+@source "./node_modules/@rivocode/ui-native/src";
+```
+
+```sh
+npx rivocode-ui-native-css
+```
+
+Isto sozinho veste a marca inteira, gráfico incluído: a classe pinta a cor nova,
+e a peça que pinta por fora da classe lê a mesma cor do mesmo CSS. Não passe
+mapa nenhum na prop `theme`.
+
+**E há um teto: dois temas por build.** `light-dark()` tem duas vagas, uma clara
+e uma escura. Um app de um cliente cabe folgado, e é o caso normal; uma vitrine
+de cinco temas, como a deste site no web, **não cabe sem cinco bundles**. É teto
+de arquitetura, e não pendência. O [guia de temas](/temas) tem o passo a passo e
+a lista completa de papéis.
+
+### Escreva só a paleta, e o comando escreve o tema
+
+O `@theme` acima tem 45 papéis para preencher, e é aí que o tema de cliente
+começa a envelhecer. Os nomes de papel, os pares de contraste, os mínimos, a
+composição de alfa e o formato que o compilador nativo aceita são conhecimento da
+biblioteca. Antes deste comando eles moravam no app de quem vestia o cliente: um
+consumidor real escreveu 220 linhas para isso, e portou a conta de contraste com
+um defeito calado justo nos 12 papéis que carregam alfa.
+
+O segundo binário do pacote traz essa conta de volta para dentro:
+
+```sh
+npx rivocode-ui-native-theme acme.ts    # lê a paleta, escreve acme.theme.css
+npx rivocode-ui-native-theme acme.ts saida.css
+npx rivocode-ui-native-theme --papeis   # o que você escreve, o que ele deriva
+```
+
+Você escreve **oito papéis por esquema**, num `.ts`, `.js`, `.mjs` ou `.json`:
+
+```ts
+export const acme = {
+  light: {
+    bg: "#ffffff",
+    surface: "#ffffff",
+    fg: "#111111",
+    accent: "#1d4ed8",
+    success: "#0f6b52",
+    warning: "#7a4a00",
+    danger: "#b3261e",
+    info: "#1d4ed8",
+  },
+  dark: {
+    bg: "#101314",
+    surface: "#191d1f",
+    fg: "#f2f3f0",
+    accent: "#8ab4f8",
+    success: "#3ddc97",
+    warning: "#f2b21c",
+    danger: "#ff8a8a",
+    info: "#8ab4f8",
+  },
+};
+```
+
+A saída entra no `global.css` **depois** do tema do pacote, e o pré-compilado sai
+como sempre:
+
+```css
+@import "tailwindcss/theme.css" layer(theme);
+@import "@rivocode/ui-native/theme.css";
+@import "./acme.theme.css";
+@import "tailwindcss/utilities.css";
+
+@source "./App.tsx";
+@source "./node_modules/@rivocode/ui-native/src";
+```
+
+```sh
+npx rivocode-ui-native-css
+```
+
+Qualquer um dos 45 papéis se escreve à mão na paleta, e o comando para de derivar
+aquele.
+
+#### Ele recusa escrever tema que não passa no contraste
+
+A medida é a do `@rivocode/ui-native/contrast`, o mesmo motor que o `bun run
+check` do repositório usa: os pares que carregam texto, a fronteira de controle
+de 3:1, o alfa sobre alfa do `Calendar`, a camada achatada por `opacity` do botão
+destrutivo e o trilho do `Switch` ligado.
+
+```
+Guarda de contraste:
+  claro: 1 falha(s)
+    accent-fg sobre accent  2.45:1 (min 4.5)
+  escuro: passa
+
+Nada foi escrito: conserte o contraste antes de gerar o CSS.
+```
+
+Nada é escrito enquanto um par estiver abaixo do mínimo. Tema que ninguém mediu é
+exatamente o que este comando existe para não deixar acontecer.
+
+#### O que ele deriva, e o que ele se recusa a adivinhar
+
+Derivar aqui é **reusar cor que você escreveu, ou compor alfa dela**. O comando
+nunca inventa matiz nova:
+
+| Papéis | De onde saem |
+|---|---|
+| `surface-raised` | igual a `surface` |
+| `fg-muted`, `fg-subtle`, `fg-disabled` | `fg` puxado 30%, 38% e 55% para o `bg` |
+| `border`, `border-strong`, `border-disabled`, `line-hover`, `skeleton`, `overlay` | alfa de `fg` na escada da casa |
+| `accent-hover`, `accent-active` | `accent` um passo para o claro e um para o escuro |
+| `accent-subtle`, `selected`, os quatro `*-subtle` | alfa da cor correspondente |
+| `accent-fg` e os quatro `*-fg` | o tom de `fg`/`bg` que pesa mais sobre o preenchimento, e o branco ou o preto puro quando nenhum dos dois alcança 4,5:1 |
+| `ring` | igual a `accent-text` |
+| `chart-1` a `chart-8` | a série da RivoCode, medida sobre o **seu** fundo |
+
+Duas escolhas dessa tabela merecem o motivo escrito.
+
+**`accent-text` e os quatro `*-text` são reusados, e só quando passam.** Eles são
+a cor que se **lê**: escurecer o vermelho da marca um passo sem avisar é decisão
+de quem desenha, e não de um script. Então o comando tenta o próprio
+preenchimento, e onde ele não alcança 4,5:1 sobre os três fundos ele **recusa e
+diz o valor que passaria**:
+
+```
+    light.accent-text foi DERIVADO: o proprio `accent`, e so quando ele passa em 4,5:1
+      `accent-text: "#667524"` passaria - confira se e a cor da marca.
+```
+
+**`chart-1` a `chart-8` caem na série da RivoCode.** É a única exceção declarada,
+e ela não é derivação: série de gráfico é escala categórica, e não identidade de
+marca. Mesmo sendo padrão, ela é medida sobre o **seu** fundo, e reprova se não
+couber. Escreva as oito na paleta se a marca tiver a dela.
+
+#### Papel novo em versão nova acusa, em vez de o tema quebrar calado
+
+A lista de papéis sai do `tokens.json` do pacote **instalado**, e não de uma cópia
+dentro do comando. Quando uma versão nova trouxer um papel, o comando o cobra
+pelo nome na primeira vez que você rodar:
+
+```
+1 papel(eis) sem valor:
+    light.accent-quiet  - papel novo no @rivocode/ui-native 0.4.0, e este comando ainda nao sabe derivar
+```
+
+Sem isso o papel novo simplesmente não sairia no seu `@theme`, a classe cairia no
+valor do `theme.css` do pacote, e a tela sairia misturada: metade do cliente,
+metade da RivoCode. Nome errado na paleta é acusado do mesmo jeito, com sugestão
+do papel que você quis dizer.
+
+#### `oklch()` entra direto, e a paleta do Tailwind 4 com ele
+
+A conta da WCAG desta casa lê hexadecimal de 3, 4, 6 e 8 dígitos, `rgb()`,
+`rgba()`, `hsl()`, `hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()` e
+`color()` nos espaços predefinidos do CSS, e converte tudo para sRGB antes de
+medir. A paleta do Tailwind 4 é escrita em `oklch()`: copie a cor de lá e o
+comando mede, sem conversor no meio. O CSS que ele **escreve** continua sendo
+sRGB literal, porque é o que o compilador nativo crava — a conversão acontece na
+entrada, e não na sua mão.
+
+Duas coisas ainda são recusadas, e as duas por não terem medida possível:
+`color-mix()`, que não é uma cor e sim uma conta cujo resultado depende do espaço
+de interpolação e do método de matiz, e semente que carrega alfa — semente é cor
+cheia, porque é dela que sai a escada de alfa dos papéis derivados.
+
+Cor que descreve tom fora do gamut do sRGB — 82 das 286 cores nomeadas do
+Tailwind 4 estão nessa faixa — é medida no valor que o aparelho mostra: o
+excedente é cortado canal por canal, e o comando avisa quais papéis caíram ali e
+para qual valor.
+
+#### O teto de dois temas está na mensagem de erro, e não só aqui
+
+Um terceiro esquema no arquivo é recusado com o motivo, porque quem passa três
+precisa **ouvir** por que não cabem:
+
+```
+3 esquemas em acme.ts: light, dark, contraste.
+
+    Cabem dois, e o teto nao e escolha nossa. Cada papel sai como
+    `light-dark(claro, escuro)`, e `light-dark()` tem DUAS vagas: uma clara
+    e uma escura. [...]
+    Um terceiro esquema e um terceiro BUNDLE: rode o comando uma vez por par
+    e escolha o CSS no build.
+```
 
 ## Ajuste fino com className
 

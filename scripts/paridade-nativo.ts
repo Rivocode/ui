@@ -446,8 +446,9 @@ const PARITY: Record<string, Row> = {
   RivoProvider: {
     state: "traduz",
     note:
-      "mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única " +
-      "altura (alvo de toque não encolhe); e ganha `fonts`, que o web não tem",
+      "`theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão " +
+      "de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única " +
+      "altura; e ganha `fonts`, que o web não tem",
     page:
       "Traduz, e ganha uma prop que no web não existe: `fonts`. No navegador as três " +
       "famílias chegam pelo CSS de tokens; no celular não há CSS de fonte, e carregar " +
@@ -456,7 +457,31 @@ const PARITY: Record<string, Row> = {
       "display: 'Poppins', mono: 'JetBrainsMono' }}>`), e o catálogo inteiro passa a " +
       "vesti-los. Sem a prop, tudo sai na fonte do sistema e nada quebra. Passe junto o " +
       "`isFontLoaded={isLoaded}` do `expo-font`: nome de fonte ausente falha calado no " +
-      "React Native, e é esse retorno que faz o provider avisar em `__DEV__`.",
+      "React Native, e é esse retorno que faz o provider avisar em `__DEV__`.\n\n" +
+      "**`density` não existe aqui, e não é omissão de paridade.** Alvo de toque não " +
+      "encolhe em tela de dedo: `comfortable` é a única altura, e a prop saiu da API.\n\n" +
+      "**E `theme` troca a tela inteira apenas entre os dois temas de casa.** " +
+      "`rivocode-dark`, `rivocode-light` e `system` trocam no mesmo quadro, porque as cores " +
+      "foram compiladas como `light-dark()` e o provider só gira o esquema do `Appearance`. " +
+      'Já `theme={{ light, dark }}`, o tema de cliente, **não troca cor de classe nenhuma**: ' +
+      "o compilador do `react-native-css` crava o hex dentro da regra (`.bg-accent` vira " +
+      '`{"backgroundColor":"#d4f34a"}`, literal), e nos 56 KB de CSS compilado não sobra uma ' +
+      "ocorrência de `--`. Não existe variável viva para redefinir depois do build.\n\n" +
+      "**O mapa está descontinuado, e agora é inerte.** Ele alcançava só quem lê cor por JS " +
+      "- `ChartDonut`, `ChartRadial`, o giro do `Button`, o trilho do `Switch` -, e saía " +
+      "donut de um tema e botão de outro, lado a lado. Uma metade que discorda da outra é " +
+      "pior do que nenhuma: o provider passou a resolver os 45 papéis lendo o CSS " +
+      "compilado, uma classe `bg-` por papel, então contexto e classe dizem sempre a mesma " +
+      "cor. O tipo `RivoNativeThemeMap` está marcado como descontinuado, o provider avisa " +
+      "em `__DEV__` quando recebe o objeto, e a prop `scheme` continua escolhendo claro ou " +
+      "escuro.\n\n" +
+      "**O caminho que funciona é o CSS do app, antes de compilar - e agora ele veste a " +
+      "tela inteira, gráfico incluído:** sobrescreva os papéis " +
+      "num `@theme` do seu `global.css`, depois do `@rivocode/ui-native/theme.css`, e rode " +
+      "`npx rivocode-ui-native-css` de novo. Ele tem um teto de arquitetura: `light-dark()` " +
+      "tem duas vagas, então são **dois temas por build**, um claro e um escuro. Um app de " +
+      "um cliente cabe folgado; uma vitrine de cinco temas, como a do web, pede cinco " +
+      "bundles. O [guia de temas](/temas) tem o passo a passo.",
   },
   SearchInput: { state: "traduz", note: "`value` e `onValueChange` obrigatórios" },
   Select: {

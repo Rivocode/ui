@@ -72,3 +72,10 @@
   --text-3xl: 30px;
   --text-3xl--line-height: 38px;
 }
+
+/* O @source inline forca uma classe bg- por papel, mesmo papel que peca
+   nenhuma pinta de fundo. E dela que o RivoProvider LE a cor em runtime, com
+   o useCssElement: sem a regra emitida, o papel volta undefined e o grafico
+   sai na cor de outro tema. Dos 45 papeis, 23 nao tinham bg- antes desta
+   linha - entre eles os oito chart-*, que e o que o ChartDonut precisa. */
+@source inline("bg-{bg,surface,surface-raised,overlay,fg,fg-muted,fg-subtle,fg-disabled,accent,accent-hover,accent-active,accent-fg,accent-text,accent-subtle,selected,skeleton,border,border-strong,border-disabled,line-hover,ring,success,success-fg,success-text,success-subtle,warning,warning-fg,warning-text,warning-subtle,danger,danger-fg,danger-text,danger-subtle,info,info-fg,info-text,info-subtle,chart-1,chart-2,chart-3,chart-4,chart-5,chart-6,chart-7,chart-8}");

@@ -1,12 +1,44 @@
-/**
- * O nativewind que os testes das pecas nativas enxergam.
- *
- * O pacote real so existe no app de exemplo, e o que os testes medem nao e
- * ele: e se o provider entrega os papeis certos do tema. O dubl e passa os
- * filhos adiante e guarda as variaveis num host element, para o teste poder
- * ler o que o tema de cliente aplicou.
- */
-import { createElement, type ReactNode } from "react";
+import { createElement, useEffect, useState, type ReactNode } from "react";
+
+import { declaredColor } from "../native/test/css-compilado";
+
+type Scheme = "light" | "dark" | null;
+
+type ColorSchemeSource = {
+  get: () => Scheme;
+  subscribe: (listener: () => void) => () => void;
+};
+
+let source: ColorSchemeSource = { get: () => null, subscribe: () => () => {} };
+
+export function connectColorScheme(next: ColorSchemeSource) {
+  source = next;
+}
+
+function useScheme(): "light" | "dark" {
+  const [scheme, setScheme] = useState<Scheme>(source.get);
+  useEffect(() => {
+    setScheme(source.get());
+    return source.subscribe(() => setScheme(source.get()));
+  }, []);
+  return scheme === "light" ? "light" : "dark";
+}
+
+export function useCssElement(
+  component: (props: Record<string, unknown>) => unknown,
+  props: Record<string, unknown>,
+  _mapping: Record<string, string>,
+) {
+  const scheme = useScheme();
+  const { className, ...rest } = props;
+  const worn = String(className ?? "").split(/\s+/);
+  const backgroundColor = declaredColor(worn, "background-color", scheme);
+  const color = declaredColor(worn, "color", scheme);
+  const style =
+    backgroundColor === undefined && color === undefined ? null : { backgroundColor, color };
+
+  return createElement(component as never, { ...rest, style });
+}
 
 export function VariableContextProvider({
   value,

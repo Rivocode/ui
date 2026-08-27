@@ -16,6 +16,19 @@
  * o app sabe o que carregou, entao a familia entra por `fonts` no
  * `RivoProvider` e nao por token. Nao devolva este bloco.
  *
+ * DENSIDADE TAMBEM NAO TRADUZ, e a licao e a mesma do bloco acima com outro
+ * disfarce. O `densities` saia daqui com as duas escalas, `comfortable` e
+ * `compact`, e nenhuma peca nativa lia nenhuma das duas: alvo de toque nao
+ * encolhe em tela de dedo, entao a prop `density` nunca existiu na API do
+ * `RivoProvider` nativo. O que ficava no `tokens.ts` era a promessa de uma
+ * escolha que o pacote nao oferece - quem lesse `tokens.densities.compact`
+ * montaria uma tela inteira sobre um numero que nada aplica. As medidas da
+ * confortavel entram em `scales`, junto com raio e tipografia, porque no
+ * nativo elas nao sao uma densidade entre duas: sao A medida.
+ *
+ * O web fica como esta. La a compacta existe, e um `[data-rc-density]` vivo
+ * no CSS a aplica de verdade.
+ *
  * `bun run check:native` roda o gerador e falha se o resultado comitado
  * divergir: mudou token no CSS, o native/ anda junto no mesmo commit.
  */
@@ -64,6 +77,9 @@ for (const [name, value] of declarations(paletteCss)) {
  * Divide o CSS em blocos de primeiro nivel, cabecalho + corpo. A densidade
  * compacta redefine as mesmas variaveis da confortavel no mesmo arquivo, e um
  * matchAll cego deixava a ultima vencer: o control-md saia 32 em vez de 40.
+ *
+ * Continua valendo depois de a compacta sair daqui, e agora com um segundo
+ * uso: e por este recorte que o bloco dela e reconhecido para ser pulado.
  */
 function topLevelBlocks(css: string) {
   const blocks: Array<{ header: string; body: string }> = [];
@@ -94,30 +110,20 @@ function topLevelBlocks(css: string) {
   return blocks;
 }
 
-/* As escalas que traduzem: forma, tipografia, movimento e densidade. O
-   `clamp()` de marketing, o z-index e os @keyframes ficam no CSS, onde
+/* As escalas que traduzem: forma, tipografia, movimento e altura de controle.
+   O `clamp()` de marketing, o z-index e os @keyframes ficam no CSS, onde
    fazem sentido. */
 const scales: Record<string, number> = {};
-const densities: Record<"comfortable" | "compact", Record<string, number>> = {
-  comfortable: {},
-  compact: {},
-};
 
 for (const block of topLevelBlocks(scalesCss)) {
   if (block.header.startsWith("@media") || block.header.startsWith("@keyframes")) continue;
-
-  const density = block.header.includes('data-rc-density="compact"')
-    ? "compact"
-    : block.header.includes('data-rc-density="comfortable"')
-      ? "comfortable"
-      : null;
+  if (block.header.includes('data-rc-density="compact"')) continue;
 
   for (const [name, value] of declarations(block.body)) {
     if (name.startsWith("z-") || name.startsWith("tracking-")) continue;
     const number = toNumber(value) ?? (/^[\d.]+$/.test(value) ? Number(value) : null);
     if (number === null) continue;
-    if (density) densities[density][name] = number;
-    else scales[name] = number;
+    scales[name] = number;
   }
 }
 
@@ -136,7 +142,6 @@ const tokens = {
     "Gerado por scripts/gen-native-tokens.ts a partir de src/tokens/*.css. Nao editar: rode bun run gen:native.",
   palette: Object.fromEntries(palette),
   scales,
-  densities,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),
@@ -185,6 +190,8 @@ const themeLines = [
     }),
 ];
 
+const roleClasses = Object.keys(dark).join(",");
+
 const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
 
 /* So o @theme: o build do Tailwind ja o materializa em :root sozinho, e uma
@@ -194,6 +201,13 @@ const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode b
 @theme {
 ${themeLines.join("\n")}
 }
+
+/* O @source inline forca uma classe bg- por papel, mesmo papel que peca
+   nenhuma pinta de fundo. E dela que o RivoProvider LE a cor em runtime, com
+   o useCssElement: sem a regra emitida, o papel volta undefined e o grafico
+   sai na cor de outro tema. Dos 45 papeis, 23 nao tinham bg- antes desta
+   linha - entre eles os oito chart-*, que e o que o ChartDonut precisa. */
+@source inline("bg-{${roleClasses}}");
 `;
 
 const ts = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
@@ -275,6 +289,13 @@ if (themeArg !== -1) {
   );
 
   console.log(`${target}: ${Object.keys(map.light).length} papeis, claro e escuro.`);
+  console.log(
+    "\nO mapa esta DESCONTINUADO como prop: `<RivoProvider theme={mapa}>` nao veste nada.\n" +
+      "Para vestir a tela, sobrescreva os papeis --color-* num @theme do global.css do app e\n" +
+      "recompile com `npx rivocode-ui-native-css`. O provider le os 45 papeis do CSS compilado,\n" +
+      "entao a classe e a cor que a peca le por JS passam a dizer a mesma coisa.\n" +
+      "Este arquivo continua servindo de conferencia de papel faltando.",
+  );
   if (missing.length > 0) {
     // Papel faltando nao e detalhe: a peca que o pede herda a cor da RivoCode,
     // e isso so aparece na tela do cliente, meses depois.
