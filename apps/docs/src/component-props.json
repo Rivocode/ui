@@ -17027,6 +17027,12 @@
         "note": "Alinhamento no eixo do lado escolhido."
       },
       {
+        "name": "busyLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve quando a espera comeca, dentro do painel."
+      },
+      {
         "name": "cancelLabel",
         "type": "string",
         "required": false,
@@ -17573,6 +17579,12 @@
         "type": "(() => void)",
         "required": false,
         "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
       },
       {
         "name": "skeleton",
@@ -22803,7 +22815,7 @@
         "name": "step",
         "type": "number",
         "required": false,
-        "note": "Quantos minutos as setas para cima e para baixo andam, pousando na grade."
+        "note": "Quantos minutos o passo anda, pousando na grade."
       },
       {
         "name": "value",
@@ -22911,7 +22923,7 @@
         "name": "step",
         "type": "number",
         "required": false,
-        "note": "Quantos minutos as setas para cima e para baixo andam, pousando na grade."
+        "note": "Quantos minutos o passo anda, pousando na grade."
       },
       {
         "name": "value",
@@ -23559,6 +23571,12 @@
         "type": "Ref<VirtualListHandle>",
         "required": false,
         "note": "Recebe um `VirtualListHandle`, com `scrollToIndex(index, { align })`."
+      },
+      {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
       },
       {
         "name": "skeletonItems",

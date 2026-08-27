@@ -41,7 +41,7 @@ const GATE = "check";
  */
 const OUT: Record<string, string> = {
   "scripts/regressao-visual.ts":
-    "Compara retrato com assinatura tirada NESTA maquina: precisa dos 26 PNG do `bun run shot` (77s de Chrome, caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run demo && bun run shot && bun run visual` antes de criar a tag.",
+    "Compara retrato com assinatura tirada NESTA maquina: precisa dos 28 PNG do `bun run shot` (77s de Chrome, caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run demo && bun run shot && bun run visual` antes de criar a tag.",
   "scripts/shot.ts":
     "Fotografa a vitrine chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
   "scripts/serve.ts":

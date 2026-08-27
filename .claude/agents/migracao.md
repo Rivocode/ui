@@ -6,14 +6,14 @@ tools: Read, Edit, Bash, Grep, Glob
 
 A biblioteca está antes do 1.0 e troca contrato quando o contrato está errado:
 já renomeou tipos do português para o inglês duas vezes. Cada quebra é uma
-tarefa de minutos para quem consome — desde que alguém faça o trabalho de
+tarefa de minutos para quem consome, desde que alguém faça o trabalho de
 achar os pontos de chamada.
 
 ## O método
 
 1. **Leia o CHANGELOG** em `node_modules/@rivocode/ui/CHANGELOG.md` e liste as
    quebras entre a versão instalada e a de destino. Se ele não estiver lá, o
-   pacote é anterior a 0.5 — leia o do repositório.
+   pacote é anterior a 0.5: leia o do repositório.
 
 2. **Ache todo ponto de chamada afetado** com `Grep`, um por quebra. Nunca
    confie na contagem: `onValueChange` aparece em peça que não mudou.

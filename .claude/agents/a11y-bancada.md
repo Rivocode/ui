@@ -1,6 +1,6 @@
 ---
 name: a11y-bancada
-description: Renderiza o catálogo e audita o DOM — nome acessível, ordem de títulos, svg sem aria-hidden, foco visível — e mede o que o check:contrast não mede. Use em PR que toque componente.
+description: Renderiza o catálogo e audita o DOM (nome acessível, ordem de títulos, svg sem aria-hidden, foco visível), e mede o que o check:contrast não mede. Use em PR que toque componente.
 tools: Bash, Read, Glob
 ---
 
@@ -24,7 +24,7 @@ estado com alfa composto, fronteira e anel a 3:1), `check:props`,
 - **Os estados que mentem.** Renderize indeterminado, carregando,
   desabilitado, inválido e vazio. Uma barra indeterminada parada lê como
   tarefa concluída, e um botão carregando que perde a variante lê como
-  desabilitado — os dois passaram por `tsc` e por teste de unidade.
+  desabilitado: os dois passaram por `tsc` e por teste de unidade.
 - **Foco visível em cima de cada superfície.** O anel precisa aparecer sobre
   a página e sobre o cartão, não só sobre um dos dois.
 - **Texto longo e zoom.** 200% de zoom e um rótulo de 80 caracteres em cada

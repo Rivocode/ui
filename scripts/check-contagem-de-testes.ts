@@ -21,6 +21,21 @@
  */
 import { $ } from "bun";
 
+/**
+ * As duas pastas da suite, e so elas.
+ *
+ * Sem o escopo, a guarda contava a ARVORE DE TRABALHO: qualquer pasta de
+ * rascunho na raiz com um `*.test.tsx` entrava na conta. Em 27/08 uma bancada
+ * de auditoria com tres arquivos fez a guarda pedir `TESTS = 1081` quando a
+ * suite rastreada tinha 1074, e quem obedecesse gravaria na home um numero
+ * inventado por um diretorio que nem esta no git. E o incidente que esta
+ * guarda existe para impedir, cometido pela propria guarda.
+ *
+ * As duas pastas sao as que o JSDoc do topo sempre declarou como significado
+ * do numero. O codigo e que nao dizia isso.
+ */
+const SUITES = ["test/", "native/test/"];
+
 const HOME_FILE = "apps/docs/src/pages/home.tsx";
 const HOME_CONST = "TESTS";
 
@@ -37,7 +52,7 @@ const HOME_CONST = "TESTS";
  * esperado, e nao falha - e escreve a linha no stderr.
  */
 async function countSkipping() {
-  const run = await $`bun test -t ___sem-correspondencia___`.nothrow().quiet();
+  const run = await $`bun test ${SUITES} -t ___sem-correspondencia___`.nothrow().quiet();
   const output = run.stderr.toString() + run.stdout.toString();
 
   const tests = /skipping (\d+) tests?/.exec(output);
@@ -56,7 +71,7 @@ async function countSkipping() {
  * que passa a nao encontrar o que procura e pior do que uma que demora.
  */
 async function countRunning() {
-  const run = await $`bun test`.nothrow().quiet();
+  const run = await $`bun test ${SUITES}`.nothrow().quiet();
   const output = run.stderr.toString() + run.stdout.toString();
 
   const total = /Ran (\d+) tests? across (\d+) files?/.exec(output);

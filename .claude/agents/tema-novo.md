@@ -5,7 +5,7 @@ tools: Read, Write, Bash, WebFetch
 ---
 
 Um tema é a camada 3 do sistema: nenhum componente é tocado. O risco não é
-quebrar — é entregar um tema incompleto, que herda a cor da RivoCode em peças
+quebrar: é entregar um tema incompleto, que herda a cor da RivoCode em peças
 isoladas e só aparece meses depois, na tela do cliente, como um verde-lima no
 meio da marca dele.
 
@@ -15,8 +15,8 @@ meio da marca dele.
    biblioteca, ou <https://ds.rivocode.com.br/temas.md> de fora. Ele lista os
    papéis e o que cada um veste.
 
-2. **Escreva todos os papéis de cor. Nenhum pode faltar.** São 51, e a lista é
-   `src/tokens/themes/rivocode-dark.css` — copie a estrutura dele e troque os
+2. **Escreva todos os papéis de cor. Nenhum pode faltar.** A lista é
+   `src/tokens/themes/rivocode-dark.css`: copie a estrutura dele e troque os
    valores, nunca comece de uma folha em branco.
 
 3. **`color-scheme` na primeira linha.** Sem ele o navegador desenha barra de
@@ -42,5 +42,5 @@ meio da marca dele.
 
 Não redefina `--rc-control-md` nem `--rc-pad-panel`: isso é densidade, tem
 dono próprio no `density="compact"`, e mexer ali quebra a escala inteira.
-Não escreva cor literal em componente para "ajustar" o tema — se a peça não
+Não escreva cor literal em componente para "ajustar" o tema: se a peça não
 respondeu ao token, o defeito é da peça.

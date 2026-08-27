@@ -63,7 +63,7 @@ Regras de forma que continuam valendo:
 
 Historico: ate 26/08/2026 a regra era "fica quando explica uma decisao ou uma
 armadilha que o codigo nao mostra". Ela foi trocada pela de cima por decisao do
-dono, e o corte removeu 5086 linhas. Se voce esta lendo um arquivo com
+dono, e o corte removeu milhares de linhas. Se voce esta lendo um arquivo com
 comentario de prosa fora das duas excecoes, ele e anterior a essa data ou
 escapou - e para sair, nao para ser imitado.
 
@@ -103,8 +103,8 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 `bun run check` roda tudo em sequencia e para no primeiro que falhar:
 instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
 contraste, temas, contrato, doc, grupos de classe, fronteira do chart, skill,
-tokens nativos, paridade, contagem de pecas, script fora do gate, contagem de
-testes, e por fim `bun test`.
+tokens nativos, paridade, contagem de pecas, vitrine, script fora do gate,
+contagem de testes, e por fim `bun test`.
 
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
@@ -116,6 +116,12 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 - `check:paridade` - `scripts/paridade-nativo.ts` e a fonte unica da tabela de
   paridade, e ela escreve tambem a secao "No React Native" de cada pagina.
 - `check:testes` - a contagem que a home exibe.
+- `check:demo` - toda peca tem que aparecer em `demo/*.tsx`, ou ter linha em
+  `SEM_VITRINE` com o motivo. Nasceu porque sete pecas foram publicadas no npm
+  sem ninguem ter olhado para nenhuma delas: passaram em 1072 testes, e o passo
+  do processo que manda olhar nos dois temas e nas duas densidades foi pulado
+  sem nada acusar. Medindo depois, 28 das 90 estavam fora da vitrine. A lista
+  so encolhe.
 - `check:scripts` - todo `scripts/*.ts` tem que ser alcancavel a partir do
   `check`, ou ter linha em `OUT` dizendo o que o impede. Nasceu porque o
   `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres

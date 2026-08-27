@@ -22,6 +22,7 @@ const PAGES = [
   { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 2600 },
   { rota: "/controles.html", name: "controles", height: 2000, alturaCelular: 3400 },
   { rota: "/dados.html", name: "dados", height: 1800, alturaCelular: 3000 },
+  { rota: "/novas.html", name: "novas", height: 5150, alturaCelular: 8150 },
 ];
 
 /** O piso de largura de janela do Chrome no macOS. */

@@ -51,10 +51,10 @@
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",
-    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:comentarios && bun run check:colors && bun run check:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:grupos && bun run check:chart && bun run check:skill && bun run check:native && bun run check:paridade && bun run check:pecas && bun run check:scripts && bun run check:testes && bun test",
+    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:comentarios && bun run check:colors && bun run check:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:grupos && bun run check:chart && bun run check:skill && bun run check:native && bun run check:paridade && bun run check:pecas && bun run check:demo && bun run check:scripts && bun run check:testes && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
-    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
+    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx demo/novas.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
     "visual": "bun run scripts/regressao-visual.ts",
     "shot": "bun run demo && bun run scripts/shot.ts",
     "serve": "bun run scripts/serve.ts",
@@ -79,13 +79,11 @@
     "check:instalacao": "bun run scripts/check-instalacao-unica.ts",
     "check:pecas": "bun run scripts/check-contagem-de-pecas.ts",
     "check:scripts": "bun run scripts/check-scripts-fora-do-gate.ts",
-    "check:testes": "bun run scripts/check-contagem-de-testes.ts"
+    "check:testes": "bun run scripts/check-contagem-de-testes.ts",
+    "check:demo": "bun run scripts/check-demo.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
-    "@fontsource-variable/jetbrains-mono": "^5.3.0",
-    "@fontsource-variable/manrope": "^5.3.0",
-    "@fontsource/poppins": "^5.3.0",
     "@tanstack/react-table": "^9.1.2",
     "@tanstack/react-virtual": "^3.14.10",
     "class-variance-authority": "^0.7.1",
@@ -94,6 +92,9 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/poppins": "^5.3.0",
     "@happy-dom/global-registrator": "^20.11.6",
     "@hookform/resolvers": "^5.9.1",
     "@tailwindcss/cli": "^4.3.3",

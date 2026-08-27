@@ -1,6 +1,6 @@
 ---
 name: peca-nova
-description: Cria uma peça nova do @rivocode/ui completa — wrapper, tipos, preview, doc, teste, índice e verificações. Use ao adicionar qualquer componente ao catálogo, e antes de dizer que uma peça está pronta.
+description: Cria uma peça nova do @rivocode/ui completa: wrapper, tipos, preview, doc, teste, índice e verificações. Use ao adicionar qualquer componente ao catálogo, e antes de dizer que uma peça está pronta.
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
@@ -13,12 +13,12 @@ quando um dos nove sai de sincronia.
 ## A ordem, e nenhuma etapa é opcional
 
 1. **Confira que a peça não existe com outro nome.** `reference/components.md`
-   da skill lista as escolhas entre peças parecidas — `PreviewCard` é o
+   da skill lista as escolhas entre peças parecidas: `PreviewCard` é o
    HoverCard, `Tree` é o TreeView, `MaskedInput` é o MaskInput, `Alert` é o
    Callout, `Slider` com dois valores é o RangeSlider.
 
 2. **Wrapper sobre a Base UI quando houver primitivo; do zero quando não.**
-   Sem cor literal, sem `z-index` numérico, sem altura cravada — as três têm
+   Sem cor literal, sem `z-index` numérico, sem altura cravada: as três têm
    guarda no `check`, e a de cor falha o build. Altura de controle sai de
    `--rc-control-*`, canto de `--rc-radius-*`, empilhamento de `--rc-z-*`.
 
@@ -33,7 +33,7 @@ quando um dos nove sai de sincronia.
    `check:previews` não pega isso porque o arquivo compila.
 
 5. **Página em `.design-sync/docs/<Peça>.md`.** Frontmatter com `category`, a
-   prosa do que a peça faz, e — obrigatória — a seção "quando não usar", com a
+   prosa do que a peça faz, e (obrigatória) a seção "quando não usar", com a
    peça vizinha nomeada: `Progress` anda e termina, `Meter` fica parado;
    `Toast` passa, `Alert` fica; `Steps` olha para frente, `Timeline` olha para
    trás; `Dialog` dispensa clicando fora, `AlertDialog` não. A tabela de props
@@ -44,19 +44,19 @@ quando um dos nove sai de sincronia.
    errados: vazio, carregando, erro, desabilitado, indeterminado.
 
 7. **Rode `bun run gen:props`** para as tabelas saírem, e confira que a peça
-   aparece com as props que você espera — inclusive os callbacks.
+   aparece com as props que você espera, inclusive os callbacks.
 
 8. **Pares de contraste novos em `scripts/check-contrast.ts`**, se a peça
    estreou combinação de cor que ainda não é medida. Fronteira de controle
    pede 3:1; texto sobre fundo de estado pede 4,5:1 com o alfa composto.
 
 9. **O lado nativo, no mesmo dia.** Escreva a linha da peça em
-   `scripts/paridade-nativo.ts` antes de dizer que terminou — `check:paridade`
+   `scripts/paridade-nativo.ts` antes de dizer que terminou: `check:paridade`
    recusa página sem linha. Se a peça porta, construa o par em `native/src/` na
    mesma leva: a API não é a mesma (no nativo tudo é controlado e a lista vem
    por `items`), mas a escolha da peça e o vocabulário de classes são. Se não
    porta, diga o motivo na linha. E `fila` é só para decisão de gesto ainda não
-   tomada — nunca para falta de tempo —, e exige entrada em `FILA_DECLARADA`.
+   tomada (nunca para falta de tempo), e exige entrada em `FILA_DECLARADA`.
 
 ## Antes de dizer que terminou
 

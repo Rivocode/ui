@@ -17,12 +17,11 @@
  * na pagina do `Card` -, e quem conta arquivo em vez de peca chega a cerca do
  * DOBRO do catalogo.
  *
- * A proporcao esta escrita assim de proposito. Aqui dizia "cento e cinquenta e
- * oito", que era o numero de arquivos no dia em que a guarda nasceu; hoje sao
- * 169, e a frase passou versoes mentindo dentro da guarda que existe
- * justamente porque numero escrito a mao envelhece calado. Se voltar a cravar
- * um digito, ele volta a apodrecer - e este e o ultimo lugar do repositorio
- * que pode se dar a esse luxo.
+ * A proporcao esta escrita assim de proposito. Aqui ja se cravou o numero de
+ * arquivos do dia, duas vezes, e as duas envelheceram sem que ninguem visse -
+ * dentro da guarda que existe justamente porque numero escrito a mao envelhece
+ * calado. Se voltar a cravar um digito, ele volta a apodrecer, e este e o
+ * ultimo lugar do repositorio que pode se dar a esse luxo.
  */
 import { readdirSync } from "node:fs";
 

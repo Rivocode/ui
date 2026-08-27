@@ -34,7 +34,7 @@ const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ def
  *
  * Os outros três da vitrine saem do catálogo enquanto o site é construído. Este
  * não pode: a contagem só existe depois de a suíte rodar, e cobrar a suíte
- * inteira do build da Vercel — minutos, a cada push — para imprimir um dígito é
+ * inteira do build da Vercel (minutos, a cada push) para imprimir um dígito é
  * caro demais pelo que se ganha.
  *
  * Então ele fica versionado aqui, e quem o mantém honesto é `bun run
@@ -42,10 +42,10 @@ const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ def
  * regravar. Sem essa guarda o dígito envelhece calado, como envelheceu duas
  * vezes: parado em 292, e depois em 348 enquanto a suíte chegava a 552.
  *
- * Conta a suíte da raiz inteira — `test/` e `native/test/` —, que é o que o
+ * Conta a suíte da raiz inteira (`test/` e `native/test/`), que é o que o
  * rótulo ao lado promete.
  */
-const TESTS = 1070
+const TESTS = 1101
 
 const INSTALL = 'npm install @rivocode/ui'
 
@@ -416,14 +416,14 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           <p>
             O <code className="font-mono text-accent-text">@rivocode/ui-native</code> traz{' '}
             {NATIVE_PIECES} das {ENTRIES.length} peças para o React Native, com os mesmos tokens,
-            os mesmos dois temas e o mesmo vocabulário de classes — o NativeWind lê as classes que
+            os mesmos dois temas e o mesmo vocabulário de classes: o NativeWind lê as classes que
             você já escreve aqui.
           </p>
           <p>
             O que atravessa é o vocabulário, o token e a escolha da peça.{' '}
             <strong className="font-medium text-fg">O JSX se reescreve</strong>: no toque tudo é
             controlado, a lista vem por <code className="font-mono text-accent-text">items</code> em
-            vez de composição, e as peças que não portam não portam por decisão — barra lateral,
+            vez de composição, e as peças que não portam não portam por decisão: barra lateral,
             tabela e dica de ponteiro são idioma de mesa, e o celular tem o dele.
           </p>
           <p>
