@@ -166,24 +166,41 @@ export function ExampleStage({
             {title ?? titleOf(name)}
           </h2>
 
-          <div className="flex items-center gap-2">
+          {/* O `flex-wrap` aqui e o do `header` sao dois: o de fora quebra
+              entre o titulo e o grupo, e o de dentro quebra DENTRO do grupo.
+              Sem este, o grupo era um item de flex unico de 334px que nao
+              encolhe - o `w-8` de cada icone de largura e a palavra de cada aba
+              travam o minimo -, entao a 320px ele transbordava 86px e o
+              `overflow-hidden` da secao comia o botao de copiar inteiro: 75px
+              fora do cartao, e `elementFromPoint` no centro dele nao devolvia o
+              botao. Nao custa altura onde a fileira ja cabe: de 414px para
+              cima o DOM sai igual ao de antes. */}
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <ViewportSwitch value={viewport} onChange={switchViewport} />
 
             {/* Icone e palavra juntos: o olho sozinho e adivinhacao, e a
                 palavra sozinha e mais uma coisa para ler numa pagina cheia de
                 exemplos. */}
-            <TabList variant="segmented">
-              <Tab value="preview">
-                <Eye size={14} aria-hidden="true" />
-                Preview
-              </Tab>
-              <Tab value="code" disabled={!source}>
-                <Code2 size={14} aria-hidden="true" />
-                Código
-              </Tab>
-            </TabList>
+            {/* As abas e o copiar num grupo so, para a quebra cair sempre entre
+                a chave de largura e eles, e nunca no meio deles: a 390px o
+                copiar sozinho descia para uma terceira linha vazia, longe do
+                "Codigo" que e o que ele copia. O `gap-2` repetido e o mesmo do
+                pai, entao onde a fileira cabe inteira o espacamento sai igual
+                ao de antes. */}
+            <div className="flex items-center gap-2">
+              <TabList variant="segmented">
+                <Tab value="preview">
+                  <Eye size={14} aria-hidden="true" />
+                  Preview
+                </Tab>
+                <Tab value="code" disabled={!source}>
+                  <Code2 size={14} aria-hidden="true" />
+                  Código
+                </Tab>
+              </TabList>
 
-            {source && <CopyButton text={source} />}
+              {source && <CopyButton text={source} />}
+            </div>
           </div>
         </header>
 
