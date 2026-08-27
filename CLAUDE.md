@@ -100,12 +100,17 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 ## O gate
 
-`bun run check` roda tudo em sequencia e para no primeiro que falhar:
+`bun run check` roda TRINTA passos em sequencia e para no primeiro que falhar:
 instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
-contraste, temas, contrato, doc, cobertura do README, grupos de classe,
-fronteira do chart, skill, lista da skill, tokens nativos, paridade, contagem
-de pecas, vitrine, script fora do gate, contagem de testes, e por fim
-`bun test`.
+contraste do web, contraste do mapa nativo, espelho do contraste, temas,
+contrato, doc, cobertura do README, classe sem regra, grupos de classe,
+fronteira do chart, fronteira do CLI, skill, lista da skill, tokens nativos,
+gerador de tema nativo, codigo compartilhado, paridade, contagem de pecas,
+vitrine, retratos declarados, script fora do gate, contagem de testes, e por
+fim `bun test`.
+
+O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
+`package.json`, o gate cresceu e esta pagina nao acompanhou.
 
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
@@ -138,6 +143,36 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres
   assinaturas de retrato divergiam do comitado e ninguem sabia, porque ninguem
   rodava. A lista `OUT` so encolhe.
+- `check:classes` - classe usada em `src/**` ou `native/src/**` que o Tailwind
+  daquele pacote nao sabe compilar. Nasceu porque o polegar do `Slider` nativo
+  pintava `shadow-1` e `shadow` nao existe no CSS nativo: a classe nunca gerou
+  um byte, o `tsc` passava, o build passava, e o polegar ficou sem sombra desde
+  que nasceu. Ela pergunta ao proprio compilador, e nao a uma lista - entao
+  variante, valor arbitrario e modificador de opacidade passam pelo caminho do
+  build. Sem lista de excecao, e o acordo e que continue sem.
+- `check:cli` - `src/lib/contrast.ts`, `src/lib/theme-check.ts` e
+  `src/tokens/theme-roles.ts` sao ferramenta de mesa: eles viajam em
+  `dist/cli.js` e **nao** podem virar alcancaveis de `src/index.ts`, senao a
+  conta de contraste entra no bundle de quem so usa as pecas. Ela le o GRAFO de
+  imports a partir das tres entradas e imprime a cadeia, porque proibir a pasta
+  deixa o caminho indireto aberto. Confere tambem o sentido inverso, para nao
+  virar decoracao, e que a frase-marca de cada arquivo ainda existe na fonte -
+  essa ultima assercao faltava, e a guarda ficou verde por vacuidade quando um
+  rename levou a frase embora.
+- `check:native:contrast` - `native/scripts/contrast.mjs` e espelho GERADO de
+  `src/lib/contrast.ts`, porque o pacote nativo publica FONTE e nao alcanca o
+  `src/` do web. Ela confere o texto E que o espelho MEDE: importa os dois e
+  compara linha por linha no tema da casa. Texto pega o arquivo editado a mao;
+  a medida pega o arquivo que virou inerte. A comparacao ignora espaco em
+  branco, porque os workflows usam `bun-version: latest` e formatacao nova do
+  transpilador deixaria a CI vermelha sem ninguem tocar no repo.
+- `check:tema:nativo` - o `rivocode-ui-native-theme` deriva 37 papeis de 8
+  sementes, e a guarda fica vermelha **no commit que adiciona um papel novo**,
+  nos dois sentidos. E para a pergunta "deriva de que?" custar cinco minutos em
+  vez de uma versao.
+- `check:retratos` - secao declarada em `SECTIONS` tem que ter marcador na
+  vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
+  milissegundos e sem navegador, porque o retrato em si vive fora do gate.
 
 `bun run build` depois, porque ha quebra que so aparece ao empacotar.
 

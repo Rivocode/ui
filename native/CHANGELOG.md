@@ -1,5 +1,165 @@
 # Mudancas
 
+## 0.4.0
+
+Esta versao nasceu de um app Expo de verdade que vestiu um tema de cliente
+inteiro. O relato que voltou tinha tres defeitos, e o primeiro deles significa
+que **o tema de cliente nunca funcionou como a documentacao dizia.** Ha duas
+quebras aqui, e as duas sao a API deixando de prometer o que nao entregava.
+
+### Corrigido: o tema de cliente veste a tela inteira
+
+O sintoma na tela era donut de um tema e botao de outro, lado a lado.
+
+A causa esta abaixo da biblioteca. O compilador do `react-native-css` crava o
+hexadecimal dentro da regra - `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`,
+literal - e no CSS compilado nao sobra **uma ocorrencia** de `--`. O
+`VariableContextProvider` entregava os 44 papeis a ninguem: classe nenhuma lia
+variavel. O que o mapa alcancava era so quem le cor por JS, e sao oito: os
+graficos, o giro do `Button` e do `Spinner`, o trilho do `Switch`, o
+`Sparkline`, e o `placeholderTextColor` de `Field` e `Textarea`. Metade da tela
+no tema do cliente, metade na cor da casa.
+
+Manter variavel viva no CSS explode a compilacao pelas cinco formas testadas -
+declarar duas vezes, com fallback, por classe, ou desligando o inliner - e
+`3.0.7` e a ultima versao publicada. Nao havia para onde subir.
+
+A saida foi pelo outro lado: **as pecas param de precisar do mapa.** O
+`RivoProvider` resolve os 45 papeis do proprio CSS compilado, em runtime, e
+publica pelo `RivoContext` que ja existia. As 14 pecas que leem `useRivo().colors`
+nao mudaram uma linha. Custo medido: 53 microssegundos por render do provider,
+que na pratica e por troca de tema.
+
+Faltavam classes para isso funcionar, e faltavam justo as que os graficos
+precisam: **23 dos 45 papeis nao tinham `bg-` emitido**, os oito `chart-1..8`
+inclusive. Agora tem, e o CSS gerado cresceu 8,3%.
+
+O que se ganha: `@theme { --color-accent: #1b57ff }` no CSS do app veste
+`Button`, `Switch` e `ChartDonut` com a mesma cor, provado numa unica arvore.
+
+**Duas coisas que valem entrar no seu contrato.** Cor de classe so muda em
+BUILD: tema de cliente no nativo e geracao de CSS, e nao troca em runtime. E
+`light-dark()` tem duas vagas, entao sao **dois temas por build, no maximo** -
+uma vitrine de cinco temas nao cabe sem cinco bundles.
+
+### Quebra: `RivoNativeThemeMap` esta descontinuado
+
+O tipo levou `@deprecated`. A prop `theme` continua sem tag, porque
+`theme="rivocode-light"` e uso legitimo - o que esta descontinuado e passar
+mapa. Ele ficou inerte: quem passa ouve um aviso em `__DEV__` dizendo por que
+era pior do que nada (metade da tela discordando da outra) e qual e o caminho
+que funciona.
+
+Migre sobrescrevendo os papeis no `@theme` do CSS do app, antes de compilar. O
+comando novo abaixo faz isso de uma paleta de oito cores.
+
+### Quebra: a prop `density` sai
+
+`<RivoProvider density>` e o tipo `RivoDensity` nao existem mais. A prop era
+aceita, a escala `compact` era gerada em `tokens.ts`, e nenhuma peca lia
+nenhuma das duas: a API prometia uma densidade que a biblioteca nunca entregou.
+
+Ela nao vai ser implementada, e o motivo ja estava escrito em tres lugares
+antes de a prop sair. A escala compacta levaria o controle medio de 40 para 32
+pontos e o grande de 48 para 38 - todos abaixo dos 44 que um dedo pede. O
+catalogo anda no sentido contrario de proposito: das 27 pecas com altura fixa,
+25 tem alvo de toque, e a altura mais comum e 48. `comfortable` e a unica
+altura, e agora a API diz isso.
+
+Quem passava `density="comfortable"` apaga a linha: era o padrao, e a tela nao
+muda. Quem passava `density="compact"` nunca viu efeito. A escala saiu do
+`tokens.ts` junto, e as medidas confortaveis entraram em `scales`, porque no
+toque elas nao sao uma densidade entre duas - sao A medida.
+
+### `rivocode-ui-native-theme`: vestir um cliente deixa de ser trabalho do app
+
+Para vestir um cliente, o app que reportou tudo isto precisou escrever 220
+linhas: os nomes de papel, os pares de contraste, os minimos, a composicao de
+alfa, o formato de saida. Nada disso e do app, e o proximo projeto reescreveria
+pela metade - com o mesmo defeito que a copia dele herdou, porque a conta que
+ele portou nao enxergava `rgba()` e devolvia `NaN` em 12 dos 45 papeis.
+
+```sh
+rivocode-ui-native-theme minha-paleta.ts
+```
+
+Voce escreve **oito** cores por esquema - `bg`, `surface`, `fg`, `accent`,
+`success`, `warning`, `danger`, `info` - e os outros 37 sao derivados. A regra
+e uma so: o gerador **nunca inventa matiz nova**; ele reusa cor que voce
+escreveu ou compoe alfa dela. Os cinco `*-text` sao o caso conservador, porque
+sao a cor que se le: onde o proprio preenchimento nao passa, o comando recusa e
+**diz o valor que passaria**.
+
+E ele nao escreve tema que reprova no contraste:
+
+```
+Guarda de contraste:
+  claro: 1 falha(s)
+    accent-fg sobre accent: 3.18 < 4.5
+Nada foi escrito: conserte o contraste antes de gerar o CSS.
+```
+
+A lista de papeis sai do `tokens.json` do pacote **instalado**, nunca de uma
+copia dentro do comando. Papel novo numa versao futura para o comando pelo
+nome, com a versao, em vez de o tema quebrar calado.
+
+### `@rivocode/ui-native/contrast`
+
+A conta de contraste do toque passa a ser importavel:
+
+```ts
+import { checkThemeMap, contrastRatio, compose } from "@rivocode/ui-native/contrast";
+```
+
+A tabela de pares dela e a do TOQUE, e nao a do web: saem `ring`, `accent-hover`,
+`line-hover` e `border-disabled`, porque nao ha foco de teclado nem ponteiro no
+celular. Entram pares que so existem no dedo - rotulo sobre o preenchimento
+pressionado, alfa sobre alfa no `Calendar`, e o par de camada do `opacity` do
+React Native, que achata preenchimento **e** rotulo juntos e derruba o `Button`
+destrutivo de 4,83 para 4,57:1 sob o toque.
+
+Ela le os mesmos espacos de cor que o web aprendeu nesta rodada, `oklch`
+incluido.
+
+### Corrigido: o pacote sobe no react-native-web
+
+`Appearance.setColorScheme` nao existe no `react-native-web`, e o
+`RivoProvider` chamava sem guarda. Como ele embrulha o app inteiro, **o app
+inteiro nao renderizava**: tela em branco e `setColorScheme is not a function`
+no console.
+
+A chamada passou a ser condicional, e o caso "nao deu" nao e silencioso - o
+aviso explica que no web o `light-dark()` resolve pelo `color-scheme` do
+elemento, e que o remedio e do app. Dois vizinhos foram consertados na mesma
+varredura: `I18nManager.isRTL` nao existe no RNW (le-se por `getConstants()`), e
+`AppState.addEventListener` devolve `undefined` sem DOM, entao `remove()`
+estourava.
+
+Isto vale mais do que um alvo a mais: o web e a unica bancada onde se inspeciona
+arvore renderizada e se tira retrato sem simulador.
+
+### Corrigido: o controle marcado, e o polegar do Slider
+
+`Switch`, `Checkbox` e `RadioGroup` marcados mediam 1,21:1 no tema claro, contra
+os 3:1 da WCAG 1.4.11 - menos que o estado desmarcado. E o conserto do web
+inteiro esta no CHANGELOG dele; aqui foi pior num ponto: o circulo do
+`RadioGroup` e vazado, entao o ponto marcado era lima cheia direto sobre a
+pagina, e a opcao escolhida nao se via. Agora medem 5,55:1 sobre a pagina e
+5,75:1 sobre o cartao.
+
+O polegar do `Slider` perdeu `shadow-1`. A classe nao existia no CSS nativo -
+nunca gerou um byte, e o polegar nunca teve sombra. Nao foi implementada porque
+o polegar do `Slider` do web tambem nao tem sombra: a classe era invencao da
+copia, e nao traducao. O polegar se le sem ela, a 12,97:1 sobre o trilho.
+
+Uma guarda nova acusa essa familia inteira agora: classe usada e nao gerada
+falha o gate, e ela pergunta ao proprio compilador em vez de consultar lista.
+
+### `ChartContainer` e `Indicator` param de aceitar uso errado em silencio
+
+Os dois avisos do web valem aqui, com os mesmos numeros: moldura de grafico com
+altura zero, e filho de `Indicator` mais largo que 48 pontos.
+
 ## 0.3.1
 
 A `FilterBar` nao tratava `dir="rtl"`, e o defeito durava para sempre no iOS.

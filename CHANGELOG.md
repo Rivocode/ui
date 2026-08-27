@@ -1,5 +1,150 @@
 # Mudancas
 
+## 0.9.0
+
+A 0.8.0 foi instalada num app de verdade, e o app respondeu. O que veio de
+volta nao foi lista de desejo: foram tres defeitos medidos com comando, cada um
+do tipo que passa por `tsc` verde e build verde e sai errado na tela. Esta
+versao e a resposta, e o tema dela e um so: **a biblioteca passa a cobrar no
+consumidor o que ela ja cobrava em casa.**
+
+### `rivocode-ui check-theme`: a guarda sai do repositorio
+
+A quebra mais cara da 0.7.0 foi silenciosa. Os `--rc-font-*` viraram papel de
+tema e sairam da camada global; dois temas de cliente escritos na 0.6.1 nao os
+declaravam; a galeria inteira perdeu familia de fonte nesses dois temas. O
+`tsc` compilou, o Vite construiu, e a unica coisa errada era a tela. A guarda
+que pegaria isso existia - e rodava no repositorio da biblioteca.
+
+Agora roda onde o dano aparece:
+
+```sh
+bunx rivocode-ui check-theme src/temas/meu-tema.css
+```
+
+Ele cobra os 55 papeis obrigatorios e mede o contraste de cada par, nesta
+ordem - papel faltando primeiro, porque medir o que nao existe cai no valor
+herdado e devolve numero bonito por acidente. Aceita `.css` (o tema do web) e
+`.theme.ts` (o mapa do nativo), `--json` para CI, e o codigo de saida serve aos
+dois.
+
+A saida separa o que a tela denuncia do que ela esconde:
+
+```
+[data-rc-theme="neon"]   (tema-neon.css)
+  52 dos 55 papeis. Faltam 3.
+  QUEBRA CALADA, e e por isso que ninguem reporta:
+    --rc-font-sans
+      A pagina inteira cai na fonte do navegador. Nao ha valor de `:root` por
+      baixo para segurar a queda, e isso e de proposito.
+      Papel novo na 0.7.0: as tres familias sairam de `src/tokens/scales.css`.
+```
+
+A lista de papeis nao e escrita a mao em lugar nenhum - ela e extraida do
+proprio CSS para `src/tokens/theme-roles.ts`, e `check:temas` fica vermelho se
+o comitado divergir da fonte. Lista escrita a mao envelhece calada, que e
+exatamente o defeito que o comando existe para pegar. Papel com um dedo errado
+(`--rc-font-san`) vira sugestao, porque a distancia e 1 do papel que falta.
+
+A conta de contraste mudou de casa para isso: ela morava em `scripts/`, que nao
+e publicado. Agora mora em `src/lib/contrast.ts` e viaja em `dist/cli.js` - e
+**nao** em `dist/index.js`. Quem so usa as pecas nao carrega um byte a mais, e
+ha guarda lendo o grafo de imports para que continue assim.
+
+### A conta de contraste passa a ler cor moderna
+
+Ela lia so sRGB: hexadecimal de 6 e 8 digitos, `rgb()` e `rgba()`. A paleta do
+Tailwind 4 e escrita em `oklch`, entao quem copiava cor de la - o caminho mais
+comum que existe - ouvia "sem medida" em vez de ser medido.
+
+Agora le hexadecimal de 3, 4, 6 e 8 digitos, `rgb()`/`rgba()` com numero ou
+percentual, `hsl()`/`hsla()`, `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()` e
+`color()` em todos os espacos predefinidos do CSS, com angulo em `deg`, `rad`,
+`grad` ou `turn`.
+
+A conversao foi provada contra o navegador, e nao contra si mesma: 328 cores
+pintadas num Chrome sem cabeca e lidas de volta pixel a pixel. **315 batem
+exatamente, 13 diferem em 1 de 255, nenhuma passa disso.** A prova pegou um
+defeito real de matriz que ninguem teria visto de outro jeito.
+
+**82 das 286 cores nomeadas do Tailwind 4 nao existem em sRGB** - `red-500` e
+`blue-500` inclusive. Elas sao medidas cortadas por canal, que e o que o
+navegador rasteriza (79 exatas contra o Chrome, 3 a 1/255; o algoritmo da
+especificacao erra ate 123 de 255 contra o mesmo navegador). O corte nao e
+calado: uma linha `nota` nomeia cada papel fora do gamut e o valor em que foi
+medido, e ela nao reprova.
+
+`color-mix()` e nome de cor da CSS continuam recusados, e a recusa diz qual dos
+dois e. Cor que nao se mede reprova em vez de ficar verde: o que nao se mede
+nao se promete.
+
+### Corrigido: o controle marcado nao se via no tema claro
+
+QUATRO pecas tinham o mesmo defeito, e nas tres primeiras ele era do tipo
+invertido - o estado ativo ficava MENOS visivel que o inativo.
+
+O trilho do `Switch` ligado pintava `accent`: no tema claro, **1,21:1** sobre a
+pagina e 1,26:1 sobre o cartao. O trilho DESLIGADO media 3,33:1. A WCAG 1.4.11
+pede 3:1 para controle sem texto, entao o ligado reprovava, e reprovava ao
+contrario. Quem olhava a chave lia o pino, e nada mais. A caixa do `Checkbox`,
+o circulo do `Radio` e o estado `indeterminate` mediam os mesmos numeros; ali o
+tique ainda se lia, porque e grafite contra a pagina, e o que desaparecia era a
+**fronteira** do controle.
+
+Agora todos pintam `accent-text` com a marca em `surface-raised`: **5,55:1**
+sobre a pagina, **5,75:1** sobre o cartao, e a marca a 5,75:1 dentro do
+preenchimento. A lima continua sendo a lima - `accent-text` e o mesmo lima um
+passo mais escuro -, e no tema escuro os dois papeis apontam para o mesmo
+valor: la o trilho nao mudou de cor.
+
+Nao havia lima clara que resolvesse: sobre branco o teto e 1,54:1, no
+`accent-active`. Fronteira propria no trilho, o outro caminho que a norma
+aceita, resolvia no web (3,85:1) e nao existe no celular, onde o trilho e o do
+sistema e nao aceita borda - a peca ficaria com duas aparencias.
+
+E o `Slider` era a quarta, achada ao armar os pares das outras tres. Nenhum
+par dele alcancava 3:1 no tema claro: a borda do pino sobre o trilho media
+**1,03:1**, e o proprio preenchimento sobre o trilho vazio media **1,03:1**
+tambem - ou seja, no tema claro nem "quanto ja foi" se lia por cor. Agora o
+preenchimento e o pino pintam `accent-text` com o miolo em `surface-raised`:
+4,69:1 sobre o trilho e 5,55:1 sobre a pagina.
+
+O pino se separa do preenchimento pelo MIOLO, e nao pela borda, e isso foi
+medido: `border-strong` no pino dava 3,19:1 sobre o trilho vazio e **1,90:1
+sobre o proprio preenchimento** - o contorno se perderia justamente na metade
+cheia, que e onde o pino sempre encosta.
+
+Cinco pares entraram nas duas guardas de contraste, com piso E comparacao: o
+marcado tem que passar dos 3:1 **e** nao pode pesar menos que o desmarcado. Um
+deles e o unico par da casa medido ao contrario - a marca DENTRO do
+preenchimento -, porque nada declarava que ela tem que se ler. E dois sao os
+primeiros pares EMPILHADOS do lado do CSS: o trilho carrega alfa, entao medir o
+token cru mediria uma cor que nenhum pixel tem. Tema de cliente
+herda as tres garantias sem escrever linha, porque `accent-text` ja precisava
+de 4,5:1 sobre os fundos e contraste e simetrico.
+
+Quem vestia o trilho por fora: `--rc-accent-image` e `--rc-accent-shadow`, o
+acabamento opcional que a regra `:where(.bg-accent)` aplica, nao alcancam mais
+o trilho ligado.
+
+### Duas pecas param de aceitar uso errado em silencio
+
+**`ChartContainer` com altura zero.** A moldura e `w-full` sem altura e o filho
+e `h-full`: quem esquece a classe de altura recebe `height: 0` na funcao de
+desenho, e o cartao fica vazio - sem erro, sem aviso, sem pista. Parecia
+coberto porque a Recharts reclama nos testes, mas o guarda dela e um OU
+(`containerWidth < 0 || calculatedWidth > 0`): largura positiva sozinha cala o
+aviso, que e exatamente o caso da armadilha. Agora a peca acusa, 200ms depois
+do primeiro layout, e a espera importa: um pai que mede em dois passes seria
+acusado sem culpa, e ha teste para esse falso positivo.
+
+**`Indicator` cobrindo texto.** A pastilha e `absolute -top-1 -right-1`, sem
+reservar espaco, e nada impedia embrulhar conteudo largo - o resultado era
+sempre texto coberto. Aviso em `__DEV__` quando o filho passa de 48px, que e o
+teto exato do conjunto legitimo: `--rc-control-lg` e 48, `Avatar` grande e 48,
+e os usos que existem de fato no repositorio sao `Button size="icon"`, 40. O
+`ref` de quem consome continua chegando.
+
 ## 0.8.0
 
 A 0.7.0 saiu de manha e foi auditada a tarde: um retrato em Chrome e uma
