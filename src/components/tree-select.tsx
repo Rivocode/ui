@@ -65,7 +65,10 @@ export function TreeSelect({
           />
         }
       >
-        <span title={names.length > 0 && names.length <= 3 ? label : undefined} className="truncate">
+        <span
+          title={names.length > 0 && names.length <= 3 ? label : undefined}
+          className="truncate"
+        >
           {label}
         </span>
         <ChevronDown size={16} aria-hidden="true" className="shrink-0 text-fg-subtle" />

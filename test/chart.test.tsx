@@ -7,7 +7,8 @@ import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 import { ChartLegendContent } from "../src/chart/chart-legend";
 import { Line, LineChart } from "recharts";
 
-const withTheme = (node: React.ReactNode) => render(<RivoProvider scope="local">{node}</RivoProvider>);
+const withTheme = (node: React.ReactNode) =>
+  render(<RivoProvider scope="local">{node}</RivoProvider>);
 
 const CONFIG: ChartConfig = {
   emitidas: { label: "Emitidas" },

@@ -16,8 +16,7 @@ export type NumberFieldProps = {
   className?: string;
 };
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 export function NumberField({
   value,

@@ -18,10 +18,7 @@ export function PopoverTrigger({
   return (
     <BasePopover.Trigger
       {...props}
-      className={cn(
-        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        className,
-      )}
+      className={cn("outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}
     />
   );
 }
@@ -66,7 +63,10 @@ export function PopoverTitle({ className, ...props }: ComponentProps<typeof Base
   return (
     <BasePopover.Title
       {...props}
-      className={cn("font-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg", className)}
+      className={cn(
+        "font-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg",
+        className,
+      )}
     />
   );
 }

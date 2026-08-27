@@ -34,9 +34,7 @@ function familyOf(node: ReactTestInstance): unknown {
 }
 
 function monoNodes(screen: ReactTestRenderer): ReactTestInstance[] {
-  return screen.root.findAll(
-    (node) => typeof node.type === "string" && familyOf(node) === mono,
-  );
+  return screen.root.findAll((node) => typeof node.type === "string" && familyOf(node) === mono);
 }
 
 describe("a fonte mono", () => {

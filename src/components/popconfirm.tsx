@@ -36,6 +36,16 @@ export type PopconfirmProps = Omit<
     trigger: ReactElement;
     /** A pergunta, curta e com o alvo dentro: "Excluir a nota 4813?". */
     title: string;
+    /**
+     * Em que nivel a pergunta sai. Padrao `h2`, como no `DialogTitle` e no
+     * `AlertDialogTitle`.
+     *
+     * Baixe quando o painel nascer dentro de uma secao que ja tem titulo: o
+     * gatilho costuma ser um botao de linha dentro de um `Card`, cujo
+     * `CardTitle` e `h3`, e um `h2` ali abre uma secao acima da que o contem.
+     * O esboco da pagina, que e como muita gente navega, inverte.
+     */
+    titleAs?: "h2" | "h3" | "h4";
     /** O que a pessoa perde ao confirmar, ou o que acontece depois. */
     description?: ReactNode;
     /**
@@ -93,6 +103,7 @@ export type PopconfirmProps = Omit<
 export function Popconfirm({
   trigger,
   title,
+  titleAs: Title = "h2",
   description,
   confirmLabel = "Confirmar",
   cancelLabel = "Cancelar",
@@ -170,7 +181,7 @@ export function Popconfirm({
         <TriangleAlert size={16} aria-hidden="true" className="mt-0.5 shrink-0 text-danger-text" />
       )}
       <div className="min-w-0">
-        <h2
+        <Title
           id={labelId}
           className={cn(
             "font-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg",
@@ -178,7 +189,7 @@ export function Popconfirm({
           )}
         >
           {title}
-        </h2>
+        </Title>
         {description && (
           <p
             id={descriptionId}

@@ -29,9 +29,7 @@ export function MaskedInput({
   ...props
 }: MaskedInputProps) {
   const controlled = value !== undefined;
-  const [internal, setInternal] = useState(() =>
-    applyMask(defaultValue, mask),
-  );
+  const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
   const text = controlled ? value : internal;
 
   const digitsOnly = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;

@@ -97,10 +97,7 @@ export function Calendar({
           "disabled:pointer-events-none",
         ),
 
-        today: cn(
-          "[&>button]:font-medium",
-          "[&:not(.rc-day-selected)>button]:text-accent-text",
-        ),
+        today: cn("[&>button]:font-medium", "[&:not(.rc-day-selected)>button]:text-accent-text"),
         outside: "[&>button]:text-fg-subtle",
         disabled: "[&>button]:text-fg-disabled",
         hidden: "invisible",

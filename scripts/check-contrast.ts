@@ -35,7 +35,8 @@ export function compose(value: string, background: string): string {
   const [r, g, b, alpha] = [+rgba[1]!, +rgba[2]!, +rgba[3]!, +rgba[4]!];
   const base = background.replace("#", "");
   const [br, bg, bb] = [0, 2, 4].map((i) => parseInt(base.slice(i, i + 2), 16));
-  const mistura = (color: number, background: number) => Math.round(alpha * color + (1 - alpha) * background);
+  const mistura = (color: number, background: number) =>
+    Math.round(alpha * color + (1 - alpha) * background);
 
   return `#${[mistura(r, br!), mistura(g, bg!), mistura(b, bb!)]
     .map((c) => c.toString(16).padStart(2, "0"))

@@ -69,12 +69,7 @@ export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup> & {
   classNames?: Slots<"backdrop" | "viewport">;
 };
 
-export function SheetContent({
-  className,
-  children,
-  classNames,
-  ...props
-}: SheetContentProps) {
+export function SheetContent({ className, children, classNames, ...props }: SheetContentProps) {
   const { portalContainer } = useRivoContext();
   const side = use(SideContext);
 
@@ -92,7 +87,11 @@ export function SheetContent({
       />
 
       <BaseDrawer.Viewport
-        className={cn("fixed inset-0 z-[var(--rc-z-dialog)] flex", VIEWPORT_SIDE[side], classNames?.viewport)}
+        className={cn(
+          "fixed inset-0 z-[var(--rc-z-dialog)] flex",
+          VIEWPORT_SIDE[side],
+          classNames?.viewport,
+        )}
       >
         <BaseDrawer.Popup
           {...props}
@@ -129,7 +128,10 @@ export function SheetTitle({ className, ...props }: ComponentProps<typeof BaseDr
   return (
     <BaseDrawer.Title
       {...props}
-      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg", className)}
+      className={cn(
+        "font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+        className,
+      )}
     />
   );
 }

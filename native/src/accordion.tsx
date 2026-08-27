@@ -21,7 +21,12 @@ export type AccordionItemProps = {
   className?: string;
 };
 
-export function AccordionItem({ title, children, defaultOpen = false, className }: AccordionItemProps) {
+export function AccordionItem({
+  title,
+  children,
+  defaultOpen = false,
+  className,
+}: AccordionItemProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (

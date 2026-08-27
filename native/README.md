@@ -19,7 +19,7 @@ Quatro arquivos do app participam, cada um por um motivo que morde:
 
 1. **`metro.config.js`**. `withNativewind(config)`, como manda o NativeWind.
 2. **`package.json`**. `"browserslist": ["chrome 130", "safari 18",
-   "firefox 130"]`. Sem isso o passe web que o Expo roda antes do compilador
+"firefox 130"]`. Sem isso o passe web que o Expo roda antes do compilador
    nativo reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e
    a compilação morre com "Specifier, found ()". É esse arquivo que sustenta a
    troca de tema em runtime.
@@ -78,10 +78,10 @@ a densidade compacta, porque alvo de toque não encolhe em tela de dedo.
 O formulário, o gráfico, o copiar e o anexar não saem do índice da raiz:
 
 ```tsx
-import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
-import { ChartContainer, ChartDonut, ChartRadial } from '@rivocode/ui-native/chart'
-import { Clipboard } from '@rivocode/ui-native/clipboard'
-import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
+import { Form, FormField, forText, useZodForm } from "@rivocode/ui-native/form";
+import { ChartContainer, ChartDonut, ChartRadial } from "@rivocode/ui-native/chart";
+import { Clipboard } from "@rivocode/ui-native/clipboard";
+import { FileUpload, FileUploadItem, FileUploadList } from "@rivocode/ui-native/file-upload";
 ```
 
 Cada porta tem **um** peer opcional atrás, e o metro resolve import por
@@ -116,25 +116,25 @@ com padrão de casa, porque o sistema já a tem: Menlo no iOS, `monospace` no
 Android.
 
 ```tsx
-import { useFonts, isLoaded } from 'expo-font'
-import { RivoProvider } from '@rivocode/ui-native'
+import { useFonts, isLoaded } from "expo-font";
+import { RivoProvider } from "@rivocode/ui-native";
 
 export default function App() {
   const [ready] = useFonts({
-    Manrope: require('./assets/Manrope.ttf'),
-    Poppins: require('./assets/Poppins.ttf'),
-    JetBrainsMono: require('./assets/JetBrainsMono.ttf'),
-  })
-  if (!ready) return null
+    Manrope: require("./assets/Manrope.ttf"),
+    Poppins: require("./assets/Poppins.ttf"),
+    JetBrainsMono: require("./assets/JetBrainsMono.ttf"),
+  });
+  if (!ready) return null;
 
   return (
     <RivoProvider
-      fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}
+      fonts={{ sans: "Manrope", display: "Poppins", mono: "JetBrainsMono" }}
       isFontLoaded={isLoaded}
     >
       {/* … */}
     </RivoProvider>
-  )
+  );
 }
 ```
 

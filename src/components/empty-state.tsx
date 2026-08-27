@@ -3,7 +3,13 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "../lib/cn";
 
 export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
-  /** Simbolo ou ilustracao. Opcional. */
+  /**
+   * Simbolo ou ilustracao. Opcional.
+   *
+   * Sai `aria-hidden`, como o do `Alert`: o titulo e a descricao ao lado ja
+   * dizem o que ele desenha. Vale para `<img>` e para SVG proprio tambem, e
+   * nao so para o icone do lucide, que se protege sozinho.
+   */
   icon?: ReactNode;
   /**
    * Aceita no e nao so texto, como o titulo do `PageHeader` e o do `Timeline`.
@@ -34,7 +40,11 @@ export function EmptyState({
         className,
       )}
     >
-      {icon && <div className="text-fg-subtle [&_svg]:size-8">{icon}</div>}
+      {icon && (
+        <div aria-hidden="true" className="text-fg-subtle [&_svg]:size-8">
+          {icon}
+        </div>
+      )}
       <p className="text-lg font-medium text-fg">{title}</p>
       <p className="max-w-sm text-base text-fg-muted">{description}</p>
       {action && <div className="mt-2">{action}</div>}

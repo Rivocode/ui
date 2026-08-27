@@ -361,7 +361,9 @@ function Painel({
         <Card>
           <CardHeader>
             <CardTitle>Ajuda e verificação</CardTitle>
-            <CardDescription>Acordeão, código de confirmação e a caixa de proporção.</CardDescription>
+            <CardDescription>
+              Acordeão, código de confirmação e a caixa de proporção.
+            </CardDescription>
           </CardHeader>
           <CardContent className="gap-4">
             <Accordion>

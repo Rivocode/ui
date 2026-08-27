@@ -2,7 +2,16 @@ import { describe, expect, mock, setSystemTime, test } from "bun:test";
 import { Text } from "react-native";
 
 import { AppState } from "../../test/react-native-mock";
-import { Avatar, Button, DataList, EmptyState, Indicator, Progress, RelativeTime, Stat } from "../src";
+import {
+  Avatar,
+  Button,
+  DataList,
+  EmptyState,
+  Indicator,
+  Progress,
+  RelativeTime,
+  Stat,
+} from "../src";
 import { Meter } from "../src/meter";
 import { REFRESH, describeRelative } from "../src/relative-time";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
@@ -153,7 +162,11 @@ describe("DataList", () => {
 describe("EmptyState", () => {
   test("título, porquê e ação no lugar", () => {
     const screen = render(
-      <EmptyState title="Nada aqui" description="Emita a primeira nota." action={<Text>Emitir</Text>} />,
+      <EmptyState
+        title="Nada aqui"
+        description="Emita a primeira nota."
+        action={<Text>Emitir</Text>}
+      />,
     );
     expect(textOf(screen)).toContain("Nada aqui");
     expect(textOf(screen)).toContain("Emita a primeira nota.");
@@ -216,7 +229,9 @@ describe("Meter", () => {
   });
 
   test("valueLabel escreve a medida na tela e é o que o leitor de tela diz", () => {
-    const screen = render(<Meter value={8} max={15} label="Armazenamento" valueLabel="8 GB de 15 GB" />);
+    const screen = render(
+      <Meter value={8} max={15} label="Armazenamento" valueLabel="8 GB de 15 GB" />,
+    );
     expect(textOf(screen)).toContain("Armazenamento");
     expect(textOf(screen)).toContain("8 GB de 15 GB");
     expect(byRole(screen, "text")[0].props.accessibilityValue.text).toBe("8 GB de 15 GB");

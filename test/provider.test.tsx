@@ -1,11 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import {
-  RivoProvider,
-  useRivoContext,
-  type RivoThemeSetting,
-} from "../src/provider/rivo-provider";
+import { RivoProvider, useRivoContext, type RivoThemeSetting } from "../src/provider/rivo-provider";
 
 function Spy() {
   const { theme, density, portalContainer } = useRivoContext();

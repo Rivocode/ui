@@ -1,4 +1,10 @@
-import { Children, isValidElement, cloneElement, type ComponentProps, type ReactElement } from "react";
+import {
+  Children,
+  isValidElement,
+  cloneElement,
+  type ComponentProps,
+  type ReactElement,
+} from "react";
 
 import { cn } from "../lib/cn";
 import { Avatar, type AvatarProps } from "./avatar";
@@ -16,10 +22,7 @@ export function AvatarGroup({ className, max, size, children, ...props }: Avatar
   const rest = all.length - shown.length;
 
   return (
-    <div
-      {...props}
-      className={cn("flex items-center -space-x-2", className)}
-    >
+    <div {...props} className={cn("flex items-center -space-x-2", className)}>
       {shown.map((child, index) =>
         cloneElement(child, {
           key: child.key ?? index,

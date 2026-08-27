@@ -139,7 +139,9 @@ describe("Switch", () => {
       theme: "rivocode-light",
     });
     const lightTrack = light.root.findByType("Switch" as never);
-    expect(lightTrack.props.trackColor.false).toBe(tokens.themes["rivocode-light"]["border-strong"]);
+    expect(lightTrack.props.trackColor.false).toBe(
+      tokens.themes["rivocode-light"]["border-strong"],
+    );
   });
 });
 
@@ -180,7 +182,13 @@ describe("Select", () => {
   test("multiple: escolher NÃO fecha a folha, para dar tempo de escolher mais", () => {
     const onValueChange = mock(() => {});
     const screen = render(
-      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={onValueChange} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["servico"]}
+        onValueChange={onValueChange}
+      />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
 
@@ -195,7 +203,13 @@ describe("Select", () => {
   test("multiple: tocar de novo desmarca, e só aquele valor sai", () => {
     const onValueChange = mock(() => {});
     const screen = render(
-      <Select label="Categorias" items={many} multiple value={["servico", "frete"]} onValueChange={onValueChange} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["servico", "frete"]}
+        onValueChange={onValueChange}
+      />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
     const marked = byRole(screen, "checkbox").filter(
@@ -208,7 +222,13 @@ describe("Select", () => {
 
   test("multiple: o item marcado é caixa de marcar, e não botão com estado mudo", () => {
     const screen = render(
-      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={() => {}} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["servico"]}
+        onValueChange={() => {}}
+      />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
     // Papel de checkbox: tocar alterna e a folha fica: é o que o leitor de tela
@@ -218,18 +238,37 @@ describe("Select", () => {
 
   test("multiple: o gatilho diz quantos, na tela e para o leitor de tela", () => {
     const none = render(
-      <Select label="Categorias" items={many} multiple value={[]} onValueChange={() => {}} placeholder="Escolha as categorias" />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={[]}
+        onValueChange={() => {}}
+        placeholder="Escolha as categorias"
+      />,
     );
     expect(textOf(none)).toContain("Escolha as categorias");
 
     const one = render(
-      <Select label="Categorias" items={many} multiple value={["frete"]} onValueChange={() => {}} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["frete"]}
+        onValueChange={() => {}}
+      />,
     );
     // Com uma só, o nome dela diz mais que a contagem.
     expect(textOf(one)).toContain("Frete");
 
     const three = render(
-      <Select label="Categorias" items={many} multiple value={["servico", "produto", "frete"]} onValueChange={() => {}} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["servico", "produto", "frete"]}
+        onValueChange={() => {}}
+      />,
     );
     expect(textOf(three)).toContain("3 selecionados");
     expect(byLabel(three, "Categorias")[0].props.accessibilityValue.text).toBe("3 selecionados");
@@ -237,7 +276,13 @@ describe("Select", () => {
 
   test("multiple: a folha oferece um jeito explícito de terminar", () => {
     const screen = render(
-      <Select label="Categorias" items={many} multiple value={["servico"]} onValueChange={() => {}} />,
+      <Select
+        label="Categorias"
+        items={many}
+        multiple
+        value={["servico"]}
+        onValueChange={() => {}}
+      />,
     );
     act(() => byLabel(screen, "Categorias")[0].props.onPress());
     // Pelo texto que ele mostra: o nome falado do Pressable vem do Text de
@@ -255,7 +300,13 @@ describe("Select", () => {
 
   test("fechado mostra o placeholder e anuncia o valor", () => {
     const screen = render(
-      <Select label="Período" items={items} value={null} onValueChange={() => {}} placeholder="Selecione o período" />,
+      <Select
+        label="Período"
+        items={items}
+        value={null}
+        onValueChange={() => {}}
+        placeholder="Selecione o período"
+      />,
     );
     expect(textOf(screen)).toContain("Selecione o período");
     // A folha começa fechada: nenhuma opção montada.

@@ -223,7 +223,8 @@ const PORTUGUESE = [
  * Minimo de seis letras para o sufixo nao engolir palavra curta - `made`
  * termina em `-ade` mas nao em `-dade`, e a margem sai barata.
  */
-const PORTUGUESE_ENDING = /(?:acao|acoes|icao|icoes|ancia|encia|dade|mento|agem|ismo|avel|ivel|veis|inho|inha)$/;
+const PORTUGUESE_ENDING =
+  /(?:acao|acoes|icao|icoes|ancia|encia|dade|mento|agem|ismo|avel|ivel|veis|inho|inha)$/;
 
 /**
  * A divida que ficou para depois. Hoje: nenhuma.
@@ -249,8 +250,7 @@ const DEBT = new Set<string>([]);
  * variavel - acusa-lo seria a guarda mordendo a propria lista. Sao poucos e
  * sao sempre os mesmos: os que traduzem, os que acentuam, e ela mesma.
  */
-const DICTIONARIES =
-  /check-nomes-em-ingles|acentuar\.ts|acentos\.test/;
+const DICTIONARIES = /check-nomes-em-ingles|acentuar\.ts|acentos\.test/;
 
 /**
  * Apaga do codigo tudo que e prosa, preservando o tamanho.
@@ -267,7 +267,8 @@ function withoutProse(code: string) {
     for (let at = from; at < to; at++) if (chars[at] !== "\n") chars[at] = " ";
   };
 
-  for (const hit of code.matchAll(/\/\*[\s\S]*?\*\//g)) erase(hit.index!, hit.index! + hit[0].length);
+  for (const hit of code.matchAll(/\/\*[\s\S]*?\*\//g))
+    erase(hit.index!, hit.index! + hit[0].length);
   for (const hit of code.matchAll(/\/\/[^\n]*/g)) erase(hit.index!, hit.index! + hit[0].length);
 
   // Em duas passadas: string so e string depois que o comentario saiu, senao
@@ -309,7 +310,10 @@ const TYPE_AHEAD =
 /** Cada jeito de um nome nascer, e como arrancar o nome de dentro dele. */
 const BINDINGS = [
   /** `const x`, `function x`, `type X`. */
-  { kind: "declaracao", pattern: /\b(?:const|let|var|function|type|interface|class|enum)\s+([A-Za-z_$][\w$]*)/g },
+  {
+    kind: "declaracao",
+    pattern: /\b(?:const|let|var|function|type|interface|class|enum)\s+([A-Za-z_$][\w$]*)/g,
+  },
   /** `(pagina: number) => void`, e todo campo de tipo. */
   { kind: "assinatura", pattern: /([A-Za-z_$][\w$]*)\s*\??\s*:/g, typed: true },
   /** `...resto`, no parametro e na desestruturacao. */

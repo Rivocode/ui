@@ -19,10 +19,7 @@ import { act, byClass, byLabel, byRole, byType, render, textOf } from "./helpers
  * volta faz o duble chegar tarde e o teste morrer em "Cannot find module".
  */
 mock.module("react-native-svg", () => {
-  const host =
-    (name: string) =>
-    (props: Record<string, unknown>) =>
-      createElement(name, props);
+  const host = (name: string) => (props: Record<string, unknown>) => createElement(name, props);
 
   return {
     default: host("Svg"),
@@ -81,7 +78,11 @@ function startAngle(d: string) {
 }
 
 describe("ChartContainer", () => {
-  const drawing = () => <ChartContainer config={SERIES} data={[1, 2]}>{() => null}</ChartContainer>;
+  const drawing = () => (
+    <ChartContainer config={SERIES} data={[1, 2]}>
+      {() => null}
+    </ChartContainer>
+  );
 
   test("os quatro finais de uma consulta saem da moldura, e nao da tela", () => {
     const waiting = render(
@@ -111,7 +112,10 @@ describe("ChartContainer", () => {
       <ChartContainer
         config={SERIES}
         data={[]}
-        empty={{ title: "Sem emissões no período", description: "Emita uma nota para ver o gráfico." }}
+        empty={{
+          title: "Sem emissões no período",
+          description: "Emita uma nota para ver o gráfico.",
+        }}
       >
         {() => <Marker />}
       </ChartContainer>,
@@ -328,7 +332,8 @@ describe("ChartDonut", () => {
       <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" thickness={1} />,
     );
 
-    const bandOf = (screen: ReactTestRenderer) => Number(byType(screen, "Path")[0]!.props.strokeWidth);
+    const bandOf = (screen: ReactTestRenderer) =>
+      Number(byType(screen, "Path")[0]!.props.strokeWidth);
 
     expect(bandOf(thin)).toBeCloseTo(44 * 0.2, 5);
     // Espessura cheia: o traco vai do centro a borda, entao o buraco fecha.

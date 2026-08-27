@@ -55,7 +55,9 @@ export function Slider({
     >
       {(label || showValue) && (
         <div className="flex items-baseline justify-between gap-4">
-          {label && <span className={cn("font-sans text-sm text-fg", classNames?.label)}>{label}</span>}
+          {label && (
+            <span className={cn("font-sans text-sm text-fg", classNames?.label)}>{label}</span>
+          )}
           {showValue && (
             <BaseSlider.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
@@ -72,7 +74,9 @@ export function Slider({
         <BaseSlider.Track
           className={cn("h-1.5 w-full rounded-pill bg-skeleton select-none", classNames?.track)}
         >
-          <BaseSlider.Indicator className={cn("rounded-pill bg-accent select-none", classNames?.indicator)} />
+          <BaseSlider.Indicator
+            className={cn("rounded-pill bg-accent select-none", classNames?.indicator)}
+          />
           {labels.map((label, index) => (
             <BaseSlider.Thumb
               key={index}

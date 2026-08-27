@@ -17,10 +17,7 @@ export type InputGroupAction = {
   disabled?: boolean;
 };
 
-export type InputGroupProps = Omit<
-  TextInputProps,
-  "value" | "onChangeText" | "className"
-> & {
+export type InputGroupProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
   value: string;
   onValueChange: (value: string) => void;
   /** O encosto antes do campo: `R$`, uma sigla, um ícone. */

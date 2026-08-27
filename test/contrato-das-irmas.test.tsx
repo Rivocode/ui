@@ -72,7 +72,12 @@ test("com `value`, quem manda continua sendo de fora", () => {
   // O par nao pode ter virado "o defaultValue vence": passar `value` e dizer
   // que a lista mora no app, e a peca nao pode desenhar outra.
   withTheme(
-    <TagsInput aria-label="Marcadores" value={["nf-e"]} defaultValue={["ignorada"]} onValueChange={() => {}} />,
+    <TagsInput
+      aria-label="Marcadores"
+      value={["nf-e"]}
+      defaultValue={["ignorada"]}
+      onValueChange={() => {}}
+    />,
   );
 
   const field = screen.getByLabelText("Marcadores");
@@ -305,7 +310,9 @@ test("o acento so pinta o controle vivo, sem depender da ordem das classes", () 
   // `data-[disabled]` vencia `data-[checked]` por sorte e PERDIA para
   // `data-[indeterminate]`: a caixa de selecionar-todas desabilitada, em
   // estado misto, saia pintada de acento cheio.
-  const { container } = withTheme(<Checkbox indeterminate disabled aria-label="Selecionar todas" />);
+  const { container } = withTheme(
+    <Checkbox indeterminate disabled aria-label="Selecionar todas" />,
+  );
 
   const box = container.ownerDocument.querySelector('[role="checkbox"]')!;
   expect(box.className).toContain("data-[indeterminate]:not-data-disabled:bg-accent");

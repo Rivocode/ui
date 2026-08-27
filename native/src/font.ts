@@ -122,9 +122,7 @@ export function fontComplaints(
     }
 
     if (isFontLoaded && !isFontLoaded(family)) {
-      complaints.push(
-        `\`${role}: ${JSON.stringify(family)}\` não está carregada neste aparelho`,
-      );
+      complaints.push(`\`${role}: ${JSON.stringify(family)}\` não está carregada neste aparelho`);
     }
   }
 

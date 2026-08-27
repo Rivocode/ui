@@ -24,9 +24,7 @@ test("a skill diz o mesmo numero de pecas que o catalogo tem", async () => {
   // lugar do sistema onde ele estava certo enquanto o indice contava tudo. Ele
   // aparece em dois arquivos, e os dois envelhecem juntos.
   const skill = await Bun.file(".claude/skills/rivocode-ui/SKILL.md").text();
-  const choice = await Bun.file(
-    ".claude/skills/rivocode-ui/reference/components.md",
-  ).text();
+  const choice = await Bun.file(".claude/skills/rivocode-ui/reference/components.md").text();
 
   expect(/S[aã]o (\d+)/.exec(skill)?.[1]).toBe(String(pieces.length));
   expect(/tem (\d+) peças/.exec(choice)?.[1]).toBe(String(pieces.length));

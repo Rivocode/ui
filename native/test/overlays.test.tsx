@@ -46,9 +46,9 @@ describe("Dialog", () => {
 
   test("o leitor de tela nao vaza para a tela de tras, e o titulo e cabecalho", () => {
     const screen = render(<Dialog open onOpenChange={() => {}} title="Nota 4813" />);
-    expect(byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal)).toBe(
-      true,
-    );
+    expect(
+      byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal),
+    ).toBe(true);
     const [heading] = byRole(screen, "header");
     expect(heading).toBeDefined();
     expect(heading.props.children).toBe("Nota 4813");
@@ -70,9 +70,9 @@ describe("AlertDialog", () => {
 
   test("também prende o leitor de tela e anuncia o título como cabeçalho", () => {
     const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onAction={() => {}} />);
-    expect(byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal)).toBe(
-      true,
-    );
+    expect(
+      byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal),
+    ).toBe(true);
     expect(byRole(screen, "header")[0].props.children).toBe("Cancelar a nota?");
   });
 
@@ -92,7 +92,9 @@ describe("AlertDialog", () => {
     expect(calls).toEqual(["open:false", "action"]);
 
     calls.length = 0;
-    const ghost = byRole(screen, "button").find((node) => !/bg-danger/.test(node.props.className ?? ""));
+    const ghost = byRole(screen, "button").find(
+      (node) => !/bg-danger/.test(node.props.className ?? ""),
+    );
     act(() => ghost!.props.onPress());
     expect(calls).toEqual(["open:false"]);
   });

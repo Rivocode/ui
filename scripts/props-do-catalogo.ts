@@ -214,7 +214,9 @@ if (import.meta.main) {
       for (const [piece, data] of Object.entries(catalog)) {
         const previous = new Set((before[piece]?.props ?? []).map((p) => p.name));
         const added = data.props.map((p) => p.name).filter((p) => !previous.has(p));
-        const removed = [...previous].filter((p) => !data.props.some((current) => current.name === p));
+        const removed = [...previous].filter(
+          (p) => !data.props.some((current) => current.name === p),
+        );
         if (added.length) console.error(`  ${piece}: entrou ${added.join(", ")}`);
         if (removed.length) console.error(`  ${piece}: saiu ${removed.join(", ")}`);
       }

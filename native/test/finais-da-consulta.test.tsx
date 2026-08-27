@@ -114,9 +114,7 @@ describe("a espera", () => {
   });
 
   test("skeletonRows muda quantas linhas a espera generica segura", () => {
-    const screen = render(
-      <QueryBoundary<Invoice[]> skeletonRows={5}>{list}</QueryBoundary>,
-    );
+    const screen = render(<QueryBoundary<Invoice[]> skeletonRows={5}>{list}</QueryBoundary>);
 
     expect(skeletons(screen)).toHaveLength(5);
   });

@@ -1,7 +1,15 @@
 {
   "name": "native",
   "version": "1.0.0",
+  "private": true,
   "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "build:css": "node ../../native/scripts/build-css.mjs"
+  },
   "dependencies": {
     "expo": "~57.0.16",
     "expo-clipboard": "~57.0.1",
@@ -23,20 +31,12 @@
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3"
   },
-  "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build:css": "node ../../native/scripts/build-css.mjs"
-  },
-  "private": true,
-  "patchedDependencies": {
-    "react-native-css@3.0.7": "patches/react-native-css@3.0.7.patch"
-  },
   "browserslist": [
     "chrome 130",
     "safari 18",
     "firefox 130"
-  ]
+  ],
+  "patchedDependencies": {
+    "react-native-css@3.0.7": "patches/react-native-css@3.0.7.patch"
+  }
 }

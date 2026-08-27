@@ -15,9 +15,21 @@ export type DialogProps = {
   className?: string;
 };
 
-export function Dialog({ open, onOpenChange, title, description, children, className }: DialogProps) {
+export function Dialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+  children,
+  className,
+}: DialogProps) {
   return (
-    <Modal visible={open} transparent animationType="fade" onRequestClose={() => onOpenChange(false)}>
+    <Modal
+      visible={open}
+      transparent
+      animationType="fade"
+      onRequestClose={() => onOpenChange(false)}
+    >
       <View accessibilityViewIsModal className="flex-1 items-center justify-center p-6">
         <Pressable
           accessibilityRole="button"
@@ -58,11 +70,13 @@ export function AlertDialog({
   cancelLabel = "Cancelar",
 }: AlertDialogProps) {
   return (
-    <Modal visible={open} transparent animationType="fade" onRequestClose={() => onOpenChange(false)}>
-      <View
-        accessibilityViewIsModal
-        className="flex-1 items-center justify-center bg-overlay p-6"
-      >
+    <Modal
+      visible={open}
+      transparent
+      animationType="fade"
+      onRequestClose={() => onOpenChange(false)}
+    >
+      <View accessibilityViewIsModal className="flex-1 items-center justify-center bg-overlay p-6">
         <View className="w-full rounded-xl border border-border bg-surface p-6">
           <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
             {title}

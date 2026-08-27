@@ -100,7 +100,7 @@ test("o medidor segmentado sai de tracinhos, e nao de arco liso", () => {
     <ChartRadial value={82} variant="segmented" label="82% da meta" segments={44} />,
   );
 
-  const ticks = container.querySelectorAll('[data-rc-tick]');
+  const ticks = container.querySelectorAll("[data-rc-tick]");
   expect(ticks.length).toBe(44);
   // O que passou do valor fica apagado, e nao ausente: a escala inteira
   // precisa continuar visivel para o traço aceso significar alguma coisa.

@@ -3,13 +3,7 @@ import { Appearance, View, useColorScheme } from "react-native";
 import { VariableContextProvider } from "nativewind";
 
 import { tokens, type RivoNativeColorRole, type RivoNativeTheme } from "../tokens";
-import {
-  FontProvider,
-  fontComplaints,
-  fontWarning,
-  resolveFonts,
-  type RivoFonts,
-} from "./font";
+import { FontProvider, fontComplaints, fontWarning, resolveFonts, type RivoFonts } from "./font";
 import { ToastProvider } from "./toast";
 
 export type RivoDensity = "comfortable" | "compact";
@@ -80,10 +74,7 @@ export function RivoProvider({
 }: RivoProviderProps) {
   const custom = typeof theme === "object" ? theme : undefined;
   const { sans, display, mono } = fonts ?? {};
-  const families = useMemo(
-    () => resolveFonts({ sans, display, mono }),
-    [sans, display, mono],
-  );
+  const families = useMemo(() => resolveFonts({ sans, display, mono }), [sans, display, mono]);
 
   useEffect(() => {
     if (!__DEV__) return;
@@ -94,7 +85,11 @@ export function RivoProvider({
   useEffect(() => {
     const wanted = custom ? scheme : theme;
     Appearance.setColorScheme(
-      wanted === "system" ? "unspecified" : wanted === "rivocode-light" || wanted === "light" ? "light" : "dark",
+      wanted === "system"
+        ? "unspecified"
+        : wanted === "rivocode-light" || wanted === "light"
+          ? "light"
+          : "dark",
     );
   }, [custom, scheme, theme]);
 
@@ -108,10 +103,7 @@ export function RivoProvider({
   const resolved: RivoNativeTheme = light ? "rivocode-light" : "rivocode-dark";
   const colors = custom ? (light ? custom.light : custom.dark) : tokens.themes[resolved];
 
-  const value = useMemo(
-    () => ({ theme: resolved, colors, density }),
-    [resolved, colors, density],
-  );
+  const value = useMemo(() => ({ theme: resolved, colors, density }), [resolved, colors, density]);
 
   const dressed = (children: ReactNode) =>
     custom ? (
@@ -129,9 +121,7 @@ export function RivoProvider({
   return (
     <RivoContext.Provider value={value}>
       <FontProvider value={families}>
-        <View className="flex-1 bg-bg">
-          {dressed(<ToastProvider>{children}</ToastProvider>)}
-        </View>
+        <View className="flex-1 bg-bg">{dressed(<ToastProvider>{children}</ToastProvider>)}</View>
       </FontProvider>
     </RivoContext.Provider>
   );

@@ -36,14 +36,11 @@ const out = await postcss([tailwind({ base: process.cwd() })]).process(css, {
 let flat = out.css;
 
 const initials = [];
-flat = flat.replace(
-  /@property\s+(--[\w-]+)\s*\{[^}]*?\}/g,
-  (block, name) => {
-    const initial = /initial-value:\s*([^;}]+)/.exec(block)?.[1]?.trim();
-    if (initial) initials.push(`  ${name}: ${initial};`);
-    return "";
-  },
-);
+flat = flat.replace(/@property\s+(--[\w-]+)\s*\{[^}]*?\}/g, (block, name) => {
+  const initial = /initial-value:\s*([^;}]+)/.exec(block)?.[1]?.trim();
+  if (initial) initials.push(`  ${name}: ${initial};`);
+  return "";
+});
 
 if (initials.length > 0) {
   flat = `:root {\n${initials.join("\n")}\n}\n${flat}`;

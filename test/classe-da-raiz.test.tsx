@@ -305,7 +305,9 @@ test("todo export do pacote tem entrada no catalogo de props", () => {
 });
 
 test("o tipo de toda peca aceita className na raiz", () => {
-  const missing = pieces.filter((name) => catalog[name] && !catalog[name]!.forwardsRoot && !excused(name));
+  const missing = pieces.filter(
+    (name) => catalog[name] && !catalog[name]!.forwardsRoot && !excused(name),
+  );
 
   expect(missing).toEqual([]);
 });

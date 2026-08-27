@@ -16,7 +16,7 @@ export type SwitchProps = {
 
 export function Switch({ checked, onCheckedChange, children, disabled, className }: SwitchProps) {
   const { colors } = useRivo();
-  
+
   const control = (
     <NativeSwitch
       value={checked}
@@ -36,7 +36,11 @@ export function Switch({ checked, onCheckedChange, children, disabled, className
       accessibilityState={{ checked, disabled }}
       disabled={disabled}
       onPress={() => onCheckedChange(!checked)}
-      className={cn("flex-row items-center justify-between gap-3", disabled && "opacity-50", className)}
+      className={cn(
+        "flex-row items-center justify-between gap-3",
+        disabled && "opacity-50",
+        className,
+      )}
     >
       <Text className="shrink text-base text-fg">{children}</Text>
       {control}

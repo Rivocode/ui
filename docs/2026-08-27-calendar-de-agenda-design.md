@@ -53,11 +53,11 @@ A fronteira, escrita para a seção "quando não usar":
 A pergunta não é quantas vistas cabem, é quantos motores de desenho a peça
 compra. São três motores diferentes, e não quatro vistas:
 
-| Motor | Serve | Custo |
-|---|---|---|
-| **Lista por seção** | `agenda` | baixo. É uma lista agrupada por dia. Herda a virtualização que já está paga. |
-| **Grade de tempo** | `day` e `week` | alto. É onde moram o empilhamento, a sobreposição e a linha do agora. Um motor, duas vistas: `day` é `week` com uma coluna. |
-| **Grade de célula** | `month` | médio, e é o que menos entrega. |
+| Motor               | Serve          | Custo                                                                                                                       |
+| ------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Lista por seção** | `agenda`       | baixo. É uma lista agrupada por dia. Herda a virtualização que já está paga.                                                |
+| **Grade de tempo**  | `day` e `week` | alto. É onde moram o empilhamento, a sobreposição e a linha do agora. Um motor, duas vistas: `day` é `week` com uma coluna. |
+| **Grade de célula** | `month`        | médio, e é o que menos entrega.                                                                                             |
 
 ### O que ship na v1: `agenda`, `day`, `week`
 
@@ -206,14 +206,14 @@ forma nova, e o erro que a maioria das bibliotecas de calendário comete.
 itinerante entre **eventos**, não entre células. Precedente direto do `Tracker`,
 que é uma parada só para 365 quadrados.
 
-| Tecla | O que faz |
-|---|---|
-| `↑` `↓` | evento anterior / próximo dentro do dia, em ordem de hora |
-| `←` `→` | o evento mais próximo em hora, no dia anterior / seguinte |
-| `Home` `End` | primeiro e último evento do período visível |
-| `PageUp` `PageDown` | período anterior / seguinte |
-| `Enter` `Espaço` | `onEventSelect` |
-| `Esc` | devolve o foco à barra de ferramentas |
+| Tecla               | O que faz                                                 |
+| ------------------- | --------------------------------------------------------- |
+| `↑` `↓`             | evento anterior / próximo dentro do dia, em ordem de hora |
+| `←` `→`             | o evento mais próximo em hora, no dia anterior / seguinte |
+| `Home` `End`        | primeiro e último evento do período visível               |
+| `PageUp` `PageDown` | período anterior / seguinte                               |
+| `Enter` `Espaço`    | `onEventSelect`                                           |
+| `Esc`               | devolve o foco à barra de ferramentas                     |
 
 `←` e `→` seguem a direção da escrita, e `Home`/`End` continuam lógicos. É
 literalmente a regra que o `Tracker` já escreveu, e ela entra **na v1, não
@@ -274,7 +274,7 @@ alguém vai tentar abrir.
 
 A regra não é "sem terceiros": a Recharts e a TanStack entraram. A regra é
 **motor interno, nunca superfície**, e é ela que reprova as candidatas. A
-TanStack Table pôde entrar porque é *headless*: não tem DOM, não tem CSS, e
+TanStack Table pôde entrar porque é _headless_: não tem DOM, não tem CSS, e
 nenhum tipo dela vaza para a assinatura. FullCalendar, `react-big-calendar` e
 `@schedule-x` são o oposto: eles **são** o DOM e o CSS. Configura-se cada um com
 os objetos de vista e de plugin dele, o desenho sai com as classes dele, e
@@ -310,9 +310,9 @@ renderizar nada.
 
 ```tsx
 <EventCalendar
-  view="week"                    // "agenda" | "day" | "week"
+  view="week" // "agenda" | "day" | "week"
   onViewChange={setView}
-  date={anchor}                  // a data âncora do período visível
+  date={anchor} // a data âncora do período visível
   onDateChange={setAnchor}
   onRangeChange={({ start, end }) => carregar(start, end)}
 
@@ -325,9 +325,9 @@ renderizar nada.
   onEventSelect={(event) => abrir(event.id)}
   onSlotSelect={({ start, end }) => novo(start, end)}
 
-  weekStartsOn={1}               // 0 domingo, 1 segunda (padrão pt-BR)
+  weekStartsOn={1} // 0 domingo, 1 segunda (padrão pt-BR)
   dayStart={7}
-  dayEnd={20}                    // 13 horas visíveis; o resto rola
+  dayEnd={20} // 13 horas visíveis; o resto rola
   hourHeight={48}
   maxColumns={3}
   label="Agenda da equipe"
@@ -398,17 +398,17 @@ vez que o catálogo tem lógica não trivial que quer viver nos dois.
 
 ## Os nove artefatos
 
-| Artefato | Onde |
-|---|---|
-| Peça | `src/components/event-calendar.tsx` mais o layout em `src/lib/` |
-| Índice | `src/index.ts` |
-| Preview | `.design-sync/previews/EventCalendar.tsx` |
-| Página | `.design-sync/docs/EventCalendar.md`, categoria Dados, com "quando não usar" nomeando `Calendar`, `Timeline` e `DataTable` |
-| Teste | `test/event-calendar.test.tsx` mais `test/layout-calendario.test.ts` |
-| `gen:props` | `apps/docs/src/component-props.json` |
-| Contraste | pares novos de `tone` sobre a grade |
-| Skill | linha em `.claude/skills/rivocode-ui/reference/components.md` |
-| Nativo | `native/src/event-calendar.tsx`, linha em `scripts/paridade-nativo.ts` |
+| Artefato    | Onde                                                                                                                       |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Peça        | `src/components/event-calendar.tsx` mais o layout em `src/lib/`                                                            |
+| Índice      | `src/index.ts`                                                                                                             |
+| Preview     | `.design-sync/previews/EventCalendar.tsx`                                                                                  |
+| Página      | `.design-sync/docs/EventCalendar.md`, categoria Dados, com "quando não usar" nomeando `Calendar`, `Timeline` e `DataTable` |
+| Teste       | `test/event-calendar.test.tsx` mais `test/layout-calendario.test.ts`                                                       |
+| `gen:props` | `apps/docs/src/component-props.json`                                                                                       |
+| Contraste   | pares novos de `tone` sobre a grade                                                                                        |
+| Skill       | linha em `.claude/skills/rivocode-ui/reference/components.md`                                                              |
+| Nativo      | `native/src/event-calendar.tsx`, linha em `scripts/paridade-nativo.ts`                                                     |
 
 O teste do layout é o que importa mais e o que custa menos: são funções puras,
 e os casos são conhecidos. Conjunto transitivo (A bate em B, B em C, A não bate

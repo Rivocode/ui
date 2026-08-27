@@ -371,11 +371,7 @@ export {
   parseTime,
   type TimeFieldProps,
 } from "./components/time-field";
-export {
-  TimePicker,
-  type TimePickerLabels,
-  type TimePickerProps,
-} from "./components/time-picker";
+export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./components/time-picker";
 export {
   VirtualList,
   type VirtualListHandle,

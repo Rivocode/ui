@@ -5,10 +5,7 @@ import { cn } from "./cn";
 import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
 
-export type TagsInputProps = Omit<
-  TextInputProps,
-  "value" | "onChangeText" | "className"
-> & {
+export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
   /** As fichas de agora. A peça é controlada: quem guarda a lista é o app. */
   value: string[];
   onValueChange: (value: string[]) => void;

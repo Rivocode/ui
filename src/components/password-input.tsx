@@ -45,11 +45,7 @@ export function PasswordInput({
         onClick={() => setVisible((current) => !current)}
         className={cn("border-l-0", classNames?.action)}
       >
-        {visible ? (
-          <EyeOff size={16} aria-hidden="true" />
-        ) : (
-          <Eye size={16} aria-hidden="true" />
-        )}
+        {visible ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
       </InputAction>
     </InputGroup>
   );

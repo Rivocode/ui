@@ -15,7 +15,7 @@ que funciona mal nos dois lugares.
 
 Três candidatos maduros em 2026: NativeWind (Tailwind em RN), Tamagui
 (sistema universal com compilador próprio) e Unistyles. O Tamagui é o mais
-poderoso para quem *começa* um sistema universal, mas nós já temos um sistema,
+poderoso para quem _começa_ um sistema universal, mas nós já temos um sistema,
 e ele fala Tailwind.
 
 **NativeWind ganha por uma razão estratégica**: o vocabulário é o mesmo.
@@ -49,15 +49,15 @@ JSON e vale para as duas plataformas de uma vez.
 
 ### 3. Catálogo por tradução, não por porte
 
-| Web | Native | Por quê |
-|---|---|---|
-| `Button`, `Badge`, `Card`, `Stat`, `EmptyState`, `Skeleton`, `Separator`, `Avatar` | mesmos nomes | traduzem direto |
-| `Field` + `Input` + `Checkbox` + `Switch` + `Radio` | mesmos nomes | formulário é o coração do produto |
-| `DataTable` | `DataList` | tabela não existe no celular; a lista com os quatro estados (carregando, erro, vazio, dados) é a mesma decisão |
-| `Sheet` | `Sheet` (bottom sheet nativo) | já é o comportamento estreito do web |
-| `Dialog`/`AlertDialog` | `Dialog` nativo | modal é modal |
-| `Toast` | `Toast` | mesma API `useToast` |
-| `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip`, `PreviewCard` | **não portam** | são idiomas de desktop; navegação nativa é tab bar e drawer do router |
+| Web                                                                                | Native                        | Por quê                                                                                                        |
+| ---------------------------------------------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `Button`, `Badge`, `Card`, `Stat`, `EmptyState`, `Skeleton`, `Separator`, `Avatar` | mesmos nomes                  | traduzem direto                                                                                                |
+| `Field` + `Input` + `Checkbox` + `Switch` + `Radio`                                | mesmos nomes                  | formulário é o coração do produto                                                                              |
+| `DataTable`                                                                        | `DataList`                    | tabela não existe no celular; a lista com os quatro estados (carregando, erro, vazio, dados) é a mesma decisão |
+| `Sheet`                                                                            | `Sheet` (bottom sheet nativo) | já é o comportamento estreito do web                                                                           |
+| `Dialog`/`AlertDialog`                                                             | `Dialog` nativo               | modal é modal                                                                                                  |
+| `Toast`                                                                            | `Toast`                       | mesma API `useToast`                                                                                           |
+| `Sidebar`, `Menubar`, `NavigationMenu`, `Tooltip`, `PreviewCard`                   | **não portam**                | são idiomas de desktop; navegação nativa é tab bar e drawer do router                                          |
 
 ## Fases
 

@@ -87,9 +87,20 @@ export type VirtualListProps<Item> = {
    *
    * A lista de dentro repete este nome com a contagem real colada: o leitor
    * conta os filhos que estao no DOM e anuncia "lista com 15 itens" numa lista
-   * de quatro mil, e o nome e o unico lugar onde cabe desmentir isso.
+   * de quatro mil, e o nome e o unico lugar onde cabe desmentir isso. Quem
+   * escreve essa contagem e `labels.count`.
    */
   label?: string;
+  /**
+   * Os textos que a peca escreve sozinha: `count` e a contagem que entra no
+   * nome da lista, colada ao `label`.
+   *
+   * Existe pelo mesmo motivo do `retryLabel`: sem ela a contagem sai em
+   * portugues grudada num `label` ja traduzido, e "Shipping log, 4000 itens"
+   * e pior do que a frase inteira em uma lingua so. O padrao concorda com o
+   * singular - um item e "1 item", e nao "1 itens".
+   */
+  labels?: { count?: (total: number) => string };
   className?: string;
   /**
    * Classe por parte: `list` e a faixa de altura total que rola por dentro da
@@ -124,11 +135,15 @@ export function VirtualList<Item>({
   empty,
   skeletonItems = 5,
   label,
+  labels,
   className,
   classNames,
   ref,
 }: VirtualListProps<Item>) {
   const viewport = useRef<HTMLDivElement>(null);
+
+  const countLabel =
+    labels?.count ?? ((total: number) => (total === 1 ? "1 item" : `${total} itens`));
 
   const estimate = typeof itemHeight === "function" ? itemHeight : () => itemHeight;
 
@@ -192,15 +207,6 @@ export function VirtualList<Item>({
       style={{ maxHeight }}
       className={cn(
         "w-full overflow-auto rounded-md border border-border-strong bg-surface",
-        // A moldura e um alvo de tabulacao porque, fora do Chrome, a rolagem
-        // nao chega pelo teclado de outro jeito: quando o item nao tem nada
-        // focavel dentro - metade dos exemplos da vitrine - Firefox e Safari
-        // deixam 256.000px de lista sem nenhuma tecla que os alcance.
-        //
-        // O anel e da casa por causa do preco da alternativa: o Chrome >= 127
-        // torna o rolador focavel sozinho, e pinta o proprio azul. Sem estas
-        // duas linhas, este e o unico lugar da vitrine onde o foco nao e
-        // `--rc-ring`.
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
@@ -222,7 +228,7 @@ export function VirtualList<Item>({
       ) : (
         <div
           role="list"
-          aria-label={label === undefined ? undefined : `${label}, ${count} itens`}
+          aria-label={label === undefined ? undefined : `${label}, ${countLabel(count)}`}
           style={{ height: virtualizer.getTotalSize() }}
           className={cn("relative w-full", classNames?.list)}
         >

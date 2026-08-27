@@ -6,11 +6,7 @@ export type ButtonGroupProps = ComponentPropsWithoutRef<"div"> & {
   orientation?: "horizontal" | "vertical";
 };
 
-export function ButtonGroup({
-  className,
-  orientation = "horizontal",
-  ...props
-}: ButtonGroupProps) {
+export function ButtonGroup({ className, orientation = "horizontal", ...props }: ButtonGroupProps) {
   return (
     <div
       {...props}

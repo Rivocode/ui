@@ -8,17 +8,6 @@
     "url": "https://github.com/Rivocode/ui.git",
     "directory": "native"
   },
-  "main": "src/index.ts",
-  "types": "src/index.ts",
-  "exports": {
-    ".": "./src/index.ts",
-    "./form": "./src/form/index.ts",
-    "./chart": "./src/chart/index.ts",
-    "./clipboard": "./src/clipboard/index.ts",
-    "./file-upload": "./src/file-upload/index.ts",
-    "./tokens": "./tokens.ts",
-    "./theme.css": "./theme.css"
-  },
   "bin": {
     "rivocode-ui-native-css": "scripts/build-css.mjs"
   },
@@ -32,6 +21,24 @@
     "CHANGELOG.md"
   ],
   "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./form": "./src/form/index.ts",
+    "./chart": "./src/chart/index.ts",
+    "./clipboard": "./src/clipboard/index.ts",
+    "./file-upload": "./src/file-upload/index.ts",
+    "./tokens": "./tokens.ts",
+    "./theme.css": "./theme.css"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "tailwind-merge": "^3"
+  },
   "peerDependencies": {
     "@hookform/resolvers": "^5",
     "expo-clipboard": ">=57",
@@ -62,12 +69,5 @@
     "zod": {
       "optional": true
     }
-  },
-  "dependencies": {
-    "tailwind-merge": "^3"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org"
   }
 }

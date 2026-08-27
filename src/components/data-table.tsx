@@ -298,7 +298,11 @@ export function DataTable<Row>({
 
   function openRow(event: MouseEvent<HTMLTableRowElement>, row: Row) {
     const target = event.target as HTMLElement;
-    if (target.closest("a,button,input,select,textarea,label,[role='menuitem'],[role='checkbox'],[data-rc-keep-row]")) {
+    if (
+      target.closest(
+        "a,button,input,select,textarea,label,[role='menuitem'],[role='checkbox'],[data-rc-keep-row]",
+      )
+    ) {
       return;
     }
     onRowClick?.(row);
@@ -502,9 +506,7 @@ export function DataTable<Row>({
               aria-rowindex={virtualized ? index + 2 : undefined}
               style={virtualized ? { height: rowHeight } : undefined}
               onClick={
-                onRowClick
-                  ? (event) => openRow(event, linha.original as unknown as Row)
-                  : undefined
+                onRowClick ? (event) => openRow(event, linha.original as unknown as Row) : undefined
               }
               className={cn(onRowClick && "cursor-pointer", classNames?.row)}
               data-selected={linha.getIsSelected() || undefined}

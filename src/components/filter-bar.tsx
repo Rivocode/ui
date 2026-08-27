@@ -2,13 +2,7 @@
 
 import { useDirection } from "@base-ui/react/direction-provider";
 import { X } from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";

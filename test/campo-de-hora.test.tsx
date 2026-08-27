@@ -259,15 +259,56 @@ test("com o campo vazio, o minuto escolhido pousa na primeira hora da janela", (
   expect(recebida).toBe("09:30");
 });
 
-test("a seta na coluna anda a selecao sem fechar o painel", () => {
-  withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
+test("a seta na coluna anda o foco sem gravar valor nenhum", () => {
+  let avisos = 0;
+  withTheme(
+    <TimePicker aria-label="Entrega" defaultValue="14:30" onValueChange={() => avisos++} />,
+  );
 
   open();
   const column = screen.getByRole("listbox", { name: "Minuto" });
   fireEvent.keyDown(column, { key: "ArrowDown" });
 
-  expect(field().value).toBe("14:45");
+  expect(avisos).toBe(0);
+  expect(field().value).toBe("14:30");
+  expect(document.activeElement?.textContent).toBe("45");
   expect(screen.getByRole("listbox", { name: "Minuto" })).toBeDefined();
+});
+
+test("andar de 08 a 18 na coluna das horas nao dispara consulta nenhuma", () => {
+  let avisos = 0;
+  withTheme(
+    <TimePicker aria-label="Entrega" defaultValue="08:00" onValueChange={() => avisos++} />,
+  );
+
+  open();
+  const column = screen.getByRole("listbox", { name: "Hora" });
+  for (let anda = 0; anda < 10; anda += 1) fireEvent.keyDown(column, { key: "ArrowDown" });
+
+  expect(avisos).toBe(0);
+  expect(document.activeElement?.textContent).toBe("18");
+});
+
+test("e o Enter na opcao focada que grava, e ai o minuto fecha o painel", () => {
+  withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
+
+  open();
+  const column = screen.getByRole("listbox", { name: "Minuto" });
+  fireEvent.keyDown(column, { key: "ArrowDown" });
+  fireEvent.click(document.activeElement as HTMLElement);
+
+  expect(field().value).toBe("14:45");
+  expect(screen.queryByRole("listbox", { name: "Minuto" })).toBeNull();
+});
+
+test("a opcao so focada nao se anuncia escolhida", () => {
+  withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
+
+  open();
+  fireEvent.keyDown(screen.getByRole("listbox", { name: "Minuto" }), { key: "ArrowDown" });
+
+  expect(document.activeElement?.getAttribute("aria-selected")).toBe("false");
+  expect(screen.getByRole("option", { name: "30" }).getAttribute("aria-selected")).toBe("true");
 });
 
 test("a coluna diz qual opcao esta escolhida, e nao so a pinta", () => {
@@ -647,7 +688,9 @@ test("o passo pelo botao diz em voz alta a hora em que parou", () => {
 });
 
 test("a seta no teclado anuncia como o botao anuncia, e o foco fica onde estava", () => {
-  const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
+  const { container } = withTheme(
+    <TimeField aria-label="Entrada" defaultValue="14:07" step={15} />,
+  );
 
   fireEvent.keyDown(field(), { key: "ArrowUp" });
 

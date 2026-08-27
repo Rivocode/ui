@@ -148,7 +148,9 @@ test("forma, movimento e fonte vivem fora da escala, onde o tema alcanca", async
     "--rc-ease",
     "--rc-tracking-display",
   ]) {
-    expect(`${token} em forma.css: ${shape.includes(`${token}:`)}`).toBe(`${token} em forma.css: true`);
+    expect(`${token} em forma.css: ${shape.includes(`${token}:`)}`).toBe(
+      `${token} em forma.css: true`,
+    );
     expect(`${token} fora de scales.css: ${!scales.includes(`${token}:`)}`).toBe(
       `${token} fora de scales.css: true`,
     );

@@ -16,10 +16,7 @@ export function MenuTrigger({ className, ...props }: ComponentProps<typeof BaseM
   return (
     <BaseMenu.Trigger
       {...props}
-      className={cn(
-        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        className,
-      )}
+      className={cn("outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}
     />
   );
 }

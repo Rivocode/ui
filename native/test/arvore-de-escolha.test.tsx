@@ -29,7 +29,12 @@ const apply = (screen: ReturnType<typeof render>) =>
 describe("TreeSelect", () => {
   test("o gatilho resume com as mesmas palavras do Select, e conta só as folhas que existem", () => {
     const one = render(
-      <TreeSelect items={PLAN} value={["pagar"]} onValueChange={() => {}} label="Centro de custo" />,
+      <TreeSelect
+        items={PLAN}
+        value={["pagar"]}
+        onValueChange={() => {}}
+        label="Centro de custo"
+      />,
     );
     // Com uma escolha so vale o nome dela, como no `summarize` das outras duas.
     expect(textOf(one)).toContain("Contas a pagar");

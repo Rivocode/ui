@@ -313,7 +313,12 @@ test("virtualizada, ordenar continua valendo - que e o motivo de ela existir", (
 });
 
 test("virtualizada, filtrar continua valendo e a contagem acompanha", () => {
-  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT, filter: "9007" });
+  const { container } = table({
+    data: LOG,
+    virtual: true,
+    maxHeight: VIEWPORT_HEIGHT,
+    filter: "9007",
+  });
 
   expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe("2");
   expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9007");

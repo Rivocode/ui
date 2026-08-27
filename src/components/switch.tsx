@@ -21,13 +21,7 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
   classNames?: Slots<"thumb" | "label">;
 };
 
-export function Switch({
-  className,
-  children,
-  labelClassName,
-  classNames,
-  ...props
-}: SwitchProps) {
+export function Switch({ className, children, labelClassName, classNames, ...props }: SwitchProps) {
   const textId = useId();
   const named = children !== undefined;
 

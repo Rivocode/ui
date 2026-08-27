@@ -69,9 +69,13 @@ describe("Sparkline", () => {
 
   test("sem trend ela usa o acento, e o papel de token requested vence", () => {
     const byDefault = render(<Sparkline variant="bar" data={[1, 9]} />);
-    expect(byDefault.root && marks(byDefault)[0].props.style.backgroundColor).toBe(dark["accent-text"]);
+    expect(byDefault.root && marks(byDefault)[0].props.style.backgroundColor).toBe(
+      dark["accent-text"],
+    );
 
-    const requested = render(<Sparkline variant="bar" trend="auto" color="chart-3" data={[9, 1]} />);
+    const requested = render(
+      <Sparkline variant="bar" trend="auto" color="chart-3" data={[9, 1]} />,
+    );
     expect(marks(requested)[0].props.style.backgroundColor).toBe(dark["chart-3"]);
   });
 

@@ -49,6 +49,20 @@ test('o estado vazio sempre oferece uma saida, nunca so "sem dados"', () => {
   expect(screen.getByRole("button", { name: "Emitir nota" })).toBeDefined();
 });
 
+test("o icone do estado vazio sai do caminho do leitor de tela, como o do aviso", () => {
+  render(
+    <EmptyState
+      icon={<img src="/vazio.svg" alt="Uma caixa aberta" data-testid="ilustracao" />}
+      title="Nenhuma nota por aqui"
+      description="Quando voce emitir a primeira, ela aparece nesta lista."
+    />,
+  );
+
+  const wrapper = screen.getByTestId("ilustracao").parentElement;
+  expect(wrapper?.getAttribute("aria-hidden")).toBe("true");
+  expect(screen.queryByRole("img", { name: "Uma caixa aberta" })).toBeNull();
+});
+
 test("o estado vazio funciona sem acao, mas continua explicando o motivo", () => {
   render(<EmptyState title="Nada encontrado" description="Nenhum resultado para esse filtro." />);
   expect(screen.getByText("Nenhum resultado para esse filtro.")).toBeDefined();

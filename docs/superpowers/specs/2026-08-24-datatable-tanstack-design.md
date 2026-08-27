@@ -24,20 +24,20 @@ mesma: colunas + três booleanos, agnóstica de biblioteca de dados.
 
 ### Em `Column<Row>`
 
-| Prop | Tipo | O quê |
-|---|---|---|
-| `sortable` | `boolean` | Cabeçalho vira botão que alterna asc → desc → sem ordem |
-| `value` | `(row) => string \| number \| Date \| null \| undefined` | Valor cru para ordenar e filtrar quando `cell` é JSX ou a chave não é campo direto. Sem ele, `row[key]`. |
+| Prop       | Tipo                                                     | O quê                                                                                                    |
+| ---------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `sortable` | `boolean`                                                | Cabeçalho vira botão que alterna asc → desc → sem ordem                                                  |
+| `value`    | `(row) => string \| number \| Date \| null \| undefined` | Valor cru para ordenar e filtrar quando `cell` é JSX ou a chave não é campo direto. Sem ele, `row[key]`. |
 
 ### Em `DataTableProps<Row>`
 
-| Prop | Tipo | O quê |
-|---|---|---|
-| `pageSize` | `number` | Liga paginação client-side. Rodapé com "X-Y de Z" à esquerda e o `Pagination` da casa à direita. Sem a prop, nada de rodapé. |
-| `filter` | `string` | Filtro global controlado. O app renderiza o campo de busca que quiser; a tabela só filtra. Compara texto normalizado (caixa e acento ignorados) sobre `value ?? row[key]` de cada coluna. |
-| `selectable` | `boolean` | Coluna de checkbox à esquerda. Chaves vêm do `rowKey`. |
-| `selected` | `string[]` | Seleção controlada. Opcional: sem ela, estado interno. |
-| `onSelectedChange` | `(keys: string[]) => void` | Avisa a cada mudança de seleção. |
+| Prop               | Tipo                       | O quê                                                                                                                                                                                     |
+| ------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pageSize`         | `number`                   | Liga paginação client-side. Rodapé com "X-Y de Z" à esquerda e o `Pagination` da casa à direita. Sem a prop, nada de rodapé.                                                              |
+| `filter`           | `string`                   | Filtro global controlado. O app renderiza o campo de busca que quiser; a tabela só filtra. Compara texto normalizado (caixa e acento ignorados) sobre `value ?? row[key]` de cada coluna. |
+| `selectable`       | `boolean`                  | Coluna de checkbox à esquerda. Chaves vêm do `rowKey`.                                                                                                                                    |
+| `selected`         | `string[]`                 | Seleção controlada. Opcional: sem ela, estado interno.                                                                                                                                    |
+| `onSelectedChange` | `(keys: string[]) => void` | Avisa a cada mudança de seleção.                                                                                                                                                          |
 
 Ordenação é client-side e não controlada. Quem ordena no servidor ordena os
 dados antes e não marca `sortable`. Está documentado no `.md` da peça.
@@ -75,14 +75,14 @@ dados antes e não marca `sortable`. Está documentado no `.md` da peça.
 
 ## Arquivos tocados
 
-| Arquivo | Mudança |
-|---|---|
-| `package.json` | dependência nova |
-| `src/components/data-table.tsx` | motor + colunas de seleção + rodapé |
-| `test/data-table.test.tsx` (novo) | ordenação, filtro, paginação, seleção, e os invariantes velhos |
-| `.design-sync/docs/DataTable.md` | props novas, quando usar cada uma |
-| `.design-sync/previews/DataTable.tsx` | histórias: Ordenável, Com busca, Com paginação, Com seleção |
-| `.claude/skills/rivocode-ui/reference/components.md` | tabela de escolha ganha as capacidades novas |
+| Arquivo                                              | Mudança                                                        |
+| ---------------------------------------------------- | -------------------------------------------------------------- |
+| `package.json`                                       | dependência nova                                               |
+| `src/components/data-table.tsx`                      | motor + colunas de seleção + rodapé                            |
+| `test/data-table.test.tsx` (novo)                    | ordenação, filtro, paginação, seleção, e os invariantes velhos |
+| `.design-sync/docs/DataTable.md`                     | props novas, quando usar cada uma                              |
+| `.design-sync/previews/DataTable.tsx`                | histórias: Ordenável, Com busca, Com paginação, Com seleção    |
+| `.claude/skills/rivocode-ui/reference/components.md` | tabela de escolha ganha as capacidades novas                   |
 
 ## Testes
 

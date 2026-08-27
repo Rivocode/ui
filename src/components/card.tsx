@@ -27,7 +27,10 @@ export function CardTitle({ className, ...props }: ComponentPropsWithoutRef<"h3"
   return (
     <h3
       {...props}
-      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg", className)}
+      className={cn(
+        "font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+        className,
+      )}
     />
   );
 }

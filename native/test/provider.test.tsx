@@ -79,6 +79,8 @@ describe("Field e Input", () => {
         <Input invalid />
       </Field>,
     );
-    expect(invalid.root.findByType("TextInput" as never).props.className).toContain("border-danger");
+    expect(invalid.root.findByType("TextInput" as never).props.className).toContain(
+      "border-danger",
+    );
   });
 });

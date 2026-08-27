@@ -53,7 +53,10 @@ function describe(value: Date, now: Date, cutoff: RelativeUnit | undefined) {
   for (const range of RANGES) {
     if (size < range.seconds) continue;
 
-    if (cutoff && RANGES.findIndex((r) => r.unit === range.unit) <= RANGES.findIndex((r) => r.unit === cutoff)) {
+    if (
+      cutoff &&
+      RANGES.findIndex((r) => r.unit === range.unit) <= RANGES.findIndex((r) => r.unit === cutoff)
+    ) {
       return { text: absolute.format(value), unit: "year" as const };
     }
 

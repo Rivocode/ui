@@ -61,10 +61,7 @@ export function Editable({
             disabled && "opacity-50",
           )}
         >
-          <Text
-            numberOfLines={1}
-            className={`text-base ${value ? "text-fg" : "text-fg-subtle"}`}
-          >
+          <Text numberOfLines={1} className={`text-base ${value ? "text-fg" : "text-fg-subtle"}`}>
             {value || placeholder}
           </Text>
         </Pressable>

@@ -97,7 +97,9 @@ for (const target of TARGETS) {
   const missingFromSkill = names.filter((name) => !skill.includes(name));
 
   if (missingFromContract.length > 0) {
-    console.error(`${CONTRACT_FILE} nao cita, de ${target.name}: ${missingFromContract.join(", ")}`);
+    console.error(
+      `${CONTRACT_FILE} nao cita, de ${target.name}: ${missingFromContract.join(", ")}`,
+    );
     misses += missingFromContract.length;
   }
   if (missingFromSkill.length > 0) {

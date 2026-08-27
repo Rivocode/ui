@@ -30,13 +30,7 @@ export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children">
   classNames?: Slots<"circle" | "indicator" | "label">;
 };
 
-export function Radio({
-  className,
-  children,
-  labelClassName,
-  classNames,
-  ...props
-}: RadioProps) {
+export function Radio({ className, children, labelClassName, classNames, ...props }: RadioProps) {
   const textId = useId();
   const named = children !== undefined;
 

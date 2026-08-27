@@ -16,9 +16,7 @@ function familyOf(node: ReactTestInstance): unknown {
 }
 
 function families(screen: ReactTestRenderer): unknown[] {
-  return screen.root
-    .findAll((node) => node.type === "Text")
-    .map((node) => familyOf(node));
+  return screen.root.findAll((node) => node.type === "Text").map((node) => familyOf(node));
 }
 
 const BRAND = { sans: "Manrope", display: "Poppins", mono: "JetBrainsMono" };

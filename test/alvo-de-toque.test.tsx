@@ -122,10 +122,7 @@ test("o link da migalha estica o alvo so na altura, para nao pegar o clique do v
   // seguinte, que fica a seis pixels de distancia.
   withTheme(
     <Breadcrumb
-      items={[
-        { label: "Clientes", href: "/clientes" },
-        { label: "Clinica Sao Lucas" },
-      ]}
+      items={[{ label: "Clientes", href: "/clientes" }, { label: "Clinica Sao Lucas" }]}
     />,
   );
 

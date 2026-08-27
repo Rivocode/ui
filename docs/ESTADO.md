@@ -15,13 +15,13 @@ Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
 
 ## O que existe hoje
 
-| Peca                        | Onde                                        | Estado                                                     |
-| --------------------------- | ------------------------------------------- | ---------------------------------------------------------- |
+| Peca                        | Onde                                        | Estado                                                    |
+| --------------------------- | ------------------------------------------- | --------------------------------------------------------- |
 | `@rivocode/ui`              | este repo, `src/`                           | **0.8.0** na arvore; 0.7.0 no npm, falta a tag            |
 | `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.1** na arvore; 0.3.0 no npm, falta a tag            |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, uma pagina crua por peca     |
-| Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`    |
-| Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar  |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, uma pagina crua por peca    |
+| Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`   |
+| Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar |
 
 O gate do repo esta verde: `bun run check` passa inteiro - vinte e tres verificacoes
 mais a suite dos dois pacotes, `test/` e `native/test/`. O `bun run build`
@@ -39,17 +39,17 @@ contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
 esta em `apps/docs/src/parts.ts` e a guarda que a segura em
 `test/indice.test.ts`.
 
-| Familia      | Quais                                                                                                                                                                                                                                                                                                                                        |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect            |
-| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                               |
-| Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                                      |
-| Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                            |
-| Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                              |
-| Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                                    |
-| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                              |
-| Dados        | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                                                           |
-| Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                                    |
+| Familia      | Quais                                                                                                                                                                                                                                                                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect |
+| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                     |
+| Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                            |
+| Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                  |
+| Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                    |
+| Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                          |
+| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                    |
+| Dados        | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                                                 |
+| Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                          |
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
 com acento. Nenhuma peca esta sem documento. A coluna de contagem por familia
@@ -72,9 +72,9 @@ e hoje 73 das 90 pecas do web tem par no celular.
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
 | Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
-| Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast`  |
-| `○ na fila`        |       0 | -                                                                                             |
-| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
+| Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast` |
+| `○ na fila`        |       0 | -                                                                                            |
+| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                             |
 
 As 17 que nao portam nao voltam a esta lista sem que alguem mude de ideia sobre
 o que um dedo faz. Os tres graficos, que este arquivo listava como bloqueados
@@ -314,11 +314,16 @@ Sobram duas coisas, e nenhuma e trabalho de codigo:
    ninguem deve faze-lo sem olhar os retratos. A causa esta diagnosticada
    acima.
 
-O que continua valendo como restricao, e nao como bloqueio: **o repositorio e
-privado**, entao o npm recusa `--provenance` com 422, e por isso os dois
-workflows publicam sem assinatura. Tornar o repositorio publico e o que devolve
-a procedencia. Esta escrito nos dois workflows, no lugar onde alguem tentaria
-"consertar", e continua sendo uma decisao que ninguem tomou.
+**O repositorio virou publico em 27/08**, e com ele a procedencia voltou. Os
+dois workflows publicam com `--provenance` e `id-token: write`, entao a partir
+da proxima tag o tarball sai assinado e qualquer um consegue verificar de onde
+ele veio.
+
+Uma armadilha ficou escrita nos dois: `--provenance` e `id-token` andam JUNTOS,
+e o `--dry-run` do npm nao exercita nenhum dos dois (ha um `if (!dryRun)` antes
+da geracao da assinatura). Por isso ha um passo que falha cedo se o token OIDC
+nao estiver la, em vez de descobrir isso no ultimo comando de uma publicacao
+que nao se desfaz.
 
 ## Decisoes que continuam valendo
 

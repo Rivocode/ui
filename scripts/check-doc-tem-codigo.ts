@@ -44,7 +44,12 @@ for (const entry of ENTRY_POINTS) {
 
       // `ToolbarRoot as Toolbar`: o nome publico e o depois do `as`, e e ele
       // que a pagina documenta.
-      exported.add(part.split(/\s+as\s+/).pop()!.trim());
+      exported.add(
+        part
+          .split(/\s+as\s+/)
+          .pop()!
+          .trim(),
+      );
     }
   }
 
@@ -72,9 +77,7 @@ const prose = (
 
 const silent = [...exported].filter(
   (name) =>
-    !NOT_A_PIECE(name) &&
-    !documented.includes(name) &&
-    !new RegExp(`\\b${name}\\b`).test(prose),
+    !NOT_A_PIECE(name) && !documented.includes(name) && !new RegExp(`\\b${name}\\b`).test(prose),
 );
 
 if (promised.length > 0) {

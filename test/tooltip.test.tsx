@@ -103,6 +103,8 @@ test("o aria-describedby de quem chama continua valendo junto com o nosso", () =
   );
 
   const tip = document.querySelector('[role="tooltip"]')!;
-  const described = screen.getByRole("button", { name: "Excluir" }).getAttribute("aria-describedby");
+  const described = screen
+    .getByRole("button", { name: "Excluir" })
+    .getAttribute("aria-describedby");
   expect(described!.split(" ")).toEqual(["ajuda", tip.id]);
 });

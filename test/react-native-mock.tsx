@@ -36,12 +36,8 @@ export const Modal = (props: AnyProps & { visible?: boolean }) =>
    cobertura e a falha apareceria so na maquina de quem tem o outro OS. */
 export const Platform = {
   OS: "ios" as const,
-  select: <T,>(spec: {
-    ios?: T;
-    android?: T;
-    native?: T;
-    default?: T;
-  }): T | undefined => spec.ios ?? spec.native ?? spec.default,
+  select: <T,>(spec: { ios?: T; android?: T; native?: T; default?: T }): T | undefined =>
+    spec.ios ?? spec.native ?? spec.default,
 };
 
 /* O I18nManager de verdade le a locale do aparelho UMA vez, na carga do

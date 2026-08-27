@@ -5,9 +5,11 @@
 }
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer theme {
-  :root, :host {
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-    monospace;
+  :root,
+  :host {
+    --font-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+      monospace;
     --spacing: 0.25rem;
     --text-xs: 12px;
     --text-xs--line-height: 18px;
@@ -30,7 +32,7 @@
     --color-bg: light-dark(#fbfbfa, #0b0d0f);
     --color-surface: light-dark(#ffffff, #14171a);
     --color-surface-raised: light-dark(#ffffff, #171a1d);
-    --color-overlay: light-dark(rgba(15,17,19,0.42), rgba(0,0,0,0.62));
+    --color-overlay: light-dark(rgba(15, 17, 19, 0.42), rgba(0, 0, 0, 0.62));
     --color-fg: light-dark(#14171a, #f2f3f0);
     --color-fg-muted: light-dark(#5b6169, #b9bfc6);
     --color-fg-subtle: light-dark(#6c737b, #8b9199);
@@ -39,24 +41,24 @@
     --color-accent-active: #bfdd3a;
     --color-accent-fg: #0f1113;
     --color-accent-text: light-dark(#4a7100, #d4f34a);
-    --color-accent-subtle: light-dark(rgba(212,243,74,0.22), rgba(212,243,74,0.14));
-    --color-selected: light-dark(rgba(212,243,74,0.16), rgba(212,243,74,0.05));
-    --color-skeleton: light-dark(rgba(15,17,19,0.08), rgba(255,255,255,0.08));
-    --color-border: light-dark(rgba(15,17,19,0.1), rgba(255,255,255,0.09));
-    --color-border-strong: light-dark(rgba(15,17,19,0.48), rgba(255,255,255,0.38));
+    --color-accent-subtle: light-dark(rgba(212, 243, 74, 0.22), rgba(212, 243, 74, 0.14));
+    --color-selected: light-dark(rgba(212, 243, 74, 0.16), rgba(212, 243, 74, 0.05));
+    --color-skeleton: light-dark(rgba(15, 17, 19, 0.08), rgba(255, 255, 255, 0.08));
+    --color-border: light-dark(rgba(15, 17, 19, 0.1), rgba(255, 255, 255, 0.09));
+    --color-border-strong: light-dark(rgba(15, 17, 19, 0.48), rgba(255, 255, 255, 0.38));
     --color-success: light-dark(#0f766e, #3ddc97);
     --color-success-text: light-dark(#0f766e, #3ddc97);
-    --color-success-subtle: light-dark(rgba(15,118,110,0.1), rgba(61,220,151,0.14));
+    --color-success-subtle: light-dark(rgba(15, 118, 110, 0.1), rgba(61, 220, 151, 0.14));
     --color-warning: light-dark(#a15c00, #f2b21c);
     --color-warning-text: light-dark(#8f5200, #f2b21c);
-    --color-warning-subtle: light-dark(rgba(161,92,0,0.1), rgba(242,178,28,0.14));
+    --color-warning-subtle: light-dark(rgba(161, 92, 0, 0.1), rgba(242, 178, 28, 0.14));
     --color-danger: light-dark(#c0261f, #dc2626);
     --color-danger-fg: #ffffff;
     --color-danger-text: light-dark(#c0261f, #ff6b6b);
-    --color-danger-subtle: light-dark(rgba(192,38,31,0.1), rgba(255,107,107,0.14));
+    --color-danger-subtle: light-dark(rgba(192, 38, 31, 0.1), rgba(255, 107, 107, 0.14));
     --color-info: light-dark(#1d4ed8, #6aa9ff);
     --color-info-text: light-dark(#1d4ed8, #6aa9ff);
-    --color-info-subtle: light-dark(rgba(29,78,216,0.1), rgba(106,169,255,0.14));
+    --color-info-subtle: light-dark(rgba(29, 78, 216, 0.1), rgba(106, 169, 255, 0.14));
     --radius-pill: 999px;
     --text-md: 16px;
     --text-md--line-height: 24px;
@@ -812,7 +814,3 @@
 .active\:opacity-90:active {
   opacity: 90%;
 }
-
-
-
-

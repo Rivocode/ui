@@ -176,7 +176,7 @@ const PARITY: Record<string, Row> = {
       "cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega " +
       "o `submit`:\n\n" +
       "```tsx\n" +
-      "<ChartContainer config={SERIES} data={meses} className=\"h-56\">\n" +
+      '<ChartContainer config={SERIES} data={meses} className="h-56">\n' +
       "  {({ width, height, colors }) => (\n" +
       "    <Svg width={width} height={height}>…</Svg>\n" +
       "  )}\n" +
@@ -235,12 +235,12 @@ const PARITY: Record<string, Row> = {
       "iguais, o arco em tracinhos incluído.\n\n" +
       "Duas mudanças de tipo, as mesmas da rosca: `centerValue` e `centerLabel` são `string`, e " +
       "`color` é papel de token (`chart-3`, `success`) e não cor de CSS.\n\n" +
-      "O papel de acessibilidade é `image`, como o `role=\"img\"` do web, e os dois vizinhos " +
+      'O papel de acessibilidade é `image`, como o `role="img"` do web, e os dois vizinhos ' +
       "explicam por quê: o `Meter` nativo já tinha recusado `progressbar`, que faz o leitor de tela " +
       "anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que " +
       "prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a " +
       "medida. Sem `label`, ele é montado do que está escrito no meio (o valor **e** a linha " +
-      "de baixo), e não só a porcentagem como no web: \"82 por cento\" sozinho não diz por cento de quê.",
+      'de baixo), e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.',
   },
   Checkbox: {
     state: "traduz",
@@ -283,14 +283,14 @@ const PARITY: Record<string, Row> = {
   },
   FilterBar: {
     state: "traduz",
-    note: "rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de\n      alvo de toque; a borda com mais escondido vira regua de 1pt, e nao esmaecido",
+    note: "rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de alvo de toque; a borda com mais escondido vira regua de 1pt, e nao esmaecido",
     page:
       "Traduz, e é onde a peça vale mais: listagem no celular é onde filtro dói. As decisões " +
       "de desenho já tinham sido tomadas pensando em 390px, então quase tudo atravessa: rola " +
       "na horizontal, não quebra linha e não colapsa em `+3`.\n\n" +
       "**O limpar fica FORA do que rola.** Se ele rolasse junto, o controle que existe para " +
       "desfazer tudo seria o único que exige rolar até o fim para achar. Ele ancora à direita " +
-      "da fileira, e o `size=\"sm\"` do `Button` nativo já entrega o alvo de 44pt sozinho.\n\n" +
+      'da fileira, e o `size="sm"` do `Button` nativo já entrega o alvo de 44pt sozinho.\n\n' +
       "**A linha reservada passa a ser medida em dedo.** No web ela guarda a altura de " +
       "`--rc-control-sm`; aqui guarda 44pt, que é uma altura de alvo de toque. Não há token " +
       "de controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do " +
@@ -353,7 +353,7 @@ const PARITY: Record<string, Row> = {
       "**A `week` nao porta.** Sete colunas em 358px dao 44,8px cada, e a coluna de semana existe " +
       "para mostrar hora e duracao. Em 44,8px ela mostra um retangulo colorido, que e o que a " +
       "`month` ja faz melhor e mais barato. O web tomou a mesma decisao para a propria tela " +
-      "estreita: abaixo de `sm` a `week` some do seletor e `view=\"week\"` resolve para `agenda`.\n\n" +
+      'estreita: abaixo de `sm` a `week` some do seletor e `view="week"` resolve para `agenda`.\n\n' +
       "O que falta e decisao de gesto, e por isso a linha esta em `FILA_DECLARADA`: arrastar para " +
       "mudar de semana, tocar e segurar para criar, e o que acontece quando o dedo pousa em cima " +
       "de dois eventos que se sobrepoem. Nenhuma dessas tem resposta no web, porque no web sao " +
@@ -453,7 +453,7 @@ const PARITY: Record<string, Row> = {
     page:
       "Traduz: o `@rivocode/ui-native` exporta `Sparkline`, e ela é o que o slot `chart` do " +
       "`Stat` nativo esperava. Ela é desenhada com `View`, sem SVG, e isso decide o que " +
-      "atravessa: `variant=\"line\"` e `variant=\"bar\"` significam a mesma coisa nos dois " +
+      'atravessa: `variant="line"` e `variant="bar"` significam a mesma coisa nos dois ' +
       "mundos, e **`area` não porta**: área quer polígono preenchido, que `View` não faz. " +
       "Duas outras diferenças, ambas deliberadas: o traço desenha 2px em vez de 1,5 (a 1,5 " +
       "ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em " +
@@ -511,7 +511,7 @@ const PARITY: Record<string, Row> = {
       "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
       "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não " +
       "portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem " +
-      "cabeçalho, e no celular ordenar é um `Menu` de \"ordenar por\" que a tela monta em " +
+      'cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em ' +
       "cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um " +
       "`filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.",
   },
@@ -539,7 +539,7 @@ const PARITY: Record<string, Row> = {
       "peça dispara **também** um aviso, porque aqui trocar o `accessibilityLabel` de um " +
       "`Pressable` que já está sob o foco **não é reanunciado** nem pelo VoiceOver nem pelo " +
       "TalkBack: quem não vê o ícone virar visto não ficaria sabendo de nada. O aviso que o " +
-      "`RivoProvider` já monta mora num `accessibilityLiveRegion=\"polite\"`, e é o único canal " +
+      '`RivoProvider` já monta mora num `accessibilityLiveRegion="polite"`, e é o único canal ' +
       "desta tela que fala sozinho. `toast={false}` desliga, para a tela que copia várias coisas " +
       "seguidas e não quer uma pilha de avisos.\n\n" +
       "**Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve " +
@@ -585,9 +585,9 @@ const PARITY: Record<string, Row> = {
       "clássico desta peça. A marca do escolhido continua sendo **por fora**, pela mesma razão do " +
       "web: símbolo desenhado sobre a amostra fica ilegível em metade das cores possíveis, e não " +
       "há token que garanta contraste contra um valor que a pessoa inventou.\n\n" +
-      "**O campo pede o teclado alfanumérico comum** (`keyboardType=\"default\"`), e não o " +
+      '**O campo pede o teclado alfanumérico comum** (`keyboardType="default"`), e não o ' +
       "numérico: hexadecimal tem `a` a `f` e uma cerquilha, e nenhum teclado de números traz as " +
-      "duas coisas. O que ele desliga é o que o sistema faria por conta: `autoCapitalize=\"none\"` " +
+      'duas coisas. O que ele desliga é o que o sistema faria por conta: `autoCapitalize="none"` ' +
       "para `bfdd3a` não virar `Bfdd3a`, e `autoCorrect={false}` para o corretor não trocar seis " +
       "letras sem sentido pela palavra mais parecida.\n\n" +
       "Quem não vê a cor a ouve por dois caminhos: o `accessibilityState.checked` de cada amostra, " +
@@ -627,7 +627,7 @@ const PARITY: Record<string, Row> = {
       "sobre um texto, e a escolha é defensiva: num painel de leitura o dedo encosta em tudo " +
       "enquanto rola, e com o toque curto abrindo o campo o teclado subia sozinho a cada " +
       "esbarrão. Para quem usa leitor de tela o gesto não existe, então a peça declara também " +
-      "uma ação de acessibilidade `longpress` chamada \"Editar\", que aparece no rotor.\n\n" +
+      'uma ação de acessibilidade `longpress` chamada "Editar", que aparece no rotor.\n\n' +
       "**Sair do campo não salva.** No web, clicar fora confirma; aqui não há clicar fora: há o " +
       "teclado que se esconde, e o próprio `Cancelar` tira o foco do campo antes de rodar, então " +
       "um `blur` que salvasse salvaria o rascunho no caminho de cancelá-lo. Nada sai daqui sem " +
@@ -635,7 +635,7 @@ const PARITY: Record<string, Row> = {
       "que é visível ao lado do campo porque sem Escape não existe saída invisível.\n\n" +
       "O resto é o contrato de sempre: `value` e `onValueChange` **obrigatórios**, sem " +
       "`defaultValue`, e `label` obrigatório. Fechada, a peça anuncia `label` e valor juntos, " +
-      "porque \"Nome do cliente\" sozinho manda a pessoa abrir a edição só para descobrir o que " +
+      'porque "Nome do cliente" sozinho manda a pessoa abrir a edição só para descobrir o que ' +
       "há lá dentro.",
   },
   FileUpload: {
@@ -652,13 +652,13 @@ const PARITY: Record<string, Row> = {
       "em `onReject`, cada recusa com o motivo pronto para um aviso.\n\n" +
       "**A área de soltar vira um botão, e isso é a peça inteira mudando de forma.** No celular " +
       "não há arrastar: nada pode ser solto em lugar nenhum, e o retângulo tracejado de 96px do " +
-      "web é, letra por letra, o idioma de \"solte aqui\": desenhá-lo numa tela de toque promete " +
+      'web é, letra por letra, o idioma de "solte aqui": desenhá-lo numa tela de toque promete ' +
       "um gesto que o aparelho não tem. Tirado o soltar, o que sobra daquela caixa é um botão com " +
       "muito espaço vazio em volta: **o espaço era o alvo de soltar, e não a affordance**. Então " +
       "sobra o botão, numa altura de controle. E a altura que ele devolve é da **lista**, que é " +
       "onde o arquivo aparece, sobe, falha e é removido. O `hint` continua existindo, e entra no " +
       "nome falado do botão pelo mesmo motivo que no web ele mora dentro do `<button>`: quem ouve " +
-      "a tela precisa saber \"XML ou PDF, até 5 MB\" antes de abrir o seletor, e não depois de ser " +
+      'a tela precisa saber "XML ou PDF, até 5 MB" antes de abrir o seletor, e não depois de ser ' +
       "recusado.\n\n" +
       "**O `accept` fala MIME.** O seletor do Expo filtra por tipo (`text/xml`, `image/*`), e não " +
       "por extensão: um `.xml` mandado para lá não casaria nada e abriria o diálogo vazio. Então " +
@@ -669,20 +669,20 @@ const PARITY: Record<string, Row> = {
       "`maxSize` só recusa o que conseguiu medir. Fechar o seletor devolve `canceled` e nenhum " +
       "callback dispara, como fechar a janela do seletor do web.\n\n" +
       "`FileUploadList` e `FileUploadItem` atravessam com o mesmo contrato (`progress` de 0 a " +
-      "100 vira barra anunciada, `error` vence o progresso e oferece \"Tentar de novo\"), com duas " +
+      '100 vira barra anunciada, `error` vence o progresso e oferece "Tentar de novo"), com duas ' +
       "diferenças de plataforma: o corte do nome é `numberOfLines`, que lá é prop e não classe, e " +
-      "o tamanho sai formatado **sem `Intl`** (\"47,1 KB\", com a vírgula escrita à mão), pela " +
+      'o tamanho sai formatado **sem `Intl`** ("47,1 KB", com a vírgula escrita à mão), pela ' +
       "mesma razão que o `Meter` nativo não tem `format`.",
   },
   Form: {
     state: "traduz",
-    note: "vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type=\"submit\"`, e há um adaptador a mais, o `forText`",
+    note: 'vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText`',
     page:
       "Traduz, no caminho próprio `@rivocode/ui-native/form`, com o mesmo arranjo do web e pela " +
       "mesma razão: o `react-hook-form` é peer opcional. O `useZodForm` é idêntico, linha por " +
       "linha, porque não há navegador nele.\n\n" +
       "**O que muda é quem dispara o envio.** No React Native não existe `<form>`, não existe " +
-      "`type=\"submit\"` e não existe Enter que envie: nada é implícito. Então o `Form` " +
+      '`type="submit"` e não existe Enter que envie: nada é implícito. Então o `Form` ' +
       "entrega o envio a quem desenha o botão (`children` pode ser uma função que recebe " +
       "`{ submit, isSubmitting }`), e continua aceitando JSX comum para quando o botão mora " +
       "fora, numa barra fixa no rodapé da tela.\n\n" +
@@ -708,8 +708,8 @@ const PARITY: Record<string, Row> = {
       "Traduz, e o que muda é quem carrega o nome acessível. No web o número é escondido do " +
       "leitor e um texto só para ele entra ao lado; no nativo a pastilha inteira é UM elemento " +
       "de acessibilidade, e o `label` (aqui obrigatório) é o que ele anuncia. O leitor lê o " +
-      "filho (\"Notificações, botão\") e a pastilha em seguida (\"3 notificações\"), e nunca um " +
-      "\"3\" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a " +
+      'filho ("Notificações, botão") e a pastilha em seguida ("3 notificações"), e nunca um ' +
+      '"3" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a ' +
       "leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O " +
       "anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não " +
       "existe no React Native, e borda ali ocupa por dentro da caixa.",
@@ -764,12 +764,12 @@ const PARITY: Record<string, Row> = {
       "teria devolvido o problema para a tela, que é de onde ele veio. O passo acompanha a " +
       "unidade, como no web: trinta segundos enquanto conta minuto, uma hora quando já conta " +
       "dia, e nunca um segundo. A hora anda de cinco em cinco minutos, e não de um em um: a " +
-      "diferença entre \"há 1 hora\" e \"há 2 horas\" não vale um timer por minuto vezes as " +
+      'diferença entre "há 1 hora" e "há 2 horas" não vale um timer por minuto vezes as ' +
       "linhas montadas. Duas coisas são só daqui. O texto se refaz ao voltar do fundo, porque " +
-      "enquanto o app dorme o timer do JS não corre e a tela reabriria dizendo \"há 2 minutos\" " +
+      'enquanto o app dorme o timer do JS não corre e a tela reabriria dizendo "há 2 minutos" ' +
       "três horas depois. E o texto é sempre numérico: o `Intl.RelativeTimeFormat` não existe " +
-      "no Hermes, o plural vai escrito à mão, e onde o web diz \"ontem\" o nativo diz \"há 1 " +
-      "dia\". O `cutoff` e o `now` são os mesmos, e a data que ele mostra sai no formato do " +
+      'no Hermes, o plural vai escrito à mão, e onde o web diz "ontem" o nativo diz "há 1 ' +
+      'dia". O `cutoff` e o `now` são os mesmos, e a data que ele mostra sai no formato do ' +
       "`formatDate`. O que não atravessa é o instante exato: no web ele mora no `title` do " +
       "`<time>`, e no toque não há `title` nem onde pousar o ponteiro. Quando a data exata " +
       "importa, ela precisa estar escrita na tela.",
@@ -778,10 +778,10 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro",
     page:
-      "Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha \"Passo 2 " +
-      "de 4\", o título do passo e a barra de progresso. A régua de bolinhas não atravessa " +
+      'Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha "Passo 2 ' +
+      'de 4", o título do passo e a barra de progresso. A régua de bolinhas não atravessa ' +
       "porque ela já tinha sido medida e reprovada abaixo de 640px: cinco passos numa faixa " +
-      "de 390px dão 60px de rótulo por passo, e \"Conferir os itens\" vira \"Confe…\" cinco " +
+      'de 390px dão 60px de rótulo por passo, e "Conferir os itens" vira "Confe…" cinco ' +
       "vezes seguidas. A descrição, que o modo estreito do web esconde por falta de largura, " +
       "aparece: aqui o passo atual é o único na tela.\n\n" +
       "Por isso não há `onStepClick`: ele só existia na régua larga, e sem bolinha não há o " +
@@ -790,7 +790,7 @@ const PARITY: Record<string, Row> = {
       "índice, sem DOM e sem media query. Deixar o passo para o router nativo seria trocar um " +
       "estado de tela por cinco rotas, e um assistente não é navegação: os passos partilham " +
       "um formulário só, o back do aparelho não pode perder o que já foi digitado, e " +
-      "\"Conferir\" não é um endereço que alguém deva abrir direto. Quem quiser uma rota por " +
+      '"Conferir" não é um endereço que alguém deva abrir direto. Quem quiser uma rota por ' +
       "passo continua podendo, porque o `goTo` aceita o índice que o router mandar. O " +
       "`WizardFooter` empilha sempre, na ordem escrita (voltar em cima, avançar embaixo, " +
       "onde o polegar está), e o `w-full` de cada botão, que no web chega por seletor de " +
@@ -813,10 +813,10 @@ const PARITY: Record<string, Row> = {
     page:
       "Traduz, e continua sendo o campo de DIGITAR: quem marca ponto escreve `0800` mais " +
       "rápido do que abre painel, e o teclado numérico do sistema é o idioma disso.\n\n" +
-      "**As regras de valor atravessam inteiras.** `\"HH:MM\"` em 24h, vazio é `\"\"`, e só hora " +
+      '**As regras de valor atravessam inteiras.** `"HH:MM"` em 24h, vazio é `""`, e só hora ' +
       "completa avisa quem escuta. `25:99` não é consertado em silêncio para `23:59`: marca " +
       "inválido na mesma tecla e volta ao último válido ao sair. Consertar calado é pior, " +
-      "porque ninguém confere valor que o campo \"aceitou\". O `step` governa os passos e as " +
+      'porque ninguém confere valor que o campo "aceitou". O `step` governa os passos e as ' +
       "opções, nunca a validação, então `14:07` com `step={30}` continua sendo hora legítima.\n\n" +
       "**Os dois lados ganharam o botão de passo, e o nativo chegou primeiro.** Seta não existe " +
       "no toque, e `step` precisava continuar significando alguma coisa; em vez de inventar " +
@@ -859,8 +859,8 @@ const PARITY: Record<string, Row> = {
       "relógio vivo lá dentro continuaria andando na tela enquanto o rótulo ficaria preso na hora " +
       "em que montou. E trilha de auditoria não pode dizer duas horas diferentes. Para o " +
       "carimbo, `formatDate`. **A ordem, que o `<ol>` do web entrega de graça, vai escrita**: não " +
-      "existe papel de item de lista no React Native, então cada evento anuncia \"3 de 5: Nota " +
-      "autorizada, 12/03 às 14:22, por Ana Duarte\", uma frase com o que mudou, quando e por " +
+      'existe papel de item de lista no React Native, então cada evento anuncia "3 de 5: Nota ' +
+      'autorizada, 12/03 às 14:22, por Ana Duarte", uma frase com o que mudou, quando e por ' +
       "quem, em vez de três paradas de VoiceOver que não dizem o assunto. E nada é tocável: uma " +
       "trilha se lê, e o marcador de 9px nunca seria alvo de dedo. Quem quer abrir o detalhe de " +
       "um evento põe um `Item` com `onPress`.",
@@ -880,7 +880,7 @@ const PARITY: Record<string, Row> = {
       "arrasta, uma marca fina acompanha, e o período lido aparece nessa linha, que existe desde " +
       "o primeiro quadro, " +
       "mostrando o período mais recente: o espaço fica reservado, a tela não pula no primeiro " +
-      "toque, e o mais recente é o que a pergunta \"piorou ontem?\" quer ler primeiro.\n\n" +
+      'toque, e o mais recente é o que a pergunta "piorou ontem?" quer ler primeiro.\n\n' +
       "A leitura de tela também muda de forma. A lista escondida com os 365 textos, que no " +
       "web é barata, aqui seriam 365 paradas de VoiceOver dentro de um cartão; a faixa é uma " +
       "parada só, do tipo ajustável (o mesmo contrato do `Slider`), e cada passo anuncia o " +
@@ -931,13 +931,13 @@ const PARITY: Record<string, Row> = {
       "por nível; a 390px o terceiro nível começa depois do meio da tela e o nome do nó cabe em " +
       "quatro letras. A peça fica ilegível justamente onde ela é mais útil. Aqui é **um nível " +
       "por vez**: tocar num galho empurra o nível de dentro, e o cabeçalho mostra o caminho " +
-      "(\"Financeiro › Contas a pagar\", cortado pela frente, porque o pedaço que importa é o " +
+      '("Financeiro › Contas a pagar", cortado pela frente, porque o pedaço que importa é o ' +
       "último) e volta um nível.\n\n" +
       "Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a " +
-      "caixa ao lado marca o galho inteiro: com um alvo só não havia como marcar \"Financeiro\" " +
+      'caixa ao lado marca o galho inteiro: com um alvo só não havia como marcar "Financeiro" ' +
       "sem visitar as sete folhas de dentro. E **não há estado misto na caixa**, porque o " +
-      "`Checkbox` nativo não tem: o galho meio marcado aparece com a caixa vazia e um \"2 de 7 " +
-      "escolhidos\" embaixo do nome (texto, que se lê e se ouve, no lugar de um tracinho que só " +
+      '`Checkbox` nativo não tem: o galho meio marcado aparece com a caixa vazia e um "2 de 7 ' +
+      'escolhidos" embaixo do nome (texto, que se lê e se ouve, no lugar de um tracinho que só ' +
       "se vê).\n\n" +
       "Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada " +
       "com busca já é o `Combobox`), `expanded`/`onExpandedChange` (não há aberto e fechado, há " +
@@ -957,7 +957,7 @@ const PARITY: Record<string, Row> = {
       "**O rodapé é a metade que o web não precisa ter.** No desktop o painel fica ao lado do " +
       "gatilho, e o gatilho conta quantos foram; sob uma folha não há gatilho à vista, então a " +
       "contagem vive no rodapé, junto do `Aplicar`, e ela conta o **rascunho**, que é o único " +
-      "número que responde \"quantos eu já marquei?\" enquanto a pessoa ainda está marcando. O " +
+      'número que responde "quantos eu já marquei?" enquanto a pessoa ainda está marcando. O ' +
       "texto sai do mesmo resumo do `Select` e do `Combobox`, de propósito.\n\n" +
       "**Sair pela lateral desiste**, e o `Aplicar` é a única porta que confirma, a mesma " +
       "divisão do `DateRangePicker`: o toque no fundo escurecido é o gesto de quem se " +
@@ -1133,7 +1133,12 @@ function exportadosNoNativo() {
       for (const cru of block[1]!.split(",")) {
         const parte = cru.trim();
         if (!parte || parte.startsWith("type ")) continue;
-        names.add(parte.split(/\s+as\s+/).pop()!.trim());
+        names.add(
+          parte
+            .split(/\s+as\s+/)
+            .pop()!
+            .trim(),
+        );
       }
     }
   }
@@ -1279,6 +1284,18 @@ const checking = process.argv.includes("--check");
 const pieces = await catalogPieces();
 const native = exportadosNoNativo();
 const problems: string[] = [];
+
+for (const [piece, row] of Object.entries(PARITY)) {
+  if (!row.note.includes("\n")) continue;
+
+  problems.push(
+    `a nota de \`${piece}\` tem quebra de linha, e nota e CELULA de tabela.\n` +
+      "    Markdown fecha a tabela na primeira quebra: da linha seguinte em diante tudo\n" +
+      "    vira prosa corrida com os pipes a mostra, e o resto da pagina se desmancha.\n" +
+      "    Aconteceu em 27/08 e foi ver na tela publicada. A prosa longa vai no `page`,\n" +
+      "    que e paragrafo; a `note` cabe em uma linha ou nao cabe.",
+  );
+}
 
 for (const piece of pieces) {
   if (!PARITY[piece]) {

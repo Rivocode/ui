@@ -38,9 +38,9 @@ nao entregava desde o comeco.
 
 ### Quebras: dois nomes e um acento
 
-| Antes | Agora | Peca |
-|---|---|---|
-| `tone` | `trend` | `Sparkline` |
+| Antes                         | Agora                        | Peca         |
+| ----------------------------- | ---------------------------- | ------------ |
+| `tone`                        | `trend`                      | `Sparkline`  |
 | `accessibilityState.selected` | `accessibilityState.checked` | `RadioGroup` |
 
 O `tone` da `Sparkline` acompanha o web, que fez a mesma troca na 0.7.0 - o
@@ -291,11 +291,11 @@ arquivo, e ficou de fora.
 Os mesmos conceitos tinham nomes diferentes de cada lado. Alinhar custa tres
 renomeacoes agora, e custaria codigo de cliente depois.
 
-| Antes | Agora |
-|---|---|
-| `Avatar initials` | `Avatar fallback` |
-| `OTPField onComplete` | `OTPField onValueComplete` |
-| `ToggleGroup single` | `ToggleGroup multiple` (e o padrao inverte junto) |
+| Antes                 | Agora                                             |
+| --------------------- | ------------------------------------------------- |
+| `Avatar initials`     | `Avatar fallback`                                 |
+| `OTPField onComplete` | `OTPField onValueComplete`                        |
+| `ToggleGroup single`  | `ToggleGroup multiple` (e o padrao inverte junto) |
 
 O `ToggleGroup` merece atencao: `single` era o padrao, e agora o padrao e a
 escolha unica com `multiple` opcional - igual ao web. Quem dependia do

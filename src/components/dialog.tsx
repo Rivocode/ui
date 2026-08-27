@@ -21,12 +21,7 @@ export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
   classNames?: Slots<"backdrop">;
 };
 
-export function DialogContent({
-  className,
-  children,
-  classNames,
-  ...props
-}: DialogContentProps) {
+export function DialogContent({ className, children, classNames, ...props }: DialogContentProps) {
   const { portalContainer } = useRivoContext();
 
   return (
@@ -64,7 +59,10 @@ export function DialogTitle({ className, ...props }: ComponentProps<typeof BaseD
   return (
     <BaseDialog.Title
       {...props}
-      className={cn("font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg", className)}
+      className={cn(
+        "font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+        className,
+      )}
     />
   );
 }

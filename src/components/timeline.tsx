@@ -59,7 +59,10 @@ export function TimelineItem({
         className,
       )}
     >
-      <span aria-hidden="true" className={cn(markerVariants({ tone, pending }), classNames?.marker)} />
+      <span
+        aria-hidden="true"
+        className={cn(markerVariants({ tone, pending }), classNames?.marker)}
+      />
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">

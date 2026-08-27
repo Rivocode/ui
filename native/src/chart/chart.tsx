@@ -169,11 +169,7 @@ export function ChartContainer({
         </StateFrame>
       ) : empty && data && data.length === 0 ? (
         <StateFrame>
-          <EmptyState
-            title={empty.title}
-            description={empty.description}
-            action={empty.action}
-          />
+          <EmptyState title={empty.title} description={empty.description} action={empty.action} />
         </StateFrame>
       ) : (
         <View

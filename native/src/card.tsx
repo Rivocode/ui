@@ -5,10 +5,7 @@ import { View, type ViewProps } from "react-native";
 
 export function Card({ children, className, ...props }: ViewProps & { className?: string }) {
   return (
-    <View
-      {...props}
-      className={`rounded-lg border border-border bg-surface ${className ?? ""}`}
-    >
+    <View {...props} className={`rounded-lg border border-border bg-surface ${className ?? ""}`}>
       {children}
     </View>
   );
@@ -19,7 +16,11 @@ export function CardHeader({ children }: { children: ReactNode }) {
 }
 
 export function CardTitle({ children }: { children: ReactNode }) {
-  return <Text font="display" className="text-xl font-semibold text-fg">{children}</Text>;
+  return (
+    <Text font="display" className="text-xl font-semibold text-fg">
+      {children}
+    </Text>
+  );
 }
 
 export function CardDescription({ children }: { children: ReactNode }) {

@@ -1,14 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import {
-  Calendar,
-  Combobox,
-  DatePicker,
-  DateRangePicker,
-  Menu,
-  Slider,
-  formatDate,
-} from "../src";
+import { Calendar, Combobox, DatePicker, DateRangePicker, Menu, Slider, formatDate } from "../src";
 import { act, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("Combobox", () => {
@@ -41,7 +33,13 @@ describe("Combobox", () => {
   test("multiple: escolher marca e mantém a folha e a busca de pé", () => {
     const onValueChange = mock(() => {});
     const screen = render(
-      <Combobox items={items} multiple value={["1"]} onValueChange={onValueChange} label="Clientes" />,
+      <Combobox
+        items={items}
+        multiple
+        value={["1"]}
+        onValueChange={onValueChange}
+        label="Clientes"
+      />,
     );
     act(() => byLabel(screen, "Clientes")[0].props.onPress());
 
@@ -56,7 +54,13 @@ describe("Combobox", () => {
 
   test("multiple: o gatilho conta quantos, e com um só diz o nome", () => {
     const two = render(
-      <Combobox items={items} multiple value={["1", "2"]} onValueChange={() => {}} label="Clientes" />,
+      <Combobox
+        items={items}
+        multiple
+        value={["1", "2"]}
+        onValueChange={() => {}}
+        label="Clientes"
+      />,
     );
     expect(textOf(two)).toContain("2 selecionados");
     expect(byLabel(two, "Clientes")[0].props.accessibilityValue.text).toBe("2 selecionados");
@@ -172,9 +176,7 @@ describe("DateRangePicker", () => {
     )!;
 
   test("o gatilho mostra o intervalo por extenso, e o vazio cai no placeholder", () => {
-    const vazio = render(
-      <DateRangePicker value={null} onValueChange={() => {}} label="Período" />,
-    );
+    const vazio = render(<DateRangePicker value={null} onValueChange={() => {}} label="Período" />);
     expect(textOf(vazio)).toContain("Escolha o período");
 
     const cheio = render(

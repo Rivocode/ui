@@ -107,7 +107,8 @@ const SPOKEN: Record<string, string> = {
  * troca na hidratacao encolhe a tecla em vez de estourar a linha.
  */
 const NO_MAC =
-  typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+  typeof navigator !== "undefined" &&
+  /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 /** Traduz o nome de uma tecla para a escrita da plataforma. */
 export function keyName(key: string) {

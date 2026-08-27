@@ -41,8 +41,9 @@ test("o circulo com texto tambem marca pelo texto", () => {
   );
 
   fireEvent.click(screen.getByText("Prestação de serviço"));
-  expect(screen.getByRole("radio", { name: "Prestação de serviço" }).getAttribute("data-checked"))
-    .not.toBeNull();
+  expect(
+    screen.getByRole("radio", { name: "Prestação de serviço" }).getAttribute("data-checked"),
+  ).not.toBeNull();
 });
 
 test("a chave com texto liga pelo texto", () => {

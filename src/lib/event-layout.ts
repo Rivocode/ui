@@ -242,7 +242,8 @@ export function packBars<Item extends CalendarEventLike>(
 
   const hiddenByDay = Array.from({ length: dayCount }, () => 0);
   for (const bar of hidden) {
-    for (let day = bar.from; day <= bar.to; day += 1) hiddenByDay[day] = (hiddenByDay[day] ?? 0) + 1;
+    for (let day = bar.from; day <= bar.to; day += 1)
+      hiddenByDay[day] = (hiddenByDay[day] ?? 0) + 1;
   }
 
   return { placed, hidden, hiddenByDay, lanes: Math.min(lanes.length, maxLanes) };
@@ -293,11 +294,14 @@ export function layoutDay<Item extends CalendarEventLike>(
   maxColumns = 3,
 ): { placed: PlacedSegment<Item>[]; overflow: DayOverflow[] } {
   const sorted = [...segments].sort((one, other) =>
-    compareSpan({ start: one.start, end: one.end, id: one.key }, {
-      start: other.start,
-      end: other.end,
-      id: other.key,
-    }),
+    compareSpan(
+      { start: one.start, end: one.end, id: one.key },
+      {
+        start: other.start,
+        end: other.end,
+        id: other.key,
+      },
+    ),
   );
   const placed: PlacedSegment<Item>[] = [];
   const overflow: DayOverflow[] = [];

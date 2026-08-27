@@ -20,10 +20,7 @@ export function Menubar({ className, ...props }: MenubarProps) {
   );
 }
 
-export function MenubarTrigger({
-  className,
-  ...props
-}: ComponentProps<typeof MenuTrigger>) {
+export function MenubarTrigger({ className, ...props }: ComponentProps<typeof MenuTrigger>) {
   return (
     <MenuTrigger
       {...props}

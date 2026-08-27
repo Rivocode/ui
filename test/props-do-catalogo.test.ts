@@ -12,7 +12,8 @@ import { expect, test } from "bun:test";
 
 const catalog = await Bun.file("apps/docs/src/component-props.json").json();
 
-const namesOf = (piece: string) => (catalog[piece]?.props ?? []).map((p: { name: string }) => p.name);
+const namesOf = (piece: string) =>
+  (catalog[piece]?.props ?? []).map((p: { name: string }) => p.name);
 
 test("a peca controlada leva os callbacks que a controlam", () => {
   expect(namesOf("Select")).toContain("onValueChange");

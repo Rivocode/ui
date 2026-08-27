@@ -2,11 +2,7 @@ import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogTitle,
-} from "../src/components/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogTitle } from "../src/components/alert-dialog";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "../src/components/dialog";
 import { Sheet, SheetContent, SheetTitle } from "../src/components/sheet";
 

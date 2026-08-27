@@ -6,12 +6,7 @@ export {
   type RivoNativeColors,
   type RivoNativeThemeMap,
 } from "./provider";
-export {
-  useRivoFonts,
-  type RivoFontRole,
-  type RivoFonts,
-  type RivoResolvedFonts,
-} from "./font";
+export { useRivoFonts, type RivoFontRole, type RivoFonts, type RivoResolvedFonts } from "./font";
 export { Button, type ButtonProps } from "./button";
 export { Badge, type BadgeProps } from "./badge";
 export { Indicator, type IndicatorProps } from "./indicator";
@@ -104,13 +99,7 @@ export { Code, type CodeProps } from "./code";
 export { Tree, leavesOf, type TreeNode, type TreeProps } from "./tree";
 export { TreeSelect, type TreeSelectProps } from "./tree-select";
 export { Editable, type EditableProps } from "./editable";
-export {
-  TimeField,
-  applyTimeMask,
-  formatTime,
-  parseTime,
-  type TimeFieldProps,
-} from "./time-field";
+export { TimeField, applyTimeMask, formatTime, parseTime, type TimeFieldProps } from "./time-field";
 export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./time-picker";
 export {
   FilterBar,

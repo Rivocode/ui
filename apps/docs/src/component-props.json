@@ -17284,6 +17284,12 @@
         "note": "Distancia entre o gatilho e o painel, em pixels."
       },
       {
+        "name": "titleAs",
+        "type": "\"h2\" | \"h3\" | \"h4\"",
+        "required": false,
+        "note": "Em que nivel a pergunta sai."
+      },
+      {
         "name": "tone",
         "type": "\"danger\" | \"neutral\"",
         "required": false,
@@ -23732,6 +23738,12 @@
         "type": "string",
         "required": false,
         "note": "O nome da lista para o leitor de tela."
+      },
+      {
+        "name": "labels",
+        "type": "{ count?: ((total: number) => string) | undefined; }",
+        "required": false,
+        "note": "Os textos que a peca escreve sozinha: `count` e a contagem que entra no nome da lista, colada ao `label`."
       },
       {
         "name": "measure",

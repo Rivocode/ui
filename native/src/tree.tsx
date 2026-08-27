@@ -68,8 +68,7 @@ function Chevron({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-const plural = (count: number, one: string, many: string) =>
-  `${count} ${count === 1 ? one : many}`;
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
 
 function describeBranch(node: TreeNode, total: number, chosen: number, multiple?: boolean) {
   const parts = [node.label, plural(total, "item", "itens")];
@@ -125,11 +124,7 @@ export function Tree({
           className="min-h-12 flex-row items-center gap-2.5 rounded-md px-3 active:bg-selected"
         >
           <Chevron direction="left" />
-          <Text
-            numberOfLines={1}
-            ellipsizeMode="head"
-            className="flex-1 text-sm text-fg-muted"
-          >
+          <Text numberOfLines={1} ellipsizeMode="head" className="flex-1 text-sm text-fg-muted">
             {trail.map((step) => step.label).join(" › ")}
           </Text>
         </Pressable>

@@ -31,6 +31,19 @@ async function settle(ms = 40) {
   });
 }
 
+test("a pergunta sai num h2, como o DialogTitle e o AlertDialogTitle da casa", () => {
+  render(<Example />);
+
+  expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Excluir a nota 4813?");
+});
+
+test("titleAs baixa o nivel da pergunta, para o painel dentro de um Card nao inverter o esboco", () => {
+  render(<Example titleAs="h4" />);
+
+  expect(screen.getByRole("heading", { level: 4 }).textContent).toBe("Excluir a nota 4813?");
+  expect(screen.queryByRole("heading", { level: 2 })).toBeNull();
+});
+
 test("a confirmacao abre ancorada, com a pergunta como nome do painel", () => {
   render(<Example />);
 

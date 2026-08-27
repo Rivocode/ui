@@ -44,7 +44,7 @@ export function Sparkline({
   label,
 }: SparklineProps) {
   const { colors } = useRivo();
-  
+
   const [width, setWidth] = useState(0);
 
   const rose = data.length > 1 && data[data.length - 1]! >= data[0]!;
@@ -64,7 +64,11 @@ export function Sparkline({
     const span = Math.max(0, ...data) - floor;
 
     return (
-      <View style={{ height }} className={cn("w-24 flex-row items-end gap-0.5", className)} {...access}>
+      <View
+        style={{ height }}
+        className={cn("w-24 flex-row items-end gap-0.5", className)}
+        {...access}
+      >
         {data.map((value, index) => (
           <View
             key={index}

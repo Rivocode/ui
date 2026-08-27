@@ -138,7 +138,9 @@ export function Stat({
               deltaVariant === "pill"
                 ? cn(
                     "rounded-pill px-1.5 py-0.5 font-medium",
-                    good ? "bg-success-subtle text-success-text" : "bg-danger-subtle text-danger-text",
+                    good
+                      ? "bg-success-subtle text-success-text"
+                      : "bg-danger-subtle text-danger-text",
                   )
                 : good
                   ? "text-success-text"

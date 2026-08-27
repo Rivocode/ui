@@ -12,11 +12,7 @@ export function Separator({ className }: { className?: string }) {
 export function Spinner({ size = "small" }: { size?: "small" | "large" }) {
   const { colors } = useRivo();
   return (
-    <ActivityIndicator
-      accessibilityLabel="Carregando"
-      size={size}
-      color={colors["fg-subtle"]}
-    />
+    <ActivityIndicator accessibilityLabel="Carregando" size={size} color={colors["fg-subtle"]} />
   );
 }
 
@@ -85,7 +81,10 @@ export type AlertProps = {
 export function Alert({ tone = "info", title, children, className }: AlertProps) {
   const styles = ALERT_TONE[tone];
   return (
-    <View accessibilityRole="alert" className={cn("gap-1 rounded-md border p-4", styles.box, className)}>
+    <View
+      accessibilityRole="alert"
+      className={cn("gap-1 rounded-md border p-4", styles.box, className)}
+    >
       <Text className={`text-sm font-medium ${styles.text}`}>{title}</Text>
       {children && <Text className="text-sm text-fg-muted">{children}</Text>}
     </View>

@@ -50,8 +50,7 @@ function list(props: Partial<React.ComponentProps<typeof VirtualList<Event>>> = 
 
 const items = (container: HTMLElement) => [...container.querySelectorAll("[role='listitem']")];
 
-const track = (container: HTMLElement) =>
-  container.querySelector("[role='list']") as HTMLElement;
+const track = (container: HTMLElement) => container.querySelector("[role='list']") as HTMLElement;
 
 test("quatro mil itens entram, e so um punhado vai para o DOM", () => {
   const { container } = list();
@@ -83,16 +82,27 @@ test("a contagem acompanha a lista que chegou, e nao a que foi desenhada", () =>
 test("o nome da lista carrega o total, e nao o que esta montado", () => {
   const { container } = list();
 
-  // O `role="list"` tem so os itens da janela no DOM, entao o leitor de tela
-  // anunciaria "lista com 15 itens" antes de chegar no "1 de 4000" que o
-  // aria-posinset diz. Por o total no nome e o que impede a peca de mentir na
-  // primeira frase que a pessoa ouve.
   const role = track(container);
   const montados = items(container).length;
 
   expect(role.getAttribute("aria-label")).toBe("Log de envio, 4000 itens");
   expect(montados).toBeGreaterThan(0);
   expect(montados).toBeLessThan(4000);
+});
+
+test("a contagem concorda com o singular, em vez de anunciar 1 itens", () => {
+  const { container } = list({ items: EVENTS.slice(0, 1) });
+
+  expect(track(container).getAttribute("aria-label")).toBe("Log de envio, 1 item");
+});
+
+test("a contagem se traduz junto com o nome, para a lista nao sair em duas linguas", () => {
+  const { container } = list({
+    label: "Shipping log",
+    labels: { count: (total) => `${total} items` },
+  });
+
+  expect(track(container).getAttribute("aria-label")).toBe("Shipping log, 4000 items");
 });
 
 test("a moldura rola por dentro em vez de empurrar a pagina", () => {
@@ -203,9 +213,7 @@ test("o vazio so vale depois que a consulta voltou", () => {
 
   list({ items: [], empty: blank });
   expect(screen.getByText("Nenhum evento")).toBeTruthy();
-  expect(
-    screen.getByText("Quando a primeira nota for enviada, ela aparece aqui."),
-  ).toBeTruthy();
+  expect(screen.getByText("Quando a primeira nota for enviada, ela aparece aqui.")).toBeTruthy();
 });
 
 test("lista vazia sem `empty` continua sendo uma moldura vazia, e nao um buraco", () => {

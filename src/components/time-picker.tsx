@@ -12,7 +12,7 @@ type ColumnProps = {
   label: string;
   options: number[];
   selected: number | undefined;
-  onSelect: (option: number, closes: boolean) => void;
+  onSelect: (option: number) => void;
   className?: string;
   optionClassName?: string;
 };
@@ -28,7 +28,17 @@ function TimeColumn({
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const labelId = useId();
   const found = options.indexOf(selected ?? -1);
-  const focusable = found === -1 ? 0 : found;
+  const chosen = found === -1 ? 0 : found;
+
+  const [active, setActive] = useState(chosen);
+  const [seen, setSeen] = useState(selected);
+
+  if (seen !== selected) {
+    setSeen(selected);
+    setActive(chosen);
+  }
+
+  const focusable = Math.min(Math.max(active, 0), Math.max(options.length - 1, 0));
 
   useEffect(() => {
     buttons.current[focusable]?.scrollIntoView?.({ block: "nearest" });
@@ -47,8 +57,8 @@ function TimeColumn({
     if (target === undefined || target < 0 || target > last) return;
 
     event.preventDefault();
+    setActive(target);
     buttons.current[target]?.focus();
-    onSelect(options[target]!, false);
   }
 
   return (
@@ -76,7 +86,7 @@ function TimeColumn({
             role="option"
             aria-selected={option === selected}
             tabIndex={index === focusable ? 0 : -1}
-            onClick={() => onSelect(option, true)}
+            onClick={() => onSelect(option)}
             className={cn(
               "flex h-[var(--rc-control-md)] w-full items-center justify-center",
               "rounded-sm font-sans text-base text-fg tabular-nums select-none",
@@ -107,6 +117,16 @@ export type TimePickerLabels = {
 };
 
 export type TimePickerProps = Omit<ComponentProps<typeof TimeField>, "className" | "classNames"> & {
+  /**
+   * Vai para o `<input>`, e nao para a moldura.
+   *
+   * O mesmo vale para `aria-label`, `aria-describedby` e o resto do que o
+   * `TimeField` aceita: quem precisa de nome aqui e o campo, e e nele que o
+   * `<label htmlFor>` tem que pousar. A consequencia e que
+   * `getElementById` devolve o campo, e nao a caixa que junta campo e
+   * relogio - para alcancar a moldura, use `className`.
+   */
+  id?: string;
   /** Veste a moldura que junta campo e botao, e nao o campo. */
   className?: string;
   /** Classe por parte: `field`, `trigger`, `panel`, `column`, `option`. */
@@ -169,9 +189,9 @@ export function TimePicker({
     commit(formatTime(at));
   }
 
-  function pickMinute(minute: number, closes: boolean) {
+  function pickMinute(minute: number) {
     commit(formatTime(columnHour * 60 + minute));
-    if (closes) setOpen(false);
+    setOpen(false);
   }
 
   const trigger = (
@@ -221,7 +241,7 @@ export function TimePicker({
             label={labels?.hours ?? "Hora"}
             options={hours}
             selected={chosenHour}
-            onSelect={(hour) => pickHour(hour)}
+            onSelect={pickHour}
             className={classNames?.column}
             optionClassName={classNames?.option}
           />

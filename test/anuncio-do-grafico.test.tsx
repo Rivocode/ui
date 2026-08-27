@@ -60,7 +60,9 @@ function chart() {
   const showTip = (label: string, value: number) => {
     const wrapper =
       root.querySelector<HTMLElement>(".recharts-tooltip-wrapper") ??
-      root.appendChild(Object.assign(document.createElement("div"), { className: "recharts-tooltip-wrapper" }));
+      root.appendChild(
+        Object.assign(document.createElement("div"), { className: "recharts-tooltip-wrapper" }),
+      );
     wrapper.innerHTML = tipHtml(label, value);
   };
 

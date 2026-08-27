@@ -16,9 +16,7 @@ function EyeIcon({ crossed }: { crossed: boolean }) {
     <View className="h-5 w-6 items-center justify-center">
       <View className="h-3 w-5 rounded-pill border-[1.5px] border-fg-muted" />
       <View className="absolute size-1.5 rounded-pill bg-fg-muted" />
-      {crossed && (
-        <View className="absolute h-[1.5px] w-6 rotate-45 rounded-pill bg-fg-muted" />
-      )}
+      {crossed && <View className="absolute h-[1.5px] w-6 rotate-45 rounded-pill bg-fg-muted" />}
     </View>
   );
 }

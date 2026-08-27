@@ -86,9 +86,7 @@ export function TreeSelect({
           </ScrollView>
 
           <View className="flex-row items-center justify-between gap-3 border-t border-border pt-3">
-            <Text className="flex-1 text-sm text-fg-muted">
-              {draftSummary ?? "Nada escolhido"}
-            </Text>
+            <Text className="flex-1 text-sm text-fg-muted">{draftSummary ?? "Nada escolhido"}</Text>
             <Button
               onPress={() => {
                 onValueChange(draft);

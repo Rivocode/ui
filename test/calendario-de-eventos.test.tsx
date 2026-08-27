@@ -30,8 +30,9 @@ function calendar(props: Partial<React.ComponentProps<typeof EventCalendar>> = {
   );
 }
 
-const items = (container: HTMLElement) =>
-  [...container.querySelectorAll<HTMLElement>("[data-rc-event]")];
+const items = (container: HTMLElement) => [
+  ...container.querySelectorAll<HTMLElement>("[data-rc-event]"),
+];
 
 const onMobile = () => {
   const original = window.matchMedia;
@@ -342,5 +343,3 @@ test("na grade o vazio fica por cima, porque a grade tambem e onde se clica", ()
 afterEach(() => {
   document.body.innerHTML = "";
 });
-
-

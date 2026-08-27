@@ -46,13 +46,7 @@ import { Toggle, ToggleGroup } from "./toggle";
 
 export type { EventCalendarView, WeekStart } from "../lib/event-layout";
 
-export type CalendarEventTone =
-  | "neutral"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+export type CalendarEventTone = "neutral" | "accent" | "success" | "warning" | "danger" | "info";
 
 export type CalendarEvent = {
   id: string;
@@ -260,10 +254,7 @@ function EventItem({
     </>
   ) : shape === "bar" ? (
     <>
-      <span
-        aria-hidden="true"
-        className={cn("size-1.5 shrink-0 rounded-pill", TONE_MARK[tone])}
-      />
+      <span aria-hidden="true" className={cn("size-1.5 shrink-0 rounded-pill", TONE_MARK[tone])} />
       <span className="min-w-0 flex-1 truncate">{segment.event.title}</span>
     </>
   ) : (
@@ -328,10 +319,7 @@ function EventItem({
         {shape === "block" && (
           <span
             aria-hidden="true"
-            className={cn(
-              "absolute inset-y-0.5 start-0.5 w-0.5 rounded-pill",
-              TONE_MARK[tone],
-            )}
+            className={cn("absolute inset-y-0.5 start-0.5 w-0.5 rounded-pill", TONE_MARK[tone])}
           />
         )}
         {body}
@@ -899,7 +887,9 @@ export function EventCalendar({
         classNames?.header,
       )}
     >
-      <span className="truncate text-xs text-fg-subtle">{weekdayName(day, short ? "short" : "long")}</span>
+      <span className="truncate text-xs text-fg-subtle">
+        {weekdayName(day, short ? "short" : "long")}
+      </span>
       <span
         className={cn(
           "flex size-7 items-center justify-center rounded-pill text-base",
@@ -912,7 +902,6 @@ export function EventCalendar({
   );
 
   function bandBar(bar: EventBar<CalendarEvent>, position: number, count: number) {
-
     const width = (bar.to - bar.from + 1) / days.length;
     const segment: EventSegment<CalendarEvent> = {
       key: `${bar.event.id}@band`,
@@ -992,10 +981,7 @@ export function EventCalendar({
           </div>
 
           {model.weeks.map((week) => (
-            <div
-              key={week.offset}
-              className="flex border-b border-border last:border-b-0"
-            >
+            <div key={week.offset} className="flex border-b border-border last:border-b-0">
               {week.days.map((day, index) => {
                 const dayIndex = week.offset + index;
                 const pieces = week.bars
@@ -1038,10 +1024,7 @@ export function EventCalendar({
                       {day.getDate()}
                     </span>
 
-                    <div
-                      role={all > 0 ? "list" : undefined}
-                      className="flex flex-col gap-0.5"
-                    >
+                    <div role={all > 0 ? "list" : undefined} className="flex flex-col gap-0.5">
                       {pieces.map((piece) => {
                         const segment: EventSegment<CalendarEvent> = {
                           key: `${piece.event.id}#${dayIndex}`,
@@ -1096,7 +1079,10 @@ export function EventCalendar({
       );
     }
 
-    const hours = Array.from({ length: Math.max(dayEnd - dayStart, 1) }, (_, index) => dayStart + index);
+    const hours = Array.from(
+      { length: Math.max(dayEnd - dayStart, 1) },
+      (_, index) => dayStart + index,
+    );
     const columnHeight = hours.length * hourHeight;
     const bandSpill = model.band.hiddenByDay.reduce((sum, count) => sum + count, 0);
     const nowMinutes = minutesOfDay(now);
@@ -1135,11 +1121,7 @@ export function EventCalendar({
               >
                 <div role="list" className="absolute inset-x-0 top-1">
                   {model.band.placed.map((bar) =>
-                    bandBar(
-                      bar,
-                      model.bandRank.get(`${bar.event.id}@band`) ?? 1,
-                      model.bandSize,
-                    ),
+                    bandBar(bar, model.bandRank.get(`${bar.event.id}@band`) ?? 1, model.bandSize),
                   )}
                 </div>
 
@@ -1198,7 +1180,10 @@ export function EventCalendar({
               aria-label={`${dayTitle(column.day)}${isSameDay(column.day, today) ? ", hoje" : ""}, ${countLabel(column.count)}`}
               onClick={(pointer) => {
                 const box = pointer.currentTarget.getBoundingClientRect();
-                pickSlot(column.day, dayStart * 60 + ((pointer.clientY - box.top) / hourHeight) * 60);
+                pickSlot(
+                  column.day,
+                  dayStart * 60 + ((pointer.clientY - box.top) / hourHeight) * 60,
+                );
               }}
               style={{ height: columnHeight }}
               className={cn(
@@ -1209,7 +1194,11 @@ export function EventCalendar({
             >
               <div aria-hidden="true" className="absolute inset-0">
                 {hours.map((hour) => (
-                  <div key={hour} style={{ height: hourHeight }} className="border-t border-border" />
+                  <div
+                    key={hour}
+                    style={{ height: hourHeight }}
+                    className="border-t border-border"
+                  />
                 ))}
               </div>
 
@@ -1315,7 +1304,11 @@ export function EventCalendar({
           aria-label="Período anterior"
           onClick={() => shift(-1)}
         >
-          {rtl ? <ChevronRight size={16} aria-hidden="true" /> : <ChevronLeft size={16} aria-hidden="true" />}
+          {rtl ? (
+            <ChevronRight size={16} aria-hidden="true" />
+          ) : (
+            <ChevronLeft size={16} aria-hidden="true" />
+          )}
         </Button>
         <Button
           variant="secondary"
@@ -1323,7 +1316,11 @@ export function EventCalendar({
           aria-label="Próximo período"
           onClick={() => shift(1)}
         >
-          {rtl ? <ChevronLeft size={16} aria-hidden="true" /> : <ChevronRight size={16} aria-hidden="true" />}
+          {rtl ? (
+            <ChevronLeft size={16} aria-hidden="true" />
+          ) : (
+            <ChevronRight size={16} aria-hidden="true" />
+          )}
         </Button>
         <Button variant="secondary" size="sm" onClick={() => changeDate(new Date())}>
           Hoje

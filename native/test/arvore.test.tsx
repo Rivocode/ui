@@ -184,7 +184,12 @@ describe("Tree", () => {
   test("o galho desligado não entra e a caixa dele não marca", () => {
     const onValueChange = mock(() => {});
     const items: TreeNode[] = [
-      { id: "raiz", label: "Bloqueado", disabled: true, children: [{ id: "folha", label: "Folha" }] },
+      {
+        id: "raiz",
+        label: "Bloqueado",
+        disabled: true,
+        children: [{ id: "folha", label: "Folha" }],
+      },
     ];
     const screen = render(
       <Tree items={items} multiple value={[]} onValueChange={onValueChange} label="Conta" />,
@@ -206,7 +211,11 @@ describe("Tree", () => {
 
     // A consulta se refez e o galho de dentro nao existe mais.
     const trimmed: TreeNode[] = [
-      { id: "financeiro", label: "Financeiro", children: [{ id: "receber", label: "Contas a receber" }] },
+      {
+        id: "financeiro",
+        label: "Financeiro",
+        children: [{ id: "receber", label: "Contas a receber" }],
+      },
     ];
     // Com o provider por fora, como o `render` monta: trocando a raiz, o React
     // remontaria a arvore e o caminho se perderia por outro motivo.
@@ -226,9 +235,7 @@ describe("Tree", () => {
 
   test("o nível vazio explica que está vazio", () => {
     const items: TreeNode[] = [];
-    const screen = render(
-      <Tree items={items} value={[]} onValueChange={() => {}} label="Conta" />,
-    );
+    const screen = render(<Tree items={items} value={[]} onValueChange={() => {}} label="Conta" />);
     expect(textOf(screen)).toContain("Nada dentro deste nível.");
   });
 });

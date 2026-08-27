@@ -157,7 +157,10 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               {read ? write(readValue) : centerValue}
             </Text>
             {(read || centerLabel) && (
-              <Text numberOfLines={1} className="mt-0.5 max-w-[64%] text-center text-xs text-fg-subtle">
+              <Text
+                numberOfLines={1}
+                className="mt-0.5 max-w-[64%] text-center text-xs text-fg-subtle"
+              >
                 {read ? textOf(read) : centerLabel}
               </Text>
             )}
@@ -190,7 +193,9 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 <Text numberOfLines={1} className="min-w-0 flex-1 text-sm text-fg-muted">
                   {textOf(slice)}
                 </Text>
-                <Text font="mono" className="text-sm text-fg">{write(values[index]!)}</Text>
+                <Text font="mono" className="text-sm text-fg">
+                  {write(values[index]!)}
+                </Text>
               </Pressable>
             );
           })}

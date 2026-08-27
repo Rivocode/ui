@@ -119,6 +119,4 @@ if (written !== counted.tests) {
   process.exit(1);
 }
 
-console.log(
-  `${counted.tests} testes em ${counted.files} arquivos, e e o numero que a home exibe.`,
-);
+console.log(`${counted.tests} testes em ${counted.files} arquivos, e e o numero que a home exibe.`);

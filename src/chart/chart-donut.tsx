@@ -106,12 +106,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               {data.map((slice, index) => {
                 const name = String(slice[nameKey]);
 
-                return (
-                  <Cell
-                    key={name}
-                    fill={colorOf(slice, index)}
-                  />
-                );
+                return <Cell key={name} fill={colorOf(slice, index)} />;
               })}
             </Pie>
 
