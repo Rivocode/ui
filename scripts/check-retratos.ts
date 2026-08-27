@@ -18,9 +18,34 @@
  * de tela; e o unico jeito de ter quadrado pequeno sem guardar cento e
  * quarenta mil numeros por retrato e a moldura ser uma secao, e nao uma pagina.
  *
- * Duas capturas seguidas da mesma arvore deram diferenca zero em todas as
- * molduras, entao o piso de ruido nao muda com a celula menor - o que muda e a
- * sensibilidade a mudanca de verdade.
+ * Seis capturas seguidas da mesma arvore, medidas em 27/08/2026: 43 dos 44
+ * retratos sairam identicos pixel a pixel nas seis, e entre eles as doze
+ * molduras de secao. Para essas, o piso de ruido nao muda com a celula menor -
+ * o que muda e a sensibilidade a mudanca de verdade. A frase antiga afirmava
+ * isso de TODAS as molduras, e falava de duas capturas; o retrato de PAGINA em
+ * largura de celular nao cabia nela.
+ *
+ * O quadragesimo quarto era `paleta-celular`, e ele piscava: em uma das seis
+ * rodadas deu 1 de 576 quadrados, pior 5, contra um `NOISE` de 4, e nas outras
+ * cinco deu zero. A diferenca eram 76 pixels de 2,24 milhoes, numa barra de 2
+ * por 38 pixels em x 74, y 1151 - o CURSOR DE TEXTO do campo de busca do
+ * `Command`, que a `demo/paleta.tsx` abre com `autoFocus` no quadro de tema
+ * claro. Cursor pisca, e foto de coisa que pisca sai conforme a fase; o resto
+ * da pagina saiu igual nas seis.
+ *
+ * O mesmo cursor aparece no `paleta` de mesa, e la ele nao acusa: a mesma barra
+ * de 2 por 38 pixels cai num quadrado de 103 por 93 e vale menos de dois niveis
+ * de cinza, e na largura de celular cai num quadrado de 41 por 93 e vale cinco.
+ * Nao sao dois defeitos, e o mesmo medido com quadrado duas vezes e meia mais
+ * estreito - por isso a mesa fica em silencio enquanto a celular acende.
+ *
+ * Subir o `NOISE` para 6 calaria o alarme e calaria junto toda mudanca desse
+ * tamanho nos 44 retratos - a trilha quadrada do `Progress` marcava so 3 numa
+ * moldura de pagina, e passaria a nao marcar nada. Entao a saida foi congelar a
+ * fonte da oscilacao, e nao cegar a guarda: `demo/paleta.html` pinta o cursor
+ * de transparente. Dez capturas depois disso deram 0 pixel de diferenca nas
+ * duas larguras, e contra o retrato antigo o unico que mudou foi o cursor, nos
+ * mesmos 76 pixels.
  *
  * Esta guarda nao tira retrato: ela nao pode, porque o `shot.ts` chama o Chrome
  * num caminho fixo do macOS e a CI e ubuntu. Ela cobra a DECLARACAO, como o

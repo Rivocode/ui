@@ -12,9 +12,12 @@
  *
  * O mesmo vale para `peer/x`, pela mesma razao.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
-const AREAS = ["src/**/*.{ts,tsx}", "native/src/**/*.{ts,tsx}"];
+const AREAS: [area: string, floor: number][] = [
+  ["src/**/*.{ts,tsx}", 80],
+  ["native/src/**/*.{ts,tsx}", 60],
+];
 
 /** `group/sidebar`, `peer/campo`. */
 const DECLARED = /\b(group|peer)\/([a-zA-Z][\w-]*)/g;
@@ -25,8 +28,8 @@ const CONSUMED = /\b(group|peer)-[a-z][\w-]*(?:-\[[^\]]*\])?\/([a-zA-Z][\w-]*)/g
 const declared = new Map<string, Set<string>>();
 const consumed = new Map<string, { file: string; line: number }[]>();
 
-for (const area of AREAS) {
-  for await (const file of new Glob(area).scan(".")) {
+for (const [area, floor] of AREAS) {
+  for (const file of await scanAtLeast(area, floor)) {
     const code = await Bun.file(file).text();
 
     code.split("\n").forEach((line, index) => {

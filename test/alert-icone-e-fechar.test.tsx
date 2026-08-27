@@ -54,7 +54,7 @@ test("o titulo e a descricao continuam empilhados, com ou sem icone", () => {
   alert({ tone: "info", icon: <TriangleAlert /> });
 
   const column = screen.getByText("Certificado vence em 8 dias").parentElement!;
-  expect(column.className).toContain("flex-col");
+  expect(column.className.split(" ")).toContain("flex-col");
 });
 
 test("onDismiss liga o xis, e quem some com o aviso e quem chamou", () => {

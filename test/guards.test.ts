@@ -3,6 +3,19 @@ import { Glob } from "bun";
 
 import { contrastRatio, readTokens } from "../src/lib/contrast";
 
+async function filesOf(area: string, floor: number) {
+  const found: string[] = [];
+  for await (const file of new Glob(area).scan({ cwd: ".", dot: true })) found.push(file);
+
+  expect(
+    found.length,
+    `a varredura de ${area} achou ${found.length} arquivo(s), e o piso e ${floor}:` +
+      " lista vazia deixa a guarda verde sem ela ter olhado nada",
+  ).toBeGreaterThanOrEqual(floor);
+
+  return found;
+}
+
 test("branco sobre preto da o maximo de 21 para 1", () => {
   expect(contrastRatio("#ffffff", "#000000")).toBeCloseTo(21, 1);
 });
@@ -148,7 +161,7 @@ test("a fronteira de um controle de formulario nunca veste a borda fraca", async
   // dos tres entra aqui, e todos eles usam o border comum com razao.
   const weak: string[] = [];
 
-  for await (const file of new Glob("src/components/*.tsx").scan(".")) {
+  for (const file of await filesOf("src/components/*.tsx", 70)) {
     const code = await Bun.file(file).text();
     for (const { text: block } of blocksOf(code)) {
       const isField = block.includes("bg-surface") && /focus-(visible|within):ring-2/.test(block);
@@ -181,7 +194,10 @@ test("a fronteira de um controle de formulario nunca veste a borda fraca", async
  * e foi assim que a barra de menus saiu sem anel de foco em toda organizacao
  * que a montou.
  */
-const AREAS = ["src/**/*.tsx", ".design-sync/previews/*.tsx"];
+const AREAS: [area: string, floor: number][] = [
+  ["src/**/*.tsx", 80],
+  [".design-sync/previews/*.tsx", 80],
+];
 
 /** Alguma coisa acende quando o foco chega. */
 const FOCUS_PAINTS =
@@ -218,11 +234,8 @@ const OUT_OF_TAB_ORDER =
 test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
   const naked: string[] = [];
 
-  // `dot: true` porque os exemplos publicados moram em `.design-sync/`, e sem
-  // isso o Glob pula a pasta inteira em silencio - a guarda passaria verde
-  // exatamente sobre o arquivo que a auditoria pegou.
-  for (const area of AREAS) {
-    for await (const file of new Glob(area).scan({ cwd: ".", dot: true })) {
+  for (const [area, floor] of AREAS) {
+    for (const file of await filesOf(area, floor)) {
       const code = await Bun.file(file).text();
 
       for (const { text, at } of [...blocksOf(code), ...classAttributesOf(code)]) {
@@ -266,8 +279,8 @@ const UNDER_DATA = /data-\[[^\]]+\]:([a-z]+)-[a-z0-9[]/g;
 test("nenhum motion-reduce perde a especificidade para uma variante de dado", async () => {
   const defeated: string[] = [];
 
-  for (const area of AREAS) {
-    for await (const file of new Glob(area).scan({ cwd: ".", dot: true })) {
+  for (const [area, floor] of AREAS) {
+    for (const file of await filesOf(area, floor)) {
       const code = await Bun.file(file).text();
 
       for (const { text, at } of [...blocksOf(code), ...classAttributesOf(code)]) {

@@ -118,8 +118,8 @@ describe("FilterChip", () => {
     );
 
     const button = cross(screen)!;
-    expect(button.props.className).toContain("self-stretch");
-    expect(button.props.className).toContain("w-4");
+    expect(String(button.props.className).split(" ")).toContain("self-stretch");
+    expect(String(button.props.className).split(" ")).toContain("w-4");
     expect(button.props.hitSlop).toEqual({ top: 0, bottom: 0, left: 14, right: 14 });
   });
 
@@ -425,7 +425,7 @@ describe("FilterBar em rtl", () => {
     const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
     const [row] = byClass(screen, /w-full flex-row/);
 
-    expect(row.props.className).toContain("gap-2");
+    expect(String(row.props.className).split(" ")).toContain("gap-2");
     expect(String(clearButton(screen)!.props.className ?? "")).not.toMatch(/\b(ml|mr)-\d/);
   });
 });

@@ -103,13 +103,25 @@ const WEB_MEMBERS: Record<string, string[]> = {
 
 const SOURCE = fileURLToPath(new URL("../src", import.meta.url));
 
-function sourceFiles(dir: string): string[] {
+function walk(dir: string): string[] {
   const found: string[] = [];
   for (const entry of readdirSync(dir)) {
     const path = join(dir, entry);
-    if (statSync(path).isDirectory()) found.push(...sourceFiles(path));
+    if (statSync(path).isDirectory()) found.push(...walk(path));
     else if (/\.tsx?$/.test(path)) found.push(path);
   }
+  return found;
+}
+
+function sourceFiles(dir: string): string[] {
+  const found = walk(dir);
+
+  expect(
+    found.length,
+    `a varredura de ${dir} achou ${found.length} arquivo(s):` +
+      " lista vazia deixa as duas guardas abaixo verdes sem terem lido nada",
+  ).toBeGreaterThan(60);
+
   return found;
 }
 

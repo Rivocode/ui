@@ -8,7 +8,7 @@
  *
  * Uso: bun run scripts/copy-fonts.ts <caminho-da-css>
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 import { dirname, join } from "node:path";
 
 const cssPath = process.argv[2];
@@ -35,11 +35,9 @@ if (wanted.size === 0) {
 const available = new Map<string, string>();
 const pastas = ["node_modules/@fontsource*/**/files/*", "node_modules/.bun/**/files/*"];
 
-for (const padrao of pastas) {
-  for await (const file of new Glob(padrao).scan({ cwd: ".", followSymlinks: true })) {
-    const name = file.split("/").pop()!;
-    if (!available.has(name)) available.set(name, file);
-  }
+for (const file of await scanAtLeast(pastas, 1, { followSymlinks: true })) {
+  const name = file.split("/").pop()!;
+  if (!available.has(name)) available.set(name, file);
 }
 
 const target = join(dirname(cssPath), "files");

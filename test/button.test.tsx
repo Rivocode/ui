@@ -11,13 +11,13 @@ test("renderiza o rotulo", () => {
 
 test("a variante padrao e a primaria", () => {
   render(<Button>Enviar</Button>);
-  expect(screen.getByRole("button").className).toContain("bg-accent");
+  expect(screen.getByRole("button").className.split(" ")).toContain("bg-accent");
 });
 
 test("a variante destrutiva usa o token de perigo, nunca um vermelho literal", () => {
   render(<Button variant="destructive">Excluir</Button>);
   const classes = screen.getByRole("button").className;
-  expect(classes).toContain("bg-danger");
+  expect(classes.split(" ")).toContain("bg-danger");
   expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i);
 });
 
@@ -78,7 +78,7 @@ test("carregando, o botao mantem a variante em vez de virar cinza", () => {
 
   expect(botao.getAttribute("data-loading")).toBe("true");
   expect(botao.className).toContain("not-data-loading:disabled:bg-surface-raised");
-  expect(botao.className).toContain("bg-danger");
+  expect(botao.className.split(" ")).toContain("bg-danger");
 });
 
 test("desabilitado de verdade continua neutro, e nao se parece com carregando", () => {
@@ -101,7 +101,7 @@ test("o tamanho de icone e quadrado, para o botao de acao da tabela", () => {
   );
   const classes = screen.getByRole("button", { name: "Mais acoes" }).className;
   expect(classes).toContain("size-[var(--rc-control-md)]");
-  expect(classes).toContain("p-0");
+  expect(classes.split(" ")).toContain("p-0");
 });
 
 test("o botao sabe virar link, porque metade dos botoes de um site e link", () => {

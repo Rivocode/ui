@@ -28,6 +28,7 @@
  * nao encolhe vira o lugar onde o codigo morto mora.
  */
 import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 import { dirname, join, normalize } from "node:path";
 
 const PACKAGE = "package.json";
@@ -76,7 +77,7 @@ for (const command of commands) {
   for (const [, path] of command.matchAll(/bun run (scripts\/[\w./-]+\.ts)/g)) queue.push(path!);
 
   if (/(^|&&\s*)bun test\b/.test(command)) {
-    for await (const file of new Glob("test/**/*.{ts,tsx}").scan(".")) queue.push(file);
+    for (const file of await scanAtLeast("test/**/*.{ts,tsx}", 60)) queue.push(file);
   }
 }
 
@@ -108,7 +109,7 @@ while (queue.length > 0) {
 const orphans: string[] = [];
 const paid = new Set<string>();
 
-for await (const file of new Glob("scripts/**/*.ts").scan(".")) {
+for (const file of await scanAtLeast("scripts/**/*.ts", 20)) {
   if (reached.has(file)) {
     if (file in OUT) paid.add(file);
     continue;

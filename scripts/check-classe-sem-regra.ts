@@ -94,7 +94,7 @@
  *     da de 12,97:1 a 15,23:1 nos dois temas e sobre os dois fundos, contra
  *     um minimo de 3:1 da 1.4.11.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 import { __unstable__loadDesignSystem } from "tailwindcss";
 import { dirname, isAbsolute, join, resolve } from "node:path";
 
@@ -122,7 +122,7 @@ const AREAS = [
   {
     name: "web",
     css: { path: "src/styles.css", text: null as string | null },
-    trees: ["src/**/*.{ts,tsx}"],
+    trees: [["src/**/*.{ts,tsx}", 80]] as [area: string, floor: number][],
   },
   {
     name: "nativo",
@@ -133,7 +133,7 @@ const AREAS = [
         `@import "./theme.css";\n` +
         `@import "tailwindcss/utilities.css";\n`,
     },
-    trees: ["native/src/**/*.{ts,tsx}"],
+    trees: [["native/src/**/*.{ts,tsx}", 60]] as [area: string, floor: number][],
   },
 ];
 
@@ -176,8 +176,8 @@ let scanned = 0;
 for (const area of AREAS) {
   const compiles = await compilerOf(area.css);
 
-  for (const tree of area.trees) {
-    for await (const file of new Glob(tree).scan(".")) {
+  for (const [tree, floor] of area.trees) {
+    for (const file of await scanAtLeast(tree, floor, { dot: true })) {
       const code = await Bun.file(file).text();
       scanned += 1;
 

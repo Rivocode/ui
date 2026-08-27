@@ -67,6 +67,6 @@ test("o className de quem usa vence o padrao", () => {
     </RivoProvider>,
   );
   const panel = screen.getByText("Sem respiro").closest("[data-open]");
-  expect(panel!.className).toContain("p-0");
+  expect(panel!.className.split(" ")).toContain("p-0");
   expect(panel!.className).not.toContain("p-[var(--rc-pad-panel-sm)]");
 });

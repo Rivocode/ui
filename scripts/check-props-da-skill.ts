@@ -31,7 +31,7 @@
  * peca que nao existe, import faltando. Para isso o caminho e o compilador, e
  * ele custa o embrulho acima.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 const SKILL_DIR = ".claude/skills/rivocode-ui";
 const CATALOG = "apps/docs/src/component-props.json";
@@ -175,7 +175,7 @@ let checked = 0;
  * oculta quando ela esta no padrao. Varrer de dentro dela resolve, e o custo de
  * descobrir isso de novo e uma tarde.
  */
-for await (const file of new Glob("**/*.md").scan(SKILL_DIR)) {
+for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
   if (OUT_OF_SCOPE.has(file)) continue;
 
   const text = await Bun.file(`${SKILL_DIR}/${file}`).text();

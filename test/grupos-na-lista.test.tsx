@@ -103,7 +103,7 @@ test("a linha entre grupos nao entra na contagem que o leitor de tela anuncia", 
   const { container } = withTheme(<GroupedSelect />);
 
   const line = container.ownerDocument.querySelector('[role="listbox"] [role="presentation"]')!;
-  expect(line.className).toContain("bg-border");
+  expect(line.className.split(" ")).toContain("bg-border");
   expect(container.ownerDocument.querySelectorAll('[role="separator"]')).toHaveLength(0);
 });
 
@@ -145,8 +145,8 @@ test("a linha do Combobox e a mesma linha do Select", () => {
   const { container } = withTheme(<GroupedCombobox />);
 
   const line = container.ownerDocument.querySelector('[role="listbox"] [role="presentation"]')!;
-  expect(line.className).toContain("h-px");
-  expect(line.className).toContain("bg-border");
+  expect(line.className.split(" ")).toContain("h-px");
+  expect(line.className.split(" ")).toContain("bg-border");
 });
 
 test("a classe de quem usa vence a do cabecalho e a da linha", () => {

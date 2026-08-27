@@ -225,12 +225,14 @@ test("a espera vinda de fora tambem trava o botao", () => {
 
 test("o tom de perigo veste o vermelho de preencher, e o neutro nao", () => {
   const { unmount } = render(<Example />);
-  expect(screen.getByRole("button", { name: "Excluir" }).className).toContain("bg-danger");
+  expect(screen.getByRole("button", { name: "Excluir" }).className.split(" ")).toContain(
+    "bg-danger",
+  );
   unmount();
 
   render(<Example tone="neutral" confirmLabel="Arquivar" />);
   const archive = screen.getByRole("button", { name: "Arquivar" });
-  expect(archive.className).toContain("bg-accent");
+  expect(archive.className.split(" ")).toContain("bg-accent");
   expect(archive.className).not.toContain("bg-danger");
 });
 

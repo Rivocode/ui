@@ -100,14 +100,14 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 ## O gate
 
-`bun run check` roda TRINTA passos em sequencia e para no primeiro que falhar:
-instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
-contraste do web, contraste do mapa nativo, espelho do contraste, temas,
-contrato, doc, cobertura do README, classe sem regra, grupos de classe,
+`bun run check` roda TRINTA E UM passos em sequencia e para no primeiro que
+falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
+literal, contraste do web, contraste do mapa nativo, espelho do contraste,
+temas, contrato, doc, cobertura do README, classe sem regra, grupos de classe,
 fronteira do chart, fronteira do CLI, skill, lista da skill, tokens nativos,
 gerador de tema nativo, codigo compartilhado, paridade, contagem de pecas,
-vitrine, retratos declarados, script fora do gate, contagem de testes, e por
-fim `bun test`.
+vitrine, retratos declarados, script fora do gate, piso de varredura, contagem
+de testes, e por fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -143,6 +143,19 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres
   assinaturas de retrato divergiam do comitado e ninguem sabia, porque ninguem
   rodava. A lista `OUT` so encolhe.
+- `check:piso` - varredura que pode devolver lista vazia e deixar a
+  verificacao em cima dela verde. Em `scripts/`, `new Glob(` so em
+  `scripts/varredura.ts`: quem varre chama `scanAtLeast(padrao, piso)`, que
+  cobra o piso na MESMA chamada - nao da para pedir os arquivos sem dizer
+  quantos se espera. Em `test/` e `native/test/`, todo `new Glob(` ou
+  `readdirSync(` dentro de um bloco `test(...)` precisa de um piso no mesmo
+  bloco. Nasceu porque quebrar cada padrao de proposito, num dia so, deixou
+  onze guardas de `scripts/` verdes lendo ZERO arquivo - entre elas o
+  `check:contrast`, que anunciou "Contraste ok em todos os temas" sem ter
+  aberto um tema - e seis blocos de teste passando com a lista vazia. Uma area
+  estava escrita e nunca fora lida: o `check:comentarios` declarava
+  `.design-sync/previews/*.tsx` e o Glob do bun pula pasta oculta sem `dot`.
+  A lista `OUT` so encolhe.
 - `check:classes` - classe usada em `src/**` ou `native/src/**` que o Tailwind
   daquele pacote nao sabe compilar. Nasceu porque o polegar do `Slider` nativo
   pintava `shadow-1` e `shadow` nao existe no CSS nativo: a classe nunca gerou
@@ -175,6 +188,41 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   milissegundos e sem navegador, porque o retrato em si vive fora do gate.
 
 `bun run build` depois, porque ha quebra que so aparece ao empacotar.
+
+## Assercao que passa sem medir
+
+Guarda verde nao e guarda que mediu: e guarda que nao reclamou. Em 27/08/2026
+foram encontradas quatro verificacoes cujo sucesso nao dependia do que elas
+diziam guardar, e a varredura da arvore inteira achou mais dezenove da mesma
+familia. Duas regras sairam disso, e uma delas nao tem guarda.
+
+**Varredura declara quanto espera achar.** Tem guarda: `check:piso`, descrita
+acima. Em `scripts/`, use `scanAtLeast` de `scripts/varredura.ts`; em teste,
+`expect(arquivos.length).toBeGreaterThan(n)` antes do laco. O piso e folgado, e
+nao a contagem de hoje.
+
+**Classe se compara por TOKEN, e nao por pedaco de string.** Nao tem guarda, e
+a decisao foi medida: `bg-accent` e prefixo de `bg-accent-text`, e
+`expect(className).toContain("bg-accent")` passa com os dois - com o defeito E
+com o conserto. Foram dezesseis assercoes assim, provadas uma a uma trocando o
+token na peca e vendo o teste continuar verde: o Button primario pintando
+`bg-accent-text`, o Card nascendo `raised`, o Alert virando `flex-col-reverse`,
+o campo nativo em foco vestindo `border-accent-text`. A forma que mede e
+`expect(className.split(" ")).toContain("bg-accent")`, mais um
+`not.toContain` do valor errado quando ele existe.
+
+Por que sem guarda: o detector de prefixo levantou 50 candidatos e 16 eram
+defeito. Os outros 34 eram `toContain` de trecho de MENSAGEM - "altura",
+"isEmpty", "março" - onde prefixo nao quer dizer nada. Guarda que erra em dois
+tercos das vezes e desligada na segunda semana, e ai o um terco que ela
+acertava para de ser visto. Fica a regra escrita, e a proxima varredura mede de
+novo.
+
+Quando desconfiar de uma assercao, **quebre de proposito o que ela deveria
+pegar**. Suspeito que morde nao e defeito. As formas que mais enganaram aqui:
+literal procurado num artefato DERIVADO sem ninguem cobrar o literal na fonte
+(`check:cli`), dois artefatos gerados da MESMA fonte comparados entre si
+(`check:paridade`) e laco de assercao que passa com zero voltas.
 
 ## Peca nova
 

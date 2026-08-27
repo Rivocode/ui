@@ -314,19 +314,20 @@
  * ser percebido, e e essa que vale aqui: uma linha de grafico que some no
  * fundo nao e legivel de outro jeito.
  */
-import { Glob } from "bun";
-
 import { checkThemeCss, readTokens } from "../src/lib/contrast";
+import { countAtLeast, scanAtLeast } from "./varredura";
 
 const palette = await Bun.file("src/tokens/palette.css").text();
-const files = await Array.fromAsync(new Glob("src/tokens/themes/*.css").scan("."));
+const files = await scanAtLeast("src/tokens/themes/*.css", 2);
 let failed = 0;
+let measured = 0;
 
-for (const file of files.sort()) {
+for (const file of files) {
   const tokens = readTokens(palette + "\n" + (await Bun.file(file).text()));
   // Nem todo arquivo na pasta de temas e um tema: o de fontes, por exemplo,
   // so traz @import. Um tema de verdade sempre declara o fundo.
   if (!tokens["--rc-bg"]) continue;
+  measured += 1;
 
   for (const finding of checkThemeCss(file, tokens)) {
     if (!finding.ok) failed++;
@@ -338,4 +339,7 @@ if (failed > 0) {
   console.error(`\n${failed} par(es) abaixo do minimo.`);
   process.exit(1);
 }
-console.log("\nContraste ok em todos os temas.");
+
+countAtLeast("tema com `--rc-bg` declarado em `src/tokens/themes/`", measured, 2);
+
+console.log(`\nContraste ok nos ${measured} temas de src/tokens/themes/.`);

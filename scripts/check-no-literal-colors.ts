@@ -3,17 +3,15 @@
  * dentro de um componente amarra a biblioteca a uma marca, e e a coisa mais
  * facil de fazer sem perceber.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/;
 const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/;
 
-const files = await Array.fromAsync(
-  new Glob("src/{components,provider,lib}/**/*.{ts,tsx,css}").scan("."),
-);
+const files = await scanAtLeast("src/{components,provider,lib}/**/*.{ts,tsx,css}", 70);
 
 let failed = 0;
-for (const file of files.sort()) {
+for (const file of files) {
   const lines = (await Bun.file(file).text()).split("\n");
   lines.forEach((line, i) => {
     if (COLOR.test(line)) {

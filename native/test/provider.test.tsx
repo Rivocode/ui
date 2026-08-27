@@ -75,11 +75,11 @@ describe("Field e Input", () => {
       </Field>,
     );
     const input = () => screen.root.findByType("TextInput" as never);
-    expect(input().props.className).toContain("border-border-strong");
+    expect(String(input().props.className).split(" ")).toContain("border-border-strong");
 
     const { act } = require("react-test-renderer") as typeof import("react-test-renderer");
     act(() => input().props.onFocus({}));
-    expect(input().props.className).toContain("border-accent");
+    expect(String(input().props.className).split(" ")).toContain("border-accent");
 
     const invalid = render(
       <Field label="x">

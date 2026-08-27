@@ -43,7 +43,7 @@
  * um sem o outro deixa o comando morto. Leia "chart" como "o primeiro
  * subcaminho que precisou disto".
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 type Frontier = {
   /** O nome publicado, para a mensagem dizer de quem se fala. */
@@ -166,7 +166,7 @@ const inside = (resolved: string, dir: string) =>
 const breaches: string[] = [];
 
 for (const frontier of FRONTIERS) {
-  for await (const file of new Glob("**/*.{ts,tsx}").scan(frontier.core)) {
+  for (const file of await scanAtLeast("**/*.{ts,tsx}", 40, { cwd: frontier.core })) {
     const path = `${frontier.core}/${file}`;
     if (inside(path, frontier.dir)) continue;
 

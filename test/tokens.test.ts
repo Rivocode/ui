@@ -30,6 +30,8 @@ test("nenhum componente le da paleta crua", async () => {
   const files = await Array.fromAsync(
     new Glob("src/{components,provider}/**/*.{ts,tsx}").scan("."),
   );
+  expect(files.length).toBeGreaterThan(70);
+
   for (const file of files) {
     expect(await Bun.file(file).text()).not.toContain("--rc-p-");
   }
@@ -59,8 +61,10 @@ test("a densidade compacta alcanca painel, item de lista, caixa e dia", async ()
 test("nenhum componente do catalogo usa medida de controle fixa em pixel", async () => {
   const { Glob } = await import("bun");
   const suspeitos: string[] = [];
+  const files = await Array.fromAsync(new Glob("src/components/*.tsx").scan("."));
+  expect(files.length).toBeGreaterThan(70);
 
-  for await (const path of new Glob("src/components/*.tsx").scan(".")) {
+  for (const path of files) {
     const fonte = await Bun.file(path).text();
     // Altura de controle, lado de caixa de marcar e respiro de painel devem
     // sair de token. Pixel solto aqui e densidade que nao chega.
@@ -203,8 +207,10 @@ test("nenhuma peca nativa le o tema direto, sem passar pelo contexto", async () 
   // resolve qual tema vale.
   const { Glob } = await import("bun");
   const offenders: string[] = [];
+  const files = await Array.fromAsync(new Glob("native/src/**/*.{ts,tsx}").scan("."));
+  expect(files.length).toBeGreaterThan(60);
 
-  for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
+  for (const file of files) {
     if (file.endsWith("provider.tsx")) continue;
     const code = await Bun.file(file).text();
     if (/tokens\.themes\[/.test(code)) offenders.push(file);

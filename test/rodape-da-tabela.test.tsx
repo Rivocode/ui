@@ -186,8 +186,8 @@ test("com moldura propria, o total gruda embaixo como o cabecalho gruda em cima"
   const { container } = table({ maxHeight: 200 });
 
   const foot = container.querySelector("tfoot")!;
-  expect(foot.className).toContain("sticky");
-  expect(foot.className).toContain("bottom-0");
+  expect(foot.className.split(" ")).toContain("sticky");
+  expect(foot.className.split(" ")).toContain("bottom-0");
   expect(foot.className).toContain("z-[var(--rc-z-sticky)]");
 });
 

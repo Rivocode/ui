@@ -36,17 +36,17 @@
  * `-ivel`, entao `paginacao`, `deslocamento` e `disponivel` sao pegos na
  * primeira vez que aparecem.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 /** Onde vale a regra: tudo que e codigo nosso. */
-const AREAS = [
-  "src/**/*.{ts,tsx}",
-  "scripts/**/*.ts",
-  "test/**/*.{ts,tsx}",
-  "demo/*.tsx",
-  "native/src/**/*.{ts,tsx}",
-  "apps/docs/src/**/*.{ts,tsx}",
-  "apps/docs/*.ts",
+const AREAS: [area: string, floor: number][] = [
+  ["src/**/*.{ts,tsx}", 80],
+  ["scripts/**/*.ts", 20],
+  ["test/**/*.{ts,tsx}", 60],
+  ["demo/*.tsx", 10],
+  ["native/src/**/*.{ts,tsx}", 60],
+  ["apps/docs/src/**/*.{ts,tsx}", 20],
+  ["apps/docs/*.ts", 1],
 ];
 
 /**
@@ -365,8 +365,8 @@ function namesInPattern(pattern: string) {
 const found: string[] = [];
 const paid = new Set<string>();
 
-for (const area of AREAS) {
-  for await (const file of new Glob(area).scan(".")) {
+for (const [area, floor] of AREAS) {
+  for (const file of await scanAtLeast(area, floor, { dot: true })) {
     if (DICTIONARIES.test(file)) continue;
 
     const code = withoutProse(await Bun.file(file).text());

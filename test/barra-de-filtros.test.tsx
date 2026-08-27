@@ -400,7 +400,7 @@ test("as partes da ficha se vestem uma a uma", () => {
 test("o size da barra desce para as fichas", () => {
   render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} size="sm" />);
 
-  expect(screen.getByText("Situacao").parentElement!.className).toContain("h-5");
+  expect(screen.getByText("Situacao").parentElement!.className.split(" ")).toContain("h-5");
 });
 
 test("o nome da fileira se troca, para duas barras na mesma tela nao se confundirem", () => {

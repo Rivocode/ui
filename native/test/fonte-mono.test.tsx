@@ -123,8 +123,11 @@ describe("a fonte mono", () => {
 
   test("só o text.tsx escreve fontFamily: o resto pede o papel e o provider responde", async () => {
     const offenders: string[] = [];
+    const files = await Array.fromAsync(new Glob("native/src/**/*.{ts,tsx}").scan("."));
 
-    for await (const file of new Glob("native/src/**/*.{ts,tsx}").scan(".")) {
+    expect(files.length).toBeGreaterThan(60);
+
+    for (const file of files) {
       if (file === "native/src/text.tsx") continue;
 
       const code = (await Bun.file(file).text())

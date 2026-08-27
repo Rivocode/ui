@@ -13,8 +13,8 @@ import {
 test("o cartao usa a superficie e a borda do tema", () => {
   render(<Card data-testid="cartao">conteudo</Card>);
   const classes = screen.getByTestId("cartao").className;
-  expect(classes).toContain("bg-surface");
-  expect(classes).toContain("border-border");
+  expect(classes.split(" ")).toContain("bg-surface");
+  expect(classes.split(" ")).toContain("border-border");
   expect(classes).toContain("rounded-lg");
 });
 

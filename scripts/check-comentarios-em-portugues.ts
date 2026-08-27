@@ -33,18 +33,18 @@
  * Medido antes de entrar no gate: 322 arquivos, 19 comentarios acusados, todos
  * ingles de verdade, nenhum falso positivo.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 /** As mesmas areas do `check:nomes`: tudo que e codigo nosso. */
-const AREAS = [
-  "src/**/*.{ts,tsx}",
-  "scripts/**/*.ts",
-  "test/**/*.{ts,tsx}",
-  "demo/*.tsx",
-  "native/src/**/*.{ts,tsx}",
-  "apps/docs/src/**/*.{ts,tsx}",
-  "apps/docs/*.ts",
-  ".design-sync/previews/*.tsx",
+const AREAS: [area: string, floor: number][] = [
+  ["src/**/*.{ts,tsx}", 80],
+  ["scripts/**/*.ts", 20],
+  ["test/**/*.{ts,tsx}", 60],
+  ["demo/*.tsx", 10],
+  ["native/src/**/*.{ts,tsx}", 60],
+  ["apps/docs/src/**/*.{ts,tsx}", 20],
+  ["apps/docs/*.ts", 1],
+  [".design-sync/previews/*.tsx", 80],
 ];
 
 /**
@@ -99,8 +99,8 @@ const withoutCode = (comment: string) =>
 const found: string[] = [];
 const paid = new Set<string>();
 
-for (const area of AREAS) {
-  for await (const file of new Glob(area).scan(".")) {
+for (const [area, floor] of AREAS) {
+  for (const file of await scanAtLeast(area, floor, { dot: true })) {
     if (DICTIONARIES.test(file)) continue;
 
     const text = await Bun.file(file).text();

@@ -137,6 +137,6 @@ test("o que ainda nao aconteceu nao se veste de acontecido", () => {
   );
 
   const markers = container.querySelectorAll("li > span");
-  expect(markers[0]!.className).toContain("bg-success");
+  expect(markers[0]!.className.split(" ")).toContain("bg-success");
   expect(markers[1]!.className).toContain("ring-border-strong");
 });

@@ -49,7 +49,7 @@ test("a mensagem de erro usa o token de perigo", () => {
       <FieldError match>Email obrigatorio</FieldError>
     </Field>,
   );
-  expect(screen.getByText("Email obrigatorio").className).toContain("text-danger");
+  expect(screen.getByText("Email obrigatorio").className.split(" ")).toContain("text-danger-text");
 });
 
 test("a altura do campo vem do token de densidade", () => {

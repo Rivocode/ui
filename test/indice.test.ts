@@ -20,6 +20,8 @@ const names = readdirSync(".design-sync/docs")
 const pieces = names.filter((nome) => !findParent(nome, names));
 
 test("a skill diz o mesmo numero de pecas que o catalogo tem", async () => {
+  expect(names.length).toBeGreaterThan(150);
+
   // O numero na skill e a primeira coisa que um agente le, e era o unico
   // lugar do sistema onde ele estava certo enquanto o indice contava tudo. Ele
   // aparece em dois arquivos, e os dois envelhecem juntos.

@@ -64,6 +64,8 @@ test("sem a assinatura, a pagina de Button escreveria o mesmo id duas vezes", as
 test("nenhuma pagina de peca repete um id de heading", async () => {
   const repetidos: string[] = [];
 
+  expect(names.length).toBeGreaterThan(150);
+
   for (const name of names) {
     if (findParent(name, names)) continue;
 

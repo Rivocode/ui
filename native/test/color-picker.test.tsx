@@ -110,7 +110,9 @@ describe("ColorPicker", () => {
     for (const swatch of byRole(screen, "radio")) {
       expect(swatch.props.className).toContain("border-2");
     }
-    expect(byLabel(screen, "Lima, #d4f34a")[0]!.props.className).toContain("border-accent");
+    expect(String(byLabel(screen, "Lima, #d4f34a")[0]!.props.className).split(" ")).toContain(
+      "border-accent",
+    );
     expect(byLabel(screen, "Teal, #3ddc97")[0]!.props.className).toContain("border-transparent");
   });
 

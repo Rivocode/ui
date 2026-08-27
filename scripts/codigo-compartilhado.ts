@@ -32,6 +32,7 @@
  * furo, e ainda pega `const` de seta e constante solta.
  */
 import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 import { existsSync } from "node:fs";
 import { rm } from "node:fs/promises";
 
@@ -86,13 +87,13 @@ const COPIA_DECLARADA: Record<string, string> = {
 /** O espelho pode nao existir ainda, e varrer pasta que nao ha e erro. */
 async function* mirrored() {
   if (!existsSync(MIRROR)) return;
-  for await (const file of new Glob("**/*").scan(MIRROR)) yield file;
+  for (const file of await scanAtLeast("**/*", 1, { cwd: MIRROR })) yield file;
 }
 
 const problems: string[] = [];
 
 const sources: Array<{ file: string; code: string }> = [];
-for await (const file of new Glob("**/*").scan(SOURCE)) {
+for (const file of await scanAtLeast("**/*", 1, { cwd: SOURCE })) {
   const code = await Bun.file(`${SOURCE}/${file}`).text();
   sources.push({ file, code });
 }
@@ -219,7 +220,7 @@ const flat = (text: string) => text.replace(/\s+/g, " ").trim();
 async function collect(pattern: string, skip: string) {
   const map = new Map<string, { file: string; line: number; name: string }>();
 
-  for await (const file of new Glob(pattern).scan(".")) {
+  for (const file of await scanAtLeast(pattern, 40)) {
     if (file.startsWith(skip)) continue;
 
     for (const found of declarations(await Bun.file(file).text())) {

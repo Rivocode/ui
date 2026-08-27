@@ -13,7 +13,7 @@
  * O segundo lado tem excecao declarada: parte que so existe dentro de outra
  * peca e documentada na pagina dela.
  */
-import { Glob } from "bun";
+import { scanAtLeast } from "./varredura";
 
 const DOCS = ".design-sync/docs";
 const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
@@ -58,10 +58,9 @@ for (const entry of ENTRY_POINTS) {
   }
 }
 
-const documented: string[] = [];
-for await (const file of new Glob("*.md").scan(DOCS)) {
-  documented.push(file.replace(/\.md$/, ""));
-}
+const documented = (await scanAtLeast("*.md", 150, { cwd: DOCS })).map((file) =>
+  file.replace(/\.md$/, ""),
+);
 
 const promised = documented.filter((name) => !exported.has(name));
 /*
