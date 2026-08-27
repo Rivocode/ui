@@ -165,7 +165,7 @@ Para esse, o que existe é o error boundary do React.
 
 Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a tela escrevia.
 
-Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. É a mesma nota que o `ChartContainer` já carrega.
+Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. É a mesma nota que o `ChartContainer` já carrega.
 
 **`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que ninguém alcance o nó interno por `[&_div]` e acople a tela à árvore da peça. No React Native não há seletor de descendente, então essa escotilha não existe e a prop não teria o que evitar. O `className` veste os três finais, como no web.
 

@@ -29,6 +29,17 @@ export type DataListProps<Row> = {
    */
   errorTitle?: string;
   errorMessage?: string;
+  /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O mesmo nome e o mesmo padrao do `DataTable`, e existe pelo motivo do
+   * `errorTitle`: uma tela em outra lingua saia com o aviso traduzido e o
+   * botao logo abaixo em portugues.
+   *
+   * `string`, e nao `ReactNode` como no web: o rotulo do `Button` nativo mora
+   * dentro de um `Text`.
+   */
+  retryLabel?: string;
   empty?: { title: string; description: string; action?: ReactNode };
   /**
    * A linha discreta de quando o `filter` zerou. Sem ela, "Nenhum resultado
@@ -82,6 +93,7 @@ export function DataList<Row>({
   onRetry,
   errorTitle,
   errorMessage = "Não foi possível carregar a lista.",
+  retryLabel = "Tentar de novo",
   empty,
   noResultsMessage = "Nenhum resultado para a busca.",
   onRowPress,
@@ -111,7 +123,7 @@ export function DataList<Row>({
         </View>
         {onRetry && (
           <Button size="sm" variant="secondary" onPress={onRetry}>
-            Tentar de novo
+            {retryLabel}
           </Button>
         )}
       </View>

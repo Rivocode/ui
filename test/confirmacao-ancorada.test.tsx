@@ -287,3 +287,38 @@ test("na tela estreita a confirmacao vira folha de baixo, com os botoes na largu
     window.matchMedia = realMatchMedia;
   }
 });
+
+test("o foco vai PARA o cancelar quando o confirmar entra em espera", async () => {
+  // A 0.8.0 consertou so metade: o cancelar passou a recusar por `aria-disabled`
+  // e continuou focavel, mas nada MOVIA o foco ate ele. Quem aperta o confirmar
+  // segura o foco nele, o `loading` o marca `disabled` de verdade, e o navegador
+  // larga o foco no `<body>` - o Tab seguinte sai do painel.
+  //
+  // O defeito so aparece em Chromium e Firefox: o WebKit segura o foco dentro
+  // sozinho, entao uma suite rodada so no Safari passa com ele de pe.
+  let release = () => {};
+  render(
+    <Example
+      onConfirm={() =>
+        new Promise<void>((resolve) => {
+          release = resolve;
+        })
+      }
+    />,
+  );
+
+  const confirmButton = screen.getByRole("button", { name: "Excluir" });
+  confirmButton.focus();
+  expect(document.activeElement).toBe(confirmButton);
+
+  fireEvent.click(confirmButton);
+  await settle();
+
+  const cancel = screen.getByRole("button", { name: "Cancelar" });
+  expect(document.activeElement).toBe(cancel);
+  expect(panel().contains(document.activeElement)).toBe(true);
+
+  await act(async () => {
+    release();
+  });
+});

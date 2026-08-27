@@ -145,7 +145,7 @@ respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
 
 Traduz, no caminho próprio `@rivocode/ui-native/chart`, com o mesmo arranjo do formulário e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app precisa ligar e reconstruir.
 
-**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
+**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `retryLabel`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e `empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
 
 **O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há contentor que meça e não há variável viva. Então a moldura mede com `onLayout`, resolve as cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega o `submit`:
 
@@ -156,6 +156,8 @@ Traduz, no caminho próprio `@rivocode/ui-native/chart`, com o mesmo arranjo do 
   )}
 </ChartContainer>
 ```
+
+O `colors` do quadro é um **mapa pela chave do `config`**, e não um array: é o `var(--color-série)` do web com outro veículo, e quem desenha pede a cor de `receita` pelo nome, que é o que sobrevive a alguém reordenar o `config`. O array é o `PALETTE`, e ele é array dos dois lados: é a ordem de sobra, de onde sai a cor de quem não declarou `color`. A diferença é que aqui ele é **exportado**, porque sem variável viva quem desenha à mão precisa alcançá-lo.
 
 A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não existe largura antes do layout. O `children` também aceita JSX comum, e é assim que `ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.
 

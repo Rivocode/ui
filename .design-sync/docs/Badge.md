@@ -14,4 +14,6 @@ sistema antigo, e botão em pilula dentro de formulário parece brinquedo.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Badge` - os mesmos tons; o texto é filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz nos tons e na pílula, e **sem o `size` do web**. Lá o `sm` existe para o selo caber numa linha de `DataTable`, que é de mesa e encolhe com a densidade; aqui não há linha que encolha: o `RivoProvider` nativo já declara que `comfortable` é a única altura, porque alvo de toque não diminui, e um segundo tamanho seria a única peça do pacote oferecendo o compacto que o pacote decidiu não ter.
+
+E a prop custaria mais do que paga. Para casar com o web ela precisaria nascer em `md`, o que aumentaria todo selo já publicado; nascer no tamanho de hoje faria `size="md"` desenhar coisas diferentes nos dois pacotes, que é pior do que não ter a prop. O selo nativo é `text-xs`, fixo.

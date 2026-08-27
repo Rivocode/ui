@@ -41,7 +41,7 @@ export type QueryBoundaryProps<Data> = {
    * O `errorTitle` acima ja dizia que um produto que nao fala portugues
    * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
    * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
-   * O mesmo nome nas quatro pecas de consulta.
+   * O mesmo nome em todas as pecas que resolvem os quatro finais.
    */
   retryLabel?: ReactNode;
 

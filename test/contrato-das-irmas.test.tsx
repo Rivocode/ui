@@ -15,6 +15,7 @@ import {
 } from "../src/components/combobox";
 import { DataTable, type Column } from "../src/components/data-table";
 import { Editable } from "../src/components/editable";
+import { EventCalendar } from "../src/components/event-calendar";
 import { PasswordInput } from "../src/components/password-input";
 import { QueryBoundary } from "../src/components/query-boundary";
 import { Radio, RadioGroup } from "../src/components/radio";
@@ -319,7 +320,14 @@ test("o acento so pinta o controle vivo, sem depender da ordem das classes", () 
   expect(box.className).not.toContain("data-[indeterminate]:bg-accent ");
 });
 
-/* --- 5. as quatro irmas dos finais de uma consulta ----------------------- */
+/* --- 5. as irmas dos finais de uma consulta ------------------------------
+ *
+ * Sao CINCO desde 27/08, e nao quatro: o EventCalendar nasceu ja com os
+ * quatro finais. A tabela abaixo e o que impede a sexta de nascer torta, e
+ * por isso ela se chama pelo papel e nao pelo numero - um numero no nome
+ * envelhece na primeira peca nova, e foi o que aconteceu com o JSDoc que
+ * dizia "as quatro pecas de consulta".
+ * ----------------------------------------------------------------------- */
 
 type Invoice = { id: string; customer: string };
 
@@ -368,11 +376,19 @@ const SISTERS: Record<string, (query: Query) => ReactNode> = {
       <svg />
     </ChartContainer>
   ),
+  EventCalendar: (query) => (
+    <EventCalendar
+      label="Agenda"
+      view="agenda"
+      events={query.isLoading ? undefined : []}
+      {...query}
+    />
+  ),
 };
 
 const sisters = Object.entries(SISTERS);
 
-test("as quatro irmas trocam o nome do botao de nova tentativa por `retryLabel`", () => {
+test("as irmas trocam o nome do botao de nova tentativa por `retryLabel`", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isError: true, onRetry: () => {}, retryLabel: "Try again" }));
     const named = within(view.container).queryByRole("button", { name: "Try again" });

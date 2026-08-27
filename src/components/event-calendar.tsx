@@ -445,7 +445,15 @@ export type EventCalendarProps = Omit<
    * que nao tem geometria de tempo onde clicar.
    */
   onSlotSelect?: (range: EventCalendarRange) => void;
-  /** Troca so o miolo da tarja; a caixa, o foco e o rotulo continuam da peca. */
+  /**
+   * Troca so o miolo da tarja; a caixa, o foco e o rotulo continuam da peca.
+   *
+   * Ela corre DURANTE o render, e por isso tem que ser pura: montar JSX pode,
+   * chamar `setState` de qualquer componente nao. Fazer isso rende o aviso
+   * "Cannot update a component while rendering a different component", que
+   * aponta para a peca de dentro e nao para a linha que causou - e por isso e
+   * dificil de achar. Se voce precisa reagir a um evento, use `onEventSelect`.
+   */
   renderEvent?: (event: CalendarEvent, info: CalendarEventInfo) => ReactNode;
 
   /** 0 domingo, 1 segunda. */

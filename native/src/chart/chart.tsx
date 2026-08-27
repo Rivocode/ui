@@ -69,6 +69,18 @@ export type ChartContainerProps = {
    */
   errorMessage?: string;
   /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
+   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
+   * como: o painel em ingles saia com o titulo traduzido e o botao em
+   * portugues. O mesmo nome do web, e o mesmo nas pecas de consulta daqui.
+   *
+   * `string` pelo mesmo motivo do `errorTitle`: o rotulo do `Button` nativo e
+   * um `Text`.
+   */
+  retryLabel?: string;
+  /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
    * web, menos o `icon`: o `EmptyState` nativo ainda não tem esse slot.
    */
@@ -114,6 +126,7 @@ export function ChartContainer({
   onRetry,
   errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
+  retryLabel = "Tentar de novo",
   empty,
   data,
   label,
@@ -152,7 +165,7 @@ export function ChartContainer({
             </Alert>
             {onRetry && (
               <Button size="sm" variant="secondary" onPress={onRetry}>
-                Tentar de novo
+                {retryLabel}
               </Button>
             )}
           </View>

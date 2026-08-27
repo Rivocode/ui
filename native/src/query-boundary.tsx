@@ -43,6 +43,18 @@ export type QueryBoundaryProps<Data> = {
    * tambem e um `Text`.
    */
   errorMessage?: string;
+  /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
+   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
+   * como: a tela em ingles saia com o titulo traduzido e o botao em
+   * portugues. O mesmo nome do web, e o mesmo nas pecas de consulta daqui.
+   *
+   * `string` pelo mesmo motivo do `errorTitle`: o rotulo do `Button` nativo e
+   * um `Text`.
+   */
+  retryLabel?: string;
 
   /**
    * O que aparece quando a consulta volta vazia. O mesmo formato do web menos
@@ -101,6 +113,7 @@ export function QueryBoundary<Data>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
+  retryLabel = "Tentar de novo",
   empty,
   isEmpty,
   skeleton,
@@ -125,7 +138,7 @@ export function QueryBoundary<Data>({
         </Alert>
         {onRetry && (
           <Button size="sm" variant="secondary" onPress={onRetry}>
-            Tentar de novo
+            {retryLabel}
           </Button>
         )}
       </View>

@@ -110,7 +110,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
 | `Avatar` | ✔ traduz | só `fallback`, as iniciais: imagem remota ainda não entra |
-| `Badge` | ✔ traduz | os mesmos tons; o texto é filho |
+| `Badge` | ✔ traduz | os mesmos tons; o texto e filho; NAO tem `size`, porque no nativo so ha uma densidade |
 | `Breadcrumb` | ✕ não porta | o caminho de volta é o botão de voltar do router |
 | `Button` | ✔ traduz | contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda |
 | `ButtonGroup` | ✕ não porta | `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo |
@@ -120,7 +120,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
 | `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate` |
-| `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho |
+| `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web |
 | `Clipboard` | ✔ traduz | vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla: o botão troca de nome e um aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado |
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
@@ -162,7 +162,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format` |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
-| `RadioGroup` | ✔ traduz | `items` na raiz; não existe `Radio` solto para compor |
+| `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `RivoProvider` | ✔ traduz | mesmo contrato de `theme`; `density` existe por paridade, e `comfortable` é a única altura (alvo de toque não encolhe); e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
@@ -182,7 +182,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta |
-| `Textarea` | ✔ traduz | `rows` é a altura inicial; o campo cresce com o conteúdo |
+| `Textarea` | ✔ traduz | `rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange` |
 | `TimeField` | ✔ traduz | digita com mascara e teclado numerico; as setas viram dois botoes de passo, no molde do `NumberField` |
 | `TimePicker` | ✔ traduz | gatilho mais folha de baixo com duas colunas; NAO embute o TimeField, ao contrario do web |
 | `Timeline` | ✔ traduz | os eventos vêm por `items`, com `tone` e `pending` em cada um; `at` é texto pronto, e cada evento é uma parada só do leitor de tela, com a posição escrita no rótulo |

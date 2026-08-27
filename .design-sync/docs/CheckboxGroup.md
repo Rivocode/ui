@@ -43,4 +43,6 @@ não notar aqui, porque a tela parece certa até alguém marcar metade da lista.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `CheckboxGroup` - `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz com `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho, e sem o `allValues`/`parent` do web, porque a caixa mestra de estado misto não tem terceiro estado do lado de cá.
+
+**O `label` é o `aria-label` do web com outro nome**, pelo mesmo motivo do `RadioGroup`: a lista de caixas responde uma pergunta, e sem o nome do conjunto cada caixa se apresenta sem dizer qual. Nomear liga junto o papel de lista, porque no React Native não existe papel de `group` e uma `View` sem papel nenhum não carrega nome.

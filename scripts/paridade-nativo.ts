@@ -141,10 +141,19 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "só `fallback`, as iniciais: imagem remota ainda não entra",
   },
-  Badge: { state: "traduz", note: "os mesmos tons; o texto é filho" },
-  Button: {
+  Badge: {
     state: "traduz",
-    note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda",
+    note: "os mesmos tons; o texto e filho; NAO tem `size`, porque no nativo so ha uma densidade",
+    page:
+      "Traduz nos tons e na pílula, e **sem o `size` do web**. Lá o `sm` existe para o selo " +
+      "caber numa linha de `DataTable`, que é de mesa e encolhe com a densidade; aqui não há " +
+      "linha que encolha: o `RivoProvider` nativo já declara que `comfortable` é a única " +
+      "altura, porque alvo de toque não diminui, e um segundo tamanho seria a única peça do " +
+      "pacote oferecendo o compacto que o pacote decidiu não ter.\n\n" +
+      "E a prop custaria mais do que paga. Para casar com o web ela precisaria nascer em " +
+      "`md`, o que aumentaria todo selo já publicado; nascer no tamanho de hoje faria " +
+      "`size=\"md\"` desenhar coisas diferentes nos dois pacotes, que é pior do que não ter a " +
+      "prop. O selo nativo é `text-xs`, fixo.",
   },
   Calendar: {
     state: "traduz",
@@ -164,7 +173,7 @@ const PARITY: Record<string, Row> = {
       "formulário e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só " +
       "bytes, é módulo nativo que o app precisa ligar e reconstruir.\n\n" +
       "**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, " +
-      "`errorTitle`, `errorMessage`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
+      "`errorTitle`, `errorMessage`, `retryLabel`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
       "as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora " +
       "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
       "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de " +
@@ -182,6 +191,12 @@ const PARITY: Record<string, Row> = {
       "  )}\n" +
       "</ChartContainer>\n" +
       "```\n\n" +
+      "O `colors` do quadro é um **mapa pela chave do `config`**, e não um array: é o " +
+      "`var(--color-série)` do web com outro veículo, e quem desenha pede a cor de `receita` " +
+      "pelo nome, que é o que sobrevive a alguém reordenar o `config`. O array é o `PALETTE`, " +
+      "e ele é array dos dois lados: é a ordem de sobra, de onde sai a cor de quem não " +
+      "declarou `color`. A diferença é que aqui ele é **exportado**, porque sem variável viva " +
+      "quem desenha à mão precisa alcançá-lo.\n\n" +
       "A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não " +
       "existe largura antes do layout. O `children` também aceita JSX comum, e é assim que " +
       "`ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.\n\n" +
@@ -254,7 +269,15 @@ const PARITY: Record<string, Row> = {
   },
   CheckboxGroup: {
     state: "traduz",
-    note: "`items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho",
+    note: "`items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web",
+    page:
+      "Traduz com `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho, e " +
+      "sem o `allValues`/`parent` do web, porque a caixa mestra de estado misto não tem " +
+      "terceiro estado do lado de cá.\n\n" +
+      "**O `label` é o `aria-label` do web com outro nome**, pelo mesmo motivo do " +
+      "`RadioGroup`: a lista de caixas responde uma pergunta, e sem o nome do conjunto cada " +
+      "caixa se apresenta sem dizer qual. Nomear liga junto o papel de lista, porque no React " +
+      "Native não existe papel de `group` e uma `View` sem papel nenhum não carrega nome.",
   },
   Collapsible: {
     state: "traduz",
@@ -393,8 +416,8 @@ const PARITY: Record<string, Row> = {
       "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
       "que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a " +
       "tela escrevia.\n\n" +
-      "Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
-      "`errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
+      "Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
+      "`errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`, e " +
       "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. É a mesma " +
       "nota que o `ChartContainer` já carrega.\n\n" +
       "**`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que " +
@@ -408,7 +431,17 @@ const PARITY: Record<string, Row> = {
   },
   RadioGroup: {
     state: "traduz",
-    note: "`items` na raiz; não existe `Radio` solto para compor",
+    note: "`items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web",
+    page:
+      "Traduz com `items` na raiz: não há `Radio` solto para compor, e tudo é controlado.\n\n" +
+      "**O `label` é o `aria-label` do web com outro nome.** A página de lá já cobrava: sem " +
+      "nome, o grupo existe para o dedo e não para o leitor de tela. Aqui não havia como " +
+      "cobrar, e o buraco era pior do que faltar a prop: o `forValue` do subcaminho de " +
+      "formulário já entregava `accessibilityLabel`, mas o tipo é fechado e espalhamento em " +
+      "JSX não confere propriedade excedente, então o nome era **descartado em silêncio com o " +
+      "TypeScript verde**.\n\n" +
+      "Ele não desenha nada: o texto visível é do `Field`, como no `Select` e no `Combobox`. " +
+      "Dentro de um `FormField`, repita ali o mesmo texto do `label` dele.",
   },
   RivoProvider: {
     state: "traduz",
@@ -480,11 +513,22 @@ const PARITY: Record<string, Row> = {
       "bar do router), e insistir numa aba desenhada por cima disso dá duas navegações " +
       "concorrentes na mesma tela.",
   },
-  Textarea: { state: "traduz", note: "`rows` é a altura inicial; o campo cresce com o conteúdo" },
-  Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
-  ToggleGroup: {
+  Textarea: {
     state: "traduz",
-    note: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
+    note: "`rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange`",
+    page:
+      "Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web, que " +
+      "também não tem variante de tamanho.\n\n" +
+      "**`onChangeText`, e não `onValueChange`, e isso é o par e não o desvio.** No catálogo " +
+      "nativo `onValueChange` é de quem é dono do valor: `Select`, `Combobox`, `Slider`, " +
+      "`Calendar`, `MaskedInput`, `SearchInput`, `InputGroup`, todas leem o texto cru e " +
+      "entregam outra coisa. `Input` e `Textarea` não entregam outra coisa: são o `TextInput` " +
+      "da plataforma com a borda da casa, e o `TextInput` chama `onChangeText` com a string.\n\n" +
+      "A regra é essa, e vale para as duas: **campo cru fala `onChangeText`; peça que " +
+      "transforma o valor fala `onValueChange`**. Dar `onValueChange` só ao `Textarea` " +
+      "quebraria o par com o `Input`, que é o que o `Field` alterna sem a tela mudar de " +
+      "contrato, e deixaria o `forText` (o quarto adaptador do `@rivocode/ui-native/form`, " +
+      "que existe exatamente para esses dois) certo para um e errado para o outro.",
   },
 
   Autocomplete: {
@@ -506,7 +550,8 @@ const PARITY: Record<string, Row> = {
       "Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de " +
       "estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o " +
       "carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se " +
-      "configuram com os nomes do web: `errorTitle`, `errorMessage` e `noResultsMessage`. Só o " +
+      "configuram com os nomes do web: `errorTitle`, `errorMessage`, `retryLabel` e " +
+      "`noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o " +
       "padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha " +
       "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
       "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não " +
@@ -973,6 +1018,19 @@ const PARITY: Record<string, Row> = {
       "router mais o título da tela. Desenhar uma trilha por cima disso duplica a " +
       "navegação e come a largura que o título precisa.",
   },
+  Button: {
+    state: "traduz",
+    note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda",
+  },
+
+  Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
+
+  ToggleGroup: {
+    state: "traduz",
+    note: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
+  },
+
+
   ButtonGroup: {
     state: "nao",
     note: "`Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo",
