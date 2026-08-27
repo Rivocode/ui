@@ -1,7 +1,15 @@
 # @rivocode/ui: design da fundação
 
+> **Documento histórico, concluído.** Descreve o que foi decidido e planejado
+> em 24/08/2026, e é mantido como registro — não como instrução. Duas coisas
+> dele já não valem: o pacote **não** é privado no GitHub Packages, está
+> público no npm sob MIT desde a 0.2.0 (não precisa de `.npmrc` nem de token),
+> e o catálogo cresceu muito além dos cinco componentes deste ciclo. Para o
+> estado de hoje leia `docs/ESTADO.md`; para o contrato de uso,
+> `.design-sync/conventions.md`.
+
 Data: 2026-08-24
-Estado: aguardando revisão
+Estado: implementado, e este documento é registro
 Ciclo: 1 de 4 (fundação)
 
 ## Contexto

@@ -23,16 +23,16 @@ Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
 | Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar  |
 
-O gate do repo esta verde: `bun run check` passa inteiro — dezenove verificacoes
-mais **880 testes em 93 arquivos**. O `bun run build` tambem.
+O gate do repo esta verde: `bun run check` passa inteiro — vinte verificacoes
+mais **1070 testes em 101 arquivos**. O `bun run build` tambem.
 
 ### O catalogo, por familia
 
-Sao **83 pecas** e **169 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **90 pecas** e **176 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as 86 partes moram na pagina de quem as monta, com
-ancora propria. Quem conta os 169 arquivos como catalogo passa a gastar
+ancora propria. Quem conta os 176 arquivos como catalogo passa a gastar
 contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
 esta em `apps/docs/src/parts.ts` e a guarda que a segura em
 `test/indice.test.ts`.
@@ -63,16 +63,16 @@ densidade confortavel e compacta, guarda de cor literal e guarda de contraste.
 ## O React Native
 
 **A fila chegou a zero.** `Tree`, `TreeSelect` e `Editable` foram as ultimas, e
-com elas 67 das 83 pecas do web tem par no celular.
+e hoje 73 das 90 pecas do web tem par no celular.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
-| Traduz, mesmo nome |      64 | mesma peca, mesmo nome de prop — a assinatura muda, veja abaixo                               |
-| Traduz, outro nome |       3 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast`  |
+| Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop — a assinatura muda, veja abaixo                               |
+| Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast`  |
 | `○ na fila`        |       0 | —                                                                                             |
-| `✕ nao porta`      |      16 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
+| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
-As 16 que nao portam nao voltam a esta lista sem que alguem mude de ideia sobre
+As 17 que nao portam nao voltam a esta lista sem que alguem mude de ideia sobre
 o que um dedo faz. Os tres graficos, que este arquivo listava como bloqueados
 por falta de motor de desenho, atravessaram: `native/src/chart/` desenha com
 `react-native-svg`, e a moldura entrega `{ width, height, colors }` a quem
@@ -111,6 +111,60 @@ Tres coisas nao estavam na lista e apareceram no caminho:
    tabela de paridade.
 3. **`ChartContainer` ja aceitava `id` e `aria-*`.** A pendencia listava nove
    pecas de tipo fechado; eram oito.
+
+## O catalogo cresceu sete pecas, e nenhuma nasceu so no web
+
+`TimeField`, `TimePicker`, `FilterBar`, `FilterChip`, `QueryBoundary`,
+`Popconfirm` e `VirtualList` - as seis que a auditoria propunha havia semanas,
+mais o par que faltava. O catalogo vai de 83 para 90.
+
+Cinco delas nasceram tambem no React Native no mesmo dia. As outras duas nao
+sao atraso: `VirtualList` nao porta porque a `FlatList` ja virtualiza de
+fabrica, e `Popconfirm` vira `AlertDialog`. **A fila do nativo voltou a zero no
+mesmo dia em que encheu.**
+
+E isso deixou de depender de boa vontade. O `CLAUDE.md` ganhou o **nono
+artefato**: peca web nova nasce nos dois pacotes no mesmo dia, e
+`check:paridade` recusa peca na fila sem uma linha em `FILA_DECLARADA` dizendo
+por que ela nao pode nascer junto. A lista so encolhe, como o `DEBT` das outras
+guardas.
+
+O `Calendar` de agenda continua fora - e o unico da auditoria que nao se apoia
+em nada pronto, e merece desenho proprio.
+
+## Dois defeitos que a doc ja desmentia, e ninguem tinha lido
+
+1. **O `ChartContainer` mostrava esqueleto quando devia mostrar erro**, nos
+   dois pacotes. Ele testava `isLoading` antes de `isError`, entao consulta que
+   falhou durante um refetch escondia a falha: carregamento eterno, sem o botao
+   de tentar de novo. O `DataTable` sempre ordenou certo, e `DataTable.md` e a
+   tabela de paridade ja afirmavam que a regra era "erro vence carregando" - a
+   peca e que discordava do texto, calada. Ha teste dos dois lados agora.
+
+2. **O `Tracker` lia o dado errado em `dir="rtl"`.** Nao era preferencia de
+   layout: o flex espelhava o desenho, a conta do ponteiro nao. A 5% da
+   esquerda ele lia "Dia 2" onde a celula era "Dia 20" - dezessete celulas de
+   distancia, e o balao dizia o dado errado. Consertado e medido em Chrome de
+   verdade. O `Splitter` tem o mesmo limite e continua tendo, agora escrito e
+   com numero na pagina dele.
+
+## As tres assinaturas visuais desatualizadas
+
+`bun run visual` estava vermelho e ninguem sabia, porque ele nao estava no
+gate: `flutuantes-celular` com 50% dos quadrados divergindo, mais `flutuantes`
+e `dialogo-celular`.
+
+**A causa foi encontrada, e nao e a fonte de hoje.** A assinatura foi gravada
+em `90c12a6`, e depois disso as cinco pecas que aparecem nesses retratos -
+`popover`, `tooltip`, `dialog`, `menu`, `select` - foram refeitas no trabalho
+que unificou o posicionamento dos cinco paineis flutuantes. As mudancas sao
+legitimas e ja foram revisadas quando entraram; o que faltou foi regravar a
+assinatura.
+
+**Continua aberto, e e acao humana:** `bun run visual --aceitar` regrava, e
+ninguem deve fazer isso sem olhar os retratos. E por isso que existe agora o
+`check:scripts` - script fora do gate tem que ser declarado, para nao apodrecer
+em silencio outra vez.
 
 ## A fonte, que mudou de lugar nos dois pacotes
 
@@ -166,28 +220,34 @@ que consertava.
 
 ### Divida de codigo
 
-1. **`regressao-visual.ts` e o unico script fora do gate.** Ele roda por `bun
-   run visual`, e nada o chama no `check`. Ou entra, ou vira dividido declarado
-   como as outras guardas fazem — script que ninguem roda envelhece igual a
-   numero em documento.
-2. **RTL no `Tracker`.** A conta do ponteiro e as setas assumem LTR. Mesmo
-   limite que o `Splitter` ja tem, e nenhum dos dois esta declarado em lugar
-   nenhum.
-3. **O balao do `Tracker` pode atrasar um quadro** enquanto o ponteiro varre a
-   faixa: a Base UI acompanha ancora que se move por `layoutShift`, e o
-   `TooltipContent` da casa so repassa `side`/`align`/`sideOffset` ao
-   `Positioner`, entao nao da para usar `trackCursorAxis`.
+As tres que este arquivo listava foram pagas: `regressao-visual` virou divida
+declarada com guarda (`check:scripts`), o RTL do `Tracker` foi consertado, e o
+quadro de atraso do balao foi medido e declarado. Sobram estas:
 
-### Pecas novas que a auditoria propos e ninguem fez
+1. **`Splitter` em `dir="rtl"`.** Arrastar 120px para a direita move a
+   divisoria 118px para a ESQUERDA, e a seta tambem inverte. Esta medido e
+   escrito na pagina, mas nao consertado - o `Tracker` mostrou que o conserto e
+   pequeno (`useDirection()` mais `insetInlineStart`), entao vale fazer.
+2. **`accessibilityLiveRegion` e do Android.** A `FilterBar` nativa anuncia a
+   contagem por ela, e no iOS o anuncio automatico nao existe sem
+   `announceForAccessibility`, que nenhuma peca do catalogo usa hoje. Vale para
+   toda peca nativa que quiser anunciar mudanca sem foco.
+3. **O `scrollToIndex` do `VirtualList` e o primeiro `useImperativeHandle` do
+   `src/`.** Nao ha precedente na casa, e portanto nao ha regra escrita sobre
+   quando expor `ref` imperativo. Ou vira padrao documentado, ou vira excecao
+   justificada.
+4. **`QueryBoundary` nao trata dado velho enquanto revalida.** O
+   stale-while-revalidate mostra o esqueleto por cima do que ja estava na tela.
+   Nao e esquecimento, esta escrito na pagina - mas e o caso que mais aparece
+   em tela real.
 
-Em ordem de valor sobre custo, todas com caso de uso escrito na auditoria:
-`TimeField`/`TimePicker` (agendamento, ponto eletronico, janela de entrega),
-`FilterBar`/`FilterChip` (a barra de filtros que toda listagem remonta),
-`QueryBoundary` (os quatro finais como peca, hoje so DataTable e
-ChartContainer os tem), `Popconfirm` (excluir uma linha sem o peso do
-AlertDialog), `VirtualList` (o virtualizador ja esta pago pelo DataTable) e o
-`Calendar` de agenda — este ultimo grande, e o unico que nao se apoia em nada
-pronto.
+### Pecas novas que a auditoria propos
+
+Seis das sete foram feitas hoje. Falta uma:
+
+- **`Calendar` de agenda** - grande, e o unico da lista que nao se apoia em
+  nada pronto. Merece desenho proprio antes de codigo, como `Tree`,
+  `TreeSelect` e `Editable` mereceram.
 
 ## O que esta bloqueado esperando acao humana
 
@@ -199,11 +259,19 @@ Tres coisas, e nenhuma e trabalho de codigo:
    fechados, entao nao ha mais nada a escrever antes delas.
 
 2. **O ensaio do `release-native`.** `gh workflow run release-native --field
-   ensaio=true` roda o caminho inteiro sem publicar. Ele NUNCA publicou de
-   verdade em quatro tentativas, e o primeiro lancamento nativo continua sendo
-   voo cego ate alguem rodar isso. Vale mais agora do que valia: a 0.3.0 leva
-   quatro subcaminhos novos, e subcaminho errado no `exports` so aparece na
-   instalacao de quem consome.
+   ensaio=true` roda o caminho inteiro sem publicar.
+
+   A versao anterior deste arquivo dizia que o workflow "nunca publicou em
+   quatro tentativas", e isso esta errado - os logs contam outra historia. A
+   primeira, disparada pela tag `native-v0.2.0`, falhou com `ENEEDAUTH`: nao
+   havia segredo de npm. Alguem entao publicou a 0.2.0 a mao, e as tres
+   tentativas seguintes tomaram `403 - You cannot publish over the previously
+   published versions`, que e o npm recusando sobrescrever versao publicada.
+   **Uma falha real e tres recusas legitimas**, e nao quatro falhas.
+
+   O workflow pode estar bom hoje; o que nunca foi provado e se o segredo
+   funciona, porque desde que ele foi corrigido nunca houve versao nova para
+   publicar. O ensaio e o unico jeito de descobrir isso sem queimar a tag.
 
 3. **A landing (`rivocode.com`), e o gerenciador de pacotes ANTES do bump.**
    Ela consome `^0.2.0` e nao quebra uma linha de codigo ao subir — usa cinco
@@ -264,7 +332,7 @@ a ultima frente parou.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # dezenove verificacoes mais os 880 testes
+bun run check        # vinte verificacoes mais os 1070 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine em demo/dist/
 cd apps/docs && bun run dev   # o site de documentacao, local
@@ -283,11 +351,11 @@ em `.design-sync/NOTES.md`.
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 169 documentos
-bun run check:pecas                                # 83 pecas
-bun test                                           # 880 pass, 93 arquivos
+ls .design-sync/docs/*.md | wc -l                  # 176 documentos
+bun run check:pecas                                # 90 pecas
+bun test                                           # 1070 pass, 101 arquivos
 bun test native/test                               # a metade nativa
-bun run check:paridade                             # confere as 83 linhas da tabela
+bun run check:paridade                             # confere as 90 linhas da tabela
 bun run check:contrato                             # os SEIS subcaminhos, web e nativo
 npm view @rivocode/ui version                      # 0.6.1 (a arvore ja e 0.7.0)
 npm view @rivocode/ui-native version               # 0.2.0 (a arvore ja e 0.3.0)

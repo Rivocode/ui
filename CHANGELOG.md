@@ -346,6 +346,79 @@ cliente que esquecesse as tres renderizaria bonito e passaria por escolha.
 O `check:temas` cobra os tres agora - passou de 72 para 75 tokens -, entao tema
 novo sem fonte declarada falha o gate.
 
+### Sete pecas novas, e nenhuma delas nasce so no web
+
+`TimeField`, `TimePicker`, `FilterBar`, `FilterChip`, `QueryBoundary`,
+`Popconfirm` e `VirtualList`. O catalogo vai de 83 para 90.
+
+- **`TimeField` / `TimePicker`** - agendamento, ponto eletronico, janela de
+  entrega. Nao sao wrapper do `MaskedInput`: o molde `hora` e posicional, poe
+  os dois pontos e nada mais - nao sabe que `25:99` nao existe, nao conhece
+  janela e nao tem seta. `25:99` nao vira `23:59` em silencio; marca invalido e
+  volta ao ultimo valido ao sair, porque ninguem confere valor que o campo
+  "aceitou". O `step` governa as setas e as opcoes, nunca a validacao.
+- **`FilterBar` / `FilterChip`** - a fileira de filtros que toda listagem
+  remontava a mao. Rola na horizontal: quebrar linha faria a altura depender de
+  quantos filtros existem, e colapsar em "+3" esconde filtro atras de contador,
+  que e a origem de "sumiram meus dados". A linha fica reservada para a tela
+  nao pular quando o primeiro filtro entra.
+- **`QueryBoundary`** - os quatro finais como peca. Usa os MESMOS nomes de prop
+  do `DataTable` e do `ChartContainer`, e nao um terceiro dialeto. O `children`
+  aceita funcao, que e o que justifica a peca: ela entrega o dado ja sem
+  `undefined` e mata o `!` que a tela escrevia.
+- **`Popconfirm`** - confirmar sem o peso do `AlertDialog`. Aqui dispensar
+  CANCELA, ao contrario do vizinho, e a razao e que o gesto distraido leva ao
+  resultado seguro: fechar nao apaga nada. Prender alguem num painel de 20rem
+  para ler dois botoes cobra atencao onde nao ha risco, e e assim que se treina
+  a pessoa a clicar em "Confirmar" sem ler.
+- **`VirtualList`** - o virtualizador ja estava pago pelo `DataTable`. Ela mede
+  a altura de verdade, o que a tabela nao pode fazer: linha absoluta sai do
+  algoritmo de layout de tabela e leva junto a largura das colunas. Quem ja
+  passou pela tela vale medida, quem nao passou vale palpite - e o que resolve
+  o item que quebra em duas linhas a 390px. Anuncia `aria-setsize` no total
+  real, entao o leitor de tela ouve "3 de 4000" e nao "3 de 20".
+
+**Cinco das sete ja nasceram tambem no React Native**, no mesmo dia. As outras
+duas nao sao atraso: o `VirtualList` nao porta porque a `FlatList` ja
+virtualiza de fabrica, e o `Popconfirm` vira `AlertDialog`, porque painel
+ancorado nao e idioma de toque - o proprio web ja vira folha de baixo abaixo de
+640px. Isso deixou de ser boa vontade e virou regra com guarda; veja o
+`CLAUDE.md`.
+
+### Quebra silenciosa: o grafico mostrava esqueleto quando devia mostrar erro
+
+O `ChartContainer` ordenava `isLoading` antes de `isError`. Com os dois ligados
+- consulta que falhou durante um refetch -, ele desenhava o esqueleto e
+escondia a falha: quem olhava via carregamento eterno, sem o botao de tentar de
+novo.
+
+O `DataTable` sempre ordenou certo, e `DataTable.md` e a tabela de paridade ja
+afirmavam que a regra da casa era **erro vence carregando**. A peca e que
+discordava do texto, calada, nos dois pacotes. Ha teste dos dois lados agora.
+
+### O `Tracker` lia o dado errado em `dir="rtl"`
+
+Nao era preferencia de layout: o flex espelhava o desenho, mas a conta que
+descobre qual periodo esta sob o ponteiro nao. O ponteiro a 5% da esquerda lia
+"Dia 2" quando a celula ali era "Dia 20" - **dezessete celulas de distancia**,
+e o balao dizia o dado errado. A conta agora mede da borda que comeca a
+leitura, as setas trocam de papel e a marca usa `insetInlineStart`.
+
+O `Splitter` tem o mesmo limite e continua tendo: em `rtl`, arrastar 120px para
+a direita move a divisoria 118px para a esquerda. Esta medido e escrito na
+pagina dele, porque limite que ninguem escreve vira surpresa.
+
+### `check:scripts`, e o guarda que ninguem rodava
+
+`scripts/regressao-visual.ts` vivia fora do gate, e por isso ficou vermelho em
+silencio: tres assinaturas de retrato divergiam do comitado desde o dia em que
+os cinco paineis flutuantes foram refeitos, e ninguem sabia.
+
+Ele nao pode entrar no gate - 77 segundos e um Chrome em caminho fixo de macOS,
+enquanto a CI e ubuntu. Entao a guarda nova resolve a classe: todo `scripts/*.ts`
+tem que ser alcancavel a partir do `check`, ou ter uma linha declarando o que o
+impede. A lista so encolhe, como o `DEBT` das outras guardas. Custo: 22ms.
+
 ### Como migrar
 
 Busca e troca por palavra inteira resolve oito dos dez. Os dois de forma -

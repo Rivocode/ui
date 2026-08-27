@@ -122,20 +122,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Vindo do GitHub Packages
-
-Até a versão `0.1.0` o pacote era privado, e todo projeto consumidor tinha um
-`.npmrc` com esta linha:
-
-```
-@rivocode:registry=https://npm.pkg.github.com
-```
-
-**Remova.** Mapeamento de escopo tem precedência sobre o registro padrão, então
-enquanto ela existir a instalação de `@rivocode/ui` continua buscando no GitHub
-Packages, e não encontra as versões novas. O token também deixa de ser
-necessário.
-
 ## Quando algo não aparece
 
 | Sintoma                                   | Causa quase certa                                                        |
@@ -143,7 +129,6 @@ necessário.
 | Tela sem estilo nenhum, nem a sua         | o plugin do Tailwind não está na lista de plugins do `vite.config.ts`   |
 | Suas classes pegam, as da biblioteca não  | falta a linha `@source`, ou o caminho relativo dela está errado          |
 | `ChevronRight is not defined` ou similar  | falta o `lucide-react`: o pnpm e o yarn não instalam par sozinhos        |
-| `404` ao instalar o escopo `@rivocode`    | um `.npmrc` antigo ainda aponta o escopo para o GitHub Packages          |
 | Erro de contexto ao abrir diálogo ou menu | árvore fora do `RivoProvider`                                            |
 | Dois Reacts na página                     | React como dependência direta da biblioteca em vez de par, verifique o lockfile |
 | Flutuante sem tema, solto no fim da página | `scope="local"` sem o container de portal do Provider                    |

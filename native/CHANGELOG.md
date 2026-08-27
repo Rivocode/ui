@@ -171,6 +171,54 @@ para `fonts={{...}}` produz o defeito calado. Pior, o gerador as resolvia com
 a mesma falha, escrita dentro da ferramenta. No celular so o app sabe o que
 carregou.
 
+### A fila volta a zero no mesmo dia em que encheu
+
+Cinco pecas web nasceram hoje e chegaram aqui junto: `QueryBoundary`,
+`FilterBar`, `FilterChip`, `TimeField` e `TimePicker`. Das 90 do catalogo web,
+73 tem par no celular e 17 nao portam por decisao.
+
+Isso deixou de ser boa vontade. **Peca web nova passa a nascer nos dois pacotes
+no mesmo dia**, e `bun run check:paridade` recusa peca que entre na fila sem
+uma linha em `FILA_DECLARADA` dizendo por que ela nao pode nascer junto. A
+lista so encolhe, como o `DEBT` das outras guardas. O motivo esta escrito la: a
+fila chegou a zero em 26/08 e voltou a encher no mesmo dia, com sete pecas de
+uma vez - cada uma parecendo atraso temporario, e temporario e como uma fila de
+vinte comeca.
+
+O que se reescreveu em cada uma, e por que:
+
+- **`TimeField`** continua sendo o campo de DIGITAR - quem marca ponto escreve
+  `0800` mais rapido do que abre painel. As setas do teclado, que nao existem
+  no toque, viram dois botoes de passo no molde do `NumberField`; eles chamam o
+  mesmo calculo, entao pousam na mesma grade do web.
+- **`TimePicker`** e gatilho mais folha de baixo, e **nao embute o `TimeField`**
+  como o web faz. Um `TextInput` dentro de um `Pressable` engole o toque do
+  pai, e o gatilho precisa ser um alvo unico para o leitor de tela.
+- **`FilterBar`** poe o limpar FORA do que rola: se ele rolasse junto, o
+  controle que existe para desfazer tudo seria o unico que exige rolar ate o
+  fim para achar.
+- **`FilterChip`** tem faixa de toque de 44pt com a pilula pintada de 28
+  dentro. A faixa foi esticada em vez de dar `hitSlop` vertical porque **no
+  Android o toque fora dos limites do pai nao e entregue** - a folga seria
+  descartada justamente no aparelho onde mais falta alvo.
+- **`QueryBoundary`** traz os mesmos nomes e a mesma ordem, e nao trouxe
+  `classNames`: a prop existe no web para ninguem alcancar o no interno por
+  `[&_div]`, e aqui nao ha seletor de descendente, entao ela nao teria o que
+  evitar.
+
+Duas nao portam, e as duas por decisao: o `VirtualList`, porque a `FlatList` ja
+virtualiza de fabrica e uma peca nossa por cima seria embrulho de embrulho; e o
+`Popconfirm`, que vira `AlertDialog` - painel ancorado a um botao de lixeira
+encostado na borda a 390px sai da tela ou tapa a linha que se vai apagar.
+
+### O grafico mostrava esqueleto quando devia mostrar erro
+
+Mesmo defeito do web, e herdado dele: `isLoading` era testado antes de
+`isError`, entao consulta que falhou durante um refetch escondia a falha atras
+do esqueleto. No celular doi mais - nao ha barra de rede visivel, e a pessoa
+fica olhando um carregamento que nunca termina, sem o botao de tentar de novo.
+O `DataList` sempre ordenou certo. Ha teste agora.
+
 ### Como migrar
 
 Busca e troca resolve as duas renomeacoes, e o `tsc` aponta a da `Sparkline`. A
