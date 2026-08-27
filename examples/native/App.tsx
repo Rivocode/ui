@@ -523,7 +523,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <RivoProvider theme={theme} density="comfortable">
+      <RivoProvider theme={theme}>
         <Painel
           lightTheme={theme === "rivocode-light"}
           onLightThemeChange={(light) => setTheme(light ? "rivocode-light" : "rivocode-dark")}

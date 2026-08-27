@@ -3,12 +3,32 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.ts",
+  "css": [
+    "O app importa o generated.css, que e GERADO: nao se edita a mao.",
+    "",
+    "`bun run start` (e o android, o ios e o web) ja sobe o observador junto do expo:",
+    "classe nova em App.tsx ou em native/src regenera o CSS sozinha, em ~250 ms, sem",
+    "ninguem lembrar de um segundo comando. Quem quiser o observador sem o expo roda",
+    "`bun run build:css --watch`; quem quiser so uma passada roda `bun run build:css`.",
+    "",
+    "Observa examples/native e native/src (e o native/theme.css), porque o global.css",
+    "aponta o @source para os dois: mudar a className de uma peca da biblioteca muda o",
+    "CSS que esta tela precisa. Regera tudo a cada mudanca, sem incremental - a passada",
+    "inteira custa ~250 ms, dos quais ~135 ms sao do Tailwind e ~110 ms da conferencia.",
+    "",
+    "Depois de cada passada ele compara o que o codigo usa com o que o CSS tem e imprime",
+    "`classe \"X\" usada e nao gerada`. Classe VALIDA nunca aparece ali: o Tailwind emite",
+    "tudo que acha. Quem aparece e o erro de digitacao e o nome que nao existe no tema -",
+    "que hoje somem sem erro nenhum e sem estilo nenhum. E aviso, e nao falha; para ele",
+    "derrubar o comando, passe --strict."
+  ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "build:css": "node ../../native/scripts/build-css.mjs"
+    "start": "node scripts/css.mjs --watch -- expo start",
+    "android": "node scripts/css.mjs --watch -- expo start --android",
+    "ios": "node scripts/css.mjs --watch -- expo start --ios",
+    "web": "node scripts/css.mjs --watch -- expo start --web",
+    "build:css": "node scripts/css.mjs",
+    "build:css:watch": "node scripts/css.mjs --watch"
   },
   "dependencies": {
     "expo": "~57.0.16",
