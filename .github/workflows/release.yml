@@ -20,15 +20,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      # Sem `id-token`, porque sem `--provenance`: o registro recusa assinatura
-      # vinda de repositorio privado, com 422 e a mensagem "Only public source
-      # repositories are supported when publishing with provenance". A checagem
-      # do CLI nao pega isso - ela olha a visibilidade do PACOTE, e e pulada
-      # quando se passa `--access public`. Quem decide e o servidor, depois de
-      # todo o trabalho feito e da assinatura ja registrada no log publico.
+      # `id-token` e `--provenance` andam JUNTOS: um sem o outro nao publica
+      # assinado, e a falta so aparece no ultimo comando de uma publicacao que
+      # nao se desfaz.
       #
-      # Para reativar, o repositorio precisa ser publico. Enquanto for privado,
-      # devolver o `--provenance` so recria a falha no ultimo passo.
+      # Os dois estiveram desligados enquanto o repositorio era privado, porque
+      # o registro recusa procedencia de fonte privada com 422 e a mensagem
+      # "Only public source repositories are supported when publishing with
+      # provenance". A checagem do CLI nao pega isso: ela olha a visibilidade do
+      # PACOTE, e e pulada quando se passa `--access public`. Quem decide e o
+      # servidor, depois de todo o trabalho feito.
+      #
+      # O repositorio e publico desde 27/08/2026. Se voltar a ser privado, a
+      # linha que sai e o `--provenance` do passo de publicar, e esta daqui vai
+      # junto.
+      id-token: write
 
     steps:
       - uses: actions/checkout@v5
@@ -80,6 +86,23 @@ jobs:
       # esta conferencia, `git tag v0.4.0` sobre um package.json em 0.3.0
       # republica silenciosamente a versao velha, ou falha la na frente com um
       # erro que nao explica nada.
+      - name: Conferir o token da procedencia
+        # O `--dry-run` do npm NAO exercita procedencia: ha um `if (!dryRun)`
+        # antes da geracao da assinatura, entao o ensaio fica verde sem provar
+        # nada. A permissao faltando so apareceria no ultimo comando de uma
+        # publicacao que nao se desfaz, e foi assim que a 0.8.0 saiu sem
+        # assinatura com o workflow inteiro verde.
+        #
+        # Esta variavel so existe quando `id-token: write` foi concedido ao job.
+        # Custa zero rede, e e a unica parte da procedencia que da para provar
+        # antes de gastar a tag.
+        run: |
+          if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+            echo "::error::Sem token OIDC: o job precisa de id-token write em permissions."
+            exit 1
+          fi
+          echo "Token OIDC presente: a publicacao sai assinada."
+
       - name: Conferir se a tag bate com a versao
         run: |
           tag="${{ github.event.inputs.tag || github.ref_name }}"
@@ -175,7 +198,7 @@ jobs:
       # e por mais uma: sem ele o ensaio dispararia o `prepublishOnly` - check
       # e build de novo - e o ensaio custaria mais que a estreia.
       - name: Ensaiar a publicacao
-        run: npm publish --access public --ignore-scripts --dry-run
+        run: npm publish --access public --ignore-scripts --provenance --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -183,6 +206,6 @@ jobs:
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
       # tempo repetindo o que acabou de ser feito.
       - name: Publicar
-        run: npm publish --access public --ignore-scripts
+        run: npm publish --access public --ignore-scripts --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
