@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { Splitter } from "../src/components/splitter";
@@ -59,6 +59,64 @@ test("no celular os dois lados empilham, em vez de espremer", () => {
   const splitter = screen.getByRole("separator").parentElement!;
   expect(splitter.className).toContain("max-md:flex-col");
   expect(screen.getByRole("separator").className).toContain("max-md:hidden");
+});
+
+function splitter(dir: "ltr" | "rtl") {
+  const medida = { size: 50 };
+  const view = render(
+    <RivoProvider scope="local" dir={dir}>
+      <Splitter
+        defaultSize={50}
+        min={10}
+        onSizeChange={(next) => {
+          medida.size = next;
+        }}
+        start={<p>Lista</p>}
+        end={<p>Detalhe</p>}
+        label="Lista e detalhe"
+      />
+    </RivoProvider>,
+  );
+
+  const handle = within(view.container).getByRole("separator", { name: "Lista e detalhe" });
+  handle.setPointerCapture = () => {};
+  handle.parentElement!.getBoundingClientRect = () =>
+    ({ left: 0, right: 600, width: 600, top: 0, bottom: 300, height: 300 }) as DOMRect;
+
+  return { ...view, handle, medida };
+}
+
+test("em rtl o arraste mede da borda que comeca a leitura, e nao sempre da esquerda", () => {
+  const { handle, medida } = splitter("rtl");
+
+  fireEvent.pointerDown(handle, { clientX: 300, clientY: 150, pointerId: 1 });
+  fireEvent.pointerMove(window, { clientX: 420, clientY: 150, pointerId: 1 });
+
+  expect(medida.size).toBe(30);
+  expect(handle.getAttribute("aria-valuenow")).toBe("30");
+
+  const espelho = splitter("ltr");
+  fireEvent.pointerDown(espelho.handle, { clientX: 300, clientY: 150, pointerId: 1 });
+  fireEvent.pointerMove(window, { clientX: 420, clientY: 150, pointerId: 1 });
+
+  expect(espelho.medida.size).toBe(70);
+});
+
+test("em rtl a seta move a divisoria para o lado que a pessoa ve, e nao pelo numero", () => {
+  const { handle, medida } = splitter("rtl");
+
+  fireEvent.keyDown(handle, { key: "ArrowRight" });
+  expect(medida.size).toBe(48);
+
+  fireEvent.keyDown(handle, { key: "ArrowLeft" });
+  fireEvent.keyDown(handle, { key: "ArrowLeft" });
+  expect(medida.size).toBe(52);
+
+  fireEvent.keyDown(handle, { key: "Home" });
+  expect(medida.size).toBe(10);
+
+  fireEvent.keyDown(handle, { key: "End" });
+  expect(medida.size).toBe(90);
 });
 
 test("o texto vira campo no clique e volta no Enter", () => {

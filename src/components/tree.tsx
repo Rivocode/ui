@@ -1,5 +1,6 @@
 "use client";
 
+import { useDirection } from "@base-ui/react/direction-provider";
 import { ChevronRight } from "lucide-react";
 import {
   useMemo,
@@ -58,6 +59,7 @@ export function Tree({
   const [internalOpenIds, setInternalOpenIds] = useState<string[]>([]);
   const openIds = expanded ?? internalOpenIds;
   const root = useRef<HTMLUListElement>(null);
+  const rtl = useDirection() === "rtl";
 
   const controlled = value !== undefined;
   const [internalValue, setInternalValue] = useState<string[]>(defaultValue ?? []);
@@ -104,15 +106,18 @@ export function Tree({
     const id = rows[index]!.dataset.id!;
     const node = findNode(visible, id);
 
+    const into = rtl ? "ArrowLeft" : "ArrowRight";
+    const out = rtl ? "ArrowRight" : "ArrowLeft";
+
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const next = rows[index + (event.key === "ArrowDown" ? 1 : -1)];
       next?.focus();
-    } else if (event.key === "ArrowRight" && node?.children?.length) {
+    } else if (event.key === into && node?.children?.length) {
       event.preventDefault();
       if (!openIds.includes(id)) toggleOpen(id);
       else rows[index + 1]?.focus();
-    } else if (event.key === "ArrowLeft") {
+    } else if (event.key === out) {
       event.preventDefault();
       if (node?.children?.length && openIds.includes(id)) toggleOpen(id);
       else {
@@ -171,6 +176,7 @@ function Branch({
   onToggleOpen: (id: string) => void;
   onToggleSelect: (node: TreeNode) => void;
 }) {
+  const rtl = useDirection() === "rtl";
   const hasChildren = Boolean(node.children?.length);
   const isOpen = openIds === null || openIds.includes(node.id);
   const leaves = leavesOf(node);
@@ -188,9 +194,9 @@ function Branch({
         aria-disabled={node.disabled || undefined}
         tabIndex={isFirst && level === 0 ? 0 : -1}
         onClick={() => !node.disabled && onToggleSelect(node)}
-        style={{ paddingLeft: `${level * 1.25 + 0.25}rem` }}
+        style={{ paddingInlineStart: `${level * 1.25 + 0.25}rem` }}
         className={cn(
-          "flex cursor-default items-center gap-2 rounded-sm py-[var(--rc-item-y)] pr-2",
+          "flex cursor-default items-center gap-2 rounded-sm py-[var(--rc-item-y)] pe-2",
           "text-base text-fg outline-none select-none",
           "hover:bg-accent-subtle focus-visible:ring-2 focus-visible:ring-ring",
           node.disabled && "cursor-not-allowed text-fg-disabled hover:bg-transparent",
@@ -212,7 +218,7 @@ function Branch({
               aria-hidden="true"
               className={cn(
                 "transition-transform duration-[var(--rc-duration-fast)] ease-rc",
-                isOpen && "rotate-90",
+                isOpen ? "rotate-90" : rtl && "rotate-180",
               )}
             />
           </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useDirection } from "@base-ui/react/direction-provider";
 import { useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
@@ -42,6 +43,7 @@ export function Splitter({
   const frame = useRef<HTMLDivElement>(null);
   const current = size ?? internal;
   const vertical = orientation === "vertical";
+  const rtl = useDirection() === "rtl";
 
   function move(to: number) {
     const clamped = Math.max(min, Math.min(100 - min, to));
@@ -56,9 +58,10 @@ export function Splitter({
     event.currentTarget.setPointerCapture(event.pointerId);
 
     const onMove = (pointer: PointerEvent) => {
+      const along = rtl ? box.right - pointer.clientX : pointer.clientX - box.left;
       const position = vertical
         ? ((pointer.clientY - box.top) / box.height) * 100
-        : ((pointer.clientX - box.left) / box.width) * 100;
+        : (along / box.width) * 100;
       move(Math.round(position));
     };
 
@@ -98,8 +101,8 @@ export function Splitter({
         aria-valuemax={100 - min}
         onPointerDown={drag}
         onKeyDown={(event) => {
-          const back = vertical ? "ArrowUp" : "ArrowLeft";
-          const forward = vertical ? "ArrowDown" : "ArrowRight";
+          const back = vertical ? "ArrowUp" : rtl ? "ArrowRight" : "ArrowLeft";
+          const forward = vertical ? "ArrowDown" : rtl ? "ArrowLeft" : "ArrowRight";
 
           if (event.key === back) move(current - STEP);
           else if (event.key === forward) move(current + STEP);

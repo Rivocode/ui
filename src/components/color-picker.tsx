@@ -1,5 +1,6 @@
 "use client";
 
+import { useDirection } from "@base-ui/react/direction-provider";
 import {
   useId,
   useRef,
@@ -103,6 +104,7 @@ export function ColorPicker({
 }: ColorPickerProps) {
   const labelId = useId();
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
+  const rtl = useDirection() === "rtl";
 
   const [internalValue, setInternalValue] = useState(defaultValue ?? "");
   const value = valueProp ?? internalValue;
@@ -145,9 +147,11 @@ export function ColorPicker({
 
   function walk(event: KeyboardEvent<HTMLDivElement>) {
     const last = swatches.length - 1;
+    const ahead = rtl ? "ArrowLeft" : "ArrowRight";
+    const back = rtl ? "ArrowRight" : "ArrowLeft";
     const step: Record<string, number | undefined> = {
-      ArrowRight: focusable + 1,
-      ArrowLeft: focusable - 1,
+      [ahead]: focusable + 1,
+      [back]: focusable - 1,
       ArrowDown: focusable + columns,
       ArrowUp: focusable - columns,
       Home: 0,

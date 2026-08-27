@@ -13,9 +13,12 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 
 const SWATCHES = ["#d4f34a", "#3ddc97", "#6aa9ff"];
 
-function picker(props: Partial<React.ComponentProps<typeof ColorPicker>> = {}) {
+function picker(
+  props: Partial<React.ComponentProps<typeof ColorPicker>> = {},
+  dir: "ltr" | "rtl" = "ltr",
+) {
   return render(
-    <RivoProvider scope="local">
+    <RivoProvider scope="local" dir={dir}>
       <ColorPicker label="Cor da marca" swatches={SWATCHES} columns={3} {...props} />
     </RivoProvider>,
   );
@@ -56,6 +59,24 @@ test("a seta anda pela grade e escolhe a amostra que recebeu o foco", () => {
 
   fireEvent.keyDown(group, { key: "End" });
   expect(seen).toEqual(["#3ddc97", "#6aa9ff"]);
+});
+
+test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () => {
+  const seen: string[] = [];
+  picker({ value: "#3ddc97", onValueChange: (color) => seen.push(color) }, "rtl");
+
+  const group = screen.getByRole("radiogroup");
+  fireEvent.keyDown(group, { key: "ArrowRight" });
+  expect(seen).toEqual(["#d4f34a"]);
+
+  fireEvent.keyDown(group, { key: "ArrowLeft" });
+  expect(seen).toEqual(["#d4f34a", "#6aa9ff"]);
+
+  fireEvent.keyDown(group, { key: "Home" });
+  expect(seen).toEqual(["#d4f34a", "#6aa9ff", "#d4f34a"]);
+
+  fireEvent.keyDown(group, { key: "End" });
+  expect(seen).toEqual(["#d4f34a", "#6aa9ff", "#d4f34a", "#6aa9ff"]);
 });
 
 test("so a amostra escolhida entra na ordem de tabulacao", () => {

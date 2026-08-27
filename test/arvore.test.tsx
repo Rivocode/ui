@@ -99,6 +99,41 @@ test("as setas andam pelas linhas que estao na tela", () => {
   expect(document.activeElement).toBe(rows[0]!);
 });
 
+function RtlTree() {
+  const [open, setOpen] = useState<string[]>(["financeiro"]);
+  return (
+    <RivoProvider scope="local" dir="rtl">
+      <Tree items={TREE} expanded={open} onExpandedChange={setOpen} />
+    </RivoProvider>
+  );
+}
+
+test("em rtl a seta que abre troca de lado, e o recuo cresce da borda que comeca a leitura", () => {
+  render(<RtlTree />);
+  const financeiro = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
+  const filha = screen.getByText("Contas a pagar").closest("[role=treeitem]") as HTMLElement;
+
+  expect(financeiro.style.paddingLeft).toBe("");
+  expect(financeiro.style.paddingInlineStart).toBe("0.25rem");
+  expect(filha.style.paddingInlineStart).toBe("1.5rem");
+
+  financeiro.focus();
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowRight" });
+  expect(financeiro.getAttribute("aria-expanded")).toBe("false");
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
+  expect(financeiro.getAttribute("aria-expanded")).toBe("true");
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
+  expect(document.activeElement).toBe(
+    screen.getByText("Contas a pagar").closest("[role=treeitem]"),
+  );
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowRight" });
+  expect(document.activeElement).toBe(financeiro);
+});
+
 test("espaco escolhe pelo teclado", () => {
   render(<ControlledTree />);
   screen.getAllByRole("treeitem")[1]!.focus();
