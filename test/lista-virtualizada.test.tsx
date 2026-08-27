@@ -80,12 +80,19 @@ test("a contagem acompanha a lista que chegou, e nao a que foi desenhada", () =>
   }
 });
 
-test("a lista e uma lista para o leitor de tela, e leva nome", () => {
+test("o nome da lista carrega o total, e nao o que esta montado", () => {
   const { container } = list();
 
+  // O `role="list"` tem so os itens da janela no DOM, entao o leitor de tela
+  // anunciaria "lista com 15 itens" antes de chegar no "1 de 4000" que o
+  // aria-posinset diz. Por o total no nome e o que impede a peca de mentir na
+  // primeira frase que a pessoa ouve.
   const role = track(container);
-  expect(role.getAttribute("aria-label")).toBe("Log de envio");
-  expect(items(container).length).toBeGreaterThan(0);
+  const montados = items(container).length;
+
+  expect(role.getAttribute("aria-label")).toBe("Log de envio, 4000 itens");
+  expect(montados).toBeGreaterThan(0);
+  expect(montados).toBeLessThan(4000);
 });
 
 test("a moldura rola por dentro em vez de empurrar a pagina", () => {

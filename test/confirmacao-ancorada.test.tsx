@@ -150,7 +150,26 @@ test("enquanto a chamada corre, Esc nao fecha o painel por baixo dela", async ()
   expect(screen.queryByRole("alertdialog")).not.toBeNull();
   expect(onCancel).not.toHaveBeenCalled();
 
-  expect(screen.getByRole("button", { name: "Cancelar" }).hasAttribute("disabled")).toBe(true);
+  // O Cancelar recusa o toque por `aria-disabled`, e NAO por `disabled`. A
+  // diferenca e a que separa esta peca de uma armadilha de teclado: com o
+  // atributo, os dois botoes saiam da ordem de tabulacao ao mesmo tempo, o
+  // `alertdialog` ficava com ZERO focaveis, o foco caia no `<body>` e o Tab
+  // vazava para o fundo que o Base UI marcou aria-hidden. Medido em Chrome
+  // antes do conserto: "focaveis restantes: NENHUM". E falha WCAG 2.1.2.
+  const cancel = screen.getByRole("button", { name: "Cancelar" });
+  expect(cancel.getAttribute("aria-disabled")).toBe("true");
+  expect(cancel.hasAttribute("disabled")).toBe(false);
+
+  // A garantia que importa, escrita como o leitor de tela a sente: sobra pelo
+  // menos um alvo de foco dentro do painel enquanto a chamada corre.
+  const focusable = panel().querySelectorAll(
+    'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+  );
+  expect(focusable.length).toBeGreaterThan(0);
+
+  // E a espera nao e silenciosa: ha regiao viva dizendo que ela corre.
+  const notice = panel().querySelector('[role="status"]');
+  expect(notice?.textContent).toBeTruthy();
 
   await act(async () => {
     release();

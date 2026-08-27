@@ -4,6 +4,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { useImperativeHandle, useRef, type ReactNode, type Ref } from "react";
 
 import { cn } from "../lib/cn";
+import { LoadingAnnouncement } from "../lib/loading-announcement";
 import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
@@ -64,6 +65,14 @@ export type VirtualListProps<Item> = {
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * Existe pelo mesmo motivo do `errorTitle`, e com o mesmo nome nas quatro
+   * pecas de consulta: sem ele, a tela em outra lingua fica com o titulo
+   * traduzido e o botao em portugues, que e pior do que tudo em portugues.
+   */
+  retryLabel?: ReactNode;
+  /**
    * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
    * porque "nenhum resultado" transfere para a pessoa o trabalho de descobrir
    * por que.
@@ -72,7 +81,14 @@ export type VirtualListProps<Item> = {
   /** Quantos itens falsos o carregando mostra. */
   skeletonItems?: number;
 
-  /** O nome da lista para o leitor de tela. Sem ele, ela sai sem nome. */
+  /**
+   * O nome da lista para o leitor de tela. Sem ele, ela sai sem nome - e a
+   * moldura, que e alvo de tabulacao, sai como uma parada sem nome tambem.
+   *
+   * A lista de dentro repete este nome com a contagem real colada: o leitor
+   * conta os filhos que estao no DOM e anuncia "lista com 15 itens" numa lista
+   * de quatro mil, e o nome e o unico lugar onde cabe desmentir isso.
+   */
   label?: string;
   className?: string;
   /**
@@ -104,6 +120,7 @@ export function VirtualList<Item>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar a lista.",
+  retryLabel = "Tentar de novo",
   empty,
   skeletonItems = 5,
   label,
@@ -146,7 +163,7 @@ export function VirtualList<Item>({
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
-            Tentar de novo
+            {retryLabel}
           </Button>
         )}
       </Alert>
@@ -169,9 +186,27 @@ export function VirtualList<Item>({
     <div
       ref={viewport}
       data-rc-viewport=""
+      tabIndex={0}
+      role="group"
+      aria-label={label}
       style={{ maxHeight }}
-      className={cn("w-full overflow-auto rounded-md border border-border bg-surface", className)}
+      className={cn(
+        "w-full overflow-auto rounded-md border border-border-strong bg-surface",
+        // A moldura e um alvo de tabulacao porque, fora do Chrome, a rolagem
+        // nao chega pelo teclado de outro jeito: quando o item nao tem nada
+        // focavel dentro - metade dos exemplos da vitrine - Firefox e Safari
+        // deixam 256.000px de lista sem nenhuma tecla que os alcance.
+        //
+        // O anel e da casa por causa do preco da alternativa: o Chrome >= 127
+        // torna o rolador focavel sozinho, e pinta o proprio azul. Sem estas
+        // duas linhas, este e o unico lugar da vitrine onde o foco nao e
+        // `--rc-ring`.
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        className,
+      )}
     >
+      <LoadingAnnouncement loading={loading} />
+
       {loading ? (
         <div aria-hidden="true">
           {Array.from({ length: skeletonItems }, (_, index) => (
@@ -187,7 +222,7 @@ export function VirtualList<Item>({
       ) : (
         <div
           role="list"
-          aria-label={label}
+          aria-label={label === undefined ? undefined : `${label}, ${count} itens`}
           style={{ height: virtualizer.getTotalSize() }}
           className={cn("relative w-full", classNames?.list)}
         >

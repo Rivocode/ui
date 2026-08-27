@@ -2,6 +2,7 @@
 
 import { TriangleAlert } from "lucide-react";
 import {
+  useEffect,
   useId,
   useRef,
   useState,
@@ -20,6 +21,11 @@ import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "./popover
 import { Sheet, SheetClose, SheetContent, SheetHandle, SheetTrigger } from "./sheet";
 
 type CloseRequest = { cancel: () => void };
+
+const CANCEL_BLOCKED = cn(
+  "aria-disabled:cursor-not-allowed aria-disabled:border-transparent",
+  "aria-disabled:bg-surface-raised aria-disabled:text-fg-disabled aria-disabled:shadow-none",
+);
 
 export type PopconfirmProps = Omit<
   ComponentProps<"div">,
@@ -66,6 +72,12 @@ export type PopconfirmProps = Omit<
      */
     loading?: boolean;
     /**
+     * O que o leitor de tela ouve quando a espera comeca, dentro do painel.
+     * Sem isto a espera e muda: o painel nao troca de nome e o unico sinal
+     * mora no botao. O padrao repete o verbo do `confirmLabel`.
+     */
+    busyLabel?: string;
+    /**
      * Para onde o foco volta ao fechar. Vale quando o proprio gatilho some na
      * confirmacao - a linha excluida leva o botao junto, e sem isto o foco cai
      * no corpo da pagina.
@@ -91,6 +103,7 @@ export function Popconfirm({
   defaultOpen = false,
   onOpenChange,
   loading = false,
+  busyLabel,
   finalFocus,
   classNames,
   className,
@@ -102,12 +115,20 @@ export function Popconfirm({
   const isMobile = useMobile();
   const [selfOpen, setSelfOpen] = useState(defaultOpen);
   const [pending, setPending] = useState(false);
+  const [notice, setNotice] = useState("");
   const cancelRef = useRef<HTMLButtonElement>(null);
   const labelId = useId();
   const descriptionId = useId();
 
   const open = openProp ?? selfOpen;
   const busy = loading || pending;
+
+  const busyMessage = busyLabel ?? `${confirmLabel}: ação em andamento. Aguarde.`;
+  const blockedMessage = "Não dá para cancelar enquanto a ação está em andamento.";
+
+  useEffect(() => {
+    setNotice(busy ? busyMessage : "");
+  }, [busy, busyMessage]);
 
   function move(next: boolean) {
     if (openProp === undefined) setSelfOpen(next);
@@ -117,6 +138,7 @@ export function Popconfirm({
   function handleOpenChange(next: boolean, details: CloseRequest) {
     if (!next && busy) {
       details.cancel();
+      setNotice(blockedMessage);
       return;
     }
 
@@ -169,6 +191,12 @@ export function Popconfirm({
     </div>
   );
 
+  const status = (
+    <div role="status" aria-live="polite" className="sr-only">
+      {notice}
+    </div>
+  );
+
   const confirmButton = (
     <Button
       type="button"
@@ -204,11 +232,12 @@ export function Popconfirm({
         >
           <SheetHandle />
           {body}
+          {status}
           <div className={cn("mt-5 flex flex-col-reverse gap-2 [&>*]:w-full", classNames?.footer)}>
             <SheetClose
-              disabled={busy}
+              aria-disabled={busy || undefined}
               render={<Button type="button" variant="secondary" size="md" ref={cancelRef} />}
-              className={classNames?.cancel}
+              className={cn(CANCEL_BLOCKED, classNames?.cancel)}
             >
               {cancelLabel}
             </SheetClose>
@@ -235,11 +264,12 @@ export function Popconfirm({
         className={cn("w-[min(20rem,calc(100vw-2rem))]", className)}
       >
         {body}
+        {status}
         <div className={cn("mt-4 flex items-center justify-end gap-2", classNames?.footer)}>
           <PopoverClose
-            disabled={busy}
+            aria-disabled={busy || undefined}
             render={<Button type="button" variant="secondary" size="sm" ref={cancelRef} />}
-            className={classNames?.cancel}
+            className={cn(CANCEL_BLOCKED, classNames?.cancel)}
           >
             {cancelLabel}
           </PopoverClose>

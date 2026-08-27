@@ -321,3 +321,130 @@ test("os textos da barra se trocam por inteiro", () => {
   expect(screen.getByRole("button", { name: "Zerar os 2" })).toBeDefined();
   expect(screen.getByRole("status").textContent).toBe("2 recortes");
 });
+
+function scroller(list: HTMLElement, box: number, content: number, at: number) {
+  Object.defineProperty(list, "clientWidth", { value: box, configurable: true });
+  Object.defineProperty(list, "scrollWidth", { value: content, configurable: true });
+  Object.defineProperty(list, "scrollLeft", { value: at, writable: true, configurable: true });
+  fireEvent.scroll(list);
+}
+
+const SIX: AppliedFilter[] = [
+  { id: "status", label: "Situacao", value: "Em aberto" },
+  { id: "emissao", label: "Emissao", value: "01/08 a 31/08" },
+  { id: "customer", label: "Cliente", value: "Clinica Sao Lucas Servicos Medicos Ltda" },
+  { id: "vendor", label: "Fornecedor", value: "Distribuidora Hospitalar Norte" },
+  { id: "branch", label: "Filial", value: "Matriz Centro" },
+  { id: "seller", label: "Vendedor", value: "Maria Fernanda de Albuquerque" },
+];
+
+test("cabendo tudo, nenhuma borda esmaece: fileira inteira nao pode fingir que continua", () => {
+  render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 600, 600, 0);
+
+  expect(list.className).not.toContain("mask-l-from");
+  expect(list.className).not.toContain("mask-r-from");
+});
+
+test("sobrando filtro a direita, a borda direita esmaece, que e o aviso de que ha mais", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.className).toContain("mask-r-from-[calc(100%-1.5rem)]");
+  expect(list.className).toContain("mask-r-to-100%");
+  expect(list.className).not.toContain("mask-l-from");
+});
+
+test("no meio da rolagem as duas bordas esmaecem, porque ha filtro dos dois lados", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 520);
+
+  expect(list.className).toContain("mask-l-from-[calc(100%-1.5rem)]");
+  expect(list.className).toContain("mask-r-from-[calc(100%-1.5rem)]");
+});
+
+test("no fim da rolagem so a esquerda esmaece: a direita nao ha mais o que prometer", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 1039);
+
+  expect(list.className).toContain("mask-l-from-[calc(100%-1.5rem)]");
+  expect(list.className).not.toContain("mask-r-from");
+});
+
+test("voltando ao comeco o esmaecido da esquerda sai junto", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 1039);
+  scroller(list, 250, 1289, 0);
+
+  expect(list.className).not.toContain("mask-l-from");
+  expect(list.className).toContain("mask-r-from");
+});
+
+test("o esmaecido nao muda a conta de fichas: todas continuam na fileira e alcancaveis", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(screen.getAllByRole("listitem").length).toBe(6);
+  expect(list.className).toContain("overflow-x-auto");
+  expect(list.className).not.toContain("flex-wrap");
+});
+
+test("o foco para longe da borda esmaecida, pela mesma medida do esmaecido", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+
+  expect(screen.getByRole("list").className).toContain("scroll-px-6");
+});
+
+test("com o rolador como parada de tabulacao, o foco nele desliga o esmaecido", () => {
+  render(
+    <FilterBar
+      filters={SIX.map((each) => ({ ...each, removable: false }))}
+      onFiltersChange={() => {}}
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 520);
+
+  expect(list.getAttribute("tabindex")).toBe("0");
+  expect(list.className).toContain("focus-visible:mask-none");
+  expect(list.className).toContain("focus-visible:ring-2");
+});
+
+test("o limpar conta o que esta aplicado, e nao o que coube na tela", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(screen.getByRole("button", { name: "Limpar 6 filtros" })).toBeDefined();
+  expect(screen.getByRole("status").textContent).toBe("6 filtros aplicados");
+});
+
+test("o classNames da lista redesenha o esmaecido, para quem quiser outra medida", () => {
+  render(
+    <FilterBar
+      filters={SIX}
+      onFiltersChange={() => {}}
+      classNames={{ list: "mask-r-from-[calc(100%-4rem)]" }}
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.className).toContain("mask-r-from-[calc(100%-4rem)]");
+  expect(list.className).not.toContain("mask-r-from-[calc(100%-1.5rem)]");
+});

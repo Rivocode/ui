@@ -1,5 +1,14 @@
+"use client";
+
+import { useDirection } from "@base-ui/react/direction-provider";
 import { X } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -156,6 +165,37 @@ export function FilterBar({
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
   const empty = labels.empty ?? applied(0);
 
+  const listRef = useRef<HTMLUListElement>(null);
+  const rtl = useDirection() === "rtl";
+  const [more, setMore] = useState({ before: false, after: false });
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const measure = () => {
+      const hidden = list.scrollWidth - list.clientWidth;
+      const before = rtl ? hidden + list.scrollLeft : list.scrollLeft;
+      const next = { before: before > 1, after: hidden - before > 1 };
+
+      setMore((current) =>
+        current.before === next.before && current.after === next.after ? current : next,
+      );
+    };
+
+    measure();
+    list.addEventListener("scroll", measure, { passive: true });
+
+    const watcher = new ResizeObserver(measure);
+    watcher.observe(list);
+    for (const item of list.querySelectorAll("li")) watcher.observe(item);
+
+    return () => {
+      list.removeEventListener("scroll", measure);
+      watcher.disconnect();
+    };
+  }, [filters, rtl]);
+
   const canRemove = Boolean(onRemove ?? onFiltersChange);
   const canClear = Boolean(onClear ?? onFiltersChange);
   const reachable = !disabled && canRemove && filters.some((filter) => filter.removable !== false);
@@ -179,11 +219,15 @@ export function FilterBar({
         )
       ) : (
         <ul
+          ref={listRef}
           role="list"
           tabIndex={reachable ? undefined : 0}
           className={cn(
-            "-my-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1",
-            !reachable && "rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "-my-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto scroll-px-6 py-1",
+            more.before && "mask-l-from-[calc(100%-1.5rem)] mask-l-to-100%",
+            more.after && "mask-r-from-[calc(100%-1.5rem)] mask-r-to-100%",
+            !reachable &&
+              "rounded-md outline-none focus-visible:mask-none focus-visible:ring-2 focus-visible:ring-ring",
             classNames?.list,
           )}
         >

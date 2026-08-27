@@ -2,6 +2,7 @@ import { CircleX } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { LoadingAnnouncement } from "../lib/loading-announcement";
 import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
@@ -34,6 +35,15 @@ export type QueryBoundaryProps<Data> = {
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
+  /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
+   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
+   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
+   * O mesmo nome nas quatro pecas de consulta.
+   */
+  retryLabel?: ReactNode;
 
   /**
    * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
@@ -86,6 +96,7 @@ export function QueryBoundary<Data>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
+  retryLabel = "Tentar de novo",
   empty,
   isEmpty,
   skeleton,
@@ -101,7 +112,7 @@ export function QueryBoundary<Data>({
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
-            Tentar de novo
+            {retryLabel}
           </Button>
         )}
       </Alert>
@@ -111,27 +122,29 @@ export function QueryBoundary<Data>({
   const needsData = typeof children === "function";
   const loading = needsData ? isLoading || data === undefined : (isLoading ?? data === undefined);
 
-  if (loading) {
-    return (
-      <div aria-busy="true" className={cn("flex flex-col gap-3", className, classNames?.loading)}>
-        {skeleton ??
-          Array.from({ length: skeletonRows }, (_, line) => (
-            <Skeleton
-              key={`carregando-${line}`}
-              className={cn("h-4 w-full", line === skeletonRows - 1 && "w-2/3")}
-            />
-          ))}
-      </div>
-    );
-  }
-
   const blank = isEmpty ?? blankOf(data);
 
-  if (empty) {
-    if (blank === undefined) warnAboutUndecidableEmpty();
+  if (!loading && empty && blank === undefined) warnAboutUndecidableEmpty();
 
-    if (blank) {
-      return (
+  // Os tres finais viraram um `return` so por causa da regiao viva: ela tem que
+  // ser o MESMO no do primeiro ao ultimo estado. Cada estado devolvendo a
+  // propria raiz remontava a regiao junto com o conteudo, e regiao que nasce
+  // com o texto dentro nao anuncia nada.
+  return (
+    <>
+      <LoadingAnnouncement loading={loading} />
+
+      {loading ? (
+        <div aria-busy="true" className={cn("flex flex-col gap-3", className, classNames?.loading)}>
+          {skeleton ??
+            Array.from({ length: skeletonRows }, (_, line) => (
+              <Skeleton
+                key={`carregando-${line}`}
+                className={cn("h-4 w-full", line === skeletonRows - 1 && "w-2/3")}
+              />
+            ))}
+        </div>
+      ) : empty && blank ? (
         <EmptyState
           className={cn(className, classNames?.empty)}
           icon={empty.icon}
@@ -139,16 +152,15 @@ export function QueryBoundary<Data>({
           description={empty.description}
           action={empty.action}
         />
-      );
-    }
-  }
-
-  if (needsData) {
-    if (data === undefined || data === null) return null;
-    return <>{(children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)}</>;
-  }
-
-  return <>{children}</>;
+      ) : needsData ? (
+        data === undefined || data === null ? null : (
+          (children as (data: NonNullable<Data>) => ReactNode)(data as NonNullable<Data>)
+        )
+      ) : (
+        children
+      )}
+    </>
+  );
 }
 
 function blankOf(data: unknown): boolean | undefined {
