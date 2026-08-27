@@ -1,4 +1,5 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import { Children, cloneElement, isValidElement } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -41,22 +42,49 @@ export function TableFooter({ className, ...props }: ComponentPropsWithoutRef<"t
 }
 
 export type TableRowProps = ComponentPropsWithoutRef<"tr"> & {
-  /** Linha escolhida. Marca no aria tambem, porque cor sozinha nao e estado. */
+  /**
+   * Linha escolhida. Pinta o fundo, desenha a barra de acento na lateral e
+   * abre a PRIMEIRA celula com um marcador de texto que so o leitor de tela
+   * ouve, porque cor sozinha nao e estado. Nao usa aria-selected: ele so vale
+   * dentro de grid ou treegrid, e esta e uma table simples - prometer grid
+   * exigiria navegacao por setas entre celulas, que a peca nao tem.
+   */
   selected?: boolean;
+  /** O texto do marcador da linha escolhida. Padrao "Selecionada". */
+  labels?: { selected?: string };
 };
 
-export function TableRow({ className, selected, ...props }: TableRowProps) {
+function withSelectedMark(children: ReactNode, label: string) {
+  let done = false;
+  return Children.map(children, (child) => {
+    if (done || !isValidElement(child)) return child;
+    done = true;
+    const cell = child as ReactElement<{ children?: ReactNode }>;
+    return cloneElement(
+      cell,
+      undefined,
+      <span key="rc-selected" className="sr-only">
+        {label}{" "}
+      </span>,
+      cell.props.children,
+    );
+  });
+}
+
+export function TableRow({ className, selected, labels, children, ...props }: TableRowProps) {
+  const mark = labels?.selected ?? "Selecionada";
   return (
     <tr
       {...props}
-      aria-selected={selected || undefined}
       className={cn(
         "border-b border-border transition-colors duration-[var(--rc-duration-fast)]",
         "hover:bg-surface-raised",
         selected && "bg-selected shadow-[inset_2px_0_0_var(--rc-accent)]",
         className,
       )}
-    />
+    >
+      {selected ? withSelectedMark(children, mark) : children}
+    </tr>
   );
 }
 

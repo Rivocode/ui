@@ -49,6 +49,24 @@ Sem eles, o texto padrão continua o de sempre. Os dois nomes são os mesmos do
 padrões. Só o tipo estreita para `string`, porque o título do `Alert` nativo é
 um `Text`.
 
+**O botão de nova tentativa também se traduz.** `retryLabel` (padrão "Tentar de
+novo") nomeia o botão que executa o `onRetry`, com o mesmo nome e o mesmo padrão
+nas quatro peças de consulta. Sem ele, o painel em inglês saía com o título
+traduzido e o botão em português.
+
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
+
+A moldura já tinha uma região viva antes desta, e as duas convivem: a do ponto
+ativo, que copia a dica quando a Recharts anda de ponto em ponto pelo teclado, e
+a da espera. `data-rc-status` e `data-rc-active-point` separam uma da outra.
+
 **A contagem de pontos sai do próprio gráfico.** A moldura lê o `data` do filho
 da Recharts, então na forma acima não é preciso repeti-lo. Passe `data` aqui só
 quando os pontos não morarem no filho direto (`<ScatterChart>` com o `data` no

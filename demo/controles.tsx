@@ -1,4 +1,4 @@
-import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
+import { AlignCenter, AlignLeft, AlignRight, Grid2x2, List, Rows3 } from "lucide-react";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -14,6 +14,9 @@ import {
   AlertDialogTrigger,
   Avatar,
   Button,
+  ButtonGroup,
+  Clipboard,
+  ColorPicker,
   Field,
   FieldLabel,
   Progress,
@@ -29,6 +32,19 @@ import {
   type RivoTheme,
 } from "../src/index";
 
+const BRAND = [
+  { value: "#d4f34a", label: "Lima" },
+  { value: "#3ddc97", label: "Verde" },
+  { value: "#f2b21c", label: "Ambar" },
+  { value: "#6aa9ff", label: "Azul" },
+  { value: "#b78cff", label: "Violeta" },
+  { value: "#ff8ac4", label: "Rosa" },
+  { value: "#ff6b6b", label: "Vermelho" },
+  { value: "#8b9199", label: "Cinza" },
+];
+
+const PIX = "00020126580014br.gov.bcb.pix0136d2b0f6a1-4c3e-4c1a-9a0c-2f1e5f8b7c3d";
+
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
@@ -40,6 +56,7 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 
 function Sample({ theme }: { theme: RivoTheme }) {
   const [avisos, setAvisos] = useState(true);
+  const [brand, setBrand] = useState("#3ddc97");
 
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[900px] p-8">
@@ -67,6 +84,31 @@ function Sample({ theme }: { theme: RivoTheme }) {
                 </label>
               ))}
             </RadioGroup>
+          </Block>
+
+          <Block title="Grupo de botoes">
+            <ButtonGroup>
+              <Button variant="secondary" size="icon" aria-label="Ver em lista">
+                <List size={16} aria-hidden="true" />
+              </Button>
+              <Button variant="secondary" size="icon" aria-label="Ver em linhas">
+                <Rows3 size={16} aria-hidden="true" />
+              </Button>
+              <Button variant="secondary" size="icon" aria-label="Ver em grade">
+                <Grid2x2 size={16} aria-hidden="true" />
+              </Button>
+            </ButtonGroup>
+
+            <ButtonGroup>
+              <Button variant="secondary">Dia</Button>
+              <Button variant="secondary">Semana</Button>
+              <Button variant="secondary">Mes</Button>
+            </ButtonGroup>
+
+            <ButtonGroup orientation="vertical" className="w-40">
+              <Button variant="secondary">Baixar PDF</Button>
+              <Button variant="secondary">Baixar XML</Button>
+            </ButtonGroup>
           </Block>
 
           <Block title="Varias linhas">
@@ -104,6 +146,28 @@ function Sample({ theme }: { theme: RivoTheme }) {
                 <AlignRight size={15} aria-hidden="true" />
               </Toggle>
             </ToggleGroup>
+          </Block>
+
+          <Block title="Cor da marca">
+            <ColorPicker
+              label="Cor da marca"
+              value={brand}
+              onValueChange={setBrand}
+              swatches={BRAND}
+              columns={4}
+            />
+          </Block>
+
+          <Block title="Copiar">
+            <div className="flex items-center gap-3">
+              <span className="min-w-0 flex-1 truncate font-mono text-sm text-fg-muted">
+                {PIX}
+              </span>
+              <Clipboard value={PIX} />
+            </div>
+            <Clipboard value={PIX} className="self-start">
+              Copiar codigo Pix
+            </Clipboard>
           </Block>
 
           <Block title="Acao sem volta">

@@ -1,5 +1,126 @@
 # Mudancas
 
+## 0.8.0
+
+A 0.7.0 saiu de manha e foi auditada a tarde: um retrato em Chrome e uma
+varredura da arvore de acessibilidade acharam treze defeitos em pecas que ja
+estavam no registro. Nenhum deles aparecia nos 1072 testes verdes. A maior
+parte desta versao e o conserto disso.
+
+E entra a peca que faltava do catalogo.
+
+### `EventCalendar`: o que acontece, quando, e por quanto tempo
+
+O `Calendar` escolhe uma data. Este mostra compromisso no tempo, em quatro
+vistas: `agenda` (lista por dia), `day`, `week` e `month`.
+
+A linha que separa ele do vizinho nao e o `Calendar`, e o `DataTable`: **se
+ninguem precisa ver duracao nem choque de horario, e tabela.** Calendario so se
+paga quando a resposta e geometrica.
+
+O que ele NAO faz esta escrito: nao busca dado (so `onRangeChange`), nao
+conhece fuso, nao edita, nao arrasta, nao expande recorrencia. Sao as fronteiras
+que impedem a peca de virar aplicacao.
+
+Duas decisoes que valem a leitura:
+
+- **Nada de `role="grid"` com celula por meia hora** - seriam 336 paradas de
+  tabulacao numa semana, que e o erro do `Tracker` numa forma nova. O andaime
+  visual sai `aria-hidden`, e **para quem ouve toda vista e a vista `agenda`**:
+  secao por dia, lista cronologica, `aria-setsize` no total real. Uma parada de
+  tabulacao, com foco itinerante entre eventos.
+- **A 390px a `week` some e a `month` fica.** A coluna de semana precisa
+  mostrar hora e duracao em 44,8px, e nao mostra. A celula de mes precisa
+  mostrar que existe alguma coisa e mais ou menos o que, em 51px, e isso
+  sobrevive.
+
+O piso de altura da tarja e a parte que assume um defeito de proposito: um
+evento de cinco minutos tem 4px, e o piso vem do CSS com o calculo rodando nos
+horarios reais. Dois eventos curtos que nao colidem no dado podem se empilhar
+na tela; a alternativa era a grade inteira mentir sobre duracao.
+
+O calculo de layout mora em arquivo proprio, sem DOM, porque ele vai atravessar
+para o React Native - e nao ha mecanismo no repositorio para compartilhar
+codigo puro entre os dois pacotes. Esse mecanismo e o que a peca vai cobrar
+primeiro.
+
+**No React Native ele entra na fila**, e a fila e por decisao de gesto, nao por
+tempo: arrastar para mudar de semana, tocar e segurar para criar, e o que fazer
+quando o dedo pousa sobre dois eventos sobrepostos. Nenhuma tem resposta no
+web, onde sao ponteiro e teclado.
+
+### Dois defeitos de nivel A, os dois em pecas novas
+
+**O `Popconfirm` era armadilha de teclado enquanto a chamada corria.** O
+`disabled` do Cancelar e o `loading` do Excluir tiravam os dois da ordem de
+tabulacao ao mesmo tempo, e o `role="alertdialog"` ficava com ZERO focaveis.
+Medido em Chrome: o foco caia no `<body>`, Esc nao fechava, e quatro Tabs
+depois o cursor estava fora do painel, no fundo que o Base UI marca
+`aria-hidden`. O leitor de tela nao ouvia nada. O Cancelar agora recusa por
+`aria-disabled` e continua focavel, e ha regiao viva com a prop `busyLabel`
+para o texto da espera. Falhava WCAG 2.1.2 e 4.1.3.
+
+**O `VirtualList` nao tinha como ser rolado pelo teclado** em Firefox e Safari:
+256 mil pixels de rolagem sem parada de tabulacao. No Chrome o salvamento
+automatico do navegador cobrava o preco na medida - nome vazio e o anel AZUL
+dele em vez do da casa, o unico lugar da vitrine onde o anel de foco nao era o
+nosso. Agora o viewport e uma parada nomeada, com o anel da casa, e o nome
+carrega o total: sem isso o leitor dizia "lista com 15 itens" antes de chegar
+ao "1 de 4000". Falhava WCAG 2.1.1.
+
+### Quebra: `aria-label` deixou de ser aceito e ignorado
+
+Em `FilterBar`, `Tracker` e `Splitter`, o `aria-label` de quem chamava pousava
+num no sem papel, ou era sobrescrito pelo espalhamento. Compilava, renderizava,
+e o leitor ouvia outro nome. Agora ele **vence** e chega ao no que tem papel.
+
+Quem escrevia `aria-label` nessas tres pecas na 0.7.0 nao muda uma linha - passa
+a funcionar. Quem dependia de ele ser ignorado (ninguem, esperamos) muda.
+
+### Os outros nove
+
+- **`FilterBar`**: o foco caia no `<body>` a cada ficha removida - seis
+  reinicios numa barra de seis. Agora vai para o xis seguinte, depois o limpar,
+  depois o anterior, depois a raiz. E `disabled` deixou de CRIAR uma parada de
+  tabulacao sem nome: ela so existe quando a fileira realmente transborda.
+- **`TimeField`**: os botoes de passo se chamavam "Aumentar" e "Diminuir", sem
+  dizer de que campo. Agora herdam o nome do rotulo, e a mudanca e anunciada.
+  Duas saidas obvias foram medidas e recusadas: apontar para o input devolve o
+  VALOR e nao o rotulo, e `role="spinbutton"` faz o Chrome ignorar
+  `aria-valuetext` e expor `480` enquanto a tela mostra `25:99`.
+- **`Table`**: `aria-selected` em `role="row"` de tabela simples e descartado
+  pelo navegador - a selecao era so cor, e o JSDoc prometia o contrario. Agora
+  ha marcador textual, com `labels.selected`, e `role="grid"` continua recusado
+  porque exigiria navegacao por setas que a peca nao implementa.
+- **`Splitter`**: a alca media 13px, e a WCAG 2.5.8 pede 24. Passou a 25, sem
+  engordar o desenho. Ganhou `aria-valuetext` (o leitor dizia "50" pelado) e
+  `aria-controls`.
+- **`Tracker`** e **`TimePicker`**: o nome era lido duas vezes seguidas.
+- **As quatro irmas** (`DataTable`, `ChartContainer`, `QueryBoundary`,
+  `VirtualList`) passam a aceitar `retryLabel` e a anunciar a espera. Duas
+  tinham metade disso, e meio contrato e pior que nenhum: quem traduzia a tela
+  ficava com titulo em ingles e botao em portugues.
+
+### `dir="rtl"`: quatro pecas liam o dado errado
+
+O `Tracker` a 5% da esquerda lia "Dia 2" onde a celula era "Dia 20" -
+dezessete celulas de distancia, e o balao dizia o dado errado. O `Splitter`
+movia a divisoria para o lado OPOSTO ao arrasto. O `ColorPicker` andava o foco
+34px para a esquerda com a seta da direita.
+
+E o `Tree` era o pior: `paddingLeft` e propriedade fisica, entao os tres niveis
+paravam no mesmo pixel. **A hierarquia era invisivel.** Trocar so a tecla teria
+consertado o teclado para um desenho que continuava errado.
+
+As quatro leem a direcao do `RivoProvider` agora, e todas foram medidas em
+Chrome antes e depois.
+
+### O peso da instalacao
+
+As tres dependencias de fonte sairam de `dependencies` para `devDependencies`.
+As faces ja viajam dentro do pacote, em `dist/files`, e o `dist/fonts.css`
+aponta para la - quem instalava baixava as fontes duas vezes.
+
 ## 0.7.0
 
 Os dez nomes que a 0.6 manteve por apelido saem. O dono da biblioteca e hoje o

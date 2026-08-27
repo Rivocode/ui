@@ -64,64 +64,22 @@ function catalogPieces() {
  * As pecas que hoje nao tem vitrine, e o motivo de cada uma.
  *
  * O motivo e para quem for decidir se ainda vale ficar de fora, entao ele diz o
- * que IMPEDE, e nao que esta faltando. Tres coisas diferentes moram nesta
- * lista, e distingui-las e o trabalho: peca que outra ja retrata, peca cujo
- * estado so existe durante um gesto que retrato nenhum guarda, e divida mesmo.
- * Vinte e oito linhas iguais dizendo "falta fazer" seriam a mesma coisa que
- * nao ter lista.
+ * que IMPEDE, e nao que esta faltando. Duas coisas moram nesta lista, e
+ * distingui-las e o trabalho: peca que outra ja retrata, e peca cujo estado so
+ * existe durante um gesto que retrato nenhum guarda.
+ *
+ * A terceira classe - divida mesmo, que era a maioria - foi paga em 27/08/2026:
+ * vinte e cinco linhas sairam daqui de uma vez, entre pecas postas nas paginas
+ * que ja existiam e as duas paginas novas, `demo/painel.tsx` e `demo/paleta.tsx`.
+ * Se alguma voltar para ca, o motivo tem que dizer o que passou a impedir.
  */
 const SEM_VITRINE: Record<string, string> = {
   ToastViewport:
     "Nao tem vitrine propria: o RivoProvider a monta, e nenhum aplicativo a escreve. O que se ve dela ja esta em demo/flutuantes.tsx, que dispara os avisos que caem dentro dela.",
   Autocomplete:
     "O painel e o mesmo do Combobox, que ja esta em demo/dados.tsx. O que ela tem de proprio - aceitar o que nao esta na lista - so aparece enquanto se digita.",
-  ContextMenu:
-    "Gesto: abre no botao direito e nao tem prop de aberto para posar. Parada, ela e o Menu que demo/flutuantes.tsx ja retrata.",
   Editable:
-    "Gesto: o `editing` e estado interno, sem prop que o force. Em retrato ela e o paragrafo que ja esta na tela, e o campo que ela vira nao aparece.",
-  Command:
-    "Divida, e das faceis: ela tem `open` controlado, entao posa aberta. Falta a pagina que a abra.",
-  Kbd: "Divida. Nasce colada ao Command, no rodape da paleta e no atalho do menu, e os dois estao fora pelo mesmo esquecimento.",
-  Stat: "Divida. O painel de numeros e o retrato mais obvio que falta na vitrine, e e onde a densidade compacta aperta primeiro.",
-  Sparkline:
-    "Divida. Ela mora dentro de um numero de painel, e o Stat, que e onde ela cabe, tambem esta fora - as duas entram na mesma pagina ou em nenhuma.",
-  ChartDonut:
-    "Divida. demo/graficos.tsx monta a pizza com a Recharts na mao e nunca chamou o embrulho, entao o que a vitrine confere e o grafico cru, e nao a peca.",
-  ChartRadial: "Divida. Mesma pagina e mesmo esquecimento: nenhum arco de medida unica ali.",
-  Tracker:
-    "Divida. Noventa quadradinhos lado a lado sao teste de contraste de verdade nos dois temas, e e justamente esse retrato que nao existe.",
-  Timeline:
-    "Divida. Entrou no catalogo em 26/08/2026, no mesmo lote que criou este buraco.",
-  Code: "Divida. Peca de uma linha dentro de um paragrafo; por pequena, nunca ganhou lugar em pagina nenhuma.",
-  RelativeTime:
-    "Divida com condicao: o texto muda com o relogio, entao ela so entra com `now` fixo. Sem isso o retrato do `bun run visual` muda sozinho e a assinatura comitada vira ruido.",
-  DescriptionList:
-    "Divida. E a folha de detalhes de toda listagem, e nao ha um `dl` em demo/ nenhum - nem em demo/listagem.tsx, que e onde ela deveria estar.",
-  PageHeader:
-    "Divida. E o topo que toda rota reescreve, e nenhuma pagina da vitrine tem topo: elas comecam direto no primeiro Card.",
-  ButtonGroup:
-    "Divida. demo/controles.tsx nasceu so com botao solto, e o grupo e onde a densidade mais aperta, por causa da borda compartilhada entre os alvos.",
-  NavigationMenu:
-    "Divida. demo/navegacao.tsx retrata Breadcrumb e Tabs e para ali; o painel por secao dela nao aparece em lugar nenhum.",
-  SearchInput:
-    "Divida, e ela mesma prova o custo: demo/dados.tsx monta a lupa na mao, com MaskedInput e o icone Search posicionado por cima, que e exatamente o arranjo que esta peca existe para substituir.",
-  PasswordInput:
-    "Divida. demo/formulario.tsx tem campo, rotulo, descricao e erro, e nao tem senha - entao o olho que revela nunca foi olhado nos dois temas.",
-  TagsInput:
-    "Divida. Parada ela e uma linha de Badge dentro de um campo, e retrata bem; e o campo que cresce conforme se escreve, e crescer e o que a densidade muda.",
-  ColorPicker:
-    "Divida. A grade de amostras e estatica e retrata bem; o que exige gesto e so o seletor fino, que pode entrar depois.",
-  Clipboard:
-    "Divida. O botao parado e retratavel, e o estado copiado dura dois segundos - vale posar os dois lado a lado.",
-  FileUpload:
-    "Divida, e das que mais doem: a area parada tem borda tracejada, que e onde o contraste escorrega no tema escuro, e ninguem olhou.",
-  Indicator:
-    "Divida. E a contagem por cima de outra coisa, e falta na vitrine a coisa de baixo - o sino, a aba com pendencia, o avatar com aviso.",
-  Tree: "Divida. O TreeSelect esta em demo/dados.tsx e a arvore solta nao, entao o que a vitrine confere e o campo, e nao a arvore dentro dele.",
-  Splitter:
-    "Divida de layout: ela precisa de altura definida, e as paginas da vitrine crescem para baixo sem limite. E trabalho de montar a pagina, e nao impedimento da peca.",
-  AspectRatio:
-    "Divida que depende de outra coisa: ela e moldura, e so aparece com media dentro. Nao ha uma imagem em demo/ nenhum, entao ela entra junto com o primeiro retrato que tiver uma.",
+    "Gesto: o `editing` e estado interno, e `EditableProps` nao tem prop que o force - nem `editing`, nem `defaultEditing`, nem `open`. Parada ela e o paragrafo que ja esta na tela, e o campo que ela vira nao aparece. O caminho que sobra e o que o ContextMenu tomou em demo/flutuantes.tsx: a pagina dispara o gesto por script depois de montar. Quem for pagar esta divida faz isso, e nao inventa prop so para a vitrine.",
 };
 
 const pieces = catalogPieces();

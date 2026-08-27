@@ -6,7 +6,14 @@ import {
   Button,
   Checkbox,
   DatePicker,
+  Field,
+  FieldDescription,
+  FieldLabel,
+  FileUpload,
+  FileUploadItem,
+  FileUploadList,
   Input,
+  PasswordInput,
   RivoProvider,
   Select,
   SelectContent,
@@ -86,6 +93,50 @@ function InvoiceForm({ values, withError }: { values: Partial<Entry>; withError?
   );
 }
 
+function Attachments() {
+  return (
+    <div className="flex w-full max-w-md flex-col gap-6">
+      <Field>
+        <FieldLabel>Senha do certificado</FieldLabel>
+        <PasswordInput defaultValue="chave-do-certificado" autoComplete="current-password" />
+        <FieldDescription>A senha do A1, guardada cifrada.</FieldDescription>
+      </Field>
+
+      <div>
+        <FileUpload
+          label="Arraste os anexos da nota, ou clique para escolher"
+          hint="XML ou PDF, ate 5 MB"
+          accept=".xml,application/pdf"
+          maxSize={5 * 1024 * 1024}
+          multiple
+        />
+        <FileUploadList>
+          <FileUploadItem name="nota-4813.xml" size={48_213} onRemove={() => {}} />
+          <FileUploadItem
+            name="comprovante-agosto.pdf"
+            size={1_284_500}
+            progress={62}
+            onRemove={() => {}}
+          />
+          <FileUploadItem
+            name="contrato-prefeitura.pdf"
+            size={3_410_000}
+            error="A conexao caiu."
+            onRetry={() => {}}
+            onRemove={() => {}}
+          />
+        </FileUploadList>
+      </div>
+
+      <FileUpload
+        label="Arraste o XML da nota"
+        hint="Envio bloqueado enquanto a emissao esta em andamento."
+        disabled
+      />
+    </div>
+  );
+}
+
 function Sample({ theme }: { theme: RivoTheme }) {
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[640px] p-8">
@@ -107,6 +158,11 @@ function Sample({ theme }: { theme: RivoTheme }) {
         <div>
           <p className="mb-4 text-sm text-fg-muted">Com erro do schema</p>
           <InvoiceForm values={{ email: "financeiro@" }} withError />
+        </div>
+
+        <div>
+          <p className="mb-4 text-sm text-fg-muted">Senha e anexos</p>
+          <Attachments />
         </div>
       </div>
     </RivoProvider>

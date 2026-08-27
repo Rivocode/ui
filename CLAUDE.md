@@ -102,17 +102,28 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 `bun run check` roda tudo em sequencia e para no primeiro que falhar:
 instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
-contraste, temas, contrato, doc, grupos de classe, fronteira do chart, skill,
-tokens nativos, paridade, contagem de pecas, vitrine, script fora do gate,
-contagem de testes, e por fim `bun test`.
+contraste, temas, contrato, doc, cobertura do README, grupos de classe,
+fronteira do chart, skill, lista da skill, tokens nativos, paridade, contagem
+de pecas, vitrine, script fora do gate, contagem de testes, e por fim
+`bun test`.
 
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 
 - `check:doc` - peca sem pagina e pagina sem peca, nos dois sentidos.
+- `check:readme` - toda peca do catalogo tem que ser citada no `README.md`, ou
+  ter linha em `OUT_OF_README` com o motivo, e a frase que abre o catalogo tem
+  que continuar dizendo que a tabela NAO e o indice. Nasceu porque o digito
+  estava certo e a lista embaixo dele nao: o `check:pecas` guardava o "90
+  pecas.", e das 90 o arquivo inteiro citava 49. A lista so encolhe.
 - `check:contrato` - o que `src/chart/index.ts` e `src/form/index.ts` exportam
   tem que estar citado em `conventions.md` E na skill.
 - `check:skill` - prop citada em exemplo da skill tem que existir na peca.
+- `check:lista-skill` - todo arquivo de `.claude/skills/rivocode-ui/reference/`
+  tem que estar no indice do `SKILL.md` E no laco `curl` de
+  `apps/docs/src/content/skill.md`. Nasceu porque o laco listava sete nomes e a
+  pasta tinha oito: quem instalava pelo site ficava sem a referencia de React
+  Native, e o `curl` saia zerado. Zero excecao, e sem lista de excecao.
 - `check:paridade` - `scripts/paridade-nativo.ts` e a fonte unica da tabela de
   paridade, e ela escreve tambem a secao "No React Native" de cada pagina.
 - `check:testes` - a contagem que a home exibe.

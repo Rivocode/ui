@@ -65,10 +65,23 @@ para uma fileira de fichas.
 
 Cada ficha corta o valor com reticências em 10rem, então um valor comprido
 encolhe a si mesmo em vez de empurrar os vizinhos para fora do alcance. O
-teclado chega a todos: o navegador rola até o xis que recebe foco. Quando
-**nenhuma** ficha tem xis (barra só de filtros travados), o trecho que rola
-vira uma parada de tabulação, senão o teclado não teria como chegar ao que está
-fora da vista.
+teclado chega a todos: o navegador rola até o xis que recebe foco.
+
+Quando **nenhum xis é alcançável** (barra só de filtros travados, ou barra
+`disabled`) **e** a fileira **realmente transborda**, o trecho que rola vira
+uma parada de tabulação, senão o teclado não teria como chegar ao que está fora
+da vista. As duas condições são necessárias, e por um tempo só a primeira era
+cobrada. O preço saiu em paradas que não levavam a lugar nenhum: `disabled`,
+cujo propósito é *tirar* controles do caminho enquanto a consulta refaz,
+**acrescentava** uma; e uma fileira de filtros travados que cabia inteira na
+linha (`scrollWidth` igual ao `clientWidth`, medido em Chrome) virava outra,
+sem ter um pixel para rolar. Tabular para dentro de uma lista que não sai do
+lugar é tabular para lugar nenhum.
+
+Sendo parada, ela **tem nome**: "Filtros aplicados: role para ver todos", o
+`label` da fileira mais o que fazer ali. Sem nome, o leitor de tela anuncia
+"lista" e deixa a pessoa adivinhar onde caiu. O texto se troca por
+`labels.scroll`, que recebe o `label` e devolve a frase.
 
 ## A borda esmaece quando há mais
 
@@ -84,8 +97,8 @@ Reticências não resolvem, porque **quem corta é o rolador, e não a ficha**: 
 truncamento em 10rem da `FilterChip` já tinha acontecido antes, dentro da
 pílula, e a borda da moldura corta o que sobrou.
 
-A borda que tem conteúdo escondido atrás **esmaece** — `mask-image`, 1,5rem de
-dissolução — e some sozinha quando não há mais o que rolar daquele lado: no
+A borda que tem conteúdo escondido atrás **esmaece** (`mask-image`, 1,5rem de
+dissolução) e some sozinha quando não há mais o que rolar daquele lado: no
 começo só a direita, no meio as duas, no fim só a esquerda, e nenhuma quando
 tudo coube. Nada sai da fileira: as seis fichas continuam lá, alcançáveis pelo
 arrasto e pela tabulação, que é a decisão que esta seção defende desde o
@@ -96,7 +109,7 @@ largura é exatamente o que falta numa linha de 390px que já divide espaço com
 "limpar":
 
 - **Setas de rolar** comeriam uns 56px de alvo justamente na largura onde o
-  problema é pior, e serviriam só ao ponteiro — o dedo já arrasta e o teclado
+  problema é pior, e serviriam só ao ponteiro: o dedo já arrasta e o teclado
   já tabula. Ainda precisariam da mesma medida de rolagem que o esmaecido usa,
   então não substituem o custo: somam a ele.
 - **Um contador "+3"** ao lado do limpar duplicaria uma contagem que já está na
@@ -105,7 +118,7 @@ largura é exatamente o que falta numa linha de 390px que já divide espaço com
   que é a segunda superfície flutuante recusada acima.
 
 **O botão não mente.** "Limpar 6 filtros" ao lado de três fichas visíveis conta
-os filtros **aplicados**, que é a pergunta que importa antes de tocar nele — e
+os filtros **aplicados**, que é a pergunta que importa antes de tocar nele, e
 era a única coisa verdadeira na tela. O que faltava não era corrigir o 6: era a
 fileira admitir que estava cortada. Lidos juntos, os dois fecham a conta: seis
 aplicados, três à vista, o resto continua para a direita.
@@ -118,6 +131,34 @@ inteiro.
 
 Por `classNames.list` a medida se redesenha (`mask-r-from-*`), para quem quiser
 outra dissolução.
+
+## O foco depois de tirar um filtro
+
+O xis que recebe o toque **sai do DOM junto com a ficha**, e o foco ia junto:
+medido em Chrome, o `activeElement` voltava para o `<body>` a cada remoção. A
+região viva anunciava "5 filtros aplicados" na hora certa, e o anúncio chegava
+de lugar nenhum: numa barra de seis, seis reinícios no topo do documento para
+quem navega por teclado.
+
+A peça escolhe onde o foco pousa, nesta ordem:
+
+1. **o xis da ficha seguinte**, que é a que ocupou o lugar da que saiu. É o que
+   deixa tirar seis filtros seguidos sem soltar o teclado;
+2. **o "limpar"**, quando a que saiu era a última da fileira;
+3. **o xis da ficha anterior**, quando não há limpar (`clearFrom={Infinity}`,
+   ou contagem que caiu abaixo da régua);
+4. **o trecho que rola** (ou a raiz `role="group"`, quando o último filtro saiu
+   e a fileira inteira desmontou). Nos dois casos o `tabindex="-1"` é posto na
+   hora e devolvido no `blur`: pouso de emergência não deixa parada de
+   tabulação nova para trás.
+
+Controle travado não entra na conta. A barra que fica `disabled` no mesmo passo
+da remoção (a consulta já refazendo) teria mandado o foco para um xis que não
+pode recebê-lo, que é o `<body>` de novo por outro caminho; nesse caso o pouso
+salta para o primeiro degrau que aceita foco.
+
+**O foco só se move se ele estava na fileira.** Quem clicou com o ponteiro
+tendo o cursor em outro lugar da página não é puxado para dentro da barra.
 
 ## O limpar aparece a partir de dois
 
@@ -145,6 +186,23 @@ recorte.
 `disabled` trava todos os xis e o limpar de uma vez. É o estado em que a lista
 já foi pedida de novo e ainda não voltou: sem ele, o segundo toque dispara uma
 consulta que a primeira ainda vai sobrescrever.
+
+## O nome da fileira
+
+`label` é a única porta do nome, e o padrão é "Filtros aplicados". Passar
+`aria-label` direto **é recusado pelo tipo**, não por preciosismo: até a 0.7.0
+ele compilava, renderizava e era engolido em silêncio, porque o `{...props}` de
+quem chama era espalhado *antes* do `aria-label` da peça. `<FilterBar
+aria-label="Filtros da listagem" />` continuava se anunciando "Filtros
+aplicados", e nada acusava: o defeito só aparece com um leitor de tela ligado.
+
+Aceitar e ignorar era a pior das três saídas. Entre as duas honestas (deixar
+quem chama vencer, ou proibir), a peça proíbe, porque `label` já existia
+exatamente para isso e porque **o mesmo texto batiza duas coisas**: a fileira e
+o trecho que rola, quando ele vira parada de tabulação. Duas portas dariam dois
+nomes ao mesmo lugar, e a parada herdaria o nome antigo. Quem precisa apontar
+para um título que já está na tela usa `aria-labelledby`, que a peça não
+sobrescreve.
 
 ## As partes
 
@@ -178,6 +236,10 @@ Traduz, e é onde a peça vale mais: listagem no celular é onde filtro dói. As
 **A linha reservada passa a ser medida em dedo.** No web ela guarda a altura de `--rc-control-sm`; aqui guarda 44pt, que é uma altura de alvo de toque. Não há token de controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do `Tracker`: a tela não pode pular quando o primeiro filtro entra.
 
 A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web: duplicar abriria um `gap` morto na fileira. **Limite de plataforma declarado:** `accessibilityLiveRegion` é do Android; no iOS o anúncio automático não existe sem `announceForAccessibility`, que nenhuma peça do catálogo usa hoje.
+
+**RTL foi verificado, e a maior parte o próprio React Native resolve.** A fileira e a ficha já são espelhadas pelo Yoga quando a locale é da direita para a esquerda, e o repouso da rolagem já para na borda onde a leitura começa: inverter de novo seria o erro clássico de espelhar duas vezes. O `contentOffset` que chega ao JavaScript é sempre distância física a partir da esquerda, nos dois sentidos e nas duas plataformas, então a régua marca o lado físico que tem conteúdo além dele, e não troca de lado.
+
+O que precisou de conta foi o valor de REPOUSO. O código guardava zero até chegar o primeiro evento de rolagem: verdade em LTR, falso em RTL, onde o repouso é o fim do conteúdo. No iOS o defeito durava para sempre enquanto ninguém arrastasse, porque em repouso ele não emite evento nenhum, e a régua aparecia do lado errado.
 
 **A borda esmaece no web; aqui ela é uma régua.** `mask-image` não existe no React Native, e um esmaecido de verdade só sairia de duas formas. Um peer novo (`expo-linear-gradient`, `MaskedView`), que uma barra de filtros não pode cobrar, porque no celular peer é módulo nativo a ligar e reconstruir. Ou um gradiente pintado NA cor da superfície de trás, que a peça não tem como saber: no tema escuro, `surface` sobre `bg` vira um borrão claro por cima das fichas. O gradiente em si até estava ao alcance, porque o `react-native-css` compila `linear-gradient` para o `experimental_backgroundImage` que o RN traz de fábrica; o que falta é a máscara, e sem ela não há alfa por pixel.
 

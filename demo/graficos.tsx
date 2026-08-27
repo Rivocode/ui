@@ -13,16 +13,15 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   ChartContainer,
+  ChartDonut,
+  ChartRadial,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   Line,
   LineChart,
-  Pie,
-  PieChart,
   useChartMotion,
   XAxis,
   YAxis,
@@ -57,6 +56,8 @@ const STATUS = [
   { name: "abertas", value: 12 },
   { name: "vencidas", value: 4 },
 ];
+
+const TOTAL = STATUS.reduce((sum, slice) => sum + slice.value, 0);
 
 const STATUSES = {
   pagas: { label: "Pagas" },
@@ -176,24 +177,31 @@ function Sample({ theme }: { theme: RivoTheme }) {
             <CardTitle>Situacao das notas</CardTitle>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={STATUSES} className="h-56">
-              <PieChart>
-                <ChartTooltip content={<ChartTooltipContent config={STATUSES} hideIndicator />} />
-                <Pie
-                  data={STATUS}
-                  dataKey="valor"
-                  nameKey="nome"
-                  innerRadius={48}
-                  strokeWidth={0}
-                  {...motion}
-                >
-                  {STATUS.map((fatia) => (
-                    <Cell key={fatia.name} fill={`var(--color-${fatia.name})`} />
-                  ))}
-                </Pie>
-                <ChartLegend content={<ChartLegendContent config={STATUSES} />} />
-              </PieChart>
-            </ChartContainer>
+            <ChartDonut
+              data={STATUS}
+              valueKey="value"
+              nameKey="name"
+              config={STATUSES}
+              format="integer"
+              centerValue={String(TOTAL)}
+              centerLabel="notas no mes"
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Meta de faturamento</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <ChartRadial value={82} centerLabel="da meta do mes" label="82% da meta do mes" />
+            <ChartRadial
+              value={64}
+              variant="segmented"
+              centerValue="64%"
+              centerLabel="dos clientes ativos"
+              label="64% dos clientes ativos"
+            />
           </CardContent>
         </Card>
       </div>

@@ -4248,6 +4248,12 @@
         "required": false,
         "note": "Sem isto, o erro nao oferece nova tentativa.",
         "since": "0.4.0"
+      },
+      {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
       }
     ]
   },
@@ -9235,6 +9241,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      },
+      {
         "name": "rowHeight",
         "type": "number",
         "required": false,
@@ -9726,6 +9738,173 @@
       }
     ]
   },
+  "EventCalendar": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"band\" | \"body\" | \"cell\" | \"column\" | \"event\" | \"gutter\" | \"header\" | \"section\" | \"toolbar\", string>>",
+        "required": false,
+        "note": "Classe por parte: `toolbar`, `body`, `header`, `gutter`, `column`, `event`, `band`, `cell`, `section`."
+      },
+      {
+        "name": "date",
+        "type": "Date",
+        "required": false,
+        "note": "A data ancora do periodo visivel, quando quem usa controla o estado."
+      },
+      {
+        "name": "dayEnd",
+        "type": "number",
+        "required": false,
+        "note": "A ultima hora desenhada."
+      },
+      {
+        "name": "dayStart",
+        "type": "number",
+        "required": false,
+        "note": "A primeira hora desenhada na grade de tempo."
+      },
+      {
+        "name": "defaultDate",
+        "type": "Date",
+        "required": false,
+        "note": "A data ancora inicial."
+      },
+      {
+        "name": "defaultView",
+        "type": "EventCalendarView",
+        "required": false,
+        "note": "A vista inicial, quando o componente controla o proprio estado."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta sem nada no periodo."
+      },
+      {
+        "name": "errorMessage",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "events",
+        "type": "CalendarEvent[]",
+        "required": false,
+        "note": "Os compromissos ja expandidos: a peca nao expande recorrencia."
+      },
+      {
+        "name": "hourHeight",
+        "type": "number",
+        "required": false,
+        "note": "Quantos pixels vale uma hora."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do calendario para o leitor de tela."
+      },
+      {
+        "name": "maxColumns",
+        "type": "number",
+        "required": false,
+        "note": "Quantas colunas um choque de horario pode abrir antes de virar \"+N\"."
+      },
+      {
+        "name": "maxHeight",
+        "type": "string | number",
+        "required": false,
+        "note": "Altura maxima da area que rola."
+      },
+      {
+        "name": "maxLanes",
+        "type": "number",
+        "required": false,
+        "note": "Quantas faixas cabem na barra de dia inteiro e na celula do mes."
+      },
+      {
+        "name": "onDateChange",
+        "type": "((date: Date) => void)",
+        "required": false
+      },
+      {
+        "name": "onEventSelect",
+        "type": "((event: CalendarEvent) => void)",
+        "required": false
+      },
+      {
+        "name": "onRangeChange",
+        "type": "((range: EventCalendarRange) => void)",
+        "required": false,
+        "note": "Avisa que o periodo visivel mudou, para o app buscar."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "onSlotSelect",
+        "type": "((range: EventCalendarRange) => void)",
+        "required": false,
+        "note": "Clique no vazio da grade, arredondado em meia hora."
+      },
+      {
+        "name": "onViewChange",
+        "type": "((view: EventCalendarView) => void)",
+        "required": false
+      },
+      {
+        "name": "renderEvent",
+        "type": "((event: CalendarEvent, info: CalendarEventInfo) => ReactNode)",
+        "required": false,
+        "note": "Troca so o miolo da tarja; a caixa, o foco e o rotulo continuam da peca."
+      },
+      {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      },
+      {
+        "name": "view",
+        "type": "EventCalendarView",
+        "required": false,
+        "note": "A vista mostrada, quando quem usa controla o estado."
+      },
+      {
+        "name": "views",
+        "type": "EventCalendarView[]",
+        "required": false,
+        "note": "Quais vistas aparecem no seletor."
+      },
+      {
+        "name": "weekStartsOn",
+        "type": "WeekStart",
+        "required": false,
+        "note": "0 domingo, 1 segunda."
+      }
+    ]
+  },
   "Field": {
     "forwardsRoot": true,
     "props": [
@@ -10017,9 +10196,9 @@
       },
       {
         "name": "labels",
-        "type": "{ remove?: ((filter: string) => string) | undefined; clear?: ((total: number) => string) | undefined; status?: ((total: number) => string) | undefined; empty?: ReactNode; }",
+        "type": "{ remove?: ((filter: string) => string) | undefined; clear?: ((total: number) => string) | undefined; status?: ((total: number) => string) | undefined; scroll?: ((name: string) => string) | undefined; empty?: ReactNode; }",
         "required": false,
-        "note": "Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva e `empty` na linha guardada."
+        "note": "Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva, `empty` na linha guardada e `scroll` no trecho que rola, quando ele vira parada de tabulacao."
       },
       {
         "name": "onClear",
@@ -22587,6 +22766,12 @@
   "TableRow": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "labels",
+        "type": "{ selected?: string | undefined; }",
+        "required": false,
+        "note": "O texto do marcador da linha escolhida."
+      },
       {
         "name": "selected",
         "type": "boolean",

@@ -29,6 +29,10 @@ function applied(total: number): string {
     : `${counted(total)} aplicado${total === 1 ? "" : "s"}`;
 }
 
+function usable(nodes: (HTMLButtonElement | null)[]): HTMLButtonElement | null {
+  return nodes.find((node) => node !== null && !node.disabled) ?? null;
+}
+
 export type FilterChipProps = ComponentPropsWithoutRef<"span"> & {
   /** O campo filtrado: "Cliente", "Vencimento". Sai em peso normal, a esquerda. */
   label: string;
@@ -124,7 +128,7 @@ export type FilterBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
   onClear?: () => void;
   /** Recebe o que sobrou, tanto no xis quanto no limpar. Sozinho ele ja basta. */
   onFiltersChange?: (filters: AppliedFilter[]) => void;
-  /** O nome da fileira para o leitor de tela. */
+  /** O nome da fileira para o leitor de tela. O mesmo texto batiza o trecho que rola quando ele vira parada de tabulacao, entao um `aria-label` escrito de fora troca os dois de uma vez. */
   label?: string;
   /** Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra. `false` some com a linha e mantem so o aviso. */
   reserve?: boolean;
@@ -134,11 +138,12 @@ export type FilterBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
   size?: "sm" | "md";
   /** Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque. */
   disabled?: boolean;
-  /** Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva e `empty` na linha guardada. */
+  /** Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva, `empty` na linha guardada e `scroll` no trecho que rola, quando ele vira parada de tabulacao. */
   labels?: {
     remove?: (filter: string) => string;
     clear?: (total: number) => string;
     status?: (total: number) => string;
+    scroll?: (name: string) => string;
     empty?: ReactNode;
   };
   /** Classe por parte: `list`, `item`, `chip`, `clear`, `empty`. */
@@ -151,6 +156,7 @@ export function FilterBar({
   onClear,
   onFiltersChange,
   label = "Filtros aplicados",
+  "aria-label": ariaLabel,
   reserve = true,
   clearFrom = 2,
   size = "md",
@@ -163,9 +169,14 @@ export function FilterBar({
   const total = filters.length;
   const status = labels.status ?? applied;
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
+  const scroll = labels.scroll ?? ((name: string) => `${name}: role para ver todos`);
+  const name = ariaLabel ?? label;
   const empty = labels.empty ?? applied(0);
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const clearRef = useRef<HTMLButtonElement>(null);
+  const leaving = useRef<{ id: string; index: number } | null>(null);
   const rtl = useDirection() === "rtl";
   const [more, setMore] = useState({ before: false, after: false });
 
@@ -196,15 +207,44 @@ export function FilterBar({
     };
   }, [filters, rtl]);
 
+  useEffect(() => {
+    const gone = leaving.current;
+    leaving.current = null;
+    if (!gone || filters.some((filter) => filter.id === gone.id)) return;
+
+    const crosses = [...(listRef.current?.querySelectorAll("li") ?? [])].map((item) =>
+      item.querySelector("button"),
+    );
+    const ahead = usable(crosses.slice(gone.index));
+    const behind = usable(crosses.slice(0, gone.index).reverse());
+    const landing = ahead ?? usable([clearRef.current]) ?? behind;
+
+    if (landing) {
+      landing.focus();
+      return;
+    }
+
+    const row = listRef.current ?? rootRef.current;
+    if (!row) return;
+
+    if (!row.hasAttribute("tabindex")) {
+      row.setAttribute("tabindex", "-1");
+      row.addEventListener("blur", () => row.removeAttribute("tabindex"), { once: true });
+    }
+    row.focus();
+  }, [filters]);
+
   const canRemove = Boolean(onRemove ?? onFiltersChange);
   const canClear = Boolean(onClear ?? onFiltersChange);
   const reachable = !disabled && canRemove && filters.some((filter) => filter.removable !== false);
+  const scrollable = !reachable && (more.before || more.after);
 
   return (
     <div
       {...props}
+      ref={rootRef}
       role="group"
-      aria-label={label}
+      aria-label={name}
       className={cn(
         "flex w-full items-center gap-2 font-sans",
         (total > 0 || reserve) && "min-h-[var(--rc-control-sm)]",
@@ -221,17 +261,18 @@ export function FilterBar({
         <ul
           ref={listRef}
           role="list"
-          tabIndex={reachable ? undefined : 0}
+          tabIndex={scrollable ? 0 : undefined}
+          aria-label={scrollable ? scroll(name) : undefined}
           className={cn(
             "-my-1 flex min-w-0 flex-1 items-center gap-2 overflow-x-auto scroll-px-6 py-1",
             more.before && "mask-l-from-[calc(100%-1.5rem)] mask-l-to-100%",
             more.after && "mask-r-from-[calc(100%-1.5rem)] mask-r-to-100%",
-            !reachable &&
+            scrollable &&
               "rounded-md outline-none focus-visible:mask-none focus-visible:ring-2 focus-visible:ring-ring",
             classNames?.list,
           )}
         >
-          {filters.map((filter) => (
+          {filters.map((filter, index) => (
             <li key={filter.id} className={cn("shrink-0", classNames?.item)}>
               <FilterChip
                 label={filter.label}
@@ -244,6 +285,11 @@ export function FilterBar({
                   filter.removable === false || !canRemove
                     ? undefined
                     : () => {
+                        const focused = document.activeElement;
+                        leaving.current =
+                          focused && listRef.current?.contains(focused)
+                            ? { id: filter.id, index }
+                            : null;
                         onRemove?.(filter);
                         onFiltersChange?.(filters.filter((other) => other.id !== filter.id));
                       }
@@ -256,6 +302,7 @@ export function FilterBar({
 
       {total >= clearFrom && canClear && (
         <Button
+          ref={clearRef}
           type="button"
           variant="ghost"
           size="sm"

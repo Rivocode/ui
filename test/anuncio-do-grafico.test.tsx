@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { ChartContainer, type ChartConfig } from "../src/chart/chart";
@@ -41,6 +41,10 @@ function tipHtml(label: string, value: number) {
   return html;
 }
 
+function activePoint() {
+  return document.querySelector<HTMLElement>("[data-rc-active-point]")!;
+}
+
 function chart() {
   const view = render(
     <RivoProvider scope="local">
@@ -66,7 +70,7 @@ function chart() {
 test("a moldura publica uma regiao viva, e ela nasce calada", () => {
   chart();
 
-  const live = screen.getByRole("status");
+  const live = activePoint();
   expect(live.getAttribute("aria-live")).toBe("polite");
   expect(live.className).toContain("sr-only");
   expect(live.textContent).toBe("");
@@ -79,7 +83,7 @@ test("a seta anuncia o ponto ativo, com rotulo e valor", async () => {
   showTip("Março", 1200);
 
   await waitFor(() => {
-    expect(screen.getByRole("status").textContent).toBe("Março, Pagas, 1.200");
+    expect(activePoint().textContent).toBe("Março, Pagas, 1.200");
   });
 });
 
@@ -88,12 +92,12 @@ test("andar para o proximo ponto troca o que a regiao diz", async () => {
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
   showTip("Março", 1200);
-  await waitFor(() => expect(screen.getByRole("status").textContent).toContain("Março"));
+  await waitFor(() => expect(activePoint().textContent).toContain("Março"));
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
   showTip("Abril", 900);
   await waitFor(() => {
-    expect(screen.getByRole("status").textContent).toBe("Abril, Pagas, 900");
+    expect(activePoint().textContent).toBe("Abril, Pagas, 900");
   });
 });
 
@@ -109,7 +113,7 @@ test("o ponteiro nao anuncia nada", async () => {
   showTip("Março", 1200);
 
   await Promise.resolve();
-  expect(screen.getByRole("status").textContent).toBe("");
+  expect(activePoint().textContent).toBe("");
 });
 
 test("depois do ponteiro, a tecla volta a anunciar", async () => {
@@ -122,7 +126,7 @@ test("depois do ponteiro, a tecla volta a anunciar", async () => {
   showTip("Abril", 900);
 
   await waitFor(() => {
-    expect(screen.getByRole("status").textContent).toBe("Abril, Pagas, 900");
+    expect(activePoint().textContent).toBe("Abril, Pagas, 900");
   });
 });
 
@@ -135,10 +139,10 @@ test("sair do grafico apaga o que foi dito", async () => {
 
   fireEvent.keyDown(root, { key: "ArrowRight" });
   showTip("Março", 1200);
-  await waitFor(() => expect(screen.getByRole("status").textContent).toContain("Março"));
+  await waitFor(() => expect(activePoint().textContent).toContain("Março"));
 
   fireEvent.focusOut(root);
-  await waitFor(() => expect(screen.getByRole("status").textContent).toBe(""));
+  await waitFor(() => expect(activePoint().textContent).toBe(""));
 });
 
 /*
@@ -151,6 +155,6 @@ test("o anuncio nao repete o nome do grafico", async () => {
   fireEvent.keyDown(root, { key: "ArrowRight" });
   showTip("Março", 1200);
 
-  await waitFor(() => expect(screen.getByRole("status").textContent).toContain("Março"));
-  expect(screen.getByRole("status").textContent).not.toContain("Gráfico");
+  await waitFor(() => expect(activePoint().textContent).toContain("Março"));
+  expect(activePoint().textContent).not.toContain("Gráfico");
 });

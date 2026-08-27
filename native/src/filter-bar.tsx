@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import {
+  I18nManager,
   Pressable,
   ScrollView,
   View,
@@ -184,17 +185,23 @@ export function FilterBar({
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
   const empty = labels.empty ?? applied(0);
 
+  const rtl = I18nManager.isRTL;
+
   const frame = useRef(0);
   const content = useRef(0);
-  const offset = useRef(0);
-  const [more, setMore] = useState({ before: false, after: false });
+  const passed = useRef(0);
+  const [more, setMore] = useState({ left: false, right: false });
 
   const measure = () => {
-    const hidden = content.current - frame.current;
-    const next = { before: offset.current > 1, after: hidden - offset.current > 1 };
+    const hidden = Math.max(0, content.current - frame.current);
+    const behind = Math.min(Math.max(passed.current, 0), hidden);
+    const ahead = hidden - behind;
+    const next = rtl
+      ? { left: ahead > 1, right: behind > 1 }
+      : { left: behind > 1, right: ahead > 1 };
 
     setMore((current) =>
-      current.before === next.before && current.after === next.after ? current : next,
+      current.left === next.left && current.right === next.right ? current : next,
     );
   };
 
@@ -211,9 +218,11 @@ export function FilterBar({
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
 
-    offset.current = contentOffset.x;
     content.current = contentSize.width;
     frame.current = layoutMeasurement.width;
+    passed.current = rtl
+      ? contentSize.width - layoutMeasurement.width - contentOffset.x
+      : contentOffset.x;
     measure();
   };
 
@@ -223,7 +232,11 @@ export function FilterBar({
 
   return (
     <View
-      className={cn("w-full flex-row items-center", (total > 0 || reserve) && "h-11", className)}
+      className={cn(
+        "w-full flex-row items-center gap-2",
+        (total > 0 || reserve) && "h-11",
+        className,
+      )}
     >
       {total > 0 && (
         <View className="flex-1 self-stretch">
@@ -259,8 +272,8 @@ export function FilterBar({
             ))}
           </ScrollView>
 
-          {more.before && <View pointerEvents="none" className={cn(EDGE, "left-0")} />}
-          {more.after && <View pointerEvents="none" className={cn(EDGE, "right-0")} />}
+          {more.left && <View pointerEvents="none" className={cn(EDGE, "left-0")} />}
+          {more.right && <View pointerEvents="none" className={cn(EDGE, "right-0")} />}
         </View>
       )}
 
@@ -282,7 +295,6 @@ export function FilterBar({
             onClear?.();
             onFiltersChange?.([]);
           }}
-          className="ml-2"
         >
           {clear(total)}
         </Button>

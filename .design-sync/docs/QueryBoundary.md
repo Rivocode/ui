@@ -87,6 +87,15 @@ envia, a ação que não desenha nada.
 O nó do carregando sai com `aria-busy="true"`. O `Skeleton` se esconde do leitor
 de tela de propósito, e é no contêiner que o aviso de carregamento pertence.
 
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
+
 ## Quem decide o vazio
 
 A peça decide sozinha, pelo `data`: **lista de tamanho zero e `null` são
@@ -119,6 +128,11 @@ descobre.
 nomes e o mesmo papel que têm no `DataTable` e no `ChartContainer`: uma tela que
 carrega três blocos precisa dizer qual deles falhou, e um produto que não fala
 português precisa dizer isso em outra língua.
+
+`retryLabel` (padrão "Tentar de novo") é o nome do botão que executa o
+`onRetry`, e existe pelo mesmo motivo: sem ele, a tela traduzida saía com o
+título em inglês e o botão em português, que é pior do que tudo em português. O
+nome e o padrão são os mesmos nas quatro peças de consulta.
 
 Sem `onRetry` não há botão de nova tentativa. Aviso com botão que não leva a
 lugar nenhum é pior que aviso sem botão.

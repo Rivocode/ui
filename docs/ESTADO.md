@@ -1,6 +1,6 @@
 # Onde paramos
 
-Atualizado em 26/08/2026, ao fim do dia. Este arquivo e o "onde paramos" do
+Atualizado em 27/08/2026, de madrugada. Este arquivo e o "onde paramos" do
 repositorio: serve a quem chega frio, humano ou agente, e responde tres coisas:
 o que existe, o que falta de verdade, e o que esta parado esperando uma pessoa.
 
@@ -17,20 +17,20 @@ Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
 
 | Peca                        | Onde                                        | Estado                                                     |
 | --------------------------- | ------------------------------------------- | ---------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.7.0**, publicado no npm por CI                        |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.0**, publicado no npm por CI                        |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.8.0** na arvore; 0.7.0 no npm, falta a tag            |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.1** na arvore; 0.3.0 no npm, falta a tag            |
 | Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, uma pagina crua por peca     |
 | Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar  |
 
-O gate do repo esta verde: `bun run check` passa inteiro - vinte verificacoes
+O gate do repo esta verde: `bun run check` passa inteiro - vinte e tres verificacoes
 mais a suite dos dois pacotes, `test/` e `native/test/`. O `bun run build`
 tambem. A contagem de testes nao se escreve aqui de proposito: ela mora na home
 do site, que e o unico lugar onde `check:testes` a confere.
 
 ### O catalogo, por familia
 
-Sao **90 pecas** e **176 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **91 pecas** e **177 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as 86 partes moram na pagina de quem as monta, com
@@ -115,6 +115,26 @@ Tres coisas nao estavam na lista e apareceram no caminho:
    tabela de paridade.
 3. **`ChartContainer` ja aceitava `id` e `aria-*`.** A pendencia listava nove
    pecas de tipo fechado; eram oito.
+
+## A auditoria de acessibilidade, e o que ela achou
+
+A 0.7.0 saiu de manha e foi auditada a tarde, com retrato em Chrome e varredura
+da arvore de acessibilidade. **Treze defeitos em pecas que ja estavam no
+registro**, e nenhum aparecia nos 1072 testes verdes daquele momento.
+
+Dois eram falha WCAG de nivel A: o `Popconfirm` ficava sem NENHUM focavel
+enquanto a chamada corria (o foco caia no `<body>`, Esc nao fechava, e o Tab
+vazava para o fundo `aria-hidden`), e o `VirtualList` tinha 256 mil pixels de
+rolagem sem parada de tabulacao, o que em Firefox e Safari significa nao poder
+rolar pelo teclado.
+
+Os treze estao consertados, cada um medido em Chrome antes e depois. O detalhe
+de cada um esta no `CHANGELOG.md` da 0.8.0.
+
+**Quatro pecas liam o dado errado em `dir="rtl"`**, e o pior era o `Tree`:
+`paddingLeft` e propriedade fisica, entao os tres niveis paravam no mesmo
+pixel e a hierarquia era invisivel. Trocar so a tecla teria consertado o
+teclado para um desenho que continuava errado.
 
 ## O catalogo cresceu sete pecas, e nenhuma nasceu so no web
 
@@ -340,7 +360,7 @@ a ultima frente parou.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # vinte verificacoes mais os 1070 testes
+bun run check        # vinte e tres verificacoes mais os 1070 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine em demo/dist/
 cd apps/docs && bun run dev   # o site de documentacao, local

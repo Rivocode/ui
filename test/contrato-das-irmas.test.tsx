@@ -1,7 +1,9 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
+import type { ReactNode } from "react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
+import { ChartContainer, type ChartConfig } from "../src/chart/chart";
 import { Checkbox } from "../src/components/checkbox";
 import { Clipboard } from "../src/components/clipboard";
 import {
@@ -11,11 +13,15 @@ import {
   ComboboxInput,
   ComboboxValue,
 } from "../src/components/combobox";
+import { DataTable, type Column } from "../src/components/data-table";
 import { Editable } from "../src/components/editable";
 import { PasswordInput } from "../src/components/password-input";
+import { QueryBoundary } from "../src/components/query-boundary";
 import { Radio, RadioGroup } from "../src/components/radio";
 import { Switch } from "../src/components/switch";
 import { TagsInput } from "../src/components/tags-input";
+import { VirtualList } from "../src/components/virtual-list";
+import { LOADED_ANNOUNCEMENT, LOADING_ANNOUNCEMENT } from "../src/lib/loading-announcement";
 
 /*
  * As quatro divergencias que a auditoria mediu entre pecas IRMAS de
@@ -304,4 +310,115 @@ test("o acento so pinta o controle vivo, sem depender da ordem das classes", () 
   const box = container.ownerDocument.querySelector('[role="checkbox"]')!;
   expect(box.className).toContain("data-[indeterminate]:not-data-disabled:bg-accent");
   expect(box.className).not.toContain("data-[indeterminate]:bg-accent ");
+});
+
+/* --- 5. as quatro irmas dos finais de uma consulta ----------------------- */
+
+type Invoice = { id: string; customer: string };
+
+const INVOICES: Invoice[] = [
+  { id: "1", customer: "Clinica Sao Lucas" },
+  { id: "2", customer: "Transportes Cabo Branco" },
+];
+
+const INVOICE_COLUMNS: Column<Invoice>[] = [{ key: "customer", header: "Cliente" }];
+
+const CHART_CONFIG: ChartConfig = { pagas: { label: "Pagas" } };
+
+type Query = {
+  isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
+  retryLabel?: ReactNode;
+};
+
+const SISTERS: Record<string, (query: Query) => ReactNode> = {
+  VirtualList: (query) => (
+    <VirtualList
+      items={query.isLoading ? undefined : INVOICES}
+      itemKey={(invoice) => invoice.id}
+      renderItem={(invoice) => <span>{invoice.customer}</span>}
+      maxHeight={200}
+      label="Notas"
+      {...query}
+    />
+  ),
+  QueryBoundary: (query) => (
+    <QueryBoundary data={query.isLoading ? undefined : INVOICES} {...query}>
+      {(invoices) => <p>{invoices.length} notas</p>}
+    </QueryBoundary>
+  ),
+  DataTable: (query) => (
+    <DataTable
+      data={query.isLoading ? undefined : INVOICES}
+      columns={INVOICE_COLUMNS}
+      rowKey={(invoice) => invoice.id}
+      {...query}
+    />
+  ),
+  ChartContainer: (query) => (
+    <ChartContainer config={CHART_CONFIG} className="h-40" {...query}>
+      <svg />
+    </ChartContainer>
+  ),
+};
+
+const sisters = Object.entries(SISTERS);
+
+test("as quatro irmas trocam o nome do botao de nova tentativa por `retryLabel`", () => {
+  for (const [name, sister] of sisters) {
+    const view = withTheme(sister({ isError: true, onRetry: () => {}, retryLabel: "Try again" }));
+    const named = within(view.container).queryByRole("button", { name: "Try again" });
+
+    expect(`${name}: ${named !== null}`).toBe(`${name}: true`);
+    view.unmount();
+  }
+});
+
+test("as quatro dizem o MESMO padrao quando ninguem passa `retryLabel`", () => {
+  for (const [name, sister] of sisters) {
+    const view = withTheme(sister({ isError: true, onRetry: () => {} }));
+    const named = within(view.container).queryByRole("button", { name: "Tentar de novo" });
+
+    expect(`${name}: ${named !== null}`).toBe(`${name}: true`);
+    view.unmount();
+  }
+});
+
+test("o botao das quatro executa o `onRetry`, e nao so aparece", () => {
+  for (const [name, sister] of sisters) {
+    let retries = 0;
+    const view = withTheme(sister({ isError: true, onRetry: () => (retries += 1) }));
+
+    fireEvent.click(within(view.container).getByRole("button", { name: "Tentar de novo" }));
+
+    expect(`${name}: ${retries}`).toBe(`${name}: 1`);
+    view.unmount();
+  }
+});
+
+test("a espera das quatro sai numa regiao viva com texto, e nao so em `aria-busy`", () => {
+  for (const [name, sister] of sisters) {
+    const view = withTheme(sister({ isLoading: true }));
+    const region = view.container.querySelector("[data-rc-status]");
+
+    expect(`${name}: ${region?.getAttribute("role")}`).toBe(`${name}: status`);
+    expect(`${name}: ${region?.getAttribute("aria-live")}`).toBe(`${name}: polite`);
+    expect(`${name}: ${region?.textContent}`).toBe(`${name}: ${LOADING_ANNOUNCEMENT}`);
+    view.unmount();
+  }
+});
+
+test("a chegada do dado fala pelo MESMO no, que nao se remonta com o conteudo", () => {
+  for (const [name, sister] of sisters) {
+    const view = withTheme(sister({ isLoading: true }));
+    const before = view.container.querySelector("[data-rc-status]");
+
+    view.rerender(<RivoProvider scope="local">{sister({ isLoading: false })}</RivoProvider>);
+    const after = view.container.querySelector("[data-rc-status]");
+
+    expect(`${name}: ${after === before}`).toBe(`${name}: true`);
+    expect(`${name}: ${after?.textContent}`).toBe(`${name}: ${LOADED_ANNOUNCEMENT}`);
+    view.unmount();
+  }
 });

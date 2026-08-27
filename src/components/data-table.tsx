@@ -22,6 +22,7 @@ import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { LoadingAnnouncement } from "../lib/loading-announcement";
 import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
@@ -89,6 +90,15 @@ export type DataTableProps<Row> = {
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
+  /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
+   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
+   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
+   * O mesmo nome nas quatro pecas de consulta.
+   */
+  retryLabel?: ReactNode;
   /**
    * A linha discreta de quando a busca nao acha nada. Sem ela, "Nenhum
    * resultado para a busca."
@@ -213,6 +223,7 @@ export function DataTable<Row>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar a lista.",
+  retryLabel = "Tentar de novo",
   noResultsMessage = "Nenhum resultado para a busca.",
   empty,
   onRowClick,
@@ -318,7 +329,7 @@ export function DataTable<Row>({
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
-            Tentar de novo
+            {retryLabel}
           </Button>
         )}
       </Alert>
@@ -531,6 +542,8 @@ export function DataTable<Row>({
 
   return (
     <div className={className}>
+      <LoadingAnnouncement loading={loading} />
+
       {maxHeight === undefined ? (
         <Table className={classNames?.table}>
           {caption && <caption className="sr-only">{caption}</caption>}

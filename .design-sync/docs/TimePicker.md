@@ -27,6 +27,13 @@ decisão.
 Os minutos vêm de `60 / step`, então o passo é mais legível quando divide 60:
 1, 5, 15 e 30 são os que a peça foi desenhada para servir.
 
+O texto acima de cada coluna é o nome dela: a coluna o toma por
+`aria-labelledby`, e o texto fica `aria-hidden` para não ser lido solto logo
+antes de a caixa ser anunciada com a mesma palavra. Antes eram duas: um
+`<span>Hora</span>` e um `aria-label="Hora"`, ditos em seguida, nas duas
+colunas. Trocar `labels.hours` ou `labels.minutes` troca os dois de uma vez,
+porque agora é um texto só.
+
 **A hora não fecha o painel; o minuto fecha.** O minuto é a última decisão, e
 fechar antes dela obrigaria a reabrir o painel na metade das escolhas. Escolher
 outra hora preserva o minuto que já estava escolhido: quem troca 14:30 por 16

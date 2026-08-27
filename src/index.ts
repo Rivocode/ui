@@ -1,4 +1,4 @@
-export const version = "0.7.0";
+export const version = "0.8.0";
 
 export { cn } from "./lib/cn";
 export { useMediaQuery, useMobile } from "./lib/screen";
@@ -381,3 +381,13 @@ export {
   type VirtualListHandle,
   type VirtualListProps,
 } from "./components/virtual-list";
+export {
+  EventCalendar,
+  type CalendarEvent,
+  type CalendarEventInfo,
+  type CalendarEventTone,
+  type EventCalendarProps,
+  type EventCalendarRange,
+  type EventCalendarView,
+  type WeekStart,
+} from "./components/event-calendar";

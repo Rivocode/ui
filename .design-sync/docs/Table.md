@@ -9,8 +9,15 @@ Tabela semântica, com `<table>` de verdade.
 Compõe com `TableCaption`, `TableHeader`, `TableBody`, `TableFooter`,
 `TableRow`, `TableHead` e `TableCell`.
 
-`selected` na linha marca no `aria-selected` e desenha uma barra de acento na
-lateral. Cor sozinha não é estado.
+`selected` na linha desenha uma barra de acento na lateral e abre a primeira
+célula com um marcador de texto que só o leitor de tela ouve: "Selecionada",
+trocável por `labels.selected`. Cor sozinha não é estado.
+
+Ela não marca no `aria-selected`. Esse atributo só vale dentro de `grid` ou
+`treegrid`; num `<table>` simples o navegador o descarta, e o estado nunca
+chega ao leitor. Virar `grid` custaria caro: `grid` exige navegação por setas
+entre as células, que esta peça não implementa. O marcador textual entrega o
+estado sem prometer um teclado que não existe.
 
 A moldura rola de lado sozinha, então tabela larga não empurra a página.
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Clock } from "lucide-react";
-import { useEffect, useRef, useState, type ComponentProps, type KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState, type ComponentProps, type KeyboardEvent } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -26,6 +26,7 @@ function TimeColumn({
   optionClassName,
 }: ColumnProps) {
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
+  const labelId = useId();
   const found = options.indexOf(selected ?? -1);
   const focusable = found === -1 ? 0 : found;
 
@@ -52,10 +53,12 @@ function TimeColumn({
 
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-1">
-      <span className="px-1 font-sans text-xs text-fg-subtle">{label}</span>
+      <span id={labelId} aria-hidden="true" className="px-1 font-sans text-xs text-fg-subtle">
+        {label}
+      </span>
       <div
         role="listbox"
-        aria-label={label}
+        aria-labelledby={labelId}
         onKeyDown={walk}
         className={cn(
           "max-h-[40vh] overflow-y-auto rounded-md border border-border p-1",

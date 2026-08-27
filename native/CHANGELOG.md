@@ -1,5 +1,29 @@
 # Mudancas
 
+## 0.3.1
+
+A `FilterBar` nao tratava `dir="rtl"`, e o defeito durava para sempre no iOS.
+
+O codigo guardava zero como valor de repouso da rolagem. Em LTR isso e verdade;
+em RTL o repouso e o fim do conteudo. E em repouso o iOS nao emite evento de
+rolagem nenhum, entao enquanto ninguem arrastasse a fileira, a regua que marca
+"ha mais escondido deste lado" aparecia do lado errado, para sempre.
+
+O que o React Native ja resolvia sozinho ficou como estava, e isso foi
+verificado na fonte e nao de memoria: a fileira e a ficha ja sao espelhadas
+pelo Yoga, e o repouso da rolagem ja para na borda onde a leitura comeca.
+Inverter de novo seria o erro classico de espelhar duas vezes, que custou
+defeito real em quatro pecas do web hoje.
+
+O `contentOffset` que chega ao JavaScript e sempre distancia fisica a partir da
+esquerda, nos dois sentidos e nas duas plataformas, por caminhos diferentes:
+o Android emite o valor cru, o iOS converte na emissao. Entao a regua marca o
+lado fisico que tem conteudo alem dele, e nao troca de lado.
+
+O respiro do botao de limpar passou de `ml-2` para `gap-2` na fileira: em RTL o
+`flex-row` do pai o joga para a esquerda fisica, e a margem punha o respiro do
+lado de fora em vez de entre ele e as fichas.
+
 ## 0.3.0
 
 A fila chega a zero. Das 83 pecas do catalogo do web, 67 tem par no celular -

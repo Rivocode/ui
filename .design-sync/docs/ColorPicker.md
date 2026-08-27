@@ -81,8 +81,8 @@ para baixo. Por isso é prop, e não uma classe de fora.
 ## Sentido da escrita
 
 Em `dir="rtl"` a grade espelha sozinha, porque é grid: a primeira amostra passa
-a ser a da direita. O que não espelha sozinho é a seta, que anda por índice — e
-por isso ela troca de papel. `→` leva o anel de foco para a direita da tela e
+a ser a da direita. O que não espelha sozinho é a seta, que anda por índice. Por
+isso ela troca de papel. `→` leva o anel de foco para a direita da tela e
 `←` para a esquerda, mesmo que o índice ande no sentido contrário. `ArrowDown` e
 `ArrowUp` continuam andando `columns` de cada vez, na mesma coluna, e `Home` e
 `End` continuam lógicos: a primeira e a última amostra, e não a esquerda e a

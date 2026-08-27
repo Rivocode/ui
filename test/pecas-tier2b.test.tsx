@@ -119,6 +119,65 @@ test("em rtl a seta move a divisoria para o lado que a pessoa ve, e nao pelo num
   expect(medida.size).toBe(90);
 });
 
+test("o alvo da divisoria chega aos 24px que a WCAG 2.5.8 pede", () => {
+  withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
+
+  const handle = screen.getByRole("separator");
+  expect(handle.className).toContain("relative");
+  expect(handle.className).toContain("after:absolute");
+  expect(handle.className).toContain("after:-inset-x-3");
+});
+
+test("a divisoria deitada estica o alvo pela outra medida", () => {
+  withTheme(
+    <Splitter
+      orientation="vertical"
+      start={<p>Lista</p>}
+      end={<p>Detalhe</p>}
+      label="Lista e detalhe"
+    />,
+  );
+
+  const handle = screen.getByRole("separator");
+  expect(handle.className).toContain("after:-inset-y-3");
+});
+
+test("a divisoria diz a medida com unidade, e nao um numero pelado", () => {
+  withTheme(
+    <Splitter defaultSize={50} start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />,
+  );
+
+  const handle = screen.getByRole("separator");
+  expect(handle.getAttribute("aria-valuetext")).toBe("50%");
+
+  fireEvent.keyDown(handle, { key: "End" });
+  expect(handle.getAttribute("aria-valuetext")).toBe("85%");
+});
+
+test("a divisoria aponta para o lado que ela mede", () => {
+  withTheme(<Splitter start={<p>Lista</p>} end={<p>Detalhe</p>} label="Lista e detalhe" />);
+
+  const handle = screen.getByRole("separator");
+  const controlled = document.getElementById(handle.getAttribute("aria-controls")!)!;
+
+  expect(controlled.textContent).toBe("Lista");
+});
+
+test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta", () => {
+  const { container } = withTheme(
+    <Splitter
+      aria-label="Divisória entre lista e detalhe"
+      start={<p>Lista</p>}
+      end={<p>Detalhe</p>}
+      label="Lista e detalhe"
+    />,
+  );
+
+  const root = container.firstElementChild!.firstElementChild!;
+  expect(root.getAttribute("aria-label")).toBeNull();
+  expect(screen.getByRole("separator", { name: "Divisória entre lista e detalhe" })).toBeDefined();
+});
+
 test("o texto vira campo no clique e volta no Enter", () => {
   let saved = "";
   withTheme(

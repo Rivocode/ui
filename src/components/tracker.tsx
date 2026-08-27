@@ -2,6 +2,7 @@
 
 import { useDirection } from "@base-ui/react/direction-provider";
 import {
+  useId,
   useState,
   type ComponentProps,
   type KeyboardEvent,
@@ -36,11 +37,20 @@ export type TrackerProps = Omit<ComponentProps<"div">, "children"> & {
   classNames?: Slots<"label" | "track" | "cell">;
 };
 
-export function Tracker({ data, label, className, classNames, ...props }: TrackerProps) {
+export function Tracker({
+  data,
+  label,
+  className,
+  classNames,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  ...props
+}: TrackerProps) {
   const [hovered, setHovered] = useState<number | null>(null);
   const [focused, setFocused] = useState<number | null>(null);
   const [dismissed, setDismissed] = useState<number | null>(null);
 
+  const labelId = useId();
   const rtl = useDirection() === "rtl";
   const last = data.length - 1;
   const clamp = (index: number) => Math.min(Math.max(index, 0), last);
@@ -91,11 +101,14 @@ export function Tracker({ data, label, className, classNames, ...props }: Tracke
 
   return (
     <div {...props} className={cn("flex flex-col gap-1.5", className)}>
-      <p className={cn("sr-only", classNames?.label)}>{label}</p>
+      <p id={labelId} aria-hidden="true" className={cn("sr-only", classNames?.label)}>
+        {label}
+      </p>
 
       <div
         role="group"
-        aria-label={label}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy ?? (ariaLabel ? undefined : labelId)}
         tabIndex={0}
         onPointerMove={read}
         onPointerDown={read}

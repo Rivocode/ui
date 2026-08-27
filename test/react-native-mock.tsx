@@ -44,6 +44,31 @@ export const Platform = {
   }): T | undefined => spec.ios ?? spec.native ?? spec.default,
 };
 
+/* O I18nManager de verdade le a locale do aparelho UMA vez, na carga do
+   modulo: o `isRTL` e uma copia de uma constante nativa, e o `forceRTL` fala com
+   o lado nativo sem mexer nesse booleano - a troca so vale depois de recarregar
+   o app. Aqui ele nasce em `false`, que e o mundo onde os 340 testes ja
+   rodavam, e o `forceRTL` continua sendo o nada que ele e la. Quem quer o outro
+   mundo escreve `I18nManager.isRTL = true` ANTES de montar e devolve depois: e
+   o mesmo gesto do aparelho, onde a arvore ja nasce sabendo de que lado a
+   leitura comeca. Fixar em `true` cobriria um lado e deixaria o outro a
+   descoberto; e sortear faria a suite depender da maquina. */
+let rtl = false;
+
+export const I18nManager = {
+  get isRTL() {
+    return rtl;
+  },
+  set isRTL(next: boolean) {
+    rtl = next;
+  },
+  doLeftAndRightSwapInRTL: true,
+  getConstants: () => ({ isRTL: rtl, doLeftAndRightSwapInRTL: true }),
+  allowRTL: (_allow: boolean) => {},
+  forceRTL: (_force: boolean) => {},
+  swapLeftAndRightInRTL: (_swap: boolean) => {},
+};
+
 /** O Slider so precisa que os handlers existam; gesto nao se testa aqui. */
 export const PanResponder = {
   create: () => ({ panHandlers: {} }),

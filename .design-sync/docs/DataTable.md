@@ -83,18 +83,22 @@ devolve.
 
 ## Os textos que a peça escreve
 
-Três eram cravados, e nenhum tinha prop:
+Eram cravados, e nenhum tinha prop:
 
 - **`errorTitle`** (padrão "Não foi possível carregar") e **`errorMessage`** são
   o par do estado de erro. Uma tela que carrega três listagens precisa dizer
   qual delas falhou. O `ChartContainer` usa os mesmos dois nomes.
+- **`retryLabel`** (padrão "Tentar de novo") é o nome do botão que executa o
+  `onRetry`. Ele existe pelo mesmo motivo do `errorTitle`, e com o mesmo nome
+  nas quatro peças de consulta: sem ele, a tela em outra língua saía com o
+  título traduzido e o botão em português.
 - **`noResultsMessage`** (padrão "Nenhum resultado para a busca.") é a linha
   discreta de quando o filtro zerou. Ela não se confunde com o `empty`: filtro
   que zerou não é consulta vazia, e o remédio de um (limpar a busca) não serve
   ao outro.
 
-Os três nomes valem igual no `DataList` do React Native, com uma diferença de
-padrão: lá o aviso de erro nasceu de uma linha só, então `errorTitle` aparece
+`errorTitle`, `errorMessage` e `noResultsMessage` valem igual no `DataList` do
+React Native, com uma diferença de padrão: lá o aviso de erro nasceu de uma linha só, então `errorTitle` aparece
 apenas quando você passa um. Sem ele, quem fala é a `errorMessage`.
 
 ## Muita linha: rolagem própria e virtualização
@@ -147,6 +151,17 @@ mil.
 Quem ordena, filtra ou pagina **no servidor** já recebe os dados prontos: mostre
 a página que veio e ponha o `Pagination` da casa do lado de fora, e não marque
 `sortable` nem use `filter`, porque duas ordenações discordando é pior que uma.
+
+## A espera se anuncia
+
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
 ## Quando não usar
 

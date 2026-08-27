@@ -125,8 +125,20 @@ Os mesmos do `DataTable`, na mesma ordem e com os mesmos nomes de prop: erro
 vence carregando, e vazio só vale depois que a consulta voltou. `isLoading` e
 `items === undefined` são a mesma coisa; `skeletonItems` diz quantos itens
 falsos aparecem, e cada um ocupa a altura de `itemHeight`, para a moldura não
-pular quando os dados chegam. `errorTitle`, `errorMessage` e `onRetry` são o par
-de erro, e `empty` é o estado vazio com descrição obrigatória.
+pular quando os dados chegam. `errorTitle`, `errorMessage`, `onRetry` e
+`retryLabel` são o conjunto do erro, e `empty` é o estado vazio com descrição
+obrigatória. `retryLabel` (padrão "Tentar de novo") nomeia o botão da nova
+tentativa, e tem o mesmo nome e o mesmo padrão nas quatro peças de consulta:
+traduzir o título sem poder traduzir o botão é pior do que não traduzir nada.
+
+**A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
+leitor de tela nenhum: ele descreve o estado de uma região, e só chega a quem já
+está dentro dela. Quem esperava ouvia silêncio, e a chegada do dado, que troca a
+tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região viva
+(`role="status" aria-live="polite"`, marcada com `data-rc-status`), que diz
+"Carregando…" enquanto a consulta não volta e "Conteúdo carregado" quando ela
+volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
+estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
 ## Partes
 

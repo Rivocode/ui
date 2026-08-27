@@ -1,4 +1,4 @@
-import { FileText, Search } from "lucide-react";
+import { FileText } from "lucide-react";
 import { createRoot } from "react-dom/client";
 
 import { useState } from "react";
@@ -10,7 +10,6 @@ import {
   Button,
   Field,
   FieldLabel,
-  InputAction,
   InputGroup,
   InputPrefix,
   InputSuffix,
@@ -23,6 +22,9 @@ import {
   MaskedInput,
   Pagination,
   RivoProvider,
+  SearchInput,
+  TagsInput,
+  Tree,
   Combobox,
   ComboboxContent,
   ComboboxInput,
@@ -82,6 +84,8 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 function Sample({ theme }: { theme: RivoTheme }) {
   const [page, setPage] = useState(3);
   const [sectors, setSectors] = useState<string[]>(["contas-pagar", "contas-receber"]);
+  const [search, setSearch] = useState("Clinica");
+  const [tags, setTags] = useState(["nf-e", "urgente", "prefeitura"]);
 
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[860px] p-8">
@@ -101,6 +105,19 @@ function Sample({ theme }: { theme: RivoTheme }) {
             />
           </Block>
 
+          <Block title="Busca">
+            <SearchInput placeholder="Buscar nota ou cliente" aria-label="Buscar nota ou cliente" />
+            <SearchInput placeholder="Buscar em tudo" aria-label="Buscar em tudo" shortcut="mod+k" />
+            <SearchInput
+              size="sm"
+              placeholder="Buscar cliente"
+              aria-label="Buscar cliente"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              onClear={() => setSearch("")}
+            />
+          </Block>
+
           <Block title="Campos com mascara">
             <Field>
               <FieldLabel>CNPJ</FieldLabel>
@@ -116,13 +133,6 @@ function Sample({ theme }: { theme: RivoTheme }) {
             <InputGroup>
               <InputPrefix>R$</InputPrefix>
               <MaskedInput mask="moeda" defaultValue="248000" />
-            </InputGroup>
-
-            <InputGroup>
-              <MaskedInput mask="" placeholder="Buscar nota ou cliente" />
-              <InputAction aria-label="Buscar">
-                <Search size={16} aria-hidden="true" />
-              </InputAction>
             </InputGroup>
 
             <InputGroup>
@@ -206,6 +216,20 @@ function Sample({ theme }: { theme: RivoTheme }) {
               onValueChange={setSectors}
               placeholder="Escolha os setores"
             />
+          </Block>
+
+          <Block title="Arvore solta">
+            <Tree
+              items={SECTORS}
+              value={sectors}
+              onValueChange={setSectors}
+              expanded={["financeiro", "operacao"]}
+              multiple
+            />
+          </Block>
+
+          <Block title="Marcadores">
+            <TagsInput value={tags} onValueChange={setTags} placeholder="Escreva e tecle Enter" />
           </Block>
 
           <Block title="Paginacao">

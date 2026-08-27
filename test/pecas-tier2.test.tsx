@@ -175,6 +175,48 @@ test("a faixa sem dado nao abre balao nenhum", () => {
   expect(screen.queryByRole("tooltip")).toBeNull();
 });
 
+test("o nome da faixa e dito uma vez, e sai do proprio texto que a peca escreve", () => {
+  const { track } = tracker(3);
+
+  expect(track.getAttribute("aria-label")).toBeNull();
+
+  const source = document.getElementById(track.getAttribute("aria-labelledby")!)!;
+  expect(source.tagName).toBe("P");
+  expect(source.textContent).toBe("Emissões por dia");
+  expect(source.getAttribute("aria-hidden")).toBe("true");
+});
+
+test("o texto que nomeia a faixa continua sendo o que classNames.label veste", () => {
+  withTheme(
+    <Tracker
+      label="Emissões por dia"
+      classNames={{ label: "text-fg-subtle" }}
+      data={[{ tone: "success", label: "Dia 1" }]}
+    />,
+  );
+
+  const track = screen.getByRole("group", { name: "Emissões por dia" });
+  const source = document.getElementById(track.getAttribute("aria-labelledby")!)!;
+
+  expect(source.className).toContain("text-fg-subtle");
+});
+
+test("o aria-label de quem chama pousa no no que tem papel, e nao numa div solta", () => {
+  const { container } = withTheme(
+    <Tracker
+      aria-label="Faixa de disponibilidade"
+      label="Emissões por dia"
+      data={[{ tone: "success", label: "Dia 1" }]}
+    />,
+  );
+
+  const root = container.firstElementChild!.firstElementChild!;
+  expect(root.getAttribute("aria-label")).toBeNull();
+
+  const track = screen.getByRole("group", { name: "Faixa de disponibilidade" });
+  expect(track.getAttribute("aria-labelledby")).toBeNull();
+});
+
 test("o texto vira ficha no Enter, e a ficha sai no proprio botao", () => {
   let current: string[] = ["nf-e"];
   function Controlled() {

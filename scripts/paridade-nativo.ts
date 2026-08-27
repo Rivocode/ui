@@ -299,6 +299,17 @@ const PARITY: Record<string, Row> = {
       "duplicar abriria um `gap` morto na fileira. **Limite de plataforma declarado:** " +
       "`accessibilityLiveRegion` é do Android; no iOS o anúncio automático não existe sem " +
       "`announceForAccessibility`, que nenhuma peça do catálogo usa hoje.\n\n" +
+      "**RTL foi verificado, e a maior parte o próprio React Native resolve.** A fileira e a " +
+      "ficha já são espelhadas pelo Yoga quando a locale é da direita para a esquerda, e o " +
+      "repouso da rolagem já para na borda onde a leitura começa: inverter de novo seria o " +
+      "erro clássico de espelhar duas vezes. O `contentOffset` que chega ao JavaScript é " +
+      "sempre distância física a partir da esquerda, nos dois sentidos e nas duas " +
+      "plataformas, então a régua marca o lado físico que tem conteúdo além dele, e não " +
+      "troca de lado.\n\n" +
+      "O que precisou de conta foi o valor de REPOUSO. O código guardava zero até chegar o " +
+      "primeiro evento de rolagem: verdade em LTR, falso em RTL, onde o repouso é o fim do " +
+      "conteúdo. No iOS o defeito durava para sempre enquanto ninguém arrastasse, porque em " +
+      "repouso ele não emite evento nenhum, e a régua aparecia do lado errado.\n\n" +
       "**A borda esmaece no web; aqui ela é uma régua.** `mask-image` não existe no React " +
       "Native, e um esmaecido de verdade só sairia de duas formas. Um peer novo " +
       "(`expo-linear-gradient`, `MaskedView`), que uma barra de filtros não pode cobrar, " +
@@ -329,6 +340,27 @@ const PARITY: Record<string, Row> = {
       "do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta " +
       "alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa: " +
       "o dedo não encolhe junto com a ficha.",
+  },
+  EventCalendar: {
+    state: "fila",
+    note: "`agenda`, `day` e `month` portam; a `week` nao cabe em 44,8px de coluna",
+    page:
+      "Na fila, e a fila e por DESENHO de gesto, nao por tempo. Tres das quatro vistas portam: a " +
+      "`agenda` vira `SectionList` (virtualizacao de fabrica, o mesmo argumento que tirou a " +
+      "`VirtualList` do catalogo nativo), a `day` e uma coluna unica de 314px, que e coluna de " +
+      "verdade, e a `month` sobrevive aos 51px por celula porque a celula so precisa mostrar que " +
+      "existe alguma coisa e mais ou menos o que.\n\n" +
+      "**A `week` nao porta.** Sete colunas em 358px dao 44,8px cada, e a coluna de semana existe " +
+      "para mostrar hora e duracao. Em 44,8px ela mostra um retangulo colorido, que e o que a " +
+      "`month` ja faz melhor e mais barato. O web tomou a mesma decisao para a propria tela " +
+      "estreita: abaixo de `sm` a `week` some do seletor e `view=\"week\"` resolve para `agenda`.\n\n" +
+      "O que falta e decisao de gesto, e por isso a linha esta em `FILA_DECLARADA`: arrastar para " +
+      "mudar de semana, tocar e segurar para criar, e o que acontece quando o dedo pousa em cima " +
+      "de dois eventos que se sobrepoem. Nenhuma dessas tem resposta no web, porque no web sao " +
+      "ponteiro e teclado.\n\n" +
+      "O calculo de layout ja nasceu pronto para atravessar: `src/lib/event-layout.ts` e funcao " +
+      "pura sem DOM, e nao ha mecanismo no repositorio para compartilhar codigo puro entre os " +
+      "dois pacotes. Esse mecanismo e o que a peca vai cobrar primeiro.",
   },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
   Input: {
@@ -1052,7 +1084,12 @@ const PARITY: Record<string, Row> = {
  * acusa mais e erro, e a guarda manda apagar a linha - e o que impede a lista
  * de virar o lugar onde a fila mora para sempre.
  */
-const FILA_DECLARADA: Record<string, string> = {};
+const FILA_DECLARADA: Record<string, string> = {
+  EventCalendar:
+    "espera decisao de gesto, e nao tempo: arrastar para mudar de semana, tocar e segurar para " +
+    "criar, e o que fazer quando o dedo pousa sobre dois eventos sobrepostos. Nenhuma tem " +
+    "resposta no web, onde sao ponteiro e teclado. Vale prototipo antes, como o Editable valeu.",
+};
 
 async function catalogPieces() {
   const pages: string[] = [];

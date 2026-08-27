@@ -16,6 +16,7 @@ import { Button } from "../components/button";
 import { EmptyState } from "../components/empty-state";
 import { Skeleton } from "../components/skeleton";
 import { cn } from "../lib/cn";
+import { LoadingAnnouncement } from "../lib/loading-announcement";
 
 export type ChartConfig = Record<
   string,
@@ -48,6 +49,15 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
+  /**
+   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
+   *
+   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
+   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
+   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
+   * O mesmo nome nas quatro pecas de consulta.
+   */
+  retryLabel?: ReactNode;
   /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
    * `DataTable`, `action` inclusive - ela e a saida que o `EmptyState`
@@ -86,6 +96,7 @@ export function ChartContainer({
   onRetry,
   errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
+  retryLabel = "Tentar de novo",
   empty,
   data,
   label,
@@ -131,9 +142,11 @@ export function ChartContainer({
     >
       <style dangerouslySetInnerHTML={{ __html: `[data-rc-chart="${id}"] {\n  ${colors}\n}` }} />
 
-      <div role="status" aria-live="polite" className="sr-only">
+      <div role="status" aria-live="polite" data-rc-active-point="" className="sr-only">
         {announcement}
       </div>
+
+      {!isError && <LoadingAnnouncement loading={isLoading === true} />}
 
       {isError ? (
         <StateFrame>
@@ -144,7 +157,7 @@ export function ChartContainer({
             </AlertDescription>
             {onRetry && (
               <Button size="sm" variant="secondary" onClick={onRetry} className="mt-3">
-                Tentar de novo
+                {retryLabel}
               </Button>
             )}
           </Alert>

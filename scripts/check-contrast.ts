@@ -87,6 +87,10 @@ const PAIRS: Array<[string, string, number]> = [
   ["--rc-fg-subtle", "--rc-surface-raised", MIN_TEXT],
   ["--rc-accent-text", "--rc-bg", MIN_TEXT],
   ["--rc-accent-text", "--rc-surface-raised", MIN_TEXT],
+  // O acento escrito sobre a superficie da grade: o "+N mais" do EventCalendar
+  // e o numero do dia de hoje. Os dois pousam em `surface`, e nao na pagina
+  // nem no painel que flutua - era o unico dos tres fundos sem medida.
+  ["--rc-accent-text", "--rc-surface", MIN_TEXT],
   ["--rc-accent-fg", "--rc-accent", MIN_TEXT],
   ["--rc-success-text", "--rc-bg", MIN_TEXT],
   ["--rc-warning-text", "--rc-bg", MIN_TEXT],
@@ -140,6 +144,10 @@ const COMPOSED_PAIRS: Array<[string, string, string, number]> = [
   ["--rc-fg", "--rc-accent-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-accent-subtle", "--rc-surface", MIN_BODY],
 
+  // A celula de hoje no mes do EventCalendar: `selected` por cima da grade, e
+  // o numero do dia escrito em acento em cima dela.
+  ["--rc-accent-text", "--rc-selected", "--rc-surface", MIN_TEXT],
+
   // A linha escolhida da tabela, que e alfa por cima de onde a tabela pousa, e
   // o miolo do intervalo do Calendar, que pousa dentro do Popover.
   ["--rc-fg", "--rc-selected", "--rc-bg", MIN_BODY],
@@ -164,6 +172,11 @@ const BOUNDARIES: Array<[string, string, number]> = [
   ["--rc-border-strong", "--rc-surface-raised", MIN_NAO_TEXTUAL],
   ["--rc-ring", "--rc-bg", MIN_NAO_TEXTUAL],
   ["--rc-ring", "--rc-surface", MIN_NAO_TEXTUAL],
+  // A linha do agora do EventCalendar: dois pixels atravessando a coluna do
+  // dia, sem texto nenhum em cima. E objeto grafico que precisa ser percebido,
+  // entao vale a mesma regra de 3:1 da fronteira de controle - e o acento nao
+  // serve para isso, porque o lima sobre branco mede 1,15.
+  ["--rc-danger", "--rc-surface", MIN_NAO_TEXTUAL],
 ];
 
 /**

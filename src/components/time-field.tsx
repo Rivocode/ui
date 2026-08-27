@@ -4,6 +4,8 @@ import { Minus, Plus } from "lucide-react";
 import {
   createContext,
   useContext,
+  useEffect,
+  useRef,
   useState,
   type ComponentProps,
   type KeyboardEvent,
@@ -30,6 +32,20 @@ const STEP = cn(
   "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:-outline-offset-2",
   "disabled:cursor-not-allowed disabled:text-fg-disabled disabled:hover:bg-transparent",
 );
+
+function labelOf(node: HTMLInputElement): string | undefined {
+  const ids = node.getAttribute("aria-labelledby")?.trim();
+  const sources = ids
+    ? ids.split(/\s+/).map((id) => node.ownerDocument.getElementById(id))
+    : [...(node.labels ?? [])];
+
+  const text = sources
+    .map((source) => source?.textContent?.trim() ?? "")
+    .filter(Boolean)
+    .join(" ");
+
+  return text || undefined;
+}
 
 export function applyTimeMask(text: string): string {
   const digits = text.replace(/\D/g, "").slice(0, 4);
@@ -114,6 +130,7 @@ export function TimeField({
   name,
   onBlur,
   onKeyDown,
+  ref,
   "aria-label": ariaLabel,
   "aria-invalid": invalidProp,
   ...props
@@ -124,10 +141,31 @@ export function TimeField({
 
   const [text, setText] = useState(current);
   const [typing, setTyping] = useState(false);
+  const [stepped, setStepped] = useState("");
+
+  const input = useRef<HTMLInputElement>(null);
+  const [labelled, setLabelled] = useState<string>();
 
   const isMobile = useMobile();
   const elsewhere = useContext(TouchStepElsewhere);
   const steppers = isMobile && !elsewhere;
+
+  const named = ariaLabel ?? labelled;
+
+  useEffect(() => {
+    const node = input.current;
+    if (!steppers || ariaLabel !== undefined || !node) {
+      setLabelled(undefined);
+      return;
+    }
+
+    const read = () => setLabelled(labelOf(node));
+    read();
+
+    const watch = new MutationObserver(read);
+    watch.observe(node, { attributes: true, attributeFilter: ["aria-labelledby"] });
+    return () => watch.disconnect();
+  }, [steppers, ariaLabel]);
 
   const bounds = timeWindow(min, max);
   const chosen = parseTime(current);
@@ -145,7 +183,10 @@ export function TimeField({
 
   function move(direction: 1 | -1) {
     setTyping(false);
-    commit(formatTime(stepTime(parseTime(shown), direction, step, bounds)));
+
+    const next = formatTime(stepTime(parseTime(shown), direction, step, bounds));
+    setStepped(next);
+    commit(next);
   }
 
   function walk(event: KeyboardEvent<HTMLInputElement>) {
@@ -158,6 +199,11 @@ export function TimeField({
   const control = (
     <Input
       {...props}
+      ref={(node: HTMLInputElement | null) => {
+        input.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       size={size}
       type="text"
       inputMode="numeric"
@@ -202,8 +248,8 @@ export function TimeField({
       disabled={disabled}
       aria-label={
         direction === 1
-          ? `Aumentar${ariaLabel ? ` ${ariaLabel}` : ""}`
-          : `Diminuir${ariaLabel ? ` ${ariaLabel}` : ""}`
+          ? `Aumentar${named ? ` ${named}` : ""}`
+          : `Diminuir${named ? ` ${named}` : ""}`
       }
       onMouseDown={(event) => event.preventDefault()}
       onClick={() => move(direction)}
@@ -219,10 +265,17 @@ export function TimeField({
 
   const hidden = name ? <input type="hidden" name={name} value={formatTime(chosen)} /> : null;
 
+  const announcement = (
+    <div role="status" aria-live="polite" className="sr-only">
+      {stepped}
+    </div>
+  );
+
   if (!steppers) {
     return (
       <>
         {control}
+        {announcement}
         {hidden}
       </>
     );
@@ -247,6 +300,7 @@ export function TimeField({
         {stepper(1)}
       </div>
 
+      {announcement}
       {hidden}
     </>
   );

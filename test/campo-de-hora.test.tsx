@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 
+import { Field, FieldLabel } from "../src/components/field";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { TimeField } from "../src/components/time-field";
 import { TimePicker } from "../src/components/time-picker";
@@ -374,6 +375,23 @@ test("escolher a hora do fim da janela nao passa do maximo", () => {
   expect(recebida).toBe("10:00");
 });
 
+async function onPhoneWaiting(body: () => Promise<void>) {
+  const original = window.matchMedia;
+  window.matchMedia = ((query: string) =>
+    ({
+      matches: query.includes("max-width"),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+
+  try {
+    await body();
+  } finally {
+    window.matchMedia = original;
+  }
+}
+
 function onPhone(body: () => void) {
   const original = window.matchMedia;
   window.matchMedia = ((query: string) =>
@@ -529,4 +547,117 @@ test("dentro do seletor o campo nao ganha botoes: o painel ja e a porta do passo
     open();
     expect(screen.getByRole("listbox", { name: "Minuto" })).toBeDefined();
   });
+});
+
+test("o nome da coluna sai do texto que esta na tela, e nao de uma copia dele", () => {
+  withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
+
+  open();
+
+  for (const name of ["Hora", "Minuto"]) {
+    const column = screen.getByRole("listbox", { name });
+    expect(column.getAttribute("aria-label")).toBeNull();
+
+    const source = document.getElementById(column.getAttribute("aria-labelledby")!)!;
+    expect(source.textContent).toBe(name);
+    expect(source.getAttribute("aria-hidden")).toBe("true");
+  }
+});
+
+test("o botao herda o nome do rotulo, e nao so do aria-label", async () => {
+  await onPhoneWaiting(async () => {
+    withTheme(
+      <Field>
+        <FieldLabel htmlFor="entrada">Entrada</FieldLabel>
+        <TimeField id="entrada" defaultValue="08:00" />
+      </Field>,
+    );
+
+    fireEvent.click(await screen.findByRole("button", { name: "Aumentar Entrada" }));
+
+    expect(field().value).toBe("08:15");
+  });
+});
+
+test("rotulo por label solto tambem chega no botao, sem Field nenhum em volta", () => {
+  onPhone(() => {
+    withTheme(
+      <>
+        <label htmlFor="almoco">Almoço</label>
+        <TimeField id="almoco" defaultValue="12:00" />
+      </>,
+    );
+
+    expect(stepper("Diminuir Almoço")).toBeDefined();
+  });
+});
+
+test("dois horarios rotulados na tela nao viram quatro botoes com dois nomes", async () => {
+  await onPhoneWaiting(async () => {
+    withTheme(
+      <>
+        <Field>
+          <FieldLabel htmlFor="entrada">Entrada</FieldLabel>
+          <TimeField id="entrada" defaultValue="08:00" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="saida">Saída</FieldLabel>
+          <TimeField id="saida" defaultValue="17:00" />
+        </Field>
+      </>,
+    );
+
+    const later = await screen.findByRole("button", { name: "Aumentar Saída" });
+    const names = screen.getAllByRole("button").map((node) => node.getAttribute("aria-label"));
+    expect(new Set(names).size).toBe(4);
+
+    fireEvent.click(later);
+    const campos = screen.getAllByPlaceholderText("hh:mm") as HTMLInputElement[];
+    expect(campos[0]!.value).toBe("08:00");
+    expect(campos[1]!.value).toBe("17:15");
+  });
+});
+
+test("campo sem rotulo nenhum nao inventa nome para o botao", () => {
+  onPhone(() => {
+    withTheme(<TimeField defaultValue="08:00" />);
+
+    expect(stepper("Aumentar")).toBeDefined();
+  });
+});
+
+test("a regiao viva existe antes de a hora mudar, senao o primeiro passo sai calado", () => {
+  onPhone(() => {
+    const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" />);
+
+    const region = container.querySelector('[role="status"][aria-live="polite"]')!;
+    expect(region).not.toBeNull();
+    expect(region.textContent).toBe("");
+  });
+});
+
+test("o passo pelo botao diz em voz alta a hora em que parou", () => {
+  onPhone(() => {
+    const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" />);
+
+    fireEvent.click(stepper("Aumentar Entrada"));
+
+    expect(container.querySelector('[role="status"]')!.textContent).toBe("08:15");
+  });
+});
+
+test("a seta no teclado anuncia como o botao anuncia, e o foco fica onde estava", () => {
+  const { container } = withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
+
+  fireEvent.keyDown(field(), { key: "ArrowUp" });
+
+  expect(container.querySelector('[role="status"]')!.textContent).toBe("14:15");
+});
+
+test("digitar nao anuncia nada: quem digita ja ouve o proprio teclado", () => {
+  const { container } = withTheme(<TimeField aria-label="Entrada" />);
+
+  fireEvent.change(field(), { target: { value: "0830" } });
+
+  expect(container.querySelector('[role="status"]')!.textContent).toBe("");
 });

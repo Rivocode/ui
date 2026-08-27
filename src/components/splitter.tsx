@@ -1,7 +1,7 @@
 "use client";
 
 import { useDirection } from "@base-ui/react/direction-provider";
-import { useRef, useState, type ComponentProps, type ReactNode } from "react";
+import { useId, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -37,9 +37,12 @@ export function Splitter({
   orientation = "horizontal",
   className,
   classNames,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
   ...props
 }: SplitterProps) {
   const [internal, setInternal] = useState(defaultSize);
+  const startId = useId();
   const frame = useRef<HTMLDivElement>(null);
   const current = size ?? internal;
   const vertical = orientation === "vertical";
@@ -85,6 +88,7 @@ export function Splitter({
       )}
     >
       <div
+        id={startId}
         className={cn("min-h-0 min-w-0 overflow-auto", classNames?.start)}
         style={{ flexBasis: `${current}%` }}
       >
@@ -94,11 +98,14 @@ export function Splitter({
       <div
         role="separator"
         tabIndex={0}
-        aria-label={label}
+        aria-label={ariaLabel ?? label}
+        aria-labelledby={ariaLabelledBy}
         aria-orientation={vertical ? "horizontal" : "vertical"}
         aria-valuenow={Math.round(current)}
         aria-valuemin={min}
         aria-valuemax={100 - min}
+        aria-valuetext={`${Math.round(current)}%`}
+        aria-controls={startId}
         onPointerDown={drag}
         onKeyDown={(event) => {
           const back = vertical ? "ArrowUp" : rtl ? "ArrowRight" : "ArrowLeft";
@@ -119,8 +126,8 @@ export function Splitter({
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           vertical ? "h-px w-full cursor-row-resize" : "w-px cursor-col-resize max-md:hidden",
           vertical
-            ? "after:absolute after:inset-x-0 after:-inset-y-1.5"
-            : "after:absolute after:inset-y-0 after:-inset-x-1.5",
+            ? "after:absolute after:inset-x-0 after:-inset-y-3"
+            : "after:absolute after:inset-y-0 after:-inset-x-3",
           classNames?.handle,
         )}
       />

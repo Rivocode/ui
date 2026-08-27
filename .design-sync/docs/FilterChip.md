@@ -52,6 +52,14 @@ pseudo-elemento até os 24px da WCAG 2.5.8 (a mesma saída da ficha do
 tenant, o período que o fechamento fixou. Ele aparece porque explica o
 resultado, e não some porque sair dele não é escolha de quem lê.
 
+## A ficha não cuida do foco
+
+Ela desmonta quando quem a renderiza a tira da lista, e o xis desmonta junto: o
+foco que estava nele volta para o `<body>` se ninguém escolher onde ele pousa.
+Dentro da `FilterBar` a conta já está paga: ela move o foco para o xis
+seguinte, e de lá para o "limpar". Fora dela, quem monta a fileira herda a
+conta.
+
 ## O valor que não cabe
 
 O valor corta com reticências em 10rem e leva o texto inteiro no `title`. É o

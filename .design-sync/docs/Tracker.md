@@ -27,6 +27,23 @@ painel sem tirar o foco dali. O período lido pelo teclado é dito também numa
 região viva, porque desenho não chega a quem ouve; o ponteiro fica calado ali,
 para não encher a fila do leitor de tela com cada quadrado varrido.
 
+## O nome é dito uma vez
+
+O texto de `label` sai num `<p>` que a fatia `label` pode mostrar, e o grupo o
+toma por `aria-labelledby` em vez de repeti-lo num `aria-label`. Antes eram duas
+frases idênticas em seguida na árvore de acessibilidade: o parágrafo escondido e
+o nome do grupo, um atrás do outro. O `<p>` fica `aria-hidden`, porque quem
+carrega a frase para quem ouve é o nome do grupo; tirá-lo da leitura não tira
+nada de ninguém, e é o que faz a frase ser dita uma vez em vez de duas.
+
+Guardar o `<p>` em vez de apagá-lo é o que preserva as duas intenções: a fatia
+`label` existe para quem quer o texto na tela, e o nome do grupo continua saindo
+do mesmo lugar que essa pessoa vê.
+
+Um `aria-label` escrito por quem chama vence o `label` e cai no mesmo grupo.
+Antes ele parava na `div` externa, sem papel, que o Chrome guarda como um nó
+`generic` nomeado e nenhum leitor de tela expõe.
+
 ## Sentido da escrita
 
 Em `dir="rtl"` a faixa vira junto. O período mais recente passa a ser o da

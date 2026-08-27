@@ -40,12 +40,49 @@ test("sai como tabela de verdade, nao como grade de divs", () => {
   expect(screen.getAllByRole("row")).toHaveLength(3);
 });
 
+const pickedRow = () =>
+  screen.getAllByRole("row").find((row) => row.className.includes("bg-selected"))!;
+
 test("a linha selecionada se marca para o leitor de tela, nao so com cor", () => {
   render(<Example />);
-  const rows = screen.getAllByRole("row");
-  const selecionada = rows.find((l) => l.getAttribute("aria-selected") === "true");
-  expect(selecionada).toBeDefined();
-  expect(selecionada!.className).toContain("bg-selected");
+  const picked = pickedRow();
+  expect(picked).toBeDefined();
+  const first = picked.querySelector("td");
+  expect(first?.querySelector(".sr-only")?.textContent?.trim()).toBe("Selecionada");
+  expect(picked.textContent).toContain("Selecionada");
+});
+
+test("o marcador abre a primeira celula, e nao aparece nas outras linhas", () => {
+  render(<Example />);
+  const cells = [...pickedRow().querySelectorAll("td")];
+  expect(cells[0]!.textContent).toBe("Selecionada Clinica Sao Lucas");
+  expect(cells[1]!.querySelector(".sr-only")).toBeNull();
+  const loose = screen
+    .getAllByRole("row")
+    .find((row) => !row.className.includes("bg-selected") && row.querySelector("td"))!;
+  expect(loose.textContent).not.toContain("Selecionada");
+});
+
+test("nao promete aria-selected, que role=table descarta", () => {
+  render(<Example />);
+  for (const row of screen.getAllByRole("row")) {
+    expect(row.hasAttribute("aria-selected")).toBe(false);
+  }
+});
+
+test("o marcador troca de idioma pela prop labels", () => {
+  render(
+    <Table>
+      <TableBody>
+        <TableRow selected labels={{ selected: "Selected" }}>
+          <TableCell>Clinica Sao Lucas</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
+  );
+  const cell = screen.getAllByRole("cell")[0]!;
+  expect(cell.querySelector(".sr-only")?.textContent?.trim()).toBe("Selected");
+  expect(cell.textContent).not.toContain("Selecionada");
 });
 
 test("a tabela rola de lado sem empurrar a pagina", () => {

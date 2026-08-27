@@ -1,7 +1,27 @@
 import { expect, mock, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
 
-import { FilterBar, FilterChip, type AppliedFilter } from "../src/components/filter-bar";
+import {
+  FilterBar,
+  FilterChip,
+  type AppliedFilter,
+  type FilterBarProps,
+} from "../src/components/filter-bar";
+
+function Controlada({
+  inicial,
+  ...rest
+}: { inicial: AppliedFilter[] } & Omit<FilterBarProps, "filters" | "onFiltersChange">) {
+  const [filters, setFilters] = useState(inicial);
+  return <FilterBar filters={filters} onFiltersChange={setFilters} {...rest} />;
+}
+
+function tira(name: string) {
+  const cross = screen.getByRole("button", { name });
+  cross.focus();
+  fireEvent.click(cross);
+}
 
 function reservedLine() {
   return screen.queryAllByText("Nenhum filtro aplicado").find((node) => node.tagName === "P");
@@ -220,15 +240,87 @@ test("o limpar fica fora do trecho que rola, ancorado na ponta", () => {
   expect(clear.className).toContain("shrink-0");
 });
 
-test("sem nenhum xis, o trecho que rola vira parada de tabulacao", () => {
+test("sem nenhum xis e transbordando, o trecho que rola vira parada de tabulacao", () => {
   render(
     <FilterBar
       filters={APPLIED.map((each) => ({ ...each, removable: false }))}
       onFiltersChange={() => {}}
     />,
   );
+  const list = screen.getByRole("list");
 
-  expect(screen.getByRole("list").getAttribute("tabindex")).toBe("0");
+  scroller(list, 250, 1289, 0);
+
+  expect(list.getAttribute("tabindex")).toBe("0");
+});
+
+test("sem nenhum xis mas cabendo tudo, nao ha parada de tabulacao: nao ha o que rolar", () => {
+  render(
+    <FilterBar
+      filters={APPLIED.map((each) => ({ ...each, removable: false }))}
+      onFiltersChange={() => {}}
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 561, 561, 0);
+
+  expect(list.hasAttribute("tabindex")).toBe(false);
+  expect(list.hasAttribute("aria-label")).toBe(false);
+});
+
+test("a parada de tabulacao ganha nome, porque parada sem nome nao diz onde a pessoa esta", () => {
+  render(
+    <FilterBar
+      filters={APPLIED.map((each) => ({ ...each, removable: false }))}
+      onFiltersChange={() => {}}
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.getAttribute("aria-label")).toBe("Filtros aplicados: role para ver todos");
+});
+
+test("o nome da parada segue o nome da fileira, e nao inventa um segundo", () => {
+  render(
+    <FilterBar
+      filters={APPLIED.map((each) => ({ ...each, removable: false }))}
+      onFiltersChange={() => {}}
+      label="Filtros da fila"
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.getAttribute("aria-label")).toBe("Filtros da fila: role para ver todos");
+});
+
+test("labels.scroll troca o nome do trecho que rola", () => {
+  render(
+    <FilterBar
+      filters={APPLIED.map((each) => ({ ...each, removable: false }))}
+      onFiltersChange={() => {}}
+      labels={{ scroll: (name) => `${name}, arraste para o lado` }}
+    />,
+  );
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.getAttribute("aria-label")).toBe("Filtros aplicados, arraste para o lado");
+});
+
+test("havendo xis, transbordar nao acrescenta parada nem nome: o teclado ja chega pelas fichas", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 250, 1289, 0);
+
+  expect(list.hasAttribute("tabindex")).toBe(false);
+  expect(list.hasAttribute("aria-label")).toBe(false);
 });
 
 test("havendo xis, o trecho que rola nao acrescenta parada de tabulacao", () => {
@@ -245,10 +337,23 @@ test("desabilitada, a barra trava todos os xis e o limpar de uma vez", () => {
   }
 });
 
-test("desabilitada e sem xis alcancavel, o trecho que rola continua chegavel pelo teclado", () => {
-  render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} disabled />);
+test("desabilitada e transbordando, o trecho que rola continua chegavel pelo teclado", () => {
+  render(<FilterBar filters={SIX} onFiltersChange={() => {}} disabled />);
+  const list = screen.getByRole("list");
 
-  expect(screen.getByRole("list").getAttribute("tabindex")).toBe("0");
+  scroller(list, 250, 1289, 0);
+
+  expect(list.getAttribute("tabindex")).toBe("0");
+  expect(list.getAttribute("aria-label")).toBe("Filtros aplicados: role para ver todos");
+});
+
+test("desabilitada e cabendo tudo, o disabled nao inventa parada de tabulacao", () => {
+  render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} disabled />);
+  const list = screen.getByRole("list");
+
+  scroller(list, 561, 561, 0);
+
+  expect(list.hasAttribute("tabindex")).toBe(false);
 });
 
 test("classNames veste cada parte, e nao a raiz", () => {
@@ -447,4 +552,146 @@ test("o classNames da lista redesenha o esmaecido, para quem quiser outra medida
 
   expect(list.className).toContain("mask-r-from-[calc(100%-4rem)]");
   expect(list.className).not.toContain("mask-r-from-[calc(100%-1.5rem)]");
+});
+
+test("removida uma ficha, o foco vai para o xis da seguinte, e nao para o topo do documento", () => {
+  render(<Controlada inicial={SIX} />);
+
+  tira("Remover filtro Situacao: Em aberto");
+
+  expect(document.activeElement?.getAttribute("aria-label")).toBe(
+    "Remover filtro Emissao: 01/08 a 31/08",
+  );
+});
+
+test("tirando uma atras da outra, o foco nunca cai no body: seis filtros, seis pousos", () => {
+  render(<Controlada inicial={SIX} />);
+  const pousos: string[] = [];
+
+  for (const filter of SIX) {
+    const cross = screen.getByRole("button", {
+      name: new RegExp(`^Remover filtro ${filter.label}`),
+    });
+    cross.focus();
+    fireEvent.click(cross);
+    pousos.push(document.activeElement === document.body ? "body" : "algum lugar da barra");
+  }
+
+  expect(pousos.length).toBe(6);
+  expect(pousos).not.toContain("body");
+});
+
+test("era a ultima ficha, entao o foco pousa no limpar, que e o vizinho que sobrou", () => {
+  render(<Controlada inicial={SIX} />);
+
+  tira("Remover filtro Vendedor: Maria Fernanda de Albuquerque");
+
+  expect(document.activeElement?.textContent).toBe("Limpar 5 filtros");
+});
+
+test("era a ultima e nao ha limpar, entao o foco volta para o xis anterior", () => {
+  render(<Controlada inicial={APPLIED} clearFrom={Infinity} />);
+
+  tira("Remover filtro Cliente: Clinica Sao Lucas");
+
+  expect(document.activeElement?.getAttribute("aria-label")).toBe(
+    "Remover filtro Situacao: Em aberto",
+  );
+});
+
+test("sobrando so ficha travada, o foco pousa no trecho que rola, e nao no body", () => {
+  render(
+    <Controlada
+      inicial={[APPLIED[0]!, { id: "branch", label: "Filial", value: "Matriz", removable: false }]}
+      clearFrom={Infinity}
+    />,
+  );
+
+  tira("Remover filtro Situacao: Em aberto");
+
+  expect(document.activeElement).toBe(screen.getByRole("list"));
+  expect(screen.getByRole("list").getAttribute("tabindex")).toBe("-1");
+});
+
+test("saiu o ultimo filtro, o foco pousa na raiz, que e quem ainda tem nome", () => {
+  render(<Controlada inicial={[APPLIED[0]!]} clearFrom={Infinity} />);
+
+  tira("Remover filtro Situacao: Em aberto");
+
+  const row = screen.getByRole("group", { name: "Filtros aplicados" });
+  expect(document.activeElement).toBe(row);
+  expect(row.getAttribute("tabindex")).toBe("-1");
+});
+
+test("o pouso de emergencia devolve o tabindex ao sair, para nao deixar parada nova para tras", () => {
+  render(<Controlada inicial={[APPLIED[0]!]} clearFrom={Infinity} />);
+
+  tira("Remover filtro Situacao: Em aberto");
+  const row = screen.getByRole("group", { name: "Filtros aplicados" });
+  fireEvent.blur(row);
+
+  expect(row.hasAttribute("tabindex")).toBe(false);
+});
+
+test("com a barra travando no mesmo passo, o foco desvia do xis desabilitado", () => {
+  function Recarregando() {
+    const [filters, setFilters] = useState(SIX);
+    const [busy, setBusy] = useState(false);
+    return (
+      <FilterBar
+        filters={filters}
+        disabled={busy}
+        onFiltersChange={(rest) => {
+          setFilters(rest);
+          setBusy(true);
+        }}
+      />
+    );
+  }
+
+  render(<Recarregando />);
+  tira("Remover filtro Situacao: Em aberto");
+
+  expect(document.activeElement).not.toBe(document.body);
+  expect((document.activeElement as HTMLButtonElement).disabled).not.toBe(true);
+});
+
+test("o foco que nao estava na fileira nao e puxado para dentro dela", () => {
+  render(<Controlada inicial={SIX} />);
+  const fora = document.createElement("button");
+  document.body.append(fora);
+  fora.focus();
+
+  fireEvent.click(screen.getByRole("button", { name: "Remover filtro Situacao: Em aberto" }));
+
+  expect(document.activeElement).toBe(fora);
+  fora.remove();
+});
+
+test("o aria-label de quem chama vence o label, e troca os DOIS nomes de uma vez", () => {
+  // A regra e a mesma do `Tracker` e do `Splitter`, e nao ha excecao: peca que
+  // tem prop de nome proprio deixa o `aria-label` de quem chama vencer. Duas
+  // `FilterBar` na mesma tela - uma de notas, outra de fornecedores - precisam
+  // de nomes diferentes, e `label` ja ocupa outro papel.
+  //
+  // O que exigiu cuidado e que aqui o nome batiza DOIS nos: a fileira e o
+  // trecho que rola, quando ele vira parada de tabulacao. Se so a raiz
+  // obedecesse, a parada ficaria com o nome antigo e a tela teria dois nomes
+  // para o mesmo lugar.
+  const { container } = render(
+    <FilterBar
+      filters={APPLIED}
+      onFiltersChange={() => {}}
+      label="Filtros da listagem"
+      aria-label="Fila de cobranca"
+    />,
+  );
+
+  expect(screen.getByRole("group", { name: "Fila de cobranca" })).toBeDefined();
+  expect(screen.queryByRole("group", { name: "Filtros da listagem" })).toBeNull();
+
+  const list = container.querySelector('[role="list"]') as HTMLElement;
+  if (list.hasAttribute("aria-label")) {
+    expect(list.getAttribute("aria-label")).toContain("Fila de cobranca");
+  }
 });

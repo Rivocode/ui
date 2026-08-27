@@ -29,13 +29,13 @@ pagava um `useState` para existir.
 Em `dir="rtl"` a árvore inteira vira. O recuo de cada nível cresce a partir da
 borda onde a leitura começa, a seta do galho aponta para o lado que ele abre, e
 `→` e `←` trocam de papel: `←` abre o galho e entra nele, `→` fecha e sobe para
-o pai. É o que o padrão WAI-ARIA de treeview pede, e a razão é o desenho — a
+o pai. É o que o padrão WAI-ARIA de treeview pede, e a razão é o desenho: a
 tecla que abre é a que aponta para onde a indentação cresce.
 
 A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
 acima da peça. E o recuo é `padding-inline-start`, e não `padding-left`: com a
 propriedade física os três níveis paravam no mesmo ponto em `rtl`, a hierarquia
-sumia da tela e sobrava uma lista plana — trocar só a tecla teria consertado o
+sumia da tela e sobrava uma lista plana. Trocar só a tecla teria consertado o
 teclado para um desenho que continuava errado.
 
 ## No React Native

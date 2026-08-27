@@ -1,9 +1,11 @@
 import { Columns3, Download, MoreHorizontal, SlidersHorizontal, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
   Button,
+  ContextMenu,
+  ContextMenuTrigger,
   Menu,
   MenuCheckboxItem,
   MenuContent,
@@ -16,6 +18,7 @@ import {
   MenuSubmenuTrigger,
   MenuTrigger,
   Popover,
+  useMobile,
   PopoverClose,
   PopoverContent,
   PopoverDescription,
@@ -65,7 +68,52 @@ function EntryToast() {
   return null;
 }
 
+function RightClick() {
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const target = box.current?.firstElementChild as HTMLElement | null;
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      target.dispatchEvent(
+        new MouseEvent("contextmenu", {
+          bubbles: true,
+          cancelable: true,
+          clientX: rect.left + 48,
+          clientY: rect.top + 32,
+        }),
+      );
+    }, 120);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div ref={box}>
+      <ContextMenu>
+        <ContextMenuTrigger className="flex h-24 w-72 items-center justify-center rounded-md border border-dashed border-border text-base text-fg-muted">
+          Clique com o botao direito
+        </ContextMenuTrigger>
+        <MenuContent>
+          <MenuItem>
+            <Download size={15} aria-hidden="true" />
+            Baixar PDF
+          </MenuItem>
+          <MenuItem>Duplicar</MenuItem>
+          <MenuSeparator />
+          <MenuItem tone="danger">
+            <Trash2 size={15} aria-hidden="true" />
+            Cancelar nota
+          </MenuItem>
+        </MenuContent>
+      </ContextMenu>
+    </div>
+  );
+}
+
 function Sample({ theme }: { theme: RivoTheme }) {
+  const narrow = useMobile();
+
   return (
     <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
       <EntryToast />
@@ -115,7 +163,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-2 text-sm text-fg-muted">Colunas</p>
-          <Menu defaultOpen>
+          <Menu defaultOpen={!narrow}>
             <MenuTrigger render={<Button variant="secondary" size="sm" />}>
               <Columns3 size={15} aria-hidden="true" />
               Colunas
@@ -138,7 +186,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-2 text-sm text-fg-muted">Ordenar por</p>
-          <Menu defaultOpen>
+          <Menu defaultOpen={!narrow}>
             <MenuTrigger render={<Button variant="secondary" size="sm" />}>
               <SlidersHorizontal size={15} aria-hidden="true" />
               Ordenar
@@ -152,7 +200,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
                 </MenuRadioItem>
               </MenuRadioGroup>
               <MenuSeparator />
-              <MenuSubmenu defaultOpen>
+              <MenuSubmenu defaultOpen={!narrow}>
                 <MenuSubmenuTrigger>Exportar</MenuSubmenuTrigger>
                 <MenuContent>
                   <MenuItem>XML da NF-e</MenuItem>
@@ -165,7 +213,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div>
           <p className="mb-2 text-sm text-fg-muted">Natureza da operacao</p>
-          <Select items={NATURES} defaultValue="5102" defaultOpen>
+          <Select items={NATURES} defaultValue="5102" defaultOpen={!narrow}>
             <SelectTrigger aria-label="Natureza da operacao" className="min-w-64">
               <SelectValue />
             </SelectTrigger>
@@ -192,8 +240,13 @@ function Sample({ theme }: { theme: RivoTheme }) {
         </div>
 
         <div>
+          <p className="mb-2 text-sm text-fg-muted">Menu do botao direito</p>
+          <RightClick />
+        </div>
+
+        <div>
           <p className="mb-2 text-sm text-fg-muted">Dica</p>
-          <Tooltip defaultOpen>
+          <Tooltip defaultOpen={!narrow}>
             <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Excluir" />}>
               <Trash2 size={16} aria-hidden="true" />
             </TooltipTrigger>

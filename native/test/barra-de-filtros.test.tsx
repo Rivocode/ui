@@ -2,6 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import type { ReactTestInstance, ReactTestRenderer } from "react-test-renderer";
 
 import { FilterBar, FilterChip, type AppliedFilter } from "../src";
+import { I18nManager } from "../../test/react-native-mock";
 import { act, byClass, byLabel, byRole, byType, render, textOf } from "./helpers";
 
 const APPLIED: AppliedFilter[] = [
@@ -48,6 +49,15 @@ function scrollTo(screen: ReactTestRenderer, offset: number, frame: number, cont
       },
     }),
   );
+}
+
+function inRTL<T>(run: () => T): T {
+  I18nManager.isRTL = true;
+  try {
+    return run();
+  } finally {
+    I18nManager.isRTL = false;
+  }
 }
 
 function textOf2(node: ReactTestInstance): string {
@@ -333,5 +343,89 @@ describe("FilterBar", () => {
     for (const button of byLabel(screen, "Remover filtro Cliente: Clínica São Lucas")) {
       expect(button.props.disabled).toBe(true);
     }
+  });
+});
+
+describe("FilterBar em rtl", () => {
+  test("em repouso a fileira já está no começo da leitura, e a régua avisa o lado que ficou para trás", () => {
+    const ltr = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    settle(ltr, 390, 1429);
+    expect(edges(ltr)).toEqual(["direita"]);
+
+    const screen = inRTL(() => {
+      const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+      settle(rendered, 390, 1429);
+      return rendered;
+    });
+
+    expect(edges(screen)).toEqual(["esquerda"]);
+  });
+
+  test("com o evento na mão a conta é física, e o mesmo contentOffset dá a mesma régua nos dois sentidos", () => {
+    for (const [offset, said] of [
+      [0, "direita"],
+      [1039, "esquerda"],
+    ] as const) {
+      const ltr = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+      scrollTo(ltr, offset, 390, 1429);
+      expect(edges(ltr)).toEqual([said]);
+
+      const screen = inRTL(() => {
+        const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+        scrollTo(rendered, offset, 390, 1429);
+        return rendered;
+      });
+
+      expect(edges(screen)).toEqual([said]);
+    }
+  });
+
+  test("no meio da rolagem em rtl as duas réguas continuam aparecendo", () => {
+    const screen = inRTL(() => {
+      const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+      scrollTo(rendered, 639, 390, 1429);
+      return rendered;
+    });
+
+    expect(edges(screen).sort()).toEqual(["direita", "esquerda"]);
+  });
+
+  test("em rtl, tudo cabendo, nenhuma régua aparece", () => {
+    const screen = inRTL(() => {
+      const rendered = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+      settle(rendered, 390, 300);
+      return rendered;
+    });
+
+    expect(edges(screen)).toEqual([]);
+  });
+
+  test("o ScrollView não leva contentOffset: quem para no começo da leitura é o próprio React Native", () => {
+    const ltr = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    const screen = inRTL(() => render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />));
+
+    for (const rendered of [ltr, screen]) {
+      const [scroller] = byType(rendered, "ScrollView");
+      expect(scroller.props.contentOffset).toBeUndefined();
+      expect(scroller.props.contentContainerClassName).toContain("flex-row");
+      expect(scroller.props.contentContainerClassName).not.toContain("row-reverse");
+    }
+  });
+
+  test("a fileira não espelha de novo o que o RN já espelha: a ordem das fichas é a da lista", () => {
+    const screen = inRTL(() => render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />));
+    const said = byType(screen, "Text")
+      .map((node) => String(node.props.children ?? ""))
+      .filter((text) => text.length > 0);
+
+    expect(said.indexOf("Situação")).toBeLessThan(said.indexOf("Cliente"));
+  });
+
+  test("o limpar não se cola por margem física: o espaço vem do gap da fileira", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    const [row] = byClass(screen, /w-full flex-row/);
+
+    expect(row.props.className).toContain("gap-2");
+    expect(String(clearButton(screen)!.props.className ?? "")).not.toMatch(/\b(ml|mr)-\d/);
   });
 });

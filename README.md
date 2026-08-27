@@ -113,9 +113,9 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-90 peças. A tabela abaixo cobre as mais usadas, e diz a diferença
-entre as que se parecem, que é a parte que costuma faltar. O índice completo,
-sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
+91 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+diferença entre as que se parecem, que é a parte que costuma faltar. O índice
+completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
 ### Ação
 
@@ -141,6 +141,7 @@ sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
 | `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
 | `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
+| `EventCalendar`                 | a agenda: o que acontece, quando e por quanto tempo. O `Calendar` escolhe uma data; este mostra compromisso no tempo |
 
 ### Flutuante
 
