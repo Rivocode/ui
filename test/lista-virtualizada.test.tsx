@@ -8,7 +8,12 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 const VIEWPORT_HEIGHT = 400;
 const ITEM_HEIGHT = 40;
 
+const MEASURED = new Map<string, PropertyDescriptor | undefined>();
+
 beforeAll(() => {
+  for (const name of ["offsetHeight", "offsetWidth"]) {
+    MEASURED.set(name, Object.getOwnPropertyDescriptor(HTMLElement.prototype, name));
+  }
   Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
     configurable: true,
     get(this: HTMLElement) {
@@ -22,8 +27,10 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  Reflect.deleteProperty(HTMLElement.prototype, "offsetHeight");
-  Reflect.deleteProperty(HTMLElement.prototype, "offsetWidth");
+  for (const [name, descriptor] of MEASURED) {
+    if (descriptor) Object.defineProperty(HTMLElement.prototype, name, descriptor);
+    else Reflect.deleteProperty(HTMLElement.prototype, name);
+  }
 });
 
 type Event = { id: string; message: string };

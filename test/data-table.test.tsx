@@ -212,7 +212,12 @@ test("a coluna que ordena sai na mesma caixa da que nao ordena", () => {
  */
 const VIEWPORT_HEIGHT = 400;
 const ROW_HEIGHT = 40;
+const MEASURED = new Map<string, PropertyDescriptor | undefined>();
+
 beforeAll(() => {
+  for (const name of ["offsetHeight", "offsetWidth"]) {
+    MEASURED.set(name, Object.getOwnPropertyDescriptor(HTMLElement.prototype, name));
+  }
   // O virtualizador mede a moldura pelo `offsetHeight`, que no happy-dom e
   // sempre zero: sem o duble ele conclui que nao cabe linha nenhuma.
   Object.defineProperty(HTMLElement.prototype, "offsetHeight", {
@@ -228,8 +233,10 @@ beforeAll(() => {
 });
 
 afterAll(() => {
-  Reflect.deleteProperty(HTMLElement.prototype, "offsetHeight");
-  Reflect.deleteProperty(HTMLElement.prototype, "offsetWidth");
+  for (const [name, descriptor] of MEASURED) {
+    if (descriptor) Object.defineProperty(HTMLElement.prototype, name, descriptor);
+    else Reflect.deleteProperty(HTMLElement.prototype, name);
+  }
 });
 
 const LOG: Invoice[] = Array.from({ length: 500 }, (_, index) => ({
