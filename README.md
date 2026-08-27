@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-83 peças. A tabela diz para que cada uma serve, e a diferença
+90 peças. A tabela diz para que cada uma serve, e a diferença
 entre as que se parecem — que é a parte que costuma faltar.
 
 ### Ação

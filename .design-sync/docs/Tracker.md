@@ -27,6 +27,32 @@ painel sem tirar o foco dali. O período lido pelo teclado é dito também numa
 região viva, porque desenho não chega a quem ouve; o ponteiro fica calado ali,
 para não encher a fila do leitor de tela com cada quadrado varrido.
 
+## Sentido da escrita
+
+Em `dir="rtl"` a faixa vira junto. O período mais recente passa a ser o da
+esquerda, o ponteiro lê a partir da borda onde a leitura começa e as setas
+andam para o lado que a pessoa vê — `←` avança no tempo, `→` volta. `Home` e
+`End` continuam lógicos: o primeiro e o último período, e não a esquerda e a
+direita.
+
+A direção vem do `RivoProvider`, e não de um `dir` escrito à mão num elemento
+acima da faixa. É o mesmo `dir` que o resto do catálogo lê, e sem ele a faixa
+espelharia o desenho sem espelhar a conta: o dedo na primeira coluna leria o
+último período.
+
+## O balão anda um quadro atrás
+
+Enquanto o dedo varre a faixa, a marca fina troca de período no mesmo quadro do
+evento e o balão chega no quadro seguinte. A Base UI acompanha âncora que se
+move por `IntersectionObserver`, que só avisa no fim do quadro — não há como
+fazê-lo chegar junto sem dar à dica um posicionador próprio.
+
+O atraso é de exatamente um quadro, e não cresce: a distância entre a marca e o
+balão é a que o ponteiro percorre nesse quadro — a 800px/s, cerca de 13px em
+60Hz — e no quadro em que o dedo para os dois voltam a coincidir. Como a dica
+só se lê com o ponteiro parado, isto está declarado como limite e não como
+defeito a corrigir.
+
 ## Quando não usar
 
 Quando a grandeza é contínua e a forma da curva importa, use `Sparkline`: o

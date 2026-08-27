@@ -20,6 +20,17 @@ No celular os dois lados empilham e a divisória some. Duas colunas de 190px nã
 são duas colunas: são duas listas ilegíveis, e arrastar uma borda de 4px com o
 dedo não é gesto que exista.
 
+## Sentido da escrita
+
+Em `dir="rtl"` a divisória **não** vira, e este é um limite conhecido. O
+desenho espelha sozinho — `start` passa a ser o lado direito —, mas a conta
+não: o arraste continua medindo da borda esquerda, e `←`/`→` continuam andando
+pelo número. Medido: arrastar o ponteiro 120px para a direita move a divisória
+118px para a **esquerda**, e `→` a move para a esquerda também.
+
+Numa tela em rtl, ou o splitter fica fora dela, ou o app troca `start` por
+`end` e aceita que o gesto vai contra a mão.
+
 ## Quando não usar
 
 Para esconder e mostrar uma área inteira, use `Collapsible` ou a `Sidebar`: o

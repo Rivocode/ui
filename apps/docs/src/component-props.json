@@ -9982,6 +9982,124 @@
     "forwardsRoot": true,
     "props": []
   },
+  "FilterBar": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "filters",
+        "type": "AppliedFilter[]",
+        "required": true,
+        "note": "Os filtros de agora."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"chip\" | \"clear\" | \"empty\" | \"item\" | \"list\", string>>",
+        "required": false,
+        "note": "Classe por parte: `list`, `item`, `chip`, `clear`, `empty`."
+      },
+      {
+        "name": "clearFrom",
+        "type": "number",
+        "required": false,
+        "note": "A partir de quantos filtros o \"limpar\" aparece."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da fileira para o leitor de tela."
+      },
+      {
+        "name": "labels",
+        "type": "{ remove?: ((filter: string) => string) | undefined; clear?: ((total: number) => string) | undefined; status?: ((total: number) => string) | undefined; empty?: ReactNode; }",
+        "required": false,
+        "note": "Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` na regiao viva e `empty` na linha guardada."
+      },
+      {
+        "name": "onClear",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado quando o \"limpar\" e apertado, antes do `onFiltersChange`."
+      },
+      {
+        "name": "onFiltersChange",
+        "type": "((filters: AppliedFilter[]) => void)",
+        "required": false,
+        "note": "Recebe o que sobrou, tanto no xis quanto no limpar."
+      },
+      {
+        "name": "onRemove",
+        "type": "((filter: AppliedFilter) => void)",
+        "required": false,
+        "note": "O filtro que saiu, com o objeto inteiro, quando o xis dele e apertado."
+      },
+      {
+        "name": "reserve",
+        "type": "boolean",
+        "required": false,
+        "note": "Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "required": false,
+        "note": "A altura das fichas."
+      }
+    ]
+  },
+  "FilterChip": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O campo filtrado: \"Cliente\", \"Vencimento\"."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\" | \"remove\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value`, `remove`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o xis e apaga a ficha, para a consulta que refaz nao aceitar um segundo toque."
+      },
+      {
+        "name": "labels",
+        "type": "{ remove?: ((filter: string) => string) | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve no xis."
+      },
+      {
+        "name": "onRemove",
+        "type": "(() => void)",
+        "required": false,
+        "note": "O que acontece no xis."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "required": false,
+        "note": "As mesmas duas alturas do `Badge`."
+      },
+      {
+        "name": "value",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que foi escolhido nesse campo."
+      }
+    ]
+  },
   "Form": {
     "forwardsRoot": true,
     "props": [
@@ -16881,6 +16999,113 @@
       }
     ]
   },
+  "Popconfirm": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "onConfirm",
+        "type": "() => void | Promise<unknown>",
+        "required": true,
+        "note": "A acao."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "note": "A pergunta, curta e com o alvo dentro: \"Excluir a nota 4813?\"."
+      },
+      {
+        "name": "trigger",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": true,
+        "note": "O botao que abre a confirmacao."
+      },
+      {
+        "name": "align",
+        "type": "Align",
+        "required": false,
+        "note": "Alinhamento no eixo do lado escolhido."
+      },
+      {
+        "name": "cancelLabel",
+        "type": "string",
+        "required": false,
+        "note": "O verbo do botao que sai sem fazer nada."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cancel\" | \"confirm\" | \"description\" | \"footer\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `title`, `description`, `footer`, `confirm`, `cancel`."
+      },
+      {
+        "name": "confirmLabel",
+        "type": "string",
+        "required": false,
+        "note": "O verbo do botao que executa."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Estado inicial de quem nao controla a abertura."
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que a pessoa perde ao confirmar, ou o que acontece depois."
+      },
+      {
+        "name": "finalFocus",
+        "type": "RefObject<HTMLElement | null>",
+        "required": false,
+        "note": "Para onde o foco volta ao fechar."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Estado de espera vindo de fora, para quem ja tem a chamada em uma store."
+      },
+      {
+        "name": "onCancel",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado em toda saida sem confirmar: botao, Esc, clique fora, arrasto."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Avisa toda abertura e todo fechamento, controlado ou nao."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa a abertura por conta de quem usa."
+      },
+      {
+        "name": "side",
+        "type": "Side",
+        "required": false,
+        "note": "Lado preferido do gatilho."
+      },
+      {
+        "name": "sideOffset",
+        "type": "number | OffsetFunction",
+        "required": false,
+        "note": "Distancia entre o gatilho e o painel, em pixels."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"neutral\"",
+        "required": false,
+        "note": "`danger` pinta o botao de vermelho e traz o icone de aviso; `neutral` serve para o que se desfaz, como arquivar."
+      }
+    ]
+  },
   "Popover": {
     "forwardsRoot": false,
     "props": [
@@ -17292,6 +17517,74 @@
         "required": false,
         "note": "Mostra a porcentagem ao lado do rotulo.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "QueryBoundary": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"error\" | \"loading\", string>>",
+        "required": false,
+        "note": "Classe por parte: `loading`, `error`, `empty`."
+      },
+      {
+        "name": "data",
+        "type": "Data",
+        "required": false,
+        "note": "A resposta da consulta."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta vazia."
+      },
+      {
+        "name": "errorMessage",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "isEmpty",
+        "type": "boolean",
+        "required": false,
+        "note": "Diz o vazio no lugar do `data`, para a resposta que nao e uma lista: `isEmpty={page.total === 0}`."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "skeleton",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O desenho da espera, no formato do que vem depois - a lista de tres linhas, o cartao, a folha de campos."
+      },
+      {
+        "name": "skeletonRows",
+        "type": "number",
+        "required": false,
+        "note": "Quantas linhas falsas a espera generica mostra."
       }
     ]
   },
@@ -22467,6 +22760,59 @@
       }
     ]
   },
+  "TimeField": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "A hora inicial de quem nao controla o valor de fora."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false,
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado so com hora inteira: `\"08:30\"`, ou `\"\"` quando o campo esvazia."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "Tamanho do campo, o mesmo vocabulario do Input."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "note": "Quantos minutos as setas para cima e para baixo andam, pousando na grade."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
+      }
+    ]
+  },
   "Timeline": {
     "forwardsRoot": true,
     "props": []
@@ -22507,6 +22853,71 @@
         "type": "\"accent\" | \"danger\" | \"neutral\" | \"success\" | \"warning\" | null",
         "required": false,
         "since": "0.5.0"
+      }
+    ]
+  },
+  "TimePicker": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"column\" | \"field\" | \"option\" | \"panel\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `field`, `trigger`, `panel`, `column`, `option`."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "A hora inicial de quem nao controla o valor de fora."
+      },
+      {
+        "name": "labels",
+        "type": "TimePickerLabels",
+        "required": false,
+        "note": "Os textos que o leitor de tela ouve."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false,
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado so com hora inteira: `\"08:30\"`, ou `\"\"` quando o campo esvazia."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "Tamanho do campo, o mesmo vocabulario do Input."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "note": "Quantos minutos as setas para cima e para baixo andam, pousando na grade."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
       }
     ]
   },
@@ -23045,6 +23456,115 @@
         "required": false,
         "note": "Ids das folhas escolhidas.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "VirtualList": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "itemKey",
+        "type": "(item: Item, index: number) => string",
+        "required": true,
+        "note": "Identidade do item, e nao so chave de React: e por ela que a altura medida segue o item quando a lista reordena ou filtra."
+      },
+      {
+        "name": "items",
+        "type": "Item[] | undefined",
+        "required": true
+      },
+      {
+        "name": "maxHeight",
+        "type": "string | number",
+        "required": true,
+        "note": "Altura maxima da moldura."
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: Item, index: number) => ReactNode",
+        "required": true,
+        "note": "O que cada item mostra."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"item\" | \"list\", string>>",
+        "required": false,
+        "note": "Classe por parte: `list` e a faixa de altura total que rola por dentro da moldura, `item` e a caixa posicionada de cada item."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta vazia."
+      },
+      {
+        "name": "errorMessage",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "required": false,
+        "note": "Respiro entre um item e o proximo, em pixel."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "itemHeight",
+        "type": "number | ((index: number) => number)",
+        "required": false,
+        "note": "O palpite de altura de um item, em pixel, ou uma funcao por indice."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da lista para o leitor de tela."
+      },
+      {
+        "name": "measure",
+        "type": "boolean",
+        "required": false,
+        "note": "Cada item desenhado devolve a altura real, e a rolagem se corrige."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "overscan",
+        "type": "number",
+        "required": false,
+        "note": "Quantos itens desenhar alem da moldura, de cada lado."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<VirtualListHandle>",
+        "required": false,
+        "note": "Recebe um `VirtualListHandle`, com `scrollToIndex(index, { align })`."
+      },
+      {
+        "name": "skeletonItems",
+        "type": "number",
+        "required": false,
+        "note": "Quantos itens falsos o carregando mostra."
       }
     ]
   },

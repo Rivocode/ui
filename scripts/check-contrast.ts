@@ -96,6 +96,10 @@ const PAIRS: Array<[string, string, number]> = [
   ["--rc-warning-text", "--rc-surface", MIN_TEXT],
   ["--rc-danger-text", "--rc-surface", MIN_TEXT],
   ["--rc-info-text", "--rc-surface", MIN_TEXT],
+  // O vermelho de ler dentro de um painel que flutua: o item de perigo do Menu
+  // em repouso e o icone de aviso do Popconfirm, que pousam em
+  // `surface-raised` e nao na pagina.
+  ["--rc-danger-text", "--rc-surface-raised", MIN_TEXT],
   ["--rc-success-fg", "--rc-success", MIN_TEXT],
   ["--rc-warning-fg", "--rc-warning", MIN_TEXT],
   ["--rc-danger-fg", "--rc-danger", MIN_TEXT],

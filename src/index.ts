@@ -355,3 +355,29 @@ export {
   type Step,
   type StepsProps,
 } from "./components/steps";
+export {
+  FilterBar,
+  FilterChip,
+  type AppliedFilter,
+  type FilterBarProps,
+  type FilterChipProps,
+} from "./components/filter-bar";
+export { Popconfirm, type PopconfirmProps } from "./components/popconfirm";
+export { QueryBoundary, type QueryBoundaryProps } from "./components/query-boundary";
+export {
+  TimeField,
+  applyTimeMask,
+  formatTime,
+  parseTime,
+  type TimeFieldProps,
+} from "./components/time-field";
+export {
+  TimePicker,
+  type TimePickerLabels,
+  type TimePickerProps,
+} from "./components/time-picker";
+export {
+  VirtualList,
+  type VirtualListHandle,
+  type VirtualListProps,
+} from "./components/virtual-list";
