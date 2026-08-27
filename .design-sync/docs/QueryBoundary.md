@@ -96,6 +96,29 @@ tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região
 volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
 estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
+## O que ela nao trata: dado velho enquanto revalida
+
+`isLoading` e `isError` descrevem duas situacoes, e o caso mais comum de tela
+real e uma terceira: **ja ha dado na tela e uma nova busca esta correndo.** Se
+voce passar `isFetching` em `isLoading`, o esqueleto cobre o que a pessoa
+estava lendo; se nao passar nada, a atualizacao acontece sem sinal nenhum.
+
+A peca nao resolve isso hoje, e a escolha e sua:
+
+```tsx
+<QueryBoundary isLoading={query.isLoading} isError={query.isError} data={query.data}>
+  {(rows) => (
+    <div aria-busy={query.isFetching}>
+      <DataTable rows={rows} />
+    </div>
+  )}
+</QueryBoundary>
+```
+
+`isLoading` do TanStack Query e verdadeiro so na primeira busca, que e o que a
+peca espera. `isFetching` e verdadeiro em toda busca, inclusive a que revalida
+- entao ele nao serve para `isLoading`, e serve para `aria-busy`.
+
 ## Quem decide o vazio
 
 A peça decide sozinha, pelo `data`: **lista de tamanho zero e `null` são

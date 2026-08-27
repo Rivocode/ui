@@ -1,416 +1,604 @@
 # Onde paramos
 
-Atualizado em 27/08/2026, de madrugada. Este arquivo e o "onde paramos" do
+Atualizado em 27/08/2026, no fim da tarde. Este arquivo e o "onde paramos" do
 repositorio: serve a quem chega frio, humano ou agente, e responde tres coisas:
 o que existe, o que falta de verdade, e o que esta parado esperando uma pessoa.
 
-Todo numero aqui foi medido no dia, com comando. A secao **Como conferir cada
-numero** no fim diz qual comando, para que a proxima pessoa nao precise
-acreditar em nada: mede de novo. Numero em documento envelhece calado, e a
-versao anterior deste arquivo passou o dia afirmando que 21 pecas nativas
-estavam na fila quando restavam tres.
+Todo numero aqui foi medido com comando, nesta arvore, hoje. A secao **Como
+conferir cada numero** no fim diz qual comando produziu cada um, para que a
+proxima pessoa nao precise acreditar em nada: mede de novo.
 
-Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
-`bun run check` inteiro e no `bun run build`.
+Isso nao e cerimonia. Hoje duas versoes deste pacote sairam para o npm **sem
+procedencia** porque alguem confiou num relato em vez de abrir o arquivo, e
+publicacao no npm nao se desfaz. O indice de trabalho que originou esta
+reescrita tinha erros de numero em tres pontos, e eles estao apontados abaixo,
+no lugar onde a medida discordou.
+
+O estado do repositorio mora aqui. A REGRA mora em `CLAUDE.md`, o contrato de
+quem consome mora em `.design-sync/conventions.md` e em
+`.claude/skills/rivocode-ui/SKILL.md`.
 
 ## O que existe hoje
 
-| Peca                        | Onde                                        | Estado                                                    |
-| --------------------------- | ------------------------------------------- | --------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.8.0** na arvore; 0.7.0 no npm, falta a tag            |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.1** na arvore; 0.3.0 no npm, falta a tag            |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, uma pagina crua por peca    |
-| Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`   |
-| Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar |
+| Peca                        | Onde                                        | Estado                                                              |
+| --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.9.0** comitada; 0.8.0 no npm, falta a tag                        |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.4.0** comitada; 0.3.1 no npm, falta a tag                        |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar, mas dez commits atras do disco: falta empurrar a `main`       |
+| Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
+| Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
 
-O gate do repo esta verde: `bun run check` passa inteiro - vinte e tres verificacoes
-mais a suite dos dois pacotes, `test/` e `native/test/`. O `bun run build`
-tambem. A contagem de testes nao se escreve aqui de proposito: ela mora na home
-do site, que e o unico lugar onde `check:testes` a confere.
+A arvore esta **limpa**: `git status --short` devolve zero linhas. Foram **19
+commits hoje**, e **dez deles ainda nao foram empurrados** - `origin/main` esta
+em `9f3d897` e o `HEAD` em `3f6b693`. Isso importa mais do que parece, e esta
+explicado em "O que esta bloqueado esperando acao humana": push na `main`
+publica o site, e enquanto ninguem empurra, `ds.rivocode.com.br` descreve a
+biblioteca de onze e meia da manha.
+
+O gate esta verde. `bun run check` roda **trinta verificacoes** mais a suite e
+sai com codigo zero; a suite tem **1285 testes em 108 arquivos**, com 3349
+chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
+(`dist/index.js` e `dist/cli.js` sao de 13:04, e o commit mais novo e de 13:03).
 
 ### O catalogo, por familia
 
 Sao **91 pecas** e **177 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
-dentro de outra coisa, e as 86 partes moram na pagina de quem as monta, com
-ancora propria. Quem conta os 176 arquivos como catalogo passa a gastar
-contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
-esta em `apps/docs/src/parts.ts` e a guarda que a segura em
-`test/indice.test.ts`.
+dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
+ancora propria. Quem conta os 177 arquivos como catalogo passa a gastar contexto
+abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
+`apps/docs/src/parts.ts` e a guarda que a segura em `test/indice.test.ts`.
 
-| Familia      | Quais                                                                                                                                                                                                                                                                                                                                 |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Familia      | Quais                                                                                                                                                                                                                                                                                                                              |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect |
-| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                     |
-| Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                            |
-| Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                  |
-| Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                    |
-| Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                          |
-| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                    |
-| Dados        | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                                                 |
-| Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                          |
+| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                   |
+| Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                          |
+| Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                |
+| Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                  |
+| Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                        |
+| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                 |
+| Dados        | Code, EventCalendar, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                               |
+| Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                       |
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
-com acento. Nenhuma peca esta sem documento. A coluna de contagem por familia
-saiu daqui: ela somava oitenta e tres depois de o catalogo chegar a noventa, e
-nao ha guarda que a confira - o site soma sozinho, a partir de `ENTRIES`.
+com acento. Nenhuma peca esta sem documento, e nenhum documento esta sem codigo
+por tras: `check:doc` confere os dois sentidos sobre as 177 paginas.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
 utilitarios: `useZodForm`, `useWizard`, `useSidebar`, `useTelaEstreita`,
-`formatDate` e `applyMask`.
+`formatDate` e `applyMask`. Contando o lado nativo sao **seis subcaminhos de
+codigo**, e `check:contrato` cobra que cada export deles apareca no
+`conventions.md` E na skill.
 
 **Fundacao:** tokens em tres camadas, temas `rivocode-dark` e `rivocode-light`,
-densidade confortavel e compacta, guarda de cor literal e guarda de contraste.
+densidade confortavel e compacta no web, guarda de cor literal sobre 96
+arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila chegou a zero.** `Tree`, `TreeSelect` e `Editable` foram as ultimas, e
-e hoje 73 das 90 pecas do web tem par no celular.
+A fila continua com **uma** peca, e ela e a mesma de ontem: o `EventCalendar`.
+Das 91 pecas do web, **73 tem par no celular**.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
 | Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
 | Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast` |
-| `○ na fila`        |       0 | -                                                                                            |
-| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                             |
+| `○ na fila`        |       1 | `EventCalendar`, e a linha dele esta em `FILA_DECLARADA`                                     |
+| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
-As 17 que nao portam nao voltam a esta lista sem que alguem mude de ideia sobre
-o que um dedo faz. Os tres graficos, que este arquivo listava como bloqueados
-por falta de motor de desenho, atravessaram: `native/src/chart/` desenha com
-`react-native-svg`, e a moldura entrega `{ width, height, colors }` a quem
-desenha, porque nao ha Recharts nem `var(--color-serie)` do lado de la.
+O `EventCalendar` merece o paragrafo, porque ele e o teste do acordo do nono
+artefato. Ele esta na fila por **decisao de gesto** e nao por falta de tempo:
+arrastar para mudar de semana, tocar e segurar para criar, e o que fazer quando
+o dedo pousa sobre dois eventos que se sobrepoem. Nenhuma dessas tem resposta no
+web, onde sao ponteiro e teclado. `check:paridade` recusaria a fila sem essa
+linha escrita, e a lista so encolhe.
+
+Uma coisa que ele cobrava ja foi paga: o calculo de layout dele e funcao pura
+sem DOM, e nao havia mecanismo para compartilhar codigo puro entre os dois
+pacotes. Hoje ha - `src/shared/` espelhado em `native/src/shared/`, com
+`check:compartilhado` conferindo que o espelho nao tem import nem global de
+plataforma. Sao **dois arquivos** atravessando por enquanto, `settled.ts` e
+`time.ts`, e o `settled.ts` e a espera de 200ms que os dois `ChartContainer`
+usam para nao acusar um pai que mede em dois passes.
 
 **Aviso que vale mais que a tabela:** nome igual nao e API igual. No nativo tudo
-e controlado (sem `defaultValue`) e a lista vem por `items`, nao por
-composicao. Nunca prometa que a tela do web vai rodar no celular: o que se
-reaproveita e o vocabulario de classes, o token e a escolha da peca. O JSX se
-reescreve.
+e controlado (sem `defaultValue`) e a lista vem por `items`, nao por composicao.
+Nunca prometa que a tela do web vai rodar no celular: o que se reaproveita e o
+vocabulario de classes, o token e a escolha da peca. O JSX se reescreve.
 
-O pacote tem quatro subcaminhos (`form`, `chart`, `clipboard` e `file-upload`),
-e a regra que os separa e **um subcaminho por peer, e nao um por assunto**.
-No celular peer nao e byte: modulo do Expo custa build. Um `/expo` comum
-cobraria o seletor de documentos de quem so quer copiar uma chave de acesso.
+O pacote tem quatro subcaminhos de codigo (`form`, `chart`, `clipboard` e
+`file-upload`), e a regra que os separa e **um subcaminho por peer, e nao um por
+assunto**. No celular peer nao e byte: modulo do Expo custa build. Um `/expo`
+comum cobraria o seletor de documentos de quem so quer copiar uma chave de
+acesso. Entram agora `./tokens`, `./contrast` e `./theme.css`, que nao carregam
+peer nenhum, e **dois binarios**: `rivocode-ui-native-css` e
+`rivocode-ui-native-theme`.
 
-## O que foi feito neste dia
+## O dia: o consumidor mediu, e a biblioteca respondeu
 
-Fechou a lista inteira de pendencias que este arquivo abria de manha. O detalhe
-de cada uma esta em `CHANGELOG.md` (0.7.0) e `native/CHANGELOG.md` (0.3.0); o
-que importa aqui e que **nao ha mais item aberto na secao "achados que agentes
-deixaram anotados"**: ela deixou de existir.
+O dia nao comecou com uma lista de desejos. Um consumidor real instalou
+`@rivocode/ui@0.8.0` e `@rivocode/ui-native@0.3.1` num app Expo e num app web, e
+voltou com achados medidos com comando. O tema das duas versoes fechadas hoje e
+um so: **a biblioteca passa a cobrar no consumidor o que ela ja cobrava em
+casa.**
 
-Tres coisas nao estavam na lista e apareceram no caminho:
+### O tema de cliente no nativo nunca vestiu a tela inteira
 
-1. **A guarda de acento so varria `src/`.** O `DataList` nativo serviu "Nao foi
-   possivel carregar a lista." por versoes, acentuada do lado web e crua no
-   aparelho, sem nada acusar. A varredura cobre os dois pacotes agora. A
-   primeira tentativa de junta-los num padrao de chaves aninhadas varreu ZERO
-   arquivo em silencio e ficou verde por nao olhar nada: por isso o teste
-   ganhou piso de arquivo.
-2. **Quatro scripts orfaos sairam de `scripts/`**: `acentos-previews`,
-   `exports-ingles`, `rodar-acentos` e `titulos-previews`. Eram mutacoes de uma
-   vez so, ja aplicadas, e nao guardas. Um deles deixou rastro que sobreviveu
-   meses: `Apos` virou `After` dentro de uma frase em portugues na fonte da
-   tabela de paridade.
-3. **`ChartContainer` ja aceitava `id` e `aria-*`.** A pendencia listava nove
-   pecas de tipo fechado; eram oito.
+O sintoma era donut de um tema e botao de outro, lado a lado. A causa estava
+abaixo da biblioteca: o compilador do `react-native-css@3.0.7` crava o
+hexadecimal dentro da regra, e no CSS compilado nao sobra **uma ocorrencia** de
+`--`. O `VariableContextProvider` entregava os papeis a ninguem, porque classe
+nenhuma lia variavel. O que o mapa alcancava era so quem le cor por JS.
 
-## A auditoria de acessibilidade, e o que ela achou
+Manter variavel viva no CSS explode a compilacao pelas cinco formas testadas, e
+`3.0.7` e a ultima versao publicada. A saida foi pelo outro lado: as pecas param
+de precisar do mapa. O `RivoProvider` resolve os **45 papeis** do proprio CSS
+compilado em runtime, via `useCssElement`, e publica pelo `RivoContext` que ja
+existia. Os **14 arquivos** que leem `useRivo()` fora do provider nao mudaram uma
+linha. `RivoNativeThemeMap` levou `@deprecated` e ficou inerte, avisando em
+`__DEV__` por que era pior do que nada.
 
-A 0.7.0 saiu de manha e foi auditada a tarde, com retrato em Chrome e varredura
-da arvore de acessibilidade. **Treze defeitos em pecas que ja estavam no
-registro**, e nenhum aparecia nos 1072 testes verdes daquele momento.
+Faltavam classes para isso funcionar, e faltavam justo as dos graficos: agora
+`native/theme.css` emite `bg-` para os 45 papeis, e o app de exemplo tem as 45
+regras `.bg-*` no CSS gerado. **O crescimento de 8,3% que o CHANGELOG cita nao
+se reproduz nesta arvore.** O que se mede e `native/theme.css` indo de 3419 para
+4267 bytes no commit do tema, ou seja +24,8%, e o `examples/native/generated.css`
+crescendo 14,5% em regras ao longo do dia - e nada nele mudou naquele commit. Se
+os 8,3% foram medidos, foi no CSS compilado do projeto de quem reportou, que
+daqui nao se alcanca.
 
-Dois eram falha WCAG de nivel A: o `Popconfirm` ficava sem NENHUM focavel
-enquanto a chamada corria (o foco caia no `<body>`, Esc nao fechava, e o Tab
-vazava para o fundo `aria-hidden`), e o `VirtualList` tinha 256 mil pixels de
-rolagem sem parada de tabulacao, o que em Firefox e Safari significa nao poder
-rolar pelo teclado.
+Duas coisas que valem entrar no contrato de quem usa: cor de classe no nativo so
+muda em **build**, e `light-dark()` tem duas vagas, entao sao **dois temas por
+build, no maximo**.
 
-Os treze estao consertados, cada um medido em Chrome antes e depois. O detalhe
-de cada um esta no `CHANGELOG.md` da 0.8.0.
+### O pacote nativo nao subia no react-native-web
 
-**Quatro pecas liam o dado errado em `dir="rtl"`**, e o pior era o `Tree`:
-`paddingLeft` e propriedade fisica, entao os tres niveis paravam no mesmo
-pixel e a hierarquia era invisivel. Trocar so a tecla teria consertado o
-teclado para um desenho que continuava errado.
+`Appearance.setColorScheme` nao existe no `react-native-web`, e o `RivoProvider`
+chamava sem guarda. Como ele embrulha o app inteiro, o app inteiro nao
+renderizava: tela em branco. A chamada virou condicional, e dois vizinhos
+sairam na mesma varredura, `I18nManager.isRTL` e `AppState.addEventListener`.
+Isso vale mais que um alvo a mais: o web e a unica bancada onde se inspeciona
+arvore renderizada e se tira retrato sem simulador.
 
-## O catalogo cresceu sete pecas, e nenhuma nasceu so no web
+### A prop `density` do nativo saiu, e e quebra
 
-`TimeField`, `TimePicker`, `FilterBar`, `FilterChip`, `QueryBoundary`,
-`Popconfirm` e `VirtualList` - as seis que a auditoria propunha havia semanas,
-mais o par que faltava. O catalogo vai de 83 para 90.
+`<RivoProvider density>` e `RivoDensity` nao existem mais - zero ocorrencias em
+`native/src/` e em `native/tokens.ts`. A prop era aceita, a escala `compact` era
+gerada, e nenhuma peca lia nenhuma das duas: a API prometia uma densidade que a
+biblioteca nunca entregou. Ela nao vai ser implementada, porque a escala compacta
+levaria o controle medio de 40 para 32 pontos, abaixo dos 44 que um dedo pede.
 
-Cinco delas nasceram tambem no React Native no mesmo dia. As outras duas nao
-sao atraso: `VirtualList` nao porta porque a `FlatList` ja virtualiza de
-fabrica, e `Popconfirm` vira `AlertDialog`. **A fila do nativo voltou a zero no
-mesmo dia em que encheu.**
+### Duas guardas sairam do repositorio e passaram a rodar no consumidor
 
-E isso deixou de depender de boa vontade. O `CLAUDE.md` ganhou o **nono
-artefato**: peca web nova nasce nos dois pacotes no mesmo dia, e
-`check:paridade` recusa peca na fila sem uma linha em `FILA_DECLARADA` dizendo
-por que ela nao pode nascer junto. A lista so encolhe, como o `DEBT` das outras
-guardas.
+A quebra mais cara da 0.7.0 foi silenciosa: os `--rc-font-*` viraram papel de
+tema, dois temas de cliente escritos na 0.6.1 nao os declaravam, e a galeria
+perdeu familia de fonte. O `tsc` compilou, o Vite construiu, e a unica coisa
+errada era a tela. A guarda que pegaria isso existia, e rodava aqui.
 
-O `Calendar` de agenda continua fora - e o unico da auditoria que nao se apoia
-em nada pronto, e merece desenho proprio.
+Agora ha `rivocode-ui check-theme` no CLI do web. Ele cobra **55 papeis
+obrigatorios** e mede o contraste de cada par, nessa ordem - papel faltando
+primeiro, porque medir o que nao existe cai no valor herdado e devolve numero
+bonito por acidente. Aceita `.css` e `.theme.ts`, e tem `--json` para CI. **O
+indice que originou esta reescrita diz 45 papeis, e 45 e o numero do NATIVO**;
+no web sao 55 obrigatorios de 58 catalogados, com tres opcionais
+(`--rc-accent-image`, `--rc-accent-shadow`, `--rc-overlay-filter`).
 
-## Dois defeitos que a doc ja desmentia, e ninguem tinha lido
+E ha `rivocode-ui-native-theme` como binario do nativo: **8 sementes por
+esquema, 37 papeis derivados, 45 no `@theme`**. A regra e uma so, o gerador
+nunca inventa matiz nova; e ele nao escreve tema que reprova no contraste. O app
+que reportou tudo isso precisou escrever 220 linhas para vestir um cliente, e a
+copia da conta que ele portou devolvia `NaN` em 12 dos 45 papeis.
 
-1. **O `ChartContainer` mostrava esqueleto quando devia mostrar erro**, nos
-   dois pacotes. Ele testava `isLoading` antes de `isError`, entao consulta que
-   falhou durante um refetch escondia a falha: carregamento eterno, sem o botao
-   de tentar de novo. O `DataTable` sempre ordenou certo, e `DataTable.md` e a
-   tabela de paridade ja afirmavam que a regra era "erro vence carregando" - a
-   peca e que discordava do texto, calada. Ha teste dos dois lados agora.
+### A conta de contraste mudou de casa e aprendeu cor moderna
 
-2. **O `Tracker` lia o dado errado em `dir="rtl"`.** Nao era preferencia de
-   layout: o flex espelhava o desenho, a conta do ponteiro nao. A 5% da
-   esquerda ele lia "Dia 2" onde a celula era "Dia 20" - dezessete celulas de
-   distancia, e o balao dizia o dado errado. Consertado e medido em Chrome de
-   verdade. O `Splitter` tem o mesmo limite e continua tendo, agora escrito e
-   com numero na pagina dele.
+Ela morava em `scripts/`, que nao e publicado. Hoje mora em `src/lib/contrast.ts`
+(919 linhas), viaja em `dist/cli.js` e **nao** em `dist/index.js` - medido:
+zero ocorrencias de `contrastRatio` ou `oklch` no bundle da biblioteca, contra
+51 KB de `cli.js`. O pacote nativo publica FONTE e nao alcanca o `src/` do web,
+entao ha um espelho gerado, `native/scripts/contrast.mjs`, exportado como
+`@rivocode/ui-native/contrast`, e `check:native:contrast` confere as **180
+linhas** do espelho E que ele mede igual.
 
-## As tres assinaturas visuais desatualizadas
+A conta lia so sRGB. Hoje le hexadecimal de 3, 4, 6 e 8 digitos, `rgb`, `hsl`,
+`hwb`, `lab`, `lch`, `oklab`, `oklch` e `color()` em todos os espacos
+predefinidos - e a conversao foi provada contra o navegador, e nao contra si
+mesma. Cor que nao se mede continua reprovando em vez de ficar verde.
 
-`bun run visual` estava vermelho e ninguem sabia, porque ele nao estava no
-gate: `flutuantes-celular` com 50% dos quadrados divergindo, mais `flutuantes`
-e `dialogo-celular`.
+### Quatro pecas tinham o mesmo defeito de contraste no tema claro
 
-**A causa foi encontrada, e nao e a fonte de hoje.** A assinatura foi gravada
-em `90c12a6`, e depois disso as cinco pecas que aparecem nesses retratos -
-`popover`, `tooltip`, `dialog`, `menu`, `select` - foram refeitas no trabalho
-que unificou o posicionamento dos cinco paineis flutuantes. As mudancas sao
-legitimas e ja foram revisadas quando entraram; o que faltou foi regravar a
-assinatura.
+`Switch`, `Checkbox`, `Radio` e `Slider`. Nas tres primeiras o defeito era do
+tipo invertido: o estado ativo ficava MENOS visivel que o inativo. O trilho
+ligado pintava `accent` e media 1,21:1 sobre a pagina, contra 3,33:1 do
+desligado; a WCAG 1.4.11 pede 3:1. No `Slider`, nenhum par alcancava 3:1 - nem
+"quanto ja foi" se lia por cor.
 
-**Continua aberto, e e acao humana:** `bun run visual --aceitar` regrava, e
-ninguem deve fazer isso sem olhar os retratos. E por isso que existe agora o
-`check:scripts` - script fora do gate tem que ser declarado, para nao apodrecer
-em silencio outra vez.
+Todos pintam `accent-text` com a marca em `surface-raised` agora, e no tema
+escuro os dois papeis apontam para o mesmo valor. Cinco pares entraram nas duas
+guardas de contraste, com piso E comparacao: o marcado tem que passar dos 3:1 e
+nao pode pesar menos que o desmarcado. Hoje o web mede **152 pares, 76 por
+tema**, e o nativo mede 52 pares de texto, 33 de 1.4.11, 1 de camada e 3 do
+controle marcado por esquema, com sete papeis declarados sem par.
 
-## A fonte, que mudou de lugar nos dois pacotes
+### Duas pecas param de aceitar uso errado em silencio
 
-Ate hoje a fonte era um padrao que nao se dispensava e nao se trocava por tema.
-As tres coisas mudaram.
+`ChartContainer` com altura zero recebia `height: 0` na funcao de desenho e o
+cartao ficava vazio, sem erro e sem pista. `Indicator` embrulhando conteudo
+largo cobria texto, sempre. Os dois avisam agora, nos dois pacotes, com os
+mesmos numeros: 200ms depois do primeiro layout no primeiro caso, e 48 pontos de
+teto no segundo.
 
-**No web**, os tokens sairam de `src/tokens/scales.css` - camada global - para
-dentro de `[data-rc-theme="..."]`, como cor e sombra ja eram. E o que permite
-duas marcas na mesma pagina. Nao ha fallback no `:root`, e e deliberado:
-nenhum outro token de tema tem, e um `system-ui` por baixo so para fonte
-tornaria a falta silenciosa. O `check:temas` passou de 72 para **75 tokens**,
-entao tema novo sem fonte declarada falha o gate.
+### O retrato ganhou moldura de secao, e parou de comparar build velho
 
-As `@font-face` sairam do `styles.css` e viraram entrada propria,
-`@rivocode/ui/fonts.css`. **Isto e quebra**, e entra na 0.7.0 porque ela ainda
-nao foi publicada - depois da tag, a mesma mudanca custaria um ciclo inteiro.
-Medido: `dist/styles.css` com zero `@font-face`, `dist/fonts.css` com catorze.
+Entrou `demo/secao.html`, que monta uma secao isolada dentro de uma moldura
+magenta que o script apara, e entrou `check:retratos` no gate - guarda que roda
+em milissegundos e sem navegador, cobrando que secao declarada tenha marcador na
+vitrine e assinatura comitada. Hoje sao **44 assinaturas: 32 da vitrine e 12 de
+secao**, sobre 6 areas em dois temas, com 22200 quadrados guardados e 47
+marcadores disponiveis no demo.
 
-**No nativo**, a fonte entra por `fonts` no `RivoProvider`, e quem a carrega e
-o app, com `expo-font`. Nao ha subcaminho novo, e isso e a regra da casa sendo
-aplicada: subcaminho existe por PEER, e aqui nao ha peer - a biblioteca nunca
-importa `expo-font`, e o que atravessa a fronteira e `string`.
+E `bun run visual` passou a RECUSAR retrato que nao seja do build atual: cada
+PNG carrega a marca do build que o gerou, num pedaco `tEXt` chamado `rc-build`
+com o resumo de conteudo de cada arquivo que o navegador carregou. Custa de 122
+a 166 bytes por PNG, contra os 77s de Chrome de cada `bun run shot`.
 
-O bloco `fonts` dos tokens gerados **foi removido**. Ele anunciava as tres
-familias do web, que nao existem instaladas em aparelho nenhum, e as resolvia
-com `split(",")[0]` - ficando com a primeira da pilha e jogando fora o
-fallback, que e literalmente a falha do `ui-monospace` escrita dentro da
-ferramenta que gera os tokens.
+### `check:classes`: classe usada e nao gerada falha o gate
 
-## O comentario, que mudou de regra
+Nasceu do `shadow-1` do polegar do `Slider` nativo, que nunca gerou um byte:
+`shadow` nao existe no CSS nativo, o `tsc` passava, o build passava, e o polegar
+ficou sem sombra desde que nasceu. A guarda pergunta ao proprio compilador do
+Tailwind em vez de consultar lista, entao variante, valor arbitrario e
+modificador de opacidade passam pelo caminho do build. Cobre **193 arquivos**
+nas duas arvores, e **nao tem lista de excecao** - o acordo e que continue sem.
 
-Por decisao do dono, com o custo posto na mesa antes: **fica so o JSDoc preso a
-uma prop publica**. Sairam 5015 linhas em 192 arquivos.
+### Duas coisas menores, e as duas eram funcao perdida
 
-O que fica nao e prosa, e dado: `gen:props` extrai o JSDoc de prop para o campo
-`note` de `component-props.json`, que e a tabela publicada. Por isso a passagem
-usou `check:props` como prova - `242 pecas, 3800 props` antes e depois - e nao
-o olho. Nenhuma linha de codigo mudou: cada arquivo foi reparsado e o fluxo de
-tokens comparado.
+`demo/folhas.tsx` e `demo/dialog.tsx` viraram quatro quadros em iframe cada,
+porque tarja `fixed inset-0` e escopada pela JANELA e envenenava os dois temas
+da mesma pagina. E o `build:css` do app de exemplo ganhou `--watch`, ligado nos
+quatro comandos de `start`.
 
-Tres pastas ficam de fora, cada uma por motivo funcional, e as tres estao
-escritas no `CLAUDE.md`: `.design-sync/previews/` (o bloco e titulo de
-historia, o site o le), `scripts/check-*.ts` (cada um abre com o incidente que
-o fez existir) e `apps/docs/` (e aplicacao, nao exporta prop, entao a regra nao
-teria o que preservar).
+O botao de copiar do painel de exemplo do site nao estava cortado a 320px:
+estava **inteiramente fora do cartao**. A fileira interna tem 334px de largura
+intrinseca numa coluna de 248 e nao encolhe, entao transbordava 86px e o
+`overflow-hidden` da secao comia o botao inteiro - 75px fora, e
+`elementFromPoint` no centro dele nao devolvia nada. Sao treze deles na pagina
+do `DataTable`. A linha quebra agora, e as abas viajam junto com o copiar para a
+quebra nunca separar o botao do "Codigo" que ele copia: custa 42px por cartao a
+320, e zero a 414, 768 e 1280.
 
-**A parte que impede o trabalho de se desfazer sozinho e a mudanca do
-`CLAUDE.md` no mesmo commit.** A secao "Comentario" descrevia a regra antiga
-com exemplos nomeados; o proximo agente que a lesse recolocaria tudo achando
-que consertava.
+## Verificacao que nao verifica
+
+Esta e a secao mais util do arquivo, e nao e uma lista de bugs. O dia teve uma
+familia de defeito que se repetiu quatro vezes, em quatro lugares que nao se
+parecem: **a guarda estava verde por nao estar olhando nada.** Verde por
+vacuidade nao e um bug de teste, e um bug de confianca - ele consome o unico
+recurso que o gate tem, que e alguem acreditar nele.
+
+Os quatro casos, medidos:
+
+1. **Um glob de chave aninhada casava zero arquivos.** A juncao das duas arvores
+   em `test/acentos.test.ts` foi escrita como `{src/**/*.{ts,tsx},...}`, e o
+   Glob do Bun nao aninha `{}` dentro de `{}`. O teste varria ZERO arquivo, em
+   silencio, e passava. O antidoto entrou no proprio teste, uma linha antes do
+   laco: `expect(files.length).toBeGreaterThan(100)`. Varredura que nao acha
+   nada nao pode passar calada.
+
+2. **`toContain` sobre string de classe passava com o defeito E com o
+   conserto.** `expect(className).toContain("bg-accent")` fica verde quando a
+   classe e `bg-accent-text`, porque uma e prefixo da outra - e `bg-accent-text`
+   era exatamente o conserto. Apareceu em tres arquivos de teste. O antidoto e
+   dividir antes de comparar (`className.split(" ")`), o que transforma prefixo
+   em token exato, e afirmar tambem o `not.toContain` do valor antigo: sem isso o
+   teste nao distingue conserto de nada.
+
+3. **A frase-marca do `check:cli` saiu da fonte num rename.** A guarda procura em
+   `dist/index.js` uma frase literal que so existe dentro do modulo de
+   ferramenta; frase que nao existe nunca aparece no bundle, e a guarda ficou
+   verde por vacuidade. O antidoto foi uma quarta assercao: a frase tem que
+   continuar existindo NA FONTE. As tres marcas de hoje estao em `TOOL_ONLY`, em
+   `scripts/check-fronteira-do-cli.ts`, e sao literais e nao nomes de funcao,
+   porque nome sobrevive ao empacotamento com sorte e literal sobrevive sempre.
+
+4. **Retratos foram comparados contra um build velho, e duas frentes relataram o
+   resultado como regressao real do `EventCalendar`.** Nao era. Os PNG eram de
+   08:55 e o `demo/dist/demo.css` foi reconstruido as 09:12; o CSS velho era o de
+   hoje menos uma regra, `.[scrollbar-gutter:stable]`, usada num unico lugar do
+   repositorio. Provado por reconstrucao: apagando so essa regra e
+   refotografando, o resultado bateu com o PNG velho em 0 pixels de 6.150.400 e
+   reproduziu os numeros exatos do alarme. Custou meio dia de duas pessoas. O
+   antidoto e a marca de build dentro do PNG, descrita acima: comparacao que
+   pode estar medindo outro build nao pode sair verde nem vermelha, porque as
+   duas respostas mentem.
+
+O que os quatro tem em comum e que o sintoma era **ausencia**: nenhum deles
+falhou, nenhum deles gritou, e tres deles estavam verdes havia semanas. O
+antidoto que funcionou nas quatro vezes e o mesmo, e ele e um habito e nao uma
+ferramenta: **provar que a guarda morde antes de acreditar que ela guarda.**
+Quebre de proposito o que ela deveria pegar, veja vermelho, restaure. Trinta
+segundos por guarda.
+
+Isso vale para o `check` inteiro, e vale especialmente para guarda nova. Guarda
+que nunca ficou vermelha na sua frente e uma hipotese, nao uma prova. E vale
+para relato de agente: o `bun run visual` verde de hoje, "44 retratos, nenhum
+mudou", so significa alguma coisa porque a guarda recusa build velho - antes
+dessa marca, a mesma frase teria sido compativel com nao ter medido nada.
+
+## O gate, medido
+
+`bun run check` sao **trinta passos** mais `bun test`, em sequencia, parando no
+primeiro que falhar. Ontem eram vinte e quatro. Os seis que entraram hoje:
+`check:contrast:nativo`, `check:native:contrast`, `check:classes`, `check:cli`,
+`check:tema:nativo` e `check:retratos`.
+
+O numero trinta esta escrito no `CLAUDE.md` de proposito, e a linha ao lado diz
+por que: quando ele nao bate com o `scripts.check` do `package.json`, o gate
+cresceu e a pagina nao acompanhou.
+
+O que cada guarda mede hoje, em numero:
+
+| Guarda                   | O que ela diz hoje                                                            |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `check:pecas`            | 91 pecas, e e o que o README e o `package.json` anunciam                       |
+| `check:doc`              | 177 paginas, todas com codigo por tras                                        |
+| `check:props`            | 250 pecas, 3918 props                                                         |
+| `check:paridade`         | 91 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
+| `check:temas`            | 71 tokens de tema e forma, e 55 papeis obrigatorios                            |
+| `check:contrast`         | 152 pares em dois temas, 76 por tema                                          |
+| `check:contrast:nativo`  | 1 mapa, 89 pares por esquema, 7 papeis sem par por declaracao                  |
+| `check:native:contrast`  | espelho de 180 linhas em dia com `src/lib/contrast.ts`                        |
+| `check:tema:nativo`      | 8 sementes, 37 derivados, 45 no `@theme`                                      |
+| `check:classes`          | 193 arquivos, sem lista de excecao                                            |
+| `check:colors`           | 96 arquivos sem cor literal fora de `src/tokens/`                             |
+| `check:grupos`           | 3 seletores de grupo, todos com quem declare                                  |
+| `check:skill`            | 54 props citadas nos exemplos da skill, todas existentes                      |
+| `check:lista-skill`      | 8 arquivos de referencia, todos no indice E no laco `curl` do site            |
+| `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
+| `check:demo`             | 88 de 91 pecas na vitrine, em 16 paginas                                      |
+| `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
+| `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
+| `check:testes`           | 1285 testes em 108 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1285 passam, 0 falham; 373 deles sao do nativo, em 26 arquivos                |
+
+## As listas de divida declarada, e o tamanho de hoje
+
+A casa tem seis listas de excecao, e o acordo e o mesmo para todas: **elas so
+encolhem**. Entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
+Medidas hoje:
+
+| Lista              | Guarda                | Tamanho | Quem esta nela                                                                  |
+| ------------------ | --------------------- | ------: | ------------------------------------------------------------------------------- |
+| `DEBT`             | `check:comentarios`   |   **0** | vazia, e o acordo e que continue                                                |
+| `FILA_DECLARADA`   | `check:paridade`      |   **1** | `EventCalendar`, por decisao de gesto                                           |
+| `SEM_VITRINE`      | `check:demo`          |   **3** | `ToastViewport`, `Autocomplete`, `Editable`                                     |
+| `OUT`              | `check:scripts`       |   **5** | `regressao-visual`, `shot`, `serve`, `build-preset`, `copy-fonts`               |
+| `COPIA_DECLARADA`  | `check:compartilhado` |  **14** | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 11 |
+| `OUT_OF_README`    | `check:readme`        |  **41** | 41 pecas do catalogo nao citadas no `README.md`, com o motivo de cada uma       |
+
+Duas noticias e um aviso. A noticia boa e o `DEBT` do `check:comentarios`, que
+esta vazio, e `check:nomes` tambem nao tem divida declarada. A outra e que
+`check:classes` nasceu **sem** lista de excecao e continua sem.
+
+O aviso e o `OUT_OF_README`, com 41 de 91. E a maior divida declarada do
+repositorio, e a que menos incomoda quem trabalha aqui, o que e exatamente o
+motivo de ela ser a maior. Ela nasceu porque o digito estava certo e a lista
+embaixo dele nao: o `check:pecas` guardava o "90 pecas." e o arquivo inteiro
+citava 49.
+
+Vale registrar tambem que o `SEM_VITRINE` explica bem o que uma linha de divida
+deve conter. A do `Editable` nao diz "falta fazer": diz que `editing` e estado
+interno, que `EditableProps` nao tem prop que o force, e qual e o caminho que
+quem for pagar deve tomar - o mesmo que o `ContextMenu` tomou, disparando o
+gesto por script depois de montar. E fecha proibindo o atalho: nao se inventa
+prop so para a vitrine.
 
 ## O que esta pendente de verdade
 
 ### Divida de codigo
 
-As tres que este arquivo listava foram pagas: `regressao-visual` virou divida
-declarada com guarda (`check:scripts`), o RTL do `Tracker` foi consertado, e o
-quadro de atraso do balao foi medido e declarado. Sobram estas:
+Duas das quatro que este arquivo listava foram pagas hoje, ou ja estavam pagas
+sem ninguem marcar. **O `Splitter` em `dir="rtl"` esta consertado** - ele le
+`useDirection()` e a pagina dele diz que a divisoria vira junto. **As tres
+assinaturas visuais desatualizadas tambem cairam**: `bun run visual` responde
+"44 retratos, nenhum mudou". Sobram estas:
 
-1. **`Splitter` em `dir="rtl"`.** Arrastar 120px para a direita move a
-   divisoria 118px para a ESQUERDA, e a seta tambem inverte. Esta medido e
-   escrito na pagina, mas nao consertado - o `Tracker` mostrou que o conserto e
-   pequeno (`useDirection()` mais `insetInlineStart`), entao vale fazer.
-2. **`accessibilityLiveRegion` e do Android.** A `FilterBar` nativa anuncia a
-   contagem por ela, e no iOS o anuncio automatico nao existe sem
-   `announceForAccessibility`, que nenhuma peca do catalogo usa hoje. Vale para
-   toda peca nativa que quiser anunciar mudanca sem foco.
-3. **O `scrollToIndex` do `VirtualList` e o primeiro `useImperativeHandle` do
-   `src/`.** Nao ha precedente na casa, e portanto nao ha regra escrita sobre
-   quando expor `ref` imperativo. Ou vira padrao documentado, ou vira excecao
-   justificada.
-4. **`QueryBoundary` nao trata dado velho enquanto revalida.** O
+1. **`accessibilityLiveRegion` e do Android.** Tres pecas nativas anunciam por
+   ela - `FilterBar`, `DateRangePicker` e o `toast` -, e no iOS o anuncio
+   automatico nao existe sem `announceForAccessibility`, que nenhuma peca do
+   catalogo usa. Vale para toda peca nativa que queira anunciar mudanca sem
+   foco.
+2. **O `scrollToIndex` do `VirtualList` continua sendo o unico
+   `useImperativeHandle` do `src/`.** Nao ha precedente na casa, e nao ha regra
+   escrita sobre quando expor `ref` imperativo - procurei por "imperativ" no
+   `conventions.md`, no `CLAUDE.md` e na skill, e nao ha nada. Ou vira padrao
+   documentado, ou vira excecao justificada.
+3. **`QueryBoundary` nao trata dado velho enquanto revalida.** O
    stale-while-revalidate mostra o esqueleto por cima do que ja estava na tela.
-   Nao e esquecimento, esta escrito na pagina - mas e o caso que mais aparece
-   em tela real.
+   E o caso que mais aparece em tela real, e ele piorou de status: a pagina da
+   peca **nao menciona mais** o limite. Ate ontem o consolo era que estava
+   escrito; hoje nem isso.
 
-### Pecas novas que a auditoria propos
+### Pecas novas
 
-Seis das sete foram feitas hoje. Falta uma:
+A lista de sete que a auditoria propos esta fechada: o `EventCalendar` entrou de
+madrugada, com quatro vistas, e a linha que o separa do vizinho nao e o
+`Calendar` e sim o `DataTable` - se ninguem precisa ver duracao nem choque de
+horario, e tabela. Nao ha peca nova proposta e nao feita.
 
-- **`Calendar` de agenda** - grande, e o unico da lista que nao se apoia em
-  nada pronto. Merece desenho proprio antes de codigo, como `Tree`,
-  `TreeSelect` e `Editable` mereceram.
+O que sobra do `EventCalendar` e o lado nativo, e ele esta na fila declarada.
 
 ## O que esta bloqueado esperando acao humana
 
-Os dois bloqueios de publicacao cairam em 26/08, e vale registrar COMO, porque
-a versao anterior deste arquivo descrevia o problema errado.
+Tres coisas, e nenhuma e trabalho de codigo.
 
-**Os dois pacotes saem por CI agora.** `@rivocode/ui@0.7.0` e
-`@rivocode/ui-native@0.3.0` foram publicados pelos workflows, disparados por
-tag - nenhum `npm publish` na mao. Antes disso, o `release-native` rodou em modo
-ensaio (`gh workflow run release-native --field ensaio=true`) e passou: e o
-ensaio que provou o segredo antes de a tag ser gasta, e essa prova nunca tinha
-sido feita.
+**1. Dez commits nao empurrados, e o site descreve outra biblioteca.** Esta e a
+mais facil de esquecer, porque nada no comando avisa: `git push origin main`
+dispara o `docs.yml` e `ds.rivocode.com.br` muda. O ultimo push foi as 11:27 e o
+trabalho da tarde inteira esta so no disco. Isso quer dizer que o site no ar nao
+conhece nem o `check-theme`, nem o conserto dos quatro controles, nem o botao de
+copiar que cabe no celular. Push nao publica pacote nenhum: npm so sai por tag.
 
-A historia das "quatro falhas" que este arquivo contava estava errada. A
-primeira, pela tag `native-v0.2.0`, falhou com `ENEEDAUTH` por falta de
-segredo; alguem publicou a 0.2.0 a mao; e as tres seguintes tomaram `403 - You
-cannot publish over the previously published versions`, que e o npm recusando
-sobrescrever. **Uma falha real e tres recusas legitimas.** Com o segredo
-corrigido e uma versao nova para publicar, o caminho completou de primeira.
+**2. As duas tags, e elas sao acao de uma pessoa.** `0.9.0` e `0.4.0` estao
+comitadas, os dois CHANGELOGs estao fechados, e as tags `v0.9.0` e
+`native-v0.4.0` nao existem. As que existem param em `v0.8.0` e `native-v0.3.1`.
+A ordem da casa e: CHANGELOG fechado, bump comitado, merge na `main`, ensaio no
+nativo, e so entao a tag. O ensaio de hoje ja passou - `gh workflow run
+release-native --field ensaio=true` rodou as 11:27 e o log diz "Token OIDC
+presente: a publicacao sai assinada."
 
-Sobram duas coisas, e nenhuma e trabalho de codigo:
+**3. A landing esta duas versoes atras.** Ela esta em `^0.7.0` com 0.7.0
+instalada, e a biblioteca fechou 0.9.0. Isso e o que sobra de um item que hoje
+encolheu bastante, e vale registrar o que foi resolvido: a linha do
+`fonts.css` **existe** (`@import '@rivocode/ui/fonts.css'` em
+`src/styles/global.css`), e a duvida do gerenciador **acabou** - so ha
+`bun.lock`, ele esta rastreado, e nao ha `pnpm-lock.yaml` nem
+`pnpm-workspace.yaml` na arvore. O que a producao serve e a build que carrega as
+fontes: o CSS servido em `rivocode.com.br` tem o mesmo nome com resumo de
+conteudo do `dist/` local, `global-BENmh2Nr.css`, com 28 referencias a `woff2` e
+as tres familias da marca presentes.
 
-1. **A landing (`rivocode.com`) precisa de uma linha, e de uma decisao.**
+### A procedencia, e a licao que ela deixou
 
-   A linha: com o `fonts.css` separado nesta versao, a landing sai na fonte do
-   sistema ate alguem escrever `@import "@rivocode/ui/fonts.css"`. Sem erro e
-   sem aviso - so a letra muda.
+**O repositorio esta publico**, e os dois workflows publicam com `--provenance` e
+`id-token: write`. Uma armadilha esta escrita nos dois: `--provenance` e
+`id-token` andam JUNTOS, e o `--dry-run` do npm nao exercita nenhum dos dois, ha
+um `if (!dryRun)` antes da geracao da assinatura. Por isso existe um passo que
+falha cedo se o token OIDC nao estiver la.
 
-   A decisao: a arvore dela tem `pnpm-lock.yaml` e `pnpm-workspace.yaml` NAO
-   RASTREADOS, com uma excecao de `minimumReleaseAge` escrita a mao. O
-   repositorio versiona `bun.lock`, a producao usa bun, e a maquina usa pnpm.
-   Enquanto isso nao for decidido e comitado, qualquer quebra no bump vem sem
-   etiqueta: nao se sabe se foi a biblioteca nova ou o gerenciador que a
-   producao nem usa. Ha ainda um risco especifico nao testado: o
-   `@source '../../node_modules/@rivocode/ui/dist'` do CSS passa por symlink
-   sob pnpm, e se o scanner do Tailwind nao atravessar, a landing sai sem
-   estilo - so localmente.
+Isso entrou as 08:27 de hoje. As duas versoes de hoje sairam antes: `0.8.0` as
+05:37 e `0.3.1` as 05:36. Medido no registro, o endpoint de attestations do npm
+devolve "Not found" para `0.7.0`, `0.8.0`, `0.3.0` e `0.3.1` - **nenhuma versao
+publicada tem procedencia.** As assinaturas que aparecem em `npm view ... dist`
+sao a do registro, e nao a de proveniencia; confundir as duas e o caminho mais
+curto para achar que esta assinado.
 
-2. **As tres assinaturas visuais.** `bun run visual --aceitar` regrava, e
-   ninguem deve faze-lo sem olhar os retratos. A causa esta diagnosticada
-   acima.
-
-**O repositorio virou publico em 27/08**, e com ele a procedencia voltou. Os
-dois workflows publicam com `--provenance` e `id-token: write`, entao a partir
-da proxima tag o tarball sai assinado e qualquer um consegue verificar de onde
-ele veio.
-
-Uma armadilha ficou escrita nos dois: `--provenance` e `id-token` andam JUNTOS,
-e o `--dry-run` do npm nao exercita nenhum dos dois (ha um `if (!dryRun)` antes
-da geracao da assinatura). Por isso ha um passo que falha cedo se o token OIDC
-nao estiver la, em vez de descobrir isso no ultimo comando de uma publicacao
-que nao se desfaz.
+Nao ha conserto: publicacao no npm nao se desfaz e o registro nao deixa
+sobrescrever. A partir da proxima tag o tarball sai assinado, e as quatro
+versoes de tras ficam como estao. A licao que fica e a mesma da secao
+"Verificacao que nao verifica", vista de outro angulo: o relato dizia que a
+procedencia estava em pe, e ninguem abriu o workflow.
 
 ## Decisoes que continuam valendo
 
 - **Mobile primeiro.** Decidir o que acontece em 390px antes de desenhar o
   desktop. Painel flutuante nao encosta na borda, calendario cai para um mes,
-  dialogo vira folha de baixo, tabela rola dentro da propria moldura.
+  dialogo vira folha de baixo, tabela rola dentro da propria moldura. O botao de
+  copiar do site foi o custo de nao aplicar isso numa pagina que nao e peca.
 - **Um subcaminho por peer, e nao um por assunto.** E o peer que cobra a
   instalacao, entao e ele que decide onde a porta fica. Vale nos dois pacotes.
-- **A TanStack Table entrou, como motor interno.** A decisao de 24/08 era
-  deixa-la de fora; a spec do mesmo dia
-  (`docs/superpowers/specs/2026-08-24-datatable-tanstack-design.md`) a reviu, e
-  hoje o `DataTable` importa `@tanstack/react-table` v9 mais a
-  `@tanstack/react-virtual`. O que a decisao protegia continua protegido: nenhum
-  tipo de terceiro vaza para a assinatura publica.
+- **Cor literal so em `src/tokens/`**, e contraste medido em vez de estimado.
+  Cor que a conta nao sabe ler reprova: o que nao se mede nao se promete.
+- **Ferramenta de mesa nao viaja no bundle da biblioteca.** A conta de contraste,
+  as consequencias escritas de cada papel e o catalogo de papeis servem ao CLI, e
+  `check:cli` le o grafo de imports para que continuem so la.
+- **A TanStack Table entrou, como motor interno.** O `DataTable` importa
+  `@tanstack/react-table` v9 e `@tanstack/react-virtual`, e nenhum tipo de
+  terceiro vaza para a assinatura publica.
 - **React Query fica de fora.** E arquitetura de aplicacao, nao de design. O que
   cabe ao design system e a apresentacao dos estados que uma consulta produz.
 - **Receitas de tela inteira** (login, painel, listagem pronta) continuam de
   fora, porque receita nao versiona como componente e ninguem decidiu se elas
   moram aqui ou num pacote separado.
+- **Nenhum agente cria tag.** Publicacao e acao de uma pessoa, porque ela nao se
+  desfaz.
 
-## Uma armadilha de processo, aprendida hoje
+## Duas armadilhas de processo
 
-Sete agentes trabalharam em paralelo sobre esta arvore, particionados por
-arquivo. Dois deles rodaram `git stash` para conferir se uma falha era
-pre-existente, e **um `git stash` num repositorio compartilhado tira do disco o
-trabalho de todo mundo**, nao so o de quem chamou. Tudo foi restaurado, mas o
-`stash pop` conflitou num arquivo que o agente nao devia tocar, e por alguns
+**Nao se roda `git stash` numa arvore compartilhada.** Isso foi aprendido em
+26/08: sete agentes trabalhavam em paralelo, dois rodaram `git stash` para
+conferir se uma falha era pre-existente, e um stash tira do disco o trabalho de
+todo mundo. Tudo foi restaurado, mas o `stash pop` conflitou, e por alguns
 minutos leituras do repositorio devolveram conteudo velho: mediu-se falha que
-nao existia.
+nao existia. A regra que fica: enquanto houver mais de uma frente escrevendo,
+nao se roda `git stash`, `git checkout --` nem `git reset --hard`. Para ler uma
+versao antiga, `git show HEAD:<arquivo>`, que le sem tocar no disco.
 
-A regra que fica: **enquanto houver mais de uma frente escrevendo na arvore,
-nao se roda `git stash`, `git checkout --` nem `git reset --hard`.** Para saber
-o que uma versao antiga dizia, use `git show HEAD:<arquivo>`, que le sem tocar
-no disco. E nao se confia em verde parcial: o `check` inteiro so vale depois que
-a ultima frente parou.
+**E nao se confia em relato de agente sobre numero.** Foi o que custou a
+procedencia de duas versoes hoje. Relato e resumo, e resumo nao e medida. Quando
+um agente diz "a guarda esta verde", a pergunta certa nao e se ele rodou, e sim
+se a guarda ainda morde - as quatro verificacoes vazias deste dia estavam todas
+verdes, e todas honestamente relatadas como verdes.
 
 ## Como retomar
 
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # vinte e tres verificacoes mais os 1070 testes
+bun run check        # trinta verificacoes mais os 1285 testes
 bun run build        # ha quebra que so aparece ao empacotar
-bun run shot         # gera a vitrine em demo/dist/
+bun run shot         # gera a vitrine e os retratos em demo/dist/
+bun run visual       # compara com as 44 assinaturas comitadas
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
 
-A landing tambem precisa da linha nova de `fonts.css`, ou sai na fonte do
-sistema depois do bump.
+O primeiro passo pendente nao e nenhum desses: e `git push origin main`, que
+sobe o site com a doc da 0.9.0. Depois dele, as duas tags.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
-`ds.rivocode.com.br/convencoes.md`. Ele passou a cobrir tambem o pacote nativo
-e os quatro subcaminhos dele. A skill que um agente le esta em
-`.claude/skills/rivocode-ui/`, e vai dentro do pacote publicado (`skill/`,
-gerado por `bun run build:skill`). As notas do sync com o claude.ai/design estao
-em `.design-sync/NOTES.md`.
+`ds.rivocode.com.br/convencoes.md`. A skill que um agente le esta em
+`.claude/skills/rivocode-ui/`, com oito arquivos de referencia, e vai dentro do
+pacote publicado (`skill/`, gerado por `bun run build:skill`). As notas do sync
+com o claude.ai/design estao em `.design-sync/NOTES.md`.
 
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 176 documentos
-bun run check:pecas                                # 90 pecas
-bun test                                           # a suite inteira, web e nativo
-bun test native/test                               # a metade nativa
-bun run check:paridade                             # confere as 90 linhas da tabela
-bun run check:contrato                             # os SEIS subcaminhos, web e nativo
-npm view @rivocode/ui version                      # tem que bater com package.json
-npm view @rivocode/ui-native version               # tem que bater com native/package.json
+ls .design-sync/docs/*.md | wc -l                  # 177 documentos
+bun run check:pecas                                # 91 pecas
+bun run check:testes                               # 1285 testes em 108 arquivos
+bun test native/test                               # 373 deles, em 26 arquivos
+bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 17 nao, 1 fila
+bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
+bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
+bun run check:contrast                             # 152 pares nos dois temas
+bun run check:contrast:nativo                      # 89 pares por esquema, 1 mapa
+bun run check:tema:nativo                          # 8 sementes, 37 derivados, 45 no @theme
+bun run check:classes                              # 193 arquivos, sem excecao
+bun run check:demo                                 # 88 de 91 na vitrine, 3 declaradas fora
+bun run check:readme                               # 50 de 91 citadas, 41 declaradas fora
+bun run check:retratos                             # 12 retratos de secao sobre 6 areas
+bun run check:scripts                              # os 5 scripts fora do gate, com o motivo
+bun run check:compartilhado                        # 2 espelhados, 14 copias declaradas
+bun run visual                                     # 44 retratos, e recusa build velho
+node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 31, ou seja 30 mais bun test
+git log --oneline origin/main..HEAD | wc -l        # commits que o site ainda nao viu
+git tag --list                                     # v0.8.0 e native-v0.3.1 sao as ultimas
+npm view @rivocode/ui version                      # 0.8.0, contra 0.9.0 no package.json
+npm view @rivocode/ui-native version               # 0.3.1, contra 0.4.0 no native/package.json
+curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.8.0   # "Not found": sem procedencia
 gh run list --workflow=docs --limit 5              # a publicacao do site
-gh run list --workflow=release-native --limit 5    # uma falha real e tres recusas
-curl -sI https://ds.rivocode.com.br/llms.txt       # 200, text/plain
+gh run list --workflow=release-native --limit 5    # o ensaio de hoje, com token OIDC presente
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 91 e 177
 ```
 
-As pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
-parte. O caminho curto e `curl -s https://ds.rivocode.com.br/llms.txt | head`,
-que abre dizendo o numero. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
+As pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de parte. O
+caminho curto e `curl -s https://ds.rivocode.com.br/llms.txt | head`, que abre
+dizendo os dois numeros. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
 
 ## O que nao foi medido
 
-- **Se a landing publicada esta com o pacote do npm ou com uma build antiga.**
-  Foi medido o `package.json` e o `node_modules` do repo `rivocode.com` local
-  (os dois dizem 0.2.0), mas nao o que esta servido em producao.
-- **Se o sync com o claude.ai/design chegou a subir alguma coisa naquele dia.**
-  O que se sabe e a data do ultimo log local. O estado do lado de la nao foi
+- **Os 8,3% de crescimento do CSS nativo que o `native/CHANGELOG.md` afirma.**
+  Foi tentado por dois caminhos e nenhum bate: `native/theme.css` cresceu 24,8%
+  em bytes no commit do tema, e `examples/native/generated.css` cresceu 14,5% em
+  regras ao longo do dia, sem mudar naquele commit. Provavelmente foi medido no
+  CSS compilado do projeto de quem reportou. O numero fica no CHANGELOG porque
+  ja saiu; nao o repita sem remedir.
+- **As pecas em aparelho de verdade.** O conserto do tema de cliente, o dos
+  quatro controles marcados e os dois avisos novos foram medidos em teste e em
+  arvore renderizada, e o `react-native-web` agora sobe - o que e uma bancada
+  boa, e nao um aparelho. Ninguem olhou nada disso num telefone hoje.
+- **O `EventCalendar` em uso.** Ele nasceu de madrugada, tem pagina, preview e
+  teste, e nenhuma tela real foi construida em cima dele. O piso de altura da
+  tarja assume um defeito de proposito - dois eventos curtos que nao colidem no
+  dado podem se empilhar na tela -, e isso e o tipo de decisao que so se julga
+  com dado de verdade dentro.
+- **Se o sync com o claude.ai/design chegou a subir alguma coisa em 24/08.** O
+  que se sabe e a data do ultimo log local. O estado do lado de la nao foi
   consultado.
-- **As tres pecas nativas novas em aparelho de verdade.** `Tree`, `TreeSelect` e
-  `Editable` tem 27 testes sobre a logica (papel, estado, empilhamento de
-  nivel, o gesto de toque longo), e nenhum deles mede como o gesto se sente. O
-  `Editable` e o de maior risco de ficar estranho, e vale um prototipo antes de
-  alguem construir tela em cima dele.
+- **O `bun run build` de hoje nao foi disparado por mim.** O `dist/` e de 13:04,
+  depois do ultimo commit, e as tres coisas que valia conferir nele foram
+  conferidas: zero `@font-face` em `dist/styles.css` contra catorze em
+  `dist/fonts.css`, e zero ocorrencia da conta de contraste em `dist/index.js`.
+  Um build limpo, do zero, nao foi feito.
