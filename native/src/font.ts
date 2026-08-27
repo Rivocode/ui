@@ -135,7 +135,7 @@ export function fontWarning(complaints: string[]): string {
   return (
     "[rivocode/ui-native] <RivoProvider fonts={...}>: " +
     complaints.join("; ") +
-    ". Nome de fonte que o aparelho não tem falha calado — o texto sai na fonte do sistema e " +
+    ". Nome de fonte que o aparelho não tem falha calado: o texto sai na fonte do sistema e " +
     "nada acusa. Declare aqui o mesmo nome com que o app registrou a família no `expo-font`."
   );
 }

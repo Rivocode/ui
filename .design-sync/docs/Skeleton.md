@@ -15,4 +15,4 @@ Fica escondido do leitor de tela de propósito. Marque o container com
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Skeleton` — mesma marca de lugar, mesmo token. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Skeleton` - mesma marca de lugar, mesmo token. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -12,4 +12,4 @@ a escala de controle criaria um `lg` que não quer dizer nada.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Textarea` — `rows` é a altura inicial; o campo cresce com o conteúdo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Textarea` - `rows` é a altura inicial; o campo cresce com o conteúdo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -23,4 +23,4 @@ marketing, não de formulário.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Button` — contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Button` - contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

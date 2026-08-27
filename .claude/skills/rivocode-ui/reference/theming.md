@@ -21,7 +21,7 @@ Componente nenhum conhece a cor da marca: ele pede um papel e o tema responde.
 
 ## Por que escrever meio tema falha em silêncio
 
-São **cinquenta papéis**. Escrever só os dez óbvios não dá erro: o papel que
+São **dezenas de papéis**. Escrever só os óbvios não dá erro: o papel que
 faltou cai no valor do tema anterior, e aparece uma cor da RivoCode isolada no
 meio da marca do cliente, quase sempre num gráfico ou num estado que ninguém
 abriu durante o desenvolvimento.
@@ -31,7 +31,7 @@ Escreva o tema inteiro de uma vez, a partir do esqueleto pronto.
 ## A fonte também é papel de tema
 
 `--rc-font-sans`, `--rc-font-display` e `--rc-font-mono` moram no seletor do
-tema, ao lado das cores — e **não** têm valor de `:root` por baixo. Tema que
+tema, ao lado das cores, e **não** têm valor de `:root` por baixo. Tema que
 esquece as três fica sem família nenhuma, exatamente como um tema que esquece
 `--rc-bg` fica sem fundo. Declare-as sempre.
 

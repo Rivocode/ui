@@ -25,8 +25,8 @@ fica debaixo do valor que ele soma.
 ## Quando não usar
 
 Para listagem que vem de uma consulta, use `DataTable`. Ela trata os três
-estados que toda consulta tem e quase nenhuma tabela escrita à mão trata —
-carregando, erro e vazio — e traz ordenação, busca, paginação e seleção sem
+estados que toda consulta tem e quase nenhuma tabela escrita à mão trata
+(carregando, erro e vazio) e traz ordenação, busca, paginação e seleção sem
 nada disso virar estado da sua tela.
 
 Este aqui fica para a tabela que você desenha: o quadro de valores de um
@@ -35,4 +35,4 @@ linhas são um `map` sobre o que a API devolveu, é a outra.
 
 ## No React Native
 
-Não porta, por decisão — não há tabela no celular; a consulta vira `DataList`. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Não porta, por decisão - não há tabela no celular; a consulta vira `DataList`. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

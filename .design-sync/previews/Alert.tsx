@@ -31,7 +31,7 @@ export function WithIcon() {
   /*
    * Cor nunca é o único sinal: quem não distingue vermelho de verde lê quatro
    * caixas iguais, e a impressão em preto e branco tem o mesmo problema. O
-   * slot garante a posição — antes do texto, alinhado com a primeira linha.
+   * slot garante a posição: antes do texto, alinhado com a primeira linha.
    */
   return (
     <div className="flex max-w-lg flex-col gap-3">

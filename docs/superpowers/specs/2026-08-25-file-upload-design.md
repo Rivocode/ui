@@ -1,12 +1,12 @@
-# FileUpload — design
+# FileUpload: design
 
 Data: 2026-08-25. A maior lacuna restante do catálogo: sistema de gestão vive
 de anexo (XML da NFe, comprovante, contrato) e não havia peça.
 
 ## A divisão de trabalho
 
-A mesma filosofia do DataTable: **a peça não conhece rede**. Subir o arquivo —
-fetch, progresso real, retry — é domínio do app, que sabe qual endpoint e qual
+A mesma filosofia do DataTable: **a peça não conhece rede**. Subir o arquivo
+(fetch, progresso real, retry) é domínio do app, que sabe qual endpoint e qual
 autenticação. A peça faz o que é de interface:
 
 - **`FileUpload`**: a área de soltar. Clique abre o seletor nativo; arrastar
@@ -14,8 +14,8 @@ autenticação. A peça faz o que é de interface:
   aceitos em `onSelect` e recusados em `onReject`, cada recusa com o motivo
   legível ("maior que 5 MB", "tipo não aceito").
 - **`FileUploadList`** + **`FileUploadItem`**: a apresentação de cada
-  arquivo — nome, tamanho formatado em pt-BR, e o estado que o app informar:
-  `progress` (0–100) vira barra, `error` vira texto com "Tentar de novo",
+  arquivo (nome, tamanho formatado em pt-BR, e o estado que o app informar):
+  `progress` (0-100) vira barra, `error` vira texto com "Tentar de novo",
   nenhum dos dois é o estado pronto. Botão de remover sempre.
 
 ## API
@@ -52,7 +52,7 @@ autenticação. A peça faz o que é de interface:
   leave do pai; sem o contador a borda pisca).
 - `accept` valida por extensão e por MIME, igual ao seletor nativo.
 - Rejeição não é erro da peça: é resultado, entregue em `onReject` com motivo
-  pronto para toast. A peça não guarda lista interna — o app é o dono dos
+  pronto para toast. A peça não guarda lista interna: o app é o dono dos
   arquivos, como é o dono dos dados da tabela.
 - `progress` vira `role="progressbar"` com `aria-valuenow`; erro é texto, não
   só cor; remover tem `aria-label` com o nome do arquivo.

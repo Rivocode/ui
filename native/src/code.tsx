@@ -8,7 +8,7 @@ export type CodeProps = Omit<TextProps, "children" | "className"> & {
   children: string;
   /**
    * O toque longo seleciona e o sistema oferece copiar. Ligado, porque é o
-   * gesto nativo para o que existe para ser copiado — e porque no celular
+   * gesto nativo para o que existe para ser copiado, e porque no celular
    * não há como arrastar o cursor sobre meia frase.
    *
    * Uma ressalva de plataforma: no Android quem seleciona é o bloco de texto

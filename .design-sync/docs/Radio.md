@@ -36,7 +36,7 @@ Sem filho, sai só o círculo, para quando o rótulo tiver estrutura própria.
 ```
 
 O respiro entre o círculo e o texto é o mesmo do `Checkbox` e do `Switch`, que
-aparecem na mesma lista de formulário — e é menor do que o que separa uma opção
+aparecem na mesma lista de formulário. E é menor do que o que separa uma opção
 da seguinte, senão o rótulo ficaria mais perto da opção de baixo do que do
 próprio círculo.
 
@@ -44,6 +44,6 @@ próprio círculo.
 
 Desabilitado se pinta com token, e não com opacidade: o fundo passa a
 `surface-raised` e a marca vai para `fg-disabled`. É a mesma receita do
-`Checkbox`, borda inclusive — ela não muda com o estado. Opacidade rebaixaria
+`Checkbox`, borda inclusive. Ela não muda com o estado. Opacidade rebaixaria
 tudo de uma vez, e a guarda de contraste do repositório não mede opacidade: o
 par aprovado no arquivo de tema poderia reprovar na tela sem nada acusar.

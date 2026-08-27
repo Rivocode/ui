@@ -11,7 +11,7 @@ Compõe com `MenuTrigger`, `MenuContent`, `MenuItem`, `MenuGroup` e
 uma peça separada.
 
 O menu também escolhe, e não só age: `MenuCheckboxItem` liga e desliga uma opção
-sem fechar o painel — o "quais colunas mostrar" de uma listagem —, e
+sem fechar o painel (o "quais colunas mostrar" de uma listagem), e
 `MenuRadioGroup` com `MenuRadioItem` faz a escolha única, o "ordenar por". Os
 dois trazem o `aria-checked` de item de menu e a navegação por seta e por
 primeira letra, que um `Popover` com `Checkbox` dentro não tem.
@@ -25,4 +25,4 @@ verdade.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Menu` — folha de baixo com `actions`, nunca popup ancorado. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Menu` - folha de baixo com `actions`, nunca popup ancorado. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -7,8 +7,8 @@ category: Formulário
 A casca do calendário: painel ancorado na mesa, folha de baixo no celular.
 
 O `DatePicker` e o `DateRangePicker` já a usam por dentro. Ela sai exportada
-para o seletor de data que a sua tela inventa — o filtro de período de um
-relatório, o calendário de agendamento — continuar trocando de formato do mesmo
+para o seletor de data que a sua tela inventa (o filtro de período de um
+relatório, o calendário de agendamento) continuar trocando de formato do mesmo
 jeito que os da casa.
 
 A troca é de formato e não de conteúdo. Calendário ancorado num campo perto do

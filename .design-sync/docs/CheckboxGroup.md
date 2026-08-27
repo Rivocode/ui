@@ -23,7 +23,7 @@ uma opção da outra e é o que entra na lista do grupo.
 
 **O rótulo vai como filho**, e nunca num `<span>` ao lado: com filho a caixa sai
 dentro de um `<label>` que ela mesma monta, e clicar no texto marca. Um `<label>`
-escrito à mão em volta funciona no navegador e desfaz o trabalho da peça — e é
+escrito à mão em volta funciona no navegador e desfaz o trabalho da peça, e é
 uma das poucas coisas que o contrato lista em "nunca faça".
 
 Para o "selecionar todas", passe `allValues` com a lista inteira e marque a caixa
@@ -43,4 +43,4 @@ não notar aqui, porque a tela parece certa até alguém marcar metade da lista.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `CheckboxGroup` — `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `CheckboxGroup` - `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

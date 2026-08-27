@@ -23,7 +23,7 @@ já virou um dos dois.
 
 A união aceita nome livre de propósito. Sem isso, vestir um cliente terminava
 num erro de tipo, e o projeto começava escrevendo `as` no ponto de entrada do
-sistema — que é o pior lugar possível para ensinar que casting é normal.
+sistema, que é o pior lugar possível para ensinar que casting é normal.
 
 `RivoDensity` é `comfortable` ou `compact`. Os dois tipos aparecem quando a
 escolha vem de fora, de uma preferência salva ou da configuração do cliente:
@@ -50,9 +50,9 @@ inteira sem espelhar nenhum.
 ## Ler o que o provider decidiu
 
 `useRivoContext()` devolve o tema já resolvido, a densidade e o container de
-portal. Serve para a tela que precisa concordar com a escolha — o logotipo que
+portal. Serve para a tela que precisa concordar com a escolha (o logotipo que
 troca entre claro e escuro, o mapa de terceiro que recebe a cor por prop, o
-portal de uma peça de fora que precisa nascer vestida:
+portal de uma peça de fora que precisa nascer vestida):
 
 ```tsx
 const { theme, density, portalContainer } = useRivoContext()
@@ -63,4 +63,4 @@ propósito: o silêncio aqui vira uma tela sem estilo que ninguém sabe explicar
 
 ## No React Native
 
-Traduz, e ganha uma prop que no web não existe: `fonts`. No navegador as três famílias chegam pelo CSS de tokens; no celular não há CSS de fonte, e carregar arquivo de fonte é decisão do app, não da biblioteca. O app carrega com o `expo-font` e declara os nomes uma vez — `<RivoProvider fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}>` —, e o catálogo inteiro passa a vesti-los. Sem a prop, tudo sai na fonte do sistema e nada quebra. Passe junto o `isFontLoaded={isLoaded}` do `expo-font`: nome de fonte ausente falha calado no React Native, e é esse retorno que faz o provider avisar em `__DEV__`.
+Traduz, e ganha uma prop que no web não existe: `fonts`. No navegador as três famílias chegam pelo CSS de tokens; no celular não há CSS de fonte, e carregar arquivo de fonte é decisão do app, não da biblioteca. O app carrega com o `expo-font` e declara os nomes uma vez (`<RivoProvider fonts={{ sans: 'Manrope', display: 'Poppins', mono: 'JetBrainsMono' }}>`), e o catálogo inteiro passa a vesti-los. Sem a prop, tudo sai na fonte do sistema e nada quebra. Passe junto o `isFontLoaded={isLoaded}` do `expo-font`: nome de fonte ausente falha calado no React Native, e é esse retorno que faz o provider avisar em `__DEV__`.

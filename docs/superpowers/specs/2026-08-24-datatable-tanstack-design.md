@@ -1,11 +1,11 @@
-# DataTable sobre TanStack Table — design
+# DataTable sobre TanStack Table: design
 
 Data: 2026-08-24. Fase 1 do esforço de modernização aprovado em conversa.
 
 ## O que muda, numa frase
 
 O `DataTable` ganha ordenação, filtro global, paginação e seleção de linhas,
-com `@tanstack/react-table` como motor interno — e a API pública continua a
+com `@tanstack/react-table` como motor interno, e a API pública continua a
 mesma: colunas + três booleanos, agnóstica de biblioteca de dados.
 
 ## O que NÃO muda
@@ -33,14 +33,14 @@ mesma: colunas + três booleanos, agnóstica de biblioteca de dados.
 
 | Prop | Tipo | O quê |
 |---|---|---|
-| `pageSize` | `number` | Liga paginação client-side. Rodapé com "X–Y de Z" à esquerda e o `Pagination` da casa à direita. Sem a prop, nada de rodapé. |
+| `pageSize` | `number` | Liga paginação client-side. Rodapé com "X-Y de Z" à esquerda e o `Pagination` da casa à direita. Sem a prop, nada de rodapé. |
 | `filter` | `string` | Filtro global controlado. O app renderiza o campo de busca que quiser; a tabela só filtra. Compara texto normalizado (caixa e acento ignorados) sobre `value ?? row[key]` de cada coluna. |
 | `selectable` | `boolean` | Coluna de checkbox à esquerda. Chaves vêm do `rowKey`. |
 | `selected` | `string[]` | Seleção controlada. Opcional: sem ela, estado interno. |
 | `onSelectedChange` | `(keys: string[]) => void` | Avisa a cada mudança de seleção. |
 
 Ordenação é client-side e não controlada. Quem ordena no servidor ordena os
-dados antes e não marca `sortable` — está documentado no `.md` da peça.
+dados antes e não marca `sortable`. Está documentado no `.md` da peça.
 
 ## Comportamentos
 
@@ -48,11 +48,11 @@ dados antes e não marca `sortable` — está documentado no `.md` da peça.
   ícone `ChevronsUpDown` apagado quando sem ordem, `ArrowUp`/`ArrowDown` no
   accent quando ativa. Foco visível padrão da casa.
 - **Checkbox de seleção**: o do cabeçalho seleciona/limpa a página visível
-  (estado `indeterminate` quando parcial — o `Checkbox` da casa já suporta).
+  (estado `indeterminate` quando parcial, e o `Checkbox` da casa já suporta).
   `aria-label` em todos. O guard do `onRowClick` já ignora cliques em
   `input`/`label`, então linha clicável e seleção convivem.
 - **Filtro sem resultado**: quando `filter` ativo zera as linhas, uma única
-  linha discreta "Nenhum resultado para a busca" — o `EmptyState` de `empty`
+  linha discreta "Nenhum resultado para a busca". O `EmptyState` de `empty`
   continua reservado para consulta que voltou vazia.
 - **Filtro/ordenação resetam a página** para 1 (comportamento padrão do
   motor, mantido de propósito: a página 4 de um resultado que não existe mais
@@ -88,11 +88,11 @@ dados antes e não marca `sortable` — está documentado no `.md` da peça.
 
 Os invariantes velhos (erro vence carregando; vazio só depois da consulta;
 guard do clique na linha) já vivem em `test/onda-c.test.tsx` e continuam
-valendo sem edição — prova do zero breaking change. Os novos, em TDD:
+valendo sem edição, prova do zero breaking change. Os novos, em TDD:
 
 1. clicar no header ordena asc, de novo desc, de novo volta à ordem original;
 2. `filter` acha com e sem acento, e some com a paginação junto;
-3. `pageSize=2` com 5 linhas mostra 2 e o rodapé diz "1–2 de 5";
+3. `pageSize=2` com 5 linhas mostra 2 e o rodapé diz "1-2 de 5";
 4. selecionar linha chama `onSelectedChange` com a chave do `rowKey`;
 5. checkbox do cabeçalho seleciona a página, não o mundo;
 6. coluna sem `sortable` não tem botão nem `aria-sort`.

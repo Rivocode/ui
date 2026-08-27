@@ -10,7 +10,7 @@ Um item do menu que liga e desliga uma opção, sem fechar o menu.
 aparecem. Cada item guarda o próprio estado com `defaultChecked`, ou responde a
 `checked` e `onCheckedChange` quando quem manda é a tela.
 
-Marcar **não fecha** o menu — `closeOnClick` nasce `false`, como na Base UI —,
+Marcar **não fecha** o menu (`closeOnClick` nasce `false`, como na Base UI),
 porque quem escolhe colunas escolhe várias de uma vez.
 
 ```tsx
@@ -33,8 +33,8 @@ três listas alinharem o texto na mesma coluna.
 
 ## Quando não usar
 
-Para uma escolha entre alternativas que se excluem — ordenar por data **ou** por
-valor —, use `MenuRadioItem` dentro de um `MenuRadioGroup`: o ponto diz que
+Para uma escolha entre alternativas que se excluem (ordenar por data **ou** por
+valor), use `MenuRadioItem` dentro de um `MenuRadioGroup`: o ponto diz que
 escolher esta desescolhe a de cima, o que a marca de certo não diz.
 
 E não troque por um `Checkbox` solto dentro de um `Popover`, que era o caminho

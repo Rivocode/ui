@@ -30,16 +30,16 @@ trilho perde o acento quando ligado.
 
 Não vale devolver um acento lavado ao trilho ligado-e-travado para o "ligado"
 continuar óbvio: medido, o pino cai para 2,5:1 sobre ele no tema escuro, abaixo
-dos 3:1 da WCAG 1.4.11 — e o pino é o único lugar onde se lê a chave.
+dos 3:1 da WCAG 1.4.11. E o pino é o único lugar onde se lê a chave.
 
 ## Quando não usar
 
 Dentro de um formulário que tem botão de salvar, use `Checkbox`. **Não é o mesmo
 controle de outro formato**: a chave age no clique e o efeito é imediato; a
 caixa responde uma pergunta que só vale quando o formulário for enviado. Uma
-chave em cima de um Salvar deixa a pessoa sem saber se já valeu — e se ela sair
+chave em cima de um Salvar deixa a pessoa sem saber se já valeu, e se ela sair
 da tela sem salvar, a resposta é não.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Switch` — `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Switch` - `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

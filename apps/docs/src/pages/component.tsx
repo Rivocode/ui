@@ -23,7 +23,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 /**
  * Os exemplos que a página mostra: os seus, e os das partes que a compõem.
  *
- * Uma parte não tem página própria — o endereço dela leva a quem a monta — e
+ * Uma parte não tem página própria (o endereço dela leva a quem a monta), e
  * até aqui o preview dela não era mostrado em lugar nenhum. `Radio` é o caso
  * extremo: `RadioGroup` não tem preview seu, então a página abria sem um único
  * exemplo, com dois escritos e mantidos em `Radio.tsx` que ninguém via.
@@ -165,7 +165,7 @@ export function ComponentPage({ slug }: { slug: string }) {
          * lacuna, dita em voz alta, na pagina de quem a tem.
          */
         <p className="mt-8 rounded-md border border-border bg-surface p-4 text-sm text-fg-subtle">
-          Esta peça ainda não tem exemplo que roda — a prosa e a tabela de props abaixo são o que
+          Esta peça ainda não tem exemplo que roda: a prosa e a tabela de props abaixo são o que
           existe hoje. É uma lacuna nossa, e não uma característica dela.
         </p>
       )}

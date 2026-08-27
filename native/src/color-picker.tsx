@@ -13,7 +13,7 @@ export type ColorPickerProps = {
   /** Avisado com o hexadecimal normalizado, sempre de seis dígitos e minúsculo. */
   onValueChange: (value: string) => void;
   /**
-   * As amostras. Sem elas, um leque de tons gerado — útil para experimentar, e
+   * As amostras. Sem elas, um leque de tons gerado, útil para experimentar, e
    * não para representar uma marca: um construtor de tema entrega aqui a
    * paleta do cliente.
    */

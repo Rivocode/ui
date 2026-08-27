@@ -24,7 +24,7 @@ export function indexLine(name: string, slug: string, owner?: { name: string; sl
   if (!owner) return `- [${name}](${addressOf(slug)})`
 
   const address = addressOf(slug, { name, ownerSlug: owner.slug })
-  return `  - [${name}](${address}) — parte de ${owner.name}`
+  return `  - [${name}](${address}), parte de ${owner.name}`
 }
 
 /**
@@ -37,7 +37,7 @@ export function indexLine(name: string, slug: string, owner?: { name: string; sl
 export function partNote(name: string, owner: { name: string; slug: string }) {
   return (
     `# ${name}\n\n${name} é parte de ${owner.name}, e é documentada na página ` +
-    `dele — com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
+    `dele, com a prosa, a tabela de props e o exemplo que monta as duas:\n\n` +
     `[/componentes/${owner.slug}.md](${addressOf(name, { name, ownerSlug: owner.slug })})\n`
   )
 }

@@ -11,7 +11,7 @@ export type TrackerPoint = {
    * O que o leitor de tela ouve e o que a linha de baixo mostra.
    *
    * `string`, e não `ReactNode` como no web: aqui ele vai inteiro para o
-   * `accessibilityValue` da faixa, que só aceita texto — e num `ReactNode` não
+   * `accessibilityValue` da faixa, que só aceita texto, e num `ReactNode` não
    * há como ler o texto de volta.
    */
   label: string;

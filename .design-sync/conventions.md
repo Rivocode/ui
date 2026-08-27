@@ -68,7 +68,7 @@ no mesmo seletor `[data-rc-theme="..."]` em que as cores estão. Não há valor 
 `:root` por baixo: tema que não declara família fica sem família nenhuma, do
 mesmo jeito que tema sem `--rc-bg` fica sem fundo.
 
-As faces da RivoCode — Manrope, Poppins e JetBrains Mono — **não viajam mais
+As faces da RivoCode (Manrope, Poppins e JetBrains Mono) **não viajam mais
 no `styles.css`**. Elas têm entrada própria, e só quem quer a marca a importa:
 
 ```css
@@ -103,7 +103,7 @@ Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
 - **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
-  `forDate`, `forValue`, `forChecked` — o nome diz o formato, e não a peça, e
+  `forDate`, `forValue`, `forChecked`: o nome diz o formato, e não a peça, e
   os nomes antigos (`forDatePicker`, `forSelect`, `forCheckbox`) seguem valendo.
   O controle vem por funcao,
   nao por clonagem do filho:
@@ -248,7 +248,7 @@ valor, e evita um segundo assinante da mesma media query.
 
 `@rivocode/ui-native` é o mesmo catálogo em React Native, publicado como
 **fonte**: o vocabulário de classes acima é o mesmo, via NativeWind, sobre os
-mesmos tokens. O que atravessa é a classe, o token e a escolha da peça — **o
+mesmos tokens. O que atravessa é a classe, o token e a escolha da peça: **o
 JSX se reescreve**. No nativo tudo é controlado (sem `defaultValue`, sem
 `defaultChecked`, sem `defaultOpen`) e a lista vem por `items`, e não por
 composição: `<Select items={…} value onValueChange label />`, sem
@@ -257,7 +257,7 @@ composição: `<Select items={…} value onValueChange label />`, sem
 A regra que desenha o pacote é **um subcaminho por peer, e não um por
 assunto**. Quatro peers são opcionais, e é o peer que decide onde a porta
 fica: no celular um módulo do Expo e o `react-native-svg` custam **build**, e
-não só bytes, e o metro resolve import por arquivo — então quem só quer um
+não só bytes, e o metro resolve import por arquivo. Então quem só quer um
 `Button` não pode encontrar nenhum deles no índice da raiz. Juntar `Clipboard`
 e `FileUpload` numa porta só, um `/expo`, cobraria o seletor de documentos de
 quem apenas copia a chave de acesso de uma NF-e; por isso são duas.
@@ -275,7 +275,7 @@ npx expo install react-native-svg expo-clipboard expo-document-picker
 
 **O formulário tem um adaptador a mais, o `forText`**, porque no nativo o campo
 não devolve evento: o `TextInput` entrega o texto direto, e `forValue` não
-serve. E **nada envia sozinho** — sem `<form>`, sem `type="submit"` e sem
+serve. E **nada envia sozinho**: sem `<form>`, sem `type="submit"` e sem
 Enter, o `Form` entrega `{ submit, isSubmitting }` por função. O rótulo viaja
 no campo: sem `for` nem `id`, o `FormField` põe `accessibilityLabel` e
 `invalid` na linha, e o adaptador os leva ao controle.
@@ -286,13 +286,13 @@ import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
 
 **O gráfico não tem Recharts, nem variável de CSS, nem contentor que meça.** O
 `ChartContainer` faz as três coisas à mão e **entrega**: `children` como função
-recebe `{ width, height, colors }`, no lugar de `var(--color-série)` — e a
+recebe `{ width, height, colors }`, no lugar de `var(--color-série)`, e a
 medida chega zerada no primeiro quadro. Os quatro finais de uma consulta
 (`isLoading`, `isError`, `onRetry`, `empty`) atravessam com os mesmos nomes, e
 a altura continua sendo sua, por classe.
 
-A `PALETTE` é a lista dos oito papéis de série do tema — `chart-1` a `chart-8`
-—, na ordem em que devem ser usados: série sem `color` no `config` recebe o
+A `PALETTE` é a lista dos oito papéis de série do tema (`chart-1` a `chart-8`),
+na ordem em que devem ser usados: série sem `color` no `config` recebe o
 próximo da paleta, e é ela que o `ChartDonut` percorre fatia a fatia. **Cor de
 série aqui é papel de token, nunca hexadecimal.** O web aceita qualquer cor de
 CSS na mesma prop porque lá ela vira `var(--color-série)` e o tema continua no
@@ -309,7 +309,7 @@ o slot `chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o
 `react-native-svg` de quem só queria um número num cartão.
 
 **Copiar confirma duas vezes.** O `Clipboard` troca o nome do botão, como no
-web, e dispara **também** um aviso — `accessibilityLabel` trocado num
+web, e dispara **também** um aviso: `accessibilityLabel` trocado num
 `Pressable` que já está sob o foco não é reanunciado nem pelo VoiceOver nem
 pelo TalkBack, e o aviso do `RivoProvider` é o único canal da tela que fala
 sozinho (`toast={false}` desliga).
@@ -317,7 +317,7 @@ sozinho (`toast={false}` desliga).
 **E a área de soltar não existe.** No celular não há arrastar: o `FileUpload`
 abre o seletor do sistema por um botão de altura de controle, com o `hint`
 dentro do nome falado, e o `accept` fala MIME, que é o que o seletor sabe
-filtrar. O que volta é um `PickedFile` com `uri` local — `size` pode faltar, e
+filtrar. O que volta é um `PickedFile` com `uri` local: `size` pode faltar, e
 `maxSize` só recusa o que mediu. A lista do que já entrou é a `FileUploadList`,
 com um `FileUploadItem` por arquivo.
 
@@ -326,8 +326,8 @@ import { Clipboard } from '@rivocode/ui-native/clipboard'
 import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
 
-O resto da paridade — o que traduz, o que muda de nome e o que não porta por
-decisão — está em <https://ds.rivocode.com.br/react-native.md>.
+O resto da paridade (o que traduz, o que muda de nome e o que não porta por
+decisão) está em <https://ds.rivocode.com.br/react-native.md>.
 
 ### Onde esta a verdade
 
@@ -335,7 +335,7 @@ decisão — está em <https://ds.rivocode.com.br/react-native.md>.
 |---|---|
 | Indice de tudo | <https://ds.rivocode.com.br/llms.txt> |
 | Uma peca, com props e exemplos | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
-| Os cinquenta papeis de um tema | <https://ds.rivocode.com.br/temas.md> |
+| Os papeis de um tema, todos | <https://ds.rivocode.com.br/temas.md> |
 | Um sistema inteiro, montado | <https://ds.rivocode.com.br/demonstracao> |
 
 **Nunca invente prop.** Se o `.md` da peca nao a lista, ela nao existe.

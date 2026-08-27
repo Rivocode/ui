@@ -587,7 +587,7 @@ atributo solto no DOM.
 O marcador nao e escrito a mao: `bun run gen:props --desde 0.5.0` carimba, no
 lancamento, tudo que ainda nao tem carimbo. Durante o desenvolvimento ninguem
 sabe em que versao a prop vai sair, e adivinhar produz um numero errado que a
-doc publica com confianca. Prop com `—` e prop que ainda nao saiu.
+doc publica com confianca. Prop com `-` e prop que ainda nao saiu.
 
 ### O nativo ganha camada 3: tema de cliente
 
@@ -623,7 +623,7 @@ barra em 82%, e nada reclama.
 | Peca | Antes | Agora |
 |---|---|---|
 | `Meter`, `Progress`, `Slider` | `format={{ style: "percent" }}` | `numberFormat={{ style: "percent" }}` |
-| `Meter`, `Progress`, `Slider` | — | `format="percent"` ou `format={(v) => ...}` |
+| `Meter`, `Progress`, `Slider` | - | `format="percent"` ou `format={(v) => ...}` |
 | `NumberField` | `format={{ ... }}` | `numberFormat={{ ... }}` |
 | `ChartDonut` | so funcao | tambem nome: `format="currencyShort"` |
 

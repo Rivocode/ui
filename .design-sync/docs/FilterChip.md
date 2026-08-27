@@ -13,12 +13,12 @@ Um filtro aplicado: o campo, o valor e o xis que o tira.
 O `label` sai em peso normal e o `value` em peso médio. É essa a hierarquia da
 ficha, e é só ela: "Cliente" é a pergunta, e quem se lê de relance é a
 resposta. Sem `value` a ficha vira o campo sozinho, que serve para filtro
-booleano — "Vencidas", "Com anexo".
+booleano: "Vencidas", "Com anexo".
 
 ## Sem cor de estado, de propósito
 
-Ela é prima do `Badge` e nasce do mesmo desenho — a mesma pílula, a mesma
-borda, as mesmas duas alturas de `size` —, mas **não tem `tone`**. Um filtro
+Ela é prima do `Badge` e nasce do mesmo desenho (a mesma pílula, a mesma
+borda, as mesmas duas alturas de `size`), mas **não tem `tone`**. Um filtro
 não é um estado: uma fileira de seis fichas coloridas vira um semáforo onde
 nenhuma cor significa nada, e a regra da casa é usar o tom pelo significado e
 nunca pela cor que se quer. Quem precisa de cor está descrevendo situação, e
@@ -28,7 +28,7 @@ para isso existe o `Badge`.
 
 `labels.remove` recebe o texto já montado e devolve o que o leitor de tela
 ouve. O padrão é "Remover filtro Cliente: Clínica São Lucas" quando o valor é
-texto, e "Remover filtro Cliente" quando não é — de um `ReactNode` não há como
+texto, e "Remover filtro Cliente" quando não é. De um `ReactNode` não há como
 ler o texto de volta. É o mesmo `labels.remove` do `TagsInput` e do
 `ComboboxChip`, e existe pela mesma razão: sem ele uma fileira se anuncia
 "Remover, Remover, Remover".
@@ -43,8 +43,8 @@ ler o texto de volta. É o mesmo `labels.remove` do `TagsInput` e do
 ```
 
 O xis desenha 12px, e a área que o dedo alcança é esticada por
-pseudo-elemento até os 24px da WCAG 2.5.8 — a mesma saída da ficha do
-`Combobox` e do `TagsInput`, que não engorda a pílula.
+pseudo-elemento até os 24px da WCAG 2.5.8 (a mesma saída da ficha do
+`Combobox` e do `TagsInput`, que não engorda a pílula).
 
 ## Sem `onRemove` não há xis
 
@@ -59,13 +59,17 @@ que impede um nome de razão social de esticar a ficha até o dobro da tela num
 aparelho de 390px, onde ela quase sempre mora dentro de uma `FilterBar` que
 rola na horizontal.
 
+Esse corte é o **da ficha**, e acontece dentro da pílula. Ficha cortada em pé,
+no meio da letra e sem reticências, não é defeito daqui: é a borda do rolador
+da `FilterBar`, e é ela que esmaece para avisar que a fileira continua.
+
 ## As partes
 
 `classNames` veste `label`, `value` e `remove`.
 
 ## Quando não usar
 
-Para dizer em que situação uma linha está — "Paga", "Vencida", "Rascunho" —,
+Para dizer em que situação uma linha está ("Paga", "Vencida", "Rascunho"),
 use `Badge`: ele descreve o dado, não some por vontade de quem lê e não tem
 xis. A `FilterChip` descreve um **recorte da lista**, e tirá-la muda o que se
 vê.
@@ -81,8 +85,8 @@ lugar de fazê-la.
 
 ## No React Native
 
-Traduz, com o mesmo vocabulário do web: rótulo, valor e o botão de tirar, sem `tone` — filtro não é situação, e seis fichas coloridas viram semáforo onde nada significa nada.
+Traduz, com o mesmo vocabulário do web: rótulo, valor e o botão de tirar, sem `tone`. Filtro não é situação, e seis fichas coloridas viram semáforo onde nada significa nada.
 
 **O alvo cresce sem a ficha engordar.** A raiz é uma faixa de 44pt e a pílula pintada é um filho absoluto dentro dela, então ela continua com 28pt como no web. O xis herda os 44 verticais da faixa e ganha `hitSlop` horizontal.
 
-A faixa foi esticada em vez de dar `hitSlop` vertical por uma razão de plataforma: **no Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa — o dedo não encolhe junto com a ficha.
+A faixa foi esticada em vez de dar `hitSlop` vertical por uma razão de plataforma: **no Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa: o dedo não encolhe junto com a ficha.

@@ -11,7 +11,7 @@ O valor chega formatado porque formatar é decisão de domínio: dinheiro sai
 abreviado do `currencyShort`, contagem sai crua, percentual traz o sinal.
 
 `delta` é a variação, com `deltaLabel` dizendo contra o quê ("sobre julho").
-Quando subir é ruim — vencidas, custo, inadimplência — passe
+Quando subir é ruim (vencidas, custo, inadimplência), passe
 `invert`: a seta continua apontando para onde o número foi, o que inverte é o
 julgamento da cor. A direção também é falada para leitor de tela, não só
 pintada.
@@ -37,7 +37,7 @@ O `%` era cravado no JSX, e o `Stat` era a única peça de número da casa fora 
 vocabulário de formatação que `Progress`, `Meter` e `Slider` já falam. Um delta
 em reais ou em pontos-base saía com um por-cento que não era verdade.
 
-`deltaFormat` é o mesmo `format` das irmãs — nome de formatador da casa ou
+`deltaFormat` é o mesmo `format` das irmãs, nome de formatador da casa ou
 função própria:
 
 ```tsx
@@ -53,4 +53,4 @@ seta, e o "alta de"/"queda de" que o leitor de tela ouve antes do número.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Stat` — `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Stat` - `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

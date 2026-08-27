@@ -113,8 +113,9 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-90 peças. A tabela diz para que cada uma serve, e a diferença
-entre as que se parecem — que é a parte que costuma faltar.
+90 peças. A tabela abaixo cobre as mais usadas, e diz a diferença
+entre as que se parecem, que é a parte que costuma faltar. O índice completo,
+sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
 ### Ação
 
@@ -326,7 +327,7 @@ opcional: quem não faz gráfico não carrega os 200 kB dela.
 npm install recharts
 ```
 
-As peças da Recharts que a biblioteca veste saem pelo mesmo import — sem isso
+As peças da Recharts que a biblioteca veste saem pelo mesmo import: sem isso
 você teria a moldura e nada para pôr dentro, e teria que acertar a versão da
 Recharts na mão. `Tooltip` e `Legend` dela ficam de fora de propósito: os nossos
 já embrulham os dois, e o nome colidiria com o `Tooltip` do catálogo.
@@ -387,7 +388,7 @@ exigir 4,5:1 dela deixaria a paleta inteira escura demais para distinguir.
 
 O `useChartMotion()` liga a animação à preferência do sistema. O resto do
 catálogo resolve isso por token, mas a Recharts interpola em JS e nenhum token a
-alcança — sem ele, o único movimento que sobra numa tela com "reduzir
+alcança: sem ele, o único movimento que sobra numa tela com "reduzir
 movimento" ligado é justamente o maior deles.
 
 A altura fica com você, por classe: gráfico sem altura definida some, porque o
@@ -434,7 +435,7 @@ guarda:
 bun run check:contrast
 ```
 
-Ela mede quarenta pares que carregam texto e falha se algum ficar abaixo de
+Ela mede todos os pares que carregam texto e falha se algum ficar abaixo de
 4,5 para 1, ou de 7 para 1 no texto principal. Ela existe para transformar
 "acho que está legível" em número.
 

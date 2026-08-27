@@ -50,7 +50,7 @@ export type ChartDonutProps<Slice> = {
   /**
    * O que o leitor de tela ouve no lugar do desenho.
    *
-   * Com a legenda ligada — o padrão — ela não é necessária, e nem é usada: o
+   * Com a legenda ligada (o padrão) ela não é necessária, e nem é usada: o
    * desenho fica escondido e cada fatia é uma parada de verdade logo abaixo.
    * Sem legenda, o nome sai das fatias, com valor e tudo.
    */

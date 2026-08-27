@@ -56,8 +56,8 @@ Quatro peças da família recebem um texto, e dois nomes de prop dão conta dos
 quatro porque são quatro papéis:
 
 - `Sidebar` tem `title`: o título que só o leitor de tela ouve, no celular,
-  onde a barra vira folha e perde o contexto. É o mesmo papel — e o mesmo nome
-  — de `CalendarPanel` e `Command`.
+  onde a barra vira folha e perde o contexto. É o mesmo papel (e o mesmo nome)
+  de `CalendarPanel` e `Command`.
 - `SidebarGroup` tem `label`: o cabeçalho visível de um grupo de itens, como em
   `MenuGroup` e nos grupos do `Command`.
 - `SidebarInput` tem `label`: o nome acessível de um campo sem rótulo visível,

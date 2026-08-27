@@ -372,7 +372,7 @@ function Painel({
               </AccordionItem>
               <AccordionItem title="Dá para cancelar depois?">
                 <Text className="text-sm text-fg-muted">
-                  Dá, em até 24 horas — e a prefeitura é avisada.
+                  Dá, em até 24 horas, e a prefeitura é avisada.
                 </Text>
               </AccordionItem>
             </Accordion>

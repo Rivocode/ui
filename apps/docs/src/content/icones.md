@@ -1,7 +1,7 @@
 O conjunto é o [lucide](https://lucide.dev), instalado como `lucide-react` e
 declarado como dependência de par obrigatória: mesmo traço, mesma grade, e o
 `size` numérico dispensa classe. Nunca emoji no lugar de ícone, e nunca um
-segundo conjunto misturado — dois traços diferentes na mesma tela parecem duas
+segundo conjunto misturado: dois traços diferentes na mesma tela parecem duas
 marcas.
 
 ## Tamanho por contexto
@@ -17,7 +17,7 @@ devolve o espaço com margem negativa, como o hint do `Stat` faz.
 
 ## Nome acessível
 
-Ícone decorativo — que acompanha um texto que já diz tudo — leva
+Ícone decorativo (que acompanha um texto que já diz tudo) leva
 `aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
 `aria-label` **no botão**, nunca no ícone:
 
@@ -29,8 +29,8 @@ devolve o espaço com margem negativa, como o hint do `Stat` faz.
 
 ## O vocabulário
 
-Um conceito, um ícone. O lucide tem sinônimo para quase tudo — `Trash` e
-`Trash2`, `Gear` e `Settings` — e cada sinônimo que entra é uma tela que parece
+Um conceito, um ícone. O lucide tem sinônimo para quase tudo (`Trash` e
+`Trash2`, `Gear` e `Settings`), e cada sinônimo que entra é uma tela que parece
 de outro produto. Esta é a tabela canônica; conceito novo entra aqui antes de
 entrar no código.
 

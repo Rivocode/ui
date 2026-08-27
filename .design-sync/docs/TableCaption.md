@@ -21,7 +21,7 @@ Ela vai **dentro** do `Table`, e como primeiro filho:
 O instinto é escrever esse título numa `<p>` ou num `<h3>` logo acima da
 tabela. Não quebra nada, e custa o nome inteiro: o anúncio vira "tabela, 5
 colunas, 12 linhas" e mais nada, porque texto vizinho não nomeia elemento
-nenhum. Numa tela com duas tabelas — a das notas e a dos pagamentos — quem
+nenhum. Numa tela com duas tabelas (a das notas e a dos pagamentos), quem
 navega por lista de tabelas ouve as duas com o mesmo nome, que é nome nenhum.
 
 E não há meio-termo: `<caption>` não tem outro pai legal além de `<table>`.
@@ -44,13 +44,13 @@ como nome, só que sem ocupar pixel nenhum:
 É o que o `DataTable` faz com o `caption` dele.
 
 A legenda sai em cima. Para mandá-la para baixo da tabela, `caption-bottom` na
-classe — o `caption-top` da peça sai do caminho sozinho.
+classe. O `caption-top` da peça sai do caminho sozinho.
 
 ## Quando não usar
 
 Numa listagem que vem de uma consulta, não monte o `<caption>` à mão: o
 `DataTable` recebe a legenda pela prop `caption`, e já a escreve dentro da
-`<table>` certa — inclusive na variante com altura, onde a tabela é outra.
+`<table>` certa (inclusive na variante com altura, onde a tabela é outra).
 
 Para o título visível que encabeça a seção inteira, com ação do lado, é o
 `PageHeader`, e não a legenda: `TableCaption` nomeia a tabela, não a tela.

@@ -1,10 +1,10 @@
 Se você programa com um agente ao lado, Claude Code, Cursor, ou qualquer um que
 leia skills, dá para ensiná-lo a biblioteca inteira de uma vez.
 
-A skill é uma pasta: um `SKILL.md` que o agente lê sempre, e sete arquivos em
+A skill é uma pasta: um `SKILL.md` que o agente lê sempre, e os arquivos de
 `reference/` que ele abre só quando o trabalho pede. Layout, design, escolha de
-peça, acessibilidade, formulário, gráfico e tema ficam separados justamente
-para não ocupar contexto enquanto não são o assunto.
+peça, acessibilidade, formulário, gráfico, tema e React Native ficam separados
+justamente para não ocupar contexto enquanto não são o assunto.
 
 ## Instalar
 
@@ -25,9 +25,9 @@ todos os seus projetos.
 
 O mesmo comando instala também o **agent** `rivocode-ui`, em
 `.claude/agents/`. A skill ensina; o agent é o especialista que a carrega
-sozinho: delegue "monte a tela de faturas" para ele e o método já vem junto —
-conferir o catálogo antes de inventar um `<div>`, ler o `.md` da peça antes de
-usar, e o contrato de tokens que não se negocia.
+sozinho: delegue "monte a tela de faturas" para ele e o método já vem junto
+(conferir o catálogo antes de inventar um `<div>`, ler o `.md` da peça antes de
+usar, e o contrato de tokens que não se negocia).
 
 ### Sem a biblioteca no projeto
 
@@ -46,7 +46,7 @@ O site serve a skill crua, sempre na versão mais nova:
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
   curl -fsSL https://ds.rivocode.com.br/skill/SKILL.md -o "$dir/SKILL.md" && \
-  for f in layout design components a11y forms charts theming; do \
+  for f in layout design components a11y forms charts theming native; do \
     curl -fsSL "https://ds.rivocode.com.br/skill/reference/$f.md" \
       -o "$dir/reference/$f.md"; \
   done
@@ -81,7 +81,7 @@ Uma tabela de escolha para os erros que mais aparecem, `Alert` contra `Toast`,
 `Dialog` contra `AlertDialog`, `Select` contra `Combobox`, `Meter` contra
 `Progress`. Cada linha diz o porquê, que é o que evita a próxima dúvida.
 
-O vocabulário de ícones — um conceito, um ícone, sempre do lucide — e a regra
+O vocabulário de ícones (um conceito, um ícone, sempre do lucide) e a regra
 de tamanho e de nome acessível que acompanha cada um.
 
 Os quatro finais de uma consulta, os dois subcaminhos com exemplo que roda, e a

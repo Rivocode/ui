@@ -1,4 +1,4 @@
-# @rivocode/ui-native — proposta
+# @rivocode/ui-native: proposta
 
 Data: 2026-08-25. Proposta, não spec de implementação: o pacote nativo é um
 projeto próprio, com o próprio ciclo de brainstorm → spec → plano.
@@ -6,7 +6,7 @@ projeto próprio, com o próprio ciclo de brainstorm → spec → plano.
 ## A tese
 
 O mesmo produto que emite nota no desktop consulta nota no celular. O que deve
-ser compartilhado **não é componente — é decisão**: os tokens (camada 1 e 3),
+ser compartilhado **não é componente, é decisão**: os tokens (camada 1 e 3),
 o vocabulário de classes e a skill. Componente nativo é outro animal (sem DOM,
 sem portal, sem hover), e fingir que é o mesmo gera a pior das bibliotecas: a
 que funciona mal nos dois lugares.
@@ -15,11 +15,11 @@ que funciona mal nos dois lugares.
 
 Três candidatos maduros em 2026: NativeWind (Tailwind em RN), Tamagui
 (sistema universal com compilador próprio) e Unistyles. O Tamagui é o mais
-poderoso para quem *começa* um sistema universal — mas nós já temos um sistema,
+poderoso para quem *começa* um sistema universal, mas nós já temos um sistema,
 e ele fala Tailwind.
 
 **NativeWind ganha por uma razão estratégica**: o vocabulário é o mesmo.
-`bg-accent`, `text-fg-muted`, `rounded-md`, `h-[var(--rc-control-md)]` — a
+`bg-accent`, `text-fg-muted`, `rounded-md`, `h-[var(--rc-control-md)]`: a
 skill que ensina o agente a construir tela web vale quase inteira no nativo, e
 o preset do Tailwind nativo sai **gerado dos mesmos tokens**. Um agente, uma
 skill, duas plataformas.
@@ -29,7 +29,7 @@ skill, duas plataformas.
 ### 1. Tokens viram fonte única (`@rivocode/tokens`)
 
 Hoje a fonte é CSS (`palette.css`, `scales.css`, temas). Um script de codegen
-extrai para JSON — os arquivos são regulares, o parser é pequeno — e passa a
+extrai para JSON (os arquivos são regulares, o parser é pequeno) e passa a
 gerar dos dois lados:
 
 ```
@@ -44,7 +44,7 @@ JSON e vale para as duas plataformas de uma vez.
 
 - Expo-first (SDK atual), new architecture, NativeWind v4+.
 - `RivoProvider` nativo: tema (claro/escuro/sistema), densidade, e o
-  container de toast — mesmos nomes de prop do web.
+  container de toast, mesmos nomes de prop do web.
 - Testes com RN Testing Library; capturas via Expo para o design-sync.
 
 ### 3. Catálogo por tradução, não por porte
@@ -61,13 +61,13 @@ JSON e vale para as duas plataformas de uma vez.
 
 ## Fases
 
-1. **Fase 0 — codegen de tokens** (a única mudança no repo web): extrai o
+1. **Fase 0 (codegen de tokens)**, a única mudança no repo web: extrai o
    JSON, regenera os CSS existentes byte a byte iguais, prova que a fonte
    única não muda nada.
-2. **Fase 1 — fundação**: Provider, Button, Badge, Card, Skeleton,
+2. **Fase 1 (fundação)**: Provider, Button, Badge, Card, Skeleton,
    EmptyState, Stat. Uma tela de painel de verdade como demo.
-3. **Fase 2 — formulário**: Field, Input, Checkbox, Switch, Select nativo.
-4. **Fase 3 — overlay e lista**: Sheet, Dialog, Toast, DataList.
+3. **Fase 2 (formulário)**: Field, Input, Checkbox, Switch, Select nativo.
+4. **Fase 3 (overlay e lista)**: Sheet, Dialog, Toast, DataList.
 5. **Transversal**: a skill ganha `reference/native.md` com a tabela de
    tradução acima, e o design-sync fotografa as telas do Expo.
 

@@ -7,7 +7,7 @@ category: Dados
 Código em bloco: retorno de API, linha de log, trecho de configuração.
 
 A rolagem é própria de propósito. JSON não quebra linha, e sem rolagem no
-próprio bloco a linha longa empurra a largura da página — e o vazamento
+próprio bloco a linha longa empurra a largura da página, e o vazamento
 horizontal só aparece no celular de quem usa, nunca no monitor de quem
 escreveu.
 

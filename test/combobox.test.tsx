@@ -37,8 +37,8 @@ function list(props: { items?: string[] } = {}) {
 test("com lista cheia, o aviso de vazio nao ocupa lugar no painel", () => {
   list();
   expect(screen.getByText("Clinica Sao Lucas")).toBeDefined();
-  // O Empty fica montado para o leitor de tela, mas o recheio — e o espaco
-  // que ele ocupa — so aparece na lista vazia.
+  // O Empty fica montado para o leitor de tela, mas o recheio (e o espaco
+  // que ele ocupa) so aparece na lista vazia.
   expect(screen.queryByText(/Nenhum cliente com esse nome/)).toBeNull();
 });
 

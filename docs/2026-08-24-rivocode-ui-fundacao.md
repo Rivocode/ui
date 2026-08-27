@@ -1,7 +1,7 @@
 # @rivocode/ui, fundação: plano de implementação
 
 > **Documento histórico, concluído.** Descreve o que foi decidido e planejado
-> em 24/08/2026, e é mantido como registro — não como instrução. Duas coisas
+> em 24/08/2026, e é mantido como registro, não como instrução. Duas coisas
 > dele já não valem: o pacote **não** é privado no GitHub Packages, está
 > público no npm sob MIT desde a 0.2.0 (não precisa de `.npmrc` nem de token),
 > e o catálogo cresceu muito além dos cinco componentes deste ciclo. Para o

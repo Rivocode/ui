@@ -33,7 +33,7 @@ export type ChartRadialProps = {
   /**
    * O que o leitor de tela ouve.
    *
-   * Sem ela, o nome sai do que está escrito no meio — o número e a linha de
+   * Sem ela, o nome sai do que está escrito no meio: o número e a linha de
    * baixo, nessa ordem. O web usa só a porcentagem, e é pouco: "82 por cento"
    * sozinho não diz por cento de quê.
    */

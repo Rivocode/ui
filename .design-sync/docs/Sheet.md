@@ -20,4 +20,4 @@ esta atrás.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Sheet` — só o comportamento de baixo, que já era o modo estreito do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Sheet` - só o comportamento de baixo, que já era o modo estreito do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

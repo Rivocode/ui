@@ -22,7 +22,7 @@ export type TimelineEvent = {
    *
    * `string`, e não um `RelativeTime` como no web, e a razão é o leitor de
    * tela. Cada evento é uma parada só, e o rótulo dessa parada é montado aqui
-   * a partir deste texto — um relógio vivo lá dentro continuaria se refazendo
+   * a partir deste texto: um relógio vivo lá dentro continuaria se refazendo
    * na tela enquanto o rótulo ficaria preso no "há 2 minutos" de quando o
    * evento montou. Trilha de auditoria não pode dizer duas horas diferentes.
    */

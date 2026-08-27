@@ -12,4 +12,4 @@ com dez mil páginas. No celular os números somem e ficam só as setas com "3 d
 
 ## No React Native
 
-Não porta, por decisão — lista de celular rola; escolher o número da página é gesto de mesa. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Não porta, por decisão - lista de celular rola; escolher o número da página é gesto de mesa. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

@@ -28,11 +28,11 @@ O telefone troca de molde entre o fixo e o celular sozinho.
 | `hora` | `99:99` | `14:30` |
 | `placa` | `AAA9A99` | `ABC1D23` |
 | `cartao` | `9999 9999 9999 9999` | `4111 1111 1111 1111` |
-| `moeda` | — | `2.480,00` |
+| `moeda` | - | `2.480,00` |
 
 `moeda` é o único sem molde: em dinheiro os centavos vêm primeiro e a casa anda
 para a esquerda a cada dígito, o contrário de todo o resto. Os oito primeiros
-vivem em `MASKS`, e `MaskName` é o nome de um deles — o tipo `Mask` da prop
+vivem em `MASKS`, e `MaskName` é o nome de um deles. O tipo `Mask` da prop
 aceita esse nome, `moeda`, ou um molde escrito à mão.
 
 Nome de molde digitado errado não vira molde literal: `mask="dinheiro"` avisa no
@@ -64,4 +64,4 @@ telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `MaskedInput` — o valor é só dígitos; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `MaskedInput` - o valor é só dígitos; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

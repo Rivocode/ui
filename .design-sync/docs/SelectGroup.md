@@ -36,7 +36,7 @@ gatilho traduz o valor guardado no rótulo que a pessoa leu. O grupo arruma a
 lista aberta, e não o que o gatilho mostra.
 
 O `SelectGroupLabel` vive dentro do grupo porque é o grupo que aponta o
-`aria-labelledby` para ele. Título escrito ao lado não nomeia nada — e nenhum
+`aria-labelledby` para ele. Título escrito ao lado não nomeia nada, e nenhum
 tipo reclama.
 
 ## Quando não usar

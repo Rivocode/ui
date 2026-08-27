@@ -30,4 +30,4 @@ acelera o que já esta em outro lugar, no menu de ações da linha, por exemplo.
 
 ## No React Native
 
-Não porta como peça, e não é por falta de caso de uso: o menu do botão direito é, no celular, o toque longo. O que falta é um `longPress` no `Menu` nativo, que hoje só abre por `open`/`onOpenChange` — até lá, chame `onOpenChange(true)` no `onLongPress` do seu próprio `Pressable`. Peça nova aqui seria um segundo `Menu` com outro nome.
+Não porta como peça, e não é por falta de caso de uso: o menu do botão direito é, no celular, o toque longo. O que falta é um `longPress` no `Menu` nativo, que hoje só abre por `open`/`onOpenChange`. Até lá, chame `onOpenChange(true)` no `onLongPress` do seu próprio `Pressable`. Peça nova aqui seria um segundo `Menu` com outro nome.

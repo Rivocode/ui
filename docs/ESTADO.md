@@ -1,7 +1,7 @@
 # Onde paramos
 
 Atualizado em 26/08/2026, ao fim do dia. Este arquivo e o "onde paramos" do
-repositorio: serve a quem chega frio, humano ou agente, e responde tres coisas —
+repositorio: serve a quem chega frio, humano ou agente, e responde tres coisas:
 o que existe, o que falta de verdade, e o que esta parado esperando uma pessoa.
 
 Todo numero aqui foi medido no dia, com comando. A secao **Como conferir cada
@@ -17,14 +17,16 @@ Tudo que esta descrito abaixo como feito esta comitado na `main`, passa no
 
 | Peca                        | Onde                                        | Estado                                                     |
 | --------------------------- | ------------------------------------------- | ---------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.7.0** na arvore; no npm ainda a 0.6.1, falta a tag     |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.0** na arvore; no npm ainda a 0.2.0, falta a tag     |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, 169 paginas cruas            |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.7.0**, publicado no npm por CI                        |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.3.0**, publicado no npm por CI                        |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | Publicado por CI desde 26/08, uma pagina crua por peca     |
 | Landing                     | repo `rivocode.com`, na `main`              | Migrada e consumindo o pacote do npm, presa no `^0.2.0`    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar  |
 
-O gate do repo esta verde: `bun run check` passa inteiro — vinte verificacoes
-mais **1070 testes em 101 arquivos**. O `bun run build` tambem.
+O gate do repo esta verde: `bun run check` passa inteiro - vinte verificacoes
+mais a suite dos dois pacotes, `test/` e `native/test/`. O `bun run build`
+tambem. A contagem de testes nao se escreve aqui de proposito: ela mora na home
+do site, que e o unico lugar onde `check:testes` a confere.
 
 ### O catalogo, por familia
 
@@ -37,20 +39,22 @@ contexto abrindo `CardTitle.md` como se fosse componente independente. A regra
 esta em `apps/docs/src/parts.ts` e a guarda que a segura em
 `test/indice.test.ts`.
 
-| Familia      | Pecas | Quais                                                                                                                                                                                                                                                                                                      |
-| ------------ | ----: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Formulario   |    28 | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, Tree, TreeSelect |
-| Estrutura    |    14 | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table                                                                                                                                                                 |
-| Feedback     |    10 | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                   |
-| Navegacao    |     9 | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                          |
-| Sobreposicao |     7 | AlertDialog, ContextMenu, Dialog, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                        |
-| Acoes        |     6 | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                  |
-| Grafico      |     4 | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                           |
-| Dados        |     4 | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                        |
-| Fundacao     |     1 | RivoProvider                                                                                                                                                                                                                                                                                                 |
+| Familia      | Quais                                                                                                                                                                                                                                                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect            |
+| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                               |
+| Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                                      |
+| Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                            |
+| Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                              |
+| Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                                    |
+| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                              |
+| Dados        | Code, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                                                           |
+| Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                                    |
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
-com acento. Nenhuma peca esta sem documento.
+com acento. Nenhuma peca esta sem documento. A coluna de contagem por familia
+saiu daqui: ela somava oitenta e tres depois de o catalogo chegar a noventa, e
+nao ha guarda que a confira - o site soma sozinho, a partir de `ENTRIES`.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
@@ -67,9 +71,9 @@ e hoje 73 das 90 pecas do web tem par no celular.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
-| Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop — a assinatura muda, veja abaixo                               |
+| Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
 | Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast`  |
-| `○ na fila`        |       0 | —                                                                                             |
+| `○ na fila`        |       0 | -                                                                                             |
 | `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
 As 17 que nao portam nao voltam a esta lista sem que alguem mude de ideia sobre
@@ -84,8 +88,8 @@ composicao. Nunca prometa que a tela do web vai rodar no celular: o que se
 reaproveita e o vocabulario de classes, o token e a escolha da peca. O JSX se
 reescreve.
 
-O pacote tem quatro subcaminhos — `form`, `chart`, `clipboard` e `file-upload`
-—, e a regra que os separa e **um subcaminho por peer, e nao um por assunto**.
+O pacote tem quatro subcaminhos (`form`, `chart`, `clipboard` e `file-upload`),
+e a regra que os separa e **um subcaminho por peer, e nao um por assunto**.
 No celular peer nao e byte: modulo do Expo custa build. Um `/expo` comum
 cobraria o seletor de documentos de quem so quer copiar uma chave de acesso.
 
@@ -94,7 +98,7 @@ cobraria o seletor de documentos de quem so quer copiar uma chave de acesso.
 Fechou a lista inteira de pendencias que este arquivo abria de manha. O detalhe
 de cada uma esta em `CHANGELOG.md` (0.7.0) e `native/CHANGELOG.md` (0.3.0); o
 que importa aqui e que **nao ha mais item aberto na secao "achados que agentes
-deixaram anotados"** — ela deixou de existir.
+deixaram anotados"**: ela deixou de existir.
 
 Tres coisas nao estavam na lista e apareceram no caminho:
 
@@ -102,7 +106,7 @@ Tres coisas nao estavam na lista e apareceram no caminho:
    possivel carregar a lista." por versoes, acentuada do lado web e crua no
    aparelho, sem nada acusar. A varredura cobre os dois pacotes agora. A
    primeira tentativa de junta-los num padrao de chaves aninhadas varreu ZERO
-   arquivo em silencio e ficou verde por nao olhar nada — por isso o teste
+   arquivo em silencio e ficou verde por nao olhar nada: por isso o teste
    ganhou piso de arquivo.
 2. **Quatro scripts orfaos sairam de `scripts/`**: `acentos-previews`,
    `exports-ingles`, `rodar-acentos` e `titulos-previews`. Eram mutacoes de uma
@@ -251,46 +255,50 @@ Seis das sete foram feitas hoje. Falta uma:
 
 ## O que esta bloqueado esperando acao humana
 
-Tres coisas, e nenhuma e trabalho de codigo:
+Os dois bloqueios de publicacao cairam em 26/08, e vale registrar COMO, porque
+a versao anterior deste arquivo descrevia o problema errado.
 
-1. **As duas tags.** A arvore esta em `ui@0.7.0` e `ui-native@0.3.0`, e o npm
-   serve 0.6.1 e 0.2.0. A tag dispara o workflow que publica, e publicacao nao
-   se desfaz — por isso nenhuma foi criada sozinha. Os dois CHANGELOGs ja estao
-   fechados, entao nao ha mais nada a escrever antes delas.
+**Os dois pacotes saem por CI agora.** `@rivocode/ui@0.7.0` e
+`@rivocode/ui-native@0.3.0` foram publicados pelos workflows, disparados por
+tag - nenhum `npm publish` na mao. Antes disso, o `release-native` rodou em modo
+ensaio (`gh workflow run release-native --field ensaio=true`) e passou: e o
+ensaio que provou o segredo antes de a tag ser gasta, e essa prova nunca tinha
+sido feita.
 
-2. **O ensaio do `release-native`.** `gh workflow run release-native --field
-   ensaio=true` roda o caminho inteiro sem publicar.
+A historia das "quatro falhas" que este arquivo contava estava errada. A
+primeira, pela tag `native-v0.2.0`, falhou com `ENEEDAUTH` por falta de
+segredo; alguem publicou a 0.2.0 a mao; e as tres seguintes tomaram `403 - You
+cannot publish over the previously published versions`, que e o npm recusando
+sobrescrever. **Uma falha real e tres recusas legitimas.** Com o segredo
+corrigido e uma versao nova para publicar, o caminho completou de primeira.
 
-   A versao anterior deste arquivo dizia que o workflow "nunca publicou em
-   quatro tentativas", e isso esta errado - os logs contam outra historia. A
-   primeira, disparada pela tag `native-v0.2.0`, falhou com `ENEEDAUTH`: nao
-   havia segredo de npm. Alguem entao publicou a 0.2.0 a mao, e as tres
-   tentativas seguintes tomaram `403 - You cannot publish over the previously
-   published versions`, que e o npm recusando sobrescrever versao publicada.
-   **Uma falha real e tres recusas legitimas**, e nao quatro falhas.
+Sobram duas coisas, e nenhuma e trabalho de codigo:
 
-   O workflow pode estar bom hoje; o que nunca foi provado e se o segredo
-   funciona, porque desde que ele foi corrigido nunca houve versao nova para
-   publicar. O ensaio e o unico jeito de descobrir isso sem queimar a tag.
+1. **A landing (`rivocode.com`) precisa de uma linha, e de uma decisao.**
 
-3. **A landing (`rivocode.com`), e o gerenciador de pacotes ANTES do bump.**
-   Ela consome `^0.2.0` e nao quebra uma linha de codigo ao subir — usa cinco
-   botoes, um import de CSS e dois atributos no `<html>`. O problema e outro: a
-   arvore dela tem `pnpm-lock.yaml` e `pnpm-workspace.yaml` NAO RASTREADOS, com
-   uma excecao de `minimumReleaseAge` escrita a mao. O repositorio versiona
-   `bun.lock`, a producao usa bun, e a maquina usa pnpm. Enquanto isso nao for
-   decidido e comitado, qualquer quebra no bump vem sem etiqueta: nao se sabe se
-   foi a biblioteca nova ou o gerenciador que a producao nem usa. Ha ainda um
-   risco especifico nao testado: o
-   `@source '../../node_modules/@rivocode/ui/dist'` do CSS passa por symlink sob
-   pnpm, e se o scanner do Tailwind nao atravessar, a landing sai sem estilo —
-   so localmente.
+   A linha: com o `fonts.css` separado nesta versao, a landing sai na fonte do
+   sistema ate alguem escrever `@import "@rivocode/ui/fonts.css"`. Sem erro e
+   sem aviso - so a letra muda.
+
+   A decisao: a arvore dela tem `pnpm-lock.yaml` e `pnpm-workspace.yaml` NAO
+   RASTREADOS, com uma excecao de `minimumReleaseAge` escrita a mao. O
+   repositorio versiona `bun.lock`, a producao usa bun, e a maquina usa pnpm.
+   Enquanto isso nao for decidido e comitado, qualquer quebra no bump vem sem
+   etiqueta: nao se sabe se foi a biblioteca nova ou o gerenciador que a
+   producao nem usa. Ha ainda um risco especifico nao testado: o
+   `@source '../../node_modules/@rivocode/ui/dist'` do CSS passa por symlink
+   sob pnpm, e se o scanner do Tailwind nao atravessar, a landing sai sem
+   estilo - so localmente.
+
+2. **As tres assinaturas visuais.** `bun run visual --aceitar` regrava, e
+   ninguem deve faze-lo sem olhar os retratos. A causa esta diagnosticada
+   acima.
 
 O que continua valendo como restricao, e nao como bloqueio: **o repositorio e
 privado**, entao o npm recusa `--provenance` com 422, e por isso os dois
-workflows de release publicam sem assinatura. Tornar o repositorio publico e o
-que devolve a procedencia. Esta escrito nos dois workflows, no lugar onde
-alguem tentaria "consertar".
+workflows publicam sem assinatura. Tornar o repositorio publico e o que devolve
+a procedencia. Esta escrito nos dois workflows, no lugar onde alguem tentaria
+"consertar", e continua sendo uma decisao que ninguem tomou.
 
 ## Decisoes que continuam valendo
 
@@ -318,7 +326,7 @@ arquivo. Dois deles rodaram `git stash` para conferir se uma falha era
 pre-existente, e **um `git stash` num repositorio compartilhado tira do disco o
 trabalho de todo mundo**, nao so o de quem chamou. Tudo foi restaurado, mas o
 `stash pop` conflitou num arquivo que o agente nao devia tocar, e por alguns
-minutos leituras do repositorio devolveram conteudo velho — mediu-se falha que
+minutos leituras do repositorio devolveram conteudo velho: mediu-se falha que
 nao existia.
 
 A regra que fica: **enquanto houver mais de uma frente escrevendo na arvore,
@@ -342,7 +350,7 @@ A landing tambem precisa da linha nova de `fonts.css`, ou sai na fonte do
 sistema depois do bump.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
-`ds.rivocode.com.br/convencoes.md` — ele passou a cobrir tambem o pacote nativo
+`ds.rivocode.com.br/convencoes.md`. Ele passou a cobrir tambem o pacote nativo
 e os quatro subcaminhos dele. A skill que um agente le esta em
 `.claude/skills/rivocode-ui/`, e vai dentro do pacote publicado (`skill/`,
 gerado por `bun run build:skill`). As notas do sync com o claude.ai/design estao
@@ -353,31 +361,31 @@ em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 176 documentos
 bun run check:pecas                                # 90 pecas
-bun test                                           # 1070 pass, 101 arquivos
+bun test                                           # a suite inteira, web e nativo
 bun test native/test                               # a metade nativa
 bun run check:paridade                             # confere as 90 linhas da tabela
 bun run check:contrato                             # os SEIS subcaminhos, web e nativo
-npm view @rivocode/ui version                      # 0.6.1 (a arvore ja e 0.7.0)
-npm view @rivocode/ui-native version               # 0.2.0 (a arvore ja e 0.3.0)
+npm view @rivocode/ui version                      # tem que bater com package.json
+npm view @rivocode/ui-native version               # tem que bater com native/package.json
 gh run list --workflow=docs --limit 5              # a publicacao do site
-gh run list --workflow=release-native --limit 5    # as quatro falhas
+gh run list --workflow=release-native --limit 5    # uma falha real e tres recusas
 curl -sI https://ds.rivocode.com.br/llms.txt       # 200, text/plain
 ```
 
-As 83 pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
+As pecas nao saem de um `ls`: elas saem do catalogo, que separa peca de
 parte. O caminho curto e `curl -s https://ds.rivocode.com.br/llms.txt | head`,
 que abre dizendo o numero. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
 
 ## O que nao foi medido
 
 - **Se a landing publicada esta com o pacote do npm ou com uma build antiga.**
-  Foi medido o `package.json` e o `node_modules` do repo `rivocode.com` local —
-  os dois dizem 0.2.0 —, mas nao o que esta servido em producao.
+  Foi medido o `package.json` e o `node_modules` do repo `rivocode.com` local
+  (os dois dizem 0.2.0), mas nao o que esta servido em producao.
 - **Se o sync com o claude.ai/design chegou a subir alguma coisa naquele dia.**
   O que se sabe e a data do ultimo log local. O estado do lado de la nao foi
   consultado.
 - **As tres pecas nativas novas em aparelho de verdade.** `Tree`, `TreeSelect` e
-  `Editable` tem 27 testes sobre a logica — papel, estado, empilhamento de
-  nivel, o gesto de toque longo —, e nenhum deles mede como o gesto se sente. O
+  `Editable` tem 27 testes sobre a logica (papel, estado, empilhamento de
+  nivel, o gesto de toque longo), e nenhum deles mede como o gesto se sente. O
   `Editable` e o de maior risco de ficar estranho, e vale um prototipo antes de
   alguem construir tela em cima dele.

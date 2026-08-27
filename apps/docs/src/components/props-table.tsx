@@ -74,7 +74,7 @@ export function PropsTable({
                     </span>
                   )}
                   {/* Quem tem uma versão velha instalada precisa saber se a
-                      prop existe para ele — e hoje descobre pelo erro de tipo,
+                      prop existe para ele, e hoje descobre pelo erro de tipo,
                       ou pior, pelo atributo solto no DOM. */}
                   {prop.since && (
                     <span

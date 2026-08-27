@@ -22,4 +22,4 @@ a `NavigationMenu` ou a `Sidebar`.
 
 ## No React Native
 
-Traduz pela metade, de propósito. O `Tabs` nativo é **só** a caixinha (`variant="segmented"` no web): `items`, `value`, `onValueChange`, sem `TabList`, `Tab` nem `TabPanel`. Aba que troca a seção da página não é peça no celular — é tab bar do router —, e insistir numa aba desenhada por cima disso dá duas navegações concorrentes na mesma tela.
+Traduz pela metade, de propósito. O `Tabs` nativo é **só** a caixinha (`variant="segmented"` no web): `items`, `value`, `onValueChange`, sem `TabList`, `Tab` nem `TabPanel`. Aba que troca a seção da página não é peça no celular (é tab bar do router), e insistir numa aba desenhada por cima disso dá duas navegações concorrentes na mesma tela.

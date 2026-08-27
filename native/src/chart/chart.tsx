@@ -15,7 +15,7 @@ export type ChartConfig = Record<
     /** O nome legível da série. Vai para a legenda e para o leitor de tela. */
     label: string;
     /**
-     * A cor da série, como **papel de token** — `chart-1` a `chart-8`, ou
+     * A cor da série, como **papel de token**: `chart-1` a `chart-8`, ou
      * qualquer outro papel do tema. Sem ela, entra o próximo da paleta, na
      * ordem em que a série aparece no `config`.
      *
@@ -42,7 +42,7 @@ export type ChartContainerProps = {
   config: ChartConfig;
   /**
    * O desenho. Como função, recebe a medida e as cores já resolvidas; como
-   * JSX, entra do jeito que está — é assim que `ChartDonut` e `ChartRadial`
+   * JSX, entra do jeito que está: é assim que `ChartDonut` e `ChartRadial`
    * ganham os quatro finais sem precisar de nada da moldura.
    */
   children: ReactNode | ((frame: ChartFrame) => ReactNode);
@@ -70,7 +70,7 @@ export type ChartContainerProps = {
   errorMessage?: string;
   /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
-   * web, menos o `icon` — o `EmptyState` nativo ainda não tem esse slot.
+   * web, menos o `icon`: o `EmptyState` nativo ainda não tem esse slot.
    */
   empty?: { title: string; description: string; action?: ReactNode };
   /**
@@ -89,7 +89,7 @@ export type ChartContainerProps = {
    *
    * Com filho em JSX ela é **ignorada**, e de propósito: quem nomeia é a peça
    * de dentro. `ChartDonut` e `ChartRadial` já se nomeiam, e um `accessible`
-   * aqui em cima engoliria a legenda da rosca — as fatias, que são a única
+   * aqui em cima engoliria a legenda da rosca: as fatias, que são a única
    * forma de ler o valor no toque, virariam uma frase só e nenhuma delas
    * alcançável.
    *
@@ -213,8 +213,8 @@ const MISSING_DATA =
 
 const IGNORED_LABEL =
   "[rivocode/ui-native] <ChartContainer label={...}> com filho em JSX: o rótulo foi " +
-  "ignorado. Quem nomeia o desenho é a peça de dentro — `ChartDonut` e `ChartRadial` têm " +
-  "`label` próprio —, e nomear aqui fecharia o filho inteiro numa parada só do leitor de " +
+  "ignorado. Quem nomeia o desenho é a peça de dentro (`ChartDonut` e `ChartRadial` têm " +
+  "`label` próprio), e nomear aqui fecharia o filho inteiro numa parada só do leitor de " +
   "tela. O `label` da moldura vale quando `children` é função.";
 
 function useSilentMisuse(wrong: boolean, message: string) {

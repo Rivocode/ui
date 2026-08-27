@@ -120,7 +120,7 @@ Sombra: `shadow-1`, `shadow-2`, `shadow-3`, em ordem de quanto a coisa flutua.
 Cartão parado não precisa de sombra: no tema escuro a sombra some e o que
 separa é a borda. Cada sombra já carrega um fio de 1px por fora, na cor certa
 do tema: é o bisel que descola o flutuante do fundo, e convive com a
-`border` que a peça já tem — um é o traço interno, o outro o contorno externo.
+`border` que a peça já tem: um é o traço interno, o outro o contorno externo.
 
 `shadow-glow` é a lanterna do acento, opt-in: hero de landing e CTA que merece
 cerimônia. Nenhum componente liga sozinho, e produto de operação nunca usa.
@@ -135,7 +135,7 @@ Animar `width` e `height` custa layout; prefira `opacity` e `transform`.
 
 Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
 aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240. **Produto de
-operação não anima entrada** — landing e hero animam uma vez, e só. As durações
+operação não anima entrada**: landing e hero animam uma vez, e só. As durações
 zeram com `prefers-reduced-motion`, então quem pediu menos movimento vê o
 conteúdo já assentado.
 
@@ -143,7 +143,7 @@ conteúdo já assentado.
 
 O conjunto é o **lucide-react**, peer obrigatória: mesmo traço, mesma grade,
 e o `size` numérico dispensa classe. Nunca emoji no lugar de ícone, e nunca
-um segundo conjunto misturado — dois traços diferentes na mesma tela parecem
+um segundo conjunto misturado: dois traços diferentes na mesma tela parecem
 duas marcas.
 
 | Onde | Tamanho |
@@ -152,7 +152,7 @@ duas marcas.
 | Junto de texto `sm`/`xs` (célula, meta, eyebrow) | `size={14}` |
 | Miúdo em linha apertada (hint do `Stat`, delta) | `size={13}` |
 
-Ícone decorativo — que acompanha um texto que já diz tudo — leva
+Ícone decorativo (que acompanha um texto que já diz tudo) leva
 `aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
 `aria-label` no botão, nunca no ícone. E alvo de toque continua sendo 24px no
 mínimo: ícone menor cresce o botão e devolve o espaço com margem negativa,
@@ -160,8 +160,8 @@ como o hint do `Stat` faz.
 
 ### O vocabulário
 
-Um conceito, um ícone. O lucide tem sinônimo para quase tudo — `Trash` e
-`Trash2`, `Gear` e `Settings` — e cada sinônimo que entra é uma tela que
+Um conceito, um ícone. O lucide tem sinônimo para quase tudo (`Trash` e
+`Trash2`, `Gear` e `Settings`), e cada sinônimo que entra é uma tela que
 parece de outro produto. Esta é a tabela canônica; conceito novo entra aqui
 antes de entrar no código.
 

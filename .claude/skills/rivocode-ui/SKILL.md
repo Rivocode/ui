@@ -40,11 +40,11 @@ Leia o arquivo que o trabalho pedir, e só ele.
 3. **Nunca invente prop.** Se o documento não a lista, ela não existe. Um chute
    falha no `tsc` na melhor das hipóteses, e passa despercebido como atributo
    solto no DOM na pior. A tabela sai do compilador, então ela é a API inteira,
-   callbacks incluídos — `onValueChange`, `onOpenChange`, `onCheckedChange`.
+   callbacks incluídos: `onValueChange`, `onOpenChange`, `onCheckedChange`.
 
 4. **Toda listagem tem quatro finais**: dados, carregando, erro e vazio. O
    `DataTable` e o `ChartContainer` recebem os quatro por prop, e entregar só
-   o caminho feliz é entregar metade da tela —
+   o caminho feliz é entregar metade da tela.
    [reference/components.md](reference/components.md) tem a ordem certa.
 
 ## O Provider, uma vez, na raiz
@@ -91,7 +91,7 @@ plugins do `vite.config.ts`, ou o resultado é o mesmo silêncio.
 
 **As fontes da marca são um import à parte.** Manrope, Poppins e JetBrains Mono
 não vêm mais dentro do CSS da biblioteca: quem quer as faces da RivoCode
-acrescenta uma linha, e quem veste outro cliente simplesmente não a escreve — e
+acrescenta uma linha, e quem veste outro cliente simplesmente não a escreve, e
 aí nenhum `.woff2` nosso é baixado.
 
 ```css
@@ -99,7 +99,7 @@ aí nenhum `.woff2` nosso é baixado.
 ```
 
 Para a fonte do cliente, instale a família dele e declare os três tokens no
-seletor do tema, junto com as cores — `theming.md` traz a receita inteira.
+seletor do tema, junto com as cores. `theming.md` traz a receita inteira.
 
 ## O vocabulário de classes
 
@@ -124,13 +124,13 @@ responder ao tema do cliente.
 
 **Toda peça aceita `className` na raiz, e a classe de quem usa vence a da
 peça** (merge por grupo: `h-14` derruba o `h-10` do Button). É o caminho para
-o wrapper de cliente — um arquivo no projeto dele, com token e nunca cor
-literal — em vez de fork. Nas peças em camadas, a documentação da prop diz o
+o wrapper de cliente (um arquivo no projeto dele, com token e nunca cor
+literal), em vez de fork. Nas peças em camadas, a documentação da prop diz o
 que ela veste. O mesmo contrato vale no `@rivocode/ui-native`.
 
 **Abaixo da raiz, vista a parte pelo nome, com `classNames`.** A trilha do
 `Progress`, o pino do `Slider`, a marca do `Checkbox`, a linha do `DataTable`
-e a tarja do `DialogContent` têm nome de fora — os mesmos da seção "Partes" da
+e a tarja do `DialogContent` têm nome de fora, os mesmos da seção "Partes" da
 página:
 
 ```tsx

@@ -12,4 +12,4 @@ elemento sai mais barata.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Separator` — só a linha horizontal. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Separator` - só a linha horizontal. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

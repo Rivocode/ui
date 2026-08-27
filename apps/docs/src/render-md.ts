@@ -41,13 +41,13 @@ function propsTable(props: Prop[]) {
     .map(
       (prop) =>
         `| \`${prop.name}\` | \`${cell(prop.type)}\` | ${prop.required ? 'sim' : ''} | ${
-          prop.since ?? '—'
+          prop.since ?? '-'
         } | ${prop.note ? cell(prop.note) : ''} |`,
     )
     .join('\n')
 
   // A coluna de versao existe para o agente que le isto sem saber qual versao o
-  // projeto tem instalada: `—` e prop que ainda nao saiu em versao nenhuma.
+  // projeto tem instalada: `-` e prop que ainda nao saiu em versao nenhuma.
   return `| Prop | Tipo | Obrigatória | Desde | O que faz |\n| --- | --- | --- | --- | --- |\n${rows}`
 }
 

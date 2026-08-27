@@ -27,7 +27,7 @@ passa `closeOnClick={false}`.
 
 ## Quando não usar
 
-Para o que acontece na mesma tela — duplicar, exportar, cancelar —, use
+Para o que acontece na mesma tela (duplicar, exportar, cancelar), use
 `MenuItem`. Âncora que não leva a lugar nenhum (`href="#"` com `onClick`) engana
 as três affordances acima, e é pior do que um item comum.
 

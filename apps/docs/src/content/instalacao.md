@@ -96,8 +96,8 @@ junto. **Não monte nenhum deles à mão.**
 ## 5. Ensinar o seu agente
 
 Se você programa com Claude Code, Cursor ou outro agente que leia skills, um
-comando instala a que ensina esta biblioteca — o contrato, a escolha entre
-peças parecidas e o vocabulário de ícones:
+comando instala a que ensina esta biblioteca (o contrato, a escolha entre
+peças parecidas e o vocabulário de ícones):
 
 ```bash
 npx rivocode-ui skill

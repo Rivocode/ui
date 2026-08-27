@@ -52,7 +52,7 @@ const CARD = { name: "Card", slug: "card" };
 
 test("a parte aponta para dentro da pagina de quem a monta", () => {
   expect(indexLine("CardHeader", "card-header", CARD)).toBe(
-    "  - [CardHeader](/componentes/card.md#cardheader) — parte de Card",
+    "  - [CardHeader](/componentes/card.md#cardheader), parte de Card",
   );
 });
 

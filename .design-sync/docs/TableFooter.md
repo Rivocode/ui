@@ -9,7 +9,7 @@ O rodapé da tabela, num `<tfoot>` de verdade. É onde mora a linha de totais.
 Toda listagem financeira daqui termina em "Total: R$ 248,3K", e até agora essa
 linha era uma `<div>` embaixo da tabela. Uma `<div>` não participa do algoritmo
 de layout de tabela: ela não conhece a largura de nenhuma coluna, então o total
-nunca fica debaixo do valor que ele soma — e, numa tabela com moldura própria,
+nunca fica debaixo do valor que ele soma. E, numa tabela com moldura própria,
 ela rola embora junto com o conteúdo.
 
 Dentro da tabela as duas coisas se resolvem sozinhas: a célula divide a largura
@@ -32,7 +32,7 @@ com a coluna, e o rodapé pode grudar embaixo pelo mesmo mecanismo com que o
 O peso é proposital: o rodapé é resumo, e resumo não pode se ler como mais uma
 linha de dado.
 
-**O dinheiro sai abreviado**, como no resto da casa — `currencyShort`, e não o
+**O dinheiro sai abreviado**, como no resto da casa: `currencyShort`, e não o
 valor por extenso. O `currency` fica para onde o centavo é o assunto: o valor
 que a pessoa confirma antes de emitir, e o comprovante depois.
 

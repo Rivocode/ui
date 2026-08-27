@@ -84,4 +84,4 @@ Erro de formulário também não é aviso: ele pertence ao campo que errou, via
 
 ## No React Native
 
-No React Native esta peça é `useToast` — não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. A [tabela de paridade](/react-native) tem o resto do catálogo.
+No React Native esta peça é `useToast` - não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. A [tabela de paridade](/react-native) tem o resto do catálogo.

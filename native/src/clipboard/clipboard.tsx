@@ -39,7 +39,7 @@ export type ClipboardProps = {
   /** Chamado depois de copiar, para quem quer disparar um aviso próprio. */
   onCopy?: (value: string) => void;
   /**
-   * O aviso de "Copiado", ligado por padrão — veja o comentário da peça.
+   * O aviso de "Copiado", ligado por padrão. Veja o comentário da peça.
    * Desligue na tela que copia várias coisas seguidas e não quer uma pilha de
    * avisos, ou quando o próprio app já avisa por outro caminho.
    */

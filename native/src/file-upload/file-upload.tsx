@@ -58,8 +58,8 @@ export type FileUploadProps = {
   /** A letra miúda: formatos e limite, para a pessoa não descobrir na recusa. */
   hint?: string;
   /**
-   * Os tipos aceitos. **Só MIME chega ao seletor do sistema** —
-   * `application/pdf`, `text/xml`, `image/*` —, porque é o que o
+   * Os tipos aceitos. **Só MIME chega ao seletor do sistema**
+   * (`application/pdf`, `text/xml`, `image/*`), porque é o que o
    * `expo-document-picker` sabe filtrar. Extensão com ponto (`.xml`) continua
    * valendo na validação de volta, contra o nome do arquivo, mas não vai para
    * o diálogo: mandá-la para lá filtraria tudo e o seletor abriria vazio.

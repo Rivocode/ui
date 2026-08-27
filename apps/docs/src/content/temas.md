@@ -51,10 +51,10 @@ para `success`, `warning` e `info`.
 
 ## Todos os papéis
 
-São cinquenta. Um tema completo declara todos; faltando um, o componente que o
+Um tema completo declara todos os que vêm abaixo; faltando um, o componente que o
 usa cai no valor do tema anterior, e o sintoma costuma ser uma cor da RivoCode
 isolada no meio do azul do cliente. Depois deles vêm três papéis de acabamento
-— gradiente, brilho e vidro — que são os únicos opcionais.
+(gradiente, brilho e vidro) que são os únicos opcionais.
 
 ### Superfície
 
@@ -79,20 +79,20 @@ isolada no meio do azul do cliente. Depois deles vêm três papéis de acabament
 | Token | Classe | O que veste |
 |---|---|---|
 | `--rc-accent` | `bg-accent` | Preenchimento da marca: botão primário, marca de escolha |
-| `--rc-accent-hover` |, | O mesmo com o ponteiro em cima |
-| `--rc-accent-active` |, | O mesmo no instante do clique |
+| `--rc-accent-hover` | - | O mesmo com o ponteiro em cima |
+| `--rc-accent-active` | - | O mesmo no instante do clique |
 | `--rc-accent-fg` | `text-accent-fg` | O que se lê **sobre** o acento |
 | `--rc-accent-text` | `text-accent-text` | O acento que se lê **sobre o fundo**: link, item ativo |
 | `--rc-accent-subtle` | `bg-accent-subtle` | Fundo tênue de item marcado, item de menu sob o ponteiro |
 
-### Row, foco e estado de linha
+### Linha, foco e estado de linha
 
 | Token | Classe | O que veste |
 |---|---|---|
 | `--rc-border` | `border-border` | A linha comum |
 | `--rc-border-strong` | `border-border-strong` | A borda de um controle, que precisa se ver |
 | `--rc-border-disabled` | `border-border-disabled` | A borda de um controle travado, que precisa se ver **menos** |
-| `--rc-line-hover` |, | A borda com o ponteiro em cima |
+| `--rc-line-hover` | - | A borda com o ponteiro em cima |
 | `--rc-ring` | `ring-ring` | O anel de foco do teclado |
 | `--rc-selected` | `bg-selected` | Linha escolhida numa tabela. Área grande pede alfa baixo |
 | `--rc-skeleton` | `bg-skeleton` | Marca de lugar do carregamento |
@@ -134,12 +134,12 @@ ao varrer, e o resultado seria uma cor que nunca resolve, em silêncio.
 
 | Token | O que veste |
 |---|---|
-| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição — cada uma já carrega o hairline de 1px que separa o flutuante da página |
-| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in — hero de landing e CTA que merece cerimônia; nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
+| `--rc-shadow-1` a `--rc-shadow-3` | `shadow-1`, `shadow-2`, `shadow-3`: linha, painel, sobreposição. Cada uma já carrega o hairline de 1px que separa o flutuante da página |
+| `--rc-glow-accent` | `shadow-glow`: a lanterna do acento, opt-in (hero de landing e CTA que merece cerimônia); nenhum componente liga sozinho. Para o **tema** acender sem que cada tela peça, veja `--rc-accent-shadow` adiante |
 | `--rc-text-display` | Tamanho de título de marketing, em `clamp()` |
 | `--rc-text-hero` | Tamanho de herói, em `clamp()` |
 | `--rc-font-sans` | `font-sans`: a família do corpo, e o padrão de toda a árvore |
-| `--rc-font-display` | `font-display`: a família de título — a que carrega a marca |
+| `--rc-font-display` | `font-display`: a família de título, a que carrega a marca |
 | `--rc-font-mono` | `font-mono`: a família de código, tabela numérica e `Kbd` |
 
 Os passos de marketing vivem no tema e não no núcleo de propósito: um sistema
@@ -149,13 +149,13 @@ dela, e um tema de cliente decide o próprio brilho.
 
 **A fonte é papel de tema, e não escala.** Os dois temas da casa declaram as
 três famílias, e um tema de cliente que não as declara fica **sem família
-nenhuma** — a árvore cai na fonte do navegador, exatamente como acontece com um
+nenhuma**: a árvore cai na fonte do navegador, exatamente como acontece com um
 tema que esquece `--rc-bg`. Não há valor de `:root` por baixo para segurar a
 queda, e isso é deliberado: uma fonte de sistema silenciosa por baixo faria a
 falta parecer escolha, e o cliente descobriria meses depois que metade da tela
 nunca vestiu a marca dele.
 
-As famílias da RivoCode — Manrope, Poppins e JetBrains Mono — **não vêm mais
+As famílias da RivoCode (Manrope, Poppins e JetBrains Mono) **não vêm mais
 junto com o `styles.css`**. Quem quer a marca importa o arquivo de faces
 separado; quem veste outra fonte instala a dela e nunca baixa as nossas:
 
@@ -188,7 +188,7 @@ dois carregando os 220 KB de `.woff2` da RivoCode.
 
 Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
 opcionais** do guia: ausentes, o gesto simplesmente não acontece, e é assim que
-os dois temas da casa nascem — os três declarados como `none`.
+os dois temas da casa nascem: os três declarados como `none`.
 
 | Token | Onde chega | O gesto |
 |---|---|---|
@@ -198,7 +198,7 @@ os dois temas da casa nascem — os três declarados como `none`.
 
 O acabamento viaja junto com o papel, e não com a peça: quem já vestia
 `bg-accent` recebe o gradiente e o brilho, quem já vestia `bg-overlay` recebe o
-vidro. É o que torna a tarja alcançável — ela é um nó interno do portal, e
+vidro. É o que torna a tarja alcançável: ela é um nó interno do portal, e
 `classNames={{ backdrop }}` resolve **uma tela**, enquanto o token resolve o
 tema inteiro, nas quatro peças que têm tarja, de uma vez.
 
@@ -216,7 +216,7 @@ Quatro coisas para saber antes de usar:
   trocando a cor de fundo, e o gradiente sobreviveria a essa troca; a regra o
   exclui. Carregando não é desabilitado para esse fim: ali a cor ainda diz qual
   ação está em andamento.
-- **O alcance é o `bg-accent` escrito direto** — botão primário, barra de
+- **O alcance é o `bg-accent` escrito direto**: botão primário, barra de
   progresso. O acento que só chega sob estado, como o `data-[checked]:bg-accent`
   da caixa de marcar, compila com outro nome de classe e não recebe o
   acabamento.
@@ -277,7 +277,7 @@ Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
 | `--rc-radius-pill` | A pílula: chave, badge, avatar, barra |
 | `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | O tempo de cada transição |
 | `--rc-duration-sheet`, `--rc-ease-sheet` | O tempo e a curva da folha lateral, que segue o dedo |
-| `--rc-ease` | A curva de todo o resto — seca e mecânica, ou macia |
+| `--rc-ease` | A curva de todo o resto: seca e mecânica, ou macia |
 | `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
 
 Redefina no mesmo seletor do tema, junto com os papéis de cor:
@@ -296,18 +296,18 @@ A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
 ## O que o tema precisa garantir
 
 Os papéis não são independentes. Estas relações precisam valer, e as quatro
-primeiras são medidas por `bun run check` — um tema que as quebra falha no CI,
+primeiras são medidas por `bun run check`. Um tema que as quebra falha no CI,
 e não na tela do cliente:
 
 | Invariante | Por quê |
 |---|---|
 | `--rc-border-strong` a 3:1 da superfície | É a fronteira que identifica o controle (WCAG 1.4.11). Abaixo disso o campo não se distingue da página |
-| `--rc-border-disabled` acima de 1,6:1 da superfície, e a 1,4× **abaixo** de `--rc-border-strong` | É o único papel com teto além de piso. Muito fraca, o controle travado some; igual à viva, ele fica idêntico ao controle que ainda responde — e a WCAG 1.4.11 dispensa componente inativo dos 3:1 justamente para abrir essa faixa |
+| `--rc-border-disabled` acima de 1,6:1 da superfície, e a 1,4× **abaixo** de `--rc-border-strong` | É o único papel com teto além de piso. Muito fraca, o controle travado some; igual à viva, ele fica idêntico ao controle que ainda responde, e a WCAG 1.4.11 dispensa componente inativo dos 3:1 justamente para abrir essa faixa |
 | `--rc-<estado>-text` a 4,5:1 sobre `--rc-<estado>-subtle` | É o par que a pessoa lê no `Alert`, e não o texto contra `--rc-bg`. O alfa é composto antes de medir |
 | `--rc-ring` a 3:1 contra `--rc-bg` e contra `--rc-surface` | O foco precisa aparecer nos dois fundos, e não só num |
 | `--rc-skeleton` diferente da superfície | Ele é a marca de lugar do que está carregando, e o corpo do `Avatar`. Igual à superfície, os dois somem |
 
-`--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor — no tema claro
+`--rc-surface` e `--rc-surface-raised` **podem** ser a mesma cor: no tema claro
 da casa as duas são branco puro, e cartão branco sobre página cinza é o padrão
 de nove entre dez painéis. Componente nenhum pode depender dessa diferença para
 existir visualmente; quem precisa de corpo próprio veste `--rc-skeleton`, e quem
@@ -381,8 +381,8 @@ sua ou a nossa:
 ```
 
 A prop aceita o nome do seu tema, e não só os dois de casa. Para guardar a
-escolha num seletor, o tipo é `RivoThemeSetting` — os de casa, `system` e o
-nome do cliente, com o autocomplete dos conhecidos preservado:
+escolha num seletor, o tipo é `RivoThemeSetting` (os de casa, `system` e o
+nome do cliente), com o autocomplete dos conhecidos preservado:
 
 ```tsx
 const [tema, setTema] = useState<RivoThemeSetting>("acme")
@@ -396,7 +396,7 @@ alcança essas peças.
 
 O arquivo que você acabou de escrever veste as duas plataformas. **A fonte é
 uma só de propósito**: um segundo lugar para manter a cor de um cliente é como
-a promessa se quebra na prática — não por decisão, por divergência silenciosa
+a promessa se quebra na prática, não por decisão, por divergência silenciosa
 seis meses depois.
 
 **1. Gere o mapa nativo a partir do mesmo CSS:**
@@ -406,7 +406,7 @@ bun run gen:native --tema tema-acme.css --saida acme.theme.ts
 ```
 
 Ele lê os blocos `[data-rc-theme="acme-light"]` e `[data-rc-theme="acme-dark"]`
-— um seletor sozinho serve aos dois esquemas — e emite um `RivoNativeThemeMap`.
+(um seletor sozinho serve aos dois esquemas) e emite um `RivoNativeThemeMap`.
 **Se faltar um papel, ele falha e diz quais**: um tema incompleto herda a cor da
 RivoCode em peças isoladas, e isso só aparece na tela do cliente.
 
@@ -428,8 +428,8 @@ Os dois temas de casa continuam compilados como `light-dark(claro, escuro)`, que
 o runtime de CSS nativo avalia sozinho: trocar entre eles acontece **no mesmo
 frame, sem re-renderização**. Nada disso muda.
 
-O tema de cliente não cabe nesse caminho — os valores dele não existem em build
-— então ele entra pelo `VariableContextProvider`, que redefine as variáveis para
+O tema de cliente não cabe nesse caminho (os valores dele não existem em build),
+então ele entra pelo `VariableContextProvider`, que redefine as variáveis para
 a árvore abaixo. O custo é **uma re-renderização quando o tema ou o esquema
 mudam**, e só é pago por quem veste um cliente.
 
@@ -438,8 +438,8 @@ só a sua árvore, que é o mesmo que o `scope="local"` faz no web.
 
 ### A regra que as peças seguem
 
-Peça que pinta por fora da classe — o trilho do `Switch`, o giro do `Button`, a
-cor da `Sparkline` — lê os papéis do contexto (`useRivo().colors`), e nunca de
+Peça que pinta por fora da classe (o trilho do `Switch`, o giro do `Button`, a
+cor da `Sparkline`) lê os papéis do contexto (`useRivo().colors`), e nunca de
 `tokens.themes`. Lendo o mapa direto ela pegaria sempre o tema de casa, e a tela
 do cliente sairia com metade das cores dele e metade da lima da RivoCode. Há um
 teste que falha se alguém voltar a ler direto.
@@ -470,17 +470,17 @@ porque todas essas falhas são silenciosas:
 erro só apareceria na tela dele.
 
 **Contraste.** Os pares de texto, os pares compostos de estado sobre o próprio
-fundo, e a fronteira não-textual de 1.4.11 — nos dois temas, com o alfa
-composto antes de medir. Um tema novo deve passar pela mesma medida, é a
+fundo, e a fronteira não-textual de 1.4.11 (nos dois temas, com o alfa
+composto antes de medir). Um tema novo deve passar pela mesma medida, é a
 diferença entre "parece bom no meu monitor" e "dá para ler".
 
 **Forma documentada.** Todo token que um tema pode declarar precisa estar
-citado neste guia — os papéis de cor e os de forma. Sem isso o guia passa a
+citado neste guia: os papéis de cor e os de forma. Sem isso o guia passa a
 mentir em silêncio, e a mentira aparece meses depois, na tela de um cliente.
 
 ## Ajuste fino com className
 
-Toda peça — no web e no React Native — aceita `className` na raiz, e **a classe
+Toda peça (no web e no React Native) aceita `className` na raiz, e **a classe
 de quem usa vence a da peça**: o merge é por grupo do Tailwind, então um
 `h-14` derruba o `h-10` do Button e um `rounded-pill` derruba o `rounded-md`,
 em vez de conviver com ele.
@@ -509,5 +509,5 @@ Duas regras mantêm o gesto saudável:
   responde a ninguém.
 - **A raiz, não as partes.** O `className` veste o elemento externo da peça.
   Nas peças com camadas (Sheet, Dialog, Select), a documentação da prop diz o
-  que ela veste — o painel, o gatilho — e o que é da plataforma continua da
+  que ela veste (o painel, o gatilho), e o que é da plataforma continua da
   plataforma.

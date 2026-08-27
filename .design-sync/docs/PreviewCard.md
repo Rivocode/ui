@@ -26,4 +26,4 @@ Nada que só exista aqui e alcancavel por toque, então o cartao nunca pode ser 
 
 ## No React Native
 
-Não porta, por decisão — aparece ao pousar o ponteiro, e não há pousar no toque. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.
+Não porta, por decisão - aparece ao pousar o ponteiro, e não há pousar no toque. Não é fila: não vai existir. A [tabela de paridade](/react-native) diz o porquê de cada uma.

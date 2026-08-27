@@ -11,7 +11,7 @@ que é o item que abre o ramo, e um `MenuContent`, que é o mesmo painel do menu
 de cima.
 
 O lado não precisa ser pedido. A Base UI abre o ramo em `inline-end` quando o
-pai é um menu, e vira para o outro lado sozinha quando não cabe — passar `side`
+pai é um menu, e vira para o outro lado sozinha quando não cabe. Passar `side`
 aqui é para quem tem motivo, não obrigação.
 
 ```tsx
@@ -40,5 +40,5 @@ e recomeça. Passando disso, `Dialog` ou uma tela própria custam menos a quem u
 
 Para o menu que abre no botão direito sobre uma área, o gatilho é outro:
 `ContextMenu`. E para a navegação principal do site, com painéis largos e links,
-é `NavigationMenu` — o submenu daqui é uma lista de ações, e não um mapa de
+é `NavigationMenu`: o submenu daqui é uma lista de ações, e não um mapa de
 seções.

@@ -33,7 +33,7 @@ Buscar e não achar nada também precisa ser dito. A contagem de resultados e a
 mensagem de vazio saem numa região `role="status"` fora da lista: sem ela,
 digitar uma busca sem resultado produz silêncio, com o foco parado no campo e
 nenhuma pista de que a lista esvaziou. O `title` é o nome do campo e o da
-lista, e é ele que o leitor de tela anuncia ao abrir — o `placeholder` some ao
+lista, e é ele que o leitor de tela anuncia ao abrir: o `placeholder` some ao
 digitar e não serve de rótulo.
 
 ## O atalho
@@ -55,4 +55,4 @@ tudo de uma vez, e a paleta vira um passo a mais para chegar no mesmo lugar.
 
 ## No React Native
 
-Não porta. A paleta de comandos é um gesto de mesa — abre por atalho, anda por seta, confirma por Enter — e nenhuma das três coisas existe no toque. No celular a porta equivalente é a tela de busca do router, com o campo no topo e o resultado levando direto para a tela.
+Não porta. A paleta de comandos é um gesto de mesa (abre por atalho, anda por seta, confirma por Enter), e nenhuma das três coisas existe no toque. No celular a porta equivalente é a tela de busca do router, com o campo no topo e o resultado levando direto para a tela.

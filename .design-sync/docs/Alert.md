@@ -16,7 +16,7 @@ leitor.
 ## O ícone tem lugar próprio
 
 **Cor nunca é o único sinal.** Sem ícone, os quatro tons são quatro caixas
-idênticas de forma, separadas só pelo matiz — e quem não distingue vermelho de
+idênticas de forma, separadas só pelo matiz. E quem não distingue vermelho de
 verde é uma fatia grande de qualquer base de usuários, sem contar a impressão em
 preto e branco.
 
@@ -34,7 +34,7 @@ tela. Agora ele é `icon`, com posição garantida antes do texto:
 O par canônico do lucide, o mesmo da tabela de ícones da casa: `Info` para
 `info`, `CheckCircle2` para `success`, `TriangleAlert` para `warning`, `CircleX`
 para `danger`. Ele sai `aria-hidden`: o texto ao lado já diz o que ele desenha,
-e o `role` da raiz já diz a urgência — anunciá-lo de novo seria dizer a mesma
+e o `role` da raiz já diz a urgência. Anunciá-lo de novo seria dizer a mesma
 coisa duas vezes.
 
 ## Que a pessoa dispensa
@@ -58,19 +58,19 @@ const [open, setOpen] = useState(true)
 ```
 
 Sem `onDismiss` não há botão, que continua sendo o padrão: aviso que a pessoa
-pode dispensar é o caso, e não a regra. O que bloqueia uma ação não se dispensa
-— tirá-lo da tela é resolver o que ele aponta.
+pode dispensar é o caso, e não a regra. O que bloqueia uma ação não se dispensa.
+Tirá-lo da tela é resolver o que ele aponta.
 
 ## Quando não usar
 
-Para a confirmação do que acabou de acontecer — nota emitida, arquivo enviado —
+Para a confirmação do que acabou de acontecer (nota emitida, arquivo enviado),
 use `useToast()`. O aviso de toast passa; este fica. Um "salvo com sucesso" que
 mora no fluxo da página ainda está lá quando a pessoa volta dez minutos depois,
 e ela lê aquilo como o estado de agora.
 
 O contrário também vale, e é o erro mais caro dos dois: informação que a pessoa
-precisa **ter na tela enquanto trabalha** — o motivo de um campo estar
-bloqueado, a pendência que impede emitir — não pode ser um toast, porque ele
+precisa **ter na tela enquanto trabalha** (o motivo de um campo estar
+bloqueado, a pendência que impede emitir) não pode ser um toast, porque ele
 some antes de ela chegar na parte em que aquilo importa.
 
 E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
@@ -78,4 +78,4 @@ E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Alert` — `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -55,5 +55,5 @@ nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
 ```
 
 `forValue` devolve o valor com o tipo que o schema deu a ele, então controle
-tipado encaixa sem `as`. Os nomes antigos — `forSelect`, `forCheckbox`,
-`forDatePicker` — continuam valendo e apontam para os mesmos adaptadores.
+tipado encaixa sem `as`. Os nomes antigos (`forSelect`, `forCheckbox`,
+`forDatePicker`) continuam valendo e apontam para os mesmos adaptadores.
