@@ -41,9 +41,9 @@ const GATE = "check";
  */
 const OUT: Record<string, string> = {
   "scripts/regressao-visual.ts":
-    "Compara retrato com assinatura tirada NESTA maquina: precisa dos 28 PNG do `bun run shot` (77s de Chrome, caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run demo && bun run shot && bun run visual` antes de criar a tag.",
+    "Compara retrato com assinatura tirada NESTA maquina: precisa dos PNG do `bun run shot` (Chrome em caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run shot && bun run visual` antes de criar a tag. O que o gate alcanca dela e o `check:retratos`, que cobra a declaracao de cada retrato de secao sem precisar de navegador.",
   "scripts/shot.ts":
-    "Fotografa a vitrine chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
+    "Fotografa a vitrine e as secoes chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
   "scripts/serve.ts":
     "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
   "scripts/build-preset.ts": "Roda no `bun run build`, que a CI dispara logo depois do gate.",
