@@ -106,3 +106,27 @@ test("errorTitle e errorMessage sao o par, e continuam aparecendo juntos", () =>
   expect(screen.getByText("Não foi possível carregar o faturamento")).toBeDefined();
   expect(screen.getByText("A consulta expirou.")).toBeDefined();
 });
+
+/*
+ * O erro vence o carregando, e as quatro pecas tem que concordar nisso.
+ *
+ * O `ChartContainer` ordenava ao contrario - `isLoading ? esqueleto : isError`
+ * -, entao uma consulta que falhou durante um refetch mostrava esqueleto e
+ * escondia a falha: quem olhava via carregamento eterno e nao tinha o botao de
+ * tentar de novo. O `DataTable` sempre ordenou certo, e `DataTable.md` e a
+ * tabela de paridade ja afirmavam que essa era a regra da casa - a peca e que
+ * discordava do texto, calada.
+ */
+test("com erro e carregando juntos, o DataTable mostra o erro e nao o esqueleto", () => {
+  const { container } = table({ isLoading: true, isError: true });
+
+  expect(screen.getByText("Não foi possível carregar")).toBeDefined();
+  expect(container.querySelectorAll(".bg-skeleton")).toHaveLength(0);
+});
+
+test("com erro e carregando juntos, o ChartContainer mostra o erro e nao o esqueleto", () => {
+  const { container } = chart({ isLoading: true, isError: true });
+
+  expect(screen.getByText("Não foi possível carregar o gráfico")).toBeDefined();
+  expect(container.querySelectorAll(".bg-skeleton")).toHaveLength(0);
+});

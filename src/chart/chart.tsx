@@ -135,15 +135,7 @@ export function ChartContainer({
         {announcement}
       </div>
 
-      {isLoading ? (
-        <StateFrame>
-          <div className="flex h-full w-full items-end gap-3 px-2 pb-6">
-            {[0.45, 0.7, 0.35, 0.85, 0.6, 0.75].map((height, index) => (
-              <Skeleton key={index} className="w-full" style={{ height: `${height * 100}%` }} />
-            ))}
-          </div>
-        </StateFrame>
-      ) : isError ? (
+      {isError ? (
         <StateFrame>
           <Alert tone="danger" className="w-full">
             <AlertTitle>{errorTitle}</AlertTitle>
@@ -156,6 +148,14 @@ export function ChartContainer({
               </Button>
             )}
           </Alert>
+        </StateFrame>
+      ) : isLoading ? (
+        <StateFrame>
+          <div className="flex h-full w-full items-end gap-3 px-2 pb-6">
+            {[0.45, 0.7, 0.35, 0.85, 0.6, 0.75].map((height, index) => (
+              <Skeleton key={index} className="w-full" style={{ height: `${height * 100}%` }} />
+            ))}
+          </div>
         </StateFrame>
       ) : empty && points && points.length === 0 ? (
         <StateFrame>

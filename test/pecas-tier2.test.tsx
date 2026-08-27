@@ -63,19 +63,21 @@ test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
  * por regra de tres sobre a largura - sem largura, o ponteiro nao le nada e o
  * teste passaria por engano, com a dica fechada.
  */
-function tracker(count: number) {
-  const view = withTheme(
-    <Tracker
-      label="Emissões por dia"
-      data={Array.from({ length: count }, (_, index) => ({
-        tone: "success" as const,
-        label: `Dia ${index + 1}`,
-      }))}
-    />,
+function tracker(count: number, dir: "ltr" | "rtl" = "ltr") {
+  const view = render(
+    <RivoProvider scope="local" dir={dir}>
+      <Tracker
+        label="Emissões por dia"
+        data={Array.from({ length: count }, (_, index) => ({
+          tone: "success" as const,
+          label: `Dia ${index + 1}`,
+        }))}
+      />
+    </RivoProvider>,
   );
 
   const track = screen.getByRole("group", { name: "Emissões por dia" });
-  track.getBoundingClientRect = () => ({ left: 0, width: 100 }) as DOMRect;
+  track.getBoundingClientRect = () => ({ left: 0, right: 100, width: 100 }) as DOMRect;
 
   return { ...view, track };
 }
@@ -134,6 +136,32 @@ test("a dica segue o foco, e nao so o ponteiro", () => {
   // esta embaixo dela, e quem esta no teclado precisa de um jeito de tira-la.
   fireEvent.keyDown(track, { key: "Escape" });
   expect(screen.queryByRole("tooltip")).toBeNull();
+});
+
+test("em rtl o ponteiro le o periodo que esta embaixo do dedo, e nao o espelhado", () => {
+  const { track } = tracker(10, "rtl");
+
+  fireEvent.pointerMove(track, { clientX: 25 });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 8");
+
+  fireEvent.pointerMove(track, { clientX: 95 });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
+});
+
+test("em rtl a seta anda para o lado que a pessoa ve, e nao para o indice", () => {
+  const { track } = tracker(4, "rtl");
+
+  fireEvent.focus(track);
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 4");
+
+  fireEvent.keyDown(track, { key: "ArrowRight" });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 3");
+
+  fireEvent.keyDown(track, { key: "ArrowLeft" });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 4");
+
+  fireEvent.keyDown(track, { key: "Home" });
+  expect(screen.getByRole("tooltip").textContent).toBe("Dia 1");
 });
 
 test("a faixa sem dado nao abre balao nenhum", () => {

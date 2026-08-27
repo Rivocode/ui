@@ -1,45 +1,18 @@
-/**
- * Caca a regressao visual: compara cada retrato com a assinatura guardada.
- *
- * Dois defeitos desta bancada eram invisiveis para o `tsc` e para teste de
- * unidade, e gritantes numa captura: a barra indeterminada que parecia 100%, e
- * o botao carregando que perdia a variante. Nenhum teste de DOM pega "esta
- * cinza igual ao vizinho".
- *
- * O que se guarda nao e a imagem: sao 24 por 24 medias de cinza por retrato,
- * em JSON, que dao 576 numeros e cabem no diff. Guardar PNG seria oito megas
- * de binario no historico para nunca serem lidos por um humano.
- *
- * Isto nao entra no `bun run check`: a renderizacao de fonte muda entre
- * maquina e sistema, e uma assinatura tirada no macOS nao bate no Linux do CI.
- * E ferramenta de quem esta prestes a publicar, e a regra e olhar o que ela
- * apontar - ela diz onde mudou, e nao se a mudanca esta certa.
- */
 import { Glob } from "bun";
 import { inflateSync } from "node:zlib";
 
 const SHOTS = "demo/dist";
 const SIGNATURES = "demo/assinaturas.json";
 
-/** O lado da grade. 24 pega uma barra que mudou de cor e ignora antialias. */
 const GRID = 24;
 
-/** Quanto um quadrado pode variar sem ser mudanca: 4 de 255 e ruido de fonte. */
 const NOISE = 4;
-
-/* ---------------------------------------------------------------------------
- * PNG
- *
- * O Chrome escreve RGBA de 8 bits sem entrelacamento, e e so isso que este
- * decodificador entende - ele existe para nao trazer uma dependencia de imagem
- * para um repositorio de componentes.
- * ------------------------------------------------------------------------- */
 
 type Image = { width: number; height: number; channels: number; pixels: Uint8Array };
 
 function decodePng(bytes: Uint8Array): Image {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  let at = 8; // assinatura do PNG
+  let at = 8;
 
   let width = 0;
   let height = 0;
@@ -67,7 +40,7 @@ function decodePng(bytes: Uint8Array): Image {
     if (type === "IDAT") data.push(body);
     if (type === "IEND") break;
 
-    at += 12 + length; // tamanho + tipo + corpo + crc
+    at += 12 + length;
   }
 
   const deflated = new Uint8Array(data.reduce((sum, part) => sum + part.length, 0));
@@ -77,15 +50,10 @@ function decodePng(bytes: Uint8Array): Image {
     offset += part.length;
   }
 
-  // O IDAT vem embrulhado em zlib, com cabecalho e adler; o inflateSync do
-  // Bun espera deflate cru e reclama de "invalid stored block lengths".
   const raw = inflateSync(deflated);
   const stride = width * channels;
   const pixels = new Uint8Array(width * height * channels);
 
-  // Cada linha carrega um byte de filtro na frente, e o filtro olha para o
-  // pixel da esquerda e para o de cima ja reconstruidos - por isso a
-  // reconstrucao e sequencial e nao da para paralelizar por linha.
   for (let y = 0; y < height; y++) {
     const filter = raw[y * (stride + 1)]!;
     const from = y * (stride + 1) + 1;
@@ -116,7 +84,6 @@ function decodePng(bytes: Uint8Array): Image {
   return { width, height, channels, pixels };
 }
 
-/** A media de cinza de cada quadrado da grade, de 0 a 255. */
 function signatureOf({ width, height, channels, pixels }: Image): number[] {
   const cells: number[] = [];
 
@@ -129,8 +96,6 @@ function signatureOf({ width, height, channels, pixels }: Image): number[] {
 
       let sum = 0;
       let count = 0;
-      // Um pixel a cada dois em cada eixo: a media nao muda e a leitura de um
-      // retrato de 2480 por 4000 cai para um quarto do trabalho.
       for (let y = fromY; y < toY; y += 2) {
         for (let x = fromX; x < toX; x += 2) {
           const at = (y * width + x) * channels;

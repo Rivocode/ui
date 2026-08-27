@@ -1,5 +1,6 @@
 "use client";
 
+import { useDirection } from "@base-ui/react/direction-provider";
 import {
   useState,
   type ComponentProps,
@@ -40,6 +41,7 @@ export function Tracker({ data, label, className, classNames, ...props }: Tracke
   const [focused, setFocused] = useState<number | null>(null);
   const [dismissed, setDismissed] = useState<number | null>(null);
 
+  const rtl = useDirection() === "rtl";
   const last = data.length - 1;
   const clamp = (index: number) => Math.min(Math.max(index, 0), last);
   const step = data.length > 0 ? 100 / data.length : 0;
@@ -54,7 +56,8 @@ export function Tracker({ data, label, className, classNames, ...props }: Tracke
     const box = event.currentTarget.getBoundingClientRect();
     if (box.width <= 0 || data.length === 0) return;
 
-    setHovered(clamp(Math.floor(((event.clientX - box.left) / box.width) * data.length)));
+    const offset = rtl ? box.right - event.clientX : event.clientX - box.left;
+    setHovered(clamp(Math.floor((offset / box.width) * data.length)));
   }
 
   function walk(event: KeyboardEvent<HTMLDivElement>) {
@@ -66,10 +69,12 @@ export function Tracker({ data, label, className, classNames, ...props }: Tracke
     }
 
     const from = focused ?? last;
+    const ahead = rtl ? "ArrowLeft" : "ArrowRight";
+    const back = rtl ? "ArrowRight" : "ArrowLeft";
     const next =
-      event.key === "ArrowRight"
+      event.key === ahead
         ? from + 1
-        : event.key === "ArrowLeft"
+        : event.key === back
           ? from - 1
           : event.key === "Home"
             ? 0
@@ -133,7 +138,7 @@ export function Tracker({ data, label, className, classNames, ...props }: Tracke
               <div
                 aria-hidden="true"
                 data-rc-track-cursor=""
-                style={{ left: `${(shown + 0.5) * step}%` }}
+                style={{ insetInlineStart: `${(shown + 0.5) * step}%` }}
                 className={cn(
                   "pointer-events-none absolute -inset-y-1 w-0.5 -translate-x-1/2",
                   "rounded-pill bg-fg",
