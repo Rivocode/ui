@@ -12,8 +12,28 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Tag ja existente para publicar, como v0.4.0"
-        required: true
+        # Deixou de ser obrigatoria por causa do ensaio: um ensaio quer rodar o
+        # que esta na main agora, e nao o que uma tag congelou. Para publicar de
+        # verdade ela continua exigida - a conferencia esta no passo "Conferir
+        # se a tag bate com a versao", e nao aqui, porque o formulario nao sabe
+        # condicionar um campo ao outro.
+        description: "Tag ja existente para publicar, como v0.9.0. Vazio so em ensaio."
+        required: false
+      ensaio:
+        # O lado nativo ganhou ensaio depois de quatro execucoes e quatro
+        # falhas, todas no ultimo passo. Este workflow nunca teve, e estava
+        # exposto ao mesmo laco: a unica forma de descobrir se o caminho
+        # funciona era criar uma tag de versao nova - queimar um numero para
+        # fazer um teste.
+        #
+        # Tudo roda igual, na mesma ordem, com os mesmos segredos e o mesmo
+        # `--dry-run` que a estreia ja fazia. So o `npm publish` real fica de
+        # fora, e as duas guardas que existem para proteger um numero de versao
+        # passam a relatar em vez de parar, porque em ensaio nao ha numero a
+        # proteger.
+        description: "Ensaio: roda o caminho inteiro e NAO publica"
+        type: boolean
+        default: false
 
 jobs:
   publish:
@@ -104,9 +124,32 @@ jobs:
           echo "Token OIDC presente: a publicacao sai assinada."
 
       - name: Conferir se a tag bate com a versao
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+          ENSAIO: ${{ inputs.ensaio }}
         run: |
-          tag="${{ github.event.inputs.tag || github.ref_name }}"
           pkg="v$(node -p "require('./package.json').version")"
+
+          if [ "$ENSAIO" = "true" ]; then
+            if [ -n "$TAG" ] && [ "$TAG" != "$pkg" ]; then
+              echo "Aviso: a tag $TAG nao bate com o package.json ($pkg)."
+              echo "Numa publicacao de verdade isto pararia aqui."
+            else
+              echo "Ensaio sobre $pkg."
+            fi
+            exit 0
+          fi
+
+          # Fora do ensaio a tag e obrigatoria, e o formulario nao consegue
+          # exigi-la so quando `ensaio` esta desmarcado. Sem esta linha, um
+          # disparo distraido publicaria o que estivesse na main.
+          if [ -z "$TAG" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Publicacao de verdade exige a tag no formulario."
+            echo "Para so exercitar o caminho, marque a caixa \"Ensaio\"."
+            exit 1
+          fi
+
+          tag="${TAG:-${{ github.ref_name }}}"
           if [ "$tag" != "$pkg" ]; then
             echo "A tag $tag nao bate com a versao do package.json ($pkg)."
             exit 1
@@ -130,6 +173,7 @@ jobs:
         # de autenticacao em vez de falar da versao.
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ENSAIO: ${{ inputs.ensaio }}
         run: |
           versao=$(node -p "require('./package.json').version")
 
@@ -138,6 +182,19 @@ jobs:
           # aqui: pode publicar. Por isso o erro vira string vazia em vez de
           # parar o passo.
           publicada=$(npm view "@rivocode/ui@$versao" version 2>/dev/null || true)
+
+          # Em ensaio, esta guarda vira o contrario de si mesma.
+          #
+          # Ela existe para nao gastar a corrida inteira quando o numero ja foi
+          # usado. O ensaio quer justamente gastar a corrida inteira, e a versao
+          # que ele tem a mao e quase sempre uma ja publicada. Parar aqui
+          # devolveria o problema: para exercitar o caminho seria preciso um
+          # numero novo, que e a versao que o ensaio existe para nao queimar.
+          if [ -n "$publicada" ] && [ "$ENSAIO" = "true" ]; then
+            echo "A versao $versao ja esta no registro."
+            echo "Num lancamento de verdade isto pararia aqui; em ensaio, segue."
+            exit 0
+          fi
 
           if [ -n "$publicada" ]; then
             echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
@@ -206,6 +263,21 @@ jobs:
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
       # tempo repetindo o que acabou de ser feito.
       - name: Publicar
+        if: ${{ inputs.ensaio != true }}
         run: npm publish --access public --ignore-scripts --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dizer que foi ensaio
+        if: ${{ inputs.ensaio == true }}
+        # Pelo mesmo motivo do passo que consulta a versao: o .npmrc escrito
+        # pelo setup-node espera esta variavel, e sem ela o `npm view` reclama
+        # de autenticacao em vez de responder o que se perguntou.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          versao=$(node -p "require('./package.json').version")
+          echo "Ensaio concluido. Nada foi publicado."
+          echo "O caminho inteiro rodou sobre a versao $versao do package.json."
+          echo "No registro hoje: latest $(npm view @rivocode/ui version 2>/dev/null || echo '?')."
+
