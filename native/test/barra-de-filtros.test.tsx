@@ -23,6 +23,33 @@ function clearButton(screen: ReactTestRenderer): ReactTestInstance | undefined {
   return byRole(screen, "button").find((node) => textOf2(node).startsWith("Limpar"));
 }
 
+function edges(screen: ReactTestRenderer): string[] {
+  return byClass(screen, /\bw-px\b/).map((node) =>
+    String(node.props.className).includes("left-0") ? "esquerda" : "direita",
+  );
+}
+
+function settle(screen: ReactTestRenderer, frame: number, content: number): void {
+  const [scroller] = byType(screen, "ScrollView");
+  act(() => {
+    scroller!.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: frame, height: 44 } } });
+    scroller!.props.onContentSizeChange(content, 44);
+  });
+}
+
+function scrollTo(screen: ReactTestRenderer, offset: number, frame: number, content: number): void {
+  const [scroller] = byType(screen, "ScrollView");
+  act(() =>
+    scroller!.props.onScroll({
+      nativeEvent: {
+        contentOffset: { x: offset, y: 0 },
+        contentSize: { width: content, height: 44 },
+        layoutMeasurement: { width: frame, height: 44 },
+      },
+    }),
+  );
+}
+
 function textOf2(node: ReactTestInstance): string {
   const found = node.findAll((child) => typeof child.type === "string" && child.type === "Text");
   return found.map((child) => String(child.props.children ?? "")).join(" ");
@@ -258,6 +285,45 @@ describe("FilterBar", () => {
 
     expect(live.props.className).toContain("absolute");
     expect(live.props.children).toBe("");
+  });
+
+  test("tudo cabendo, nenhuma borda aparece", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    settle(screen, 390, 300);
+
+    expect(edges(screen)).toEqual([]);
+  });
+
+  test("com ficha escondida à direita, a borda avisa desse lado antes de qualquer toque", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    settle(screen, 390, 1429);
+
+    expect(edges(screen)).toEqual(["direita"]);
+  });
+
+  test("no meio da rolagem há filtro escondido dos dois lados, e as duas bordas dizem isso", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    scrollTo(screen, 400, 390, 1429);
+
+    expect(edges(screen).sort()).toEqual(["direita", "esquerda"]);
+  });
+
+  test("no fim da rolagem só a borda de trás fica, porque à frente não sobrou nada", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    scrollTo(screen, 1039, 390, 1429);
+
+    expect(edges(screen)).toEqual(["esquerda"]);
+  });
+
+  test("a borda não custa largura da fileira nem come o arrasto que começa nela", () => {
+    const screen = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+    settle(screen, 390, 1429);
+    const [rule] = byClass(screen, /\bw-px\b/);
+
+    expect(rule!.props.pointerEvents).toBe("none");
+    expect(rule!.props.className).toContain("absolute");
+    expect(rule!.props.className).toContain("bg-border-strong");
+    expect(String(rule!.props.className)).not.toMatch(/#[0-9a-f]{3,6}|rgba?\(/i);
   });
 
   test("o disabled trava o xis e o limpar de uma vez", () => {

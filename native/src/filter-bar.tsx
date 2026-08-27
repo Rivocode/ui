@@ -1,4 +1,12 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { useRef, useState } from "react";
+import {
+  Pressable,
+  ScrollView,
+  View,
+  type LayoutChangeEvent,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+} from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
@@ -9,6 +17,7 @@ type ChipSize = "sm" | "md";
 const PILL: Record<ChipSize, string> = { sm: "top-2.5 bottom-2.5", md: "top-2 bottom-2" };
 const PAD: Record<ChipSize, string> = { sm: "px-2", md: "px-2.5" };
 const FONT: Record<ChipSize, string> = { sm: "text-xs", md: "text-sm" };
+const EDGE = "absolute top-0 bottom-0 w-px bg-border-strong";
 
 function describe(label: string, value?: string): string {
   return value === undefined || value === "" ? label : `${label}: ${value}`;
@@ -175,6 +184,39 @@ export function FilterBar({
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
   const empty = labels.empty ?? applied(0);
 
+  const frame = useRef(0);
+  const content = useRef(0);
+  const offset = useRef(0);
+  const [more, setMore] = useState({ before: false, after: false });
+
+  const measure = () => {
+    const hidden = content.current - frame.current;
+    const next = { before: offset.current > 1, after: hidden - offset.current > 1 };
+
+    setMore((current) =>
+      current.before === next.before && current.after === next.after ? current : next,
+    );
+  };
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    frame.current = event.nativeEvent.layout.width;
+    measure();
+  };
+
+  const onContentSizeChange = (width: number) => {
+    content.current = width;
+    measure();
+  };
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+
+    offset.current = contentOffset.x;
+    content.current = contentSize.width;
+    frame.current = layoutMeasurement.width;
+    measure();
+  };
+
   const canRemove = Boolean(onRemove ?? onFiltersChange);
   const canClear = Boolean(onClear ?? onFiltersChange);
   const line = total === 0 && reserve;
@@ -184,34 +226,42 @@ export function FilterBar({
       className={cn("w-full flex-row items-center", (total > 0 || reserve) && "h-11", className)}
     >
       {total > 0 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          accessibilityRole="list"
-          accessibilityLabel={label}
-          className="flex-1"
-          contentContainerClassName="flex-row items-center gap-2"
-        >
-          {filters.map((filter) => (
-            <FilterChip
-              key={filter.id}
-              label={filter.label}
-              value={filter.value}
-              size={size}
-              disabled={disabled}
-              labels={labels}
-              onRemove={
-                filter.removable === false || !canRemove
-                  ? undefined
-                  : () => {
-                      onRemove?.(filter);
-                      onFiltersChange?.(filters.filter((other) => other.id !== filter.id));
-                    }
-              }
-            />
-          ))}
-        </ScrollView>
+        <View className="flex-1 self-stretch">
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            accessibilityRole="list"
+            accessibilityLabel={label}
+            scrollEventThrottle={16}
+            onLayout={onLayout}
+            onContentSizeChange={onContentSizeChange}
+            onScroll={onScroll}
+            contentContainerClassName="flex-row items-center gap-2"
+          >
+            {filters.map((filter) => (
+              <FilterChip
+                key={filter.id}
+                label={filter.label}
+                value={filter.value}
+                size={size}
+                disabled={disabled}
+                labels={labels}
+                onRemove={
+                  filter.removable === false || !canRemove
+                    ? undefined
+                    : () => {
+                        onRemove?.(filter);
+                        onFiltersChange?.(filters.filter((other) => other.id !== filter.id));
+                      }
+                }
+              />
+            ))}
+          </ScrollView>
+
+          {more.before && <View pointerEvents="none" className={cn(EDGE, "left-0")} />}
+          {more.after && <View pointerEvents="none" className={cn(EDGE, "right-0")} />}
+        </View>
       )}
 
       <Text

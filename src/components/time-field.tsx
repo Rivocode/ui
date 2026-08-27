@@ -1,11 +1,35 @@
 "use client";
 
-import { useState, type ComponentProps, type KeyboardEvent } from "react";
+import { Minus, Plus } from "lucide-react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type ComponentProps,
+  type KeyboardEvent,
+} from "react";
 
 import { cn } from "../lib/cn";
+import { useMobile } from "../lib/screen";
 import { Input } from "./field";
 
 const DAY = 24 * 60;
+
+export const TouchStepElsewhere = createContext(false);
+
+const HEIGHT = {
+  sm: "h-[var(--rc-control-sm)]",
+  md: "h-[var(--rc-control-md)]",
+  lg: "h-[var(--rc-control-lg)]",
+} as const;
+
+const STEP = cn(
+  "flex w-11 shrink-0 items-center justify-center text-fg-muted",
+  "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
+  "hover:bg-accent-subtle hover:text-fg",
+  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:-outline-offset-2",
+  "disabled:cursor-not-allowed disabled:text-fg-disabled disabled:hover:bg-transparent",
+);
 
 export function applyTimeMask(text: string): string {
   const digits = text.replace(/\D/g, "").slice(0, 4);
@@ -64,9 +88,9 @@ export type TimeFieldProps = Omit<
   defaultValue?: string;
   /** Chamado so com hora inteira: `"08:30"`, ou `""` quando o campo esvazia. Texto pela metade nao avisa ninguem. */
   onValueChange?: (value: string) => void;
-  /** Tamanho do campo, o mesmo vocabulario do Input. */
+  /** Tamanho do campo, o mesmo vocabulario do Input. No celular o campo nunca fica abaixo de 44px, que e o alvo do dedo. */
   size?: "sm" | "md" | "lg";
-  /** Quantos minutos as setas para cima e para baixo andam, pousando na grade. Nao recusa hora digitada fora dela. */
+  /** Quantos minutos o passo anda, pousando na grade. Anda pelas setas no teclado e pelos botoes de mais e de menos no celular. Nao recusa hora digitada fora dela. */
   step?: number;
   /** Primeira hora da janela, em `"HH:MM"`. Antes dela o campo se marca invalido. */
   min?: string;
@@ -80,7 +104,7 @@ export function TimeField({
   value,
   defaultValue,
   onValueChange,
-  size,
+  size = "md",
   step = 15,
   min,
   max,
@@ -90,6 +114,7 @@ export function TimeField({
   name,
   onBlur,
   onKeyDown,
+  "aria-label": ariaLabel,
   "aria-invalid": invalidProp,
   ...props
 }: TimeFieldProps) {
@@ -99,6 +124,10 @@ export function TimeField({
 
   const [text, setText] = useState(current);
   const [typing, setTyping] = useState(false);
+
+  const isMobile = useMobile();
+  const elsewhere = useContext(TouchStepElsewhere);
+  const steppers = isMobile && !elsewhere;
 
   const bounds = timeWindow(min, max);
   const chosen = parseTime(current);
@@ -114,49 +143,111 @@ export function TimeField({
     onValueChange?.(next);
   }
 
+  function move(direction: 1 | -1) {
+    setTyping(false);
+    commit(formatTime(stepTime(parseTime(shown), direction, step, bounds)));
+  }
+
   function walk(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
 
     event.preventDefault();
-    const from = parseTime(shown);
-    const next = stepTime(from, event.key === "ArrowUp" ? 1 : -1, step, bounds);
-    setTyping(false);
-    commit(formatTime(next));
+    move(event.key === "ArrowUp" ? 1 : -1);
+  }
+
+  const control = (
+    <Input
+      {...props}
+      size={size}
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      disabled={disabled}
+      placeholder={placeholder}
+      value={shown}
+      aria-label={ariaLabel}
+      aria-invalid={invalid}
+      onChange={(event) => {
+        const masked = applyTimeMask(event.target.value);
+        setText(masked);
+        setTyping(true);
+
+        const minutes = parseTime(masked);
+        if (minutes !== undefined) commit(formatTime(minutes));
+        else if (masked === "") commit("");
+      }}
+      onBlur={(event) => {
+        setTyping(false);
+        onBlur?.(event);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (!event.defaultPrevented) walk(event);
+      }}
+      className={cn(
+        "tabular-nums aria-[invalid=true]:border-danger",
+        steppers && [
+          "h-full min-w-0 flex-1 rounded-none border-0 text-center",
+          "focus-visible:ring-0 focus-visible:ring-offset-0",
+          "aria-[invalid=true]:border-0",
+        ],
+        !steppers && className,
+      )}
+    />
+  );
+
+  const stepper = (direction: 1 | -1) => (
+    <button
+      type="button"
+      disabled={disabled}
+      aria-label={
+        direction === 1
+          ? `Aumentar${ariaLabel ? ` ${ariaLabel}` : ""}`
+          : `Diminuir${ariaLabel ? ` ${ariaLabel}` : ""}`
+      }
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={() => move(direction)}
+      className={cn(STEP, direction === 1 ? "border-l border-border" : "border-r border-border")}
+    >
+      {direction === 1 ? (
+        <Plus size={16} aria-hidden="true" />
+      ) : (
+        <Minus size={16} aria-hidden="true" />
+      )}
+    </button>
+  );
+
+  const hidden = name ? <input type="hidden" name={name} value={formatTime(chosen)} /> : null;
+
+  if (!steppers) {
+    return (
+      <>
+        {control}
+        {hidden}
+      </>
+    );
   }
 
   return (
     <>
-      <Input
-        {...props}
-        size={size}
-        type="text"
-        inputMode="numeric"
-        autoComplete="off"
-        disabled={disabled}
-        placeholder={placeholder}
-        value={shown}
-        aria-invalid={invalid}
-        onChange={(event) => {
-          const masked = applyTimeMask(event.target.value);
-          setText(masked);
-          setTyping(true);
+      <div
+        className={cn(
+          "flex w-full items-stretch overflow-hidden rounded-md border bg-surface",
+          HEIGHT[size],
+          "min-h-11",
+          "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+          "focus-within:ring-offset-bg",
+          invalid ? "border-danger" : "border-border-strong",
+          disabled && "cursor-not-allowed",
+          className,
+        )}
+      >
+        {stepper(-1)}
+        {control}
+        {stepper(1)}
+      </div>
 
-          const minutes = parseTime(masked);
-          if (minutes !== undefined) commit(formatTime(minutes));
-          else if (masked === "") commit("");
-        }}
-        onBlur={(event) => {
-          setTyping(false);
-          onBlur?.(event);
-        }}
-        onKeyDown={(event) => {
-          onKeyDown?.(event);
-          if (!event.defaultPrevented) walk(event);
-        }}
-        className={cn("tabular-nums aria-[invalid=true]:border-danger", className)}
-      />
-
-      {name && <input type="hidden" name={name} value={formatTime(chosen)} />}
+      {hidden}
     </>
   );
 }

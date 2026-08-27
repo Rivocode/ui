@@ -373,3 +373,160 @@ test("escolher a hora do fim da janela nao passa do maximo", () => {
 
   expect(recebida).toBe("10:00");
 });
+
+function onPhone(body: () => void) {
+  const original = window.matchMedia;
+  window.matchMedia = ((query: string) =>
+    ({
+      matches: query.includes("max-width"),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+
+  try {
+    body();
+  } finally {
+    window.matchMedia = original;
+  }
+}
+
+function stepper(name: string) {
+  return screen.getByRole("button", { name });
+}
+
+test("na tela estreita o campo ganha os dois botoes de passo, que a seta nao alcanca no dedo", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
+
+    fireEvent.click(stepper("Aumentar Entrada"));
+
+    expect(field().value).toBe("14:15");
+  });
+});
+
+test("o botao de menos pousa na grade do passo, e nao subtrai o passo cru", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
+
+    fireEvent.click(stepper("Diminuir Entrada"));
+
+    expect(field().value).toBe("14:00");
+  });
+});
+
+test("o botao anda exatamente onde a seta andaria", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" defaultValue="09:20" step={30} />);
+    fireEvent.click(stepper("Aumentar Entrada"));
+    const pelosBotoes = field().value;
+
+    withTheme(<TimeField aria-label="Saída" defaultValue="09:20" step={30} />);
+    const segundo = screen.getAllByPlaceholderText("hh:mm")[1] as HTMLInputElement;
+    fireEvent.keyDown(segundo, { key: "ArrowUp" });
+
+    expect(segundo.value).toBe(pelosBotoes);
+  });
+});
+
+test("o botao de passo respeita a janela, como a seta respeita", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" defaultValue="08:10" step={15} min="08:00" />);
+
+    fireEvent.click(stepper("Diminuir Entrada"));
+
+    expect(field().value).toBe("08:00");
+  });
+});
+
+test("com o campo vazio, o botao de mais comeca na abertura da janela", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" min="09:30" max="18:00" />);
+
+    fireEvent.click(stepper("Aumentar Entrada"));
+
+    expect(field().value).toBe("09:30");
+  });
+});
+
+test("os botoes carregam o nome do campo, para dois horarios na tela nao virarem dois Aumentar", () => {
+  onPhone(() => {
+    withTheme(
+      <>
+        <TimeField aria-label="Entrada" defaultValue="08:00" />
+        <TimeField aria-label="Saída" defaultValue="17:00" />
+      </>,
+    );
+
+    fireEvent.click(stepper("Aumentar Saída"));
+
+    expect(screen.getAllByPlaceholderText("hh:mm")[0]).toHaveProperty("value", "08:00");
+    expect(screen.getAllByPlaceholderText("hh:mm")[1]).toHaveProperty("value", "17:15");
+  });
+});
+
+test("o botao de passo tem largura de dedo, e a moldura nunca encolhe abaixo do alvo", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" size="sm" defaultValue="08:00" />);
+
+    const menos = stepper("Diminuir Entrada");
+    expect(menos.className).toContain("w-11");
+    expect(menos.parentElement?.className).toContain("min-h-11");
+  });
+});
+
+test("o campo desabilitado nao anda pelos botoes", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" defaultValue="08:00" disabled />);
+
+    const mais = stepper("Aumentar Entrada") as HTMLButtonElement;
+    expect(mais.disabled).toBe(true);
+
+    fireEvent.click(mais);
+    expect(field().value).toBe("08:00");
+  });
+});
+
+test("digitar continua governando o valor com os botoes na tela", () => {
+  onPhone(() => {
+    let recebida = "";
+    withTheme(
+      <TimeField aria-label="Entrada" onValueChange={(hora) => (recebida = hora)} name="entrada" />,
+    );
+
+    fireEvent.change(field(), { target: { value: "2599" } });
+    expect(recebida).toBe("");
+    expect(field().getAttribute("aria-invalid")).toBe("true");
+
+    fireEvent.change(field(), { target: { value: "0830" } });
+    expect(recebida).toBe("08:30");
+  });
+});
+
+test("a hora impossivel pinta a moldura inteira, e nao um campo sem borda dentro dela", () => {
+  onPhone(() => {
+    withTheme(<TimeField aria-label="Entrada" value="25:99" />);
+
+    expect(stepper("Diminuir Entrada").parentElement?.className).toContain("border-danger");
+  });
+});
+
+test("na mesa o campo continua sem botao, e a seta continua sendo o caminho", () => {
+  withTheme(<TimeField aria-label="Entrada" defaultValue="14:07" step={15} />);
+
+  expect(screen.queryByRole("button", { name: "Aumentar Entrada" })).toBeNull();
+
+  fireEvent.keyDown(field(), { key: "ArrowUp" });
+  expect(field().value).toBe("14:15");
+});
+
+test("dentro do seletor o campo nao ganha botoes: o painel ja e a porta do passo no dedo", () => {
+  onPhone(() => {
+    withTheme(<TimePicker aria-label="Entrega" defaultValue="14:30" />);
+
+    expect(screen.queryByRole("button", { name: /Aumentar/ })).toBeNull();
+
+    open();
+    expect(screen.getByRole("listbox", { name: "Minuto" })).toBeDefined();
+  });
+});

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ComponentProps, type KeyboardEvent } 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
 import { CalendarPanel } from "./calendar-panel";
-import { TimeField, formatTime, parseTime, timeWindow } from "./time-field";
+import { TimeField, TouchStepElsewhere, formatTime, parseTime, timeWindow } from "./time-field";
 
 type ColumnProps = {
   label: string;
@@ -192,16 +192,18 @@ export function TimePicker({
 
   return (
     <div className={cn("relative", className)}>
-      <TimeField
-        {...props}
-        value={current}
-        onValueChange={commit}
-        step={step}
-        min={min}
-        max={max}
-        disabled={disabled}
-        className={cn("pr-10", classNames?.field)}
-      />
+      <TouchStepElsewhere.Provider value={true}>
+        <TimeField
+          {...props}
+          value={current}
+          onValueChange={commit}
+          step={step}
+          min={min}
+          max={max}
+          disabled={disabled}
+          className={cn("pr-10", classNames?.field)}
+        />
+      </TouchStepElsewhere.Provider>
 
       <CalendarPanel
         open={isOpen}
