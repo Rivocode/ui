@@ -40,6 +40,19 @@ aparecem na mesma lista de formulário. E é menor do que o que separa uma opç�
 da seguinte, senão o rótulo ficaria mais perto da opção de baixo do que do
 próprio círculo.
 
+## O círculo marcado
+
+O círculo marcado pinta `accent-text`, e não `accent`, com o ponto em
+`surface-raised`. É a mesma troca da caixa do `Checkbox` e do trilho do
+`Switch`: com a lima cheia o preenchimento media 1,21:1 sobre a página no tema
+claro e 1,26:1 sobre o cartão, contra os 3:1 da WCAG 1.4.11. O ponto era
+grafite e se lia, então o que sumia era a **fronteira do círculo** - a pessoa
+via um ponto solto, e não uma opção escolhida.
+
+Com `accent-text` a fronteira mede 5,55:1 sobre a página e 5,75:1 sobre o
+cartão, e o ponto mede 5,75:1 dentro do preenchimento. No tema escuro os dois
+papéis apontam para o mesmo valor, então lá o círculo não mudou de cor.
+
 ## Desabilitado
 
 Desabilitado se pinta com token, e não com opacidade: o fundo passa a

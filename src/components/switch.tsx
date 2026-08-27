@@ -35,7 +35,7 @@ export function Switch({ className, children, labelClassName, classNames, ...pro
         "transition-colors duration-[var(--rc-duration-base)] ease-rc",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "data-[checked]:not-data-disabled:border-accent data-[checked]:not-data-disabled:bg-accent",
+        "data-[checked]:not-data-disabled:border-accent-text data-[checked]:not-data-disabled:bg-accent-text",
         "data-[disabled]:cursor-not-allowed data-[disabled]:border-border-disabled",
         "data-[invalid]:border-danger",
         "before:absolute before:-inset-y-2.5 before:inset-x-0 before:content-['']",
@@ -47,7 +47,7 @@ export function Switch({ className, children, labelClassName, classNames, ...pro
           "size-4 rounded-pill bg-fg-muted",
           "transition-[transform,background-color] duration-[var(--rc-duration-base)] ease-rc",
           "data-[checked]:translate-x-5",
-          "data-[checked]:not-data-disabled:bg-accent-fg",
+          "data-[checked]:not-data-disabled:bg-surface-raised",
           "data-[disabled]:bg-fg-disabled",
           classNames?.thumb,
         )}

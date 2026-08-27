@@ -55,10 +55,10 @@ export function RadioGroup({
           >
             <View
               className={`mt-0.5 size-5 items-center justify-center rounded-pill border ${
-                active ? "border-accent" : "border-border-strong"
+                active ? "border-accent-text" : "border-border-strong"
               }`}
             >
-              {active && <View className="size-2.5 rounded-pill bg-accent" />}
+              {active && <View className="size-2.5 rounded-pill bg-accent-text" />}
             </View>
             <View className="min-w-0 flex-1">
               <Text className="text-base text-fg">{item.label}</Text>

@@ -316,8 +316,10 @@ test("o acento so pinta o controle vivo, sem depender da ordem das classes", () 
   );
 
   const box = container.ownerDocument.querySelector('[role="checkbox"]')!;
-  expect(box.className).toContain("data-[indeterminate]:not-data-disabled:bg-accent");
-  expect(box.className).not.toContain("data-[indeterminate]:bg-accent ");
+  const classes = box.className.split(" ");
+  expect(classes).toContain("data-[indeterminate]:not-data-disabled:bg-accent-text");
+  expect(classes).not.toContain("data-[indeterminate]:bg-accent-text");
+  expect(classes).not.toContain("data-[indeterminate]:not-data-disabled:bg-accent");
 });
 
 /* --- 5. as irmas dos finais de uma consulta ------------------------------

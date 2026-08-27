@@ -4,6 +4,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { Switch } from "../src/components/switch";
 import { Radio, RadioGroup } from "../src/components/radio";
+import { Slider } from "../src/components/slider";
 import { Separator } from "../src/components/separator";
 import { Avatar } from "../src/components/avatar";
 import { Progress } from "../src/components/progress";
@@ -34,6 +35,10 @@ test("a chave liga e desliga, e conta o estado", () => {
   expect(key.getAttribute("aria-checked")).toBe("false");
   fireEvent.click(key);
   expect(key.getAttribute("aria-checked")).toBe("true");
+
+  const classes = key.className.split(" ");
+  expect(classes).toContain("data-[checked]:not-data-disabled:bg-accent-text");
+  expect(classes).not.toContain("data-[checked]:not-data-disabled:bg-accent");
 });
 
 test("a chave marca invalido junto com o Field", () => {
@@ -63,6 +68,36 @@ test("o grupo de radio deixa so um marcado", () => {
   fireEvent.click(options[1]!);
   expect(options[0]!.getAttribute("aria-checked")).toBe("false");
   expect(options[1]!.getAttribute("aria-checked")).toBe("true");
+
+  // O mesmo acento do trilho da chave, e pelo mesmo motivo: a lima cheia
+  // media 1,21:1 sobre a pagina no tema claro e o circulo marcado nao tinha
+  // fronteira, so o ponto solto no meio.
+  const circle = options[1]!.className.split(" ");
+  expect(circle).toContain("data-[checked]:not-data-disabled:bg-accent-text");
+  expect(circle).not.toContain("data-[checked]:not-data-disabled:bg-accent");
+  const dot = options[1]!.querySelector("span")!.className.split(" ");
+  expect(dot).toContain("bg-surface-raised");
+  expect(dot).not.toContain("bg-accent-fg");
+});
+
+test("o pino e o preenchimento da faixa vestem o acento escuro, e o miolo se le dentro dele", () => {
+  const { container } = withTheme(
+    <Slider
+      defaultValue={30}
+      thumbLabel="Desconto"
+      classNames={{ indicator: "ind-faixa", thumb: "pino-faixa" }}
+    />,
+  );
+
+  const fill = container.querySelector(".ind-faixa")!.className.split(" ");
+  expect(fill).toContain("bg-accent-text");
+  expect(fill).not.toContain("bg-accent");
+
+  const thumb = container.querySelector(".pino-faixa")!.className.split(" ");
+  expect(thumb).toContain("border-accent-text");
+  expect(thumb).toContain("bg-surface-raised");
+  expect(thumb).not.toContain("border-accent");
+  expect(thumb).not.toContain("bg-surface");
 });
 
 test("a linha que separa se anuncia como separador", () => {

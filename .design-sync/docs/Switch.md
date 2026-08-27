@@ -21,6 +21,25 @@ texto também liga:
 Sem filho, sai só a chave. Vale para linha de ajuste onde o texto tem descrição
 embaixo e a chave fica na ponta direita.
 
+## O trilho ligado
+
+O trilho ligado pinta `accent-text`, e não `accent`: é a mesma lima um passo
+mais escura, e a troca é de contraste. Com a lima cheia o trilho media 1,21:1
+sobre a página no tema claro, contra 3,33:1 do trilho **desligado** - o estado
+ligado ficava menos visível que o desligado, e abaixo dos 3:1 que a WCAG 1.4.11
+pede para controle que não carrega texto. Com `accent-text` ele mede 5,55:1
+sobre a página e 5,75:1 sobre o cartão.
+
+Não havia lima clara que resolvesse: o passo mais escuro antes do `accent-text`
+é o `accent-active`, e ele para em 1,54:1 sobre branco. No tema escuro os dois
+papéis apontam para o mesmo valor, então lá o trilho não mudou um pixel. O pino
+ligado acompanha em `surface-raised`, e é o que se lê dentro do trilho, a
+5,75:1 no claro e 13,91:1 no escuro.
+
+Quem escreve tema de cliente herda a garantia sem fazer nada: `accent-text` já
+precisa de 4,5:1 sobre os fundos para o texto de acento, e é a mesma medida que
+o trilho usa.
+
 ## Desabilitado
 
 Desabilitado se pinta com token, e não com opacidade, como no `Checkbox` e no

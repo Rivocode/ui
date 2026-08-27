@@ -76,7 +76,7 @@ test("a faixa deixa vestir trilha, indicador e pino", () => {
   );
 
   wears(container, "trilha-z", "bg-skeleton");
-  wears(container, "ind-z", "bg-accent");
+  wears(container, "ind-z", "bg-accent-text");
   wears(container, "pino-z", "rounded-pill");
 });
 

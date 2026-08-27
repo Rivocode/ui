@@ -25,6 +25,32 @@ quando o rótulo tiver estrutura própria: um título com descrição embaixo, u
 link no meio da frase. Nesse caso, o `<label>` em volta é seu, e é ele que faz
 o clique no texto valer.
 
+## A caixa marcada
+
+A caixa marcada pinta `accent-text`, e não `accent`, com o tique em
+`surface-raised`. É a mesma troca do trilho do `Switch`, e pelo mesmo motivo:
+com a lima cheia o preenchimento media 1,21:1 sobre a página no tema claro e
+1,26:1 sobre o cartão, abaixo dos 3:1 que a WCAG 1.4.11 pede para controle sem
+texto.
+
+Aqui o estado ainda se lia, e é o que fazia o defeito passar: o tique era
+grafite e se via de qualquer jeito. O que desaparecia era a **fronteira da
+caixa** - sobrava um tique flutuando no lugar de uma caixa marcada. Com
+`accent-text` a fronteira mede 5,55:1 sobre a página e 5,75:1 sobre o cartão, e
+o tique mede 5,75:1 dentro do preenchimento.
+
+O estado misto entra na mesma troca, pelo mesmo par de tokens: ele pintava a
+lima cheia também, e a caixa de selecionar-todas sumia igual.
+
+Não havia lima clara que resolvesse: o passo mais escuro antes do `accent-text`
+é o `accent-active`, e ele para em 1,49:1 sobre a página. No tema escuro os dois
+papéis apontam para o mesmo valor, então lá a caixa não mudou de cor, e o tique
+foi de 15,06:1 para 13,91:1.
+
+Quem escreve tema de cliente herda a garantia sem fazer nada: `accent-text` já
+precisa de 4,5:1 sobre `bg`, `surface` e `surface-raised`, e contraste é
+simétrico - é a mesma medida que a fronteira e o tique usam.
+
 ## Desabilitado
 
 Desabilitado se pinta com token, e não com opacidade: o fundo passa a

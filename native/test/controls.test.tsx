@@ -113,7 +113,15 @@ describe("Checkbox", () => {
     const [box] = byRole(screen, "checkbox");
     expect(box.props.accessibilityState.checked).toBe(true);
     // O visto é borda rotacionada, nunca glyph de fonte.
-    expect(byClass(screen, /-rotate-45/).length).toBe(1);
+    const marks = byClass(screen, /-rotate-45/);
+    expect(marks.length).toBe(1);
+
+    // O mesmo acento do trilho do Switch: com a lima cheia, a caixa marcada
+    // media 1,21:1 sobre a página no tema claro e perdia a fronteira.
+    expect(byClass(screen, /border-accent-text bg-accent-text/).length).toBe(1);
+    expect(byClass(screen, /bg-accent(?![\w-])/).length).toBe(0);
+    expect(marks[0].props.className).toContain("border-surface-raised");
+    expect(marks[0].props.className).not.toContain("border-accent-fg");
   });
 });
 
@@ -130,15 +138,18 @@ describe("Switch", () => {
     expect(onCheckedChange).toHaveBeenCalledWith(true);
   });
 
-  test("o trilho veste o acento do tema em vigor", () => {
+  test("o trilho ligado veste o acento que se lê sobre o fundo", () => {
     const dark = render(<Switch checked onCheckedChange={() => {}} />);
     const track = dark.root.findByType("Switch" as never);
-    expect(track.props.trackColor.true).toBe(tokens.themes["rivocode-dark"].accent);
+    expect(track.props.trackColor.true).toBe(tokens.themes["rivocode-dark"]["accent-text"]);
 
     const light = render(<Switch checked onCheckedChange={() => {}} />, {
       theme: "rivocode-light",
     });
     const lightTrack = light.root.findByType("Switch" as never);
+    expect(lightTrack.props.trackColor.true).toBe(tokens.themes["rivocode-light"]["accent-text"]);
+    expect(lightTrack.props.trackColor.true).not.toBe(tokens.themes["rivocode-light"].accent);
+    expect(lightTrack.props.thumbColor).toBe(tokens.themes["rivocode-light"]["surface-raised"]);
     expect(lightTrack.props.trackColor.false).toBe(
       tokens.themes["rivocode-light"]["border-strong"],
     );

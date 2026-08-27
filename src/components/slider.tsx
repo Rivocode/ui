@@ -75,7 +75,7 @@ export function Slider({
           className={cn("h-1.5 w-full rounded-pill bg-skeleton select-none", classNames?.track)}
         >
           <BaseSlider.Indicator
-            className={cn("rounded-pill bg-accent select-none", classNames?.indicator)}
+            className={cn("rounded-pill bg-accent-text select-none", classNames?.indicator)}
           />
           {labels.map((label, index) => (
             <BaseSlider.Thumb
@@ -83,7 +83,7 @@ export function Slider({
               index={index}
               aria-label={label}
               className={cn(
-                "size-4 rounded-pill border border-accent bg-surface select-none",
+                "size-4 rounded-pill border border-accent-text bg-surface-raised select-none",
                 "relative after:absolute after:-inset-1.5",
                 "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
                 "has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-bg",

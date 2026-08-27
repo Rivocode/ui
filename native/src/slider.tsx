@@ -73,7 +73,7 @@ export function Slider({
         <View className="h-full rounded-pill bg-accent" style={{ width: fraction * width }} />
       </View>
       <View
-        className="absolute size-5 rounded-pill border border-border-strong bg-fg shadow-1"
+        className="absolute size-5 rounded-pill border border-border-strong bg-fg"
         style={{ left: Math.max(0, fraction * width - 10) }}
       />
     </View>

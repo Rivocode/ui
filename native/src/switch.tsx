@@ -22,8 +22,8 @@ export function Switch({ checked, onCheckedChange, children, disabled, className
       value={checked}
       onValueChange={onCheckedChange}
       disabled={disabled}
-      trackColor={{ false: colors["border-strong"], true: colors.accent }}
-      thumbColor={checked ? colors["accent-fg"] : colors["fg-muted"]}
+      trackColor={{ false: colors["border-strong"], true: colors["accent-text"] }}
+      thumbColor={checked ? colors["surface-raised"] : colors["fg-muted"]}
       ios_backgroundColor={colors["border-strong"]}
     />
   );

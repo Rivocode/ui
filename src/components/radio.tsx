@@ -44,7 +44,7 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-        "data-[checked]:not-data-disabled:border-accent data-[checked]:not-data-disabled:bg-accent",
+        "data-[checked]:not-data-disabled:border-accent-text data-[checked]:not-data-disabled:bg-accent-text",
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[disabled]:border-border-disabled",
         "data-[invalid]:border-danger",
@@ -54,7 +54,7 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
     >
       <BaseRadio.Indicator
         className={cn(
-          "size-2 rounded-pill bg-accent-fg",
+          "size-2 rounded-pill bg-surface-raised",
           "data-[disabled]:bg-fg-disabled",
           classNames?.indicator,
         )}

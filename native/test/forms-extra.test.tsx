@@ -35,6 +35,12 @@ describe("RadioGroup", () => {
     expect(radios[1].props.accessibilityState.selected).toBeUndefined();
     expect(textOf(screen)).toContain("Cai na hora");
 
+    // O círculo vazado marca com `accent-text`, e não com a lima cheia: no
+    // tema claro a borda e o ponto mediam 1,21:1 sobre a página.
+    expect(byClass(screen, /border-accent-text/).length).toBe(1);
+    expect(byClass(screen, /bg-accent-text/).length).toBe(1);
+    expect(byClass(screen, /bg-accent(?![\w-])/).length).toBe(0);
+
     act(() => radios[0].props.onPress());
     expect(onValueChange).toHaveBeenCalledWith("boleto");
   });

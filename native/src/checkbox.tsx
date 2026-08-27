@@ -46,11 +46,11 @@ export function Checkbox({
     >
       <View
         className={`size-5 items-center justify-center rounded-sm border ${
-          checked ? "border-accent bg-accent" : "border-border-strong bg-surface"
+          checked ? "border-accent-text bg-accent-text" : "border-border-strong bg-surface"
         }`}
       >
         {checked && (
-          <View className="mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-accent-fg" />
+          <View className="mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-surface-raised" />
         )}
       </View>
       {children && <Text className="text-base text-fg">{children}</Text>}
