@@ -1,5 +1,43 @@
 # EventCalendar no React Native: desenho
 
+## A decisao, tomada depois deste documento: NAO
+
+Data da decisao: 2026-08-27, o mesmo dia. **O `EventCalendar` nao vai existir no
+React Native**, e a linha de paridade dele passou de `fila` para `nao`. Com
+isso a `FILA_DECLARADA` ficou VAZIA.
+
+O que decidiu foi a conta que este documento faz, e nao uma mudanca de ideia
+sobre o caso de uso. Ela esta na secao 8, e diz o seguinte: as vistas nao
+custam a mesma coisa. A `agenda` e o `month` sao baratos e ja tem resposta no
+pacote - uma e lista, a outra e o `Calendar`, que pinta por dia pelo
+`DayPaint`. A `day` e a `week` sao a peca inteira: o desenhador de tempo, o
+alvo de 44 pontos sobre tarja de 12, o conflito de gesto, e a maior parte das
+mil e duzentas linhas. Elas custam de 15 a 18% do pacote no aplicativo de quem
+importa um `Button`, porque o nativo publica FONTE e o metro compila tudo.
+
+E o que elas comprariam nao cabe na tela. Grade de tempo responde "o que choca
+com o que", e essa pergunta se faz com o olho passeando - nao com o dedo
+cobrindo o que ele toca.
+
+**Este documento continua valendo**, e nao como historico: ele e o registro do
+que foi MEDIDO para chegar aqui. Os 44,8px de coluna, os 24,15px por hora da
+proposta de trocar o eixo, os pares de contraste que a peca criaria, a
+armadilha de RTL do `month`, e o achado de que o `event-layout` e
+compartilhavel - tudo isso e verdade, e volta a valer no dia em que alguem
+propuser a peca de novo. Sem ele, a proposta voltaria como intuicao.
+
+As oito perguntas da ultima secao ficaram sem resposta de proposito. Cinco
+delas - 1, 3, 4, 5 e 6 - eram sobre a metade cara, e a decisao de nao
+constru-la as responde de uma vez. As outras tres continuam abertas para o
+pacote, e nao para esta peca: o anunciador que o iOS exige (pergunta 2) e a
+divida numero 1 do `ESTADO.md`, e ela nao sai daqui.
+
+O que se perde, dito na cara: quem quiser agenda de trabalho no celular nao vai
+ter isso do design system. A resposta honesta para essa pessoa e que a tela
+dela e a lista por dia, montada com as pecas que ja existem.
+
+---
+
 Data: 2026-08-27. O `EventCalendar` e a unica peca do catalogo em
 `FILA_DECLARADA`, e a fila era por DESENHO DE GESTO, nao por tempo. A decisao
 de gesto acabou de ser tomada pelo dono, e este documento existe para ser

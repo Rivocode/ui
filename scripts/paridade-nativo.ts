@@ -365,8 +365,8 @@ const PARITY: Record<string, Row> = {
       "o dedo não encolhe junto com a ficha.",
   },
   EventCalendar: {
-    state: "fila",
-    note: "`agenda`, `day` e `month` portam; a `week` nao cabe em 44,8px de coluna",
+    state: "nao",
+    note: "grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar`",
     page:
       "Na fila, e a fila e por DESENHO de gesto, nao por tempo. Tres das quatro vistas portam: a " +
       "`agenda` vira `SectionList` (virtualizacao de fabrica, o mesmo argumento que tirou a " +
@@ -377,17 +377,25 @@ const PARITY: Record<string, Row> = {
       "para mostrar hora e duracao. Em 44,8px ela mostra um retangulo colorido, que e o que a " +
       "`month` ja faz melhor e mais barato. O web tomou a mesma decisao para a propria tela " +
       'estreita: abaixo de `sm` a `week` some do seletor e `view="week"` resolve para `agenda`.\n\n' +
-      "O que falta e decisao de gesto, e por isso a linha esta em `FILA_DECLARADA`: o que o dedo " +
-      "faz para trocar de periodo, o que ele faz quando pousa em cima de dois eventos que se " +
-      "sobrepoem, e se toque longo cria. Nenhuma dessas tem resposta no web, porque no web sao " +
-      "ponteiro e teclado. O desenho esta escrito em " +
-      "`docs/2026-08-27-event-calendar-nativo-desenho.md`, e as perguntas que sobraram estao " +
-      "listadas la.\n\n" +
-      "O calculo de layout ja nasceu pronto para atravessar: `src/lib/event-layout.ts` e funcao " +
-      "pura sem DOM, sem import e sem global de plataforma. O mecanismo para compartilhar codigo " +
-      "puro entre os dois pacotes passou a existir em 27/08/2026 - `src/shared/`, o espelho em " +
-      "`native/src/shared/` e o `check:compartilhado` no gate -, entao a peca nativa nao pode " +
-      "copiar essas funcoes: copia nao declarada deixa a guarda vermelha.",
+      "**A decisao foi tomada em 27/08/2026, e e nao.** Ela esteve em `FILA_DECLARADA` esperando " +
+      "decisao de gesto; o desenho foi escrito, medido, e a conta dele decidiu contra a peca. " +
+      "Esta em `docs/2026-08-27-event-calendar-nativo-desenho.md`, e continua valendo como " +
+      "registro do que foi medido.\n\n" +
+      "O custo nao se distribui por igual entre as vistas, e e isso que decide. A `agenda` e o " +
+      "`month` sao baratos: um e lista, o outro e grade de mes, e os dois ja tem resposta no " +
+      "pacote. A `day` e a `week` sao a peca inteira - o desenhador de tempo, o alvo de 44 " +
+      "pontos sobre tarja de 12, o conflito entre deslizar para trocar de periodo e arrastar " +
+      "para ler, e a maior parte das mil e duzentas linhas. Elas custam de 15 a 18% do pacote, " +
+      "compiladas pelo metro no aplicativo de quem importa um `Button`, porque o nativo publica " +
+      "FONTE.\n\n" +
+      "E o que elas comprariam nao cabe na tela: sete colunas em 358px dao 44,8px cada, onde a " +
+      "coluna de semana existe para mostrar hora e duracao. Grade de tempo e idioma de mesa - " +
+      "ela responde \"o que choca com o que\", e essa pergunta se faz com o olho passeando, e " +
+      "nao com o dedo cobrindo o que ele toca.\n\n" +
+      "**No telefone, a resposta e outra peca.** Compromisso por dia e lista, e a lista se monta " +
+      "com o que ja existe. Data com valor - vencimento, prazo, entrega - e o `Calendar`, que " +
+      "no nativo ja pinta por dia pelo `DayPaint`. Quem precisa de grade de tempo no celular " +
+      "esta pedindo a tela de mesa num aparelho que nao a comporta.",
   },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
   Input: {
@@ -1171,12 +1179,7 @@ const PARITY: Record<string, Row> = {
  * acusa mais e erro, e a guarda manda apagar a linha - e o que impede a lista
  * de virar o lugar onde a fila mora para sempre.
  */
-const FILA_DECLARADA: Record<string, string> = {
-  EventCalendar:
-    "espera decisao de gesto, e nao tempo: arrastar para mudar de semana, tocar e segurar para " +
-    "criar, e o que fazer quando o dedo pousa sobre dois eventos sobrepostos. Nenhuma tem " +
-    "resposta no web, onde sao ponteiro e teclado. Vale prototipo antes, como o Editable valeu.",
-};
+const FILA_DECLARADA: Record<string, string> = {};
 
 async function catalogPieces() {
   const pages = (await scanAtLeast("*.md", 150, { cwd: DOCS })).map((file) =>
