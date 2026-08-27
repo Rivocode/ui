@@ -59,7 +59,7 @@ const PASSOS: Step[] = [
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3">
+    <section data-rc-shot={title} className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{title}</p>
       {children}
     </section>

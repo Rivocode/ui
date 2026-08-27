@@ -23,9 +23,9 @@ const ITEMS = [
   { icon: Settings, label: "Ajustes" },
 ];
 
-function MenuLateral() {
+function MenuLateral({ defaultOpen }: { defaultOpen: boolean }) {
   return (
-    <Sheet side="left" defaultOpen>
+    <Sheet side="left" defaultOpen={defaultOpen}>
       <SheetTrigger render={<Button variant="secondary" />}>Abrir menu</SheetTrigger>
       <SheetContent className="p-4">
         <SheetTitle className="px-2 text-lg">RivoCode</SheetTitle>
@@ -52,9 +52,9 @@ function MenuLateral() {
   );
 }
 
-function BottomSheet() {
+function BottomSheet({ defaultOpen }: { defaultOpen: boolean }) {
   return (
-    <Sheet side="bottom" defaultOpen>
+    <Sheet side="bottom" defaultOpen={defaultOpen}>
       <SheetTrigger render={<Button variant="secondary" />}>Acoes da nota</SheetTrigger>
       <SheetContent>
         <SheetHandle />
@@ -70,20 +70,60 @@ function BottomSheet() {
   );
 }
 
-function Sample({ theme, side }: { theme: RivoTheme; side: SheetSide }) {
+const LEGEND: Record<string, string> = {
+  left: "folha lateral aberta",
+  bottom: "folha de baixo aberta",
+  "": "as duas folhas fechadas",
+};
+
+const LABEL = "mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase";
+
+function Sample({ theme, open }: { theme: RivoTheme; open: SheetSide | "" }) {
   return (
-    <RivoProvider scope="local" theme={theme} className="min-h-[560px] p-8">
-      <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">
-        {theme} / folha {side === "left" ? "lateral" : "de baixo"}
+    <RivoProvider scope="local" theme={theme} className="min-h-screen p-8">
+      <p className={open === "left" ? `${LABEL} text-right` : LABEL}>
+        {theme} / {LEGEND[open]}
       </p>
-      {side === "left" ? <MenuLateral /> : <BottomSheet />}
+      <div className="flex flex-wrap gap-3">
+        <MenuLateral defaultOpen={open === "left"} />
+        <BottomSheet defaultOpen={open === "bottom"} />
+      </div>
     </RivoProvider>
   );
 }
 
-createRoot(document.getElementById("root")!).render(
-  <div>
-    <Sample theme="rivocode-dark" side="left" />
-    <Sample theme="rivocode-light" side="bottom" />
-  </div>,
-);
+function Frames() {
+  return (
+    <div className="flex flex-col">
+      <iframe
+        src="./folhas.html#escuro"
+        title="Folhas fechadas no tema escuro"
+        className="h-[200px] w-full border-0"
+      />
+      <iframe
+        src="./folhas.html#escuro-lateral"
+        title="Folha lateral aberta no tema escuro"
+        className="h-[520px] w-full border-0"
+      />
+      <iframe
+        src="./folhas.html#claro"
+        title="Folhas fechadas no tema claro"
+        className="h-[200px] w-full border-0"
+      />
+      <iframe
+        src="./folhas.html#claro-de-baixo"
+        title="Folha de baixo aberta no tema claro"
+        className="h-[520px] w-full border-0"
+      />
+    </div>
+  );
+}
+
+const root = createRoot(document.getElementById("root")!);
+const view = window.location.hash.slice(1);
+
+if (view === "escuro") root.render(<Sample theme="rivocode-dark" open="" />);
+else if (view === "escuro-lateral") root.render(<Sample theme="rivocode-dark" open="left" />);
+else if (view === "claro") root.render(<Sample theme="rivocode-light" open="" />);
+else if (view === "claro-de-baixo") root.render(<Sample theme="rivocode-light" open="bottom" />);
+else root.render(<Frames />);

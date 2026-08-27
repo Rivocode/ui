@@ -1,6 +1,9 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 
+@source '../src/chart';
 @source '../src/components';
+@source '../src/form';
+@source '../src/lib';
 @source '../src/provider';
 @source '.';
 

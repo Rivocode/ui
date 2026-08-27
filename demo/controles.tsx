@@ -47,7 +47,7 @@ const PIX = "00020126580014br.gov.bcb.pix0136d2b0f6a1-4c3e-4c1a-9a0c-2f1e5f8b7c3
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3">
+    <section data-rc-shot={title} className="flex flex-col gap-3">
       <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">{title}</p>
       {children}
     </section>
@@ -171,7 +171,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           </Block>
 
           <Block title="Acao sem volta">
-            <AlertDialog defaultOpen={theme === "rivocode-light"}>
+            <AlertDialog>
               <AlertDialogTrigger render={<Button variant="destructive" />}>
                 Cancelar nota
               </AlertDialogTrigger>

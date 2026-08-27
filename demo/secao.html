@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Retrato de secao</title>
+    <style>
+      /* O magenta e a moldura, e nao decoracao: a captura sai do tamanho da
+         janela, entao quem recorta e o script, aparando as bordas que sobraram
+         nesta cor. Nenhum tema da casa a produz. */
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #ff00ff;
+      }
+      #frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 0;
+        display: block;
+      }
+      pre {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        padding: 16px;
+        background: #101010;
+        color: #ffffff;
+        font: 14px monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="frame"><iframe id="tela" title="Secao da vitrine"></iframe></div>
+    <script>
+      const PAD = 8;
+      const [page, name, theme, density] = decodeURIComponent(location.hash.slice(1)).split("|");
+
+      const frame = document.getElementById("frame");
+      const tela = document.getElementById("tela");
+      tela.style.width = "1240px";
+      tela.style.height = "2000px";
+      tela.src = page || "./index.html";
+
+      let scope = "";
+      if (theme) scope += '[data-rc-theme="' + theme + '"]';
+      if (density) scope += '[data-rc-density="' + density + '"]';
+      const query = (scope ? scope + " " : "") + '[data-rc-shot="' + name + '"]';
+
+      function fail(message) {
+        const pre = document.createElement("pre");
+        pre.textContent = message;
+        document.body.append(pre);
+      }
+
+      let tries = 0;
+      const timer = setInterval(() => {
+        const doc = tela.contentDocument;
+        const target = doc && doc.querySelector(query);
+        if (!target) {
+          if (++tries > 60) {
+            clearInterval(timer);
+            fail("secao nao encontrada em " + page + "\n" + query);
+          }
+          return;
+        }
+
+        clearInterval(timer);
+        tela.style.height = doc.documentElement.scrollHeight + "px";
+
+        requestAnimationFrame(() => {
+          const box = target.getBoundingClientRect();
+          const left = Math.max(0, Math.floor(box.left + doc.documentElement.scrollLeft) - PAD);
+          const top = Math.max(0, Math.floor(box.top + doc.documentElement.scrollTop) - PAD);
+          frame.style.width = Math.ceil(box.width) + PAD * 2 + "px";
+          frame.style.height = Math.ceil(box.height) + PAD * 2 + "px";
+          tela.style.left = -left + "px";
+          tela.style.top = -top + "px";
+        });
+      }, 50);
+    </script>
+  </body>
+</html>
