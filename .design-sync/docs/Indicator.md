@@ -20,6 +20,13 @@ Acima de `max` sai "99+", em vez de a pastilha esticar e empurrar o que está ao
 lado. Com `dot`, sai só o ponto, para "tem algo novo aqui", quando o número
 não importa.
 
+A pastilha fica **por cima** do filho, e não ao lado: ela não reserva espaço.
+Isso serve para alvo pequeno (o botão do sino, o item da barra, o avatar), e
+sempre cobre texto quando o filho é largo. Acima de 48px de largura, que é o
+maior alvo legítimo do catálogo (`Avatar` grande e controle `lg` na densidade
+confortável medem exatamente isso), a peça avisa no console em desenvolvimento.
+Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`.
+
 ## No React Native
 
 Traduz, e o que muda é quem carrega o nome acessível. No web o número é escondido do leitor e um texto só para ele entra ao lado; no nativo a pastilha inteira é UM elemento de acessibilidade, e o `label` (aqui obrigatório) é o que ele anuncia. O leitor lê o filho ("Notificações, botão") e a pastilha em seguida ("3 notificações"), e nunca um "3" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não existe no React Native, e borda ali ocupa por dentro da caixa.

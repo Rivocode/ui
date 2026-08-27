@@ -17,6 +17,7 @@ import { EmptyState } from "../components/empty-state";
 import { Skeleton } from "../components/skeleton";
 import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
+import { SETTLED } from "../shared/settled";
 
 export type ChartConfig = Record<
   string,
@@ -113,6 +114,7 @@ export function ChartContainer({
 
   const points = data ?? dataOfChild(children);
   useMissingDataWarning(empty !== undefined && points === undefined);
+  useFlatBoxWarning(id);
 
   const announcement = useActivePointAnnouncement(id);
 
@@ -204,6 +206,33 @@ function useMissingDataWarning(missing: boolean) {
         "ChartContainer - e o mesmo array que voce ja entrega ao grafico.",
     );
   }, [missing]);
+}
+
+export function flatBoxComplaint(width: number, height: number): string | undefined {
+  if (!(width > 0 && height === 0)) return undefined;
+
+  return (
+    "[rivocode/ui] <ChartContainer>: a moldura mediu largura e nenhuma altura, e a Recharts " +
+    "desenhou num retangulo de 0px - o cartao fica vazio, sem erro nenhum. A altura vem de " +
+    'quem usa a moldura: de a ela uma classe de altura (className="h-64"), ou altura ao pai ' +
+    "que a segura."
+  );
+}
+
+function useFlatBoxWarning(chartId: string) {
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+
+    const root = document.querySelector<HTMLElement>(`[data-rc-chart="${chartId}"]`);
+    if (!root) return;
+
+    const waiting = setTimeout(() => {
+      const complaint = flatBoxComplaint(root.clientWidth, root.clientHeight);
+      if (complaint) console.warn(complaint);
+    }, SETTLED);
+
+    return () => clearTimeout(waiting);
+  }, [chartId]);
 }
 
 const NAVIGATION_KEYS = new Set(["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"]);

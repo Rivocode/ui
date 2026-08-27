@@ -1,8 +1,21 @@
-import type { ReactNode } from "react";
-import { View } from "react-native";
+import { useRef, type ReactNode } from "react";
+import { View, type LayoutChangeEvent } from "react-native";
 
 import { cn } from "./cn";
 import { Text } from "./text";
+
+const WIDEST_MARKED = 48;
+
+export function indicatorWidthComplaint(width: number): string | undefined {
+  if (width <= WIDEST_MARKED) return undefined;
+  return (
+    "[rivocode/ui-native] <Indicator>: o filho mede " +
+    `${Math.round(width)}px de largura, e a pastilha fica por cima dele sem ` +
+    `reservar espaço - acima de ${WIDEST_MARKED}px ela cobre conteúdo. ` +
+    "A peça marca alvo pequeno: o botão do sino, o item da barra, o avatar. " +
+    "Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`."
+  );
+}
 
 export type IndicatorProps = {
   /** O que recebe a marca: o botão do sino, o item da barra, o avatar. */
@@ -41,9 +54,18 @@ export function Indicator({
 }: IndicatorProps) {
   const show = dot === true || (count !== undefined && count > 0);
   const written = count !== undefined && count > max ? `${max}+` : String(count ?? "");
+  const complained = useRef(false);
+
+  const onLayout = (event: LayoutChangeEvent) => {
+    if (complained.current) return;
+    const complaint = indicatorWidthComplaint(event.nativeEvent.layout.width);
+    if (!complaint) return;
+    complained.current = true;
+    console.warn(complaint);
+  };
 
   return (
-    <View className={cn("self-start", className)}>
+    <View className={cn("self-start", className)} onLayout={__DEV__ ? onLayout : undefined}>
       {children}
 
       {show && (

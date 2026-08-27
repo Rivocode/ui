@@ -16,7 +16,10 @@ ponte tem que ser por variável. Escrever a cor direta no `stroke` funciona até
 o tema mudar.
 
 A altura fica com quem usa, por classe: gráfico sem altura definida some,
-porque o contentor mede o pai.
+porque o contentor mede o pai. Onde a moldura mede largura e nenhuma altura, ela
+avisa no console em desenvolvimento em vez de entregar um cartão vazio. O aviso
+espera o layout assentar antes de acusar, porque a caixa mede zero por um quadro
+no caminho normal.
 
 ## Os quatro finais de uma consulta
 

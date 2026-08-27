@@ -1,7 +1,19 @@
-import type { ComponentProps, ReactNode } from "react";
+import { useCallback, useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
+
+export function indicatorWidthComplaint(width: number): string | undefined {
+  const widest = 48;
+  if (!(width > widest)) return undefined;
+
+  return (
+    `[rivocode/ui] <Indicator>: o filho mede ${Math.round(width)}px de largura, e a ` +
+    `pastilha fica por cima dele sem reservar espaco - acima de ${widest}px ela cobre ` +
+    "conteudo. A peca marca alvo pequeno: o botao do sino, o item da barra, o avatar. " +
+    "Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`."
+  );
+}
 
 export type IndicatorProps = ComponentProps<"span"> & {
   /** O que recebe a marca: o botao do sino, o item da barra, o avatar. */
@@ -32,13 +44,31 @@ export function Indicator({
   dot,
   className,
   classNames,
+  ref,
   ...props
 }: IndicatorProps) {
   const show = dot || (count !== undefined && count > 0);
   const written = count !== undefined && count > max ? `${max}+` : String(count ?? "");
+  const complained = useRef(false);
+
+  const hold = useCallback(
+    (node: HTMLSpanElement | null): void | (() => void) => {
+      if (node && !complained.current && process.env.NODE_ENV !== "production") {
+        const complaint = indicatorWidthComplaint(node.offsetWidth);
+        if (complaint) {
+          complained.current = true;
+          console.warn(complaint);
+        }
+      }
+
+      if (typeof ref === "function") return ref(node) as void | (() => void);
+      if (ref) (ref as { current: HTMLSpanElement | null }).current = node;
+    },
+    [ref],
+  );
 
   return (
-    <span {...props} className={cn("relative inline-flex", className)}>
+    <span {...props} ref={hold} className={cn("relative inline-flex", className)}>
       {children}
 
       {show && (

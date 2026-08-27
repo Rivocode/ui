@@ -1,4 +1,4 @@
-import { describe, expect, mock, setSystemTime, test } from "bun:test";
+import { describe, expect, mock, setSystemTime, spyOn, test } from "bun:test";
 import { Text } from "react-native";
 
 import { AppState } from "../../test/react-native-mock";
@@ -12,6 +12,7 @@ import {
   RelativeTime,
   Stat,
 } from "../src";
+import { indicatorWidthComplaint } from "../src/indicator";
 import { Meter } from "../src/meter";
 import { REFRESH, describeRelative } from "../src/relative-time";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
@@ -287,6 +288,34 @@ describe("Indicator", () => {
       </Indicator>,
     );
     expect(textOf(proprio)).toContain("9+");
+  });
+
+  test("filho largo é acusado em __DEV__: a pastilha cobre conteúdo, e nada reserva espaço", () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const screen = render(
+        <Indicator count={3} label="3 notificações">
+          <Text>Uma linha inteira de conteúdo</Text>
+        </Indicator>,
+      );
+      const [wrapper] = byClass(screen, /\bself-start\b/);
+
+      act(() => {
+        wrapper!.props.onLayout({ nativeEvent: { layout: { width: 320 } } });
+        wrapper!.props.onLayout({ nativeEvent: { layout: { width: 320 } } });
+      });
+
+      expect(warn.mock.calls.length).toBe(1);
+      expect(String(warn.mock.calls[0]![0])).toContain("[rivocode/ui-native]");
+      expect(String(warn.mock.calls[0]![0])).toContain("320px");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  test("alvo pequeno não é acusado: o sino, o item da barra e o avatar cabem nos 48px", () => {
+    expect(indicatorWidthComplaint(48)).toBeUndefined();
+    expect(indicatorWidthComplaint(49)).toContain("49px");
   });
 
   test("o ponto marca sem contar, e mesmo assim se anuncia", () => {

@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, mock, spyOn, test } from "bun:test";
 import { createElement } from "react";
 import type { ReactTestInstance, ReactTestRenderer } from "react-test-renderer";
 
@@ -166,6 +166,72 @@ describe("ChartContainer", () => {
     // dispara a cada relayout do pai, e nao so quando o tamanho muda.
     layout(screen, 320, 220);
     expect(sizes[sizes.length - 1]).toEqual({ width: 320, height: 220 });
+  });
+
+  test("caixa medida sem altura é acusada: o desenho recebeu height 0 e o cartão fica vazio", async () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const screen = render(drawing());
+      layout(screen, 320, 0);
+
+      await Bun.sleep(260);
+
+      expect(warn.mock.calls.length).toBe(1);
+      expect(String(warn.mock.calls[0]![0])).toContain("[rivocode/ui-native]");
+      expect(String(warn.mock.calls[0]![0])).toContain("altura");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  test("altura medida cala a peça, e o zero antes do primeiro layout também", async () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const measured = render(drawing());
+      layout(measured, 320, 220);
+
+      render(drawing());
+
+      await Bun.sleep(260);
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  test("o zero de um passe de layout intermediário não acusa: o passe seguinte cancela", async () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const screen = render(drawing());
+      layout(screen, 320, 0);
+      layout(screen, 320, 240);
+
+      await Bun.sleep(260);
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  test("filho em JSX não é acusado por caixa chata: a peça de dentro tem tamanho próprio", async () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const screen = render(
+        <ChartContainer config={SERIES} data={SLICES}>
+          <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" />
+        </ChartContainer>,
+      );
+      layout(screen, 320, 0);
+
+      await Bun.sleep(260);
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
   });
 
   test("a moldura nomeia o desenho que ela mesma embrulha, e so esse", () => {

@@ -1,8 +1,8 @@
-import { expect, test } from "bun:test";
+import { expect, spyOn, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
-import { ChartContainer, type ChartConfig } from "../src/chart/chart";
+import { ChartContainer, flatBoxComplaint, type ChartConfig } from "../src/chart/chart";
 import { ChartTooltipContent } from "../src/chart/chart-tooltip";
 import { ChartLegendContent } from "../src/chart/chart-legend";
 import { Line, LineChart } from "recharts";
@@ -188,4 +188,57 @@ test("consulta vazia mostra o convite, e nao um grafico sem ponto", () => {
     </ChartContainer>,
   );
   expect(screen.getByText("Sem notas no periodo")).toBeDefined();
+});
+
+const ours = (warn: ReturnType<typeof spyOn<Console, "warn">>) =>
+  warn.mock.calls.map((call) => String(call[0])).filter((line) => line.startsWith("[rivocode/ui]"));
+
+test("moldura com largura e sem altura e acusada: a Recharts desenharia em 0px", async () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+  withTheme(
+    <ChartContainer config={{ pagas: { label: "Pagas" } }}>
+      <LineChart data={[{ pagas: 1 }]}>
+        <Line dataKey="pagas" />
+      </LineChart>
+    </ChartContainer>,
+  );
+
+  const moldura = document.querySelector<HTMLElement>("[data-rc-chart]")!;
+  Object.defineProperty(moldura, "clientWidth", { configurable: true, value: 620 });
+  Object.defineProperty(moldura, "clientHeight", { configurable: true, value: 0 });
+
+  await Bun.sleep(260);
+
+  const complaints = ours(warn);
+  expect(complaints).toHaveLength(1);
+  expect(complaints[0]).toContain("altura");
+  warn.mockRestore();
+});
+
+test("moldura com altura medida cala a peca, e caixa sem medida nenhuma tambem", async () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+  withTheme(
+    <ChartContainer config={{ pagas: { label: "Pagas" } }} className="h-40">
+      <LineChart data={[{ pagas: 1 }]}>
+        <Line dataKey="pagas" />
+      </LineChart>
+    </ChartContainer>,
+  );
+
+  const moldura = document.querySelector<HTMLElement>("[data-rc-chart]")!;
+  Object.defineProperty(moldura, "clientWidth", { configurable: true, value: 620 });
+  Object.defineProperty(moldura, "clientHeight", { configurable: true, value: 160 });
+
+  await Bun.sleep(260);
+
+  expect(ours(warn)).toHaveLength(0);
+  warn.mockRestore();
+});
+
+test("o aviso de caixa chata mede largura e altura, e nao uma das duas", () => {
+  expect(flatBoxComplaint(620, 0)).toContain("0px");
+  expect(flatBoxComplaint(620, 1)).toBeUndefined();
+  expect(flatBoxComplaint(0, 0)).toBeUndefined();
 });

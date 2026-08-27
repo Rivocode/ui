@@ -4,7 +4,9 @@ Não vem no pacote principal. É dependência opcional, e chega pelo mesmo
 provider. Instale junto: `recharts`.
 
 Recharts vestida pelo tema. A cor de cada série vem do `config` e vira variável
-com o nome da série. **A altura é sua, por classe: gráfico sem altura some.**
+com o nome da série. **A altura é sua, por classe: gráfico sem altura some** - e a
+moldura acusa isso no console em desenvolvimento, quando mede largura e nenhuma
+altura.
 
 ```tsx
 import {

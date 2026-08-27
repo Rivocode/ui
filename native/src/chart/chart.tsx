@@ -7,6 +7,7 @@ import { Button } from "../button";
 import { cn } from "../cn";
 import { EmptyState } from "../empty-state";
 import { useRivo } from "../provider";
+import { SETTLED } from "../shared/settled";
 import { Skeleton } from "../skeleton";
 
 export type ChartConfig = Record<
@@ -32,7 +33,12 @@ export type ChartConfig = Record<
 export type ChartFrame = {
   /** A largura medida, em px. Zero no primeiro quadro, antes do layout. */
   width: number;
-  /** A altura medida, em px. Ela vem da classe de quem usa a moldura. */
+  /**
+   * A altura medida, em px. Ela vem da classe de quem usa a moldura.
+   *
+   * Zero depois do primeiro layout e uso errado, e nao um estado: o desenho
+   * sai vazio. A peca acusa no console em `__DEV__` quando isso acontece.
+   */
   height: number;
   /** A cor de cada série, pela mesma chave do `config`, já resolvida. */
   colors: Record<string, string>;
@@ -146,6 +152,7 @@ export function ChartContainer({
 
   useSilentMisuse(empty !== undefined && data === undefined, MISSING_DATA);
   useSilentMisuse(label !== undefined && !drawn, IGNORED_LABEL);
+  useSilentMisuse(drawn && box.width > 0 && box.height === 0, FLAT_BOX, SETTLED);
 
   const spoken = drawn
     ? ({
@@ -226,9 +233,21 @@ const IGNORED_LABEL =
   "`label` próprio), e nomear aqui fecharia o filho inteiro numa parada só do leitor de " +
   "tela. O `label` da moldura vale quando `children` é função.";
 
-function useSilentMisuse(wrong: boolean, message: string) {
+const FLAT_BOX =
+  "[rivocode/ui-native] <ChartContainer>: a moldura mediu largura e nenhuma altura, e a " +
+  "função de desenho recebeu `height: 0` - o cartão fica vazio, sem erro nenhum. A altura " +
+  'vem de quem usa a moldura: dê a ela uma classe de altura (`className="h-56"`), ou ' +
+  "altura ao pai que a segura.";
+
+function useSilentMisuse(wrong: boolean, message: string, after = 0) {
   useEffect(() => {
     if (!wrong || !__DEV__) return;
-    console.warn(message);
-  }, [wrong, message]);
+    if (after === 0) {
+      console.warn(message);
+      return;
+    }
+
+    const waiting = setTimeout(() => console.warn(message), after);
+    return () => clearTimeout(waiting);
+  }, [wrong, message, after]);
 }
