@@ -281,6 +281,42 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web",
   },
+  FilterBar: {
+    state: "traduz",
+    note: "rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de alvo de toque",
+    page:
+      "Traduz, e é onde a peça vale mais: listagem no celular é onde filtro dói. As decisões " +
+      "de desenho já tinham sido tomadas pensando em 390px, então quase tudo atravessa — rola " +
+      "na horizontal, não quebra linha e não colapsa em `+3`.\n\n" +
+      "**O limpar fica FORA do que rola.** Se ele rolasse junto, o controle que existe para " +
+      "desfazer tudo seria o único que exige rolar até o fim para achar. Ele ancora à direita " +
+      "da fileira, e o `size=\"sm\"` do `Button` nativo já entrega o alvo de 44pt sozinho.\n\n" +
+      "**A linha reservada passa a ser medida em dedo.** No web ela guarda a altura de " +
+      "`--rc-control-sm`; aqui guarda 44pt, que é uma altura de alvo de toque — não há token de " +
+      "controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do " +
+      "`Tracker`: a tela não pode pular quando o primeiro filtro entra.\n\n" +
+      "A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web " +
+      "— duplicar abriria um `gap` morto na fileira. **Limite de plataforma declarado:** " +
+      "`accessibilityLiveRegion` é do Android; no iOS o anúncio automático não existe sem " +
+      "`announceForAccessibility`, que nenhuma peça do catálogo usa hoje.\n\n" +
+      "Caem `classNames` por parte (não há `[&_li]` de que fugir sem DOM) e a parada de " +
+      "tabulação do web, porque não há foco de teclado aqui.",
+  },
+  FilterChip: {
+    state: "traduz",
+    note: "a faixa de toque tem 44pt e a pilula pintada continua com 28; `size` muda o desenho, nunca o alvo",
+    page:
+      "Traduz, com o mesmo vocabulário do web: rótulo, valor e o botão de tirar, sem `tone` — " +
+      "filtro não é situação, e seis fichas coloridas viram semáforo onde nada significa nada." +
+      "\n\n**O alvo cresce sem a ficha engordar.** A raiz é uma faixa de 44pt e a pílula " +
+      "pintada é um filho absoluto dentro dela, então ela continua com 28pt como no web. O xis " +
+      "herda os 44 verticais da faixa e ganha `hitSlop` horizontal.\n\n" +
+      "A faixa foi esticada em vez de dar `hitSlop` vertical por uma razão de plataforma: **no " +
+      "Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai " +
+      "do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta " +
+      "alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa " +
+      "— o dedo não encolhe junto com a ficha.",
+  },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
   Input: {
     state: "traduz",
@@ -304,6 +340,27 @@ const PARITY: Record<string, Row> = {
   },
   PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
   Progress: { state: "traduz", note: "`value` de 0 a 100 e `label`; sem `format`" },
+  QueryBoundary: {
+    state: "traduz",
+    note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo",
+    page:
+      "Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio " +
+      "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
+      "que justifica a peça existir — ela entrega o dado já sem `undefined`, e mata o `!` que a " +
+      "tela escrevia.\n\n" +
+      "Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
+      "`errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
+      "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. É a mesma " +
+      "nota que o `ChartContainer` já carrega.\n\n" +
+      "**`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que " +
+      "ninguém alcance o nó interno por `[&_div]` e acople a tela à árvore da peça. No React " +
+      "Native não há seletor de descendente, então essa escotilha não existe e a prop não teria " +
+      "o que evitar. O `className` veste os três finais, como no web.\n\n" +
+      "O esqueleto genérico fica na peça, e não vem de quem chama: sem ele, `isLoading` sem " +
+      "`skeleton` colapsaria a tela para altura zero e ela pularia quando o dado chegasse — no " +
+      "celular isso dói mais, porque não há barra de rolagem nem indicador de rede para " +
+      "explicar a espera.",
+  },
   RadioGroup: {
     state: "traduz",
     note: "`items` na raiz; não existe `Radio` solto para compor",
@@ -705,6 +762,42 @@ const PARITY: Record<string, Row> = {
       "já precisava existir para o dedo. O resto é igual — a peça é controlada, a repetida não " +
       "entra duas vezes e sair do campo fecha o que estava meio escrito.",
   },
+  TimeField: {
+    state: "traduz",
+    note: "digita com mascara e teclado numerico; as setas viram dois botoes de passo, no molde do `NumberField`",
+    page:
+      "Traduz, e continua sendo o campo de DIGITAR — quem marca ponto escreve `0800` mais " +
+      "rápido do que abre painel, e o teclado numérico do sistema é o idioma disso.\n\n" +
+      "**As regras de valor atravessam inteiras.** `\"HH:MM\"` em 24h, vazio é `\"\"`, e só hora " +
+      "completa avisa quem escuta. `25:99` não é consertado em silêncio para `23:59`: marca " +
+      "inválido na mesma tecla e volta ao último válido ao sair — consertar calado é pior, " +
+      "porque ninguém confere valor que o campo \"aceitou\". O `step` governa os passos e as " +
+      "opções, nunca a validação, então `14:07` com `step={30}` continua sendo hora legítima.\n\n" +
+      "**O que se reescreve é a seta.** Seta não existe no toque, e `step` precisava continuar " +
+      "significando alguma coisa; em vez de inventar gesto, a peça veste o molde que a casa já " +
+      "tem para passo no dedo — `[−][campo][+]`, do `NumberField`, com 48pt em cada botão. Eles " +
+      "chamam o mesmo cálculo do web, então pousam na grade a partir da meia-noite.\n\n" +
+      "Caem `defaultValue` (aqui tudo é controlado), `name` (formulário escondido não existe no " +
+      "React Native) e `size` (o `Input` nativo não tem vocabulário de tamanho).",
+  },
+  TimePicker: {
+    state: "traduz",
+    note: "gatilho mais folha de baixo com duas colunas; NAO embute o TimeField, ao contrario do web",
+    page:
+      "Traduz como gatilho mais **folha de baixo**, que é a decisão da casa para painel no " +
+      "celular. Duas colunas roláveis pela mesma razão do web, que pesa mais aqui: `step={5}` " +
+      "numa lista única são 288 linhas para rolar com o polegar. Cada opção tem 48pt, acima dos " +
+      "44pt exigidos, e a coluna rola até a hora escolhida a cada abertura.\n\n" +
+      "**A diferença de estrutura, e ela não é estética:** no web o relógio mora DENTRO do " +
+      "campo; aqui não. Um `TextInput` dentro de um `Pressable` engole o toque do pai, e o " +
+      "gatilho precisa ser um alvo único para o leitor de tela. Todo picker nativo da casa " +
+      "(`DatePicker`, `DateRangePicker`, `Select`, `Combobox`, `TreeSelect`) já é gatilho mais " +
+      "folha, e a divisão sai mais limpa do que no web: `TimeField` é digitação, `TimePicker` é " +
+      "toque.\n\n" +
+      "A hora não fecha a folha e preserva o minuto; o minuto fecha. O `labels` perde `open` e " +
+      "`title`, porque aqui o `label` obrigatório já nomeia o gatilho E titula a folha — o " +
+      "mesmo arranjo do `DateRangePicker`.",
+  },
   Timeline: {
     state: "traduz",
     note:
@@ -746,6 +839,37 @@ const PARITY: Record<string, Row> = {
       "texto de um período. Nenhum dado fica inalcançável e nenhum vira obstáculo. Por isso o " +
       "`label` de cada ponto é `string`, e não `ReactNode`: ele vai inteiro para o valor " +
       "acessível da faixa, e de um `ReactNode` não há como ler o texto de volta.",
+  },
+  VirtualList: {
+    state: "nao",
+    note: "a plataforma ja virtualiza: `FlatList` e `FlashList` fazem isto de fabrica",
+    page:
+      "Não porta, e não é fila: **a plataforma já resolve**. A `FlatList` do React Native " +
+      "virtualiza de fábrica, e o `DataList` daqui já a usa por baixo. Uma peça nossa por cima " +
+      "seria embrulho de embrulho, e cobraria manutenção para reimplementar o que o sistema " +
+      "entrega — com pior desempenho, porque a `FlatList` roda parte do trabalho fora da ponte " +
+      "de JavaScript.\n\n" +
+      "O que o web tinha de próprio, e que a `FlatList` não dá sozinha, são os quatro finais e a " +
+      "contagem honesta para o leitor de tela. Os dois já estão no `DataList`: use ele para " +
+      "lista longa que veio de consulta, e a `FlatList` crua para lista longa que você já tem " +
+      "na mão.",
+  },
+  Popconfirm: {
+    state: "vira",
+    native: "AlertDialog",
+    note: "vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora",
+    page:
+      "Vira `AlertDialog`. Painel ancorado não é idioma de toque: uma pergunta de 20rem presa " +
+      "a um botão de lixeira encostado na borda direita a 390px sai da tela ou tapa a linha que " +
+      "se vai apagar. O próprio web já reconhece isso — abaixo de 640px o `Popconfirm` deixa de " +
+      "ser painel e vira folha de baixo, que é exatamente o que o nativo tem.\n\n" +
+      "**Uma diferença de contrato, e ela é deliberada:** no web dispensar CANCELA (`Esc`, " +
+      "clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao " +
+      "resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também " +
+      "não. Então a saída no celular é o botão de cancelar, escrito e visível — sem Escape não " +
+      "há saída invisível, e é a mesma regra que o `Editable` segue.\n\n" +
+      "A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera " +
+      "e a mesma trava contra o segundo toque.",
   },
   Tree: {
     state: "traduz",
@@ -897,6 +1021,23 @@ const PARITY: Record<string, Row> = {
  * ----------------------------------------------------------------------- */
 
 /** As pecas com pagina propria no site, pela mesma regra de prefixo dele. */
+/**
+ * A fila do nativo, declarada peca por peca - e ela SO ENCOLHE.
+ *
+ * A fila chegou a zero em 26/08/2026 e voltou a encher no mesmo dia, quando
+ * sete pecas novas entraram no web de uma vez. Fila que cresce calada e o
+ * comeco do pacote nativo virar promessa: cada peca parece atraso temporario,
+ * e um ano depois sao vinte "temporarias". A regra passa a ser construir os
+ * dois lados juntos, e o que nao der para construir junto tem que ser DITO
+ * aqui, com o motivo, na hora.
+ *
+ * Entrada nova nesta lista e decisao consciente, e nao despacho: escreva por
+ * que a peca nao pode nascer nos dois lados no mesmo dia. Entrada que nao
+ * acusa mais e erro, e a guarda manda apagar a linha - e o que impede a lista
+ * de virar o lugar onde a fila mora para sempre.
+ */
+const FILA_DECLARADA: Record<string, string> = {};
+
 async function catalogPieces() {
   const pages: string[] = [];
   for await (const file of new Glob("*.md").scan(DOCS)) {
@@ -1123,6 +1264,26 @@ for (const piece of Object.keys(PARITY)) {
         "    mandando usar o substituto.",
     );
   }
+}
+
+for (const piece of pieces) {
+  if (PARITY[piece]?.state !== "fila") continue;
+  if (piece in FILA_DECLARADA) continue;
+
+  problems.push(
+    `\`${piece}\` entrou na fila do nativo sem estar declarada em FILA_DECLARADA.\n` +
+      "    Peca web nova nasce nos dois lados no mesmo dia. Se esta nao pode, escreva\n" +
+      "    o motivo em FILA_DECLARADA - a fila so cresce por decisao escrita.",
+  );
+}
+
+for (const piece of Object.keys(FILA_DECLARADA)) {
+  if (PARITY[piece]?.state === "fila") continue;
+
+  problems.push(
+    `\`${piece}\` esta em FILA_DECLARADA e nao esta mais na fila.\n` +
+      "    A lista so encolhe: apague a linha.",
+  );
 }
 
 if (problems.length > 0) {

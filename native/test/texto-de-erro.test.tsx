@@ -107,3 +107,29 @@ describe("ChartContainer", () => {
     expect(textOf(screen)).toContain("A consulta expirou.");
   });
 });
+
+/*
+ * O erro vence o carregando, e os dois pacotes tem que concordar.
+ *
+ * O `ChartContainer` dos DOIS lados ordenava ao contrario - carregando antes
+ * de erro -, entao consulta que falhou durante um refetch mostrava esqueleto e
+ * escondia a falha. No celular doi mais: nao ha barra de rede visivel, e a
+ * pessoa fica olhando um carregamento que nunca termina, sem o botao de tentar
+ * de novo. `DataList` e `DataTable` sempre ordenaram certo, e a doc ja
+ * prometia essa ordem - as pecas de grafico e que discordavam do texto.
+ */
+describe("erro vence carregando", () => {
+  test("o DataList mostra o erro, e nao o esqueleto", () => {
+    const screen = render(list({ isLoading: true, isError: true }));
+
+    expect(textOf(screen)).toContain("Não foi possível carregar a lista.");
+    expect(byClass(screen, /bg-skeleton/)).toHaveLength(0);
+  });
+
+  test("o ChartContainer mostra o erro, e nao o esqueleto", () => {
+    const screen = chart({ isLoading: true, isError: true });
+
+    expect(textOf(screen)).toContain("Não foi possível carregar o gráfico");
+    expect(byClass(screen, /bg-skeleton/)).toHaveLength(0);
+  });
+});

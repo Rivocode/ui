@@ -4,11 +4,11 @@ description: Cria uma peça nova do @rivocode/ui completa — wrapper, tipos, pr
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
-Uma peça deste catálogo tem oito artefatos, e ela não existe enquanto os oito
+Uma peça deste catálogo tem nove artefatos, e ela não existe enquanto os nove
 não existirem. O `FileUpload` foi publicado com a página de documentação
 pronta e o componente ausente: quem seguia a doc quebrava em tempo de build, e
 um agente lendo o índice propunha a peça com confiança. É o que acontece
-quando um dos oito sai de sincronia.
+quando um dos nove sai de sincronia.
 
 ## A ordem, e nenhuma etapa é opcional
 
@@ -49,6 +49,14 @@ quando um dos oito sai de sincronia.
 8. **Pares de contraste novos em `scripts/check-contrast.ts`**, se a peça
    estreou combinação de cor que ainda não é medida. Fronteira de controle
    pede 3:1; texto sobre fundo de estado pede 4,5:1 com o alfa composto.
+
+9. **O lado nativo, no mesmo dia.** Escreva a linha da peça em
+   `scripts/paridade-nativo.ts` antes de dizer que terminou — `check:paridade`
+   recusa página sem linha. Se a peça porta, construa o par em `native/src/` na
+   mesma leva: a API não é a mesma (no nativo tudo é controlado e a lista vem
+   por `items`), mas a escolha da peça e o vocabulário de classes são. Se não
+   porta, diga o motivo na linha. E `fila` é só para decisão de gesto ainda não
+   tomada — nunca para falta de tempo —, e exige entrada em `FILA_DECLARADA`.
 
 ## Antes de dizer que terminou
 

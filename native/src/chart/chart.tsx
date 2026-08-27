@@ -144,17 +144,7 @@ export function ChartContainer({
 
   return (
     <View className={cn("w-full", className)}>
-      {isLoading ? (
-        <StateFrame>
-          <View className="h-full w-full flex-row items-end gap-3 px-2 pb-6">
-            {WAITING.map((height, index) => (
-              <View key={index} className="min-w-0 flex-1" style={{ height: `${height * 100}%` }}>
-                <Skeleton className="h-full w-full" />
-              </View>
-            ))}
-          </View>
-        </StateFrame>
-      ) : isError ? (
+      {isError ? (
         <StateFrame>
           <View className="w-full gap-3">
             <Alert tone="danger" title={errorTitle}>
@@ -165,6 +155,16 @@ export function ChartContainer({
                 Tentar de novo
               </Button>
             )}
+          </View>
+        </StateFrame>
+      ) : isLoading ? (
+        <StateFrame>
+          <View className="h-full w-full flex-row items-end gap-3 px-2 pb-6">
+            {WAITING.map((height, index) => (
+              <View key={index} className="min-w-0 flex-1" style={{ height: `${height * 100}%` }}>
+                <Skeleton className="h-full w-full" />
+              </View>
+            ))}
           </View>
         </StateFrame>
       ) : empty && data && data.length === 0 ? (

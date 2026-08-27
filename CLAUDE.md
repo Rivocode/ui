@@ -103,7 +103,8 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 `bun run check` roda tudo em sequencia e para no primeiro que falhar:
 instalacao, lint, tipos, previews, props, nomes, comentarios, cor literal,
 contraste, temas, contrato, doc, grupos de classe, fronteira do chart, skill,
-tokens nativos, paridade, contagem de testes, e por fim `bun test`.
+tokens nativos, paridade, contagem de pecas, script fora do gate, contagem de
+testes, e por fim `bun test`.
 
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
@@ -115,16 +116,40 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 - `check:paridade` - `scripts/paridade-nativo.ts` e a fonte unica da tabela de
   paridade, e ela escreve tambem a secao "No React Native" de cada pagina.
 - `check:testes` - a contagem que a home exibe.
+- `check:scripts` - todo `scripts/*.ts` tem que ser alcancavel a partir do
+  `check`, ou ter linha em `OUT` dizendo o que o impede. Nasceu porque o
+  `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres
+  assinaturas de retrato divergiam do comitado e ninguem sabia, porque ninguem
+  rodava. A lista `OUT` so encolhe.
 
 `bun run build` depois, porque ha quebra que so aparece ao empacotar.
 
 ## Peca nova
 
-Sao oito artefatos e a peca nao existe sem os oito. Use o agent `peca-nova`
+Sao NOVE artefatos e a peca nao existe sem os nove. Use o agent `peca-nova`
 (`.claude/agents/peca-nova.md`), que tem a ordem e o motivo de cada etapa.
 Resumo: wrapper sem cor literal e sem `z-index` numerico, `classNames` por
 parte, preview, pagina com a secao "quando nao usar" nomeando a peca vizinha,
 teste, `gen:props`, pares de contraste novos.
+
+**O nono artefato e o lado nativo, e ele nao e opcional.** Peca web nova nasce
+nos dois pacotes no mesmo dia. Nao e regra de simetria: e o que impede a fila
+do nativo de existir. Ela chegou a zero em 26/08/2026 e voltou a encher no
+mesmo dia, quando sete pecas entraram no web de uma vez - cada uma parecendo
+atraso temporario, e temporario e como uma fila de vinte comeca.
+
+Tres respostas sao validas, e todas tem que estar ESCRITAS em
+`scripts/paridade-nativo.ts` na hora:
+
+- **`traduz` / `vira`** - a peca nasceu nos dois lados. E o caso padrao.
+- **`nao`** - idioma de mesa que nao tem sentido no toque, ou coisa que a
+  plataforma ja da de fabrica. Decisao, e nao atraso; o motivo vai na linha.
+- **`fila`** - so quando a peca depende de DECISAO DE GESTO que ainda nao foi
+  tomada, e nunca por falta de tempo. Ela exige entrada em `FILA_DECLARADA`
+  com o motivo, e `bun run check:paridade` recusa fila sem declaracao.
+
+A lista `FILA_DECLARADA` **so encolhe**, como o `DEBT` das outras guardas:
+entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
 
 ## Commit e release
 
@@ -142,3 +167,40 @@ Os pacotes andam em velocidades diferentes de proposito. A tag tem que bater
 com a versao do `package.json` correspondente, e o workflow confere isso -
 junto com o segredo e com a existencia da versao no registro - ANTES de gastar
 o `check` inteiro.
+
+### O que cada empurrao publica
+
+**Push na `main` publica o SITE, sozinho e sem tag.** E a coisa mais facil de
+esquecer aqui, porque nada no comando avisa: `git push origin main` dispara o
+`docs.yml` e `ds.rivocode.com.br` muda. Nenhum PACOTE sai por push - npm so
+sai por tag. Entao merge de trabalho pela metade nao quebra instalacao de
+ninguem, mas troca o que esta no ar para quem le a doc.
+
+| Gatilho | Workflow | Publica |
+|---|---|---|
+| push na `main` | `ci.yml` + `docs.yml` | o site |
+| tag `v*` | `release.yml` | `@rivocode/ui` no npm |
+| tag `native-v*` | `release-native.yml` | `@rivocode/ui-native` no npm |
+
+### A ordem, e por que ela e essa
+
+1. **Feche o CHANGELOG antes da tag.** E ele que sai junto com a versao;
+   incompleto ali e surpresa na tela de quem migra.
+2. **Bump da versao no `package.json` certo**, e commit.
+3. **Merge na `main`** - o site sobe com a doc da versao nova.
+4. **Ensaio, no nativo:** `gh workflow run release-native --field ensaio=true`
+   roda o caminho inteiro sem gastar versao. Nao pule: a primeira publicacao
+   nativa de verdade falhou com `ENEEDAUTH`, alguem publicou a mao, e as tres
+   tentativas seguintes tomaram `403` por tentar republicar a MESMA versao. O
+   ensaio e o unico jeito de saber se o segredo esta bom sem queimar a tag.
+5. **A tag**, e so entao.
+
+**Publicacao nao se desfaz, e o npm nao deixa sobrescrever.** Versao publicada
+com defeito nao se conserta republicando: conserta-se com versao nova. Por isso
+o passo 4 existe, e por isso a tag e sempre acao de uma pessoa - nenhum agente
+cria tag por conta propria.
+
+**O repositorio e privado**, entao o npm recusa `--provenance` com 422 e os
+dois workflows publicam sem assinatura. Torna-lo publico e o que devolve a
+procedencia. Esta escrito nos dois workflows, no lugar onde alguem tentaria
+"consertar".

@@ -27,6 +27,7 @@ export { Switch, type SwitchProps } from "./switch";
 export { Sheet, type SheetProps } from "./sheet";
 export { useToast } from "./toast";
 export { DataList, type DataListProps } from "./data-list";
+export { QueryBoundary, type QueryBoundaryProps } from "./query-boundary";
 export { Tracker, type TrackerPoint, type TrackerProps } from "./tracker";
 export { Item, type ItemProps } from "./item";
 export { RelativeTime, type RelativeTimeProps, type RelativeUnit } from "./relative-time";
@@ -103,3 +104,18 @@ export { Code, type CodeProps } from "./code";
 export { Tree, leavesOf, type TreeNode, type TreeProps } from "./tree";
 export { TreeSelect, type TreeSelectProps } from "./tree-select";
 export { Editable, type EditableProps } from "./editable";
+export {
+  TimeField,
+  applyTimeMask,
+  formatTime,
+  parseTime,
+  type TimeFieldProps,
+} from "./time-field";
+export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./time-picker";
+export {
+  FilterBar,
+  FilterChip,
+  type AppliedFilter,
+  type FilterBarProps,
+  type FilterChipProps,
+} from "./filter-bar";
