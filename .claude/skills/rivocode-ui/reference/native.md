@@ -18,15 +18,16 @@ custa um dia.**
 
 - **A cor de classe só muda em BUILD.** O compilador do `react-native-css` crava
   o valor dentro da regra (`.bg-accent` vira `{"backgroundColor":"#d4f34a"}`), e
-  no CSS compilado não sobra uma ocorrência de `--`. Logo
-  `<RivoProvider theme={{ light, dark }}>` **não troca cor de classe nenhuma**.
-- **O mapa está DESCONTINUADO, e agora é inerte.** Ele alcançava só quem lê cor
+  no CSS compilado não sobra uma ocorrência de `--`. Logo nenhum objeto de tema
+  passado em runtime jamais trocou cor de classe.
+- **O mapa de tema SAIU do provider.** Ele alcançava só quem lê cor
   por JS (`ChartDonut`, `ChartRadial`, o giro do `Button` e do `Spinner`, o
   trilho do `Switch`, a `Sparkline`, o texto de dica dos campos), e o sintoma era
   tela MISTURADA: donut de um tema e botão de outro, lado a lado. O provider
   passou a resolver os 45 papéis lendo o CSS compilado, uma classe `bg-` por
-  papel, então contexto e classe dizem sempre a mesma cor. `RivoNativeThemeMap`
-  está marcado como descontinuado; a prop `scheme` continua valendo.
+  papel, então contexto e classe dizem sempre a mesma cor. A prop `theme` aceita
+  só `rivocode-dark`, `rivocode-light` e `system`, e a prop `scheme` saiu junto
+  com o mapa, porque era ela que escolhia o esquema dele.
 - **O teto é de dois temas por build.** `light-dark()` tem duas vagas. Um
   cliente por app cabe; uma vitrine de cinco temas pede cinco bundles.
 
@@ -265,8 +266,8 @@ Portou peça nova no native? Rode o script e comite o que ele reescrever.
   `RivoProvider` aceita `rivocode-dark`, `rivocode-light` e `system`, e trocar
   a prop troca a tela inteira via `Appearance.setColorScheme()`.
 - Prometer tema de cliente em runtime, ou escrever `theme={{ light, dark }}`
-  como se ele vestisse a tela: ele veste só quem lê cor por JS, e a tela sai
-  misturada. Cor de classe é build, e o caminho está na seção de tema acima.
+  na prop: o objeto não é mais aceito, e nunca vestiu a tela inteira. Cor de
+  classe é build, e o caminho está na seção de tema acima.
 - Escrever `density` numa tela nativa: a prop **não existe** no pacote. Alvo de
   toque não encolhe em tela de dedo, e `comfortable` é a única altura.
 - Glyph de texto como ícone de estado (o visto do Checkbox é borda

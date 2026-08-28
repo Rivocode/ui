@@ -371,10 +371,9 @@ troca a página inteira com ela aberta. Aqui não.
 resolve o token e crava o valor dentro da regra: `.bg-accent` vira
 `{"backgroundColor":"#d4f34a"}`, literal, e nos 56 KB de CSS compilado não sobra
 **uma ocorrência de `--`**. Não há variável viva no aparelho para redefinir, e
-por isso `<RivoProvider theme={{ light, dark }}>` **não troca cor de classe
-nenhuma**.
+por isso nenhum objeto de tema passado em runtime jamais trocou cor de classe.
 
-**O mapa de tema está descontinuado, e agora é inerte.** Ele alcançava quem lê a
+**O mapa de tema SAIU do provider.** Ele alcançava quem lê a
 cor por JS, do contexto - `ChartDonut`, `ChartRadial`, o giro do `Button` e do
 `Spinner`, o trilho do `Switch`, a `Sparkline`, o texto de dica dos campos -, e
 não alcançava fundo, cartão, botão, selo e borda, que são classe: dava donut de
@@ -384,8 +383,9 @@ aviso em `__DEV__`.
 Uma metade que discorda da outra é pior do que nenhuma. O provider passou a
 resolver os 45 papéis **lendo o CSS compilado**, uma classe `bg-` por papel, e
 publica no mesmo contexto que as peças já liam: contexto e classe dizem sempre a
-mesma cor. `RivoNativeThemeMap` está marcado como descontinuado; a prop `scheme`
-continua escolhendo claro ou escuro.
+mesma cor. Com isso o mapa deixou de ter o que fazer e foi removido: a prop
+`theme` aceita só `rivocode-dark`, `rivocode-light` e `system`, e a prop `scheme`
+saiu junto, porque era ela que escolhia o esquema do mapa.
 
 ### O caminho que funciona
 

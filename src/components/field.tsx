@@ -2,7 +2,7 @@
 
 import { Field as BaseField } from "@base-ui/react/field";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentProps } from "react";
+import { createContext, use, useEffect, type ComponentProps, type Ref } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -29,19 +29,63 @@ export const inputVariants = cva(
   },
 );
 
+const FieldRootPresence = createContext(false);
+
+export function missingFieldRootComplaint(part: string): string {
+  return (
+    `[rivocode/ui] <${part}> fora de <Field>: a Base UI derruba a árvore inteira quando uma ` +
+    "parte do campo não encontra o <Field> em volta, e a página fica em branco sem erro na " +
+    `tela. Envolva o bloco com <Field name="algo">, ou troque <${part}> por um elemento ` +
+    "comum onde não houver campo nenhum. Aqui o desenho seguiu num elemento simples, sem " +
+    "a ligação com o controle que o leitor de tela espera."
+  );
+}
+
+function useMissingFieldRootWarning(part: string, missing: boolean) {
+  useEffect(() => {
+    if (!missing || process.env.NODE_ENV === "production") return;
+
+    console.error(missingFieldRootComplaint(part));
+  }, [part, missing]);
+}
+
+type BaseOnly = {
+  render?: unknown;
+  style?: unknown;
+  match?: unknown;
+  nativeLabel?: unknown;
+};
+
+function plainProps<T extends BaseOnly>(props: T) {
+  const { render: _render, style, match: _match, nativeLabel: _nativeLabel, ...rest } = props;
+  return {
+    ...rest,
+    style: typeof style === "function" ? undefined : (style as ComponentProps<"p">["style"]),
+  };
+}
+
 export type FieldProps = ComponentProps<typeof BaseField.Root>;
 
 export function Field({ className, ...props }: FieldProps) {
-  return <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />;
+  return (
+    <FieldRootPresence value={true}>
+      <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />
+    </FieldRootPresence>
+  );
 }
 
 export function FieldLabel({ className, ...props }: ComponentProps<typeof BaseField.Label>) {
-  return (
-    <BaseField.Label
-      {...props}
-      className={cn("font-sans text-sm font-medium text-fg", className)}
-    />
-  );
+  const inside = use(FieldRootPresence);
+  const classes = cn("font-sans text-sm font-medium text-fg", className);
+
+  useMissingFieldRootWarning("FieldLabel", !inside);
+
+  if (!inside) {
+    const { ref, ...plain } = plainProps(props);
+    return <label {...plain} ref={ref as Ref<HTMLLabelElement>} className={classes} />;
+  }
+
+  return <BaseField.Label {...props} className={classes} />;
 }
 
 export type InputProps = Omit<ComponentProps<typeof BaseField.Control>, "size"> &
@@ -74,9 +118,27 @@ export function FieldDescription({
   className,
   ...props
 }: ComponentProps<typeof BaseField.Description>) {
-  return <BaseField.Description {...props} className={cn("text-xs text-fg-subtle", className)} />;
+  const inside = use(FieldRootPresence);
+  const classes = cn("text-xs text-fg-subtle", className);
+
+  useMissingFieldRootWarning("FieldDescription", !inside);
+
+  if (!inside) return <p {...plainProps(props)} className={classes} />;
+
+  return <BaseField.Description {...props} className={classes} />;
 }
 
 export function FieldError({ className, ...props }: ComponentProps<typeof BaseField.Error>) {
-  return <BaseField.Error {...props} className={cn("text-xs text-danger-text", className)} />;
+  const inside = use(FieldRootPresence);
+  const classes = cn("text-xs text-danger-text", className);
+
+  useMissingFieldRootWarning("FieldError", !inside);
+
+  if (!inside) {
+    if (props.match !== true) return null;
+
+    return <div {...plainProps(props)} className={classes} />;
+  }
+
+  return <BaseField.Error {...props} className={classes} />;
 }

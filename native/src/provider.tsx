@@ -16,13 +16,10 @@ import { ToastProvider } from "./toast";
 
 export type RivoNativeColors = Record<RivoNativeColorRole, string>;
 
-/** @deprecated O mapa nao veste mais nada: sobrescreva os papeis --color-* no CSS do app. */
-export type RivoNativeThemeMap = { light: RivoNativeColors; dark: RivoNativeColors };
-
 type RivoContextValue = {
   /**
    * O esquema resolvido: com `theme="system"`, aqui chega o que o aparelho
-   * pediu; com tema de cliente, o de casa mais proximo dele.
+   * pediu.
    */
   theme: RivoNativeTheme;
   /**
@@ -40,16 +37,6 @@ const PAINT = { className: "style" } as const;
 
 const Swatch = (props: { style?: unknown }) => createElement("RivoSwatch", props);
 
-const CLIENT_THEME_WARNING =
-  "[rivocode/ui-native] <RivoProvider theme={{ light, dark }}>: o mapa de tema está " +
-  "descontinuado e não veste mais nada. Ele nunca alcançou o que é pintado por classe - o " +
-  "compilador do react-native-css crava o valor do token dentro da classe em build -, então " +
-  "vestia só as peças que leem cor do contexto, e a tela saía com o gráfico de um tema e o " +
-  "botão de outro. Agora o provider lê os 45 papéis do CSS compilado, e contexto e classe " +
-  "dizem sempre a mesma cor. Para vestir um cliente, sobrescreva os papéis `--color-*` no CSS " +
-  "do app antes de compilar: é o único caminho que alcança a tela inteira, e ele agora alcança " +
-  "também a cor que a peça lê do contexto.";
-
 const schemeWarning = (asked: "light" | "dark") =>
   "[rivocode/ui-native] <RivoProvider>: este runtime não tem `Appearance.setColorScheme` - é o caso " +
   "do react-native-web -, então o esquema `" +
@@ -60,8 +47,10 @@ const schemeWarning = (asked: "light" | "dark") =>
   asked +
   "` na raiz do documento para a tela casar com o tema pedido, ou use " +
   '<RivoProvider theme="system"> junto de `color-scheme: light dark`, que segue o navegador dos ' +
-  "dois lados. A cor que a peça lê do contexto continua sendo a do tema pedido, para os dois lados " +
-  "combinarem quando você declarar.";
+  "dois lados. A cor que a peça lê do contexto sai desse mesmo documento e é relida sempre que o " +
+  "`color-scheme` ou a classe da raiz mudam - inclusive quando o seu app declara isso dentro de um " +
+  "efeito, depois desta montagem -, então os dois lados saem no mesmo esquema em vez de meia tela " +
+  "em cada um.";
 
 const RivoContext = createContext<RivoContextValue | null>(null);
 
@@ -106,12 +95,29 @@ type ProbeNode = {
   remove: () => void;
 };
 
+type Watcher = {
+  observe: (node: unknown, options: unknown) => void;
+  disconnect: () => void;
+};
+
+type SchemeQuery = {
+  addEventListener?: (type: "change", listener: () => void) => void;
+  removeEventListener?: (type: "change", listener: () => void) => void;
+  addListener?: (listener: () => void) => void;
+  removeListener?: (listener: () => void) => void;
+};
+
 type Browser = {
   document?: {
     createElement?: (tag: string) => ProbeNode;
-    body?: { appendChild?: (node: unknown) => void };
+    documentElement?: unknown;
+    body?: { appendChild?: (node: unknown) => void } | null;
   };
   getComputedStyle?: (node: unknown) => { backgroundColor?: string } | null;
+  MutationObserver?: new (callback: () => void) => Watcher;
+  matchMedia?: (query: string) => SchemeQuery | null;
+  requestAnimationFrame?: (callback: () => void) => number;
+  cancelAnimationFrame?: (handle: number) => void;
 };
 
 const TRANSPARENT = /^(?:transparent|rgba\(0,\s*0,\s*0,\s*0\))$/;
@@ -139,19 +145,61 @@ function domRoleColors(): (string | undefined)[] | undefined {
   }
 }
 
+const ROOT_ATTRIBUTES = { attributes: true, attributeFilter: ["style", "class"] } as const;
+
+const DARK_QUERY = "(prefers-color-scheme: dark)";
+
+function watchScheme(reread: () => void): () => void {
+  const browser = globalThis as unknown as Browser;
+  const stops: (() => void)[] = [];
+
+  const Observer = browser.MutationObserver;
+  if (Observer) {
+    const watcher = new Observer(reread);
+    let watching = false;
+    for (const root of [browser.document?.documentElement, browser.document?.body]) {
+      if (!root) continue;
+      watcher.observe(root, ROOT_ATTRIBUTES);
+      watching = true;
+    }
+    if (watching) stops.push(() => watcher.disconnect());
+  }
+
+  const query = browser.matchMedia?.call(browser, DARK_QUERY);
+  const listen = query?.addEventListener;
+  const forget = query?.removeEventListener;
+  const listenOld = query?.addListener;
+  const forgetOld = query?.removeListener;
+  if (query && listen && forget) {
+    listen.call(query, "change", reread);
+    stops.push(() => forget.call(query, "change", reread));
+  } else if (query && listenOld && forgetOld) {
+    listenOld.call(query, reread);
+    stops.push(() => forgetOld.call(query, reread));
+  }
+
+  const frame = browser.requestAnimationFrame;
+  if (frame) {
+    const handle = frame.call(browser, reread);
+    stops.push(() => browser.cancelAnimationFrame?.call(browser, handle));
+  } else {
+    const timer = setTimeout(reread, 0);
+    stops.push(() => clearTimeout(timer));
+  }
+
+  return () => {
+    for (const stop of stops) stop();
+  };
+}
+
 export type RivoProviderProps = {
   children: ReactNode;
   /**
-   * `rivocode-dark` e o padrao, como no web; `system` segue o aparelho. O
-   * objeto de tema esta descontinuado e nao veste nada: a camada 3 aqui e
-   * sobrescrever os papeis `--color-*` no CSS do app antes de compilar.
+   * `rivocode-dark` e o padrao, como no web; `system` segue o aparelho. A
+   * camada 3 aqui e sobrescrever os papeis `--color-*` no CSS do app antes de
+   * compilar.
    */
-  theme?: RivoNativeTheme | "system" | RivoNativeThemeMap;
-  /**
-   * Claro ou escuro, quando o tema e de cliente. Com tema de casa quem decide
-   * e o proprio nome do tema, entao esta prop nao se aplica.
-   */
-  scheme?: "light" | "dark" | "system";
+  theme?: RivoNativeTheme | "system";
   /**
    * As familias que o APP ja carregou com o `expo-font`, uma por papel. A
    * biblioteca nunca carrega fonte: ela so passa o nome adiante, e o papel que
@@ -169,11 +217,9 @@ export type RivoProviderProps = {
 export function RivoProvider({
   children,
   theme = "rivocode-dark",
-  scheme = "system",
   fonts,
   isFontLoaded,
 }: RivoProviderProps) {
-  const custom = typeof theme === "object" ? theme : undefined;
   const { sans, display, mono } = fonts ?? {};
   const families = useMemo(() => resolveFonts({ sans, display, mono }), [sans, display, mono]);
 
@@ -183,18 +229,8 @@ export function RivoProvider({
     if (complaints.length > 0) console.warn(fontWarning(complaints));
   }, [sans, display, mono, isFontLoaded]);
 
-  const dressing = Boolean(custom);
-  useEffect(() => {
-    if (__DEV__ && dressing) console.warn(CLIENT_THEME_WARNING);
-  }, [dressing]);
-
-  const wanted = custom ? scheme : theme;
   const asked =
-    wanted === "system"
-      ? "unspecified"
-      : wanted === "rivocode-light" || wanted === "light"
-        ? "light"
-        : "dark";
+    theme === "system" ? "unspecified" : theme === "rivocode-light" ? "light" : "dark";
 
   useEffect(() => {
     if (typeof Appearance.setColorScheme === "function") {
@@ -205,11 +241,7 @@ export function RivoProvider({
   }, [asked]);
 
   const device = useColorScheme();
-  const light = custom
-    ? scheme === "system"
-      ? device === "light"
-      : scheme === "light"
-    : theme === "rivocode-light" || (theme === "system" && device === "light");
+  const light = theme === "rivocode-light" || (theme === "system" && device === "light");
 
   const resolved: RivoNativeTheme = light ? "rivocode-light" : "rivocode-dark";
   const base = tokens.themes[resolved] as RivoNativeColors;
@@ -219,7 +251,16 @@ export function RivoProvider({
 
   useEffect(() => {
     if (Platform.OS !== "web") return;
-    setFromDom(domRoleColors());
+
+    const reread = () => {
+      const read = domRoleColors();
+      if (!read) return;
+      const next = read.join("|");
+      setFromDom((worn) => (worn !== undefined && worn.join("|") === next ? worn : read));
+    };
+
+    reread();
+    return watchScheme(reread);
   }, [resolved]);
 
   const painted = fromDom ?? fromCss;

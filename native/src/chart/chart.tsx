@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
 
 import type { RivoNativeColorRole } from "../../tokens";
@@ -8,6 +8,7 @@ import { cn } from "../cn";
 import { EmptyState } from "../empty-state";
 import { useRivo } from "../provider";
 import { SETTLED } from "../shared/settled";
+import { useSilentMisuse } from "../silent-misuse";
 import { Skeleton } from "../skeleton";
 
 export type ChartConfig = Record<
@@ -140,15 +141,17 @@ export function ChartContainer({
 }: ChartContainerProps) {
   const { colors: theme } = useRivo();
   const [box, setBox] = useState({ width: 0, height: 0 });
+  const warned = useRef<Set<string>>(new Set());
 
   const drawn = typeof children === "function";
 
-  const colors = Object.fromEntries(
+  const resolved = Object.fromEntries(
     Object.entries(config).map(([key, series], index) => [
       key,
       theme[series.color ?? PALETTE[index % PALETTE.length]!],
     ]),
   );
+  const colors = __DEV__ ? watched(resolved, warned.current) : resolved;
 
   useSilentMisuse(empty !== undefined && data === undefined, MISSING_DATA);
   useSilentMisuse(label !== undefined && !drawn, IGNORED_LABEL);
@@ -239,15 +242,23 @@ const FLAT_BOX =
   'vem de quem usa a moldura: dê a ela uma classe de altura (`className="h-56"`), ou ' +
   "altura ao pai que a segura.";
 
-function useSilentMisuse(wrong: boolean, message: string, after = 0) {
-  useEffect(() => {
-    if (!wrong || !__DEV__) return;
-    if (after === 0) {
-      console.warn(message);
-      return;
-    }
+export function unknownSeriesComplaint(key: string, known: readonly string[]): string {
+  return (
+    `[rivocode/ui-native] <ChartContainer>: o desenho pediu a cor "${key}", e o \`config\` ` +
+    `não conhece essa série - \`colors["${key}"]\` volta \`undefined\`, o SVG pinta a marca ` +
+    "de preto, e não há erro nenhum. As séries deste gráfico são: " +
+    `${known.join(", ")}. Corrija a chave, ou declare a série no \`config\`.`
+  );
+}
 
-    const waiting = setTimeout(() => console.warn(message), after);
-    return () => clearTimeout(waiting);
-  }, [wrong, message, after]);
+function watched(colors: Record<string, string>, warned: Set<string>) {
+  return new Proxy(colors, {
+    get(target, key) {
+      if (typeof key === "string" && !(key in target) && !warned.has(key)) {
+        warned.add(key);
+        console.warn(unknownSeriesComplaint(key, Object.keys(target)));
+      }
+      return target[key as string];
+    },
+  });
 }

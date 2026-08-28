@@ -71,6 +71,19 @@
   --text-2xl--line-height: 30px;
   --text-3xl: 30px;
   --text-3xl--line-height: 38px;
+
+  /* Familia de fonte nao vem por classe aqui, e o initial e o que faz a classe
+     DEIXAR de existir. O tailwindcss/theme.css do app traz --font-sans,
+     --font-serif e --font-mono de fabrica, e com eles font-sans, font-serif e
+     font-mono compilam para uma pilha de CSS da qual o react-native-css guarda
+     so a primeira - generica que celular nenhum tem instalada, e o texto sai na
+     letra do sistema sem nada acusar. A font-display nunca compilou nada. Sem
+     os tres tokens, as quatro classes viram candidato que o Tailwind ignora, e
+     o check:classes as pega. A familia entra pelo fonts do RivoProvider e sai
+     pela prop font do Text. */
+  --font-sans: initial;
+  --font-serif: initial;
+  --font-mono: initial;
 }
 
 /* O @source inline forca uma classe bg- por papel, mesmo papel que peca

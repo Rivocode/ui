@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  Children,
   cloneElement,
+  isValidElement,
   useEffect,
   useId,
   useState,
@@ -88,6 +90,89 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
 
 export const PALETTE = Array.from({ length: 8 }, (_, index) => `var(--rc-chart-${index + 1})`);
 
+const PAINTED: Record<string, readonly ("fill" | "stroke")[]> = {
+  Area: ["fill", "stroke"],
+  Bar: ["fill"],
+  Line: ["stroke"],
+  Radar: ["fill", "stroke"],
+};
+
+type MarkProps = {
+  dataKey?: unknown;
+  fill?: unknown;
+  stroke?: unknown;
+  children?: ReactNode;
+};
+
+function markName(type: ReactElement["type"]): string {
+  if (typeof type === "string") return type;
+  return (type as { displayName?: string }).displayName ?? "";
+}
+
+function repaint(node: ReactNode, config: ChartConfig, unknown: Set<string>): ReactNode {
+  return Children.map(node, (child) => {
+    if (!isValidElement(child)) return child;
+
+    const written = child.props as MarkProps;
+    const roles = PAINTED[markName(child.type)];
+    const patch: Record<string, unknown> = {};
+
+    if (
+      roles &&
+      typeof written.dataKey === "string" &&
+      written.fill === undefined &&
+      written.stroke === undefined
+    ) {
+      if (written.dataKey in config) {
+        for (const role of roles) patch[role] = `var(--color-${written.dataKey})`;
+      } else {
+        unknown.add(written.dataKey);
+      }
+    }
+
+    if (written.children !== undefined && typeof written.children !== "function") {
+      patch.children = repaint(written.children, config, unknown);
+    }
+
+    return Object.keys(patch).length > 0 ? cloneElement(child, patch) : child;
+  });
+}
+
+export function seriesColors(
+  chart: ReactElement,
+  config: ChartConfig,
+): { chart: ReactElement; unknown: string[] } {
+  const written = chart.props as MarkProps;
+  if (written.children === undefined || typeof written.children === "function") {
+    return { chart, unknown: [] };
+  }
+
+  const missing = new Set<string>();
+  const painted = cloneElement(chart, {
+    children: repaint(written.children, config, missing),
+  } as Partial<MarkProps>);
+
+  return { chart: painted, unknown: [...missing] };
+}
+
+export function unknownSeriesComplaint(key: string, known: readonly string[]): string {
+  return (
+    `[rivocode/ui] <ChartContainer>: a marca com \`dataKey\` "${key}" não tem cor, e o ` +
+    `\`config\` não conhece essa série - a Recharts pinta a marca de preto, e não há erro ` +
+    "nenhum. As séries deste gráfico são: " +
+    `${known.join(", ")}. Corrija a chave, ou declare a série no \`config\` - a moldura ` +
+    "pinta sozinha toda marca que nasce sem `fill` e sem `stroke`."
+  );
+}
+
+function useUnknownSeriesWarning(keys: string, known: string) {
+  useEffect(() => {
+    if (keys === "" || process.env.NODE_ENV === "production") return;
+
+    for (const key of keys.split(",")) console.warn(unknownSeriesComplaint(key, known.split(",")));
+  }, [keys, known]);
+}
+
 export function ChartContainer({
   config,
   className,
@@ -113,8 +198,11 @@ export function ChartContainer({
     .join("\n  ");
 
   const points = data ?? dataOfChild(children);
+  const painted = seriesColors(children, config);
+
   useMissingDataWarning(empty !== undefined && points === undefined);
   useFlatBoxWarning(id);
+  useUnknownSeriesWarning(painted.unknown.join(","), Object.keys(config).join(","));
 
   const announcement = useActivePointAnnouncement(id);
 
@@ -183,7 +271,7 @@ export function ChartContainer({
         </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          {describe(children, label ?? nameFromConfig(config))}
+          {describe(painted.chart, label ?? nameFromConfig(config))}
         </ResponsiveContainer>
       )}
     </div>

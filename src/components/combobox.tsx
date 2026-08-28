@@ -2,16 +2,80 @@
 
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
 import { Check, ChevronDown, X } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+import { createContext, use, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import {
+  isChosen,
+  keyOnScreen,
+  plainText,
+  useKeyOnScreenWarning,
+  type LabelLookup,
+} from "../lib/item-label";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 import { inputVariants } from "./field";
 import { floatingGroupLabel, floatingPanel } from "./menu";
 
-export const Combobox = BaseCombobox.Root;
+type ComboboxLabelSource = {
+  chosen: unknown;
+  lookup: LabelLookup;
+  resolved: { current: boolean };
+};
+
+const ComboboxLabels = createContext<ComboboxLabelSource | null>(null);
+
+export function missingComboboxLabelComplaint(key: string, label: string): string {
+  return (
+    `[rivocode/ui] <Combobox> sem \`itemToStringLabel\`: o campo está mostrando "${key}", que é ` +
+    `a chave do item, e não "${label}", que é o texto da lista. Item em objeto sem \`label\` ` +
+    "não tem rótulo de onde a Base UI possa ler, e ela escreve a chave crua, sem erro na tela. " +
+    "Passe itemToStringLabel={(item) => item.nome} ao <Combobox>, ou dê ao item a forma " +
+    "{ value, label }."
+  );
+}
+
+function comboboxComplaintOf(
+  source: ComboboxLabelSource | null,
+  value: unknown,
+  children: ReactNode,
+): string | null {
+  if (source === null || source.resolved.current) return null;
+  if (!isChosen(source.chosen, value)) return null;
+
+  const key = keyOnScreen(source.chosen, source.lookup);
+  if (key === null || key === "") return null;
+
+  const label = plainText(children);
+  if (label === null || label === key) return null;
+
+  return missingComboboxLabelComplaint(key, label);
+}
+
+export function Combobox<Value, Multiple extends boolean | undefined = false>(
+  props: BaseCombobox.Root.Props<Value, Multiple>,
+) {
+  const { value, defaultValue, items, itemToStringLabel, inputValue, defaultInputValue } = props;
+  const resolved = useRef(false);
+
+  if (inputValue !== undefined || defaultInputValue !== undefined) resolved.current = true;
+
+  const source = useMemo<ComboboxLabelSource>(
+    () => ({
+      chosen: value === undefined ? defaultValue : value,
+      lookup: { items, itemToStringLabel },
+      resolved,
+    }),
+    [value, defaultValue, items, itemToStringLabel],
+  );
+
+  return (
+    <ComboboxLabels value={source}>
+      <BaseCombobox.Root {...props} />
+    </ComboboxLabels>
+  );
+}
 
 export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
   /** Mostra o botao de limpar quando ha escolha. */
@@ -120,6 +184,8 @@ export function ComboboxItem({
   children,
   ...props
 }: ComponentProps<typeof BaseCombobox.Item>) {
+  useKeyOnScreenWarning(comboboxComplaintOf(use(ComboboxLabels), props.value, children));
+
   return (
     <BaseCombobox.Item
       {...props}
@@ -157,7 +223,13 @@ export function ComboboxSeparator({
   return <BaseCombobox.Separator {...props} className={cn("my-1 h-px bg-border", className)} />;
 }
 
-export const ComboboxValue = BaseCombobox.Value;
+export function ComboboxValue(props: ComponentProps<typeof BaseCombobox.Value>) {
+  const source = use(ComboboxLabels);
+
+  if (source !== null && props.children != null) source.resolved.current = true;
+
+  return <BaseCombobox.Value {...props} />;
+}
 
 export type ComboboxChipProps = ComponentProps<typeof BaseCombobox.Chip> & {
   /**

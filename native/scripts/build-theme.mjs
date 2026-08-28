@@ -103,7 +103,7 @@ export const DERIVED = Object.keys(EXPLAIN);
 const MAP_EMITTER = {
   on: false,
   why:
-    "O emissor do `RivoNativeThemeMap` esta escrito e desligado nesta versao.\n" +
+    "O emissor do mapa de tema por objeto esta escrito e desligado nesta versao.\n" +
     "    As pecas que pintavam fora da classe passaram a resolver a cor do CSS\n" +
     "    compilado em runtime, e com isso o mapa deixou de ter o que fazer: um\n" +
     "    segundo lugar para manter a cor de um cliente e como a promessa se quebra\n" +
@@ -310,8 +310,8 @@ export function emitMap(slots, source, name) {
   const map = { light: slots.light.colors, dark: slots.dark.colors };
   return (
     `/* Gerado de ${source} por rivocode-ui-native-theme --mapa. Nao editar. */\n` +
-    `import type { RivoNativeThemeMap } from "@rivocode/ui-native";\n\n` +
-    `export const ${name}Theme: RivoNativeThemeMap = ${JSON.stringify(map, null, 2)};\n`
+    `type ThemeMap = { light: Record<string, string>; dark: Record<string, string> };\n\n` +
+    `export const ${name}Theme: ThemeMap = ${JSON.stringify(map, null, 2)};\n`
   );
 }
 

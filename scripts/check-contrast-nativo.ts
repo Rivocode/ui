@@ -3,13 +3,16 @@
  * `check-contrast` nao enxerga.
  *
  * O `check-contrast` le CSS: abre `src/tokens/themes/*.css`, resolve `var()` e
- * mede os pares. Acontece que o nativo nao tem CSS de tema. O `RivoProvider`
- * do `@rivocode/ui-native` aceita um `RivoNativeThemeMap` - um objeto com os
- * 45 papeis em `light` e em `dark` - e nenhuma linha do gate media uma cor
- * dele. O efeito e o que o relato descreve: um tema de cliente escrito para o
- * celular podia sair com texto ilegivel e o gate ficava verde, enquanto o
- * MESMO erro em CSS reprovava. Quem sentiu portou a conta a mao, fora do
- * repositorio, e conta feita a mao envelhece calada.
+ * mede os pares. Acontece que o nativo nao tem CSS de tema. Na epoca, o
+ * `RivoProvider` do `@rivocode/ui-native` recebia o tema de cliente como
+ * objeto - os 45 papeis em `light` e em `dark` - e nenhuma linha do gate media
+ * uma cor dele. O efeito e o que o relato descreve: um tema de cliente escrito
+ * para o celular podia sair com texto ilegivel e o gate ficava verde, enquanto
+ * o MESMO erro em CSS reprovava. Quem sentiu portou a conta a mao, fora do
+ * repositorio, e conta feita a mao envelhece calada. A prop por objeto morreu
+ * depois, e o par `light`/`dark` continua sendo a FORMA que esta guarda mede:
+ * e o que o `bun run gen:native --tema` emite, e e por onde um tema de cliente
+ * passa antes de virar CSS.
  *
  * A conta nao muda; a FORMA do dado muda, e foi onde a porta ficou aberta. O
  * gerador emite alfa como `rgba(212,243,74,0.14)`, que e o que o React Native
@@ -240,7 +243,10 @@ for (const file of files) {
       typeof value === "object" && value !== null && "light" in value && "dark" in value,
   );
   if (found.length === 0) {
-    console.error(`${file}: nenhum export com \`light\` e \`dark\` - nao e um RivoNativeThemeMap.`);
+    console.error(
+      `${file}: nenhum export com \`light\` e \`dark\` - nao e um mapa de tema. Emita um com` +
+        " `bun run gen:native --tema`.",
+    );
     process.exit(1);
   }
   for (const [key, value] of found) maps.push([`${file}:${key}`, value as ThemeMap]);

@@ -80,8 +80,8 @@ decidida muda, e é aqui que se perde um dia.
 
 No celular o compilador do `react-native-css` resolve o token em build e crava o
 valor dentro da regra: `.bg-accent` vira `{"backgroundColor":"#d4f34a"}`, e no
-CSS compilado não sobra uma ocorrência de `--`. Então
-`<RivoProvider theme={{ light, dark }}>` **não troca cor de classe nenhuma**.
+CSS compilado não sobra uma ocorrência de `--`. Então nenhum objeto de tema
+passado em runtime jamais trocou cor de classe.
 
 Ele trocava só quem lê a cor por JS: `ChartDonut`, `ChartRadial`, o giro do
 `Button` e do `Spinner`, o trilho do `Switch`, a `Sparkline`, o texto de dica dos
@@ -89,11 +89,11 @@ campos. Fundo, cartão, botão, selo e borda continuavam com a cor da RivoCode, 
 resultado na tela **não era a marca ausente: era a tela misturada**, donut de um
 tema e botão de outro.
 
-**O mapa está descontinuado, e agora é inerte.** O provider resolve os 45 papéis
-lendo o CSS compilado, uma classe `bg-` por papel, e publica no contexto que as
-peças já liam: contexto e classe dizem sempre a mesma cor. Passar `theme={{
-light, dark }}` não veste nada, e `RivoNativeThemeMap` está marcado como
-descontinuado. A prop `scheme` continua escolhendo claro ou escuro.
+**O mapa saiu do provider.** O provider resolve os 45 papéis lendo o CSS
+compilado, uma classe `bg-` por papel, e publica no contexto que as peças já
+liam: contexto e classe dizem sempre a mesma cor. A prop `theme` aceita só
+`rivocode-dark`, `rivocode-light` e `system` - objeto de tema não compila mais -,
+e a prop `scheme` saiu junto, porque era ela que escolhia o esquema do mapa.
 
 O caminho que funciona é sobrescrever os papéis num `@theme` do `global.css` do
 app, depois do `@rivocode/ui-native/theme.css`, e pré-compilar de novo com

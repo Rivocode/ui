@@ -16,6 +16,15 @@
  * o app sabe o que carregou, entao a familia entra por `fonts` no
  * `RivoProvider` e nao por token. Nao devolva este bloco.
  *
+ * Nao bastava nao emitir: o `@import "tailwindcss/theme.css"` do app traz
+ * `--font-sans`, `--font-serif` e `--font-mono` de fabrica, e com eles as
+ * classes `font-sans`, `font-serif` e `font-mono` compilam para a pilha de CSS
+ * `ui-monospace, SFMono-Regular, Menlo, ...`, da qual o react-native-css guarda
+ * a PRIMEIRA - generica que aparelho nenhum tem. A `font-display` nao compila
+ * nada, e some calada. Por isso o @theme abaixo zera os tres com `initial`: sem
+ * o token, nenhuma das quatro gera regra, e o `check:classes` passa a acusa-las
+ * dentro de `native/src/**` como acusou o `shadow-1` do Slider.
+ *
  * DENSIDADE TAMBEM NAO TRADUZ, e a licao e a mesma do bloco acima com outro
  * disfarce. O `densities` saia daqui com as duas escalas, `comfortable` e
  * `compact`, e nenhuma peca nativa lia nenhuma das duas: alvo de toque nao
@@ -192,6 +201,9 @@ const themeLines = [
 
 const roleClasses = Object.keys(dark).join(",");
 
+const familyRoles = ["sans", "serif", "mono"];
+const familyReset = familyRoles.map((role) => `  --font-${role}: initial;`).join("\n");
+
 const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode bun run gen:native. */
 
 /* So o @theme: o build do Tailwind ja o materializa em :root sozinho, e uma
@@ -200,6 +212,17 @@ const themeCss = `/* Gerado por scripts/gen-native-tokens.ts. Nao editar: rode b
    e o provider troca o tema em runtime com Appearance.setColorScheme(). */
 @theme {
 ${themeLines.join("\n")}
+
+  /* Familia de fonte nao vem por classe aqui, e o initial e o que faz a classe
+     DEIXAR de existir. O tailwindcss/theme.css do app traz --font-sans,
+     --font-serif e --font-mono de fabrica, e com eles font-sans, font-serif e
+     font-mono compilam para uma pilha de CSS da qual o react-native-css guarda
+     so a primeira - generica que celular nenhum tem instalada, e o texto sai na
+     letra do sistema sem nada acusar. A font-display nunca compilou nada. Sem
+     os tres tokens, as quatro classes viram candidato que o Tailwind ignora, e
+     o check:classes as pega. A familia entra pelo fonts do RivoProvider e sai
+     pela prop font do Text. */
+${familyReset}
 }
 
 /* O @source inline forca uma classe bg- por papel, mesmo papel que peca
@@ -284,13 +307,13 @@ if (themeArg !== -1) {
   await Bun.write(
     target,
     `/* Gerado de ${source} por bun run gen:native --tema. Nao editar. */\n` +
-      `import type { RivoNativeThemeMap } from "@rivocode/ui-native";\n\n` +
-      `export const ${base.replace(/-/g, "")}Theme: RivoNativeThemeMap = ${JSON.stringify(map, null, 2)};\n`,
+      `type ThemeMap = { light: Record<string, string>; dark: Record<string, string> };\n\n` +
+      `export const ${base.replace(/-/g, "")}Theme: ThemeMap = ${JSON.stringify(map, null, 2)};\n`,
   );
 
   console.log(`${target}: ${Object.keys(map.light).length} papeis, claro e escuro.`);
   console.log(
-    "\nO mapa esta DESCONTINUADO como prop: `<RivoProvider theme={mapa}>` nao veste nada.\n" +
+    "\nO mapa nao e prop de nada: o `RivoProvider` nao recebe mais objeto de tema.\n" +
       "Para vestir a tela, sobrescreva os papeis --color-* num @theme do global.css do app e\n" +
       "recompile com `npx rivocode-ui-native-css`. O provider le os 45 papeis do CSS compilado,\n" +
       "entao a classe e a cor que a peca le por JS passam a dizer a mesma coisa.\n" +

@@ -349,8 +349,10 @@ describe("o emissor do mapa", () => {
     };
     const written = generator.emitMap(slots, "acme.ts", "acme");
 
-    expect(written).toContain('import type { RivoNativeThemeMap } from "@rivocode/ui-native";');
-    expect(written).toContain("export const acmeTheme: RivoNativeThemeMap = {");
+    expect(written).toContain(
+      "type ThemeMap = { light: Record<string, string>; dark: Record<string, string> };",
+    );
+    expect(written).toContain("export const acmeTheme: ThemeMap = {");
     expect(written).toContain('"light": {');
     expect(written).toContain('"dark": {');
   });

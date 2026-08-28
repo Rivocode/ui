@@ -133,9 +133,6 @@ const REQUIRES_PARENT: Record<string, string> = {
   DialogDescription: "Dialog",
   DialogTitle: "Dialog",
   DialogTrigger: "Dialog",
-  FieldDescription: "Field",
-  FieldError: "Field",
-  FieldLabel: "Field",
   FieldsetLegend: "Fieldset",
   MenuCheckboxItem: "Menu",
   MenuContent: "Menu",
@@ -233,6 +230,7 @@ const SAMPLE_CHILD: Record<string, ReactNode> = {
  */
 const SAMPLE_PROPS: Record<string, Record<string, unknown>> = {
   RivoProvider: { scope: "local" },
+  FieldError: { match: true },
 };
 
 /**

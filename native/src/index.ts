@@ -3,7 +3,6 @@ export {
   useRivo,
   type RivoProviderProps,
   type RivoNativeColors,
-  type RivoNativeThemeMap,
 } from "./provider";
 export { useRivoFonts, type RivoFontRole, type RivoFonts, type RivoResolvedFonts } from "./font";
 export { Button, type ButtonProps } from "./button";

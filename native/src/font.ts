@@ -137,3 +137,36 @@ export function fontWarning(complaints: string[]): string {
     "nada acusa. Declare aqui o mesmo nome com que o app registrou a família no `expo-font`."
   );
 }
+
+const FAMILY_CLASSES = new Set(["font-sans", "font-serif", "font-mono", "font-display"]);
+
+const warnedClasses = new Set<string>();
+
+export function familyClassesIn(className: string | undefined): string[] {
+  if (!className) return [];
+
+  const found: string[] = [];
+  for (const token of className.split(/\s+/)) {
+    if (FAMILY_CLASSES.has(token) && !found.includes(token)) found.push(token);
+  }
+  return found;
+}
+
+export function familyClassWarning(classes: string[]): string {
+  return (
+    `[rivocode/ui-native] className="${classes.join(" ")}": ` +
+    "família de fonte não vem por classe no pacote nativo. O CSS daqui não emite regra para " +
+    "nenhuma delas, então a classe é ignorada em silêncio e o texto sai na fonte do sistema sem " +
+    "nada acusar. No celular só o app sabe o que o `expo-font` carregou: declare a família uma " +
+    "vez em `<RivoProvider fonts={{ sans, display, mono }}>` e peça o papel pela prop `font` do " +
+    "`Text`, do `TextInput` e das peças de texto."
+  );
+}
+
+export function warnFamilyClass(className: string | undefined): void {
+  const fresh = familyClassesIn(className).filter((name) => !warnedClasses.has(name));
+  if (fresh.length === 0) return;
+
+  for (const name of fresh) warnedClasses.add(name);
+  console.warn(familyClassWarning(fresh));
+}

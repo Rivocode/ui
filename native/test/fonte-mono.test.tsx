@@ -5,9 +5,11 @@ import type { ReactTestInstance, ReactTestRenderer } from "react-test-renderer";
 import { Calendar } from "../src/calendar";
 import { Code } from "../src/code";
 import { ColorPicker } from "../src/color-picker";
-import { mono } from "../src/font";
+import { familyClassesIn, mono } from "../src/font";
 import { Timeline } from "../src/timeline";
 import { byLabel, render } from "./helpers";
+
+const REFUSAL_REGISTRY = "native/src/font.ts";
 
 /*
  * O que esta suite mede nao e a plataforma, e sim que a letra de largura fixa
@@ -111,6 +113,8 @@ describe("a fonte mono", () => {
     expect(files.length).toBeGreaterThan(60);
 
     for (const file of files) {
+      if (file === REFUSAL_REGISTRY) continue;
+
       const code = (await Bun.file(file).text())
         .replace(/\/\*[\s\S]*?\*\//g, "")
         .replace(/\/\/[^\n]*/g, "");
@@ -119,6 +123,13 @@ describe("a fonte mono", () => {
     }
 
     expect(offenders).toEqual([]);
+
+    expect(familyClassesIn("font-sans font-serif font-mono font-display")).toEqual([
+      "font-sans",
+      "font-serif",
+      "font-mono",
+      "font-display",
+    ]);
   });
 
   test("só o text.tsx escreve fontFamily: o resto pede o papel e o provider responde", async () => {

@@ -578,21 +578,22 @@ uma classe `bg-` por papel, e publica o resultado no contexto que as peças já
 liam. Então o que você sobrescreve no `@theme` chega aos dois lados de uma vez:
 classe e contexto dizem sempre a mesma cor.
 
-### A prop `theme` com um mapa está descontinuada
+### A prop `theme` não recebe mais um mapa
 
 ```tsx
-<RivoProvider theme={acmeTheme} scheme="system">
+<RivoProvider theme="rivocode-dark">
 ```
 
-**O mapa não veste mais nada.** Ele nunca alcançou a cor pintada por classe, e
-manter uma metade que discorda da outra era pior do que não ter nenhuma: o
-provider avisa em `__DEV__` e o tipo `RivoNativeThemeMap` está marcado como
-descontinuado. A prop `scheme` continua valendo: com um mapa passado, é ela que
-escolhe entre claro e escuro.
+**O mapa saiu.** Ele nunca alcançou a cor pintada por classe, e manter uma
+metade que discorda da outra era pior do que não ter nenhuma. Passou por
+`@deprecated` e por um aviso em `__DEV__`, e agora não existe mais: a prop
+`theme` aceita só `rivocode-dark`, `rivocode-light` e `system`. A prop `scheme`
+saiu junto, porque era ela que escolhia o esquema do mapa.
 
-O gerador continua emitindo o mapa - `bun run gen:native --tema tema-acme.css` -
-porque ele é o plano de queda e a fonte de conferência de papel faltando. Para
-vestir a tela, use o `@theme` de cima.
+O gerador continua emitindo o arquivo de mapa -
+`bun run gen:native --tema tema-acme.css` -, agora só como conferência de papel
+faltando e como entrada da medição de contraste. Para vestir a tela, use o
+`@theme` de cima.
 
 ### A regra que as peças seguem
 

@@ -6,7 +6,7 @@ import {
   type TextProps as NativeTextProps,
 } from "react-native";
 
-import { useRivoFonts, type RivoFontRole } from "./font";
+import { useRivoFonts, warnFamilyClass, type RivoFontRole } from "./font";
 
 export type TextProps = NativeTextProps & {
   /**
@@ -20,6 +20,8 @@ export type TextProps = NativeTextProps & {
 export function Text({ font = "sans", style, ...props }: TextProps) {
   const family = useRivoFonts()[font];
 
+  if (__DEV__) warnFamilyClass(props.className);
+
   return <NativeText {...props} style={family ? [{ fontFamily: family }, style] : style} />;
 }
 
@@ -31,6 +33,8 @@ export type TextInputProps = NativeTextInputProps & {
 
 export function TextInput({ font = "sans", style, ...props }: TextInputProps) {
   const family = useRivoFonts()[font];
+
+  if (__DEV__) warnFamilyClass(props.className);
 
   return <NativeTextInput {...props} style={family ? [{ fontFamily: family }, style] : style} />;
 }

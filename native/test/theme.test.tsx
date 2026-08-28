@@ -1,5 +1,4 @@
 import { describe, expect, spyOn, test } from "bun:test";
-import type { ReactElement } from "react";
 
 import { tokens } from "../tokens";
 import { render, byClass, byType, paintedColor, variableDeclarations } from "./helpers";
@@ -11,11 +10,6 @@ import { useRivo, type RivoNativeColors } from "../src";
 
 const ROLES = Object.keys(tokens.themes["rivocode-dark"]) as (keyof RivoNativeColors)[];
 
-const ACME = {
-  light: { ...tokens.themes["rivocode-light"], accent: "#1b57ff", "accent-fg": "#ffffff" },
-  dark: { ...tokens.themes["rivocode-dark"], accent: "#7aa2ff", "accent-fg": "#0b1020" },
-};
-
 const fromCss = (role: string, scheme: "light" | "dark") =>
   declaredColor([`bg-${role}`], "background-color", scheme);
 
@@ -24,15 +18,6 @@ function warned(run: () => void): string[] {
   try {
     run();
     return warn.mock.calls.map((call) => String(call[0]));
-  } finally {
-    warn.mockRestore();
-  }
-}
-
-function dressed(element: ReactElement, scheme: "light" | "dark") {
-  const warn = spyOn(console, "warn").mockImplementation(() => {});
-  try {
-    return render(element, { theme: ACME, scheme });
   } finally {
     warn.mockRestore();
   }
@@ -119,14 +104,14 @@ describe("o gráfico e o botão saem do mesmo tema, na mesma tela", () => {
   }
 });
 
-describe("tema de cliente: o mapa não veste mais nada", () => {
+describe("tema de cliente: o caminho é o CSS do app, e não uma prop", () => {
   test("o fundo do Button e a cor que ele lê do contexto são a MESMA, e é a do CSS", () => {
-    const screen = dressed(
+    const screen = render(
       <>
         <Button>Emitir</Button>
         <Probe />
       </>,
-      "light",
+      { theme: "rivocode-light" },
     );
     const painted = paintedColor(
       byClass(screen, /\bbg-accent\b/)[0]!,
@@ -136,27 +121,17 @@ describe("tema de cliente: o mapa não veste mais nada", () => {
 
     expect(painted).toBe(fromCss("accent", "light"));
     expect(seen.accent).toBe(painted);
-    expect(seen.accent).not.toBe(ACME.light.accent);
   });
 
-  test("o giro do Button sai no contraste do CSS, e não no que o mapa pedia", () => {
-    const screen = dressed(<Button loading>Emitindo</Button>, "light");
+  test("o giro do Button sai no contraste do CSS", () => {
+    const screen = render(<Button loading>Emitindo</Button>, { theme: "rivocode-light" });
     const spinner = byType(screen, "ActivityIndicator")[0]!;
 
     expect(spinner.props.color).toBe(fromCss("accent-fg", "light"));
-    expect(spinner.props.color).not.toBe(ACME.light["accent-fg"]);
   });
 
-  test("o esquema do mapa ainda escolhe entre o claro e o escuro", () => {
-    dressed(<Probe />, "light");
-    expect(seen.bg).toBe(fromCss("bg", "light"));
-
-    dressed(<Probe />, "dark");
-    expect(seen.bg).toBe(fromCss("bg", "dark"));
-  });
-
-  test("nada é embrulhado: o VariableContextProvider saiu com o mapa", () => {
-    const screen = dressed(<Button>Emitir</Button>, "light");
+  test("nada é embrulhado: o VariableContextProvider saiu junto com o mapa", () => {
+    const screen = render(<Button>Emitir</Button>, { theme: "rivocode-light" });
 
     expect(byType(screen, "VariableContextProvider").length).toBe(0);
   });
@@ -171,15 +146,7 @@ describe("tema de cliente: o mapa não veste mais nada", () => {
     expect(alive).toEqual([]);
   });
 
-  test("o provider acusa em __DEV__ que o mapa está descontinuado, e diz o que fazer no lugar", () => {
-    const [message] = warned(() => render(<Button>Emitir</Button>, { theme: ACME }));
-
-    expect(message).toContain("[rivocode/ui-native]");
-    expect(message).toContain("descontinuado");
-    expect(message).toContain("--color-*");
-  });
-
-  test("sem tema de cliente não há aviso: o tema de casa pinta tudo o que promete", () => {
+  test("montar com o tema de casa não emite aviso nenhum", () => {
     expect(warned(() => render(<Button>Emitir</Button>, { theme: "rivocode-light" }))).toEqual([]);
   });
 });

@@ -1,15 +1,84 @@
 "use client";
 
 import { Select as BaseSelect } from "@base-ui/react/select";
-import type { ComponentProps } from "react";
+import { createContext, use, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import {
+  isChosen,
+  keyOnScreen,
+  plainText,
+  useKeyOnScreenWarning,
+  type LabelLookup,
+} from "../lib/item-label";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 import { floatingGroupLabel, floatingPanel } from "./menu";
 
-export const Select = BaseSelect.Root;
-export const SelectValue = BaseSelect.Value;
+type SelectLabelSource = {
+  chosen: unknown;
+  lookup: LabelLookup;
+  resolved: { current: boolean };
+};
+
+const SelectLabels = createContext<SelectLabelSource | null>(null);
+
+export function missingSelectItemsComplaint(key: string, label: string): string {
+  return (
+    `[rivocode/ui] <Select> sem \`items\`: o gatilho está mostrando "${key}", que é o valor do ` +
+    `item, e não "${label}", que é o texto da lista. Sem \`items\` a Base UI não tem de onde ler ` +
+    "o rótulo e escreve a chave crua, sem erro na tela. Passe " +
+    `items={[{ label: "${label}", value: "${key}" }]} ao <Select>, ou resolva o rótulo você ` +
+    "mesmo em <SelectValue>{(escolha) => ...}</SelectValue>."
+  );
+}
+
+function selectComplaintOf(
+  source: SelectLabelSource | null,
+  value: unknown,
+  children: ReactNode,
+): string | null {
+  if (source === null || source.resolved.current) return null;
+  if (!isChosen(source.chosen, value)) return null;
+
+  const key = keyOnScreen(source.chosen, source.lookup);
+  if (key === null || key === "") return null;
+
+  const label = plainText(children);
+  if (label === null || label === key) return null;
+
+  return missingSelectItemsComplaint(key, label);
+}
+
+export function Select<Value, Multiple extends boolean | undefined = false>(
+  props: BaseSelect.Root.Props<Value, Multiple>,
+) {
+  const { value, defaultValue, items, itemToStringLabel } = props;
+  const resolved = useRef(false);
+
+  const source = useMemo<SelectLabelSource>(
+    () => ({
+      chosen: value === undefined ? defaultValue : value,
+      lookup: { items, itemToStringLabel },
+      resolved,
+    }),
+    [value, defaultValue, items, itemToStringLabel],
+  );
+
+  return (
+    <SelectLabels value={source}>
+      <BaseSelect.Root {...props} />
+    </SelectLabels>
+  );
+}
+
+export function SelectValue(props: ComponentProps<typeof BaseSelect.Value>) {
+  const source = use(SelectLabels);
+
+  if (source !== null && props.children != null) source.resolved.current = true;
+
+  return <BaseSelect.Value {...props} />;
+}
 
 export function SelectTrigger({
   className,
@@ -83,6 +152,8 @@ export function SelectItem({
   children,
   ...props
 }: ComponentProps<typeof BaseSelect.Item>) {
+  useKeyOnScreenWarning(selectComplaintOf(use(SelectLabels), props.value, children));
+
   return (
     <BaseSelect.Item
       {...props}

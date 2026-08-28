@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { View } from "react-native";
 
 import { Alert } from "./basics";
@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { cn } from "./cn";
 import { EmptyState } from "./empty-state";
 import { Skeleton } from "./skeleton";
+import { useSilentMisuse } from "./silent-misuse";
 
 export type QueryBoundaryProps<Data> = {
   /**
@@ -196,10 +197,3 @@ const UNDECIDABLE_EMPTY =
   "chegou não é array nem `null`, então o estado vazio nunca vai aparecer e os filhos " +
   "desenham sobre o nada. Diga o vazio com `isEmpty={resposta.total === 0}`, ou passe em " +
   "`data` a lista de dentro da resposta.";
-
-function useSilentMisuse(wrong: boolean, message: string) {
-  useEffect(() => {
-    if (!wrong || !__DEV__) return;
-    console.warn(message);
-  }, [wrong, message]);
-}

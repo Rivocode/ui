@@ -109,6 +109,14 @@ describe("NumberField", () => {
     expect(byLabel(screen, "Aumentar Parcelas")[0].props.disabled).toBe(true);
     expect(byLabel(screen, "Diminuir Parcelas")[0].props.disabled).toBe(false);
   });
+
+  test("o campo do meio pode encolher, senao o passo + sai da caixa", () => {
+    const screen = render(<NumberField value={2} onValueChange={() => {}} label="Parcelas" />);
+
+    const field = byClass(screen, /border-l/)[0]!;
+    expect(String(field.props.className).split(" ")).toContain("min-w-0");
+    expect(String(field.props.className).split(" ")).toContain("flex-1");
+  });
 });
 
 describe("OTPField", () => {

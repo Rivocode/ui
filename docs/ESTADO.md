@@ -138,8 +138,10 @@ Manter variavel viva no CSS explode a compilacao pelas cinco formas testadas, e
 de precisar do mapa. O `RivoProvider` resolve os **45 papeis** do proprio CSS
 compilado em runtime, via `useCssElement`, e publica pelo `RivoContext` que ja
 existia. Os **14 arquivos** que leem `useRivo()` fora do provider nao mudaram uma
-linha. `RivoNativeThemeMap` levou `@deprecated` e ficou inerte, avisando em
-`__DEV__` por que era pior do que nada.
+linha. O mapa de tema por objeto levou `@deprecated`, ficou inerte, e em
+28/08/2026 saiu de vez do pacote: nao ha mais tipo, nem membro na uniao da prop
+`theme`, nem aviso em `__DEV__`. A prop `scheme` saiu junto - sem o mapa, era
+ela quem escolhia o esquema dele, e ninguem mais a lia.
 
 Faltavam classes para isso funcionar, e faltavam justo as dos graficos: agora
 `native/theme.css` emite `bg-` para os 45 papeis, e o app de exemplo tem as 45
