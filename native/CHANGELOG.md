@@ -1,6 +1,6 @@
 # Mudancas
 
-## Nao publicado
+## 0.4.1
 
 ### Corrigido: o `rivocode-ui-native-theme` le os dois esquemas, e nao um deles duas vezes
 

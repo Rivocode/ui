@@ -22,9 +22,9 @@ quem consome mora em `.design-sync/conventions.md` e em
 
 | Peca                        | Onde                                        | Estado                                                              |
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.9.0** comitada; 0.8.0 no npm, falta a tag                        |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.4.0** comitada; 0.3.1 no npm, falta a tag                        |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar, mas dez commits atras do disco: falta empurrar a `main`       |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.9.1** comitada; 0.9.0 no npm, falta a tag                        |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.4.1** comitada; 0.4.0 no npm, falta a tag                        |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`                                          |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
 
@@ -431,24 +431,24 @@ O que sobra do `EventCalendar` e o lado nativo, e ele esta na fila declarada.
 
 ## O que esta bloqueado esperando acao humana
 
-Tres coisas, e nenhuma e trabalho de codigo.
+Duas coisas, e nenhuma e trabalho de codigo.
 
-**1. Dez commits nao empurrados, e o site descreve outra biblioteca.** Esta e a
-mais facil de esquecer, porque nada no comando avisa: `git push origin main`
-dispara o `docs.yml` e `ds.rivocode.com.br` muda. O ultimo push foi as 11:27 e o
-trabalho da tarde inteira esta so no disco. Isso quer dizer que o site no ar nao
-conhece nem o `check-theme`, nem o conserto dos quatro controles, nem o botao de
-copiar que cabe no celular. Push nao publica pacote nenhum: npm so sai por tag.
+**1. As duas tags, e elas sao acao de uma pessoa.** `0.9.1` e `0.4.1` estao
+comitadas, os dois CHANGELOGs estao fechados, a `main` esta empurrada e o site
+esta no ar - e as tags `v0.9.1` e `native-v0.4.1` nao existem. As que existem
+param em `v0.9.0` e `native-v0.4.0`, e as duas estao no npm.
 
-**2. As duas tags, e elas sao acao de uma pessoa.** `0.9.0` e `0.4.0` estao
-comitadas, os dois CHANGELOGs estao fechados, e as tags `v0.9.0` e
-`native-v0.4.0` nao existem. As que existem param em `v0.8.0` e `native-v0.3.1`.
+A 0.9.1 leva o conserto do foco do `Popconfirm` no Firefox, e ele **nao foi
+verificado em Firefox**: nao ha Playwright neste repositorio. Quem roda a suite
+e o app que consome, e o teste de la esta marcado `test.fail` para o Firefox -
+entrando o conserto, o Playwright acusa sozinho com um "unexpected pass". Essa
+e a confirmacao que falta antes da tag.
+
 A ordem da casa e: CHANGELOG fechado, bump comitado, merge na `main`, ensaio no
-nativo, e so entao a tag. O ensaio de hoje ja passou - `gh workflow run
-release-native --field ensaio=true` rodou as 11:27 e o log diz "Token OIDC
-presente: a publicacao sai assinada."
+nativo, e so entao a tag. Publicar 0.9.0 e 0.4.0 duas vezes nao da: o registro
+recusa com 403, e o conserto de versao publicada e versao nova.
 
-**3. A landing esta duas versoes atras.** Ela esta em `^0.7.0` com 0.7.0
+**2. A landing esta duas versoes atras.** Ela esta em `^0.7.0` com 0.7.0
 instalada, e a biblioteca fechou 0.9.0. Isso e o que sobra de um item que hoje
 encolheu bastante, e vale registrar o que foi resolvido: a linha do
 `fonts.css` **existe** (`@import '@rivocode/ui/fonts.css'` em
@@ -475,8 +475,10 @@ sao a do registro, e nao a de proveniencia; confundir as duas e o caminho mais
 curto para achar que esta assinado.
 
 Nao ha conserto: publicacao no npm nao se desfaz e o registro nao deixa
-sobrescrever. A partir da proxima tag o tarball sai assinado, e as quatro
-versoes de tras ficam como estao. A licao que fica e a mesma da secao
+sobrescrever. As quatro versoes de tras ficam como estao, e a partir da tag
+seguinte o tarball passou a sair assinado - medido no registro, o endpoint de
+attestations responde para `@rivocode/ui@0.9.0` e para
+`@rivocode/ui-native@0.4.0`. A licao que fica e a mesma da secao
 "Verificacao que nao verifica", vista de outro angulo: o relato dizia que a
 procedencia estava em pe, e ninguem abriu o workflow.
 
@@ -526,15 +528,16 @@ verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta verificacoes mais os 1285 testes
+bun run check        # trinta verificacoes mais os 1293 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
 
-O primeiro passo pendente nao e nenhum desses: e `git push origin main`, que
-sobe o site com a doc da 0.9.0. Depois dele, as duas tags.
+O primeiro passo pendente nao e nenhum desses: sao as duas tags, `v0.9.1` e
+`native-v0.4.1`, e as duas sao acao de uma pessoa. A `main` ja esta empurrada e
+o site ja esta no ar com a doc da 0.9.1.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
 `ds.rivocode.com.br/convencoes.md`. A skill que um agente le esta em
@@ -547,9 +550,9 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 177 documentos
 bun run check:pecas                                # 91 pecas
-bun run check:testes                               # 1285 testes em 108 arquivos
+bun run check:testes                               # 1293 testes em 109 arquivos
 bun test native/test                               # 373 deles, em 26 arquivos
-bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 17 nao, 1 fila
+bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 18 nao, 0 fila
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
 bun run check:contrast                             # 152 pares nos dois temas
@@ -564,12 +567,12 @@ bun run check:compartilhado                        # 2 espelhados, 14 copias dec
 bun run visual                                     # 44 retratos, e recusa build velho
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 31, ou seja 30 mais bun test
 git log --oneline origin/main..HEAD | wc -l        # commits que o site ainda nao viu
-git tag --list                                     # v0.8.0 e native-v0.3.1 sao as ultimas
-npm view @rivocode/ui version                      # 0.8.0, contra 0.9.0 no package.json
-npm view @rivocode/ui-native version               # 0.3.1, contra 0.4.0 no native/package.json
-curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.8.0   # "Not found": sem procedencia
+git tag --list                                     # v0.9.0 e native-v0.4.0 sao as ultimas
+npm view @rivocode/ui version                      # 0.9.0, contra 0.9.1 no package.json
+npm view @rivocode/ui-native version               # 0.4.0, contra 0.4.1 no native/package.json
+curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.0   # responde: assinada
 gh run list --workflow=docs --limit 5              # a publicacao do site
-gh run list --workflow=release-native --limit 5    # o ensaio de hoje, com token OIDC presente
+gh run list --workflow=release-native --limit 5    # o ensaio e a publicacao da 0.4.0
 curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 91 e 177
 ```
 

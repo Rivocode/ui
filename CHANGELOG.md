@@ -1,6 +1,6 @@
 # Mudancas
 
-## Nao publicado
+## 0.9.1
 
 ### Corrigido: o `Popconfirm` segura o foco no Firefox
 

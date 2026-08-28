@@ -300,7 +300,14 @@ com defeito nao se conserta republicando: conserta-se com versao nova. Por isso
 o passo 4 existe, e por isso a tag e sempre acao de uma pessoa - nenhum agente
 cria tag por conta propria.
 
-**O repositorio e privado**, entao o npm recusa `--provenance` com 422 e os
-dois workflows publicam sem assinatura. Torna-lo publico e o que devolve a
-procedencia. Esta escrito nos dois workflows, no lugar onde alguem tentaria
-"consertar".
+**O repositorio esta publico**, e os dois workflows publicam com
+`--provenance` e `id-token: write`. Os dois andam JUNTOS: um sem o outro nao
+publica, e o `--dry-run` do npm nao exercita nenhum dos dois - ha um
+`if (!dryRun)` antes da geracao da assinatura. Por isso cada workflow tem um
+passo que falha cedo se o token OIDC nao estiver la. Esta escrito nos dois, no
+lugar onde alguem tentaria "consertar".
+
+Ate `v0.8.0` e `native-v0.3.1` o repositorio era privado e o npm recusava a
+assinatura com 422: essas versoes ficaram sem procedencia e assim continuam -
+publicacao no npm nao se desfaz. Da `v0.9.0` e da `native-v0.4.0` em diante o
+tarball sai assinado, e o endpoint de attestations do registro responde.
