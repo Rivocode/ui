@@ -1,5 +1,35 @@
 # Mudancas
 
+## 0.7.0
+
+### O `Menu` abre no toque longo, e o `ContextMenu` deixa de faltar
+
+Das 18 pecas que a tabela de paridade declarava como "nao porta", DEZESSETE sao
+decisao de plataforma - idioma de mesa que nao existe no dedo. Uma era nossa, e
+a propria nota dizia o conserto: "nao precisa de peca nova, precisa de
+`longPress` no `Menu`". O menu de botao direito E o toque longo no celular; o
+caso de uso existia e o gesto existia, e so faltava a peca aceitar.
+
+O `Menu` ganhou `children`, que e a area do toque longo - o mesmo papel que o
+`ContextMenuTrigger` tem no web, envolvendo o conteudo -, e `triggerClassName`,
+porque o `Pressable` entra ENTRE o pai e os filhos e sem isso um alvo dentro de
+um `flex-row` perde o layout. Sem `children` o retorno e identico ao de antes:
+nenhuma chamada existente muda.
+
+`delayLongPress` NAO foi exposto. O `Editable`, que ja abre por toque longo
+neste pacote, tambem nao expoe, e os 500ms sao a expectativa do sistema: duas
+duracoes diferentes na mesma tela e pior do que uma so.
+
+**O gesto nunca e a unica porta.** Seguindo o que o `Editable` ja estabeleceu, o
+gatilho leva `accessibilityRole`, `accessibilityHint` dizendo o gesto e
+`accessibilityActions` com `longpress` - acao padrao que o VoiceOver oferece no
+rotor e o TalkBack mapeia. Menu que so abre por toque longo seria inalcancavel
+para quem navega por leitor de tela.
+
+A tabela de paridade fechou sozinha: `ContextMenu` saiu de "nao porta" para
+"traduz com outro nome", e o placar foi de 18 para **17 que nao portam** - as
+dezessete restantes sao todas decisao de plataforma.
+
 ## 0.6.0
 
 ### O `tsc` do app nao trava mais na nossa fonte

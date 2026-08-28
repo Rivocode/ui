@@ -1699,10 +1699,22 @@
         "note": "O sujeito das acoes: \"Nota 4813\"."
       },
       {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A area que abre o menu no toque longo - o botao direito do celular."
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false,
         "note": "Veste a lista de acoes dentro da folha."
+      },
+      {
+        "name": "triggerClassName",
+        "type": "string",
+        "required": false,
+        "note": "Veste a area do toque longo."
       }
     ]
   },

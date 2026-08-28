@@ -408,7 +408,7 @@ const PARITY: Record<string, Row> = {
   },
   Menu: {
     state: "traduz",
-    note: "folha de baixo com `actions`, nunca popup ancorado",
+    note: "folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo",
   },
   NumberField: {
     state: "traduz",
@@ -1084,13 +1084,16 @@ const PARITY: Record<string, Row> = {
       "direto para a tela.",
   },
   ContextMenu: {
-    state: "nao",
-    note: "não precisa de peça nova: precisa de `longPress` no `Menu`, que ele ainda não aceita",
+    state: "vira",
+    native: "Menu",
+    note: "o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu`",
     page:
-      "Não porta como peça, e não é por falta de caso de uso: o menu do botão direito é, no " +
-      "celular, o toque longo. O que falta é um `longPress` no `Menu` nativo, que hoje só " +
-      "abre por `open`/`onOpenChange`. Até lá, chame `onOpenChange(true)` no `onLongPress` " +
-      "do seu próprio `Pressable`. Peça nova aqui seria um segundo `Menu` com outro nome.",
+      "Vira `Menu`, e não peça nova: o menu do botão direito é, no celular, o toque longo, e " +
+      "quem abre a folha de ações já é o `Menu`. Passe a área alvo como `children` dele — o " +
+      "que no web é o `ContextMenuTrigger` — e ela chama `onOpenChange(true)` no toque longo, " +
+      "com `triggerClassName` para o layout que os filhos exigem. Quem navega por leitor de " +
+      "tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o " +
+      "TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.",
   },
   Kbd: {
     state: "nao",

@@ -1,6 +1,15 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import { Calendar, Combobox, DatePicker, DateRangePicker, Menu, Slider, formatDate } from "../src";
+import {
+  Calendar,
+  Combobox,
+  DatePicker,
+  DateRangePicker,
+  Menu,
+  Slider,
+  Text,
+  formatDate,
+} from "../src";
 import { act, byLabel, byRole, render, textOf } from "./helpers";
 
 describe("Combobox", () => {
@@ -160,6 +169,65 @@ describe("Menu", () => {
     act(() => first.props.onPress());
     expect(calls[0]).toBe("open:false");
     expect(danger).toBeDefined();
+  });
+
+  const acoes = [{ label: "Baixar o PDF", onSelect: () => {} }];
+
+  test("children vira a area do toque longo, e o toque longo abre", () => {
+    const calls: string[] = [];
+    const screen = render(
+      <Menu
+        open={false}
+        onOpenChange={(next) => calls.push(`open:${next}`)}
+        title="Nota 4813"
+        actions={acoes}
+        triggerClassName="flex-1"
+      >
+        <Text>Nota 4813</Text>
+      </Menu>,
+    );
+
+    const trigger = byRole(screen, "button").find((node) => node.props.onLongPress);
+    expect(trigger).toBeDefined();
+    expect(String(trigger!.props.className).split(" ")).toContain("flex-1");
+    expect(textOf(screen)).toContain("Nota 4813");
+    expect(textOf(screen)).not.toContain("Baixar o PDF");
+
+    act(() => trigger!.props.onLongPress());
+    expect(calls).toEqual(["open:true"]);
+  });
+
+  test("o leitor de tela tem a mesma porta, pela acao longpress", () => {
+    const calls: string[] = [];
+    const screen = render(
+      <Menu
+        open={false}
+        onOpenChange={(next) => calls.push(`open:${next}`)}
+        title="Nota 4813"
+        actions={acoes}
+      >
+        <Text>Nota 4813</Text>
+      </Menu>,
+    );
+
+    const trigger = byRole(screen, "button").find((node) => node.props.onLongPress)!;
+    const names = (trigger.props.accessibilityActions as { name: string }[]).map((one) => one.name);
+    expect(names).toContain("longpress");
+    expect(String(trigger.props.accessibilityHint)).toContain("segure");
+
+    act(() => trigger.props.onAccessibilityAction({ nativeEvent: { actionName: "longpress" } }));
+    expect(calls).toEqual(["open:true"]);
+
+    act(() => trigger.props.onAccessibilityAction({ nativeEvent: { actionName: "activate" } }));
+    expect(calls).toEqual(["open:true"]);
+  });
+
+  test("sem children nao nasce area de toque longo", () => {
+    const screen = render(
+      <Menu open onOpenChange={() => {}} title="Nota 4813" actions={acoes} />,
+    );
+
+    expect(byRole(screen, "button").filter((node) => node.props.onLongPress)).toHaveLength(0);
   });
 });
 

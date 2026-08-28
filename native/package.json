@@ -1,6 +1,6 @@
 {
   "name": "@rivocode/ui-native",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "As peças do design system da RivoCode em React Native: o mesmo vocabulário de classes do web, via NativeWind, sobre os mesmos tokens.",
   "license": "MIT",
   "repository": {

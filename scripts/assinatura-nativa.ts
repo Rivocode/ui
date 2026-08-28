@@ -328,6 +328,31 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "filter", native: null, note: "o filtro é da peça e ignora acento; não se troca" },
     ],
   },
+  ContextMenu: {
+    nativePiece: "Menu",
+    rows: [
+      {
+        web: null,
+        native: "children",
+        note: "o `ContextMenuTrigger` vira `children` do `Menu`, e o gesto é o toque longo, não o botão direito",
+      },
+      {
+        web: null,
+        native: "actions",
+        note: "os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo",
+      },
+      {
+        web: null,
+        native: "title",
+        note: "a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata",
+      },
+      {
+        web: "open",
+        native: "open",
+        note: "`open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe",
+      },
+    ],
+  },
   DataTable: {
     nativePiece: "DataList",
     rows: [
@@ -578,9 +603,14 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata",
       },
       {
+        web: null,
+        native: "children",
+        note: "não há `MenuTrigger`: `children` é a área que abre no toque longo, e o botão de três pontinhos é seu",
+      },
+      {
         web: "open",
         native: "open",
-        note: "`open` e `onOpenChange` são obrigatórios: não há `MenuTrigger`",
+        note: "`open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe",
       },
     ],
   },
