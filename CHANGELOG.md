@@ -1,5 +1,25 @@
 # Mudancas
 
+## Nao publicado
+
+### Corrigido: o `Popconfirm` segura o foco no Firefox
+
+A 0.9.0 acertou Chromium e WebKit e deixou o Firefox de pe: com a promessa do
+`onConfirm` correndo, o foco caia no `<body>` e o Tab seguinte saia do painel.
+
+A guarda tinha forma de Chromium. Ela so movia o foco para o cancelar quando
+`document.activeElement` ja era o `<body>`, e e isso que o Chromium faz
+enquanto larga o foco do botao que acabou de virar `disabled`. O Firefox adia
+esse conserto: no instante do efeito o `activeElement` ainda e o proprio
+confirmar, ja `disabled`, a guarda concluia que ninguem tinha perdido nada, e
+so depois o navegador largava o foco no vazio - sem ninguem para pega-lo.
+
+A pergunta passou a ser "o foco esta perdido, ou prestes a se perder", e nao
+"o foco esta no `<body>`": conta como perdido o alvo ausente, o `<body>`, o que
+saiu da arvore, e o que ainda esta ativo mas ja e `disabled`. O ultimo e a
+ordem do Firefox. Foco que a pessoa moveu de proposito para um alvo vivo
+continua intocado.
+
 ## 0.9.0
 
 A 0.8.0 foi instalada num app de verdade, e o app respondeu. O que veio de

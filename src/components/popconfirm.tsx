@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { focusIsLost } from "../lib/focus";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useMobile } from "../lib/screen";
 import type { Slots } from "../lib/slots";
@@ -141,26 +142,9 @@ export function Popconfirm({
     setNotice(busy ? busyMessage : "");
   }, [busy, busyMessage]);
 
-  /*
-   * Quem aperta o confirmar segura o foco nele, e o `loading` do Button o
-   * marca `disabled` de verdade - o navegador larga o foco no `<body>`, e o Tab
-   * seguinte sai do painel. Ter um alvo vivo nao basta: alguem tem que MOVER o
-   * foco ate ele.
-   *
-   * A 0.8.0 consertou so a metade de ter o alvo, e a outra metade so aparece em
-   * Chromium e Firefox - o WebKit segura o foco dentro sozinho, entao um teste
-   * rodado so no Safari passa com o defeito de pe.
-   *
-   * O destino e o cancelar, e nao a moldura: ele e o unico controle que a
-   * pessoa ainda pode usar, e cair nele e a resposta a "e agora?".
-   */
   useEffect(() => {
     if (!busy) return;
-
-    // So quando o foco caiu no vazio. Se a pessoa moveu o foco para outro lugar
-    // de proposito, o `activeElement` nao e o `<body>` e nada e roubado dela.
-    const perdido = document.activeElement === null || document.activeElement === document.body;
-    if (!perdido) return;
+    if (!focusIsLost(document.activeElement)) return;
 
     cancelRef.current?.focus();
   }, [busy]);
