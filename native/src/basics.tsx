@@ -32,7 +32,7 @@ export function Progress({ value, label, className }: ProgressProps) {
       accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped) }}
       className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
     >
-      <View className="h-full rounded-pill bg-accent" style={{ width: `${clamped}%` }} />
+      <View className="h-full rounded-pill bg-accent-text" style={{ width: `${clamped}%` }} />
     </View>
   );
 }

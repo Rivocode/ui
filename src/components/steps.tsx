@@ -31,7 +31,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
         <p className="font-display text-lg tracking-tight text-fg">{step?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
           <div
-            className="h-full rounded-pill bg-accent transition-[width] duration-[var(--rc-duration-base)] ease-rc"
+            className="h-full rounded-pill bg-accent-text transition-[width] duration-[var(--rc-duration-base)] ease-rc"
             style={{ width: `${((current + 1) / steps.length) * 100}%` }}
           />
         </div>

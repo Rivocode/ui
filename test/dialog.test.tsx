@@ -108,3 +108,34 @@ test("os dois rodapes empilham no celular, e nao so o da confirmacao", () => {
     expect(`${id}: ${footer.className.includes("max-sm:[&>*]:w-full")}`).toBe(`${id}: true`);
   }
 });
+
+test("o painel dos dois cabe na tela e rola por dentro, como o da folha", () => {
+  const paineis = [
+    [
+      "dialog",
+      <Dialog open key="dg">
+        <DialogContent>Corpo</DialogContent>
+      </Dialog>,
+    ],
+    [
+      "alertdialog",
+      <AlertDialog open key="ad">
+        <AlertDialogContent>Corpo</AlertDialogContent>
+      </AlertDialog>,
+    ],
+  ] as const;
+
+  for (const [role, node] of paineis) {
+    const { unmount } = render(<RivoProvider scope="local">{node}</RivoProvider>);
+    const classes = screen.getByRole(role).className.split(" ");
+
+    expect(`${role}: ${classes.includes("max-h-[85dvh]")}`).toBe(`${role}: true`);
+    expect(`${role}: ${classes.includes("overflow-y-auto")}`).toBe(`${role}: true`);
+    expect(`${role}: ${classes.includes("overscroll-contain")}`).toBe(`${role}: true`);
+    expect(`${role}: ${classes.includes("flex")}`).toBe(`${role}: true`);
+    expect(`${role}: ${classes.includes("flex-col")}`).toBe(`${role}: true`);
+    expect(classes).not.toContain("overflow-hidden");
+
+    unmount();
+  }
+});

@@ -153,3 +153,85 @@ test("a serie que o config conhece nao vira acusacao", () => {
     warn.mockRestore();
   }
 });
+
+test('a barra com `stroke="none"` continua herdando a cor no `fill`', () => {
+  const pintada = paint(
+    <BarChart data={[{ emitidas: 1 }]}>
+      <Bar dataKey="emitidas" stroke="none" />
+    </BarChart>,
+    "emitidas",
+  );
+
+  expect(pintada.fill).toBe("var(--color-emitidas)");
+  expect(pintada.stroke).toBe("none");
+});
+
+test('a linha com `fill="none"` continua herdando a cor no `stroke`', () => {
+  const tracada = paint(
+    <LineChart data={[{ pagas: 1 }]}>
+      <Line dataKey="pagas" fill="none" />
+    </LineChart>,
+    "pagas",
+  );
+
+  expect(tracada.stroke).toBe("var(--color-pagas)");
+  expect(tracada.fill).toBe("none");
+});
+
+test('o `stroke="none"` nao desliga o aviso da serie que o config nao conhece', () => {
+  const { chart, unknown } = seriesColors(
+    <BarChart data={[{ canceladas: 1 }]}>
+      <Bar dataKey="canceladas" stroke="none" />
+    </BarChart>,
+    CONFIG,
+  );
+
+  expect(unknown).toEqual(["canceladas"]);
+  const inside = chart.props as { children?: ReactNode };
+  expect((marks(inside.children)[0]!.props as { fill?: string }).fill).toBeUndefined();
+});
+
+test('a moldura acusa no console mesmo com `stroke="none"` na barra', () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+  try {
+    render(
+      <RivoProvider scope="local">
+        <ChartContainer config={CONFIG} className="h-40">
+          <BarChart data={[{ canceladas: 1 }]}>
+            <Bar dataKey="canceladas" stroke="none" />
+          </BarChart>
+        </ChartContainer>
+      </RivoProvider>,
+    );
+
+    const said = warn.mock.calls.flat().join("\n");
+    expect(said).toContain('"canceladas"');
+    expect(said).toContain("emitidas, pagas");
+  } finally {
+    warn.mockRestore();
+  }
+});
+
+test("a area com gradiente no `fill` ganha o traco, e o gradiente fica", () => {
+  const area = paint(
+    <AreaChart data={[{ pagas: 1 }]}>
+      <Area dataKey="pagas" fill="url(#gradiente)" />
+    </AreaChart>,
+    "pagas",
+  );
+
+  expect(area.fill).toBe("url(#gradiente)");
+  expect(area.stroke).toBe("var(--color-pagas)");
+});
+
+test("a marca com todos os seus papeis escritos nao vira acusacao", () => {
+  const { unknown } = seriesColors(
+    <BarChart data={[{ canceladas: 1 }]}>
+      <Bar dataKey="canceladas" fill="url(#gradiente)" />
+    </BarChart>,
+    CONFIG,
+  );
+
+  expect(unknown).toEqual([]);
+});

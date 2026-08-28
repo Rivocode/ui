@@ -227,6 +227,45 @@
  * pino ali e a borda, exatamente como na caixa DESMARCADA do `Checkbox`, onde
  * tambem so a borda e medida.
  *
+ * ## A barra que carrega o valor sozinha
+ *
+ * Em 28/08/2026 o `Meter`, o `Progress` e o `Tracker` ainda pintavam a barra
+ * cheia com `bg-accent` sobre o trilho `bg-skeleton`. No tema claro isso da
+ * 1,03:1 sobre a pagina, 1,06:1 no cartao e 1,06:1 no painel que flutua - a
+ * mesma familia de numeros do pino do `Slider`, e pelo mesmo motivo: nenhuma
+ * lima clara alcanca 3:1 sobre branco. Com `showValue` desligado, que e o
+ * padrao, a barra e o UNICO portador do valor, e uma cota em 72% se le como
+ * cota vazia. No escuro passava com folga, a 12,98:1, entao era defeito so do
+ * claro.
+ *
+ * A guarda ficava VERDE sobre isso, e nao por falta de linha: as duas linhas
+ * de `--rc-accent-text` sobre `--rc-skeleton` ja existiam, e mediam o papel
+ * que o `Slider` tinha acabado de vestir no commit anterior. O `accent` cru
+ * sobre o trilho, que era o papel das outras tres pecas, nao tinha par nenhum.
+ * Par que mede o token ja consertado nao pega a peca que ficou para tras, e a
+ * familia inteira parecia coberta porque o NOME do par lembrava a peca certa.
+ *
+ * O conserto e o mesmo troco que a chave, a caixa, o radio e o `Slider`
+ * levaram: `accent` vira `accent-text`. Medido depois, a barra da 4,69:1 sobre
+ * o trilho na pagina e 4,87:1 no cartao e no painel; no escuro os dois papeis
+ * sao o mesmo valor, e o tema escuro nao muda um pixel. O terceiro fundo
+ * entrou junto porque faltava: medidor dentro de Dialog, Popover, Menu ou
+ * Sheet pousa em `surface-raised`, e ali ninguem media.
+ *
+ * O `Tracker` entrou por outro caminho na mesma porta. Ele nao enche um
+ * trilho: pinta uma faixa por periodo, e o periodo neutro e o proprio
+ * `bg-skeleton`. Quadrado de acento ao lado de quadrado neutro e exatamente o
+ * par de cima - 1,03:1 no claro -, entao o tom `accent` era indistinguivel de
+ * "nada aconteceu", enquanto `success`, `warning` e `danger` mediam de 4,24:1
+ * a 4,84:1 no mesmo lugar.
+ *
+ * A barra indeterminada PARADA trocou junto. Quem pede menos movimento recebe
+ * um `repeating-linear-gradient` no lugar da animacao, e as faixas vestiam
+ * `accent` e `accent-hover`: fio claro sobre fio claro, dentro de uma barra
+ * que ja nao se lia. Agora sao `accent-text` e `accent-active`, que separam as
+ * faixas em 3,73:1 no claro e 1,23:1 no escuro - acima do 1,13:1 que o par
+ * antigo dava la.
+ *
  * ## Que cor a conta sabe ler, e por que essas
  *
  * Ate 27/08/2026 ela lia sRGB e mais nada: hexadecimal de 6 e 8 digitos,

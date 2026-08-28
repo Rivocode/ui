@@ -11,7 +11,7 @@ A legenda não é só título: o leitor de tela anuncia ela junto com o rótulo 
 cada campo dentro. "Número" sozinho não diz nada; "Endereco, número" diz.
 
 ```tsx
-<FieldsetRoot>
+<Fieldset>
   <FieldsetLegend>Endereco</FieldsetLegend>
 
   <Field>
@@ -23,7 +23,7 @@ cada campo dentro. "Número" sozinho não diz nada; "Endereco, número" diz.
     <FieldLabel>Numero</FieldLabel>
     <Input placeholder="1200" />
   </Field>
-</FieldsetRoot>
+</Fieldset>
 ```
 
 O respiro entre grupos e maior que o respiro entre campos, de propósito: e ele

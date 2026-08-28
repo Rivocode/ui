@@ -484,7 +484,8 @@ export const CSS_BOUNDARIES = [
   ["--rc-danger", "--rc-surface", MIN_NON_TEXTUAL],
   ["--rc-surface-raised", "--rc-accent-text", MIN_NON_TEXTUAL],
   ["--rc-accent-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
-  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL]
+  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface-raised"], MIN_NON_TEXTUAL]
 ];
 export const CSS_DISABLED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
 export const CSS_CHECKED = "--rc-accent-text";
@@ -646,6 +647,12 @@ for (const background of ["bg", "surface"]) {
     layers: ["skeleton", background],
     min: MIN_NON_TEXTUAL,
     note: "borda do pino do Slider dentro do trilho vazio"
+  });
+  MAP_BOUNDARIES.push({
+    front: "accent-text",
+    layers: ["skeleton", background],
+    min: MIN_NON_TEXTUAL,
+    note: "barra cheia do Meter e do Progress dentro do trilho"
   });
 }
 export const MAP_LAYER_PAIRS = [

@@ -16,7 +16,24 @@ export type Route =
   | { kind: 'guide'; slug: string }
   | { kind: 'component'; slug: string }
 
-export function readRoute(path = window.location.pathname): Route {
+/**
+ * O caminho que o roteador le quando ninguem diz qual.
+ *
+ * No navegador e a barra de enderecos. No prerender nao ha `window`: a rota vem
+ * de quem esta gerando a pagina, por `setRenderedPath`. Sem isto o primeiro
+ * render fora do navegador estoura em `window`, e nenhuma pagina sai com
+ * conteudo dentro do `#root`.
+ */
+let renderedPath = '/'
+
+export function setRenderedPath(path: string) {
+  renderedPath = path
+}
+
+const currentPath = () =>
+  typeof window === 'undefined' ? renderedPath : window.location.pathname
+
+export function readRoute(path = currentPath()): Route {
   if (path === '/fundacao' || path === '/fundacao/') return { kind: 'foundation' }
   // Antes do padrao de guia la embaixo, que senao engoliria este.
   if (path === '/demonstracao' || path === '/demonstracao/') return { kind: 'demo' }

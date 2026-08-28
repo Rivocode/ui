@@ -16,9 +16,15 @@ export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   /** De onde sai o nome de cada fatia. E ele que o `config` procura. */
   nameKey: keyof Slice & string;
   config?: ChartConfig;
-  /** O numero grande no meio. Sem ele, o miolo fica vazio. */
+  /**
+   * O numero grande no meio, que apaga enquanto o ponteiro le uma fatia.
+   *
+   * Sem ele, o miolo fica vazio. Ele volta quando o ponteiro sai:
+   * a dica ja mostra o numero daquela fatia, e os dois juntos deixariam dois
+   * numeros na tela sem dizer qual e qual.
+   */
   centerValue?: ReactNode;
-  /** A linha pequena embaixo do numero. */
+  /** A linha pequena embaixo do numero. Apaga junto com ele durante a leitura. */
   centerLabel?: ReactNode;
   /**
    * Espessura do anel, em fracao do raio. `1` fecha e vira pizza. Anel mais

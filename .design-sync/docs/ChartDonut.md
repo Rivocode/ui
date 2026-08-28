@@ -29,6 +29,16 @@ buraco, e é ali que o total precisa caber. Em `1` ela fecha e vira pizza.
 O número do meio fica preso à largura do buraco. Total comprido escapando por
 cima do anel é o defeito clássico dessa peça.
 
+**O miolo apaga enquanto o ponteiro lê uma fatia, e isso é de propósito.** A
+dica que aparece já traz o número daquela fatia; manter o total no centro ao
+mesmo tempo deixaria dois números na tela sem dizer qual é qual, e o de baixo
+do dedo é o que a pessoa foi buscar. O centro volta sozinho quando o ponteiro
+sai — não há prop para desligar, e nada se perde, porque o total está a um
+movimento de distância.
+
+Se você precisa dos dois ao mesmo tempo na tela, o lugar do total é fora da
+peça: um `Stat` ao lado, ou o título do cartão.
+
 ## As cores
 
 Sem `config`, cada fatia pega uma cor da paleta do tema, na ordem. Com `config`,

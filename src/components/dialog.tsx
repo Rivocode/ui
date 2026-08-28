@@ -39,6 +39,7 @@ export function DialogContent({ className, children, classNames, ...props }: Dia
         className={cn(
           "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]",
           "-translate-x-1/2 -translate-y-1/2",
+          "flex max-h-[85dvh] flex-col overflow-y-auto overscroll-contain",
           "rounded-xl border border-border bg-surface p-[var(--rc-pad-panel)] shadow-3",
           "font-sans text-fg outline-none",
           "max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:w-full",

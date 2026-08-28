@@ -22,27 +22,27 @@ quem consome mora em `.design-sync/conventions.md` e em
 
 | Peca                        | Onde                                        | Estado                                                              |
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.10.0** comitada no `package.json`, sem tag; 0.9.1 no npm, na tag |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.5.0** comitada no `native/package.json`, sem tag; 0.4.1 no npm, na tag |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.11.0** no npm, na tag `v0.11.0`, e igual ao `package.json`       |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.7.0** no npm, na tag `native-v0.7.0`, e igual ao manifesto dele  |
 | Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `e37084d`                   |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
 
-Os dois bumps de versao, as duas secoes novas de CHANGELOG, as duas guardas
-novas do gate e a tabela de assinatura do nativo ESTAO comitados e empurrados:
-**o `HEAD` e o `origin/main` sao o mesmo commit**, `e37084d`, e
-`git log --oneline origin/main..HEAD` devolve zero. Foram **6 commits em
-28/08**, todos empurrados.
+Foram **12 commits em 28/08**, todos empurrados, e **cinco publicacoes**, todas
+por tag automatica: `0.10.0` e `0.11.0` do web, `0.5.0`, `0.6.0` e `0.7.0` do
+nativo. **O `HEAD` e o `origin/main` sao o mesmo commit**, `ca8e3b3`, e
+`git log --oneline origin/main..HEAD` devolve zero.
 
-A arvore **nao** esta limpa, e o que sobra nela e uma coisa so: `git status
---short` devolve **6 linhas** - o workflow de tag automatica, o script de
-decisao, o teste dele, e as tres paginas que os acompanham, esta inclusive. E o
-unico trabalho que ainda nao esta no ar.
+A arvore **nao** esta limpa: `git status --short` devolve **4 linhas** - o aviso
+de que o miolo do `ChartDonut` apaga durante a leitura, escrito na peca e na
+pagina, a tabela de props regerada, e esta pagina. E o unico trabalho que ainda
+nao esta no ar.
 
 O gate esta verde. `bun run check` roda **trinta e quatro verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1384 testes em 119 arquivos**, com
-3665 chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
-(`dist/index.js` e `dist/cli.js` sao de 10:40, e o commit mais novo e de 10:01).
+suite e sai com codigo zero; a suite tem **1397 testes em 120 arquivos**, com
+3711 chamadas de `expect`, dos quais 417 testes em 32 arquivos sao do nativo. O
+`bun run build` rodou junto do ultimo commit: `dist/index.js` e o commit mais
+novo sao os dois de 13:09.
 
 ### O catalogo, por familia
 
@@ -83,15 +83,21 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia.** Das 91 pecas do web, **73 tem par no celular**, e as 18
-que faltam faltam por decisao escrita, nao por atraso.
+**A fila esta vazia, e o que falta nao e nosso.** Das 91 pecas do web, **74 tem
+par no celular**, e as 17 que faltam faltam por decisao escrita. Ate 28/08 eram
+18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
+apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
+`Menu`". O `Menu` passou a aceitar, e ela saiu. As 17 que sobraram sao todas
+plataforma: ponteiro que nao existe no toque, teclado que o aparelho nao tem,
+navegacao que no celular e o router, e duas que a plataforma ja resolve melhor
+do que nos.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
 | Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
-| Traduz, outro nome |       4 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ToastViewport` vira `useToast` |
+| Traduz, outro nome |       5 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ContextMenu` vira `Menu`       |
 | `○ na fila`        |       0 | `FILA_DECLARADA` esta vazia, e o acordo e que continue                                       |
-| `✕ nao porta`      |      18 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
+| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
 O `EventCalendar` merece o paragrafo, porque ele foi o teste do acordo do nono
 artefato - e o acordo foi cumprido do jeito mais util: a fila nao foi zerada
@@ -124,12 +130,12 @@ assunto**. No celular peer nao e byte: modulo do Expo custa build. Um `/expo`
 comum cobraria o seletor de documentos de quem so quer copiar uma chave de
 acesso. Entram agora `./tokens`, `./contrast` e `./theme.css`, que nao carregam
 peer nenhum, e **tres binarios**: `rivocode-ui-native-css`,
-`rivocode-ui-native-theme` e o `rivocode-ui-native-init` da 0.5.0, que escreve a
+`rivocode-ui-native-theme` e o `rivocode-ui-native-init` da 0.6.0, que escreve a
 receita de instalacao.
 
 ## O dia: o que compilava, renderizava e saia errado na tela
 
-A 0.10.0 e a 0.5.0 estao escritas na arvore e ainda nao comitadas, e as duas tem
+A 0.10.0 e a 0.5.0 sairam neste dia, e as duas tem
 um tema so, que e primo do tema de 27/08: **defeito que so a tela denunciava
 passa a ter quem o denuncie antes.** Sete frentes, todas da mesma forma - `tsc`
 verde, build verde, tela errada.
@@ -201,9 +207,9 @@ calado, e `--dry-run` mostra o plano. O caso que mais surpreende e o
 `babel.config.js`, e ele foi medido: o certo e **nao existir**, porque sem
 arquivo nenhum o Expo cai no `babel-preset-expo` sozinho e escrever um a mao
 derruba o app no SDK 57. A guarda `check:receita` cobra que a receita e o
-`examples/native` digam a mesma coisa: 6 arquivos, 9 diretivas de CSS, 1 plugin
+`examples/native` digam a mesma coisa: 7 arquivos, 9 diretivas de CSS, 1 plugin
 de PostCSS, `withNativewind`, `userInterfaceStyle automatic`, `browserslist` com
-3, e nenhum arquivo de Babel nos dois.
+3, 2 fatos de tipagem, e nenhum arquivo de Babel nos dois.
 
 ### A tabela de assinatura, e por que ela precisou de um segundo catalogo
 
@@ -475,10 +481,10 @@ O que cada guarda mede hoje, em numero:
 | `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
 | `check:demo`             | 88 de 91 pecas na vitrine, em 16 paginas                                      |
 | `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
-| `check:receita`          | 6 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
+| `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1384 testes em 119 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1384 passam, 0 falham, 3671 `expect`; 404 sao do nativo, em 31 arquivos       |
+| `check:testes`           | 1397 testes em 120 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1397 passam, 0 falham, 3711 `expect`; 417 sao do nativo, em 32 arquivos       |
 
 Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **82 pecas e 447
 props** - o catalogo que da ao `check:assinatura` o lado nativo da comparacao.
@@ -612,24 +618,42 @@ commit. Depois de criar, ele chama o release por `workflow_dispatch`, porque tag
 empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.
 
 O que sobrou de humano e o que sempre foi caro: o numero da versao e o
-fechamento do CHANGELOG. Os dois ja estao feitos. A `0.10.0` e a `0.5.0` estao
-comitadas no `package.json` e no `native/package.json`, com as duas secoes de
-CHANGELOG fechadas no topo de cada arquivo. `git tag --list` para em `v0.9.1` e
-`native-v0.4.1`, e nao ha nenhum release no GitHub (`gh release list` volta
-vazio, para as doze tags que existem).
+fechamento do CHANGELOG. **Nada esta pendente aqui.** As cinco publicacoes de
+28/08 sairam por este caminho, sem ninguem criar tag: `v0.10.0`, `v0.11.0`,
+`native-v0.5.0`, `native-v0.6.0` e `native-v0.7.0`. Sao dezessete tags no
+`origin`, e `gh release list` continua vazio - tag nao vira release no GitHub, e
+isso nunca foi automatizado.
 
-Entao o proximo `ci` verde na `main` cria `v0.10.0` e `native-v0.5.0` e publica
-as duas. Nao ha comando a dar, e nao ha como dar meio comando: para segurar
-qualquer um dos dois, o caminho e a valvula - `[no-release]` no ASSUNTO do
-commit da cabeca, que barra os DOIS pacotes, porque a mensagem e uma so. Le-se
-so a primeira linha porque o corpo e prosa: na estreia, o commit que criou a
-automacao escreveu a marca ao explica-la e foi barrado por ela.
-Publicar 0.9.1 e 0.4.1 de novo nao da: o registro recusa com 403, e o conserto
-de versao publicada e versao nova.
+A automacao foi exercitada de verdade em tres episodios que vale registrar,
+porque os tres sao a guarda funcionando e nao a guarda atrapalhando:
 
-Vale lembrar que o empurrao na `main` publica o site junto, e o site ja descreve
-a `0.10.0`. A `0.5.0` carrega **quebra** de contrato no nativo (o
-`RivoNativeThemeMap` e a prop `scheme`).
+**A automacao vetou a si mesma na estreia.** O commit que criou o `tag.yml`
+explicava a valvula `[no-release]` no CORPO da mensagem. O script lia a mensagem
+inteira, achou a marca na prosa, e barrou os dois pacotes: o `ci` fechou verde, o
+`tag` rodou, terminou `success` e nao criou tag nenhuma. E a mesma forma do
+scanner do Tailwind que gera classe a partir de nome escrito em comentario -
+texto que fala SOBRE uma marca vira a marca. O conserto foi ler so a primeira
+linha, e o teste que prova monta exatamente aquela mensagem.
+
+**Um commit foi empurrado no meio do trabalho de um agente**, e saiu partido:
+levou os testes novos do `Avatar` sem o codigo que eles exercitam, e um
+`native-props.json` anterior as props novas. A CI acusou no `check:props:nativo`
+com "Avatar: entrou alt, src", o `tag.yml` foi PULADO por `ci` vermelho, e nada
+publicou errado. E o unico caso do dia em que uma guarda impediu uma publicacao,
+e ela impediu a certa.
+
+**A assimetria entre os pacotes foi exercitada.** No push da `0.11.0` o `tag`
+rodou sobre os dois manifestos e criou so `v0.11.0`; o nativo foi barrado por "a
+versao nao mudou". E a propriedade central do desenho - os dois pacotes andam em
+velocidades diferentes, e nenhum arrasta o outro.
+
+Para segurar uma publicacao, o caminho e a valvula: `[no-release]` no ASSUNTO do
+commit da cabeca, que barra os DOIS pacotes porque a mensagem e uma so.
+Republicar um numero nao da: o registro recusa com 403, e o conserto de versao
+publicada e versao nova.
+
+Vale lembrar que o empurrao na `main` publica o site junto. A `0.5.0` carregou
+**quebra** de contrato no nativo (o `RivoNativeThemeMap` e a prop `scheme`).
 
 **2. A landing esta tres versoes atras.** Ela esta em `^0.7.0` com 0.7.0
 travada no `bun.lock`, o npm ja serve 0.9.1 e a arvore fechou 0.10.0. Isso e o
@@ -716,7 +740,7 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e quatro verificacoes mais os 1384 testes
+bun run check        # trinta e quatro verificacoes mais os 1397 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
@@ -740,10 +764,10 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 177 documentos
 bun run check:pecas                                # 91 pecas
-bun run check:testes                               # 1384 testes em 119 arquivos
-bun test                                           # 1384 passam, 0 falham, 3671 expect()
+bun run check:testes                               # 1397 testes em 120 arquivos
+bun test                                           # 1397 passam, 0 falham, 3711 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
-bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 18 nao, 0 fila
+bun run check:paridade                             # 91 linhas: 69 traduz, 5 vira, 17 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
@@ -755,7 +779,7 @@ bun run check:colors                               # 98 arquivos sem cor literal
 bun run check:demo                                 # 88 de 91 na vitrine, 3 declaradas fora
 bun run check:readme                               # 50 de 91 citadas, 41 declaradas fora
 bun run check:retratos                             # 12 retratos de secao sobre 6 areas
-bun run check:receita                              # 6 arquivos de receita, e nenhum Babel nos dois
+bun run check:receita                              # 7 arquivos de receita, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
 bun run check:piso                                 # os 2 fora do piso, com o motivo
 bun run check:compartilhado                        # 2 espelhados, 14 copias declaradas
@@ -765,10 +789,10 @@ node -e 'p=require("./demo/assinaturas.json");console.log(Object.keys(p).length)
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 34, ou seja 33 mais bun test
 git status --short | wc -l                         # 6: so o workflow de tag automatica, o script, o teste e as tres paginas
 git log --oneline origin/main..HEAD | wc -l        # 0 - o HEAD e o origin/main sao e37084d
-git tag --list                                     # v0.9.1 e native-v0.4.1 sao as ultimas
-gh release list                                    # vazio: as doze tags nao viraram release
-npm view @rivocode/ui version                      # 0.9.1, contra 0.10.0 no package.json
-npm view @rivocode/ui-native version               # 0.4.1, contra 0.5.0 no native/package.json
+git tag --list                                     # v0.11.0 e native-v0.7.0 sao as ultimas
+gh release list                                    # vazio: as dezessete tags nao viraram release
+npm view @rivocode/ui version                      # 0.11.0, igual ao package.json
+npm view @rivocode/ui-native version               # 0.7.0, igual ao native/package.json
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.1   # responde: assinada
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.4.1   # idem
 gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit e37084d

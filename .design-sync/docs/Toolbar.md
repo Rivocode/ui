@@ -11,12 +11,12 @@ E isso que a diferencia de uma `div` com botões: **dez botões soltos sao dez
 paradas de Tab** entre o campo anterior e o proximo. Numa barra, e uma.
 
 ```tsx
-<ToolbarRoot>
+<Toolbar>
   <ToolbarButton render={<Toggle />}>Negrito</ToolbarButton>
   <ToolbarButton render={<Toggle />}>Italico</ToolbarButton>
   <ToolbarSeparator />
   <ToolbarButton render={<Button variant="ghost" />}>Limpar formato</ToolbarButton>
-</ToolbarRoot>
+</Toolbar>
 ```
 
 Use `ToolbarButton` com `render` para vestir `Button`, `Toggle` ou `Select` sem

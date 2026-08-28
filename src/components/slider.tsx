@@ -1,14 +1,17 @@
 "use client";
 
 import { Slider as BaseSlider } from "@base-ui/react/slider";
-import type { ComponentProps, ReactNode } from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { resolveFormat, type Format } from "../lib/format";
 import type { Slots } from "../lib/slots";
 
 export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format"> & {
-  /** Texto acima do controle. Sem ele, passe `aria-label` no `thumbLabel`. */
+  /**
+   * Texto acima do controle, e o nome que o leitor de tela le no pino. Sem
+   * ele, o nome tem que vir do `thumbLabel`.
+   */
   label?: ReactNode;
   /** Mostra o valor ao lado do rotulo. */
   showValue?: boolean;
@@ -21,8 +24,9 @@ export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format">
   /** As opcoes do `Intl.NumberFormat`, para quem precisa delas. */
   numberFormat?: Intl.NumberFormatOptions;
   /**
-   * O que o leitor de tela chama o pino. Numa faixa, passe um por pino: os
-   * dois precisam de nomes diferentes para o leitor saber qual e qual.
+   * O que o leitor de tela chama o pino, no lugar do `label`. Numa faixa,
+   * passe um por pino: os dois precisam de nomes diferentes para o leitor
+   * saber qual e qual, e o `label` sozinho nomearia os dois igual.
    */
   thumbLabel?: string | string[];
   /** Classe por parte: `label`, `value`, `control`, `track`, `indicator`, `thumb`. */
@@ -39,6 +43,7 @@ export function Slider({
   classNames,
   ...props
 }: SliderProps) {
+  const labelId = useId();
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   const values = props.value ?? props.defaultValue;
@@ -56,7 +61,9 @@ export function Slider({
       {(label || showValue) && (
         <div className="flex items-baseline justify-between gap-4">
           {label && (
-            <span className={cn("font-sans text-sm text-fg", classNames?.label)}>{label}</span>
+            <span id={labelId} className={cn("font-sans text-sm text-fg", classNames?.label)}>
+              {label}
+            </span>
           )}
           {showValue && (
             <BaseSlider.Value
@@ -77,11 +84,12 @@ export function Slider({
           <BaseSlider.Indicator
             className={cn("rounded-pill bg-accent-text select-none", classNames?.indicator)}
           />
-          {labels.map((label, index) => (
+          {labels.map((thumbName, index) => (
             <BaseSlider.Thumb
               key={index}
               index={index}
-              aria-label={label}
+              aria-label={thumbName}
+              aria-labelledby={!thumbName && label ? labelId : undefined}
               className={cn(
                 "size-4 rounded-pill border border-accent-text bg-surface-raised select-none",
                 "relative after:absolute after:-inset-1.5",

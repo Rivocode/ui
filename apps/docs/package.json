@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build && bun run prerender.ts",
+    "preview": "vite preview",
+    "prerender": "bun run prerender.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",

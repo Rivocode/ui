@@ -63,7 +63,7 @@ export function Meter({
       >
         <BaseMeter.Indicator
           className={cn(
-            "h-full rounded-pill bg-accent",
+            "h-full rounded-pill bg-accent-text",
             "transition-[width] duration-[var(--rc-duration-base)] ease-rc",
             classNames?.indicator,
           )}

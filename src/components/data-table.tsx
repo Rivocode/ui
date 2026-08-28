@@ -243,6 +243,12 @@ export function DataTable<Row>({
 }: DataTableProps<Row>) {
   const [pageIndex, setPageIndex] = useState(0);
 
+  const [seenFilter, setSeenFilter] = useState(filter);
+  if (filter !== seenFilter) {
+    setSeenFilter(filter);
+    setPageIndex(0);
+  }
+
   const [internalSelection, setInternalSelection] = useState<RowSelectionState>(() =>
     Object.fromEntries((defaultValue ?? []).map((key) => [key, true])),
   );
@@ -400,7 +406,10 @@ export function DataTable<Row>({
               {column.sortable && engineColumn ? (
                 <button
                   type="button"
-                  onClick={() => engineColumn.toggleSorting()}
+                  onClick={() => {
+                    setPageIndex(0);
+                    engineColumn.toggleSorting();
+                  }}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-sm",
                     "uppercase",
@@ -491,7 +500,7 @@ export function DataTable<Row>({
             ))}
           </TableRow>
         ))
-      ) : rows.length === 0 && filter ? (
+      ) : rows.length === 0 && filter && filteredTotal === 0 ? (
         <TableRow>
           <TableCell colSpan={columnCount} className="py-8 text-center text-fg-muted">
             {noResultsMessage}

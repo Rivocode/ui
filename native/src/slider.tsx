@@ -70,7 +70,7 @@ export function Slider({
       {...(disabled ? {} : pan.panHandlers)}
     >
       <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <View className="h-full rounded-pill bg-accent" style={{ width: fraction * width }} />
+        <View className="h-full rounded-pill bg-accent-text" style={{ width: fraction * width }} />
       </View>
       <View
         className="absolute size-5 rounded-pill border border-border-strong bg-fg"

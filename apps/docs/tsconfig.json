@@ -19,5 +19,5 @@
       "@rivocode/ui/chart": ["../../src/chart/index.ts"]
     }
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts", "prerender.ts"]
 }

@@ -164,6 +164,47 @@ test("caminho comprido dobra o meio em reticencia", () => {
   expect(screen.getByText("4813")).toBeDefined();
 });
 
+test("a migalha corta o texto numa caixa de bloco, senao o truncate nao faz nada", () => {
+  withTheme(
+    <Breadcrumb
+      items={[
+        { label: "Inicio", href: "/" },
+        { label: "Notas fiscais emitidas em janeiro de 2026", href: "/notas" },
+        { label: "4813" },
+      ]}
+    />,
+  );
+
+  const caixas = [
+    ["ancora", screen.getByText("Notas fiscais emitidas em janeiro de 2026")],
+    ["texto", screen.getByText("4813")],
+  ] as const;
+
+  for (const [nome, node] of caixas) {
+    const classes = node.className.split(" ");
+    expect(`${nome}: ${classes.includes("truncate")}`).toBe(`${nome}: true`);
+    expect(`${nome}: ${classes.includes("block")}`).toBe(`${nome}: true`);
+  }
+});
+
+test("no celular o separador some junto com a migalha a esquerda dele", () => {
+  const { container } = withTheme(
+    <Breadcrumb
+      items={[
+        { label: "Inicio", href: "/" },
+        { label: "Notas", href: "/notas" },
+        { label: "4813" },
+      ]}
+    />,
+  );
+
+  const separadores = [...container.querySelectorAll('li[aria-hidden="true"]')];
+  expect(separadores.length).toBe(2);
+
+  expect(separadores[0]!.className.split(" ")).toContain("max-sm:hidden");
+  expect(separadores[1]!.className.split(" ")).not.toContain("max-sm:hidden");
+});
+
 test("a paginacao anda e trava nas pontas", () => {
   function List() {
     const [page, setPage] = useState(1);

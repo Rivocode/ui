@@ -41,7 +41,7 @@ function withTheme(node: React.ReactNode) {
 function wears(container: HTMLElement, marker: string, base: string) {
   const target = container.ownerDocument.querySelector(`.${marker}`);
   expect(target).not.toBeNull();
-  expect(target!.className).toContain(base);
+  expect(target!.className.split(" ")).toContain(base);
 }
 
 test("a barra deixa vestir trilha e indicador", () => {
@@ -54,7 +54,7 @@ test("a barra deixa vestir trilha e indicador", () => {
   );
 
   wears(container, "trilha-x", "bg-skeleton");
-  wears(container, "indicador-x", "bg-accent");
+  wears(container, "indicador-x", "bg-accent-text");
 });
 
 test("a medida deixa vestir as mesmas partes que a barra", () => {
@@ -63,7 +63,7 @@ test("a medida deixa vestir as mesmas partes que a barra", () => {
   );
 
   wears(container, "trilha-y", "bg-skeleton");
-  wears(container, "ind-y", "bg-accent");
+  wears(container, "ind-y", "bg-accent-text");
 });
 
 test("a faixa deixa vestir trilha, indicador e pino", () => {

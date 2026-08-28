@@ -4291,7 +4291,7 @@
         "name": "centerValue",
         "type": "ReactNode",
         "required": false,
-        "note": "O numero grande no meio.",
+        "note": "O numero grande no meio, que apaga enquanto o ponteiro le uma fatia.",
         "since": "0.4.0"
       },
       {
@@ -22245,7 +22245,7 @@
         "name": "label",
         "type": "ReactNode",
         "required": false,
-        "note": "Texto acima do controle.",
+        "note": "Texto acima do controle, e o nome que o leitor de tela le no pino.",
         "since": "0.4.0"
       },
       {
@@ -22357,7 +22357,7 @@
         "name": "thumbLabel",
         "type": "string | string[]",
         "required": false,
-        "note": "O que o leitor de tela chama o pino.",
+        "note": "O que o leitor de tela chama o pino, no lugar do `label`.",
         "since": "0.4.0"
       },
       {

@@ -68,12 +68,12 @@ export function Progress({
       >
         <BaseProgress.Indicator
           className={cn(
-            "h-full rounded-pill bg-accent",
+            "h-full rounded-pill bg-accent-text",
             "transition-[width] duration-[var(--rc-duration-base)] ease-rc",
             "data-[indeterminate]:w-1/5 data-[indeterminate]:animate-indeterminate",
             "motion-reduce:data-[indeterminate]:animate-none",
             "motion-reduce:data-[indeterminate]:w-full",
-            "motion-reduce:data-[indeterminate]:bg-[image:repeating-linear-gradient(115deg,var(--rc-accent)_0_0.5rem,var(--rc-accent-hover)_0.5rem_1rem)]",
+            "motion-reduce:data-[indeterminate]:bg-[image:repeating-linear-gradient(115deg,var(--rc-accent-text)_0_0.5rem,var(--rc-accent-active)_0.5rem_1rem)]",
             classNames?.indicator,
           )}
         />

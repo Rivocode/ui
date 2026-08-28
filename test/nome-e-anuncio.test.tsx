@@ -7,6 +7,7 @@ import { Field, FieldDescription, FieldError, FieldLabel } from "../src/componen
 import { TagsInput } from "../src/components/tags-input";
 import { Command, type CommandGroup } from "../src/components/command";
 import { PageHeader } from "../src/components/page-header";
+import { Slider } from "../src/components/slider";
 
 function withTheme(node: React.ReactNode) {
   return render(<RivoProvider scope="local">{node}</RivoProvider>);
@@ -156,6 +157,28 @@ test("achar tambem se anuncia: a contagem entra na mesma regiao", () => {
 
   fireEvent.change(field, { target: { value: "clientes" } });
   expect(within(screen.getByRole("status")).getByText("1 resultado")).toBeDefined();
+});
+
+/* --- Slider: o rotulo nomeia o pino --------------------------------------- */
+
+test("o rotulo do slider nomeia o controle, sem precisar de thumbLabel", () => {
+  withTheme(<Slider defaultValue={30} max={90} label="Prazo" showValue />);
+
+  expect(screen.getByRole("slider", { name: "Prazo" })).toBeDefined();
+});
+
+test("na faixa de dois pinos, cada pino guarda o nome proprio", () => {
+  withTheme(
+    <Slider
+      defaultValue={[20, 60]}
+      label="Faixa de valor"
+      thumbLabel={["Valor mínimo", "Valor máximo"]}
+    />,
+  );
+
+  expect(screen.getByRole("slider", { name: "Valor mínimo" })).toBeDefined();
+  expect(screen.getByRole("slider", { name: "Valor máximo" })).toBeDefined();
+  expect(screen.queryAllByRole("slider", { name: "Faixa de valor" })).toHaveLength(0);
 });
 
 /* --- PageHeader: o nivel do titulo --------------------------------------- */

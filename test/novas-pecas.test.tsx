@@ -119,3 +119,47 @@ test("sem resultado ela diz isso, em vez de mostrar lista vazia", () => {
 
   expect(screen.getByText("Nada com esse nome")).toBeDefined();
 });
+
+test("mudar a consulta volta o realce para o topo, e o Enter segue o realce", () => {
+  let picked = "";
+
+  withTheme(
+    <Command
+      open
+      onOpenChange={() => {}}
+      groups={[
+        {
+          items: [
+            { id: "abonar", label: "Abonar multa", onSelect: () => (picked = "abonar") },
+            {
+              id: "abandonar",
+              label: "Abandonar rascunho",
+              onSelect: () => (picked = "abandonar"),
+            },
+            { id: "arquivar", label: "Arquivar nota", onSelect: () => (picked = "arquivar") },
+            {
+              id: "atualizar",
+              label: "Atualizar cadastro",
+              onSelect: () => (picked = "atualizar"),
+            },
+          ],
+        },
+      ]}
+    />,
+  );
+
+  const field = screen.getByRole("combobox");
+  fireEvent.change(field, { target: { value: "a" } });
+  fireEvent.keyDown(field, { key: "ArrowDown" });
+  fireEvent.keyDown(field, { key: "ArrowDown" });
+  fireEvent.keyDown(field, { key: "ArrowDown" });
+  expect(screen.getByRole("option", { selected: true }).textContent).toContain(
+    "Atualizar cadastro",
+  );
+
+  fireEvent.change(field, { target: { value: "ab" } });
+  expect(screen.getByRole("option", { selected: true }).textContent).toContain("Abonar multa");
+
+  fireEvent.keyDown(field, { key: "Enter" });
+  expect(picked).toBe("abonar");
+});

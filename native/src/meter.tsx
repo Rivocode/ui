@@ -61,7 +61,7 @@ export function Meter({
       </View>
 
       <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <View className="h-full rounded-pill bg-accent" style={{ width: `${percent}%` }} />
+        <View className="h-full rounded-pill bg-accent-text" style={{ width: `${percent}%` }} />
       </View>
     </View>
   );

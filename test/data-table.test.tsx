@@ -146,6 +146,65 @@ test("filtrar volta para a primeira pagina", async () => {
   expect(firstColumn(container)).toEqual(["4813", "4814"]);
 });
 
+test("buscar depois de virar a pagina desenha a primeira pagina do filtro", async () => {
+  const { container, rerender } = table({ pageSize: 2 });
+  fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
+  expect(firstColumn(container)).toEqual(["4817"]);
+
+  rerender(
+    <RivoProvider scope="local">
+      <DataTable
+        data={INVOICES}
+        columns={COLUMNS}
+        rowKey={(nota) => nota.id}
+        pageSize={2}
+        filter="Aurora"
+      />
+    </RivoProvider>,
+  );
+
+  expect(screen.queryByText("Nenhum resultado para a busca.")).toBeNull();
+  expect(firstColumn(container)).toEqual(["4815"]);
+  expect(screen.getByText("1–1 de 1")).toBeDefined();
+
+  await act(async () => {});
+});
+
+test("reordenar depois de virar a pagina desenha a primeira pagina da ordem", async () => {
+  const { container } = table({ pageSize: 2 });
+  fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
+  expect(firstColumn(container)).toEqual(["4817"]);
+
+  fireEvent.click(screen.getByRole("button", { name: /valor/i }));
+
+  expect(firstColumn(container)).toEqual(["4817", "4816"]);
+  expect(screen.getByText("1–2 de 5")).toBeDefined();
+
+  await act(async () => {});
+});
+
+test("a mensagem de vazio cala quando o modelo filtrado ainda tem linha", async () => {
+  const { container, rerender } = table({ pageSize: 2, filter: "48" });
+  fireEvent.click(screen.getByRole("button", { name: "Página 3" }));
+  expect(firstColumn(container)).toEqual(["4817"]);
+
+  rerender(
+    <RivoProvider scope="local">
+      <DataTable
+        data={INVOICES.slice(0, 2)}
+        columns={COLUMNS}
+        rowKey={(nota) => nota.id}
+        pageSize={2}
+        filter="48"
+      />
+    </RivoProvider>,
+  );
+
+  expect(screen.queryByText("Nenhum resultado para a busca.")).toBeNull();
+
+  await act(async () => {});
+});
+
 test("selecionar uma linha devolve a chave do rowKey", () => {
   let selecionadas: string[] = [];
   table({ selectable: true, onValueChange: (keys) => (selecionadas = keys) });

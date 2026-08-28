@@ -22,7 +22,7 @@ const TONE: Record<NonNullable<TrackerPoint["tone"]>, string> = {
   success: "bg-success",
   warning: "bg-warning",
   danger: "bg-danger",
-  accent: "bg-accent",
+  accent: "bg-accent-text",
 };
 
 export type TrackerProps = {

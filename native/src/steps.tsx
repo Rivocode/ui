@@ -44,7 +44,7 @@ export function Steps({ steps, current, className }: StepsProps) {
 
       <View className="mt-1 h-1 w-full overflow-hidden rounded-pill bg-skeleton">
         <View
-          className="h-full rounded-pill bg-accent"
+          className="h-full rounded-pill bg-accent-text"
           style={{ width: `${percent(index, steps.length)}%` }}
         />
       </View>

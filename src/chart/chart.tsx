@@ -117,16 +117,15 @@ function repaint(node: ReactNode, config: ChartConfig, unknown: Set<string>): Re
     const roles = PAINTED[markName(child.type)];
     const patch: Record<string, unknown> = {};
 
-    if (
-      roles &&
-      typeof written.dataKey === "string" &&
-      written.fill === undefined &&
-      written.stroke === undefined
-    ) {
-      if (written.dataKey in config) {
-        for (const role of roles) patch[role] = `var(--color-${written.dataKey})`;
-      } else {
-        unknown.add(written.dataKey);
+    if (roles && typeof written.dataKey === "string") {
+      const vacant = roles.filter((role) => written[role] === undefined);
+
+      if (vacant.length > 0) {
+        if (written.dataKey in config) {
+          for (const role of vacant) patch[role] = `var(--color-${written.dataKey})`;
+        } else {
+          unknown.add(written.dataKey);
+        }
       }
     }
 
@@ -157,11 +156,12 @@ export function seriesColors(
 
 export function unknownSeriesComplaint(key: string, known: readonly string[]): string {
   return (
-    `[rivocode/ui] <ChartContainer>: a marca com \`dataKey\` "${key}" não tem cor, e o ` +
+    `[rivocode/ui] <ChartContainer>: a marca com \`dataKey\` "${key}" ficou sem cor, e o ` +
     `\`config\` não conhece essa série - a Recharts pinta a marca de preto, e não há erro ` +
     "nenhum. As séries deste gráfico são: " +
     `${known.join(", ")}. Corrija a chave, ou declare a série no \`config\` - a moldura ` +
-    "pinta sozinha toda marca que nasce sem `fill` e sem `stroke`."
+    "pinta sozinha todo papel de tinta que a marca deixa vago, papel a papel: o `fill` da " +
+    "barra, o `stroke` da linha, os dois da área."
   );
 }
 

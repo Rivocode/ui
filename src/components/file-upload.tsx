@@ -196,7 +196,7 @@ export function FileUploadItem({
             className="mt-2 h-1 overflow-hidden rounded-pill bg-skeleton"
           >
             <div
-              className="h-full rounded-pill bg-accent transition-[width] duration-[var(--rc-duration-base)] ease-rc"
+              className="h-full rounded-pill bg-accent-text transition-[width] duration-[var(--rc-duration-base)] ease-rc"
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
             />
           </div>

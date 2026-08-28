@@ -89,6 +89,12 @@ export function Command({
   const { portalContainer } = useRivoContext();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+
+  const [seenQuery, setSeenQuery] = useState(query);
+  if (query !== seenQuery) {
+    setSeenQuery(query);
+    setActive(0);
+  }
   const listId = useId();
   const list = useRef<HTMLDivElement>(null);
 

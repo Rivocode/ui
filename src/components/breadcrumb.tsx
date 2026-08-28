@@ -36,11 +36,12 @@ export function Breadcrumb({ className, items, max = 4, ...props }: BreadcrumbPr
           const fullLabel =
             crumb !== "reticencia" && typeof crumb.label === "string" ? crumb.label : undefined;
           const wideOnly = index < visiveis.length - 2;
+          const separatorWideOnly = index < visiveis.length - 1;
 
           return (
             <Fragment key={index}>
               {index > 0 && (
-                <li aria-hidden="true" className={cn(wideOnly && "max-sm:hidden")}>
+                <li aria-hidden="true" className={cn(separatorWideOnly && "max-sm:hidden")}>
                   <ChevronRight size={14} className="text-fg-subtle" />
                 </li>
               )}
@@ -55,7 +56,7 @@ export function Breadcrumb({ className, items, max = 4, ...props }: BreadcrumbPr
                     href={crumb.href}
                     title={fullLabel}
                     className={cn(
-                      "truncate rounded-sm text-fg-muted",
+                      "block truncate rounded-sm text-fg-muted",
                       "relative after:absolute after:inset-x-0 after:-inset-y-1.5",
                       "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
                       "hover:text-fg",
@@ -68,7 +69,7 @@ export function Breadcrumb({ className, items, max = 4, ...props }: BreadcrumbPr
                   <span
                     aria-current={isLast ? "page" : undefined}
                     title={fullLabel}
-                    className="truncate text-fg"
+                    className="block truncate text-fg"
                   >
                     {crumb.label}
                   </span>

@@ -1,5 +1,21 @@
 # Mudancas
 
+## 0.8.0
+
+### Corrigido: a barra que carrega o valor sozinha era invisivel no tema claro
+
+`Meter`, `Progress`, `Tracker`, `Steps` e o preenchimento do `Slider` pintavam a
+barra cheia com `bg-accent`, que mede **1,03:1** contra a propria trilha no tema
+claro - a WCAG 1.4.11 pede 3:1. O `Slider` e o caso que mais chama atencao: o do
+web foi consertado numa versao anterior e o do toque ficou para tras.
+
+O token passou a ser `bg-accent-text`. No tema escuro os dois sao o mesmo valor,
+entao la nao muda um pixel.
+
+O mapa de contraste do nativo tinha o mesmo buraco do web: ele nao media o
+acento cru sobre a trilha, so o token ja consertado. A guarda foi corrigida
+antes das pecas, e e ela que impede a volta.
+
 ## 0.7.0
 
 ### O `Menu` abre no toque longo, e o `ContextMenu` deixa de faltar

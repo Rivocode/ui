@@ -10,8 +10,11 @@ Escolha de valor numa faixa: desconto, prazo, tolerancia.
 mais e não pede pontaria: arrastar um pino até 37 e trabalho, digitar 37 não.
 
 ```tsx
-<Slider defaultValue={25} max={50} label="Desconto" showValue thumbLabel="Desconto" />
+<Slider defaultValue={25} max={50} label="Desconto" showValue />
 ```
+
+O `label` é o nome que o leitor de tela lê no pino, e não só o texto acima
+dele: um pino sem rótulo visível é que precisa de `thumbLabel`.
 
 `format` escreve o número do `showValue` e o que o leitor de tela anuncia: o
 nome de um formatador da casa, ou uma função sua para a unidade que só esta tela

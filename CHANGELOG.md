@@ -1,5 +1,98 @@
 # Mudancas
 
+## 0.12.0
+
+### Corrigido: a barra que carrega o valor sozinha era invisivel no tema claro
+
+`Meter`, `Progress`, `Tracker`, `Steps` e `FileUpload` pintavam a barra cheia
+com `bg-accent`, que mede **1,03:1** contra a propria trilha no tema claro. A
+WCAG 1.4.11 pede 3:1, e com `showValue` desligado - que e o padrao - a barra e o
+UNICO portador do valor: uma cota em 72% lia como barra vazia.
+
+O token passou a ser `bg-accent-text`, que mede 4,69 a 4,87 nos tres fundos onde
+as pecas pousam. No tema escuro os dois tokens sao o mesmo valor, entao la nao
+muda um pixel. Nenhuma lima clara alcanca 3:1 - `accent-hover` da 1,11 e
+`accent-active` 1,26 -, e esse teto ja estava registrado para a chave, a caixa,
+o radio e o Slider, que fizeram esse mesmo troco antes.
+
+A guarda foi consertada ANTES da peca, e e ela que impede a volta: o par que
+`CSS_BOUNDARIES` media era o token do Slider, ja consertado, entao ninguem media
+o acento cru sobre a trilha. O terceiro fundo (`surface-raised`, onde o medidor
+dentro de Dialog e Menu pousa) tambem faltava. O mapa nativo tinha o mesmo
+buraco.
+
+O `Tracker` entrou junto por medida propria: o periodo neutro dele e o proprio
+`bg-skeleton`, entao o tom `accent` era indistinguivel de "nada aconteceu",
+enquanto os outros tres tons mediam de 4,24 a 4,84 no mesmo lugar.
+
+### Corrigido: `DataTable` respondia "Nenhum resultado" com o resultado existindo
+
+`pageIndex` nao voltava para zero quando o `filter` mudava. Quem estava na pagina
+3 e buscava algo que devolvia uma linha recebia uma negativa categorica sobre um
+dado que existe, com o rodape escrevendo `21-1 de 1`. Reordenar tinha o mesmo
+defeito, mais silencioso.
+
+A pagina ja prometia o conserto - "filtrar ou reordenar volta para a primeira
+pagina" -, e agora a promessa e verdade. Por seguranca, a mensagem de vazio
+tambem passou a calar quando o modelo filtrado ainda tem linha: antes a condicao
+so olhava a pagina.
+
+### Corrigido: o `label` do `Slider` nao nomeava o controle
+
+O rotulo saia num `<span>` sem `id`, e o `<input type="range">` so recebia
+`aria-label` quando vinha `thumbLabel`. Um `<Slider label="Desconto" />` era um
+controle sem nome nenhum para o leitor de tela - e era essa a forma que o
+exemplo da pagina ensinava. O exemplo tambem foi consertado.
+
+### Corrigido: `Dialog` e `AlertDialog` sem altura maxima
+
+O painel e `fixed` e nao tinha `max-h` nem rolagem. Conteudo mais alto que a
+janela crescia para os dois lados a partir do centro, e o que passava da borda
+nao rolava de jeito nenhum - o titulo sumia acima da tela. Agora os dois seguem
+a conta que o `Sheet` ja fazia: `max-h-[85dvh]` com o miolo rolando e o titulo
+parado.
+
+### Corrigido: o realce do `Command` derivava, e o Enter executava outra acao
+
+O indice ativo so era grampeado quando a lista encolhia, e nunca voltava ao topo
+quando a CONSULTA mudava. Como o filtro remove itens de qualquer posicao, o mesmo
+indice passava a apontar para outra acao: com "a" e tres setas o realce estava em
+"Abonar multa"; digitando mais uma letra, o Enter executava "Abandonar rascunho".
+A peca existe para quem digita rapido sem olhar a lista.
+
+### Corrigido: o `Breadcrumb` empurrava a pagina para fora da tela
+
+`truncate` estava no `<a>` e no `<span>`, que computam `display: inline` - e
+`overflow` nao tem efeito em caixa inline. O texto saia do proprio item, as
+migalhas se sobrepunham, e o documento ganhava barra horizontal ja em 1280px.
+Junto saiu um chevron orfao que aparecia no celular em toda trilha de tres
+migalhas ou mais: o separador escondia pela migalha seguinte, e nao pela
+anterior.
+
+### A heranca de cor da marca passa a decidir papel a papel
+
+O portao que pintava a serie e o que avisava serie desconhecida era o mesmo, e
+ele exigia `fill` E `stroke` vazios na mesma marca. `<Bar dataKey="v"
+stroke="none" />` - que e o que sai de qualquer exemplo da Recharts copiado -
+caia fora dos dois: a barra de uma serie CONHECIDA voltava a nascer preta, e a
+chave que o `config` nao conhecia deixava de acusar. Apagava a cor e desligava
+a guarda com a mesma prop, e nenhuma das duas tinha relacao com ela.
+
+Agora cada papel decide sozinho, pela tabela que ja dizia que prop de tinta
+cada marca usa: o `fill` da barra, o `stroke` da linha, os dois da area. E a
+chave vai para o aviso sempre que sobrou papel por pintar, e nao so quando os
+dois estavam vazios.
+
+O criterio conservador continua: papel que o chamador escreveu fica como esta,
+entao `fill="url(#gradiente)"` segue intocado.
+
+### O miolo do `ChartDonut` apaga durante a leitura, e agora esta escrito
+
+Ele sempre apagou enquanto o ponteiro le uma fatia - a dica ja mostra o numero
+daquela fatia, e os dois juntos deixariam dois numeros na tela sem dizer qual e
+qual. Nao estava em lugar nenhum, e a primeira frase do JSDoc, que e a unica que
+chega a tabela publicada, nao dizia.
+
 ## 0.11.0
 
 ### O `PageHeader` deixa o chamador alcancar a caixa de acoes
