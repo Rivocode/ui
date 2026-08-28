@@ -3,7 +3,7 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { BABEL_NAMES, BABEL_V4, RECIPE, globalCss, plan } from "../scripts/init.mjs";
+import { BABEL_NAMES, BABEL_V4, RECIPE, globalCss, nativewindEnv, plan } from "../scripts/init.mjs";
 
 function app(extra: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), "receita-"));
@@ -32,16 +32,17 @@ function byName(steps: ReturnType<typeof plan>, name: string) {
 }
 
 describe("a receita de instalacao", () => {
-  test("cobre seis arquivos, e nenhum deles duas vezes", () => {
+  test("cobre sete arquivos, e nenhum deles duas vezes", () => {
     const names = RECIPE.map((item) => item.name);
 
-    expect(names.length).toBe(6);
-    expect(new Set(names).size).toBe(6);
+    expect(names.length).toBe(7);
+    expect(new Set(names).size).toBe(7);
     expect(names).toEqual([
       "babel.config.js",
       "postcss.config.mjs",
       "metro.config.js",
       "global.css",
+      "nativewind-env.d.ts",
       "app.json",
       "package.json",
     ]);
@@ -51,11 +52,16 @@ describe("a receita de instalacao", () => {
     const root = app();
     try {
       const steps = apply(root);
-      expect(steps.length).toBe(6);
+      expect(steps.length).toBe(7);
 
       expect(existsSync(join(root, "babel.config.js"))).toBe(false);
 
-      for (const name of ["postcss.config.mjs", "metro.config.js", "global.css"]) {
+      for (const name of [
+        "postcss.config.mjs",
+        "metro.config.js",
+        "global.css",
+        "nativewind-env.d.ts",
+      ]) {
         expect(readFileSync(join(root, name), "utf8").length).toBeGreaterThan(20);
       }
 
@@ -215,6 +221,36 @@ describe("a receita de instalacao", () => {
 
     for (const word of ["shadow", "invert", "filter", "transform"]) {
       expect(linhas).toContain(`@source not inline("${word}");`);
+    }
+  });
+
+  test("o nativewind-env.d.ts referencia os tipos do NativeWind e o modulo de CSS", () => {
+    const dts = nativewindEnv();
+
+    expect(dts).toContain('/// <reference types="nativewind/types" />');
+    expect(dts).toContain('declare module "*.css";');
+    expect(dts).not.toContain("nativewind/jsx-runtime");
+  });
+
+  test("o nativewind-env.d.ts nasce no app e conflita se ja disser outra coisa", () => {
+    const root = app();
+    try {
+      apply(root);
+      expect(readFileSync(join(root, "nativewind-env.d.ts"), "utf8")).toBe(nativewindEnv());
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+
+    const meu = 'declare module "*.svg";\n';
+    const outro = app({ "nativewind-env.d.ts": meu });
+    try {
+      const step = byName(plan(outro), "nativewind-env.d.ts");
+
+      expect(step.action).toBe("conflito");
+      expect(step.body).toBeUndefined();
+      expect(readFileSync(join(outro, "nativewind-env.d.ts"), "utf8")).toBe(meu);
+    } finally {
+      rmSync(outro, { recursive: true, force: true });
     }
   });
 

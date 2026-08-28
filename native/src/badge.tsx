@@ -4,8 +4,10 @@ import { View } from "react-native";
 import { cn } from "./cn";
 import { Text } from "./text";
 
+const NEUTRAL_TONE = { box: "bg-surface-raised border border-border", label: "text-fg-muted" };
+
 const TONE: Record<string, { box: string; label: string }> = {
-  neutral: { box: "bg-surface-raised border border-border", label: "text-fg-muted" },
+  neutral: NEUTRAL_TONE,
   accent: { box: "bg-accent-subtle", label: "text-accent-text" },
   success: { box: "bg-success-subtle", label: "text-success-text" },
   warning: { box: "bg-warning-subtle", label: "text-warning-text" },
@@ -20,7 +22,7 @@ export type BadgeProps = {
 };
 
 export function Badge({ children, tone = "neutral", className }: BadgeProps) {
-  const styles = TONE[tone];
+  const styles = TONE[tone] ?? NEUTRAL_TONE;
   return (
     <View className={cn("self-start rounded-pill px-2.5 py-0.5", styles.box, className)}>
       <Text className={`text-xs font-medium ${styles.label}`}>{children}</Text>

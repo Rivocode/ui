@@ -32,17 +32,33 @@ Por dentro há um `PolarAngleAxis` com `domain={[0, max]}` que não desenha nada
 Ele existe porque a Recharts normaliza pelo maior valor da série, e com um único
 ponto isso significa que **qualquer valor daria a volta inteira**.
 
-## O miolo é pequeno
+## O miolo é pequeno, e ele não cresce com o cartão
 
-O buraco de um arco cabe uma palavra curta. `R$ 246.700,00` quebra em duas
-linhas ali dentro e fica apertado.
+O arco é um quadrado limitado pelo menor lado, e a peça tem `11rem` (176px) de
+altura fixa. Num cartão de 176px ou mais o vão de dentro trava em **cerca de
+125px de largura**: alargar o cartão alarga o gráfico, e não o buraco.
 
-A hierarquia que funciona é a porcentagem como número grande, e o valor por
-extenso como a linha de baixo:
+O que cabe ali, medido nesse vão: **umas dez letras** no número grande
+(`1,5rem`) e **umas dezoito** na linha de baixo (`0,75rem`) — `da meta do mês`
+tem catorze e sobra espaço; `R$ 246,7K de R$ 300K` tem vinte e não cabe.
+Passando do limite nada corta nem vira reticências, porque o teto que o CSS
+impõe é uma fração da **largura do cartão**, e não o buraco: num cartão largo
+a frase atravessa o anel de ponta a ponta, e num estreito ela quebra em duas
+linhas e aperta contra a base aberta. Os dois saem feios, e nenhum dos dois acusa.
+
+A hierarquia que funciona é a porcentagem como número grande e o denominador
+como a linha de baixo, que é justamente o que a porcentagem não carrega:
 
 ```tsx
-<ChartRadial value={246_700} max={300_000} centerLabel="R$ 246,7K de R$ 300K" />
+<ChartRadial value={246_700} max={300_000} centerLabel="de R$ 300K" />
 ```
+
+Quando a frase é maior que isso, ela sai do miolo. O arco não tem legenda de
+fora para receber texto — a rosca tem, e é uma das razões para escolhê-la —,
+então o lugar é o cartão em volta: o título, ou uma linha de apoio acima do
+gráfico. Para quem ouve, a frase inteira vai em `label`: sem ele o nome
+acessível é só a porcentagem, e "82 por cento" sozinho não diz por cento de
+quê.
 
 ## A legenda da rosca
 

@@ -32,19 +32,20 @@ O `react-native-reanimated` não é enfeite nem peer opcional: o
 você nunca importou. Ele traz junto o `react-native-worklets`, que o
 `babel-preset-expo` liga sozinho.
 
-### Os seis arquivos, e o que cada um segura
+### Os sete arquivos, e o que cada um segura
 
 O `npx rivocode-ui-native-init` escreve a receita inteira e imprime o que fez:
 
 ```
 Receita do @rivocode/ui-native em meu-app/:
 
-  = babel.config.js     nao existe, e e assim que tem que ser
-  + postcss.config.mjs  criado
-  + metro.config.js     criado
-  + global.css          criado
-  ~ app.json            expo.userInterfaceStyle: "light" -> "automatic"
-  + package.json        browserslist adicionado
+  = babel.config.js       nao existe, e e assim que tem que ser
+  + postcss.config.mjs    criado
+  + metro.config.js       criado
+  + global.css            criado
+  + nativewind-env.d.ts   criado
+  ~ app.json              expo.userInterfaceStyle: "light" -> "automatic"
+  + package.json          browserslist adicionado
 ```
 
 `+` é arquivo novo, `~` é uma chave de JSON trocada com o valor antigo à vista,
@@ -55,7 +56,7 @@ porque reescrever um `babel.config.js` ou um `postcss.config.mjs` apaga a
 configuração de outra biblioteca e o app quebra num lugar que não parece ter
 relação com este comando. `--dry-run` mostra o plano sem escrever nada.
 
-São seis, e cada um por um motivo que morde:
+São sete, e cada um por um motivo que morde:
 
 1. **`babel.config.js`**. **O certo é não existir.** Sem arquivo de Babel
    nenhum, o `@expo/metro-config` cai no `babel-preset-expo` por conta própria
@@ -106,6 +107,28 @@ São seis, e cada um por um motivo que morde:
    `className`. `.shadow` redeclara `--tw-shadow`, que o pré-compilado já
    declarou no `:root`, e var declarada duas vezes derruba o compilador nativo
    com "expected an object-like struct named Specifier, found ()".
+7. **`nativewind-env.d.ts`**. Duas linhas, e a primeira é a que o `tsc` do seu
+   app cobra:
+
+   ```ts
+   /// <reference types="nativewind/types" />
+
+   declare module "*.css";
+   ```
+
+   Este pacote publica **fonte**, e não `dist`: o `tsc` do seu app compila as
+   nossas peças junto com o seu código. Sem essa referência, `className` não
+   existe nas props de `View`, `Text` e `Pressable`, e o `tsc` reprova o
+   catálogo inteiro com dezenas de erros **dentro do `node_modules`** — e
+   `skipLibCheck: true` **não salva**, porque ele só pula `.d.ts`, e o que está
+   sendo compilado aqui é `.tsx`. É exigência do NativeWind, e vale para
+   qualquer biblioteca que publique fonte com `className`. A segunda linha é do
+   `generated.css` que o `App.tsx` importa no topo. O arquivo precisa estar no
+   `include` do seu `tsconfig.json`; o template do Expo já alcança `**/*.ts`.
+
+   Do nosso lado a outra metade é medida: o `native/tsconfig.check.json` compila
+   a fonte publicada com `strict` e `noUncheckedIndexedAccess` ligados, para que
+   um app que ligue essas flags não trombe na rigidez da nossa biblioteca.
 
 O `examples/native` do repositório roda essa mesma receita, e
 `bun run check:receita` fica vermelho no dia em que as duas se separarem.

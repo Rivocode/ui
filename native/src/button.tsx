@@ -29,12 +29,13 @@ const SPINNER_TOKEN: Record<string, keyof (typeof tokens.themes)["rivocode-dark"
 
 function ButtonSpinner({ variant }: { variant: string }) {
   const { colors } = useRivo();
+  const token = SPINNER_TOKEN[variant] ?? "fg";
   return (
     <ActivityIndicator
       accessibilityElementsHidden
       importantForAccessibility="no"
       size="small"
-      color={colors[SPINNER_TOKEN[variant]]}
+      color={colors[token]}
     />
   );
 }

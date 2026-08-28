@@ -1,5 +1,36 @@
 # Mudancas
 
+## 0.6.0
+
+### O `tsc` do app nao trava mais na nossa fonte
+
+O pacote publica FONTE - `main` e `types` apontam para `src/index.ts` -, entao o
+compilador de quem consome atravessa as nossas pecas. Um app com
+`noUncheckedIndexedAccess`, que e comum em projeto novo com `strict`, nao
+compilava por causa de OITO pontos nossos, em `badge`, `basics`, `button` e
+`calendar`. Nada disso aparecia aqui, porque a nossa propria passagem de tipos
+nao ligava a flag.
+
+Os oito foram consertados sem `!` e sem `as`: onde o indice pode faltar de
+verdade, a falta passou a ser tratada. Tom desconhecido no `Badge` veste o
+neutro, tom desconhecido no `Alert` veste o info, variante desconhecida no
+`Button` pinta o spinner como o `secondary`, e mes fora da faixa no `Calendar`
+da a volta em vez de quebrar - a mesma volta que o `new Date` ao lado ja fazia.
+
+A flag entrou no `native/tsconfig.check.json`, que roda no job `nativo` da CI.
+E o que impede a volta: o app so descobria isto depois de instalar.
+
+### `nativewind-env.d.ts` entrou na receita, e sao sete arquivos
+
+Sem `/// <reference types="nativewind/types" />` num `.d.ts` do app, o `tsc`
+dele reprova DENTRO do `node_modules`, porque `className` nao existe em `View`,
+`Text` e `Pressable` - e o `skipLibCheck` nao salva, porque ele so pula `.d.ts`
+e o que estamos compilando e `.tsx`.
+
+O `npx rivocode-ui-native-init` passou a escrever o arquivo, o README passou a
+lista-lo, e o `check:receita` passou a medi-lo como FATO: a lista de
+`reference types` e a de `declare module`, e nao o texto em volta.
+
 ## 0.5.0
 
 ### Quebra: o `RivoNativeThemeMap` e a prop `scheme` sairam

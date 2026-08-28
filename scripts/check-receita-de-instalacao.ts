@@ -12,18 +12,19 @@
  * de ler o `examples/native` inteiro e reconstruir a receita a mao.
  *
  * O `rivocode-ui-native-init` nasceu para essa leitura nao precisar acontecer
- * de novo. So que ele criou uma SEGUNDA copia da receita: seis arquivos que
- * precisam concordar entre si viraram doze, e nada dizia quando as duas metades
- * se separassem. O `examples/native` e o unico lugar onde a receita e MEDIDA -
- * ele roda -, entao ele e a fonte, e esta guarda cobra que o comando diga o
- * mesmo.
+ * de novo. So que ele criou uma SEGUNDA copia da receita: os arquivos que
+ * precisam concordar entre si dobraram de numero, e nada dizia quando as duas
+ * metades se separassem. O `examples/native` e o unico lugar onde a receita e
+ * MEDIDA - ele roda -, entao ele e a fonte, e esta guarda cobra que o comando
+ * diga o mesmo.
  *
  * Ela nao compara texto: compara os FATOS que cada arquivo carrega, extraidos
  * dos dois lados pelo mesmo leitor - a lista ordenada de diretivas do
  * `global.css`, os plugins do PostCSS, o embrulho do metro, o
- * `userInterfaceStyle` do `app.json`, o `browserslist` do `package.json` e os
- * presets do Babel. Comparar texto reprovaria pelo caminho relativo do
- * monorepo, que e diferente de proposito.
+ * `userInterfaceStyle` do `app.json`, o `browserslist` do `package.json`, a
+ * referencia de tipos do `nativewind-env.d.ts` e os presets do Babel. Comparar
+ * texto reprovaria pelo caminho relativo do monorepo, que e diferente de
+ * proposito.
  *
  * O `babel.config.js` e o unico fato pela AUSENCIA, e ele foi medido: escrever
  * um com `presets: ["babel-preset-expo"]` derruba um app do Expo 57 inteiro,
@@ -49,9 +50,11 @@ const recipe = (await import(`${import.meta.dir}/../${RECIPE}`)) as {
   BROWSERSLIST: string[];
   USER_INTERFACE_STYLE: string;
   METRO_WRAPPER: string;
+  RECIPE: { name: string }[];
   globalCss: (spec?: string) => string;
   postcssConfig: () => string;
   metroConfig: () => string;
+  nativewindEnv: () => string;
 };
 
 const SPEC = recipe.SPEC;
@@ -86,6 +89,21 @@ function plugins(mjs: string): string[] {
 
 function wrapper(js: string): string[] {
   return [...js.matchAll(/\b(withNativewind|withNativeWind)\s*\(/g)].map((one) => one[1]!);
+}
+
+/**
+ * O `.d.ts` do app tambem carrega FATO, e nao texto: a lista de referencias de
+ * tipo e a de modulos declarados. E a metade do setup que o `tsc` do app cobra
+ * e o metro nao - sem `nativewind/types` o `className` nao existe nas props de
+ * `View`, e como o pacote publica FONTE o erro cai na NOSSA arvore.
+ */
+function typing(dts: string): string[] {
+  return [
+    ...[...dts.matchAll(/\/\/\/\s*<reference\s+types="([^"]+)"\s*\/>/g)].map(
+      (one) => `types ${one[1]!}`,
+    ),
+    ...[...dts.matchAll(/declare\s+module\s+"([^"]+)"/g)].map((one) => `module ${one[1]!}`),
+  ];
 }
 
 const problems: string[] = [];
@@ -129,6 +147,22 @@ compare(
   wrapper(recipe.metroConfig()),
   wrapper(await Bun.file(`${EXAMPLE}/metro.config.js`).text()),
   "E o `withNativewind` que troca o transformador do metro pelo do react-native-css.",
+);
+
+const exampleTyping = typing(await Bun.file(`${EXAMPLE}/nativewind-env.d.ts`).text());
+const mineTyping = typing(recipe.nativewindEnv());
+
+countAtLeast(`fato de \`${EXAMPLE}/nativewind-env.d.ts\``, exampleTyping.length, 2);
+countAtLeast("fato do nativewind-env.d.ts da receita", mineTyping.length, 2);
+
+compare(
+  "nativewind-env.d.ts: as declaracoes de tipo nao batem.",
+  mineTyping,
+  exampleTyping,
+  "Sem `nativewind/types` o `className` nao existe nas props de View, Text e" +
+    "\n    Pressable, e o tsc do app reprova a nossa fonte inteira por um erro que" +
+    "\n    nao e dele - o skipLibCheck dele nao salva, porque so pula .d.ts. O" +
+    '\n    `declare module "*.css"` e do `generated.css` que o App.tsx importa.',
 );
 
 const exampleApp = (await Bun.file(`${EXAMPLE}/app.json`).json()) as {
@@ -190,9 +224,10 @@ if (problems.length > 0) {
 }
 
 console.log(
-  `A receita de 6 arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ${EXAMPLE}: ` +
-    `${mineDirectives.length} diretivas de CSS, ${recipe.POSTCSS_PLUGINS.length} plugin de PostCSS, ` +
+  `A receita de ${recipe.RECIPE.length} arquivos do \`rivocode-ui-native-init\` diz o mesmo que o ` +
+    `${EXAMPLE}: ${mineDirectives.length} diretivas de CSS, ${recipe.POSTCSS_PLUGINS.length} plugin de PostCSS, ` +
     `${recipe.METRO_WRAPPER}, userInterfaceStyle ${recipe.USER_INTERFACE_STYLE}, ` +
-    `browserslist com ${recipe.BROWSERSLIST.length}, e nenhum arquivo de Babel nos dois ` +
+    `browserslist com ${recipe.BROWSERSLIST.length}, ${mineTyping.length} fatos de tipagem, ` +
+    `e nenhum arquivo de Babel nos dois ` +
     `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes).`,
 );

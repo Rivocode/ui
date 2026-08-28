@@ -15,7 +15,7 @@ import {
 import { indicatorWidthComplaint } from "../src/indicator";
 import { Meter } from "../src/meter";
 import { REFRESH, describeRelative } from "../src/relative-time";
-import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, byType, render, textOf } from "./helpers";
 
 const ROWS = [
   { id: "1", name: "Clínica São Lucas" },
@@ -189,6 +189,46 @@ describe("Avatar", () => {
   test("as iniciais entram por fallback, o mesmo nome do web", () => {
     const screen = render(<Avatar fallback="EB" />);
     expect(textOf(screen)).toContain("EB");
+    expect(byType(screen, "Image")).toHaveLength(0);
+  });
+
+  test("a foto remota entra por src, e as iniciais ficam embaixo dela", () => {
+    const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" alt="Emanuel" />);
+    const [photo] = byType(screen, "Image");
+
+    expect(photo!.props.source).toEqual({ uri: "https://exemplo.com/eu.jpg" });
+    expect(photo!.props.accessibilityLabel).toBe("Emanuel");
+    expect(photo!.props.accessible).toBe(true);
+    expect(photo!.props.className.split(" ")).toContain("absolute");
+    expect(textOf(screen)).toContain("EB");
+  });
+
+  test("sem alt a foto some do leitor de tela, porque o nome ja esta do lado", () => {
+    const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" />);
+    const [photo] = byType(screen, "Image");
+
+    expect(photo!.props.accessible).toBe(false);
+  });
+
+  test("foto que falha volta para as iniciais, e trocar o src tenta de novo", () => {
+    const screen = render(<Avatar fallback="EB" src="https://exemplo.com/quebrada.jpg" />);
+
+    act(() => byType(screen, "Image")[0]!.props.onError());
+    expect(byType(screen, "Image")).toHaveLength(0);
+    expect(textOf(screen)).toContain("EB");
+
+    act(() => {
+      screen.update(<Avatar fallback="EB" src="https://exemplo.com/outra.jpg" />);
+    });
+    expect(byType(screen, "Image")).toHaveLength(1);
+  });
+
+  test("a moldura recorta a foto na pilula", () => {
+    const screen = render(<Avatar fallback="EB" src="https://exemplo.com/eu.jpg" />);
+    const [frame] = byClass(screen, /rounded-pill/);
+
+    expect(frame!.props.className.split(" ")).toContain("overflow-hidden");
+    expect(frame!.props.className.split(" ")).toContain("rounded-pill");
   });
 });
 

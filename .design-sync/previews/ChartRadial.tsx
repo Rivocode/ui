@@ -16,13 +16,11 @@ export function WithOwnValue() {
     <Card className="w-64">
       <CardContent className="py-4">
         <p className="text-sm text-fg-muted">Faturado</p>
-        {/* A porcentagem grande e o valor embaixo: moeda por extenso no
-            miolo de um arco quebra em duas linhas e fica apertada. */}
         <ChartRadial
           value={246_700}
           max={300_000}
-          centerLabel={`${currencyShort(246_700)} de ${currencyShort(300_000)}`}
-          label="82% da meta"
+          centerLabel={`de ${currencyShort(300_000)}`}
+          label={`82% da meta de ${currencyShort(300_000)}`}
         />
       </CardContent>
     </Card>

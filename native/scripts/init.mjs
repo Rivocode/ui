@@ -62,6 +62,18 @@ export const METRO_WRAPPER = "withNativewind";
  */
 export const BLOCKED = ["shadow", "invert", "filter", "transform"];
 
+/**
+ * O que o `.d.ts` do app tem que dizer. A referência é exigência do NativeWind,
+ * e não defeito nosso: sem ela `className` não existe nas props de `View`,
+ * `Text` e `Pressable`, e como este pacote publica FONTE, o `tsc` do app
+ * reprova o catálogo inteiro por um erro que não é dele — `skipLibCheck` não
+ * salva, porque ele só pula `.d.ts`. O `declare module` é do `generated.css`,
+ * que o `App.tsx` importa no topo.
+ */
+export const TYPES_REFERENCE = "nativewind/types";
+
+export const CSS_MODULE = "*.css";
+
 export function globalCss(spec = SPEC) {
   return [
     `@import "tailwindcss/theme.css" layer(theme);`,
@@ -72,6 +84,15 @@ export function globalCss(spec = SPEC) {
     `@source "./node_modules/${spec}/src";`,
     ``,
     ...BLOCKED.map((word) => `@source not inline("${word}");`),
+    ``,
+  ].join("\n");
+}
+
+export function nativewindEnv() {
+  return [
+    `/// <reference types="${TYPES_REFERENCE}" />`,
+    ``,
+    `declare module "${CSS_MODULE}";`,
     ``,
   ].join("\n");
 }
@@ -108,6 +129,7 @@ export const RECIPE = [
   { name: "postcss.config.mjs", kind: "file", body: postcssConfig },
   { name: "metro.config.js", kind: "file", body: metroConfig },
   { name: "global.css", kind: "file", body: globalCss },
+  { name: "nativewind-env.d.ts", kind: "file", body: nativewindEnv },
   { name: "app.json", kind: "json", path: ["expo", "userInterfaceStyle"], value: USER_INTERFACE_STYLE },
   { name: "package.json", kind: "json", path: ["browserslist"], value: BROWSERSLIST },
 ];
@@ -264,6 +286,8 @@ const WHY = {
   "metro.config.js": "`withNativewind(config)`, que troca o transformador do metro pelo do react-native-css.",
   "global.css":
     "a fonte do CSS. O app nao a importa: importa o `generated.css` que o `rivocode-ui-native-css` escreve a partir dela.",
+  "nativewind-env.d.ts":
+    '`/// <reference types="nativewind/types" />`, senao `className` nao existe nas props de View, Text e Pressable e o tsc do app reprova a nossa fonte inteira - e o skipLibCheck dele nao salva, porque so pula .d.ts.',
   "app.json": "`userInterfaceStyle` em `automatic`, senao o iOS prende a aparencia no claro e o tema escuro nunca chega.",
   "package.json":
     "`browserslist` moderno, senao o passe web do Expo reescreve o `light-dark()` dos tokens num polyfill de vars orfas e a compilacao morre com \"Specifier, found ()\".",
@@ -288,7 +312,7 @@ function main() {
 
   for (const step of steps) {
     if (step.body !== undefined && !dry) writeFileSync(resolve(root, step.name), step.body);
-    console.log(`  ${MARKS[step.action]} ${step.name.padEnd(19)} ${step.note}`);
+    console.log(`  ${MARKS[step.action]} ${step.name.padEnd(21)} ${step.note}`);
   }
 
   const stale = steps.filter((step) => step.babel);

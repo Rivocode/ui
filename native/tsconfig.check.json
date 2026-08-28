@@ -23,6 +23,12 @@
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
+    // Ligada porque o app que nos consome compila a NOSSA fonte: projeto novo
+    // com strict costuma ligar esta flag, e ai oito indexacoes nossas - o mapa
+    // de tom do Badge e do Alert, o token do spinner do Button, o nome do mes
+    // do Calendar - derrubavam o tsc de quem so queria usar a peca. Rigidez
+    // nossa nao pode virar erro no app dos outros.
+    "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,

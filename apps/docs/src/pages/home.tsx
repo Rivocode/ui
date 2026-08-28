@@ -45,7 +45,7 @@ const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ def
  * Conta a suíte da raiz inteira (`test/` e `native/test/`), que é o que o
  * rótulo ao lado promete.
  */
-const TESTS = 1384
+const TESTS = 1390
 
 const INSTALL = 'npm install @rivocode/ui'
 

@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { useState, type ReactNode } from "react";
+import { ActivityIndicator, Image, View } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
@@ -39,33 +39,57 @@ export function Progress({ value, label, className }: ProgressProps) {
 
 export type AvatarProps = {
   /**
-   * As iniciais. Imagem chega depois, com expo-image; o fallback ja e o
-   * produto - e o nome e o mesmo do web de proposito, para a mesma peca nao
-   * pedir prop diferente de cada lado.
+   * As iniciais. Continua obrigatoria com foto: e ela que ocupa o lugar
+   * enquanto a imagem baixa, e e ela que volta se a imagem falhar.
    */
   fallback: string;
+  /**
+   * A foto, por endereco: `https://` da rede, `file://` do aparelho, `data:`
+   * embutida. O mesmo nome do web.
+   */
+  src?: string;
+  /**
+   * Descricao da foto para o leitor de tela. Deixe vazia quando o nome ja
+   * aparece do lado, senao ele fala a pessoa duas vezes.
+   */
+  alt?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 };
 
-export function Avatar({ fallback, size = "md", className }: AvatarProps) {
+export function Avatar({ fallback, src, alt, size = "md", className }: AvatarProps) {
+  const [broken, setBroken] = useState<string | null>(null);
   const box = { sm: "size-8", md: "size-10", lg: "size-12" }[size];
   const text = { sm: "text-xs", md: "text-sm", lg: "text-base" }[size];
+  const photo = src !== undefined && src !== broken;
   return (
     <View
       className={cn(
-        "items-center justify-center rounded-pill border border-border bg-surface-raised",
+        "items-center justify-center overflow-hidden rounded-pill border border-border bg-surface-raised",
         box,
         className,
       )}
     >
       <Text className={`font-medium text-fg-muted ${text}`}>{fallback}</Text>
+      {photo && (
+        <Image
+          source={{ uri: src }}
+          onError={() => setBroken(src)}
+          resizeMode="cover"
+          accessible={alt !== undefined && alt !== ""}
+          accessibilityRole="image"
+          accessibilityLabel={alt}
+          className="absolute size-full"
+        />
+      )}
     </View>
   );
 }
 
+const INFO_TONE = { box: "border-info bg-info-subtle", text: "text-info-text" };
+
 const ALERT_TONE: Record<string, { box: string; text: string }> = {
-  info: { box: "border-info bg-info-subtle", text: "text-info-text" },
+  info: INFO_TONE,
   success: { box: "border-success bg-success-subtle", text: "text-success-text" },
   warning: { box: "border-warning bg-warning-subtle", text: "text-warning-text" },
   danger: { box: "border-danger bg-danger-subtle", text: "text-danger-text" },
@@ -79,7 +103,7 @@ export type AlertProps = {
 };
 
 export function Alert({ tone = "info", title, children, className }: AlertProps) {
-  const styles = ALERT_TONE[tone];
+  const styles = ALERT_TONE[tone] ?? INFO_TONE;
   return (
     <View
       accessibilityRole="alert"

@@ -20,7 +20,12 @@ const MONTHS = [
   "outubro",
   "novembro",
   "dezembro",
-];
+] as const;
+
+const monthLabel = (month: number) => {
+  const name = MONTHS[((month % 12) + 12) % 12] ?? MONTHS[0];
+  return name.charAt(0).toUpperCase() + name.slice(1);
+};
 
 const toISO = (year: number, month: number, day: number) =>
   `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -105,7 +110,7 @@ export function MonthView({
           <Chevron left />
         </Pressable>
         <Text className="text-base font-medium text-fg">
-          {MONTHS[month][0].toUpperCase() + MONTHS[month].slice(1)} de {year}
+          {monthLabel(month)} de {year}
         </Text>
         <Pressable
           accessibilityRole="button"
