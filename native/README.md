@@ -13,21 +13,78 @@ nativo em <https://ds.rivocode.com.br/react-native.md>.
 ## Instalação
 
 ```sh
-npx expo install nativewind react-native-css tailwindcss @tailwindcss/postcss postcss
+npx expo install nativewind@preview react-native-css react-native-reanimated
+npm install -D tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
+npx rivocode-ui-native-init
 ```
 
-Quatro arquivos do app participam, cada um por um motivo que morde:
+**É `nativewind@preview`, e não `nativewind`.** A tag `latest` do NativeWind
+ainda aponta para a `4.2.6`, e o peer deste pacote é `>=5.0.0-preview.1`: `npx
+expo install nativewind` instala a v4, o aviso de peer rola para fora da tela
+junto com o resto da saída do `npm`, e o que aparece depois é a v4 tentando
+compilar um CSS escrito para a v5. A tag `preview` é a que o NativeWind publica
+para a linha 5.
 
-1. **`metro.config.js`**. `withNativewind(config)`, como manda o NativeWind.
-2. **`package.json`**. `"browserslist": ["chrome 130", "safari 18",
-"firefox 130"]`. Sem isso o passe web que o Expo roda antes do compilador
-   nativo reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e
-   a compilação morre com "Specifier, found ()". É esse arquivo que sustenta a
+O `react-native-reanimated` não é enfeite nem peer opcional: o
+`react-native-css` o exige em tempo de bundle, e sem ele o metro para em
+`Unable to resolve module react-native-reanimated` a partir de um arquivo que
+você nunca importou. Ele traz junto o `react-native-worklets`, que o
+`babel-preset-expo` liga sozinho.
+
+### Os seis arquivos, e o que cada um segura
+
+O `npx rivocode-ui-native-init` escreve a receita inteira e imprime o que fez:
+
+```
+Receita do @rivocode/ui-native em meu-app/:
+
+  = babel.config.js     nao existe, e e assim que tem que ser
+  + postcss.config.mjs  criado
+  + metro.config.js     criado
+  + global.css          criado
+  ~ app.json            expo.userInterfaceStyle: "light" -> "automatic"
+  + package.json        browserslist adicionado
+```
+
+`+` é arquivo novo, `~` é uma chave de JSON trocada com o valor antigo à vista,
+`=` é o que já estava certo, e `!` é o que ele **não** tocou. Arquivo que nasce
+inteiro e já existe com outro conteúdo nunca é reescrito calado: ele sai como
+`!`, o comando termina com código 1, e só `--force` faz a receita vencer —
+porque reescrever um `babel.config.js` ou um `postcss.config.mjs` apaga a
+configuração de outra biblioteca e o app quebra num lugar que não parece ter
+relação com este comando. `--dry-run` mostra o plano sem escrever nada.
+
+São seis, e cada um por um motivo que morde:
+
+1. **`babel.config.js`**. **O certo é não existir.** Sem arquivo de Babel
+   nenhum, o `@expo/metro-config` cai no `babel-preset-expo` por conta própria
+   e liga o plugin de worklets junto. Escrever um à mão com
+   `presets: ["babel-preset-expo"]` **derruba o app**: no SDK 57 esse preset
+   mora em `node_modules/expo/node_modules` e não resolve da raiz do projeto, e
+   o bundle morre com `MODULE_NOT_FOUND` antes do primeiro módulo, numa pilha
+   que só cita o `@babel/core`. Se o seu app já tem um, ele fica — mas duas
+   linhas da receita v4 do NativeWind, que continua sendo o primeiro resultado
+   de busca, não valem mais aqui e o comando as acusa pelo nome:
+   `jsxImportSource: "nativewind"`, que faz todo JSX exigir
+   `nativewind/jsx-runtime` — arquivo que a v5 não tem —, e o preset
+   `nativewind/babel`, que adiciona pela segunda vez o plugin de worklets.
+2. **`postcss.config.mjs`**. O plugin `@tailwindcss/postcss`, e nada mais. É
+   ele que faz o Tailwind rodar no passe de CSS; sem ele o arquivo entra cru no
+   bundle, com as variáveis do tema e **nenhum utilitário gerado**, e a tela
+   renderiza sem estilo, sem erro e sem pista — o mesmo silêncio do `@source`
+   esquecido no web.
+3. **`metro.config.js`**. `withNativewind(config)`, que troca o transformador
+   do metro pelo do `react-native-css`.
+4. **`app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
+   aparência no claro e o tema escuro nunca chega. O template do Expo nasce em
+   `"light"`, então esta é a chave que o comando quase sempre troca.
+5. **`package.json`**. `"browserslist": ["chrome 130", "safari 18",
+   "firefox 130"]`. Sem isso o passe web que o Expo roda antes do compilador
+   nativo reescreve o `light-dark()` dos tokens num polyfill de vars órfãs, e a
+   compilação morre com "Specifier, found ()". É esse arquivo que sustenta a
    troca entre os dois temas de casa em runtime.
-3. **`app.json`**. `"userInterfaceStyle": "automatic"`, senão o iOS prende a
-   aparência no claro e o tema escuro nunca chega.
-4. **`global.css`**. A fonte do CSS:
+6. **`global.css`**. A fonte do CSS:
 
    ```css
    @import "tailwindcss/theme.css" layer(theme);
@@ -36,7 +93,24 @@ Quatro arquivos do app participam, cada um por um motivo que morde:
 
    @source "./App.tsx";
    @source "./node_modules/@rivocode/ui-native/src";
+
+   @source not inline("shadow");
+   @source not inline("invert");
+   @source not inline("filter");
+   @source not inline("transform");
    ```
+
+   As quatro últimas linhas não são higiene: o scanner do Tailwind lê o código
+   como texto, e `shadow`, `invert`, `filter` e `transform` aparecem no
+   TypeScript das peças como chave de configuração e nome de prop, nunca como
+   `className`. `.shadow` redeclara `--tw-shadow`, que o pré-compilado já
+   declarou no `:root`, e var declarada duas vezes derruba o compilador nativo
+   com "expected an object-like struct named Specifier, found ()".
+
+O `examples/native` do repositório roda essa mesma receita, e
+`bun run check:receita` fica vermelho no dia em que as duas se separarem.
+
+### O CSS pré-compilado
 
 O app não importa o `global.css`: importa o **pré-compilado**. Gere-o com
 

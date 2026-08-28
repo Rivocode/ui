@@ -90,9 +90,10 @@ falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
 
 **Gerados. Nao editar a mao:** `native/theme.css`, `native/tokens.ts`,
 `native/tokens.json` (`bun run gen:native`), `apps/docs/src/component-props.json`
-(`bun run gen:props`), `examples/native/generated.css` (`bun run build:css` do
-app). Todos carregam cabecalho dizendo isso, e o `check` falha se o comitado
-divergir da fonte.
+(`bun run gen:props`), `apps/docs/src/native-props.json`
+(`bun run gen:props:nativo`), `examples/native/generated.css`
+(`bun run build:css` do app). Todos carregam cabecalho dizendo isso, e o `check`
+falha se o comitado divergir da fonte.
 
 **Nao rode `bun install` dentro de `native/`.** Ela nao e workspace: o comando
 cria um segundo React e derruba dezenas de testes com "Invalid hook call". A CI
@@ -100,14 +101,14 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 ## O gate
 
-`bun run check` roda TRINTA E UM passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E TRES passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
 literal, contraste do web, contraste do mapa nativo, espelho do contraste,
 temas, contrato, doc, cobertura do README, classe sem regra, grupos de classe,
 fronteira do chart, fronteira do CLI, skill, lista da skill, tokens nativos,
-gerador de tema nativo, codigo compartilhado, paridade, contagem de pecas,
-vitrine, retratos declarados, script fora do gate, piso de varredura, contagem
-de testes, e por fim `bun test`.
+gerador de tema nativo, codigo compartilhado, paridade, assinatura nativa,
+contagem de pecas, vitrine, retratos declarados, receita de instalacao, script
+fora do gate, piso de varredura, contagem de testes, e por fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -131,6 +132,13 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   Native, e o `curl` saia zerado. Zero excecao, e sem lista de excecao.
 - `check:paridade` - `scripts/paridade-nativo.ts` e a fonte unica da tabela de
   paridade, e ela escreve tambem a secao "No React Native" de cada pagina.
+- `check:assinatura` - o `check:paridade` responde "existe no nativo?"; esta
+  responde "como se escreve a chamada la". Ela confere cada linha da tabela de
+  assinatura contra os dois catalogos de props, e cobra COBERTURA da unica
+  familia que se deriva sozinha: variante que existe de um lado so. O lado
+  nativo vem de `apps/docs/src/native-props.json`, artefato comitado porque
+  gerar exige `examples/native` instalado - o `check:props:nativo` que o mantem
+  em dia roda no job `nativo` da CI, ao lado do `check:native:types`.
 - `check:testes` - a contagem que a home exibe.
 - `check:demo` - toda peca tem que aparecer em `demo/*.tsx`, ou ter linha em
   `SEM_VITRINE` com o motivo. Nasceu porque sete pecas foram publicadas no npm
@@ -138,6 +146,17 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   do processo que manda olhar nos dois temas e nas duas densidades foi pulado
   sem nada acusar. Medindo depois, 28 das 90 estavam fora da vitrine. A lista
   so encolhe.
+- `check:receita` - o que o `npx rivocode-ui-native-init` escreve tem que
+  dizer o mesmo que o `examples/native`, que e a fonte porque e o unico dos
+  dois que roda. Nasceu porque um agente montou um app do zero com o pacote
+  publicado e nao chegou ao fim lendo a doc: o `native/README.md` listava
+  QUATRO arquivos de setup e escondia os dois mais caros de diagnosticar. Ela
+  compara FATO, e nao texto - a lista ordenada de diretivas do `global.css`, os
+  plugins do PostCSS, o embrulho do metro, o `userInterfaceStyle`, o
+  `browserslist` -, porque o caminho relativo do monorepo e diferente de
+  proposito. O `babel.config.js` e o unico fato pela AUSENCIA, e ele foi
+  medido: escrever um com `presets: ["babel-preset-expo"]` derruba um app do
+  Expo 57 inteiro, porque nesse SDK o preset nao resolve da raiz.
 - `check:scripts` - todo `scripts/*.ts` tem que ser alcancavel a partir do
   `check`, ou ter linha em `OUT` dizendo o que o impede. Nasceu porque o
   `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres

@@ -44,3 +44,9 @@ jobs:
         working-directory: examples/native
 
       - run: bun run check:native:types
+
+      # A tabela de props do nativo e artefato comitado, e este e o unico job
+      # que consegue GERAR: o `--check` compara o JSON com o que o compilador
+      # diz agora. Sem ele o `check:assinatura` do gate conferiria a assinatura
+      # contra uma foto antiga do pacote nativo.
+      - run: bun run check:props:nativo

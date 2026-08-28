@@ -63,7 +63,7 @@ export function NumberField({
         }}
         editable={!disabled}
         placeholderTextColor={colors["fg-subtle"]}
-        textAlign="center"
+        style={{ textAlign: "center" }}
         className="h-12 min-w-0 flex-1 border-l border-r border-border text-base text-fg"
       />
       {stepper(step, "+", `Aumentar ${label}`, value >= max)}

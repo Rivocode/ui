@@ -1,5 +1,56 @@
 # Mudancas
 
+## 0.10.0
+
+### Corrigido: parte de campo fora do `Field` nao derruba mais a pagina
+
+`FieldLabel`, `FieldDescription` e `FieldError` usadas fora de um `Field`
+lancavam `FieldRootContext is missing` la dentro da Base UI, e a arvore inteira
+caia: pagina em branco, sem erro na tela. O `tsc` passava, o build passava, e
+nenhum teste acusava. O caso que apareceu foi um `FieldLabel` solto dentro de um
+`CheckboxGroup`.
+
+As tres passaram a ler um contexto proprio. Sem o `Field` em volta, desenham um
+elemento comum - `label`, `p` e `div` - com as mesmas classes, e reclamam em
+desenvolvimento nomeando a peca e o conserto. A pagina continua de pe, e a
+ligacao com o controle que o leitor de tela espera fica faltando, que e o que a
+mensagem diz.
+
+`Input` e `Textarea` ficaram de fora de proposito: elas nao caem, e o proprio
+catalogo as usa fora de `Field` no `MaskedInput`, no `DatePicker`, no
+`ColorPicker` e no `TimeField`. Avisar ali seria ruido em cima de uso correto.
+
+### Marca de grafico sem cor passa a herdar a da serie
+
+`<Bar dataKey="emitidas">` sem `fill` saia PRETO, porque e o padrao da Recharts
+- cor que nao pertence a tema nenhum da casa. A moldura ja conhecia a serie pelo
+`config`, entao ela passou a descer nos filhos e pintar sozinha: o defeito deixa
+de existir em vez de virar aviso.
+
+O criterio e conservador de proposito. So recebe cor a marca que nasce sem
+`fill` E sem `stroke`; quem escreveu uma das duas fez uma escolha, e a moldura
+nao a desfaz, entao `fill="url(#gradiente)"` continua como esta.
+
+Sobra o caso em que nao ha o que herdar - `dataKey` que o `config` nao conhece
+-, e esse avisa em desenvolvimento, nomeando a chave.
+
+### `Select` e `Combobox` passam a acusar rotulo cru na tela
+
+Sem o mapeamento de rotulo, as duas escreviam a CHAVE: o campo mostrava
+`freire` no lugar de `Freire Contabilidade`, e `todas` no lugar de `Todas as
+situacoes`. Compilava, renderizava, e so a tela contava.
+
+O aviso de desenvolvimento nao pergunta "falta a prop", e sim "o que o campo
+escreve e diferente do que a lista escreve". Ele so sai quando a resolucao caiu
+para o valor cru, o item e o escolhido, o filho e texto puro e esse texto
+difere da chave. Item em texto cala, `{ value, label }` cala, `items` cala,
+`itemToStringLabel` cala, `SelectValue` com funcao cala.
+
+Duas abstencoes deliberadas: peca nao controlada e sem `defaultValue` fica muda,
+porque nao da para saber o escolhido sem interceptar o `onValueChange`; e nao ha
+palpite sobre a forma da string, porque heuristica de aparencia e o aviso que
+grita em cima de uso correto e e desligado na segunda semana.
+
 ## 0.9.1
 
 ### Corrigido: o `Popconfirm` segura o foco no Firefox

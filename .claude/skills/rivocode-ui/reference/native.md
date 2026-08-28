@@ -68,6 +68,169 @@ Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
 Nunca prometa que a tela do web "vai rodar no celular": o que se reaproveita é
 o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
+O que sobra dessas duas regras — prop que troca de nome, tipo que troca de
+forma, variante que só existe de um lado — está na tabela da próxima seção,
+peça por peça. Leia a linha antes de reescrever a chamada: os seis casos que
+mais custaram tempo (`SearchInput`, `MaskedInput`, `Timeline`, `Sparkline`,
+`Popconfirm` e `Meter`) foram descobertos um a um, no `tsc`, por não estarem
+escritos em lugar nenhum.
+
+## A assinatura, prop a prop
+
+**147 divergências de assinatura em 66 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+
+| Peça | No web | No React Native | O que muda na chamada |
+| --- | --- | --- | --- |
+| `Accordion` | `value` | — | a raiz não guarda valor: cada `AccordionItem` abre sozinho, com `defaultOpen` |
+| `Accordion` | `multiple` | — | sem raiz controlada, vários abertos é o único modo |
+| `Accordion` | — | `children` | a raiz só empilha; quem tem prop é o item |
+| `AccordionItem` | — | `title` | o cabeçalho vira `title`, no lugar do `AccordionTrigger` por filho |
+| `AccordionItem` | `value` | — | não há valor de item: quem abre e fecha é o próprio item |
+| `Alert` | — | `title` | o título vira prop; no web ele é `AlertTitle` por filho |
+| `Alert` | `icon` | — | o ícone é o do tom, e não se troca |
+| `Alert` | `onDismiss` | — | não há fechar: aviso que some no toque some sem ninguém ver, e `dismissLabel` sai junto |
+| `AlertDialog` | — | `title` | `title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription` |
+| `AlertDialog` | — | `actionLabel` | o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé |
+| `AlertDialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e não fecha no toque fora |
+| `Autocomplete` → `Combobox` | `value` | `value` | no web `value` é o texto digitado e ele pode não estar na lista; no nativo é o item escolhido (`string` ou `string[]`) |
+| `Autocomplete` → `Combobox` | `mode` | — | não há completar inline: a folha filtra e a pessoa toca |
+| `Autocomplete` → `Combobox` | `items` | `items` | grupos (`Group[]`) não portam: a folha recebe uma lista rasa de `{ label, value }` |
+| `Avatar` | `src` | — | imagem remota ainda não entra: só as iniciais, e `alt` sai junto |
+| `Avatar` | `fallback` | `fallback` | vira obrigatória, porque é tudo que a peça tem para desenhar |
+| `Button` | `size` | `size` | `cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop` |
+| `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
+| `Calendar` | — | `value` | o web é o react-day-picker (`mode`, `selected`, `onSelect`); o nativo é um mês desenhado à mão com `value`/`onValueChange` |
+| `Calendar` | `startMonth` | — | a faixa é `min`/`max` em ISO `aaaa-mm-dd`, e não `startMonth`/`endMonth` em `Date` |
+| `Calendar` | `mode` | — | só data única: intervalo é o `DateRangePicker` |
+| `ChartContainer` | — | `children` | `children` é função e recebe `{ width, height, colors }`: não há `ResponsiveContainer` para medir por você, e a medida chega zerada no primeiro quadro |
+| `ChartContainer` | `empty` | `empty` | `title` e `description` do vazio são `string`, e não `ReactNode`; `icon` sai |
+| `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
+| `ChartDonut` | `format` | `format` | só função `(value: number) => string`: nome de formatador da casa pediria o `Intl` no bundle |
+| `ChartDonut` | `centerValue` | `centerValue` | `centerValue` e `centerLabel` viram `string` |
+| `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
+| `Checkbox` | `indeterminate` | — | não há terceiro estado, e `parent` sai junto: o pai de um grupo se desenha à mão |
+| `Checkbox` | — | `accessibilityLabel` | sem `children`, é ele que nomeia a caixa para o leitor de tela |
+| `Clipboard` | `variant` | `variant` | só `secondary` e `ghost`: o copiar não é ação destrutiva nem primária |
+| `Clipboard` | — | `toast` | o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado |
+| `Code` | — | `children` | `children` é `string`, e não `ReactNode`: o trecho é texto |
+| `Collapsible` | `open` | — | a peça guarda o próprio aberto; `defaultOpen` é o que se passa |
+| `Collapsible` | — | `label` | o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
+| `ColorPicker` | `label` | `label` | `label` é `string`: sem `ReactNode`, como em toda peça do nativo |
+| `Combobox` | `items` | `items` | `items` na raiz e obrigatória; sem `ComboboxItem` por filho e sem grupos |
+| `Combobox` | — | `label` | `label` é obrigatório: é ele que o leitor de tela anuncia, no lugar do `aria-label` |
+| `Combobox` | — | `searchPlaceholder` | a folha tem busca própria; `emptyMessage` é o texto de lista vazia |
+| `Combobox` | `filter` | — | o filtro é da peça e ignora acento; não se troca |
+| `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
+| `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
+| `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
+| `DataTable` → `DataList` | `value` | `selected` | a seleção é `selected` mais `onSelectedChange`, e não `value`/`onValueChange` |
+| `DataTable` → `DataList` | `pageSize` | — | lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto |
+| `DataTable` → `DataList` | — | `filterValue` | o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto |
+| `DatePicker` | `value` | `value` | o valor é ISO `aaaa-mm-dd` em `string`, e não `Date`; a exibição continua `dd/mm/aaaa` |
+| `DatePicker` | `startMonth` | — | a faixa é `min`/`max` em ISO, e `disabledDays` não porta |
+| `DatePicker` | `confirm` | — | a folha sempre confirma: escolher já fecha |
+| `DatePicker` | — | `label` | `label` é obrigatório, e o campo não vive dentro de um `Field` |
+| `DateRangePicker` | `value` | `value` | as duas pontas são ISO `string` num `{ from, to }`, e não `Date` |
+| `DateRangePicker` | `numberOfMonths` | — | um mês por folha, sempre |
+| `DescriptionItem` | `label` | `label` | `label` é `string`, e o corpo continua sendo filho |
+| `Dialog` | — | `title` | `title` é prop obrigatória e `description` é prop: sem `DialogTitle` e sem `DialogTrigger` |
+| `Dialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios: quem abre é quem chama |
+| `Editable` | `value` | `value` | `value` e `onValueChange` obrigatórios; quem abre é o toque longo, e há um `Cancelar` visível |
+| `EmptyState` | `title` | `title` | `title` e `description` são `string` |
+| `EmptyState` | `icon` | — | sem ícone: o desenho é texto e ação |
+| `Field` | — | `label` | `label`, `description` e `error` viram props: sem `FieldLabel`, `FieldDescription` e `FieldError` |
+| `Field` | `validate` | — | a validação é do formulário, e não do campo: veja `@rivocode/ui-native/form` |
+| `Fieldset` | — | `legend` | `legend` vira prop obrigatória, no lugar do `FieldsetLegend` |
+| `FileUpload` | `onSelect` | `onSelect` | o que volta é `PickedFile` com `uri` local, e não `File`: `size` pode faltar |
+| `FileUpload` | `accept` | `accept` | aceita lista, e fala MIME: é o que o seletor do sistema sabe filtrar |
+| `FileUpload` | `label` | `label` | `label` e `hint` são `string`, e a área de soltar vira um botão |
+| `FilterBar` | `labels` | `labels` | `labels.empty` é `string`, e `labels.scroll` não existe: quem rola é a lista |
+| `FilterChip` | `value` | `value` | `value` é `string`: a pílula não recebe elemento |
+| `Form` | — | `children` | `children` é função e recebe `{ submit, isSubmitting }`: nada envia sozinho, porque não há `<form>` nem `type="submit"` |
+| `FormField` | `label` | `label` | `label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle |
+| `FormField` | `description` | `description` | `description` é `string` |
+| `Indicator` | `label` | `label` | `label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase |
+| `Indicator` | `classNames` | `badgeClassName` | uma classe só, a da pastilha: não há `classNames` no pacote nativo |
+| `Input` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText` |
+| `Input` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
+| `InputGroup` | — | `prefix` | `prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction` |
+| `InputGroup` | — | `value` | a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro |
+| `Item` | — | `title` | `title`, `description`, `media` e `actions` viram props: sem `ItemTitle`, `ItemDescription` e `ItemMedia` |
+| `Item` | `interactive` | `onPress` | quem torna a linha tocável é o `onPress`, e não um booleano |
+| `MaskedInput` | `mask` | `mask` | no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é sempre molde literal e o dígito é `#` |
+| `MaskedInput` | `value` | `value` | no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo |
+| `MaskedInput` | `onValueChange` | `onValueChange` | no web chega `(masked, raw)`; no nativo chega só o limpo |
+| `Menu` | — | `actions` | os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo |
+| `Menu` | — | `title` | a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata |
+| `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios: não há `MenuTrigger` |
+| `Meter` | `format` | `valueLabel` | o texto vai pronto: resolver nome de formatador custaria o `Intl` no bundle do celular |
+| `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
+| `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
+| `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
+| `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
+| `OTPField` | `length` | `length` | no nativo tem padrão (6) e é opcional |
+| `OTPField` | `mask` | — | sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType` |
+| `PageHeader` | `breadcrumb` | — | o caminho de volta é o botão de voltar do router |
+| `PageHeader` | — | `badge` | a pastilha ao lado do título vira prop |
+| `PageHeader` | `titleAs` | — | não há nível de título: o cabeçalho é uma parada só do leitor de tela |
+| `PasswordInput` | `labels` | `labels` | `labels.show` e `labels.hide` são obrigatórios juntos, porque o botão troca de nome com o estado |
+| `Popconfirm` → `AlertDialog` | `trigger` | — | não há ancoragem: você desenha o próprio botão e controla `open` |
+| `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | e não devolve promessa: o modal não segura o botão em espera |
+| `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
+| `Popconfirm` → `AlertDialog` | `description` | `description` | vira `string` obrigatória: o modal não abre sem dizer o que se perde |
+| `Popconfirm` → `AlertDialog` | `tone` | — | o botão é sempre destrutivo, e o painel não cancela ao tocar fora |
+| `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
+| `Progress` | `format` | — | sem formatador, e sem `showValue`: a barra mostra a porcentagem |
+| `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
+| `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
+| `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`, e o `icon` sai |
+| `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
+| `RivoProvider` | `density` | — | a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura |
+| `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
+| `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
+| `RivoProvider` | `toastPosition` | — | o aviso sobe de baixo, e `scope` e `dir` saem junto |
+| `SearchInput` | — | `onValueChange` | no web a peça é um `<input>` e aceita `value`/`onChange` (ou nenhum dos dois); aqui `value` e `onValueChange` são obrigatórios |
+| `SearchInput` | `onClear` | — | o limpar é botão da própria peça, e ele chama `onValueChange("")` |
+| `SearchInput` | `shortcut` | — | não há teclado para desenhar o `Kbd` dentro do campo |
+| `Select` | `items` | `items` | `items` na raiz e obrigatória; sem `SelectTrigger`, `SelectContent` e `SelectItem` |
+| `Select` | — | `label` | `label` é obrigatório: é ele que o leitor de tela anuncia |
+| `Select` | `value` | `value` | o valor é `string` ou `string[]`, e não o item genérico do web |
+| `Sheet` | `side` | — | só de baixo, que já era o modo estreito do web; `snapPoints` sai junto |
+| `Sheet` | — | `title` | `title` é prop obrigatória e `description` é prop |
+| `Slider` | `value` | `value` | um valor só: `number`, e não `number[]` |
+| `Slider` | `format` | — | sem formatador e sem `showValue`: o número sai como está |
+| `Slider` | `label` | `label` | `label` vira obrigatório e é `string` |
+| `Sparkline` | `variant` | `variant` | `area` não porta: pede polígono preenchido, e o desenho nativo é `View` |
+| `Sparkline` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token |
+| `Sparkline` | — | `height` | a altura é prop, porque não há CSS que a dê de fora |
+| `Spinner` | `size` | `size` | os dois tamanhos do `ActivityIndicator`: `small` e `large`, e não `sm`/`md`/`lg` |
+| `Spinner` | `label` | — | sem rótulo próprio: quem nomeia a espera é o texto ao lado |
+| `Stat` | `value` | `value` | `value` é `string` já formatada: não há `Intl` para escrever o número |
+| `Stat` | `deltaFormat` | — | `delta` é número e sai como veio; `deltaVariant` sai junto |
+| `Stat` | `icon` | — | sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação |
+| `Steps` | `onStepClick` | — | só o modo estreito do web (texto e barra), e ele nunca foi clicável |
+| `Switch` | `value` | — | não há formulário nativo para carregar valor: o estado é `checked` |
+| `Tabs` | — | `items` | `items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu |
+| `Tabs` | `value` | `value` | o valor é `string`, e não o genérico do web |
+| `TagsInput` | `labels` | `removeLabel` | uma função só, e não um objeto de rótulos |
+| `TagsInput` | — | `max` | o teto de fichas é prop, porque não há como cortar por CSS |
+| `Textarea` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText`, como o `Input` |
+| `TimeField` | — | `label` | `label` é obrigatório, e as setas viram dois botões de passo |
+| `TimePicker` | — | `label` | `label` é obrigatório, e a folha tem duas colunas: NÃO embute o `TimeField` |
+| `Timeline` | — | `items` | os eventos vêm por `items`, e não por `TimelineItem` filho |
+| `Timeline` | — | `label` | `label` diz o que a linha conta, e entra no anúncio de cada parada |
+| `TimelineItem` → `Timeline` | `at` | — | vira `items[].at` e é `string` já escrita: um `RelativeTime` vivo lá dentro deixaria o rótulo falado preso na hora em que montou |
+| `TimelineItem` → `Timeline` | `tone` | — | `tone` e `pending` viram campos de `items[]`, e `by` e `title` também |
+| `Toggle` | `value` | — | não há formulário nativo para carregar valor: o estado é `pressed` |
+| `ToggleGroup` | — | `items` | `items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual |
+| `Tree` | `expanded` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
+| `Tree` | `filter` | — | sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado |
+| `Tree` | — | `label` | `label` é obrigatório: é ele que nomeia o nível para o leitor de tela |
+| `TreeSelect` | `searchable` | — | sem busca na folha |
+| `TreeSelect` | — | `label` | `label` é obrigatório, e o rodapé traz a contagem do rascunho e o `Aplicar` |
+
+Fora da tabela, uma perda que se repete: **13 peças perdem `size` no nativo** — `Badge`, `Clipboard`, `DatePicker`, `DateRangePicker`, `Input`, `InputGroup`, `MaskedInput`, `NumberField`, `PasswordInput`, `SearchInput`, `TimeField`, `TimePicker` e `TreeSelect`. Alvo de toque não encolhe, e `comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.
+
 ## O formulário entra por outro caminho
 
 `Form`, `FormField`, os adaptadores e o `useZodForm` vivem em
@@ -273,9 +436,13 @@ Portou peça nova no native? Rode o script e comite o que ele reescrever.
 - Glyph de texto como ícone de estado (o visto do Checkbox é borda
   rotacionada, porque fonte muda de corpo entre iOS e Android).
 - Esquecer `accessibilityRole`/`accessibilityState` em controle custom.
-- `text-center` como classe em `TextInput`: esse estilo vira prop no runtime
-  e a aplicação quebra. Use a prop `textAlign`. O mesmo vale para atalhos
-  lógicos (`border-x` gera `border-inline`, que não existe lá): escreva
+- Alinhar texto de `TextInput` por classe **ou** por prop: as duas falham, e
+  cada uma de um jeito. `text-center` vira prop no runtime e a aplicação
+  quebra com `path.split is not a function`; a prop `textAlign` não está no
+  `forwardPropsList` do react-native-web e é descartada em silêncio, então o
+  campo nasce à esquerda no alvo web. O caminho que os dois alvos leem é
+  `style={{ textAlign: "center" }}`. O mesmo vale para atalhos lógicos
+  (`border-x` gera `border-inline`, que não existe lá): escreva
   `border-l border-r`.
 - A utility de divisória do Tailwind (a de bordas entre filhos): o seletor de
   filho não existe no RN. O `DescriptionList` interpõe bordas via `Children`.

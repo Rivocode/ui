@@ -47,6 +47,8 @@ const OUT: Record<string, string> = {
     "Fotografa a vitrine e as secoes chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
   "scripts/serve.ts":
     "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
+  "scripts/props-do-catalogo-nativo.ts":
+    "Le os tipos do pacote nativo, e react e react-native so estao instalados em `examples/native`, que nao e workspace: `bun install --frozen-lockfile` na raiz nunca os traz. Pior do que falhar, ele PASSARIA mentindo - sem os peers, `Omit<TextInputProps, ...> & {...}` colapsa e dez pecas saem sem props. Por isso a tabela e artefato comitado: quem gera precisa do app instalado, e o `--check` roda no job `nativo` da CI, ao lado do `check:native:types`. O que o gate alcanca dela e o `check:assinatura`, que le o JSON.",
   "scripts/build-preset.ts": "Roda no `bun run build`, que a CI dispara logo depois do gate.",
   "scripts/copy-fonts.ts": "Roda no `bun run build` e no `bun run demo`, e nao no gate.",
 };

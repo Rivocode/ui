@@ -100,7 +100,7 @@ export function TimeField({
         value={shown}
         placeholder={placeholder}
         placeholderTextColor={colors["fg-subtle"]}
-        textAlign="center"
+        style={{ textAlign: "center" }}
         onChangeText={(typed) => {
           const masked = applyTimeMask(typed);
           setText(masked);

@@ -1,5 +1,110 @@
 # Mudancas
 
+## 0.5.0
+
+### Quebra: o `RivoNativeThemeMap` e a prop `scheme` sairam
+
+O tipo estava `@deprecated` e inerte desde a 0.4.0: o provider ja resolvia os 45
+papeis lendo o CSS compilado, e o objeto nao vestia mais nada alem de um aviso
+em `__DEV__`. Agora ele saiu do pacote - nao ha tipo exportado, nem membro na
+uniao da prop `theme`, nem aviso. A prop aceita `rivocode-dark`,
+`rivocode-light` e `system`.
+
+A prop `scheme` saiu junto. Ela so era lida quando `theme` era um objeto, para
+escolher entre o claro e o escuro do mapa; sem o mapa, ninguem a lia.
+
+Quem passava `theme={{ light, dark }}` nao perde cor nenhuma, porque o mapa ja
+nao pintava: sobrescreva os papeis `--color-*` num `@theme` do `global.css` do
+app e recompile com `npx rivocode-ui-native-css`. Quem passava `scheme` troca
+por `theme="rivocode-light"`, `theme="rivocode-dark"` ou `theme="system"`.
+
+O `gen:native --tema` continua emitindo o arquivo de mapa, agora com a forma
+declarada inline em vez de importar o tipo: ele serve de conferencia de papel
+faltando e e a entrada da guarda de contraste.
+
+### Corrigido: a tela parava de sair metade num esquema e metade no outro
+
+O provider lia a paleta do DOM uma vez e congelava. As cores resolvem por
+`light-dark()`, que depende do `color-scheme`, e o inicial e claro - entao o app
+que declara o esquema dentro de um `useEffect`, que e o padrao obvio, ja tinha
+perdido a leitura. O sintoma media assim: fundo escuro pela classe, barra de
+abas branca porque veio de `useRivo().colors`.
+
+E a mesma tela misturada que a 0.4.0 consertou, voltando por outra porta - antes
+a causa era o mapa de tema, agora era ordem de efeitos.
+
+A leitura passa a reagir a tres gatilhos, e cada um pega o que os outros nao
+pegam: mutacao de `style` e `class` na raiz e no `body`, a media query de
+esquema para o app que fica no automatico, e uma releitura no quadro seguinte
+para a folha que o app injeta sem tocar na raiz. So vira estado quando algum
+valor muda de fato, entao nao ha repintura por quadro. Fora do alvo web o
+caminho e inerte.
+
+### Quebra: as classes de familia de fonte nao existem mais
+
+`font-display` nunca gerou um byte. Pior: `font-sans`, `font-serif` e
+`font-mono` GERAVAM regra, apontando para a pilha de CSS que o Tailwind traz de
+fabrica - e o `react-native-css` guarda so o primeiro nome dela. Ou seja, o
+texto saia numa fonte que ninguem escolheu, sem erro em lugar nenhum.
+
+O `@theme` gerado passa a zerar os tres tokens de familia com `initial`, entao
+as quatro classes deixam de compilar e a guarda de classe sem regra as acusa
+dentro do pacote. Quem escrever uma delas numa tela ouve, em `__DEV__`, o nome
+do caminho que funciona: a prop `fonts` do `RivoProvider`, que e a unica que
+alcanca o aparelho.
+
+### Corrigido: o `+` do `NumberField` volta para dentro da caixa
+
+No alvo web o passo de somar saia para fora e ficava invisivel e intocavel:
+`flex: 1 1 0%` com `min-width: auto` dentro de um `overflow-hidden`. O campo do
+meio ganhou `min-w-0`.
+
+### Corrigido: o numero do `NumberField` e a hora do `TimeField` nascem centrados
+
+Centralizar texto de `TextInput` nao tinha caminho, e as duas tentativas obvias
+falhavam de jeitos diferentes. A classe `text-center` nao e ignorada: ela
+estoura, porque o `react-native-css` declara `nativeStyleMapping` para
+`textAlign` e o runtime chama `path.split` num booleano. E a prop `textAlign`
+nao esta no `forwardPropsList` do react-native-web, entao e descartada calada -
+era ela que as duas pecas usavam.
+
+As duas passaram a alinhar por `style`, que e o unico caminho que os dois alvos
+leem. Nao ha prop nova: as pecas vem centradas, como no web.
+
+### Marca de grafico com chave desconhecida passa a acusar
+
+`colors[chave]` com chave que nao existe devolvia `undefined`, virava
+`fill={undefined}`, e o SVG pintava PRETO - cor que nao pertence a tema nenhum
+da casa. Em `__DEV__` o mapa entregue ao desenho vai num `Proxy` que nomeia a
+chave desconhecida e lista as validas, uma vez por chave. Em producao e o
+objeto cru, sem custo.
+
+### `npx rivocode-ui-native-init`: a receita de instalacao vira comando
+
+Seis arquivos do app precisam concordar entre si para o pacote funcionar, e ate
+aqui a unica forma de descobrir quais era ler o `examples/native` inteiro: o
+README listava QUATRO, e escondia os dois mais caros de diagnosticar. O comando
+novo escreve a receita e imprime o que fez, arquivo por arquivo.
+
+Ele nao sobrescreve calado. Arquivo que nasce inteiro e ja existe com outro
+conteudo sai marcado, o comando termina com codigo 1, e so `--force` faz a
+receita vencer; chave de JSON e trocada com o valor antigo a vista. `--dry-run`
+mostra o plano sem escrever nada.
+
+O `babel.config.js` e o caso que mais surpreende, e ele foi medido: o certo e
+**nao existir**. Sem arquivo de Babel nenhum o Expo cai no `babel-preset-expo`
+sozinho; escrever um a mao com esse preset derruba o app no SDK 57, porque ali
+o preset nao resolve da raiz do projeto. O comando nao escreve nenhum - ele
+olha se existe um e acusa as duas linhas da receita v4 do NativeWind que ainda
+circulam, `jsxImportSource: "nativewind"` e o preset `nativewind/babel`.
+
+### Corrigido no README: o comando de instalacao trazia a versao errada
+
+`npx expo install nativewind` traz a `4.2.6`, que nao satisfaz o peer
+`>=5.0.0-preview.1` deste pacote. O comando certo e `nativewind@preview`. O
+`react-native-reanimated`, que o `react-native-css` exige em tempo de bundle,
+tambem faltava na linha.
+
 ## 0.4.1
 
 ### Corrigido: o `rivocode-ui-native-theme` le os dois esquemas, e nao um deles duas vezes

@@ -1,0 +1,2864 @@
+{
+  "Accordion": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "AccordionItem": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "Alert": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "AlertDialog": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "actionLabel",
+        "type": "string",
+        "required": true,
+        "note": "O rotulo do botao que confirma a acao destrutiva."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onAction",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "cancelLabel",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "AspectRatio": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "ratio",
+        "type": "number",
+        "required": true,
+        "note": "Largura sobre altura: `16 / 9`, `1`, `4 / 3`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Avatar": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "fallback",
+        "type": "string",
+        "required": true,
+        "note": "As iniciais."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false
+      }
+    ]
+  },
+  "Badge": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "tone",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Button": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Em espera: nao aceita toque e anuncia `busy`."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Calendar": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": true,
+        "note": "A data escolhida, como `aaaa-mm-dd`."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Limites inclusivos, no mesmo formato."
+      }
+    ]
+  },
+  "Card": {
+    "entry": "native/src/index.ts",
+    "props": []
+  },
+  "CardContent": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "CardDescription": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      }
+    ]
+  },
+  "CardHeader": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      }
+    ]
+  },
+  "CardTitle": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      }
+    ]
+  },
+  "ChartContainer": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "((frame: ChartFrame) => ReactNode) | ReactNode",
+        "required": true,
+        "note": "O desenho."
+      },
+      {
+        "name": "config",
+        "type": "ChartConfig",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "data",
+        "type": "readonly unknown[]",
+        "required": false,
+        "note": "Os pontos, para a moldura saber contar zero."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta sem nenhum ponto."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "note": "`string`, e não `ReactNode` como no web: o corpo do `Alert` nativo é um `Text`, e um nó de React ali não teria onde caber."
+      },
+      {
+        "name": "errorTitle",
+        "type": "string",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do desenho, quando o desenho é uma função."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro não oferece nova tentativa."
+      },
+      {
+        "name": "retryLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      }
+    ]
+  },
+  "ChartDonut": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "data",
+        "type": "Slice[]",
+        "required": true
+      },
+      {
+        "name": "nameKey",
+        "type": "keyof Slice & string",
+        "required": true,
+        "note": "De onde sai o nome de cada fatia."
+      },
+      {
+        "name": "valueKey",
+        "type": "keyof Slice & string",
+        "required": true,
+        "note": "De onde sai o número de cada fatia."
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "note": "A linha pequena embaixo do número."
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "note": "O número grande no meio."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "config",
+        "type": "ChartConfig",
+        "required": false
+      },
+      {
+        "name": "format",
+        "type": "((value: number) => string)",
+        "required": false,
+        "note": "Como o número é escrito."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do desenho."
+      },
+      {
+        "name": "legend",
+        "type": "boolean",
+        "required": false,
+        "note": "A lista de fatias embaixo, com nome e valor."
+      },
+      {
+        "name": "thickness",
+        "type": "number",
+        "required": false,
+        "note": "Espessura do anel, em fração do raio."
+      }
+    ]
+  },
+  "ChartRadial": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "De 0 a `max`."
+      },
+      {
+        "name": "centerLabel",
+        "type": "string",
+        "required": false,
+        "note": "A linha pequena embaixo do número."
+      },
+      {
+        "name": "centerValue",
+        "type": "string",
+        "required": false,
+        "note": "O número grande no meio."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
+        "required": false,
+        "note": "A cor do arco, como papel de token."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "segments",
+        "type": "number",
+        "required": false,
+        "note": "Quantos tracinhos, no `segmented`."
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "note": "Quantos graus o arco cobre."
+      },
+      {
+        "name": "variant",
+        "type": "\"segmented\" | \"solid\"",
+        "required": false,
+        "note": "`solid` desenha um arco liso; `segmented` desenha o arco em tracinhos, que é a variação mais pedida de medidor em painel."
+      }
+    ]
+  },
+  "Checkbox": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(checked: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome falado, para a caixa que nao tem rotulo ao lado - a de marcar uma linha de lista, por exemplo."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O rotulo."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "hitSlop",
+        "type": "number | Insets | null",
+        "required": false,
+        "note": "Area de toque alem do desenho."
+      }
+    ]
+  },
+  "CheckboxGroup": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "CheckboxGroupItem[]",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "Os valores marcados."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do conjunto para o leitor de tela."
+      }
+    ]
+  },
+  "Clipboard": {
+    "entry": "native/src/clipboard/index.ts",
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O que vai para a área de transferência."
+      },
+      {
+        "name": "children",
+        "type": "string",
+        "required": false,
+        "note": "Liga o texto ao lado do ícone."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "{ copy?: string | undefined; copied?: string | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela chama o botão antes e depois de copiar."
+      },
+      {
+        "name": "onCopy",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado depois de copiar, para quem quer disparar um aviso próprio."
+      },
+      {
+        "name": "timeout",
+        "type": "number",
+        "required": false,
+        "note": "Quanto tempo a confirmação fica no botão, em ms."
+      },
+      {
+        "name": "toast",
+        "type": "boolean",
+        "required": false,
+        "note": "O aviso de \"Copiado\", ligado por padrão."
+      },
+      {
+        "name": "variant",
+        "type": "\"ghost\" | \"secondary\"",
+        "required": false,
+        "note": "Os dois papéis que um botão de copiar tem: ao lado do dado, ou solto."
+      }
+    ]
+  },
+  "Code": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "string",
+        "required": true,
+        "note": "O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Collapsible": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O rotulo do gatilho: \"Ver os detalhes do calculo\"."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "ColorPicker": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Avisado com o hexadecimal normalizado, sempre de seis dígitos e minúsculo."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "A cor escolhida, em hexadecimal de seis dígitos."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "note": "Quantas amostras por linha."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "hideInput",
+        "type": "boolean",
+        "required": false,
+        "note": "Esconde o campo de texto e deixa só as amostras."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O texto acima das amostras."
+      },
+      {
+        "name": "swatches",
+        "type": "ColorSwatch[]",
+        "required": false,
+        "note": "As amostras."
+      },
+      {
+        "name": "swatchesLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela chama o conjunto quando não há `label`."
+      }
+    ]
+  },
+  "Combobox": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "ComboboxItem[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void) | ((value: string[]) => void)",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | string[] | null",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; a folha de busca e da plataforma."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "required": false,
+        "note": "O que dizer quando a busca nao acha nada - com o porque, como sempre."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "searchPlaceholder",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "DataList": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "data",
+        "type": "Row[] | undefined",
+        "required": true
+      },
+      {
+        "name": "keyExtractor",
+        "type": "(row: Row, index: number) => string",
+        "required": true
+      },
+      {
+        "name": "renderItem",
+        "type": "(row: Row) => ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "required": false
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "errorTitle",
+        "type": "string",
+        "required": false,
+        "note": "Uma linha de titulo acima da mensagem de erro."
+      },
+      {
+        "name": "filter",
+        "type": "string",
+        "required": false,
+        "note": "Filtro controlado, o mesmo nome e o mesmo formato do `DataTable`: a tela poe o `SearchInput` onde quiser e passa o texto; a lista estreita ignorando caixa e acento."
+      },
+      {
+        "name": "filterValue",
+        "type": "((row: Row) => string)",
+        "required": false,
+        "note": "O que o `filter` le em cada linha."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "noResultsMessage",
+        "type": "string",
+        "required": false,
+        "note": "A linha discreta de quando o `filter` zerou."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false
+      },
+      {
+        "name": "onRowPress",
+        "type": "((row: Row) => void)",
+        "required": false
+      },
+      {
+        "name": "onSelectedChange",
+        "type": "((keys: string[]) => void)",
+        "required": false
+      },
+      {
+        "name": "retryLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      },
+      {
+        "name": "selectable",
+        "type": "boolean",
+        "required": false,
+        "note": "Caixa de marcar a esquerda de cada linha."
+      },
+      {
+        "name": "selected",
+        "type": "string[]",
+        "required": false,
+        "note": "Selecao controlada."
+      },
+      {
+        "name": "skeletonRows",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  "DatePicker": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; o calendario na folha e o mesmo para todos."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "DateRangePicker": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela anuncia no gatilho, e o título da folha."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(range: DateRange | null) => void",
+        "required": true,
+        "note": "`null` quando a pessoa toca em Limpar."
+      },
+      {
+        "name": "value",
+        "type": "DateRange | null",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; a folha é a mesma para todos."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Limites inclusivos, no mesmo formato ISO."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "DescriptionItem": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "DescriptionList": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Dialog": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o cartao central, nao o fundo escurecido."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Editable": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela chama o campo, aberto ou fechado."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Avisado na confirmacao, e nunca no Cancelar."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O texto de agora."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O que aparece no lugar do valor vazio."
+      }
+    ]
+  },
+  "EmptyState": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "description",
+        "type": "string",
+        "required": true,
+        "note": "Obrigatoria pelo mesmo motivo do web: \"nenhum resultado\" sem o porque transfere o trabalho para a pessoa, e ela quase nunca descobre."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "action",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Field": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "note": "A ajuda embaixo do campo."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "note": "O erro vence a descricao, como no web."
+      }
+    ]
+  },
+  "Fieldset": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "legend",
+        "type": "string",
+        "required": true,
+        "note": "O titulo do grupo: \"Endereço de cobrança\"."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "FileUpload": {
+    "entry": "native/src/file-upload/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o botão diz: \"Escolher o XML da nota\"."
+      },
+      {
+        "name": "accept",
+        "type": "string | string[]",
+        "required": false,
+        "note": "Os tipos aceitos."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "hint",
+        "type": "string",
+        "required": false,
+        "note": "A letra miúda: formatos e limite, para a pessoa não descobrir na recusa."
+      },
+      {
+        "name": "maxSize",
+        "type": "number",
+        "required": false,
+        "note": "Em bytes."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onReject",
+        "type": "((rejections: Rejection[]) => void)",
+        "required": false,
+        "note": "Os que não passaram, cada um com o motivo legível."
+      },
+      {
+        "name": "onSelect",
+        "type": "((files: PickedFile[]) => void)",
+        "required": false,
+        "note": "Os que passaram na validação."
+      }
+    ]
+  },
+  "FileUploadItem": {
+    "entry": "native/src/file-upload/index.ts",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onRemove",
+        "type": "() => void",
+        "required": true
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": true,
+        "note": "Em bytes."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "note": "Vence o progresso: mostra o texto e oferece nova tentativa."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false
+      },
+      {
+        "name": "progress",
+        "type": "number",
+        "required": false,
+        "note": "0 a 100 vira barra."
+      }
+    ]
+  },
+  "FileUploadList": {
+    "entry": "native/src/file-upload/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "FilterBar": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "filters",
+        "type": "AppliedFilter[]",
+        "required": true,
+        "note": "Os filtros de agora."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a fileira inteira."
+      },
+      {
+        "name": "clearFrom",
+        "type": "number",
+        "required": false,
+        "note": "A partir de quantos filtros o \"limpar\" aparece."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava todos os xis e o limpar, para a consulta que refaz nao aceitar um segundo toque."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da fileira para o leitor de tela."
+      },
+      {
+        "name": "labels",
+        "type": "{ remove?: ((filter: string) => string) | undefined; clear?: ((total: number) => string) | undefined; status?: ((total: number) => string) | undefined; empty?: string | undefined; }",
+        "required": false,
+        "note": "Os textos que a peca escreve: `remove` no xis, `clear` no botao de limpar, `status` no aviso vivo e `empty` na linha guardada."
+      },
+      {
+        "name": "onClear",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado quando o \"limpar\" e apertado, antes do `onFiltersChange`."
+      },
+      {
+        "name": "onFiltersChange",
+        "type": "((filters: AppliedFilter[]) => void)",
+        "required": false,
+        "note": "Recebe o que sobrou, tanto no xis quanto no limpar."
+      },
+      {
+        "name": "onRemove",
+        "type": "((filter: AppliedFilter) => void)",
+        "required": false,
+        "note": "O filtro que saiu, com o objeto inteiro, quando o xis dele e apertado."
+      },
+      {
+        "name": "reserve",
+        "type": "boolean",
+        "required": false,
+        "note": "Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra."
+      },
+      {
+        "name": "size",
+        "type": "ChipSize",
+        "required": false,
+        "note": "A altura das pilulas."
+      }
+    ]
+  },
+  "FilterChip": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O campo filtrado: \"Cliente\", \"Vencimento\"."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a ficha inteira - a faixa de toque de 44pt, e nao a pilula pintada dentro dela."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o xis e apaga a ficha, para a consulta que refaz nao aceitar um segundo toque."
+      },
+      {
+        "name": "labels",
+        "type": "{ remove?: ((filter: string) => string) | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve no xis."
+      },
+      {
+        "name": "onRemove",
+        "type": "(() => void)",
+        "required": false,
+        "note": "O que acontece no xis."
+      },
+      {
+        "name": "size",
+        "type": "ChipSize",
+        "required": false,
+        "note": "A altura da pilula desenhada, e so ela: o alvo de toque do xis e 44pt nas duas, porque o dedo nao encolhe junto com a ficha."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O que foi escolhido nesse campo."
+      }
+    ]
+  },
+  "Form": {
+    "entry": "native/src/form/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "((handle: FormHandle) => ReactNode) | ReactNode",
+        "required": true,
+        "note": "Os campos."
+      },
+      {
+        "name": "form",
+        "type": "UseFormReturn<Values, unknown, Parsed>",
+        "required": true,
+        "note": "O retorno do `useZodForm` ou do `useForm`."
+      },
+      {
+        "name": "onSubmit",
+        "type": "SubmitHandler<Parsed>",
+        "required": true,
+        "note": "Chamado com os valores já validados e convertidos pelo schema."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "FormField": {
+    "entry": "native/src/form/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "(row: FormFieldRow<Values, Name>, state: ControllerFieldState) => ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": true,
+        "note": "Recebe o campo pronto para o adaptador."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "Obrigatório, ao contrário do web."
+      },
+      {
+        "name": "name",
+        "type": "Name",
+        "required": true,
+        "note": "O caminho do campo no schema."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "control",
+        "type": "Control<Values>",
+        "required": false,
+        "note": "Só quando o campo vive fora de um `<Form>`."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Indicator": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true,
+        "note": "O que recebe a marca: o botão do sino, o item da barra, o avatar."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela ouve no lugar do número: \"3 notificações\"."
+      },
+      {
+        "name": "badgeClassName",
+        "type": "string",
+        "required": false,
+        "note": "Veste a pastilha."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "note": "Quantos."
+      },
+      {
+        "name": "dot",
+        "type": "boolean",
+        "required": false,
+        "note": "Sem contagem: só o ponto, para \"tem algo novo aqui\"."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O teto: acima dele sai \"99+\", em vez de a pastilha esticar."
+      }
+    ]
+  },
+  "Input": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "A familia do provider que veste o que se digita."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false
+      }
+    ]
+  },
+  "InputGroup": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "InputGroupAction[]",
+        "required": false,
+        "note": "Os botões colados no campo, depois do sufixo."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a moldura."
+      },
+      {
+        "name": "inputClassName",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "prefix",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O encosto antes do campo: `R$`, uma sigla, um ícone."
+      },
+      {
+        "name": "suffix",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O encosto depois do campo: `,00`, `kg`, `@empresa.com.br`."
+      }
+    ]
+  },
+  "Item": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "note": "O texto que nomeia a linha."
+      },
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela anuncia na linha."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O canto da direita: valor, `Badge`, `Button`, `Indicator`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "note": "A segunda linha, menor: o complemento que cabe."
+      },
+      {
+        "name": "media",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O canto da esquerda: `Avatar`, ícone, miniatura."
+      },
+      {
+        "name": "onPress",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Toca e vai."
+      },
+      {
+        "name": "variant",
+        "type": "\"outline\" | \"plain\"",
+        "required": false,
+        "note": "`plain` para lista dentro de card ou folha; `outline` para grade de escolhas."
+      }
+    ]
+  },
+  "MaskedInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "mask",
+        "type": "string",
+        "required": true,
+        "note": "O molde, com `#` onde entra digito: `##.###.###/####-##`."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(clean: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O valor LIMPO, so digitos - a mascara e do campo, o dado nao a carrega."
+      },
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "A familia do provider que veste o que se digita."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false
+      }
+    ]
+  },
+  "Menu": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "actions",
+        "type": "MenuAction[]",
+        "required": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true,
+        "note": "O sujeito das acoes: \"Nota 4813\"."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a lista de acoes dentro da folha."
+      }
+    ]
+  },
+  "Meter": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome da medida."
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "Onde a medida esta agora, na escala de `min` a `max`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O teto da escala: a cota, o limite do plano, o disco contratado."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "note": "O piso da escala."
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "note": "Escreve a porcentagem ao lado do rotulo."
+      },
+      {
+        "name": "valueLabel",
+        "type": "string",
+        "required": false,
+        "note": "A medida ja escrita - \"8 GB de 15 GB\", \"R$ 4.200 de R$ 5.000\"."
+      }
+    ]
+  },
+  "NumberField": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome que o leitor de tela anuncia: \"Quantidade de parcelas\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: number) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  "OTPField": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "length",
+        "type": "number",
+        "required": false,
+        "note": "Quantos digitos o codigo tem."
+      },
+      {
+        "name": "onValueComplete",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado uma vez, quando o ultimo digito entra."
+      }
+    ]
+  },
+  "PageHeader": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "As acoes da tela: um Button primario, no maximo dois."
+      },
+      {
+        "name": "badge",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A etiqueta ao lado do titulo: um Badge, tipicamente."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false,
+        "note": "A frase de contexto embaixo do titulo, nao um subtitulo decorativo."
+      }
+    ]
+  },
+  "PasswordInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a moldura."
+      },
+      {
+        "name": "inputClassName",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "{ show: string; hide: string; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve no botão, antes e depois de revelar."
+      }
+    ]
+  },
+  "Progress": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "0 a 100."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "QueryBoundary": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "((data: NonNullable<Data>) => ReactNode) | ReactNode",
+        "required": true,
+        "note": "A resposta na tela."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste os tres finais, e nao os filhos: a moldura que reserva a altura vale igual para o esqueleto, para o aviso de erro e para o vazio."
+      },
+      {
+        "name": "data",
+        "type": "Data",
+        "required": false,
+        "note": "A resposta da consulta."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta vazia."
+      },
+      {
+        "name": "errorMessage",
+        "type": "string",
+        "required": false,
+        "note": "A linha de baixo do aviso."
+      },
+      {
+        "name": "errorTitle",
+        "type": "string",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "isEmpty",
+        "type": "boolean",
+        "required": false,
+        "note": "Diz o vazio no lugar do `data`, para a resposta que nao e uma lista: `isEmpty={page.total === 0}`."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "retryLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      },
+      {
+        "name": "skeleton",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O desenho da espera, no formato do que vem depois - a lista de tres linhas, o cartao, a folha de campos."
+      },
+      {
+        "name": "skeletonRows",
+        "type": "number",
+        "required": false,
+        "note": "Quantas linhas falsas a espera generica mostra."
+      }
+    ]
+  },
+  "RadioGroup": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "RadioItem[]",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | null",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do grupo para o leitor de tela."
+      }
+    ]
+  },
+  "RelativeTime": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "value",
+        "type": "string | number | Date",
+        "required": true,
+        "note": "O instante que se descreve."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "cutoff",
+        "type": "\"day\" | \"hour\" | \"minute\" | \"month\" | \"week\" | \"year\"",
+        "required": false,
+        "note": "A partir de qual unidade parar de contar e mostrar a data."
+      },
+      {
+        "name": "now",
+        "type": "Date",
+        "required": false,
+        "note": "O agora, para teste e para tela congelada."
+      }
+    ]
+  },
+  "RivoProvider": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "fonts",
+        "type": "RivoFonts",
+        "required": false,
+        "note": "As familias que o APP ja carregou com o `expo-font`, uma por papel."
+      },
+      {
+        "name": "isFontLoaded",
+        "type": "((family: string) => boolean)",
+        "required": false,
+        "note": "O `isLoaded` do `expo-font`, para o provider conferir em `__DEV__` se cada nome de `fonts` chegou mesmo ao aparelho."
+      },
+      {
+        "name": "theme",
+        "type": "\"rivocode-dark\" | \"rivocode-light\" | \"system\"",
+        "required": false,
+        "note": "`rivocode-dark` e o padrao, como no web; `system` segue o aparelho."
+      }
+    ]
+  },
+  "SearchInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "Select": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "SelectItem[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void) | ((value: string[]) => void)",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string | string[] | null",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; a folha de opcoes e da plataforma."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O que o gatilho mostra sem escolha: \"Selecione o período\"."
+      }
+    ]
+  },
+  "Separator": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Sheet": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o painel da folha, nao o fundo escurecido."
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Skeleton": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Slider": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome que o leitor de tela anuncia: \"Volume do alerta\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: number) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false
+      }
+    ]
+  },
+  "Sparkline": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "data",
+        "type": "number[]",
+        "required": true,
+        "note": "So os numeros, na ordem do tempo."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "color",
+        "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
+        "required": false,
+        "note": "O papel de token que pinta o traco - `chart-1` a `chart-8` quando a peca entra numa serie."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": false,
+        "note": "A altura do desenho, em px."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "trend",
+        "type": "\"auto\" | \"none\"",
+        "required": false,
+        "note": "Pinta de verde ou vermelho conforme suba ou desca do primeiro ao ultimo ponto."
+      },
+      {
+        "name": "variant",
+        "type": "\"bar\" | \"line\"",
+        "required": false,
+        "note": "`line` para tendencia pura; `bar` quando cada periodo conta sozinho."
+      }
+    ]
+  },
+  "Spinner": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "size",
+        "type": "\"large\" | \"small\"",
+        "required": false
+      }
+    ]
+  },
+  "Stat": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "Ja formatado, como no web: dinheiro abreviado, contagem crua."
+      },
+      {
+        "name": "chart",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O slot de tendencia, quando houver um grafico nativo para por."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "delta",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "deltaLabel",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invert",
+        "type": "boolean",
+        "required": false,
+        "note": "Subir e ruim aqui: vencidas, custo, inadimplencia."
+      }
+    ]
+  },
+  "Steps": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "current",
+        "type": "number",
+        "required": true,
+        "note": "Índice do passo atual, contando de zero."
+      },
+      {
+        "name": "steps",
+        "type": "Step[]",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Switch": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "onCheckedChange",
+        "type": "(checked: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "Tabs": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "TabItem[]",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "TagsInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(value: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "As fichas de agora."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a caixa toda."
+      },
+      {
+        "name": "inputClassName",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Teto de fichas."
+      },
+      {
+        "name": "removeLabel",
+        "type": "((tag: string) => string)",
+        "required": false,
+        "note": "O que o leitor de tela ouve no botão de cada ficha."
+      },
+      {
+        "name": "separators",
+        "type": "string[]",
+        "required": false,
+        "note": "O que fecha uma ficha além do Enter."
+      }
+    ]
+  },
+  "Text": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "Qual das tres familias do provider veste este texto: `sans` no corrido, `display` no titulo, `mono` onde a largura fixa alinha coluna."
+      }
+    ]
+  },
+  "Textarea": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "rows",
+        "type": "number",
+        "required": false,
+        "note": "Altura inicial em linhas; o campo cresce com o conteudo."
+      }
+    ]
+  },
+  "TextInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "A familia do provider que veste o que se digita."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false
+      }
+    ]
+  },
+  "TimeField": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome que o leitor de tela anuncia, e o que os dois botoes de passo repetem: \"Horario da entrega\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Chamado so com hora inteira: `\"08:30\"`, ou `\"\"` quando o campo esvazia."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a moldura que junta os dois botoes e o campo."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Pinta o campo de erro por decisao de fora; sem ela o campo decide sozinho."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false,
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O molde cinza do campo vazio."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "note": "Quantos minutos os botoes de mais e de menos andam, pousando na grade."
+      }
+    ]
+  },
+  "Timeline": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "TimelineEvent[]",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que a linha conta: \"Histórico da nota 4471\"."
+      }
+    ]
+  },
+  "TimePicker": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o leitor de tela anuncia no gatilho, e o titulo da folha."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Chamado so com hora inteira, do mesmo jeito que no `TimeField`."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "A hora escolhida, em 24h e sempre `\"HH:MM\"`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; a folha e a mesma para todos."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "TimePickerLabels",
+        "required": false,
+        "note": "Os nomes das duas colunas."
+      },
+      {
+        "name": "max",
+        "type": "string",
+        "required": false,
+        "note": "Ultima hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "min",
+        "type": "string",
+        "required": false,
+        "note": "Primeira hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O que o gatilho mostra sem escolha: \"Escolha o horario\"."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "note": "De quantos em quantos minutos a coluna da direita anda."
+      }
+    ]
+  },
+  "Toggle": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "onPressedChange",
+        "type": "(pressed: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "pressed",
+        "type": "boolean",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      }
+    ]
+  },
+  "ToggleGroup": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "ToggleGroupItem[]",
+        "required": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "Os valores apertados."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "note": "`multiple` aceita varios ao mesmo tempo; o padrao desaperta o anterior."
+      }
+    ]
+  },
+  "Tracker": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "data",
+        "type": "TrackerPoint[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que a faixa mede, dito por extenso: \"Emissões dos últimos 90 dias\"."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
+  "Tree": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "TreeNode[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome do nivel de cima: \"Centro de custo\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "Ids das FOLHAS marcadas."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "required": false,
+        "note": "O que dizer quando um nivel nao tem nada dentro."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "note": "Sem isto, so uma folha por vez e nenhum galho se marca."
+      }
+    ]
+  },
+  "TreeSelect": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "TreeNode[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que se escolhe: \"Centro de custo\"."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(ids: string[]) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "Ids das FOLHAS escolhidas - o mesmo contrato do `Tree` e do web."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o gatilho; a folha e da plataforma."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "note": "Ligada por padrao, como no web: arvore quase sempre se escolhe aos punhados."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O que o gatilho mostra sem escolha."
+      }
+    ]
+  },
+  "WizardFooter": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
+  }
+}
