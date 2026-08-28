@@ -133,7 +133,13 @@
         "name": "fallback",
         "type": "string",
         "required": true,
-        "note": "As iniciais."
+        "note": "As iniciais que ocupam o lugar enquanto a foto baixa, e que voltam se ela falhar - por isso continuam obrigatorias mesmo com `src`."
+      },
+      {
+        "name": "alt",
+        "type": "string",
+        "required": false,
+        "note": "Descricao da foto para o leitor de tela, vazia quando o nome ja aparece do lado - senao ele fala a pessoa duas vezes."
       },
       {
         "name": "className",
@@ -144,6 +150,12 @@
         "name": "size",
         "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false
+      },
+      {
+        "name": "src",
+        "type": "string",
+        "required": false,
+        "note": "A foto, por endereco: `https://` da rede, `file://` do aparelho, `data:` embutida."
       }
     ]
   },

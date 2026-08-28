@@ -20,6 +20,23 @@ da a volta em vez de quebrar - a mesma volta que o `new Date` ao lado ja fazia.
 A flag entrou no `native/tsconfig.check.json`, que roda no job `nativo` da CI.
 E o que impede a volta: o app so descobria isto depois de instalar.
 
+### O `Avatar` aceita foto, e sem peer novo
+
+O JSDoc dizia que a imagem chegaria depois, com `expo-image`. Estava errado
+desde sempre: a `Image` do CORE do React Native ja busca `https://` sozinha.
+Entao `src` e `alt` entraram com os mesmos nomes do web, sem peer novo, sem
+subcaminho novo e sem passo a mais na instalacao.
+
+A foto e desenhada por cima das iniciais, entao `fallback` continua obrigatoria
+e passou a ter razao melhor: e o que aparece enquanto a imagem baixa e o que
+volta se ela falhar. O estado guarda QUAL `src` quebrou, entao trocar a foto
+tenta de novo sozinho. Sem `alt`, a imagem sai do leitor de tela - e o caso de
+quando o nome ja aparece do lado.
+
+A tabela de assinatura perdeu a linha `Avatar | src | - | imagem remota ainda
+nao entra`: a prop passou a existir dos dois lados com a mesma assinatura, e
+linha que descreve divergencia que acabou e ruido. Sao 146 divergencias agora.
+
 ### `nativewind-env.d.ts` entrou na receita, e sao sete arquivos
 
 Sem `/// <reference types="nativewind/types" />` num `.d.ts` do app, o `tsc`

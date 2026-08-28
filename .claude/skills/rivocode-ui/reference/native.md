@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**147 divergências de assinatura em 66 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**146 divergências de assinatura em 66 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -95,8 +95,7 @@ escritos em lugar nenhum.
 | `Autocomplete` → `Combobox` | `value` | `value` | no web `value` é o texto digitado e ele pode não estar na lista; no nativo é o item escolhido (`string` ou `string[]`) |
 | `Autocomplete` → `Combobox` | `mode` | — | não há completar inline: a folha filtra e a pessoa toca |
 | `Autocomplete` → `Combobox` | `items` | `items` | grupos (`Group[]`) não portam: a folha recebe uma lista rasa de `{ label, value }` |
-| `Avatar` | `src` | — | imagem remota ainda não entra: só as iniciais, e `alt` sai junto |
-| `Avatar` | `fallback` | `fallback` | vira obrigatória, porque é tudo que a peça tem para desenhar |
+| `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
 | `Button` | `size` | `size` | `cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop` |
 | `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `Calendar` | — | `value` | o web é o react-day-picker (`mode`, `selected`, `onSelect`); o nativo é um mês desenhado à mão com `value`/`onValueChange` |
@@ -304,7 +303,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-27:** 69 traduzem com o mesmo nome, 4 traduzem com outro, 0 estão na fila e 18 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-28:** 69 traduzem com o mesmo nome, 4 traduzem com outro, 0 estão na fila e 18 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -313,7 +312,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
-| `Avatar` | ✔ traduz | só `fallback`, as iniciais: imagem remota ainda não entra |
+| `Avatar` | ✔ traduz | `src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar |
 | `Badge` | ✔ traduz | os mesmos tons; o texto e filho; NAO tem `size`, porque no nativo so ha uma densidade |
 | `Breadcrumb` | ✕ não porta | o caminho de volta é o botão de voltar do router |
 | `Button` | ✔ traduz | contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda |

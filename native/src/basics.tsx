@@ -39,8 +39,8 @@ export function Progress({ value, label, className }: ProgressProps) {
 
 export type AvatarProps = {
   /**
-   * As iniciais. Continua obrigatoria com foto: e ela que ocupa o lugar
-   * enquanto a imagem baixa, e e ela que volta se a imagem falhar.
+   * As iniciais que ocupam o lugar enquanto a foto baixa, e que voltam se ela
+   * falhar - por isso continuam obrigatorias mesmo com `src`.
    */
   fallback: string;
   /**
@@ -49,8 +49,8 @@ export type AvatarProps = {
    */
   src?: string;
   /**
-   * Descricao da foto para o leitor de tela. Deixe vazia quando o nome ja
-   * aparece do lado, senao ele fala a pessoa duas vezes.
+   * Descricao da foto para o leitor de tela, vazia quando o nome ja aparece do
+   * lado - senao ele fala a pessoa duas vezes.
    */
   alt?: string;
   size?: "sm" | "md" | "lg";

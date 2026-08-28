@@ -139,7 +139,7 @@ const PARITY: Record<string, Row> = {
   AspectRatio: { state: "traduz", note: "`ratio` numérico, igual" },
   Avatar: {
     state: "traduz",
-    note: "só `fallback`, as iniciais: imagem remota ainda não entra",
+    note: "`src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar",
   },
   Badge: {
     state: "traduz",

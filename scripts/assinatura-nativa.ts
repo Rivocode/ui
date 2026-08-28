@@ -175,14 +175,9 @@ export const SIGNATURES: Record<string, Signature> = {
   Avatar: {
     rows: [
       {
-        web: "src",
-        native: null,
-        note: "imagem remota ainda não entra: só as iniciais, e `alt` sai junto",
-      },
-      {
         web: "fallback",
         native: "fallback",
-        note: "vira obrigatória, porque é tudo que a peça tem para desenhar",
+        note: "vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar",
       },
     ],
   },

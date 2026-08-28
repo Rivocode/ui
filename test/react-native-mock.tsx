@@ -19,6 +19,7 @@ export const View = host("View");
 export const Text = host("Text");
 export const TextInput = host("TextInput");
 export const ActivityIndicator = host("ActivityIndicator");
+export const Image = host("Image");
 export const ScrollView = host("ScrollView");
 export const Pressable = host("Pressable");
 export const Switch = host("Switch");
