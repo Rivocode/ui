@@ -57,8 +57,9 @@ const SEEDS = {
 const bench = mkdtempSync(join(tmpdir(), "rivocode-gerador-"));
 
 const run = async (name: string, palette: string, ...flags: string[]) => {
-  const path = join(bench, `${name}.mjs`);
-  const output = join(bench, `${name}.theme.css`);
+  const file = name.includes(".") ? name : `${name}.mjs`;
+  const path = join(bench, file);
+  const output = join(bench, `${file.replace(/\.[^.]+$/, "")}.theme.css`);
   writeFileSync(path, palette);
 
   const shell = Bun.spawn([Bun.which("node") ?? "bun", GENERATOR, path, output, ...flags], {
@@ -141,6 +142,54 @@ describe("o teto de dois temas", () => {
     const { slots } = generator.schemesOf({ light: SEEDS.light });
 
     expect(slots?.light).toEqual(slots?.dark ?? {});
+  });
+
+  test("`light` e `dark` soltos sao os dois esquemas, e nao o primeiro deles duas vezes", async () => {
+    const solto =
+      `export const light = ${JSON.stringify(SEEDS.light)};\n` +
+      `export const dark = ${JSON.stringify(SEEDS.dark)};\n`;
+    const { code, output, css } = await run("solto", solto);
+
+    expect(code).toBe(0);
+    expect(css).toContain(`--color-accent: light-dark(${SEEDS.light.accent}, ${SEEDS.dark.accent});`);
+    expect(css).toContain(`--color-bg: light-dark(${SEEDS.light.bg}, ${SEEDS.dark.bg});`);
+    expect(output).toContain("claro e escuro");
+    expect(output).not.toContain("fundo escuro");
+  });
+
+  test("a paleta em `.json` carrega, porque o proprio comando a oferece", async () => {
+    const { code, output, css } = await run(
+      "acme.json",
+      JSON.stringify({ light: SEEDS.light, dark: SEEDS.dark }),
+    );
+
+    expect(code).toBe(0);
+    expect(output).not.toContain("import attribute");
+    expect(css).toContain(`--color-accent: light-dark(${SEEDS.light.accent}, ${SEEDS.dark.accent});`);
+  });
+
+  test("um esquema so sai anunciado, e nao descartado calado", async () => {
+    const { code, output, css } = await run(
+      "umso",
+      `export const light = ${JSON.stringify(SEEDS.light)};\n`,
+    );
+
+    expect(code).toBe(0);
+    expect(output).toContain("um esquema so");
+    expect(output).toContain("modo claro e no escuro");
+    expect(css).not.toContain("light-dark(");
+  });
+
+  test("tres esquemas soltos tambem nao cabem, e nao viram dois calados", async () => {
+    const tres =
+      `export const light = ${JSON.stringify(SEEDS.light)};\n` +
+      `export const dark = ${JSON.stringify(SEEDS.dark)};\n` +
+      `export const contraste = ${JSON.stringify(SEEDS.dark)};\n`;
+    const { code, output, wrote } = await run("tres-soltos", tres);
+
+    expect(code).toBe(1);
+    expect(wrote).toBe(false);
+    expect(output).toContain("DUAS vagas");
   });
 
   test("tres esquemas nao cabem, e o comando diz por que", async () => {

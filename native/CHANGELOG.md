@@ -1,5 +1,37 @@
 # Mudancas
 
+## Nao publicado
+
+### Corrigido: o `rivocode-ui-native-theme` le os dois esquemas, e nao um deles duas vezes
+
+Paleta escrita como a ajuda do proprio comando manda - `export const light` e
+`export const dark` soltos no arquivo - saia com **um esquema so**. O comando
+lia os exports em ordem alfabetica, ficava com o primeiro (`dark`), e enchia as
+duas vagas do `light-dark()` com ele. Tres sintomas, uma raiz:
+
+- o CSS nascia sem `light-dark()` nenhum, e o aparelho no modo claro mostrava o
+  tema escuro;
+- o resumo dizia "45 papeis, claro e escuro" tendo medido o escuro duas vezes,
+  e a guarda de contraste concordava, porque media o mesmo esquema nas duas
+  pontas;
+- o aviso "o esquema `light` tem fundo escuro" acusava paleta clara correta.
+
+A extensao do arquivo nunca foi o eixo: `.ts` e `.mjs` erravam igual. O que
+separava era a FORMA - `export const tema = { light, dark }` funcionava.
+
+### Corrigido: a paleta em `.json` carrega
+
+`rivocode-ui-native-theme paleta.json` morria com `needs an import attribute of
+"type: json"`, e a mensagem de erro do comando oferecia `.json` como a saida
+para quem tem Node antigo. Agora ele le o arquivo em vez de importa-lo.
+
+### Melhorado: tema de um esquema so sai anunciado
+
+Paleta com so `light` (ou so `dark`) continua valendo - tema de um esquema e
+escolha -, mas o comando agora diz que as duas vagas sairam iguais, em vez de
+descartar a outra calado. O resumo tambem para de dizer "claro e escuro" quando
+mediu um.
+
 ## 0.4.0
 
 Esta versao nasceu de um app Expo de verdade que vestiu um tema de cliente

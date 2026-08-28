@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, realpathSync, writeFileSync } from "node:fs";
-import { basename, dirname, resolve } from "node:path";
+import { basename, dirname, extname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
@@ -226,29 +226,46 @@ export function derive(seeds, slot) {
   return { slot, scheme, colors, written, guessed, missing };
 }
 
-export function readPalette(path) {
-  return import(pathToFileURL(path).href).then((loaded) => {
-    const found = Object.entries(loaded).filter(
-      ([, value]) => typeof value === "object" && value !== null && !Array.isArray(value),
-    );
-    const withSchemes = found.filter(([, value]) => "light" in value || "dark" in value);
-    return withSchemes.length > 0 ? withSchemes : found;
-  });
+export function candidatesOf(loaded) {
+  const found = Object.entries(loaded).filter(
+    ([, value]) => typeof value === "object" && value !== null && !Array.isArray(value),
+  );
+  const withSchemes = found.filter(([, value]) => "light" in value || "dark" in value);
+  if (withSchemes.length > 0) return withSchemes;
+  if (found.some(([name]) => name === "light" || name === "dark")) {
+    return [["light e dark", Object.fromEntries(found)]];
+  }
+  return found;
+}
+
+export async function readPalette(path) {
+  if (extname(path) === ".json") {
+    const parsed = JSON.parse(readFileSync(path, "utf8"));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return [];
+    const found = candidatesOf(parsed);
+    if (found.length > 0) return found;
+    return Object.values(parsed).some((value) => typeof value === "string")
+      ? [[basename(path), parsed]]
+      : [];
+  }
+  return candidatesOf(await import(pathToFileURL(path).href));
 }
 
 export function schemesOf(palette) {
   const entries = Object.entries(palette);
   const nested = entries.filter(([, value]) => typeof value === "object" && value !== null);
-  if (nested.length === 0) return { names: ["*"], slots: { light: palette, dark: palette } };
+  if (nested.length === 0) {
+    return { names: ["*"], paired: false, slots: { light: palette, dark: palette } };
+  }
   const names = nested.map(([name]) => name);
   if (nested.length === 1) {
     const [, only] = nested[0];
-    return { names, slots: { light: only, dark: only } };
+    return { names, paired: false, slots: { light: only, dark: only } };
   }
   if (nested.length === 2 && names.includes("light") && names.includes("dark")) {
-    return { names, slots: { light: palette.light, dark: palette.dark } };
+    return { names, paired: true, slots: { light: palette.light, dark: palette.dark } };
   }
-  return { names, slots: undefined };
+  return { names, paired: false, slots: undefined };
 }
 
 export function unreadable(colors) {
@@ -412,7 +429,7 @@ async function main() {
   }
 
   const [, palette] = candidates[0];
-  const { names, slots: raw } = schemesOf(palette);
+  const { names, paired, slots: raw } = schemesOf(palette);
 
   if (!raw) {
     die(
@@ -565,9 +582,18 @@ async function main() {
   const written = slots.light.written.length;
   console.log(text);
   console.log(
-    `\n${output}: ${ROLES.length} papeis, claro e escuro. ` +
+    `\n${output}: ${ROLES.length} papeis, ` +
+      `${paired ? "claro e escuro" : "um esquema so"}. ` +
       `${written} escrito(s) por voce, ${ROLES.length - written} derivado(s).`,
   );
+  if (!paired) {
+    console.log(
+      `\nAviso: a paleta trouxe um esquema so (${names.join(", ")}), entao as duas\n` +
+        "vagas do `light-dark()` sairam iguais e o CSS nao tem `light-dark()`\n" +
+        "nenhum: o aparelho mostra este mesmo tema no modo claro e no escuro.\n" +
+        "Para os dois modos, exporte `light` e `dark` com as sementes de cada um.",
+    );
+  }
   if (slots.light.guessed.some((role) => HOUSE_DEFAULT.includes(role))) {
     console.log(
       `\nAviso: chart-1 a chart-8 sairam na serie da RivoCode, medida sobre o SEU\n` +
