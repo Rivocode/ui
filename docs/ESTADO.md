@@ -22,25 +22,26 @@ quem consome mora em `.design-sync/conventions.md` e em
 
 | Peca                        | Onde                                        | Estado                                                              |
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.10.0** no `package.json`, ainda NAO comitada; 0.9.1 no npm, na tag |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.5.0** no `native/package.json`, ainda NAO comitada; 0.4.1 no npm, na tag |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `73068df`                   |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.10.0** comitada no `package.json`, sem tag; 0.9.1 no npm, na tag |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.5.0** comitada no `native/package.json`, sem tag; 0.4.1 no npm, na tag |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `e37084d`                   |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
 
-A arvore **nao** esta limpa, e e isso que a primeira coluna da tabela quer
-dizer: `git status --short` devolve **22 linhas** - 14 arquivos modificados e 8
-que ainda nao existem no indice, e esta pagina e uma delas. E dentro dessas
-linhas que moram os dois bumps de versao, as duas secoes novas de CHANGELOG, as
-duas guardas novas do gate e a tabela de assinatura do nativo. Nada disso esta
-comitado, entao nada disso esta no ar: **o `HEAD` e o `origin/main` sao o mesmo
-commit**, `73068df`, e `git log --oneline origin/main..HEAD` devolve zero. Foram
-**5 commits em 28/08**, todos empurrados, e o site subiu do ultimo deles as
-10:02.
+Os dois bumps de versao, as duas secoes novas de CHANGELOG, as duas guardas
+novas do gate e a tabela de assinatura do nativo ESTAO comitados e empurrados:
+**o `HEAD` e o `origin/main` sao o mesmo commit**, `e37084d`, e
+`git log --oneline origin/main..HEAD` devolve zero. Foram **6 commits em
+28/08**, todos empurrados.
+
+A arvore **nao** esta limpa, e o que sobra nela e uma coisa so: `git status
+--short` devolve **6 linhas** - o workflow de tag automatica, o script de
+decisao, o teste dele, e as tres paginas que os acompanham, esta inclusive. E o
+unico trabalho que ainda nao esta no ar.
 
 O gate esta verde. `bun run check` roda **trinta e tres verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1367 testes em 118 arquivos**, com
-3604 chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
+suite e sai com codigo zero; a suite tem **1382 testes em 119 arquivos**, com
+3665 chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
 (`dist/index.js` e `dist/cli.js` sao de 10:40, e o commit mais novo e de 10:01).
 
 ### O catalogo, por familia
@@ -476,8 +477,8 @@ O que cada guarda mede hoje, em numero:
 | `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
 | `check:receita`          | 6 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1367 testes em 118 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1367 passam, 0 falham, 3604 `expect`; 404 sao do nativo, em 31 arquivos       |
+| `check:testes`           | 1382 testes em 119 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1382 passam, 0 falham, 3665 `expect`; 404 sao do nativo, em 31 arquivos       |
 
 Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **82 pecas e 447
 props** - o catalogo que da ao `check:assinatura` o lado nativo da comparacao.
@@ -602,29 +603,31 @@ decisao foi tomada, escrita e medida, e a linha dele na tabela de paridade e
 
 Duas coisas, e em nenhuma delas ha codigo a escrever.
 
-**1. Um commit, um merge e duas tags - e as duas tags sao acao de uma pessoa.**
-O item de ontem morreu: `v0.9.1` e `native-v0.4.1` **existem**, estao no
-`origin`, e o npm serve `@rivocode/ui@0.9.1` e `@rivocode/ui-native@0.4.1`. Nao
-ha versao comitada sem tag.
+**1. Um empurrao na `main`, e as duas tags nascem sozinhas.** Isto mudou em
+28/08/2026: a tag deixou de ser acao de uma pessoa. O `tag.yml` roda depois de
+o `ci` fechar verde na `main`, compara cada manifesto com o mundo e cria a tag
+quando as quatro guardas passam - tag inexistente, versao inedita no npm,
+CHANGELOG aberto na secao daquela versao, e nenhum `[no-release]` na mensagem do
+commit. Depois de criar, ele chama o release por `workflow_dispatch`, porque tag
+empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.
 
-O que existe agora e um degrau antes disso. A `0.10.0` e a `0.5.0` estao
-escritas no `package.json` e no `native/package.json` com as duas secoes de
-CHANGELOG fechadas, e **nao estao comitadas**: `git status --short` devolve 22
-linhas, entre elas os dois manifestos, os dois CHANGELOGs, as duas guardas
-novas, a tabela de assinatura e o `init.mjs`. `git tag --list` para em `v0.9.1`
-e `native-v0.4.1`, e nao ha nenhum release no GitHub (`gh release list` volta
+O que sobrou de humano e o que sempre foi caro: o numero da versao e o
+fechamento do CHANGELOG. Os dois ja estao feitos. A `0.10.0` e a `0.5.0` estao
+comitadas no `package.json` e no `native/package.json`, com as duas secoes de
+CHANGELOG fechadas no topo de cada arquivo. `git tag --list` para em `v0.9.1` e
+`native-v0.4.1`, e nao ha nenhum release no GitHub (`gh release list` volta
 vazio, para as doze tags que existem).
 
-A ordem da casa vale inteira, e o primeiro passo dela nao e a tag: CHANGELOG
-fechado (esta), bump comitado (**falta**), merge na `main` (falta), ensaio no
-nativo (`gh workflow run release-native --field ensaio=true`), e so entao a tag.
+Entao o proximo `ci` verde na `main` cria `v0.10.0` e `native-v0.5.0` e publica
+as duas. Nao ha comando a dar, e nao ha como dar meio comando: para segurar
+qualquer um dos dois, o caminho e a valvula - `[no-release]` na mensagem do
+commit da cabeca, que barra os DOIS pacotes, porque a mensagem e uma so.
 Publicar 0.9.1 e 0.4.1 de novo nao da: o registro recusa com 403, e o conserto
 de versao publicada e versao nova.
 
-Vale lembrar que o merge na `main` publica o site sozinho, sem tag. Enquanto o
-bump nao for comitado, `ds.rivocode.com.br` descreve a `0.9.1` - e a `0.5.0`
-carrega **quebra** de contrato no nativo (o `RivoNativeThemeMap` e a prop
-`scheme`), entao a doc no ar ainda oferece uma API que a proxima versao nao tem.
+Vale lembrar que o empurrao na `main` publica o site junto, e o site ja descreve
+a `0.10.0`. A `0.5.0` carrega **quebra** de contrato no nativo (o
+`RivoNativeThemeMap` e a prop `scheme`).
 
 **2. A landing esta tres versoes atras.** Ela esta em `^0.7.0` com 0.7.0
 travada no `bun.lock`, o npm ja serve 0.9.1 e a arvore fechou 0.10.0. Isso e o
@@ -683,8 +686,11 @@ procedencia estava em pe, e ninguem abriu o workflow.
 - **Receitas de tela inteira** (login, painel, listagem pronta) continuam de
   fora, porque receita nao versiona como componente e ninguem decidiu se elas
   moram aqui ou num pacote separado.
-- **Nenhum agente cria tag.** Publicacao e acao de uma pessoa, porque ela nao se
-  desfaz.
+- **A tag nasce por maquina; o numero da versao, nao.** Desde 28/08/2026 o
+  `tag.yml` cria a tag e chama o release quando quatro guardas passam. O que
+  nenhuma maquina decide continua sendo o numero da versao e o fechamento do
+  CHANGELOG - e a guarda do CHANGELOG e o que substitui o dedo humano no
+  `git tag`. Publicacao no npm nao se desfaz, e e por isso que sao quatro.
 
 ## Duas armadilhas de processo
 
@@ -708,18 +714,18 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e tres verificacoes mais os 1367 testes
+bun run check        # trinta e tres verificacoes mais os 1382 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
 
-O primeiro passo pendente nao e nenhum desses: e comitar as 22 linhas que estao
-na arvore, com os bumps para `0.10.0` e `0.5.0` dentro delas, e empurrar - o que
-publica o site. So depois vem o ensaio do nativo e as duas tags, `v0.10.0` e
-`native-v0.5.0`, que sao acao de uma pessoa. O que esta no ar hoje e a doc da
-0.9.1.
+O primeiro passo pendente nao e nenhum desses: e empurrar. O `0.10.0` e o
+`0.5.0` ja estao comitados com os dois CHANGELOGs fechados, entao o `ci` verde
+na `main` cria `v0.10.0` e `native-v0.5.0` e publica as duas sem mais nenhum
+comando. Para ver a decisao antes, sem criar tag nenhuma:
+`gh workflow run tag`, que vem com o ensaio marcado.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
 `ds.rivocode.com.br/convencoes.md`. A skill que um agente le esta em
@@ -732,8 +738,8 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 177 documentos
 bun run check:pecas                                # 91 pecas
-bun run check:testes                               # 1367 testes em 118 arquivos
-bun test                                           # 1367 passam, 0 falham, 3604 expect()
+bun run check:testes                               # 1382 testes em 119 arquivos
+bun test                                           # 1382 passam, 0 falham, 3665 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
 bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 18 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
@@ -755,15 +761,15 @@ bun run check:props:nativo                         # 82 pecas, 447 props - so ro
 bun run visual                                     # 44 retratos, e recusa build velho
 node -e 'p=require("./demo/assinaturas.json");console.log(Object.keys(p).length)'       # 44, sendo 32 de vitrine e 12 de secao
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 34, ou seja 33 mais bun test
-git status --short | wc -l                         # 22 linhas: o trabalho da 0.10.0 e da 0.5.0, sem commit
-git log --oneline origin/main..HEAD | wc -l        # 0 - o HEAD e o origin/main sao 73068df
+git status --short | wc -l                         # 6: so o workflow de tag automatica, o script, o teste e as tres paginas
+git log --oneline origin/main..HEAD | wc -l        # 0 - o HEAD e o origin/main sao e37084d
 git tag --list                                     # v0.9.1 e native-v0.4.1 sao as ultimas
 gh release list                                    # vazio: as doze tags nao viraram release
 npm view @rivocode/ui version                      # 0.9.1, contra 0.10.0 no package.json
 npm view @rivocode/ui-native version               # 0.4.1, contra 0.5.0 no native/package.json
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.1   # responde: assinada
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.4.1   # idem
-gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit 73068df
+gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit e37084d
 gh run list --workflow=release-native --limit 5    # o ensaio e a publicacao da 0.4.1
 curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 91 e 177
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false, e e a divida da secao "Divida de codigo"

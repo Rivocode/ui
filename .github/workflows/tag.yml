@@ -1,0 +1,176 @@
+name: tag
+
+# Cria a tag quando a versao de um manifesto muda na `main`, e chama o release.
+#
+# Antes disso a tag era acao de uma pessoa. O dono decidiu automatizar, ciente
+# do que estava trocando: era o dedo humano no `git tag` que garantia que merge
+# de trabalho pela metade nao publicasse nada. As quatro guardas abaixo existem
+# para devolver essa garantia por maquina - em especial a do CHANGELOG, que e a
+# que separa "a versao subiu" de "a versao esta pronta".
+#
+# O gatilho e o `workflow_run` do `ci`, e nao o `push`. A diferenca importa:
+# assim nenhuma tag nasce antes de o gate inteiro ter passado sobre aquele
+# commit. Um `on: push` correria em paralelo com o `ci` e poderia tagear codigo
+# que o gate ainda vai reprovar - e publicacao no npm nao se desfaz.
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+    branches: [main]
+  # O ensaio, pelo mesmo motivo dos outros dois workflows: este caminho so
+  # roda de verdade num dia de release, e nao da para exercita-lo sem gastar
+  # uma versao. Com a caixa marcada, tudo roda igual - decisao, guardas e
+  # resumo - e a tag NAO nasce.
+  workflow_dispatch:
+    inputs:
+      ensaio:
+        description: "Ensaio: decide e relata, e NAO cria tag nenhuma"
+        type: boolean
+        default: true
+
+jobs:
+  decidir:
+    # `workflow_run` dispara em qualquer conclusao, inclusive `failure` e
+    # `cancelled`. Sem esta linha, um gate vermelho viraria uma tag.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Criar e empurrar a tag.
+      contents: write
+      # Chamar o release por `workflow_dispatch`. Sem isto o `gh workflow run`
+      # devolve 403, e a tag ficaria no historico apontando para uma versao que
+      # nunca subiu - exatamente o estado que os outros dois workflows gastam
+      # um passo inteiro para evitar.
+      actions: write
+
+    strategy:
+      # Um pacote nao decide pelo outro: eles andam em velocidades diferentes,
+      # e o web parado nao pode calar o nativo.
+      fail-fast: false
+      # Em serie, e nao em paralelo: as duas pernas empurram tag para o mesmo
+      # `origin`, e duas atualizacoes de ref ao mesmo tempo nao rendem nada
+      # alem de uma corrida para depurar depois.
+      max-parallel: 1
+      matrix:
+        # A tabela de cada pacote - manifesto, prefixo, CHANGELOG e workflow -
+        # mora em `TARGETS`, dentro de `scripts/decisao-de-release.ts`, para
+        # nao existir em dois lugares. Aqui fica so a chave.
+        package: [web, native]
+
+    steps:
+      # O commit que o `ci` aprovou, e nao o topo da `main` de agora. Num
+      # `workflow_run` o `GITHUB_SHA` aponta para o topo do branch padrao, que
+      # pode ja ter andado: tagear ele seria tagear codigo que ninguem mediu.
+      #
+      # `fetch-depth: 0` traz o historico e as tags. As tags tambem sao lidas
+      # do `origin` por `git ls-remote`, que e a resposta autoritativa, mas o
+      # clone raso deixaria `git tag --list` vazio e a leitura local mentiria.
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # O Node entra so pelo `npm view`: e ele quem responde se o numero ja
+      # esta no registro, e essa e a unica das quatro guardas que precisa de
+      # rede.
+      #
+      # Sem `registry-url` de proposito, ao contrario dos dois releases. Ele e
+      # que escreve o `.npmrc` que espera `NODE_AUTH_TOKEN`, e consultar o
+      # registro nao precisa de credencial: sem o arquivo, nao ha token vazio
+      # para o npm ler e reclamar de autenticacao em vez de responder a
+      # pergunta. Este workflow nao publica nada, entao nao ve o segredo.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # A decisao mora numa funcao pura, e nao aqui: `decideRelease` recebe a
+      # versao, as tags que existem, as versoes do registro, o texto do
+      # CHANGELOG e a mensagem do commit, e devolve o veredito com o motivo.
+      # `test/decisao-de-release.test.ts` cobre os quatro motivos de barrar e o
+      # caminho feliz, nos dois pacotes - o que nao daria para provar se a
+      # decisao fosse um `if` de shell escrito neste arquivo.
+      #
+      # Este passo NAO falha quando uma guarda barra. Guarda que deixa a CI
+      # vermelha em todo push que nao e release e desligada na segunda semana,
+      # e ai o release que ela protegia deixa de ser protegido. Ela relata no
+      # resumo da execucao e segue.
+      #
+      # Sem `bun install` antes: o script nao importa nada do `node_modules`, e
+      # instalar a arvore inteira para ler dois manifestos custaria mais que
+      # tudo o que este workflow faz.
+      - name: Decidir
+        id: decidir
+        run: bun run scripts/decisao-de-release.ts ${{ matrix.package }}
+
+      # A tag aponta para o commit que o `ci` aprovou, que e o que esta
+      # em HEAD depois do checkout acima.
+      - name: Criar a tag
+        if: ${{ steps.decidir.outputs.release == 'true' && inputs.ensaio != true }}
+        env:
+          TAG: ${{ steps.decidir.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
+
+      # A armadilha que decide o desenho deste arquivo.
+      #
+      # Tag empurrada com o `GITHUB_TOKEN` padrao NAO dispara `on: push: tags`.
+      # O GitHub bloqueia de proposito, para evitar recursao: "events triggered
+      # by the GITHUB_TOKEN will not create a new workflow run". Se este
+      # workflow apenas criasse a tag, o `release.yml` nunca acordaria, e a
+      # unica coisa que sobraria seria uma tag no historico sem versao no npm.
+      #
+      # `workflow_dispatch` e uma das excecoes escritas nessa mesma regra - ele
+      # dispara mesmo vindo do `GITHUB_TOKEN`. Por isso a chamada e explicita, e
+      # por isso o job pede `actions: write`. Os dois releases ja aceitam o
+      # campo `tag`, e e ele que amarra a publicacao a tag recem-criada em vez
+      # de ao topo da `main`.
+      #
+      # `--ref` aponta para a tag para que a versao do workflow que roda seja a
+      # que a tag congelou. A tag acabou de subir, e o `gh` as vezes chega
+      # antes de a referencia estar visivel para a API: por isso as tentativas.
+      - name: Chamar o release
+        if: ${{ steps.decidir.outputs.release == 'true' && inputs.ensaio != true }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.decidir.outputs.tag }}
+          WORKFLOW: ${{ steps.decidir.outputs.workflow }}
+        run: |
+          for attempt in 1 2 3; do
+            if gh workflow run "$WORKFLOW" --ref "$TAG" --field tag="$TAG"; then
+              echo "O $WORKFLOW foi chamado para $TAG."
+              exit 0
+            fi
+            echo "Tentativa $attempt falhou; a tag pode nao estar visivel ainda."
+            sleep 5
+          done
+
+          echo "::error::A tag $TAG subiu e o $WORKFLOW nao atendeu."
+          echo "A tag existe e a versao NAO foi publicada. Chame o release a mao:"
+          echo "  gh workflow run $WORKFLOW --ref $TAG --field tag=$TAG"
+          exit 1
+
+      # Um ensaio verde parece uma publicacao verde. O recado vai para o resumo
+      # da execucao, que e a primeira coisa que a pagina mostra, ao lado do que
+      # a decisao escreveu la.
+      - name: Dizer que foi ensaio
+        if: ${{ inputs.ensaio == true }}
+        env:
+          TAG: ${{ steps.decidir.outputs.tag }}
+          VERDICT: ${{ steps.decidir.outputs.verdict }}
+        run: |
+          {
+            echo "Ensaio - NENHUMA tag foi criada e nada foi publicado."
+            echo
+            echo "A decisao acima rodou inteira sobre a arvore de agora, com as"
+            echo "quatro guardas medidas de verdade. O veredito foi \`$VERDICT\`,"
+            echo "e a tag em questao seria \`$TAG\`."
+          } | tee -a "$GITHUB_STEP_SUMMARY"

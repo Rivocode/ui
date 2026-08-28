@@ -289,35 +289,91 @@ o `check` inteiro.
 
 ### O que cada empurrao publica
 
-**Push na `main` publica o SITE, sozinho e sem tag.** E a coisa mais facil de
-esquecer aqui, porque nada no comando avisa: `git push origin main` dispara o
-`docs.yml` e `ds.rivocode.com.br` muda. Nenhum PACOTE sai por push - npm so
-sai por tag. Entao merge de trabalho pela metade nao quebra instalacao de
-ninguem, mas troca o que esta no ar para quem le a doc.
+**Push na `main` publica o SITE, e pode publicar PACOTE.** A primeira metade e
+a mais facil de esquecer, porque nada no comando avisa: `git push origin main`
+dispara o `docs.yml` e `ds.rivocode.com.br` muda. A segunda metade e nova, de
+28/08/2026: ate ali npm so saia por tag, e a tag era acao de uma pessoa. Agora o
+`tag.yml` cria a tag sozinho quando a versao de um manifesto muda. Merge de
+trabalho pela metade continua nao publicando nada, mas quem segura isso passou a
+ser uma guarda, e nao o dedo humano no `git tag`.
 
 | Gatilho | Workflow | Publica |
 |---|---|---|
 | push na `main` | `ci.yml` + `docs.yml` | o site |
+| `ci` verde na `main` | `tag.yml` | a tag, e chama o release |
 | tag `v*` | `release.yml` | `@rivocode/ui` no npm |
 | tag `native-v*` | `release-native.yml` | `@rivocode/ui-native` no npm |
 
-### A ordem, e por que ela e essa
+### A tag nasce sozinha, e o que continua humano
 
-1. **Feche o CHANGELOG antes da tag.** E ele que sai junto com a versao;
-   incompleto ali e surpresa na tela de quem migra.
-2. **Bump da versao no `package.json` certo**, e commit.
-3. **Merge na `main`** - o site sobe com a doc da versao nova.
-4. **Ensaio, no nativo:** `gh workflow run release-native --field ensaio=true`
-   roda o caminho inteiro sem gastar versao. Nao pule: a primeira publicacao
-   nativa de verdade falhou com `ENEEDAUTH`, alguem publicou a mao, e as tres
-   tentativas seguintes tomaram `403` por tentar republicar a MESMA versao. O
-   ensaio e o unico jeito de saber se o segredo esta bom sem queimar a tag.
-5. **A tag**, e so entao.
+O gatilho e o `workflow_run` do `ci`, tipo `completed`, na `main`, e o job so
+segue com `conclusion == "success"`: nenhuma tag nasce antes de o gate inteiro
+ter passado sobre aquele commit. Nao e `on: push` de proposito - o push correria
+em paralelo com o `ci` e tagearia codigo que o gate ainda vai reprovar, e
+publicacao no npm nao se desfaz. Pelo mesmo motivo o checkout e do
+`workflow_run.head_sha`, e nao do topo da `main` de agora: a tag aponta para o
+commit que foi medido.
+
+Para cada pacote, separadamente - os dois andam em velocidades diferentes, e o
+prefixo e o que os separa -, a tag so nasce se as QUATRO passarem:
+
+1. **A tag ainda nao existe**, aqui e no `origin`. Sem isso, todo push na `main`
+   tentaria recriar a ultima.
+2. **A versao ainda nao esta no npm**, medido com
+   `npm view <pacote> versions --json`. Publicacao nao se desfaz, e foi assim
+   que tres tentativas seguidas tomaram `403` por republicar o MESMO numero.
+3. **O CHANGELOG daquele pacote abre com `## <versao>`**, igual a do manifesto e
+   no TOPO. Esta e a guarda que preserva o merge de trabalho pela metade: bump
+   que entra sem CHANGELOG fechado NAO publica. A ordem da casa sempre foi
+   "feche o CHANGELOG antes da tag"; a diferenca e que agora ela e cobrada por
+   maquina.
+4. **A mensagem do commit da cabeca nao tem `[no-release]`.** E a valvula de
+   escape para bumpar sem publicar. Ela vale para os dois pacotes de uma vez,
+   porque a mensagem e uma so.
+
+A decisao mora numa funcao pura - `decideRelease`, em
+`scripts/decisao-de-release.ts` - que recebe a versao, as tags que existem, as
+versoes do registro, o texto do CHANGELOG e a mensagem do commit, e devolve o
+veredito com o motivo. `test/decisao-de-release.test.ts` cobre os quatro motivos
+de barrar e o caminho feliz, nos dois pacotes. Guarda de publicacao escrita em
+`if` de shell dentro do `.yml` nao teria como ser provada, e esta e a unica do
+repositorio que decide se um numero de versao queima.
+
+**Guarda que barra nao deixa a CI vermelha.** Ela escreve no resumo da execucao
+o que foi feito ou por que nao foi, para cada pacote, inclusive quando nao havia
+nada a fazer - e segue. Vermelho em todo push que nao e release e desligado na
+segunda semana, e ai o release que a guarda protegia deixa de ser protegido. O
+que PARA a corrida e outra coisa: a guarda que nao consegue MEDIR. `npm view`
+que falha por qualquer motivo que nao seja o 404 de pacote inexistente, `git`
+que nao alcanca o `origin` - ali o script morre com codigo 1, porque guarda sem
+medida que responde "pode publicar" cria a tag por falta de resposta.
+
+**Duas coisas continuam sendo decisao de uma pessoa, e nenhuma maquina toma
+nenhuma delas: o numero da versao e o fechamento do CHANGELOG.** E so isso que
+se faz num dia de release - bump no manifesto certo, secao nova no CHANGELOG
+daquele pacote, commit, merge na `main`. O resto e consequencia.
 
 **Publicacao nao se desfaz, e o npm nao deixa sobrescrever.** Versao publicada
-com defeito nao se conserta republicando: conserta-se com versao nova. Por isso
-o passo 4 existe, e por isso a tag e sempre acao de uma pessoa - nenhum agente
-cria tag por conta propria.
+com defeito nao se conserta republicando: conserta-se com versao nova. E a razao
+de as quatro guardas existirem, e ela nao mudou por a tag ter virado automatica
+- mudou so quem paga por esquecer.
+
+**Tag empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.** O GitHub
+bloqueia para evitar recursao, e por isso o `tag.yml` nao para na tag: ele chama
+o release por `workflow_dispatch` passando o campo `tag`, que os dois releases ja
+aceitam - e `workflow_dispatch` e uma das excecoes escritas nessa mesma regra. E
+por isso o job pede `actions: write` alem de `contents: write`. Sem essa chamada
+a tag existiria e a versao nunca subiria, que e o pior dos dois estados.
+
+Tres ensaios, e nenhum deles gasta versao:
+
+- `gh workflow run tag` roda a decisao inteira, com as quatro guardas medidas de
+  verdade, e nao cria tag nenhuma - a caixa vem marcada.
+- `gh workflow run release --field ensaio=true` e
+  `gh workflow run release-native --field ensaio=true` atravessam o caminho da
+  publicacao ate o passo antes do `npm publish`. O do nativo nasceu porque a
+  primeira publicacao de verdade falhou com `ENEEDAUTH`, alguem publicou a mao,
+  e as tres tentativas seguintes tomaram `403`.
 
 **O repositorio esta publico**, e os dois workflows publicam com
 `--provenance` e `id-token: write`. Os dois andam JUNTOS: um sem o outro nao
