@@ -40,7 +40,7 @@ decisao, o teste dele, e as tres paginas que os acompanham, esta inclusive. E o
 unico trabalho que ainda nao esta no ar.
 
 O gate esta verde. `bun run check` roda **trinta e tres verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1382 testes em 119 arquivos**, com
+suite e sai com codigo zero; a suite tem **1383 testes em 119 arquivos**, com
 3665 chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
 (`dist/index.js` e `dist/cli.js` sao de 10:40, e o commit mais novo e de 10:01).
 
@@ -477,8 +477,8 @@ O que cada guarda mede hoje, em numero:
 | `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
 | `check:receita`          | 6 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1382 testes em 119 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1382 passam, 0 falham, 3665 `expect`; 404 sao do nativo, em 31 arquivos       |
+| `check:testes`           | 1383 testes em 119 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1383 passam, 0 falham, 3667 `expect`; 404 sao do nativo, em 31 arquivos       |
 
 Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **82 pecas e 447
 props** - o catalogo que da ao `check:assinatura` o lado nativo da comparacao.
@@ -607,7 +607,7 @@ Duas coisas, e em nenhuma delas ha codigo a escrever.
 28/08/2026: a tag deixou de ser acao de uma pessoa. O `tag.yml` roda depois de
 o `ci` fechar verde na `main`, compara cada manifesto com o mundo e cria a tag
 quando as quatro guardas passam - tag inexistente, versao inedita no npm,
-CHANGELOG aberto na secao daquela versao, e nenhum `[no-release]` na mensagem do
+CHANGELOG aberto na secao daquela versao, e nenhum `[no-release]` no ASSUNTO do
 commit. Depois de criar, ele chama o release por `workflow_dispatch`, porque tag
 empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.
 
@@ -620,8 +620,10 @@ vazio, para as doze tags que existem).
 
 Entao o proximo `ci` verde na `main` cria `v0.10.0` e `native-v0.5.0` e publica
 as duas. Nao ha comando a dar, e nao ha como dar meio comando: para segurar
-qualquer um dos dois, o caminho e a valvula - `[no-release]` na mensagem do
-commit da cabeca, que barra os DOIS pacotes, porque a mensagem e uma so.
+qualquer um dos dois, o caminho e a valvula - `[no-release]` no ASSUNTO do
+commit da cabeca, que barra os DOIS pacotes, porque a mensagem e uma so. Le-se
+so a primeira linha porque o corpo e prosa: na estreia, o commit que criou a
+automacao escreveu a marca ao explica-la e foi barrado por ela.
 Publicar 0.9.1 e 0.4.1 de novo nao da: o registro recusa com 403, e o conserto
 de versao publicada e versao nova.
 
@@ -714,7 +716,7 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e tres verificacoes mais os 1382 testes
+bun run check        # trinta e tres verificacoes mais os 1383 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
@@ -738,8 +740,8 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 177 documentos
 bun run check:pecas                                # 91 pecas
-bun run check:testes                               # 1382 testes em 119 arquivos
-bun test                                           # 1382 passam, 0 falham, 3665 expect()
+bun run check:testes                               # 1383 testes em 119 arquivos
+bun test                                           # 1383 passam, 0 falham, 3667 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
 bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 18 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas

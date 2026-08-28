@@ -42,6 +42,12 @@ export type ReleaseFacts = {
   /** O texto inteiro do CHANGELOG do pacote. */
   changelog: string;
   /** A mensagem do commit da cabeca. */
+  /**
+   * A mensagem inteira do commit da cabeca. So o ASSUNTO - a primeira linha -
+   * e lido atras da marca, porque o corpo e prosa: o commit que criou esta
+   * automacao explicava a valvula, escreveu a marca no meio do texto, e foi
+   * barrado por ela.
+   */
   message: string;
 };
 
@@ -82,11 +88,13 @@ function barred(tag: string, verdict: ReleaseVerdict, reason: string): ReleaseDe
 export function decideRelease(target: ReleaseTarget, facts: ReleaseFacts): ReleaseDecision {
   const tag = `${target.prefix}${facts.version}`;
 
-  if (facts.message.toLowerCase().includes(VETO)) {
+  const subject = facts.message.split("\n", 1)[0] ?? "";
+
+  if (subject.toLowerCase().includes(VETO)) {
     return barred(
       tag,
       "vetoed",
-      `A mensagem do commit da cabeca tem ${VETO}, entao a tag ${tag} nao nasce.` +
+      `O assunto do commit da cabeca tem ${VETO}, entao a tag ${tag} nao nasce.` +
         " Bump sem publicacao e escolha de quem comitou, e a valvula existe para isso.",
     );
   }

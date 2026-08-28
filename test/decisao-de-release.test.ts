@@ -116,6 +116,15 @@ test("um titulo de terceiro nivel nao conta como a secao do topo", () => {
   expect(topSection("# Mudancas\n\n### Corrigido: nada\n\n## 0.11.0\n")).toBe("0.11.0");
 });
 
+test(`${VETO} so no CORPO nao barra: foi assim que a automacao vetou a si mesma`, () => {
+  const message =
+    `ci: a tag nasce do gate verde\n\n` +
+    `A valvula de escape e escrever ${VETO} no assunto do commit.`;
+
+  expect(decideRelease(WEB, facts("0.11.0", { message })).release).toBe(true);
+  expect(decideRelease(NATIVE, facts("0.6.0", { message })).release).toBe(true);
+});
+
 test(`${VETO} na mensagem do commit barra o web`, () => {
   const decision = decideRelease(
     WEB,

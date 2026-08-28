@@ -10,7 +10,13 @@
  *
  * A skill ja tinha guarda desde cedo (`test/indice.test.ts`), e foi por isso
  * que ela ficou certa enquanto estes dois derraparam trinta pecas. Esta guarda
- * so estende a mesma ideia aos dois lugares que faltavam.
+ * so estende a mesma ideia aos lugares que faltavam.
+ *
+ * O terceiro lugar entrou depois, e ele desmente a frase acima: o site TAMBEM
+ * erra, num ponto so. O `apps/docs/index.html` e estatico e nao le `ENTRIES`,
+ * entao a `description` dele envelheceu ate dizer 55 com o catalogo em 91 - e
+ * como e ela que o desdobramento de link mostra, o numero errado viajava para
+ * fora do site, em cartao de conversa, sem ninguem abrir a pagina.
  *
  * A contagem sai de onde o site tira a dele: os documentos de
  * `.design-sync/docs/`, menos as partes. Parte nao e peca - `CardHeader` mora
@@ -29,6 +35,7 @@ import { findParent } from "../apps/docs/src/parts";
 
 const README = "README.md";
 const PACKAGE = "package.json";
+const INDEX = "apps/docs/index.html";
 
 const names = readdirSync(".design-sync/docs")
   .filter((file) => file.endsWith(".md"))
@@ -71,14 +78,28 @@ if (!inPackage) {
   );
 }
 
+const index = await Bun.file(INDEX).text();
+const inIndex = /content="[^"]*?(\d+) componentes/.exec(index);
+
+if (!inIndex) {
+  problems.push(
+    `${INDEX}: a meta description nao diz "<numero> componentes".\n` +
+      `    E ela que o desdobramento de link mostra, entao o numero errado sai do site.`,
+  );
+} else if (Number(inIndex[1]) !== pieces) {
+  problems.push(
+    `${INDEX}: a meta description diz ${inIndex[1]} componentes, e o catalogo tem ${pieces}.`,
+  );
+}
+
 if (problems.length) {
   console.error("Numero de pecas errado fora do site:\n");
   for (const problem of problems) console.error(`  ${problem}`);
   console.error(
     "\nO catalogo e a fonte, e ele muda toda vez que uma peca entra. Regrave os\n" +
-      "dois lugares acima, que sao os unicos escritos a mao.",
+      "lugares acima, que sao os unicos escritos a mao.",
   );
   process.exit(1);
 }
 
-console.log(`${pieces} pecas, e e o que o README e o package.json anunciam.`);
+console.log(`${pieces} pecas, e e o que o README, o package.json e a meta do site anunciam.`);

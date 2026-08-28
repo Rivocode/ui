@@ -327,9 +327,13 @@ prefixo e o que os separa -, a tag so nasce se as QUATRO passarem:
    que entra sem CHANGELOG fechado NAO publica. A ordem da casa sempre foi
    "feche o CHANGELOG antes da tag"; a diferenca e que agora ela e cobrada por
    maquina.
-4. **A mensagem do commit da cabeca nao tem `[no-release]`.** E a valvula de
+4. **O ASSUNTO do commit da cabeca nao tem `[no-release]`.** E a valvula de
    escape para bumpar sem publicar. Ela vale para os dois pacotes de uma vez,
-   porque a mensagem e uma so.
+   porque a mensagem e uma so. So a primeira linha e lida, e isso foi aprendido
+   caro: o proprio commit que criou esta automacao explicava a valvula no
+   corpo, escreveu a marca no meio da prosa, e foi barrado por ela - a
+   automacao vetou a si mesma na estreia. E a mesma forma do scanner do
+   Tailwind que gera classe a partir de nome escrito em comentario.
 
 A decisao mora numa funcao pura - `decideRelease`, em
 `scripts/decisao-de-release.ts` - que recebe a versao, as tags que existem, as
