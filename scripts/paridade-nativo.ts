@@ -1272,12 +1272,12 @@ function inWords(items: string[]) {
   return `${items.slice(0, -1).join(", ")} e ${items[items.length - 1]}`;
 }
 
-function scoreboard(pieces: string[], _native: Set<string>) {
+function scoreboard(pieces: string[], _native: Set<string>, measured: string) {
   const conta = (state: State) => pieces.filter((p) => PARITY[p]!.state === state).length;
 
   return (
     `**${pieces.length} peças no catálogo do web, medidas contra ` +
-    `${inWords(NATIVE_INDEXES.map((file) => `\`${file}\``))} em ${new Date().toISOString().slice(0, 10)}:** ` +
+    `${inWords(NATIVE_INDEXES.map((file) => `\`${file}\``))} em ${measured}:** ` +
     `${conta("traduz")} traduzem com o mesmo nome, ${conta("vira")} traduzem com outro, ` +
     `${conta("fila")} estão na fila e ${conta("nao")} não portam por decisão. ` +
     "A coluna do meio separa as duas ausências, que é a distinção que a tabela existe " +
@@ -1450,12 +1450,17 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-const sectionBody = `${scoreboard(pieces, native)}\n\n${table(pieces)}`;
+const TODAY = new Date().toISOString().slice(0, 10);
+const MEASURED = /(?<= em )\d{4}-\d{2}-\d{2}(?=:\*\*)/;
+const sectionBody = (measured: string) =>
+  `${scoreboard(pieces, native, measured)}\n\n${table(pieces)}`;
 const outdated: string[] = [];
 
 for (const guide of GUIDES) {
   const before = readFileSync(guide.file, "utf8");
-  const after = withReplacedSection(before, guide.title, sectionBody);
+  const kept = MEASURED.exec(before)?.[0];
+  if (kept && before === withReplacedSection(before, guide.title, sectionBody(kept))) continue;
+  const after = withReplacedSection(before, guide.title, sectionBody(TODAY));
   if (before === after) continue;
   if (!checking) writeFileSync(guide.file, after);
   outdated.push(guide.file);
