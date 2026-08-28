@@ -1,6 +1,6 @@
 {
   "name": "@rivocode/ui",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Design system da RivoCode: 91 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
   "keywords": [
     "base-ui",
@@ -68,7 +68,7 @@
     "test": "bun test",
     "lint": "oxlint",
     "format": "oxfmt",
-    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:comentarios && bun run check:colors && bun run check:contrast && bun run check:contrast:nativo && bun run check:native:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:readme && bun run check:classes && bun run check:grupos && bun run check:chart && bun run check:cli && bun run check:skill && bun run check:lista-skill && bun run check:native && bun run check:tema:nativo && bun run check:compartilhado && bun run check:paridade && bun run check:assinatura && bun run check:pecas && bun run check:demo && bun run check:retratos && bun run check:receita && bun run check:scripts && bun run check:piso && bun run check:testes && bun test",
+    "check": "bun run check:instalacao && bun run lint && bun run check:types && bun run check:previews && bun run check:props && bun run check:nomes && bun run check:comentarios && bun run check:colors && bun run check:contrast && bun run check:contrast:nativo && bun run check:native:contrast && bun run check:temas && bun run check:contrato && bun run check:doc && bun run check:exemplos && bun run check:readme && bun run check:classes && bun run check:grupos && bun run check:chart && bun run check:cli && bun run check:skill && bun run check:lista-skill && bun run check:native && bun run check:tema:nativo && bun run check:compartilhado && bun run check:paridade && bun run check:assinatura && bun run check:pecas && bun run check:demo && bun run check:retratos && bun run check:receita && bun run check:scripts && bun run check:piso && bun run check:testes && bun test",
     "check:colors": "bun run scripts/check-no-literal-colors.ts",
     "check:contrast": "bun run scripts/check-contrast.ts",
     "check:contrast:nativo": "bun run scripts/check-contrast-nativo.ts",
@@ -102,6 +102,7 @@
     "check:classes": "bun run scripts/check-classe-sem-regra.ts",
     "check:grupos": "bun run scripts/check-grupos-de-classe.ts",
     "check:doc": "bun run scripts/check-doc-tem-codigo.ts",
+    "check:exemplos": "bun run scripts/check-exemplo-da-doc.ts",
     "check:readme": "bun run scripts/check-cobertura-do-readme.ts",
     "check:contrato": "bun run scripts/check-contrato-documentado.ts",
     "check:chart": "bun run scripts/check-fronteira-do-chart.ts",

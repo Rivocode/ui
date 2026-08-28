@@ -1,5 +1,35 @@
 # Mudancas
 
+## 0.11.0
+
+### O `PageHeader` deixa o chamador alcancar a caixa de acoes
+
+O lado do titulo nasce `min-w-0` e encolhe; o das acoes nasce `shrink-0` e nao
+encolhe. Isso esta certo para o caso comum - botao nao deve ser espremido pelo
+titulo -, mas o que vai ali nem sempre e botao: campo de busca e barra de filtro
+sao largos, e sem poder encolher eles empurram a linha inteira para fora da
+pagina. Nenhuma classe do chamador alcancava aquela caixa.
+
+A peca ganhou `classNames` por parte - `row`, `heading`, `title`, `description`
+e `actions` -, que e a convencao da casa para exatamente isso. O padrao nao
+mudou: quem precisa de encolhimento passa
+`classNames={{ actions: "min-w-0 shrink" }}`, e o `tailwind-merge` resolve o
+conflito com o `shrink-0`.
+
+### Corrigido na doc: o exemplo de gradiente de area nao compilava
+
+A pagina do `ChartContainer` ensinava a chamar um `useAreaGradient('faturado')`
+que nunca existiu. A funcao real e `areaGradient(id, name)`, e o mesmo exemplo
+ainda esquecia o `id` obrigatorio do `<ChartAreaGradient>` - enquanto o
+paragrafo logo abaixo do bloco explicava justamente esse `id`. Quem copiava do
+site nao compilava.
+
+Varrendo as 177 paginas, era o UNICO nome inventado. O `check:exemplos` entrou
+no gate para que continue sendo zero: ele confere cada `useAlgo(` e cada
+`<ChartAlgo>` dos blocos `tsx` contra os exports dos dois pacotes. O corpo das
+paginas era a unica parte do material que nao passava por compilador nenhum - o
+`check:previews` ja compilava os previews, e o `check:skill` ja cobria a SKILL.
+
 ## 0.10.0
 
 ### Corrigido: parte de campo fora do `Field` nao derruba mais a pagina

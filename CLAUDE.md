@@ -101,14 +101,15 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 ## O gate
 
-`bun run check` roda TRINTA E TRES passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E QUATRO passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
 literal, contraste do web, contraste do mapa nativo, espelho do contraste,
-temas, contrato, doc, cobertura do README, classe sem regra, grupos de classe,
-fronteira do chart, fronteira do CLI, skill, lista da skill, tokens nativos,
-gerador de tema nativo, codigo compartilhado, paridade, assinatura nativa,
-contagem de pecas, vitrine, retratos declarados, receita de instalacao, script
-fora do gate, piso de varredura, contagem de testes, e por fim `bun test`.
+temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
+grupos de classe, fronteira do chart, fronteira do CLI, skill, lista da skill,
+tokens nativos, gerador de tema nativo, codigo compartilhado, paridade,
+assinatura nativa, contagem de pecas, vitrine, retratos declarados, receita de
+instalacao, script fora do gate, piso de varredura, contagem de testes, e por
+fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -117,6 +118,15 @@ Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 
 - `check:doc` - peca sem pagina e pagina sem peca, nos dois sentidos.
+- `check:exemplos` - nome citado em bloco `tsx` de `.design-sync/docs/` tem que
+  existir nos pacotes. Nasceu porque a pagina do `ChartContainer` ensinava a
+  chamar um `useAreaGradient('faturado')` que nunca existiu - a funcao real e
+  `areaGradient(id, name)` -, e o paragrafo logo abaixo do bloco explicava o
+  `id` que o proprio bloco esquecia. O corpo das paginas e o que a pessoa
+  copia, e era a unica parte do material que nao passava por compilador nenhum:
+  o `check:previews` compila os previews, e o `check:skill` cobre a SKILL. Na
+  arvore inteira era o UNICO nome inventado em 177 paginas. A lista `FOREIGN`
+  so nomeia hook de biblioteca de terceiro, e nao abriga excecao nossa.
 - `check:readme` - toda peca do catalogo tem que ser citada no `README.md`, ou
   ter linha em `OUT_OF_README` com o motivo, e a frase que abre o catalogo tem
   que continuar dizendo que a tabela NAO e o indice. Nasceu porque o digito

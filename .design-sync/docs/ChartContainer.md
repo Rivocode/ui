@@ -92,13 +92,15 @@ frente.
 
 ```tsx
 function Faturamento() {
-  const faturado = useAreaGradient('faturado')
-
   return (
     <ChartContainer config={config} className="h-64">
       <AreaChart data={meses}>
-        <ChartAreaGradient series={['faturado']} />
-        <Area dataKey="faturado" stroke="var(--color-faturado)" fill={faturado} />
+        <ChartAreaGradient id="faturamento" series={['faturado']} />
+        <Area
+          dataKey="faturado"
+          stroke="var(--color-faturado)"
+          fill={areaGradient('faturamento', 'faturado')}
+        />
       </AreaChart>
     </ChartContainer>
   )

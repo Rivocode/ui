@@ -13291,6 +13291,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"description\" | \"heading\" | \"row\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `row`, `heading`, `title`, `description`, `actions`."
+      },
+      {
         "name": "description",
         "type": "ReactNode",
         "required": false,

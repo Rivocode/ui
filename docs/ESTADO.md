@@ -39,8 +39,8 @@ A arvore **nao** esta limpa, e o que sobra nela e uma coisa so: `git status
 decisao, o teste dele, e as tres paginas que os acompanham, esta inclusive. E o
 unico trabalho que ainda nao esta no ar.
 
-O gate esta verde. `bun run check` roda **trinta e tres verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1383 testes em 119 arquivos**, com
+O gate esta verde. `bun run check` roda **trinta e quatro verificacoes** mais a
+suite e sai com codigo zero; a suite tem **1384 testes em 119 arquivos**, com
 3665 chamadas de `expect`. O `bun run build` rodou depois do ultimo commit
 (`dist/index.js` e `dist/cli.js` sao de 10:40, e o commit mais novo e de 10:01).
 
@@ -477,8 +477,8 @@ O que cada guarda mede hoje, em numero:
 | `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
 | `check:receita`          | 6 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1383 testes em 119 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1383 passam, 0 falham, 3667 `expect`; 404 sao do nativo, em 31 arquivos       |
+| `check:testes`           | 1384 testes em 119 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1384 passam, 0 falham, 3671 `expect`; 404 sao do nativo, em 31 arquivos       |
 
 Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **82 pecas e 447
 props** - o catalogo que da ao `check:assinatura` o lado nativo da comparacao.
@@ -716,7 +716,7 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e tres verificacoes mais os 1383 testes
+bun run check        # trinta e quatro verificacoes mais os 1384 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
@@ -740,8 +740,8 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ```sh
 ls .design-sync/docs/*.md | wc -l                  # 177 documentos
 bun run check:pecas                                # 91 pecas
-bun run check:testes                               # 1383 testes em 119 arquivos
-bun test                                           # 1383 passam, 0 falham, 3667 expect()
+bun run check:testes                               # 1384 testes em 119 arquivos
+bun test                                           # 1384 passam, 0 falham, 3671 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
 bun run check:paridade                             # 91 linhas: 69 traduz, 4 vira, 18 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas

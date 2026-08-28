@@ -3,6 +3,7 @@
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import type { Slots } from "../lib/slots";
 
 export type PageHeaderProps = Omit<ComponentProps<"header">, "title"> & {
   /** O nome da tela. Sai num `<h1>` por padrao, porque cabecalho de pagina e o topo dela. */
@@ -22,6 +23,15 @@ export type PageHeaderProps = Omit<ComponentProps<"header">, "title"> & {
   breadcrumb?: ReactNode;
   /** O que da para fazer daqui: botao de criar, exportar, filtrar. */
   actions?: ReactNode;
+  /**
+   * Classe por parte: `row`, `heading`, `title`, `description`, `actions`.
+   *
+   * A caixa de `actions` nasce `shrink-0`, para o botao nao ser espremido pelo
+   * titulo. Quando o que vai ali e largo - um campo de busca, uma barra de
+   * filtros -, e por aqui que ela ganha `min-w-0 shrink`, senao ela empurra a
+   * linha inteira para fora da pagina.
+   */
+  classNames?: Slots<"row" | "heading" | "title" | "description" | "actions">;
 };
 
 export function PageHeader({
@@ -31,21 +41,37 @@ export function PageHeader({
   breadcrumb,
   actions,
   className,
+  classNames,
   ...props
 }: PageHeaderProps) {
   return (
     <header {...props} className={cn("flex flex-col gap-3", className)}>
       {breadcrumb}
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <Title className="font-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg">
+      <div
+        className={cn("flex flex-wrap items-start justify-between gap-3", classNames?.row)}
+      >
+        <div className={cn("min-w-0", classNames?.heading)}>
+          <Title
+            className={cn(
+              "font-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+              classNames?.title,
+            )}
+          >
             {title}
           </Title>
-          {description && <p className="mt-1 text-sm text-fg-muted">{description}</p>}
+          {description && (
+            <p className={cn("mt-1 text-sm text-fg-muted", classNames?.description)}>
+              {description}
+            </p>
+          )}
         </div>
 
-        {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+        {actions && (
+          <div className={cn("flex shrink-0 items-center gap-2", classNames?.actions)}>
+            {actions}
+          </div>
+        )}
       </div>
     </header>
   );
