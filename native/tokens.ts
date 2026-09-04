@@ -61,7 +61,7 @@ export const tokens = {
     "item-y": 6,
     "box": 18,
     "day": 36,
-    "radius-sm": 6,
+    "radius-sm": 4,
     "radius-md": 8,
     "radius-lg": 12,
     "radius-xl": 16,

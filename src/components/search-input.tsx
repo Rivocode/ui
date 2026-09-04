@@ -65,7 +65,7 @@ export function SearchInput({
           "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-          "disabled:cursor-not-allowed disabled:opacity-60",
+          "disabled:cursor-not-allowed disabled:bg-surface-raised disabled:text-fg-disabled",
           "[&::-webkit-search-cancel-button]:hidden",
           className,
         )}

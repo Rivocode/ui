@@ -36,7 +36,7 @@ export function TableFooter({ className, ...props }: ComponentPropsWithoutRef<"t
   return (
     <tfoot
       {...props}
-      className={cn("border-t border-border bg-surface font-medium text-fg", className)}
+      className={cn("border-t border-border font-medium text-fg", className)}
     />
   );
 }
@@ -78,7 +78,7 @@ export function TableRow({ className, selected, labels, children, ...props }: Ta
       {...props}
       className={cn(
         "border-b border-border transition-colors duration-[var(--rc-duration-fast)]",
-        "hover:bg-surface-raised",
+        "hover:bg-accent-subtle",
         selected && "bg-selected shadow-[inset_2px_0_0_var(--rc-accent)]",
         className,
       )}

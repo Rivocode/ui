@@ -475,6 +475,7 @@ O que cada guarda mede hoje, em numero:
 | `check:tema:nativo`      | 8 sementes, 37 derivados, 45 no `@theme`                                      |
 | `check:classes`          | 196 arquivos, sem lista de excecao                                            |
 | `check:colors`           | 98 arquivos sem cor literal fora de `src/tokens/`                             |
+| `check:opacidade`        | 4 usos de opacidade parcial em `src/`, todos declarados, e 2 medidas de alfa  |
 | `check:grupos`           | 3 seletores de grupo, todos com quem declare                                  |
 | `check:skill`            | 56 props citadas nos exemplos da skill, todas existentes                      |
 | `check:lista-skill`      | 9 arquivos de referencia, todos no indice E no laco `curl` do site            |

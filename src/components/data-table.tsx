@@ -375,7 +375,7 @@ export function DataTable<Row>({
         ],
       )}
     >
-      <TableRow aria-rowindex={virtualized ? 1 : undefined}>
+      <TableRow aria-rowindex={virtualized ? 1 : undefined} className="hover:bg-transparent">
         {selectable && (
           <TableHead className={cn("w-10", classNames?.head)}>
             <Checkbox

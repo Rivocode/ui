@@ -88,7 +88,7 @@ export function TagsInput({
         "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring",
         "has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-bg",
         "has-[[data-invalid]]:border-danger",
-        disabled && "cursor-not-allowed opacity-60",
+        disabled && "cursor-not-allowed border-border-disabled bg-surface-raised text-fg-disabled",
         classNames?.field,
         className,
       )}

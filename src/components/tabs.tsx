@@ -59,7 +59,7 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         "data-[active]:text-accent-text",
         "data-[disabled]:cursor-not-allowed data-[disabled]:text-fg-disabled",
-        "group-data-[variante=segmented]/abas:h-7",
+        "group-data-[variante=segmented]/abas:h-[var(--rc-control-sm)]",
         "group-data-[variante=segmented]/abas:rounded-sm",
         "group-data-[variante=segmented]/abas:px-2.5",
         "group-data-[variante=segmented]/abas:text-sm",

@@ -296,9 +296,9 @@ export function SidebarGroup({ className, label, children, ...props }: SidebarGr
   const { collapsed } = useSidebar();
 
   return (
-    <div {...props} className={cn("flex flex-col gap-1", className)}>
+    <div {...props} className={cn("flex flex-col gap-0.5", className)}>
       {label && !collapsed && (
-        <p className="px-2 py-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase">
+        <p className="px-2 py-1 text-xs font-medium tracking-[0.04em] text-fg-subtle uppercase">
           {label}
         </p>
       )}

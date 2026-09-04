@@ -65,6 +65,19 @@
   --text-xl: var(--rc-text-xl);
   --text-2xl: var(--rc-text-2xl);
   --text-3xl: var(--rc-text-3xl);
+
+  --text-xs--line-height: var(--rc-leading-normal);
+  --text-sm--line-height: var(--rc-leading-normal);
+  --text-base--line-height: var(--rc-leading-normal);
+  --text-md--line-height: var(--rc-leading-normal);
+  --text-lg--line-height: var(--rc-leading-normal);
+  --text-xl--line-height: var(--rc-leading-tight);
+  --text-2xl--line-height: var(--rc-leading-tight);
+  --text-3xl--line-height: var(--rc-leading-tight);
+
+  --leading-tight: var(--rc-leading-tight);
+  --leading-normal: var(--rc-leading-normal);
+  --leading-relaxed: var(--rc-leading-relaxed);
   --text-display: var(--rc-text-display);
   --text-hero: var(--rc-text-hero);
 

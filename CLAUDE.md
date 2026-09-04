@@ -101,9 +101,9 @@ nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
 
 ## O gate
 
-`bun run check` roda TRINTA E QUATRO passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E CINCO passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
-literal, contraste do web, contraste do mapa nativo, espelho do contraste,
+literal, alfa sobre cor, contraste do web, contraste do mapa nativo, espelho do contraste,
 temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
 grupos de classe, fronteira do chart, fronteira do CLI, skill, lista da skill,
 tokens nativos, gerador de tema nativo, codigo compartilhado, paridade,
@@ -117,6 +117,17 @@ O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
 o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 
+- `check:opacidade` - `opacity-<n>` em `src/` tem que estar em `DECLARADAS`, com
+  motivo, e a linha que declara um par de cor tem a conta MEDIDA nos dois temas
+  com o alfa aplicado. Nasceu porque o `check:contrast` mede o par PLENO e nao
+  ve alfa: o xis do `Alert` pintava `opacity-70` sobre `{tom}-subtle` e media
+  2,77 no success e 2,66 no warning, contra os 3 da 1.4.11, e o
+  `hover:opacity-90` do Button destrutivo media 4,45 contra os 4,5 de AA. Cinco
+  outras pecas desabilitavam por `opacity-60` em vez de `text-fg-disabled`. O
+  repositorio ja sabia disso e a regra tinha virado teste de TRES pecas
+  (`test/contrato-das-irmas.test.tsx`), enquanto as outras sete nunca foram
+  olhadas. So o web: em `native/src` o desabilitado E `opacity-50` na camada
+  inteira, decisao escrita em `WITHOUT_PAIR`. A lista so encolhe.
 - `check:doc` - peca sem pagina e pagina sem peca, nos dois sentidos.
 - `check:exemplos` - nome citado em bloco `tsx` de `.design-sync/docs/` tem que
   existir nos pacotes. Nasceu porque a pagina do `ChartContainer` ensinava a

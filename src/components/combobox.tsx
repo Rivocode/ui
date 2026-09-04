@@ -105,7 +105,7 @@ export function ComboboxInput({
           <BaseCombobox.Clear
             aria-label="Limpar escolha"
             className={cn(
-              "inline-flex size-7 items-center justify-center rounded-md text-fg-subtle",
+              "inline-flex size-7 items-center justify-center rounded-sm text-fg-subtle",
               "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
               "hover:bg-accent-subtle hover:text-fg",
               "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -118,7 +118,7 @@ export function ComboboxInput({
         <BaseCombobox.Trigger
           aria-label="Abrir lista"
           className={cn(
-            "inline-flex size-7 items-center justify-center rounded-md text-fg-subtle",
+            "inline-flex size-7 items-center justify-center rounded-sm text-fg-subtle",
             "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
             "hover:bg-accent-subtle hover:text-fg",
             "outline-none focus-visible:ring-2 focus-visible:ring-ring",

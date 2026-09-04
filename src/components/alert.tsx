@@ -85,8 +85,8 @@ export function Alert({
           onClick={onDismiss}
           className={cn(
             "-my-1 -mr-1 shrink-0 rounded-sm p-1 outline-none",
-            "transition-opacity duration-[var(--rc-duration-fast)]",
-            "opacity-70 hover:opacity-100",
+            "transition-colors duration-[var(--rc-duration-fast)]",
+            "text-fg-muted hover:text-fg",
             "focus-visible:ring-2 focus-visible:ring-ring",
           )}
         >

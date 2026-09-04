@@ -43,7 +43,7 @@ export function AccordionItem({ className, title, children, ...props }: Accordio
 
       <BaseAccordion.Panel
         className={cn(
-          "h-[var(--accordion-panel-height)] overflow-hidden text-base text-fg-muted",
+          "h-[var(--accordion-panel-height)] overflow-hidden text-base text-fg",
           "transition-[height] duration-[var(--rc-duration-base)] ease-rc",
           "data-[starting-style]:h-0 data-[ending-style]:h-0",
         )}

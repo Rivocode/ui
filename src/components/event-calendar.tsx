@@ -260,7 +260,7 @@ function EventItem({
   ) : (
     <>
       <span className="block truncate font-medium">{segment.event.title}</span>
-      {showTime && <span className="block truncate opacity-80">{time}</span>}
+      {showTime && <span className="block truncate">{time}</span>}
     </>
   );
 

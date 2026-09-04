@@ -27,7 +27,7 @@ export const buttonVariants = cva(
           "border-2 border-border-strong bg-transparent text-fg",
           "hover:border-line-hover hover:bg-accent-subtle",
         ),
-        destructive: "bg-danger text-danger-fg hover:opacity-90",
+        destructive: "bg-danger text-danger-fg",
       },
       size: {
         sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",

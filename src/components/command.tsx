@@ -233,7 +233,7 @@ export function Command({
             {matches.map((group, index) => (
               <div key={group.label ?? index} role="group" aria-label={group.label}>
                 {group.label && (
-                  <p className="px-2.5 pt-2 pb-1 font-mono text-xs tracking-[0.04em] text-fg-subtle uppercase">
+                  <p className="px-2.5 pt-2 pb-1 text-xs font-medium tracking-[0.04em] text-fg-subtle uppercase">
                     {group.label}
                   </p>
                 )}

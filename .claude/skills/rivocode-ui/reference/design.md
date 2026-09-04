@@ -59,10 +59,14 @@ Três, e só três. A quarta variação vira ruído.
 | Token | Papel |
 |---|---|
 | `text-fg` | o que a pessoa veio ler: valor, título, resposta |
-| `text-fg-muted` | apoio: descrição, rótulo de campo, texto de linha |
+| `text-fg-muted` | apoio: descrição, texto de linha, legenda de apoio |
 | `text-fg-subtle` | metadado: legenda de eixo, cabeçalho de grupo, dica de ajuda |
 
 `text-fg-disabled` não é um quarto tom, é um estado.
+
+Rótulo de campo é a exceção, e ela é deliberada: `FieldLabel`, `Slider`,
+`Progress` e `Meter` escrevem em `text-fg` com `font-medium`. O rótulo é o que
+nomeia o controle, e nomear não é apoiar.
 
 Hierarquia se faz primeiro por **tamanho e peso**, depois por tom. Um painel
 onde tudo é `text-fg` cansa; um onde tudo é `text-fg-muted` não tem foco.

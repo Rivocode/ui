@@ -65,7 +65,7 @@ export function FilterChip({
         badgeVariants({ size }),
         "max-w-full gap-1",
         onRemove && (size === "sm" ? "pe-1" : "pe-1.5"),
-        disabled && "opacity-60",
+        disabled && "border-border-disabled text-fg-disabled",
         className,
       )}
     >

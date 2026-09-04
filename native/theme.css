@@ -50,7 +50,7 @@
   --color-chart-6: light-dark(#6d3fc4, #b78cff);
   --color-chart-7: light-dark(#0e7490, #4fd8e8);
   --color-chart-8: light-dark(#b32a72, #ff8ac4);
-  --radius-sm: 6px;
+  --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;

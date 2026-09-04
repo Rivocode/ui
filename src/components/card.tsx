@@ -20,7 +20,7 @@ export function Card({ className, elevation, ...props }: CardProps) {
 }
 
 export function CardHeader({ className, ...props }: ComponentPropsWithoutRef<"div">) {
-  return <div {...props} className={cn("flex flex-col gap-1 p-5 pb-3", className)} />;
+  return <div {...props} className={cn("flex flex-col gap-1 p-[var(--rc-pad-panel)] pb-3", className)} />;
 }
 
 export function CardTitle({ className, ...props }: ComponentPropsWithoutRef<"h3">) {
@@ -40,14 +40,14 @@ export function CardDescription({ className, ...props }: ComponentPropsWithoutRe
 }
 
 export function CardContent({ className, ...props }: ComponentPropsWithoutRef<"div">) {
-  return <div {...props} className={cn("px-5 py-3 text-base text-fg", className)} />;
+  return <div {...props} className={cn("px-[var(--rc-pad-panel)] py-3 text-base text-fg", className)} />;
 }
 
 export function CardFooter({ className, ...props }: ComponentPropsWithoutRef<"div">) {
   return (
     <div
       {...props}
-      className={cn("flex items-center gap-3 border-t border-border p-5 pt-3", className)}
+      className={cn("flex items-center gap-3 border-t border-border p-[var(--rc-pad-panel)] pt-3", className)}
     />
   );
 }
