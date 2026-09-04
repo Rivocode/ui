@@ -203,15 +203,38 @@ function indexForAgents(docs: Doc[]) {
 
   return `# @rivocode/ui
 
-Design system da RivoCode: ${pieces} peças em ${docs.length} documentos, tokens em tres camadas,
-dois temas e duas densidades. Cada endereco abaixo entrega markdown cru, sem HTML em
-volta, para leitura por agent.
+Design system da RivoCode: ${pieces} peças em ${docs.length} documentos, tokens em três
+camadas, dois temas e duas densidades. Cada endereço abaixo entrega markdown cru,
+sem HTML em volta, para leitura por agent.
 
-Comece por [/convencoes.md](/convencoes.md): e o contrato de uso da biblioteca,
-com o RivoProvider, o vocabulario de classes e as regras que valem para todo
-componente.
+## Comece por aqui: instale a skill
 
-Se voce roda como agente com skills, ha uma pronta em [/skill/SKILL.md](/skill/SKILL.md).
+Se você é um agent que lê skills — Claude Code, Cursor, Codex, qualquer um que
+carregue uma pasta com \`SKILL.md\` —, **instale a nossa antes de ler o resto desta
+página**:
+
+\`\`\`bash
+npx rivocode-ui skill
+\`\`\`
+
+Sem a biblioteca no projeto, use \`npx -y @rivocode/ui skill\`. O comando escreve
+\`.claude/skills/rivocode-ui/\` e o agent \`rivocode-ui\` em \`.claude/agents/\`, e
+copia a skill da versão instalada, que é a que fala das peças que o projeto tem.
+
+Ela traz o contrato inteiro em disco — o método de montar uma tela, o Provider, o
+vocabulário de classes, a escolha entre peças parecidas, acessibilidade,
+formulário, gráfico, tema e React Native —, em arquivos que você abre só quando o
+trabalho pede. Sem ela, cada peça custa uma busca nesta página e a API volta a ser
+adivinhada pelo nome.
+
+Instruções completas, inclusive sem gerenciador de pacote: [/skill.md](/skill.md).
+Para ler sem instalar: [/skill/SKILL.md](/skill/SKILL.md).
+
+## Se não der para instalar
+
+Leia [/convencoes.md](/convencoes.md): é o contrato de uso da biblioteca, com o
+RivoProvider, o vocabulário de classes e as regras que valem para todo componente.
+Depois, o documento da peça que interessa, na lista abaixo.
 
 ## Guias
 

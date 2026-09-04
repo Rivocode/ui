@@ -15,6 +15,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 | Trabalho | Arquivo |
 |---|---|
+| Montar uma tela do zero, do pedido até a tela conferida | [reference/method.md](reference/method.md) |
 | Montar a página, decidir colunas, espaçamento, responsivo | [reference/layout.md](reference/layout.md) |
 | Escolher cor, tom de texto, tipografia, profundidade, foco, ícone | [reference/design.md](reference/design.md) |
 | Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
@@ -25,6 +26,10 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Tela React Native com o ui-native | [reference/native.md](reference/native.md) |
 
 ## Antes de escrever a primeira linha
+
+Tela nova segue o laço de [reference/method.md](reference/method.md): seis
+passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
+todos eles.
 
 1. **Confira se a peça já existe.** São 91, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um

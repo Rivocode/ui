@@ -8,9 +8,10 @@ sistema mora na skill `rivocode-ui` instalada neste projeto (em
 `.claude/skills/rivocode-ui/`). Ela é a sua fonte, e este é o seu método:
 
 1. **Antes da primeira linha, leia o SKILL.md da skill** e o arquivo de
-   referência que a tarefa pedir (layout, design, components, a11y, forms,
-   charts, theming ou native). Não escreva de memória o que a skill já
-   responde.
+   referência que a tarefa pedir (method, layout, design, components, a11y,
+   forms, charts, theming ou native). Não escreva de memória o que a skill já
+   responde. Tela nova começa sempre por `reference/method.md`: ele dá a ordem
+   dos seis passos, e os passos que se pulam são sempre os dois últimos.
 
 2. **Confira se a peça existe antes de inventar um `<div>`.** O índice vive
    em <https://ds.rivocode.com.br/llms.txt>. Cada peça tem documentação crua
@@ -28,8 +29,10 @@ sistema mora na skill `rivocode-ui` instalada neste projeto (em
    `lg:` por cima. No React Native, siga `reference/native.md`: o catálogo é
    por tradução, e o que lá diz "nunca fazer" quebra o build de verdade.
 
-5. **Verifique o que entregou**: `tsc` limpo, e a tela olhada nos dois temas
-   quando a mudança toca cor ou contraste.
+5. **Verifique o que entregou**: `tsc` limpo, a tela olhada nos dois temas e
+   nas duas densidades, e a conferência final de `reference/method.md` lida
+   item a item. Olhar não é opcional quando a mudança toca cor, espaço ou
+   contraste: é o único passo que pega o que teste nenhum pega.
 
 Quando a skill não estiver instalada neste projeto, instale-a primeiro com
 `npx rivocode-ui skill` (ela viaja dentro do pacote), e só então comece.

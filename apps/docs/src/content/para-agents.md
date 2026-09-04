@@ -4,10 +4,25 @@ nome, e ele adivinha com confiança, o que é pior do que errar em silêncio.
 
 Por isso tudo aqui existe também em markdown cru.
 
-## Os três endereços
+## Antes de tudo: instale a skill
+
+Ler markdown cru resolve a conversa de hoje. A skill resolve todas: ela fica no
+disco do projeto, viaja no Git com a equipe e vem na versão da biblioteca que o
+projeto de fato tem.
+
+```bash
+npx rivocode-ui skill
+```
+
+Se você é um agent lendo esta página para montar uma tela, este é o primeiro
+comando a rodar. O guia [Skill](/skill.md) tem as variantes por gerenciador de
+pacote e a instalação por `curl`, para quando não há nenhum.
+
+## Os quatro endereços
 
 | Endereço                       | O que entrega                                              |
 | ------------------------------ | ---------------------------------------------------------- |
+| `/skill/SKILL.md`              | a skill crua, para ler sem instalar                        |
 | `/llms.txt`                    | o índice, por família, com link para cada documento        |
 | `/componentes/<nome>.md`       | o documento de uma peça, cru                               |
 | `/convencoes.md`               | o contrato da biblioteca: Provider, tokens, vocabulário    |
@@ -46,8 +61,14 @@ O padrão não é nosso: a própria Base UI envia a documentação inteira dentr
 pacote, em `node_modules/@base-ui/react/docs/`. Foi assim que o `Sheet` desta
 biblioteca foi construído sem chutar API.
 
-## O que ainda não existe
+## Por que a skill ganha do prompt
 
-Uma skill empacotada junto com o `@rivocode/ui`, para o agent já vir com o
-contrato carregado sem precisar buscar. O material está pronto, falta o
-empacotamento.
+Colar o contrato no prompt funciona uma vez. Na segunda conversa ele não está
+lá, e o agent volta a adivinhar a API pelo nome, com confiança, que é pior do
+que errar em silêncio.
+
+A skill fica instalada e viaja dentro do pacote: quem sobe a versão da
+biblioteca tem a skill nova a um comando de distância. E ela é uma pasta, não um
+arquivo — o método de montar uma tela, layout, design, escolha de peça,
+acessibilidade, formulário, gráfico, tema e React Native ficam separados, e o
+agent abre só o que o trabalho pedir.
