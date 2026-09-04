@@ -477,8 +477,8 @@ O que cada guarda mede hoje, em numero:
 | `check:colors`           | 98 arquivos sem cor literal fora de `src/tokens/`                             |
 | `check:opacidade`        | 4 usos de opacidade parcial em `src/`, todos declarados, e 2 medidas de alfa  |
 | `check:grupos`           | 3 seletores de grupo, todos com quem declare                                  |
-| `check:skill`            | 56 props citadas nos exemplos da skill, todas existentes                      |
-| `check:lista-skill`      | 9 arquivos de referencia, todos no indice E no laco `curl` do site            |
+| `check:skill`            | 68 props citadas nos exemplos da skill, todas existentes                      |
+| `check:lista-skill`      | 11 arquivos de referencia, todos no indice E no laco `curl` do site           |
 | `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
 | `check:demo`             | 88 de 91 pecas na vitrine, em 16 paginas                                      |
 | `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
@@ -756,7 +756,7 @@ comando. Para ver a decisao antes, sem criar tag nenhuma:
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
 `ds.rivocode.com.br/convencoes.md`. A skill que um agente le esta em
-`.claude/skills/rivocode-ui/`, com nove arquivos de referencia, e vai dentro do
+`.claude/skills/rivocode-ui/`, com onze arquivos de referencia, e vai dentro do
 pacote publicado (`skill/`, gerado por `bun run build:skill`). As notas do sync
 com o claude.ai/design estao em `.design-sync/NOTES.md`.
 

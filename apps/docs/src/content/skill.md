@@ -2,9 +2,10 @@ Se você programa com um agente ao lado, Claude Code, Cursor, ou qualquer um que
 leia skills, dá para ensiná-lo a biblioteca inteira de uma vez.
 
 A skill é uma pasta: um `SKILL.md` que o agente lê sempre, e os arquivos de
-`reference/` que ele abre só quando o trabalho pede. O método, layout, design,
-escolha de peça, acessibilidade, formulário, gráfico, tema e React Native ficam
-separados justamente para não ocupar contexto enquanto não são o assunto.
+`reference/` que ele abre só quando o trabalho pede. O método, o fluxo, o texto,
+layout, design, escolha de peça, acessibilidade, formulário, gráfico, tema e
+React Native ficam separados justamente para não ocupar contexto enquanto não
+são o assunto.
 
 ## Instalar
 
@@ -46,7 +47,7 @@ O site serve a skill crua, sempre na versão mais nova:
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
   curl -fsSL https://ds.rivocode.com.br/skill/SKILL.md -o "$dir/SKILL.md" && \
-  for f in method layout design components a11y forms charts theming native; do \
+  for f in method fluxo texto layout design components a11y forms charts theming native; do \
     curl -fsSL "https://ds.rivocode.com.br/skill/reference/$f.md" \
       -o "$dir/reference/$f.md"; \
   done

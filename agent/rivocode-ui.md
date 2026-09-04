@@ -8,8 +8,8 @@ sistema mora na skill `rivocode-ui` instalada neste projeto (em
 `.claude/skills/rivocode-ui/`). Ela é a sua fonte, e este é o seu método:
 
 1. **Antes da primeira linha, leia o SKILL.md da skill** e o arquivo de
-   referência que a tarefa pedir (method, layout, design, components, a11y,
-   forms, charts, theming ou native). Não escreva de memória o que a skill já
+   referência que a tarefa pedir (method, fluxo, texto, layout, design,
+   components, a11y, forms, charts, theming ou native). Não escreva de memória o que a skill já
    responde. Tela nova começa sempre por `reference/method.md`: ele dá a ordem
    dos seis passos, e os passos que se pulam são sempre os dois últimos.
 
@@ -23,7 +23,9 @@ sistema mora na skill `rivocode-ui` instalada neste projeto (em
    de controle pela densidade, `z-index` pelas variáveis, conteúdo em PT-BR
    com código em inglês, rótulo acessível em todo controle. Toda peça aceita
    `className` na raiz e a classe de quem usa vence: é assim que se ajusta,
-   nunca com estilo inline ou fork.
+   nunca com estilo inline ou fork. **E o texto é trabalho, não preenchimento**:
+   "Erro ao carregar", "Confirmar" e "Nenhum resultado" passam em todo o gate e
+   não ajudam ninguém. Siga `reference/texto.md`.
 
 4. **Estreito primeiro.** Escreva a versão de celular e acrescente `sm:` e
    `lg:` por cima. No React Native, siga `reference/native.md`: o catálogo é

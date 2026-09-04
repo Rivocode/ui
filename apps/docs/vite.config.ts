@@ -221,10 +221,10 @@ Sem a biblioteca no projeto, use \`npx -y @rivocode/ui skill\`. O comando escrev
 \`.claude/skills/rivocode-ui/\` e o agent \`rivocode-ui\` em \`.claude/agents/\`, e
 copia a skill da versão instalada, que é a que fala das peças que o projeto tem.
 
-Ela traz o contrato inteiro em disco — o método de montar uma tela, o Provider, o
-vocabulário de classes, a escolha entre peças parecidas, acessibilidade,
-formulário, gráfico, tema e React Native —, em arquivos que você abre só quando o
-trabalho pede. Sem ela, cada peça custa uma busca nesta página e a API volta a ser
+Ela traz o contrato inteiro em disco — o método de montar uma tela, a forma da
+tarefa, o texto da interface, o Provider, o vocabulário de classes, a escolha
+entre peças parecidas, acessibilidade, formulário, gráfico, tema e React Native
+—, em arquivos que você abre só quando o trabalho pede. Sem ela, cada peça custa uma busca nesta página e a API volta a ser
 adivinhada pelo nome.
 
 Instruções completas, inclusive sem gerenciador de pacote: [/skill.md](/skill.md).

@@ -16,6 +16,8 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Trabalho | Arquivo |
 |---|---|
 | Montar uma tela do zero, do pedido até a tela conferida | [reference/method.md](reference/method.md) |
+| Decidir o fluxo: uma tela ou várias, confirmar ou desfazer, erro | [reference/fluxo.md](reference/fluxo.md) |
+| Escrever o texto: rótulo, botão, mensagem de erro, vazio | [reference/texto.md](reference/texto.md) |
 | Montar a página, decidir colunas, espaçamento, responsivo | [reference/layout.md](reference/layout.md) |
 | Escolher cor, tom de texto, tipografia, profundidade, foco, ícone | [reference/design.md](reference/design.md) |
 | Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
@@ -51,6 +53,11 @@ todos eles.
    `DataTable` e o `ChartContainer` recebem os quatro por prop, e entregar só
    o caminho feliz é entregar metade da tela.
    [reference/components.md](reference/components.md) tem a ordem certa.
+
+5. **Escreva o texto, não o preencha.** "Erro ao carregar", "Confirmar" e
+   "Nenhum resultado" passam no `tsc`, no contraste e nos testes, e não ajudam
+   ninguém. [reference/texto.md](reference/texto.md) tem a forma das três
+   frases que toda tela escreve.
 
 ## O Provider, uma vez, na raiz
 

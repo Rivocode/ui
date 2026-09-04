@@ -69,6 +69,6 @@ que errar em silêncio.
 
 A skill fica instalada e viaja dentro do pacote: quem sobe a versão da
 biblioteca tem a skill nova a um comando de distância. E ela é uma pasta, não um
-arquivo — o método de montar uma tela, layout, design, escolha de peça,
-acessibilidade, formulário, gráfico, tema e React Native ficam separados, e o
-agent abre só o que o trabalho pedir.
+arquivo — o método de montar uma tela, a forma da tarefa, o texto da interface,
+layout, design, escolha de peça, acessibilidade, formulário, gráfico, tema e
+React Native ficam separados, e o agent abre só o que o trabalho pedir.
