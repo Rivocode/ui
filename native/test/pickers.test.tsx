@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, mock, setSystemTime, test } from "bun:test";
 
 import {
   Calendar,
@@ -232,6 +232,9 @@ describe("Menu", () => {
 });
 
 describe("DateRangePicker", () => {
+  beforeAll(() => setSystemTime(new Date("2026-08-15T12:00:00")));
+  afterAll(() => setSystemTime());
+
   const open = (screen: ReturnType<typeof render>) =>
     act(() => byLabel(screen, "Período")[0].props.onPress());
 
