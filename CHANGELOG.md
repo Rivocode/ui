@@ -36,6 +36,76 @@ A pagina "Para agents" fechava dizendo que a skill "ainda nao existe, falta o
 empacotamento". Ela viaja dentro do pacote desde que o `build:skill` existe, e a
 pagina que ensina o agente a ler o site era a ultima a saber.
 
+### Corrigido: tres pares de cor reprovavam por baixo do `check:contrast`
+
+A guarda mede o par PLENO e nao ve `opacity-*`. Entao a conta aprovava
+`danger-fg` sobre `danger` e a peca pintava 90% dele. Tres defeitos viviam nesse
+ponto cego, todos no tema claro:
+
+- o xis de fechar do `Alert`, em `opacity-70` sobre `{tom}-subtle`, media
+  **2,77** no success e **2,66** no warning, contra os 3 da WCAG 1.4.11. Passa a
+  `text-fg-muted hover:text-fg`, que mede 5,07 a 5,20 nos quatro tons;
+- o `hover:opacity-90` do Button destrutivo media **4,45**, e AA pede 4,5. Era o
+  unico variant cujo hover nao era token, e o hover sai. Devolve-lo direito pede
+  um `--rc-danger-hover`, que seria papel obrigatorio novo e quebraria todo tema
+  de cliente na atualizacao - fica como decisao, e nao como conserto de pressa;
+- `SearchInput`, `InputGroup`, `FilterBar`, `TagsInput` e o horario do
+  `EventCalendar` desciam a opacidade em vez de trocar o token. Passam a
+  `text-fg-disabled` com `bg-surface-raised` e `border-border-disabled`, que e o
+  que `Checkbox`, `Radio` e `Switch` ja faziam.
+
+O hover da linha da `Table` era `hover:bg-surface-raised`, e no tema claro
+`surface` e `surface-raised` sao os dois a mesma cor: branco sobre branco. Vira
+`bg-accent-subtle`, e a linha de cabecalho do `DataTable` recebe
+`hover:bg-transparent`, porque `fg-subtle` reprova sobre esse fundo.
+
+### `check:opacidade`: o alfa sobre cor passa a ser medido
+
+Trigesimo quinto passo do gate. Toda ocorrencia de `opacity-<1..99>` em `src/`
+tem que estar declarada com motivo, e a linha que declara um par de cor tem a
+conta MEDIDA nos dois temas com o alfa aplicado. Cobra os dois sentidos, e a
+lista so encolhe.
+
+So o web: em `native/src` o desabilitado E `opacity-50` na camada inteira, e isso
+ja estava decidido e escrito em `WITHOUT_PAIR`. O repositorio tambem ja sabia do
+problema - `test/contrato-das-irmas.test.tsx` cobra "nenhum dos tres desabilita
+por opacidade" e explica este mesmo motivo -, mas a regra tinha virado teste de
+TRES pecas, e as outras sete nunca foram olhadas.
+
+### Os `--rc-leading-*` deixam de ser ficcao no web
+
+O `contract.css` nao ligava nenhum deles, e o `dist` saia com o default do
+Tailwind: `leading-relaxed` em 1.625 enquanto o token dizia 1.7, e cada `text-*`
+com a altura de linha do Tailwind e nao a nossa. A documentacao e a skill
+descreviam um contrato de altura de linha que **so o pacote nativo cumpria**.
+
+As oito medidas passam a ler `--rc-leading-tight` de `xl` para cima e
+`--rc-leading-normal` abaixo - a mesma regra que `gen-native-tokens` ja aplicava
+do outro lado da fronteira. Tema de cliente que declare os tres tokens muda
+junto, que e o que a doc sempre prometeu.
+
+### Sombra, raio e o acabamento que a regua do metodo apontou
+
+`--rc-shadow-2` e `--rc-shadow-3` ganham uma camada de contato curta e uma de
+ambiente com spread negativo, e perdem alfa no tema escuro: a sombra abraca o
+painel em vez de manchar a pagina, e quem separa continua sendo o anel de 1px.
+`Menu` e `Popover` descem de `shadow-3` para `shadow-2` - um menu a 4px do
+gatilho nao flutua o mesmo que um dialogo modal.
+
+`--rc-radius-sm` vai de 6px para 4px, porque entre 6 e 8 a diferenca e invisivel
+e a passada de forma ("o raio de dentro e menor que o de fora?") nao tinha como
+ser conferida a olho. `--rc-control-lg` compacto vai de 38px para 36px, o unico
+numero da escala fora da grade de 4.
+
+E o resto: o `Card` passa a usar `--rc-pad-panel`, que a documentacao ja
+afirmava que ele usava, entao o respiro dele finalmente segue a densidade; a aba
+segmentada sai de `h-7` para `--rc-control-sm`; o cabecalho de grupo da
+`Sidebar` e do `Command` deixa de ser `font-mono`, porque nao se le caractere a
+caractere; o corpo do `Accordion` vai para `text-fg`, porque e a resposta que a
+pessoa abriu a sanfona para ler; o `TableFooter` para de pintar superficie fora
+do caso que gruda; e os dois botoes do `Combobox` recebem raio menor que o do
+campo que os contem.
+
 ### Corrigido: tres testes do `DateRangePicker` nativo liam o relogio
 
 Eles montavam a peca com `value={null}`, e sem valor a grade abre no mes de
