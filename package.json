@@ -1,6 +1,6 @@
 {
   "name": "@rivocode/ui",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Design system da RivoCode: 91 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
   "keywords": [
     "base-ui",

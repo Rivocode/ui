@@ -1,5 +1,52 @@
 # Mudancas
 
+## 0.13.0
+
+### A skill ganha o metodo, e o site manda instala-la antes de ler
+
+`reference/method.md` e o nono arquivo da skill, e escreve a ORDEM que faltava:
+seis passos do pedido ate a tela conferida, e o que termina cada um. Os outros
+oito ensinam o sistema, e nenhum dizia em que sequencia usa-lo - a decisao de
+acabamento caia na leitura "geral", que nao tem resposta errada. O passo 4 troca
+essa leitura por quatro passadas, cada uma com UMA pergunta literal: quantos
+valores de espaco existem aqui, o que a pessoa veio ler esta em `text-fg`, o
+raio de dentro e menor que o de fora, quantas coisas se mexem.
+
+Os dois ultimos passos sao os que se pulam, e por isso estao escritos com o
+incidente junto: olhar nos dois temas e nas duas densidades e o passo que faltou
+quando sete pecas foram publicadas sem ninguem ter olhado para nenhuma, com mais
+de mil testes verdes.
+
+Duas secoes que nao existiam em lugar nenhum: os dez sinais que fazem uma tela
+parecer gerada - todos passando no `tsc` e no teste - e o que faz uma tela
+parecer atual, escrito so com token que ja existe.
+
+O arquivo viaja no pacote, entao quem roda `npx rivocode-ui skill` nesta versao
+recebe o metodo junto. O agent `rivocode-ui` passa a comecar por ele.
+
+### O `llms.txt` abre mandando instalar a skill
+
+A primeira secao do indice para agents deixou de ser o catalogo e passou a ser a
+instalacao; `/convencoes.md` virou o plano B de quem nao pode instalar nada. O
+laco `curl` NAO foi repetido la de proposito: seria a segunda copia escrita a mao
+da pasta `reference/`, que e o defeito que o `check:lista-skill` existe para
+pegar, e ele so olha o `skill.md`.
+
+A pagina "Para agents" fechava dizendo que a skill "ainda nao existe, falta o
+empacotamento". Ela viaja dentro do pacote desde que o `build:skill` existe, e a
+pagina que ensina o agente a ler o site era a ultima a saber.
+
+### Corrigido: tres testes do `DateRangePicker` nativo liam o relogio
+
+Eles montavam a peca com `value={null}`, e sem valor a grade abre no mes de
+HOJE - `calendar.tsx` cai em `new Date()` quando nao ha ISO para ancorar. Os
+toques eram todos de agosto de 2026: passaram ate 31/08/2026 e ficaram vermelhos
+em 01/09, com `undefined is not an object`, que nao parece com "o mes virou".
+
+O `beforeAll` prende 15/08/2026 e o `afterAll` devolve o relogio. Medido movendo
+o pino para setembro: caem exatamente os tres, e nenhum outro. Nada mudou na
+peca publicada.
+
 ## 0.12.0
 
 ### Corrigido: a barra que carrega o valor sozinha era invisivel no tema claro
