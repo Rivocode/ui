@@ -29,6 +29,15 @@ semântica de cor: `success`, `danger`, `warning`, `info` no `Badge`, no
 `Alert`, no `Tracker` e no `Timeline`. Aqui a palavra queria dizer outra coisa,
 e com outros valores. `tone` continua funcionando e sai numa versão maior.
 
+## Parada, de propósito
+
+A Sparkline não anima, nem na primeira pintura nem quando os dados mudam. Ela
+mora em linha de tabela e em fileira de indicadores, e nesses lugares aparece às
+dezenas: vinte linhas trocando de filtro ao mesmo tempo são vinte desenhos se
+mexendo, e o que a pessoa lê é ruído, e não a mudança. O `ChartContainer`, a
+rosca e o arco andam até o valor novo porque cada um é o assunto do cartão; a
+miniatura é um detalhe do número ao lado dela.
+
 ## Acessibilidade
 
 Ela sai escondida do leitor de tela de propósito: um desenho de tendência sem
@@ -43,4 +52,4 @@ semana) em vez de tendência contínua. É a única variante que atravessa para 
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Sparkline`, e ela é o que o slot `chart` do `Stat` nativo esperava. Ela é desenhada com `View`, sem SVG, e isso decide o que atravessa: `variant="line"` e `variant="bar"` significam a mesma coisa nos dois mundos, e **`area` não porta**: área quer polígono preenchido, que `View` não faz. Duas outras diferenças, ambas deliberadas: o traço desenha 2px em vez de 1,5 (a 1,5 ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em `height`. **Sem `label` ela é escondida do leitor de tela de propósito**: uma linha sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que calar.
+Traduz: o `@rivocode/ui-native` exporta `Sparkline`, e ela é o que o slot `chart` do `Stat` nativo esperava. Ela é desenhada com `View`, sem SVG, e isso decide o que atravessa: `variant="line"` e `variant="bar"` significam a mesma coisa nos dois mundos, e **`area` não porta**: área quer polígono preenchido, que `View` não faz. Duas outras diferenças, ambas deliberadas: o traço desenha 2px em vez de 1,5 (a 1,5 ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em `height`. **Sem `label` ela é escondida do leitor de tela de propósito**: uma linha sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que calar. E ela fica **parada**, como no web: nem a primeira pintura nem a troca de dados anima.

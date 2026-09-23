@@ -37,6 +37,7 @@ export function Editable({
   ...props
 }: EditableProps) {
   const [editing, setEditing] = useState(false);
+  const [swapped, setSwapped] = useState(false);
   const controlled = value !== undefined;
   const [internal, setInternal] = useState(defaultValue);
   const text = controlled ? value : internal;
@@ -49,8 +50,11 @@ export function Editable({
     field.current?.select();
   }, [editing]);
 
+  const swap = swapped && "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]";
+
   function open() {
     setDraft(text);
+    setSwapped(true);
     setEditing(true);
   }
 
@@ -63,7 +67,7 @@ export function Editable({
 
   if (!editing) {
     return (
-      <div {...props} className={cn("flex min-w-0", className)}>
+      <div {...props} key="reading" className={cn("flex min-w-0", swap, className)}>
         <button
           type="button"
           disabled={disabled}
@@ -86,7 +90,7 @@ export function Editable({
   }
 
   return (
-    <div {...props} className={cn("flex min-w-0", className)}>
+    <div {...props} key="editing" className={cn("flex min-w-0", swap, className)}>
       <input
         ref={field}
         aria-label={label}

@@ -166,6 +166,38 @@ export function Presence({
   );
 }
 
+const written = (value: number | number[]) =>
+  Array.isArray(value) ? value.join(",") : String(value);
+
+const sameShape = (from: number | number[], to: number | number[]) =>
+  Array.isArray(from) && Array.isArray(to)
+    ? from.length === to.length
+    : !Array.isArray(from) && !Array.isArray(to);
+
+export function useTween<Value extends number | number[]>(
+  target: Value,
+  duration: MotionDuration = "slow",
+) {
+  const motion = useMotion();
+  const value = useSharedValue<Value>(target);
+  const last = useRef<Value>(target);
+  const now = written(target);
+
+  useEffect(() => {
+    const previous = last.current;
+    if (written(previous) === now) return;
+    const next = target;
+    last.current = next;
+    if (!sameShape(previous, next)) {
+      value.value = next;
+      return;
+    }
+    value.value = withTiming(next, motion.timing(duration));
+  }, [now, duration, motion, value]);
+
+  return value;
+}
+
 export function Fill({ percent, className }: { percent: number; className?: string }) {
   const motion = useMotion();
   const width = useSharedValue(percent);

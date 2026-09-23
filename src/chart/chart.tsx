@@ -20,6 +20,7 @@ import { Skeleton } from "../components/skeleton";
 import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
 import { SETTLED } from "../shared/settled";
+import { useTokenMotion, withMotion, type ChartMotion } from "./use-chart-motion";
 
 export type ChartConfig = Record<
   string,
@@ -97,7 +98,12 @@ const PAINTED: Record<string, readonly ("fill" | "stroke")[]> = {
   Radar: ["fill", "stroke"],
 };
 
+const MOVING = new Set(["Area", "Bar", "Funnel", "Line", "Pie", "Radar", "RadialBar", "Scatter"]);
+
 type MarkProps = {
+  isAnimationActive?: unknown;
+  animationDuration?: unknown;
+  animationEasing?: unknown;
   dataKey?: unknown;
   fill?: unknown;
   stroke?: unknown;
@@ -109,13 +115,20 @@ function markName(type: ReactElement["type"]): string {
   return (type as { displayName?: string }).displayName ?? "";
 }
 
-function repaint(node: ReactNode, config: ChartConfig, unknown: Set<string>): ReactNode {
+function repaint(
+  node: ReactNode,
+  config: ChartConfig,
+  unknown: Set<string>,
+  motion: ChartMotion | undefined,
+): ReactNode {
   return Children.map(node, (child) => {
     if (!isValidElement(child)) return child;
 
     const written = child.props as MarkProps;
-    const roles = PAINTED[markName(child.type)];
-    const patch: Record<string, unknown> = {};
+    const name = markName(child.type);
+    const roles = PAINTED[name];
+    const patch: Record<string, unknown> =
+      motion && MOVING.has(name) ? withMotion(written, motion) : {};
 
     if (roles && typeof written.dataKey === "string") {
       const vacant = roles.filter((role) => written[role] === undefined);
@@ -130,7 +143,7 @@ function repaint(node: ReactNode, config: ChartConfig, unknown: Set<string>): Re
     }
 
     if (written.children !== undefined && typeof written.children !== "function") {
-      patch.children = repaint(written.children, config, unknown);
+      patch.children = repaint(written.children, config, unknown, motion);
     }
 
     return Object.keys(patch).length > 0 ? cloneElement(child, patch) : child;
@@ -140,6 +153,7 @@ function repaint(node: ReactNode, config: ChartConfig, unknown: Set<string>): Re
 export function seriesColors(
   chart: ReactElement,
   config: ChartConfig,
+  motion?: ChartMotion,
 ): { chart: ReactElement; unknown: string[] } {
   const written = chart.props as MarkProps;
   if (written.children === undefined || typeof written.children === "function") {
@@ -148,7 +162,7 @@ export function seriesColors(
 
   const missing = new Set<string>();
   const painted = cloneElement(chart, {
-    children: repaint(written.children, config, missing),
+    children: repaint(written.children, config, missing, motion),
   } as Partial<MarkProps>);
 
   return { chart: painted, unknown: [...missing] };
@@ -198,7 +212,9 @@ export function ChartContainer({
     .join("\n  ");
 
   const points = data ?? dataOfChild(children);
-  const painted = seriesColors(children, config);
+  const showsEmpty = empty !== undefined && points !== undefined && points.length === 0;
+  const motion = useTokenMotion(`[data-rc-chart="${id}"]`, !isError && !isLoading && !showsEmpty);
+  const painted = seriesColors(children, config, motion);
 
   useMissingDataWarning(empty !== undefined && points === undefined);
   useFlatBoxWarning(id);
@@ -260,7 +276,7 @@ export function ChartContainer({
             ))}
           </div>
         </StateFrame>
-      ) : empty && points && points.length === 0 ? (
+      ) : showsEmpty ? (
         <StateFrame>
           <EmptyState
             title={empty.title}

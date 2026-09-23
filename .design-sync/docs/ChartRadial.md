@@ -23,6 +23,16 @@ corre. Por isso ela sai como `role="img"` com rótulo, e não como barra de
 carregamento, trocar um pelo outro faz o leitor de tela anunciar "carregando"
 para algo que não carrega.
 
+## Movimento
+
+Quando o `value` muda, o arco anda do valor velho ao novo, com a duração e a
+curva dos tokens (`--rc-duration-slow`, `--rc-ease`). Na primeira pintura ele
+não sobe do zero: a medida nasce no lugar, pela mesma decisão do
+`ChartContainer`. Com "reduzir movimento", o arco salta.
+
+O `segmented` não anda: os tracinhos acendem de uma vez. Ele é contagem, e não
+traço contínuo, e tracinho meio aceso não diz nada.
+
 ## O eixo escondido
 
 `sweep` é quanto do círculo o arco ocupa. Em `270`, que é o padrão, ele deixa a
@@ -77,3 +87,5 @@ Traduz quase inteiro, em `@rivocode/ui-native/chart`, e é a peça de gráfico q
 Duas mudanças de tipo, as mesmas da rosca: `centerValue` e `centerLabel` são `string`, e `color` é papel de token (`chart-3`, `success`) e não cor de CSS.
 
 O papel de acessibilidade é `image`, como o `role="img"` do web, e os dois vizinhos explicam por quê: o `Meter` nativo já tinha recusado `progressbar`, que faz o leitor de tela anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a medida. Sem `label`, ele é montado do que está escrito no meio (o valor **e** a linha de baixo), e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.
+
+O arco liso anda até o valor novo como no web, e nasce no lugar; o `segmented` acende os tracinhos de uma vez, também como no web.

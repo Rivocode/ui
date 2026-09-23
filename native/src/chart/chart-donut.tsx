@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
+import Animated, { useAnimatedProps } from "react-native-reanimated";
 import Svg, { Circle, Path } from "react-native-svg";
 
 import { cn } from "../cn";
+import { useTween } from "../motion";
 import { useRivo } from "../provider";
 import { Text } from "../text";
 import { arcPath } from "./arc";
@@ -129,14 +131,14 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               const dim = reading !== null && reading !== index;
 
               return (
-                <Path
+                <Wedge
                   key={nameOf(data[index]!)}
-                  d={arcPath(middle, wedge.from + edge, wedge.from + wedge.span - edge)}
-                  fill="none"
+                  radius={middle}
+                  from={wedge.from + edge}
+                  to={wedge.from + wedge.span - edge}
                   stroke={colorOf(data[index]!, index)}
-                  strokeWidth={band}
-                  strokeLinecap="butt"
-                  strokeOpacity={dim ? 0.32 : 1}
+                  band={band}
+                  dim={dim}
                 />
               );
             })
@@ -202,5 +204,42 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
         </View>
       )}
     </View>
+  );
+}
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+function Wedge({
+  radius,
+  from,
+  to,
+  stroke,
+  band,
+  dim,
+}: {
+  radius: number;
+  from: number;
+  to: number;
+  stroke: string;
+  band: number;
+  dim: boolean;
+}) {
+  const start = useTween(from);
+  const end = useTween(to);
+
+  const animatedProps = useAnimatedProps(() => {
+    "worklet";
+    return { d: arcPath(radius, start.value, end.value) };
+  });
+
+  return (
+    <AnimatedPath
+      animatedProps={animatedProps}
+      fill="none"
+      stroke={stroke}
+      strokeWidth={band}
+      strokeLinecap="butt"
+      strokeOpacity={dim ? 0.32 : 1}
+    />
   );
 }

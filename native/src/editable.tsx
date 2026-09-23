@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Pressable, View, type AccessibilityActionEvent } from "react-native";
+import { Pressable, type AccessibilityActionEvent } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
 import { Input } from "./field";
+import { Presence } from "./motion";
 import { Text } from "./text";
 
 export type EditableProps = {
@@ -44,7 +45,7 @@ export function Editable({
 
   if (!editing) {
     return (
-      <View className={cn("flex-row", className)}>
+      <Presence swapKey="reading" exit="none" className={cn("flex-row", className)}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`${label}: ${value || "vazio"}`}
@@ -65,12 +66,16 @@ export function Editable({
             {value || placeholder}
           </Text>
         </Pressable>
-      </View>
+      </Presence>
     );
   }
 
   return (
-    <View className={cn("flex-row items-center gap-2", className)}>
+    <Presence
+      swapKey="editing"
+      exit="none"
+      className={cn("flex-row items-center gap-2", className)}
+    >
       <Input
         accessibilityLabel={label}
         autoFocus
@@ -84,6 +89,6 @@ export function Editable({
       <Button variant="ghost" onPress={() => setEditing(false)}>
         Cancelar
       </Button>
-    </View>
+    </Presence>
   );
 }

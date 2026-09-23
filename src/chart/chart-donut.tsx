@@ -8,6 +8,7 @@ import { ChartTooltipContent } from "./chart-tooltip";
 import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
 import { resolveFormat, type Format } from "../lib/format";
+import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   data: Slice[];
@@ -74,6 +75,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   const [reading, setReading] = useState(false);
+  const motion = useTokenMotion(null);
 
   const outer = "88%";
   const internal = `${Math.round(88 * (1 - thickness))}%`;
@@ -104,7 +106,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               outerRadius={outer}
               paddingAngle={2}
               cornerRadius={4}
-              isAnimationActive={false}
+              {...motion}
               onMouseEnter={() => setReading(true)}
               onMouseLeave={() => setReading(false)}
               stroke="none"

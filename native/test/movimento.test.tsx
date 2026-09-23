@@ -17,6 +17,7 @@ import {
   Checkbox,
   Collapsible,
   Dialog,
+  Editable,
   Field,
   Meter,
   Progress,
@@ -309,7 +310,7 @@ describe("nenhuma peca anima por fora do useMotion", () => {
       if (name === "motion.tsx") continue;
       const code = readFileSync(file, "utf8");
 
-      if (!/from "\.\/motion"/.test(code)) offenders.push(`${name}: nao importa ./motion`);
+      if (!/from "(?:\.\.?\/)+motion"/.test(code)) offenders.push(`${name}: nao importa ./motion`);
       for (const hit of code.matchAll(/withTiming\(([^;]*?)\)\s*;/g)) {
         if (!/motion\.(timing\(|pulse)/.test(hit[1]!))
           offenders.push(`${name}: withTiming sem motion.timing`);
@@ -557,5 +558,42 @@ describe("Skeleton e Calendar", () => {
         .props.onPress(),
     );
     expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
+  });
+});
+
+describe("Editable", () => {
+  const editable = () => (
+    <Editable value="Clínica São Lucas" onValueChange={() => {}} label="Nome do cliente" />
+  );
+
+  test("a leitura nasce parada, e a troca para a edicao e de volta entra por fade", () => {
+    const screen = render(editable());
+    expect(entered(screen)).toEqual([]);
+    const layer = () =>
+      views(screen).find((node) => node.props.className?.split(" ").includes("flex-row"))!;
+    const reading = layer();
+
+    act(() => byRole(screen, "button")[0]!.props.onLongPress());
+    expect(layer()).not.toBe(reading);
+    const [editing] = entered(screen);
+    expect(editing!.preset).toBe("FadeIn");
+    expect(editing!.config.duration).toBe(tokens.scales["duration-base"]);
+    const layers = views(screen).filter((node) => node.props.entering || node.props.exiting);
+    expect(layers.map((node) => node.props.exiting)).toEqual([undefined]);
+
+    act(() =>
+      byRole(screen, "button")
+        .find((node) => node.props.accessibilityLabel === undefined)!
+        .props.onPress(),
+    );
+    expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
+    expect(byRole(screen, "button")[0]!.props.onLongPress).toBeDefined();
+  });
+
+  test("com reduzir movimento, a troca e seca", () => {
+    reduceMotion(true);
+    const screen = render(editable());
+    act(() => byRole(screen, "button")[0]!.props.onLongPress());
+    expect(entered(screen)).toEqual([]);
   });
 });

@@ -18,7 +18,7 @@ import {
   type Updater,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
+import { ArrowUp, ChevronsUpDown } from "lucide-react";
 import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
@@ -419,10 +419,15 @@ export function DataTable<Row>({
                   )}
                 >
                   {column.header}
-                  {direcao === "asc" ? (
-                    <ArrowUp className="size-3.5 text-accent-text" aria-hidden="true" />
-                  ) : direcao === "desc" ? (
-                    <ArrowDown className="size-3.5 text-accent-text" aria-hidden="true" />
+                  {direcao ? (
+                    <ArrowUp
+                      className={cn(
+                        "size-3.5 text-accent-text",
+                        "transition-transform duration-[var(--rc-duration-base)] ease-rc",
+                        direcao === "desc" && "rotate-180",
+                      )}
+                      aria-hidden="true"
+                    />
                   ) : (
                     <ChevronsUpDown className="size-3.5 text-fg-subtle" aria-hidden="true" />
                   )}

@@ -4,6 +4,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 
 import { cn } from "../lib/cn";
+import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children"> & {
   /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta. */
@@ -43,6 +44,7 @@ export function ChartRadial({
   segments = 44,
   ...rest
 }: ChartRadialProps) {
+  const motion = useTokenMotion(null);
   const clamped = Math.max(0, Math.min(value, max));
   const percentage = Math.round((clamped / max) * 100);
 
@@ -77,7 +79,7 @@ export function ChartRadial({
               fill={color}
               cornerRadius={999}
               background={{ fill: "var(--rc-skeleton)" }}
-              isAnimationActive={false}
+              {...motion}
             />
           </RadialBarChart>
         </ResponsiveContainer>

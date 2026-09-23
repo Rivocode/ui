@@ -205,7 +205,16 @@ const PARITY: Record<string, Row> = {
       "valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela " +
       "surda ao tema do cliente. E o `label` só vale na forma de função: com filho em JSX quem " +
       "nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa " +
-      "parada só do leitor de tela.",
+      "parada só do leitor de tela.\n\n" +
+      "**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura " +
+      "vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e " +
+      "`ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`), as duas no mesmo " +
+      "caminho `/chart`. Elas nascem no lugar e, quando o valor muda, andam até o novo com a " +
+      "duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o " +
+      "`react-native-svg`: a mesma decisão do web, de que o gráfico nasce pronto e só anda " +
+      'quando o dado muda. Com "reduzir movimento" elas saltam. A linha anda ponto a ponto ' +
+      "quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com " +
+      "`Rect` e `Path` crus continua podendo, e fica parado.",
   },
   ChartDonut: {
     state: "traduz",
@@ -236,7 +245,10 @@ const PARITY: Record<string, Row> = {
       "Uma diferença de desenho, e ela é medida: as pontas das fatias saem **retas**. O " +
       "`cornerRadius` do web vem da Recharts, que recorta o canto de uma fatia preenchida; aqui a " +
       "fatia é um arco traçado, e a ponta redonda que o SVG oferece estende o traço em quase doze " +
-      "graus para cada lado na espessura padrão: uma fatia de 5% apareceria como 11%.",
+      "graus para cada lado na espessura padrão: uma fatia de 5% apareceria como 11%.\n\n" +
+      "O movimento é o do web: a rosca nasce pronta e, quando os dados mudam, cada fatia anda " +
+      "do ângulo velho ao novo com a duração e a curva dos tokens, pelo Reanimated. Com " +
+      '"reduzir movimento", a troca é seca.',
   },
   ChartRadial: {
     state: "traduz",
@@ -255,7 +267,9 @@ const PARITY: Record<string, Row> = {
       "anunciar indicador de progresso para uma medida que sobe e desce, e `adjustable`, que " +
       "prometeria que o gesto muda o valor. O nome carrega o número, então ouvir a peça é ouvir a " +
       "medida. Sem `label`, ele é montado do que está escrito no meio (o valor **e** a linha " +
-      'de baixo), e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.',
+      'de baixo), e não só a porcentagem como no web: "82 por cento" sozinho não diz por cento de quê.\n\n' +
+      "O arco liso anda até o valor novo como no web, e nasce no lugar; o `segmented` acende os " +
+      "tracinhos de uma vez, também como no web.",
   },
   Checkbox: {
     state: "traduz",
@@ -437,7 +451,10 @@ const PARITY: Record<string, Row> = {
     note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo",
   },
   PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
-  Progress: { state: "traduz", note: "`value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo" },
+  Progress: {
+    state: "traduz",
+    note: "`value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo",
+  },
   QueryBoundary: {
     state: "traduz",
     note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo",
@@ -532,7 +549,10 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento",
   },
-  Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento" },
+  Skeleton: {
+    state: "traduz",
+    note: "mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento",
+  },
   Slider: {
     state: "traduz",
     note: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
@@ -549,7 +569,8 @@ const PARITY: Record<string, Row> = {
       "ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em " +
       "`height`. **Sem `label` ela é escondida do leitor de tela de propósito**: uma linha " +
       'sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que ' +
-      "calar.",
+      "calar. E ela fica **parada**, como no web: nem a primeira pintura nem a troca de " +
+      "dados anima.",
   },
   Spinner: { state: "traduz", note: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
   Stat: {
