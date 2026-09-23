@@ -1,5 +1,67 @@
 # Mudancas
 
+## 0.9.0
+
+### Quebra: dois peers novos, e os dois obrigatorios
+
+`react-native-reanimated >=4` e `react-native-keyboard-controller >=1.21`
+passam a ser peers declarados. O Reanimated ja era exigido na pratica pelo
+`react-native-css`; o `keyboard-controller` e novo, e vem incluido no Expo Go do
+SDK 57. O `npx rivocode-ui-native-init` le do manifesto quais peers sao
+obrigatorios e, se faltar algum no app, imprime o `npx expo install` com os
+nomes e termina com codigo 1.
+
+```sh
+npx expo install react-native-reanimated react-native-keyboard-controller
+```
+
+O `KeyboardProvider` NAO precisa ser montado: o `RivoProvider` embrulha um, e
+reaproveita o do app quando ja existe.
+
+### O layout acompanha o teclado
+
+A `ScrollArea` virou a tela de formulario: rola ate o campo em foco, e o
+`footer` novo fica preso embaixo e sobe junto com o teclado, entrando na conta
+de onde o campo para. `Sheet` e `Dialog` - e o que abre em folha, como `Select`,
+`Combobox`, `Menu`, `DatePicker` e `TimePicker` - sobem acima do teclado
+sozinhos. Nao some `KeyboardAvoidingView` por cima: o desconto seria feito duas
+vezes.
+
+Uma armadilha medida no simulador: `className` nao chega a componente de
+terceiro. `<SafeAreaView className="flex-1">` do `react-native-safe-area-context`
+fica sem altura, a rolagem some e o `footer` sobe para o topo. Use
+`style={{ flex: 1 }}`.
+
+### O catalogo passa a se mexer
+
+`native/src/motion.tsx` e a fonte unica: le "reduzir movimento" do sistema e
+muda com a tela aberta, e toda peca que anima passa por ele. Afundam no toque
+`Button`, `Toggle` e `ToggleGroup`; `Toast` sobe e desce; `Accordion` e
+`Collapsible` giram a seta e esmaecem o corpo; o fundo da aba ativa das `Tabs`
+desliza; `Steps`, `Progress` e `Meter` andam ate o valor; `Field`, `Checkbox`,
+`RadioGroup`, `OTPField`, `TagsInput`, `FilterBar`, `Calendar` e `Tree` ganham
+o seu movimento; `Skeleton` pulsa. Com a preferencia ligada, `Dialog`, `Sheet` e
+os que abrem em folha abrem sem transicao. O `Switch` fica como esta: o do
+sistema ja desliza.
+
+Na montagem entram `Alert`, `EmptyState`, `Stat`, `Progress`, `Meter`,
+`Tracker`, `Indicator`, `Timeline`, o item do `FileUpload` e a `DataList`.
+
+### Os graficos andam, e dois novos para desenhar
+
+`ChartDonut` e `ChartRadial` varrem do zero ao aparecer e andam ate o angulo
+novo na troca. O `ChartContainer` nao tinha barra nem linha proprias; `ChartBar`
+e `ChartLine` entram em `/chart`, crescendo da base e subindo da `baseline`. O
+valor no meio da rosca e do radial passa a caber no furo: uma linha, largura
+presa e fonte que encolhe quando o numero e longo.
+
+### `EmptyState` ganha `icon` e `illustration`
+
+Era a unica peca do par sem simbolo. `icon` aceita tambem uma funcao que recebe
+`{ color, size }`, porque no RN a cor nao desce da `View` para o SVG.
+`illustration` nao forca tamanho. O `empty` de `DataList`, `QueryBoundary` e
+`ChartContainer` leva o `icon` ate o `EmptyState`.
+
 ## 0.8.0
 
 ### Corrigido: a barra que carrega o valor sozinha era invisivel no tema claro

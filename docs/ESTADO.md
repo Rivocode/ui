@@ -22,8 +22,8 @@ quem consome mora em `.design-sync/conventions.md` e em
 
 | Peca                        | Onde                                        | Estado                                                              |
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
-| `@rivocode/ui`              | este repo, `src/`                           | **0.13.0** no npm, na tag `v0.13.0`, e igual ao `package.json`       |
-| `@rivocode/ui-native`       | este repo, `native/`                        | **0.7.0** no npm, na tag `native-v0.7.0`, e igual ao manifesto dele  |
+| `@rivocode/ui`              | este repo, `src/`                           | **0.14.0** no npm, na tag `v0.14.0`, e igual ao `package.json`       |
+| `@rivocode/ui-native`       | este repo, `native/`                        | **0.9.0** no npm, na tag `native-v0.9.0`, e igual ao manifesto dele  |
 | Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `e37084d`                   |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |

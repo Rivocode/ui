@@ -1,5 +1,80 @@
 # Mudancas
 
+## 0.14.0
+
+### O catalogo passa a se mexer, e o que se mexia pela metade passa a se mexer inteiro
+
+O achado que abriu esta versao foi um defeito, e nao falta de acabamento: no
+Tailwind 4, `scale-*`, `translate-*` e `rotate-*` escrevem as propriedades
+`scale`, `translate` e `rotate`, e nao `transform`. Sete pecas listavam
+`transition-[...transform...]`, e a escala ou o deslize delas nunca animou: o
+painel de `Menu`, `Popover`, `Select`, `Combobox`, `Tooltip`, `PreviewCard` e
+`NavigationMenu` esmaecia com a escala saltando, e o polegar do `Switch` e o
+`Toast` pulavam. Uma guarda em `test/movimento.test.tsx` recusa `transform` em
+lista de transicao.
+
+Passam a se mexer, sempre com os tokens de duracao e curva, e sempre zerados
+por "reduzir movimento":
+
+- `Dialog`, `AlertDialog` e `Command` entram esmaecendo e crescendo de 0,97;
+- a marca do `Checkbox` e o ponto do `Radio` crescem ao marcar;
+- `FieldError` aparece e sai com esmaecer e 4px de descida;
+- o painel novo das `Tabs` esmaece, e o velho some na hora;
+- o `Steps` troca cor e anel da etapa, e a linha entre etapas enche;
+- `Calendar`, `DatePicker`, `DateRangePicker` e `EventCalendar` deslizam o mes
+  novo do lado para onde a pessoa andou (`animate={false}` desliga);
+- o `Clipboard`, o `Avatar` e a seta de ordenacao da `DataTable`, que virou uma
+  so e gira meia volta; o `Editable` esmaece na troca entre leitura e edicao.
+
+Fica sem movimento de proposito o que tem que ser imediato ou seguir o dedo:
+anel de foco, `Slider`, `Splitter` e numero digitado.
+
+### As pecas entram na montagem, e o grafico se desenha na primeira vez
+
+A regra antiga, "produto de operacao nao anima entrada", saiu. Entra o que
+CHEGA; a moldura nao. Cinco utilitarios novos: `animate-enter`,
+`animate-appear`, `animate-pop`, `animate-fill` e `animate-reveal`. Todos terminam em
+`backwards`, entao se a animacao nao rodar o conteudo continua la, e rodam uma
+vez por montagem. `Alert`, `EmptyState`, `Stat`, `Progress`, `Meter`,
+`Tracker`, `Indicator`, `Timeline`, o item do `FileUpload`, a ficha que chega no
+`TagsInput` e no `FilterBar` e o corpo da `DataTable` ao sair do esqueleto
+passam a entrar. `Card`, `PageHeader`, `Sidebar`, controles no estado inicial e
+`Badge` ficam parados: a tela inteira piscaria a cada navegacao.
+
+### O grafico anima com a casa, e nao com a Recharts
+
+O `ChartContainer` aplica sozinho, em toda marca, a duracao e a curva dos
+tokens, no lugar dos 1500ms padrao da Recharts, e desliga a animacao sob
+"reduzir movimento" sem depender de quem usa lembrar do `useChartMotion`. Ele
+continua exportado, e espalha-lo dentro da moldura nao muda nada. `ChartDonut` e
+`ChartRadial` perderam o `isAnimationActive={false}` fixo: varrem do zero ao
+aparecer e andam ate o valor novo na troca. A `Sparkline` so esmaece, porque
+aparece as dezenas numa tabela.
+
+O HTML do servidor continua sem SVG, como antes; a primeira marca montada no
+cliente ja nasce animada, entao nao existe quadro com o desenho pronto que some.
+
+### `EmptyState` ganha `illustration`
+
+O `icon` forca 32px em qualquer SVG descendente, e por isso ilustracao nao
+cabia. `illustration` e a prop separada, sem tamanho forcado e com o involucro
+em `text-fg-subtle`, para `currentColor` acompanhar o tema do cliente. A pagina
+e a skill dizem quando usar cada uma: ilustracao na primeira vez e no
+onboarding, icone na busca sem resultado. Nao ha kit de ilustracoes: o sistema
+veste varios clientes, e cor literal so existe em `src/tokens/`.
+
+### O site abre a pagina de uma peca de duas a quatro vezes mais rapido
+
+As partes de uma pagina baixavam uma depois da outra, e a tabela de props vinha
+num JSON de 534 KB com o catalogo inteiro. Agora tudo sai em paralelo e cada
+pagina recebe so os props dela: abrir o `Select` pela barra lateral foi de 1,87 s
+para 0,59 s na rede de celular simulada.
+
+### As dependencias chegam por PR
+
+O Dependabot abre, toda segunda, um PR agrupado de menor e correcao por pasta e
+um por major, e o `ci.yml` e quem aprova. `native/` fica de fora de proposito.
+
 ## 0.13.0
 
 ### A skill ganha o metodo, e o site manda instala-la antes de ler
