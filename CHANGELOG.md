@@ -1,5 +1,21 @@
 # Mudancas
 
+## 0.14.1
+
+### O `Sheet` volta a deixar a lista de dentro rolar
+
+O miolo do `SheetContent` nascia sem altura, entao todo `h-full` abaixo dele
+crescia ate o tamanho do conteudo em vez de parar na altura do painel. Agora
+ele herda a altura do painel.
+
+- No `Sidebar` do celular, o `SidebarContent` passa a rolar sozinho, e o
+  `SidebarFooter` fica preso embaixo. Antes o painel inteiro rolava, e o rodape
+  ficava fora da tela.
+- Uma lista com `overscroll-behavior: contain` dentro do `Sheet` nao rolava de
+  jeito nenhum, nem com a roda nem com o toque: ela nao transbordava e ainda
+  barrava a rolagem de chegar ao painel. Era o caso da gaveta de navegacao do
+  site.
+
 ## 0.14.0
 
 ### O catalogo passa a se mexer, e o que se mexia pela metade passa a se mexer inteiro
