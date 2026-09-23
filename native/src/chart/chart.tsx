@@ -5,7 +5,7 @@ import type { RivoNativeColorRole } from "../../tokens";
 import { Alert } from "../basics";
 import { Button } from "../button";
 import { cn } from "../cn";
-import { EmptyState } from "../empty-state";
+import { EmptyState, type EmptyStateProps } from "../empty-state";
 import { useRivo } from "../provider";
 import { SETTLED } from "../shared/settled";
 import { useSilentMisuse } from "../silent-misuse";
@@ -89,9 +89,15 @@ export type ChartContainerProps = {
   retryLabel?: string;
   /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
-   * web, menos o `icon`: o `EmptyState` nativo ainda não tem esse slot.
+   * web, e o `icon` aceita tambem a funcao que recebe cor e tamanho, como no
+   * `EmptyState` nativo.
    */
-  empty?: { title: string; description: string; action?: ReactNode };
+  empty?: {
+    title: string;
+    description: string;
+    action?: ReactNode;
+    icon?: EmptyStateProps["icon"];
+  };
   /**
    * Os pontos, para a moldura saber contar zero.
    *
@@ -192,7 +198,12 @@ export function ChartContainer({
         </StateFrame>
       ) : empty && data && data.length === 0 ? (
         <StateFrame>
-          <EmptyState title={empty.title} description={empty.description} action={empty.action} />
+          <EmptyState
+            title={empty.title}
+            description={empty.description}
+            action={empty.action}
+            icon={empty.icon}
+          />
         </StateFrame>
       ) : (
         <View

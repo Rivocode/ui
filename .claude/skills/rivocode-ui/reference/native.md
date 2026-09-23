@@ -140,7 +140,7 @@ escritos em lugar nenhum.
 | `Dialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios: quem abre é quem chama |
 | `Editable` | `value` | `value` | `value` e `onValueChange` obrigatórios; quem abre é o toque longo, e há um `Cancelar` visível |
 | `EmptyState` | `title` | `title` | `title` e `description` são `string` |
-| `EmptyState` | `icon` | — | sem ícone: o desenho é texto e ação |
+| `EmptyState` | `icon` | `icon` | aceita também uma função que recebe `color` e `size`, porque a cor não desce da `View` para o SVG |
 | `Field` | — | `label` | `label`, `description` e `error` viram props: sem `FieldLabel`, `FieldDescription` e `FieldError` |
 | `Field` | `validate` | — | a validação é do formulário, e não do campo: veja `@rivocode/ui-native/form` |
 | `Fieldset` | — | `legend` | `legend` vira prop obrigatória, no lugar do `FieldsetLegend` |
@@ -308,7 +308,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-08-28:** 69 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-23:** 69 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -342,7 +342,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
 | `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger` |
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
-| `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web |
+| `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados |
 | `EventCalendar` | ✕ não porta | grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar` |
 | `Field` | ✔ traduz | `label`, `description` e `error` como props; o erro vence a descrição, como no web |
 | `Fieldset` | ✔ traduz | `legend` como prop |

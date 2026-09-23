@@ -127,6 +127,10 @@ O segundo e o terceiro **não** levam ação de criar: quem filtrou quer o filtr
 de volta, não um cadastro. E o texto nomeia o recorte que não achou — "no
 período", "com esse nome" —, porque é ele que a pessoa vai mexer.
 
+O desenho segue a mesma divisão: o primeiro caso aceita `illustration`, e o
+segundo e o terceiro levam `icon`. Quando usar cada um, e como pintar sem cor
+literal, está em [design.md](design.md#ícone-ou-ilustração-no-estado-vazio).
+
 ## Rótulo, dica e marca de lugar
 
 - **Rótulo** nomeia o campo e fica sempre visível. Não é frase, não tem dois

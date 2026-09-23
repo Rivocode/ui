@@ -4,7 +4,7 @@ import { Pressable, View } from "react-native";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { cn } from "./cn";
-import { EmptyState } from "./empty-state";
+import { EmptyState, type EmptyStateProps } from "./empty-state";
 import { Skeleton } from "./skeleton";
 import { Text } from "./text";
 
@@ -40,7 +40,12 @@ export type DataListProps<Row> = {
    * dentro de um `Text`.
    */
   retryLabel?: string;
-  empty?: { title: string; description: string; action?: ReactNode };
+  empty?: {
+    title: string;
+    description: string;
+    action?: ReactNode;
+    icon?: EmptyStateProps["icon"];
+  };
   /**
    * A linha discreta de quando o `filter` zerou. Sem ela, "Nenhum resultado
    * para a busca."
@@ -149,7 +154,14 @@ export function DataList<Row>({
   }
 
   if (data.length === 0 && empty) {
-    return <EmptyState title={empty.title} description={empty.description} action={empty.action} />;
+    return (
+      <EmptyState
+        title={empty.title}
+        description={empty.description}
+        action={empty.action}
+        icon={empty.icon}
+      />
+    );
   }
 
   const rows = data.map((row, index) => ({ row, key: keyExtractor(row, index) }));

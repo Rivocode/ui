@@ -12,6 +12,18 @@ export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
    */
   icon?: ReactNode;
   /**
+   * Desenho maior que o icone, para o vazio de primeira vez: a tela inicial
+   * sem nada ainda, o passo de onboarding. Filtro sem resultado e lista que
+   * esvaziou pedem `icon`, e nao isto.
+   *
+   * O tamanho e de quem desenha: o `icon` forca 32px em todo SVG, e aqui nada
+   * e forcado. Sai `aria-hidden`, como o `icon`, e em `text-fg-subtle`: pinte
+   * com `currentColor` ou com classe de token (`fill-accent-subtle`), nunca
+   * com cor literal, senao o desenho nao acompanha o tema do cliente. Quando
+   * vem, toma o lugar do `icon`.
+   */
+  illustration?: ReactNode;
+  /**
    * Aceita no e nao so texto, como o titulo do `PageHeader` e o do `Timeline`.
    * Era `string`, e por isso um numero formatado ou um `<strong>` no meio da
    * frase - "Nenhuma nota em **marco**" - nao cabia num estado vazio, cabendo
@@ -27,6 +39,7 @@ export type EmptyStateProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
 export function EmptyState({
   className,
   icon,
+  illustration,
   title,
   description,
   action,
@@ -40,10 +53,16 @@ export function EmptyState({
         className,
       )}
     >
-      {icon && (
-        <div aria-hidden="true" className="text-fg-subtle [&_svg]:size-8">
-          {icon}
+      {illustration ? (
+        <div aria-hidden="true" className="text-fg-subtle">
+          {illustration}
         </div>
+      ) : (
+        icon && (
+          <div aria-hidden="true" className="text-fg-subtle [&_svg]:size-8">
+            {icon}
+          </div>
+        )
       )}
       <p className="text-lg font-medium text-fg">{title}</p>
       <p className="max-w-sm text-base text-fg-muted">{description}</p>

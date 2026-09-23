@@ -441,7 +441,11 @@ export const SIGNATURES: Record<string, Signature> = {
   EmptyState: {
     rows: [
       { web: "title", native: "title", note: "`title` e `description` são `string`" },
-      { web: "icon", native: null, note: "sem ícone: o desenho é texto e ação" },
+      {
+        web: "icon",
+        native: "icon",
+        note: "aceita também uma função que recebe `color` e `size`, porque a cor não desce da `View` para o SVG",
+      },
     ],
   },
   Field: {

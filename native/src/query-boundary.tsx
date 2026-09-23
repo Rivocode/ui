@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { Alert } from "./basics";
 import { Button } from "./button";
 import { cn } from "./cn";
-import { EmptyState } from "./empty-state";
+import { EmptyState, type EmptyStateProps } from "./empty-state";
 import { Skeleton } from "./skeleton";
 import { useSilentMisuse } from "./silent-misuse";
 
@@ -58,9 +58,10 @@ export type QueryBoundaryProps<Data> = {
   retryLabel?: string;
 
   /**
-   * O que aparece quando a consulta volta vazia. O mesmo formato do web menos
-   * o `icon` - o `EmptyState` nativo ainda nao tem esse slot -, e com o titulo
-   * e a descricao em `string`, que e o que cabe dentro de um `Text`.
+   * O que aparece quando a consulta volta vazia. O mesmo formato do web, com o
+   * titulo e a descricao em `string`, que e o que cabe dentro de um `Text`, e
+   * o `icon` aceitando tambem a funcao que recebe cor e tamanho, como no
+   * `EmptyState` nativo.
    *
    * A descricao e obrigatoria porque "nenhum resultado" transfere para a
    * pessoa o trabalho de descobrir por que, e ela quase nunca descobre.
@@ -68,7 +69,12 @@ export type QueryBoundaryProps<Data> = {
    * Sem ela nao ha estado vazio: os filhos desenham a resposta vazia do jeito
    * deles.
    */
-  empty?: { title: string; description: string; action?: ReactNode };
+  empty?: {
+    title: string;
+    description: string;
+    action?: ReactNode;
+    icon?: EmptyStateProps["icon"];
+  };
 
   /**
    * Diz o vazio no lugar do `data`, para a resposta que nao e uma lista:
@@ -174,6 +180,7 @@ export function QueryBoundary<Data>({
         title={empty.title}
         description={empty.description}
         action={empty.action}
+        icon={empty.icon}
       />
     );
   }

@@ -12,6 +12,7 @@ import {
   RelativeTime,
   Stat,
 } from "../src";
+import { tokens } from "../tokens";
 import { indicatorWidthComplaint } from "../src/indicator";
 import { Meter } from "../src/meter";
 import { REFRESH, describeRelative } from "../src/relative-time";
@@ -172,6 +173,83 @@ describe("EmptyState", () => {
     expect(textOf(screen)).toContain("Nada aqui");
     expect(textOf(screen)).toContain("Emita a primeira nota.");
     expect(textOf(screen)).toContain("Emitir");
+  });
+});
+
+describe("EmptyState com desenho", () => {
+  const hidden = (screen: ReturnType<typeof render>) =>
+    screen.root.findAll(
+      (node) =>
+        typeof node.type === "string" &&
+        node.props.accessibilityElementsHidden === true &&
+        node.props.importantForAccessibility === "no-hide-descendants",
+    );
+
+  test("o icone por funcao recebe o fg-subtle do tema e os 32 do web", () => {
+    const received: { color: string; size: number }[] = [];
+    const screen = render(
+      <EmptyState
+        icon={(glyph) => {
+          received.push(glyph);
+          return <Text>lupa</Text>;
+        }}
+        title="Nada encontrado"
+        description="Tente outro filtro."
+      />,
+      { theme: "rivocode-light" },
+    );
+
+    expect(received.length).toBeGreaterThan(0);
+    expect(received.at(-1)).toEqual({
+      color: tokens.themes["rivocode-light"]["fg-subtle"],
+      size: 32,
+    });
+    expect(received.at(-1)!.color).not.toBe(tokens.themes["rivocode-dark"]["fg-subtle"]);
+    expect(hidden(screen)).toHaveLength(1);
+    expect(textOf(screen)).toContain("lupa");
+  });
+
+  test("o icone em no tambem sai do leitor de tela", () => {
+    const screen = render(
+      <EmptyState
+        icon={<Text>lupa</Text>}
+        title="Nada encontrado"
+        description="Tente outro filtro."
+      />,
+    );
+    const [wrapper] = hidden(screen);
+    expect(wrapper).toBeDefined();
+    expect(textOf(screen)).toContain("lupa");
+  });
+
+  test("sem desenho, nao sobra involucro escondido", () => {
+    const screen = render(<EmptyState title="Nada encontrado" description="Tente outro filtro." />);
+    expect(hidden(screen)).toHaveLength(0);
+  });
+
+  test("a ilustracao toma o lugar do icone", () => {
+    const screen = render(
+      <EmptyState
+        icon={<Text>lupa</Text>}
+        illustration={<Text>caixa aberta</Text>}
+        title="Nenhuma nota"
+        description="Emita a primeira."
+      />,
+    );
+    expect(hidden(screen)).toHaveLength(1);
+    expect(textOf(screen)).toContain("caixa aberta");
+    expect(textOf(screen)).not.toContain("lupa");
+  });
+
+  test("o empty do DataList leva o icone ate o EmptyState", () => {
+    const screen = render(
+      list({
+        data: [],
+        empty: { title: "Nenhuma nota", description: "Emita a primeira.", icon: <Text>lupa</Text> },
+      }),
+    );
+    expect(hidden(screen)).toHaveLength(1);
+    expect(textOf(screen)).toContain("lupa");
   });
 });
 
