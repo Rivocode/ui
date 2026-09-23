@@ -145,16 +145,22 @@ mesmo global:
   | `ChartRadial` | O arco de uma medida so: meta, cota, conversao |
   | `Sparkline` | A linha miuda que cabe dentro de um indicador |
 
-  O `useChartMotion()` liga a animacao da Recharts a preferencia de "reduzir
-  movimento" do sistema. O resto do catalogo resolve isso por token - o
-  `--rc-duration-*` vai a zero e toda transicao para -, mas a Recharts
-  interpola em JS e nenhum token a alcanca. Espalhe o que ele devolve na marca:
+  O `ChartContainer` cuida do movimento sozinho: toda marca que anima (`Line`,
+  `Bar`, `Area`, `Pie`, `Radar`, `RadialBar`, `Scatter`) sai com
+  `animationDuration` de `--rc-duration-slow`, `animationEasing` de `--rc-ease`
+  e `isAnimationActive` desligado no primeiro quadro e com "reduzir movimento".
+  O grafico nasce pronto e so anda quando o dado muda. Marca com
+  `isAnimationActive={false}` fica parada. O `useChartMotion()` devolve o mesmo
+  trio para quem desenha com a Recharts fora da moldura:
 
   ```tsx
   const movimento = useChartMotion()
 
   <Line dataKey="pagas" stroke="var(--color-pagas)" {...movimento} />
   ```
+
+  A `ChartDonut` e a `ChartRadial` andam ate o valor novo do mesmo jeito; a
+  `Sparkline` fica parada, porque aparece as dezenas numa tabela.
 
   Os formatadores do eixo e da dica sao os mesmos do resto da biblioteca, e
   estao logo abaixo.
@@ -265,7 +271,7 @@ quem apenas copia a chave de acesso de uma NF-e; por isso são duas.
 | Subcaminho | O peer que ele custa | O que sai por ele |
 |---|---|---|
 | `@rivocode/ui-native/form` | `react-hook-form`, mais `zod` e `@hookform/resolvers` no `useZodForm` | `Form`, `FormField`, `useZodForm` e os adaptadores `forText`, `forValue`, `forChecked`, `forDate` |
-| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial` e a `PALETTE` |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, e a `PALETTE` |
 | `@rivocode/ui-native/clipboard` | `expo-clipboard` | `Clipboard` |
 | `@rivocode/ui-native/file-upload` | `expo-document-picker` | `FileUpload`, `FileUploadList`, `FileUploadItem` |
 
@@ -301,8 +307,14 @@ um `#22c55e` escrito ali seria a única coisa da tela que não muda quando o
 cliente troca de tema.
 
 ```tsx
-import { ChartContainer, ChartDonut, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
+import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
 ```
+
+`ChartBar` e `ChartLine` são as marcas que andam: desenhe a barra e a linha com
+elas, dentro da função da moldura, no lugar de `Rect` e `Path` crus. Nascem no
+lugar e, quando o dado muda, vão até o valor novo com os tokens de movimento,
+pelo Reanimated; com "reduzir movimento", saltam. A rosca e o arco já fazem isso
+sozinhos, e a `Sparkline` fica parada.
 
 A `Sparkline` fica fora deste subcaminho, na raiz e desenhada com `View`: ela é
 o slot `chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o

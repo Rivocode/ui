@@ -113,18 +113,40 @@ página com o mesmo nome de série pintariam um com o gradiente do outro, porque
 
 ## Movimento
 
+A moldura cuida do movimento sozinha, e nenhuma marca precisa de prop para
+isso. Toda `Line`, `Bar`, `Area`, `Pie`, `Radar`, `RadialBar` e `Scatter` que
+ela embrulha sai com três props vestidas:
+
+- **`animationDuration`** lido de `--rc-duration-slow`, e **`animationEasing`**
+  lido de `--rc-ease`, no valor computado da própria moldura. A Recharts
+  interpola em JavaScript e não enxerga variável de CSS; por isso a moldura lê o
+  token depois de montar e entrega o número. O padrão da Recharts (1500 ms, `ease`)
+  não aparece em lugar nenhum.
+- **`isAnimationActive`** desligado com "reduzir movimento", e desligado também
+  no primeiro quadro: **o gráfico nasce pronto e só anda quando o dado muda.**
+
+O segundo é decisão. Produto de operação abre o mesmo painel dezenas de vezes por
+dia, e a barra que cresce do zero a cada abertura é espera que a pessoa paga para
+ver um número que já estava ali. O que o movimento informa é a **mudança**: o
+filtro trocou, o mês virou, e a barra que anda do valor velho ao novo mostra
+quanto mudou. Pelo mesmo motivo, o gráfico que chega depois do `isLoading` também
+não anima: ele nasceu ali, e a espera já foi o esqueleto.
+
+Marca com `isAnimationActive={false}` fica parada: a moldura só liga o que
+ninguém desligou. `animationDuration` e `animationEasing` escritos à mão
+também vencem.
+
+`useChartMotion()` continua exportado e devolve o mesmo trio, para quem desenha
+com a Recharts **fora** da moldura:
+
 ```tsx
 const motion = useChartMotion()
 
 <Line dataKey="pagas" stroke="var(--color-pagas)" {...motion} />
 ```
 
-`useChartMotion()` liga a animação da Recharts à preferência de "reduzir
-movimento" do sistema. O resto do catálogo resolve isso por token (o
-`--rc-duration-*` vai a zero e toda transição para), mas a Recharts não anima
-por CSS, ela interpola em JavaScript, e nenhum token a alcança. Sem isto, o
-único movimento que sobra numa tela com movimento reduzido é justamente o maior
-deles.
+Dentro do `ChartContainer` ele é dispensável, e espalhá-lo não muda nada: a
+moldura veste a marca do mesmo jeito.
 
 ## As peças da Recharts que saem daqui
 
@@ -167,3 +189,5 @@ O `colors` do quadro é um **mapa pela chave do `config`**, e não um array: é 
 A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefone não existe largura antes do layout. O `children` também aceita JSX comum, e é assim que `ChartDonut` e `ChartRadial` ganham os quatro finais sem precisar de nada da moldura.
 
 Duas regras a mais, as duas por causa do que não existe do lado de cá. O `config.color` pede **papel de token** (`chart-1` a `chart-8`), e não cor de CSS: a cor que a peça recebe é o valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela surda ao tema do cliente. E o `label` só vale na forma de função: com filho em JSX quem nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa parada só do leitor de tela.
+
+**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e `ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`), as duas no mesmo caminho `/chart`. Elas nascem no lugar e, quando o valor muda, andam até o novo com a duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o `react-native-svg`: a mesma decisão do web, de que o gráfico nasce pronto e só anda quando o dado muda. Com "reduzir movimento" elas saltam. A linha anda ponto a ponto quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com `Rect` e `Path` crus continua podendo, e fica parado.

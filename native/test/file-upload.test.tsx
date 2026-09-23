@@ -1,6 +1,10 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import { act, byLabel, byRole, render, textOf } from "./helpers";
+import { timingCalls } from "react-native-reanimated";
+
+import { tokens } from "../tokens";
+import { RivoProvider } from "../src";
+import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 
 /*
  * O expo-document-picker entra como duble pela mesma razao do
@@ -183,6 +187,31 @@ describe("FileUpload", () => {
 });
 
 describe("FileUploadItem", () => {
+  test("a barra de cada arquivo nasce no valor e anda ate o novo no tempo slow", () => {
+    const item = (progress: number) => (
+      <FileUploadItem name="nota.xml" size={1024} progress={progress} onRemove={() => {}} />
+    );
+    const widthOf = (screen: ReturnType<typeof render>) =>
+      byType(screen, "View")
+        .map((node) => node.props.style as { width?: string } | undefined)
+        .find((style) => typeof style?.width === "string")!.width;
+
+    const screen = render(item(20));
+    expect(widthOf(screen)).toBe("20%");
+
+    timingCalls.length = 0;
+    act(() => screen.update(<RivoProvider>{item(70)}</RivoProvider>));
+    expect(widthOf(screen)).toBe("70%");
+    expect(timingCalls.at(-1)).toEqual({
+      to: 70,
+      config: {
+        duration: tokens.scales["duration-slow"],
+        easing: { bezier: [...tokens.easings.ease] },
+        reduceMotion: "never",
+      },
+    });
+  });
+
   test("o tamanho sai formatado pela peca, com a virgula do pt-BR", () => {
     const screen = render(
       <FileUploadList>

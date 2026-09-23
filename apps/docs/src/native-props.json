@@ -281,6 +281,47 @@
       }
     ]
   },
+  "ChartBar": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "fill",
+        "type": "string",
+        "required": true,
+        "note": "A cor final, como o `colors` do quadro entrega: `colors.receita`."
+      },
+      {
+        "name": "height",
+        "type": "number",
+        "required": true,
+        "note": "A altura, em px."
+      },
+      {
+        "name": "width",
+        "type": "number",
+        "required": true,
+        "note": "A largura, em px."
+      },
+      {
+        "name": "x",
+        "type": "number",
+        "required": true,
+        "note": "A borda esquerda, em px do quadro que a moldura mediu."
+      },
+      {
+        "name": "y",
+        "type": "number",
+        "required": true,
+        "note": "O topo da barra, em px."
+      },
+      {
+        "name": "radius",
+        "type": "number",
+        "required": false,
+        "note": "O raio do canto, em px."
+      }
+    ]
+  },
   "ChartContainer": {
     "entry": "native/src/chart/index.ts",
     "props": [
@@ -419,6 +460,29 @@
         "type": "number",
         "required": false,
         "note": "Espessura do anel, em fração do raio."
+      }
+    ]
+  },
+  "ChartLine": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "points",
+        "type": "readonly ChartPoint[]",
+        "required": true,
+        "note": "Os pontos, ja em px do quadro, na ordem do eixo."
+      },
+      {
+        "name": "stroke",
+        "type": "string",
+        "required": true,
+        "note": "A cor final do traco: `colors.receita`."
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "required": false,
+        "note": "A espessura do traco, em px."
       }
     ]
   },

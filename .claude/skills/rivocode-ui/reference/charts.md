@@ -51,21 +51,29 @@ que a pessoa confirma antes de emitir, e o comprovante depois.
 | `Sparkline` | A linha miúda que cabe dentro de um indicador |
 | `ChartLegend` + `ChartLegendContent` | A legenda, com o nome que está no `config` |
 | `useSeriesToggle` | A legenda vira filtro: clicar esconde a série |
-| `useChartMotion` | Respeita "reduzir movimento", que nenhum token alcança aqui |
+| `useChartMotion` | Duração e curva dos tokens, e "reduzir movimento", para marca fora da moldura |
 
 Também saem daqui radar, dispersão, polar e `LabelList`. O `Tooltip` e o
 `Legend` da Recharts **não**: os nossos já embrulham os dois.
 
-A recharts não anima por CSS, ela interpola em JS, então `--rc-duration-*` indo
-a zero não a alcança: numa tela com "reduzir movimento" ligado o único
-movimento que sobra é justamente o maior deles. Espalhe o `useChartMotion()` na
-marca:
+A Recharts não anima por CSS, ela interpola em JS, e nenhum token a alcança
+sozinho. **O `ChartContainer` resolve isso por você**: toda marca dentro dele sai
+com a duração de `--rc-duration-slow`, a curva de `--rc-ease`, e a animação
+desligada no primeiro quadro e com "reduzir movimento". O gráfico nasce pronto e
+só anda quando o dado muda: não escreva `isAnimationActive` nem
+`animationDuration` na marca. `isAnimationActive={false}` escrito à mão continua
+valendo, para a marca que tem de ficar parada.
+
+Fora da moldura, espalhe o `useChartMotion()`, que devolve o mesmo trio:
 
 ```tsx
 const motion = useChartMotion()
 
 <Line dataKey="paid" stroke="var(--color-paid)" {...motion} />
 ```
+
+`ChartDonut` e `ChartRadial` andam até o valor novo sozinhas; a `Sparkline`
+fica parada, porque numa tabela ela aparece às dezenas.
 
 `areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
 contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto

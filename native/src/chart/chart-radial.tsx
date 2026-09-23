@@ -1,8 +1,10 @@
 import { View } from "react-native";
+import Animated, { useAnimatedProps } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 
 import type { RivoNativeColorRole } from "../../tokens";
 import { cn } from "../cn";
+import { useTween } from "../motion";
 import { useRivo } from "../provider";
 import { Text } from "../text";
 import { arcPath } from "./arc";
@@ -10,6 +12,8 @@ import { arcPath } from "./arc";
 const RADIUS = 42;
 
 const BAND = 8;
+
+const WHOLE = 359.9;
 
 export type ChartRadialProps = {
   /** De 0 a `max`. Acima disso o arco para no fim, e não dá a volta. */
@@ -91,7 +95,7 @@ export function ChartRadial({
         ) : (
           <>
             <Band from={from} to={from + sweep} stroke={track} />
-            {to > from && <Band from={from} to={to} stroke={paint} />}
+            <Reach from={from} to={to} stroke={paint} />
           </>
         )}
       </Svg>
@@ -115,13 +119,38 @@ export function ChartRadial({
 }
 
 function Band({ from, to, stroke }: { from: number; to: number; stroke: string }) {
-  if (to - from >= 359.9) {
+  if (to - from >= WHOLE) {
     return <Circle r={RADIUS} fill="none" stroke={stroke} strokeWidth={BAND} />;
   }
 
   return (
     <Path
       d={arcPath(RADIUS, from, to)}
+      fill="none"
+      stroke={stroke}
+      strokeWidth={BAND}
+      strokeLinecap="round"
+    />
+  );
+}
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+function Reach({ from, to, stroke }: { from: number; to: number; stroke: string }) {
+  const end = useTween(to);
+
+  const animatedProps = useAnimatedProps(() => {
+    "worklet";
+    const reach = Math.min(end.value, from + WHOLE);
+    return {
+      d: reach > from ? arcPath(RADIUS, from, reach) : "",
+      strokeOpacity: reach > from ? 1 : 0,
+    };
+  });
+
+  return (
+    <AnimatedPath
+      animatedProps={animatedProps}
       fill="none"
       stroke={stroke}
       strokeWidth={BAND}

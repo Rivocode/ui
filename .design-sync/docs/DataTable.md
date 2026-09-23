@@ -20,7 +20,10 @@ Tudo opt-in, tudo client-side, nada muda para quem não pedir:
 
 - **`sortable` na coluna**: o cabeçalho vira botão que alterna crescente,
   decrescente, sem ordem. Quando `cell` devolve JSX, entregue o valor cru em
-  `value`, senão a ordem compara o que estiver em `row[key]`.
+  `value`, senão a ordem compara o que estiver em `row[key]`. A seta é uma
+  só e **gira meia volta** ao inverter o sentido, no tempo `--rc-duration-base`:
+  trocar o desenho de uma vez fazia a inversão passar despercebida, e é ela que
+  diz que a lista embaixo virou de ponta-cabeça.
 - **`filter` na tabela**, filtro global controlado: o app põe o campo de busca
   onde a tela pedir e passa o texto; a tabela compara ignorando caixa e acento
   ("otica" acha "Ótica"). Sem resultado, uma linha discreta explica. O

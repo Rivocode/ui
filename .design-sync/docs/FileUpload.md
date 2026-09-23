@@ -27,7 +27,9 @@ ou PDF, até 5 MB" antes de escolher errado.
 ## As partes
 
 `FileUploadList` é a lista do que já entrou, e `FileUploadItem` é cada arquivo
-nela, com nome, tamanho, `progress` e `error`. Subir é do app: a peça valida na
+nela, com nome, tamanho, `progress` e `error`. A barra de cada arquivo anda até
+o valor novo pela largura, no tempo `--rc-duration-base`, em vez de pular de
+um número para o outro a cada aviso do envio. Subir é do app: a peça valida na
 entrada e mostra o que o app disser depois. Quem controla o envio é quem sabe
 quando ele terminou.
 

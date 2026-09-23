@@ -39,6 +39,13 @@ movimento de distância.
 Se você precisa dos dois ao mesmo tempo na tela, o lugar do total é fora da
 peça: um `Stat` ao lado, ou o título do cartão.
 
+## Movimento
+
+Quando os dados mudam, cada fatia anda do ângulo velho ao novo, com a duração e
+a curva dos tokens (`--rc-duration-slow`, `--rc-ease`). Na primeira pintura ela
+não gira do zero: a rosca nasce pronta, pela mesma decisão do `ChartContainer`.
+Com "reduzir movimento", a troca é seca.
+
 ## As cores
 
 Sem `config`, cada fatia pega uma cor da paleta do tema, na ordem. Com `config`,
@@ -64,3 +71,5 @@ A fatia não é o alvo, e a razão é aritmética: um anel de 190px tem cerca de
 **E a leitura de tela não usa o truque do `Tracker`.** Lá os 90 períodos viraram uma parada `adjustable` só, porque 90 paradas dentro de um cartão são um obstáculo. Aqui são no máximo seis fatias (acima disso a rosca para de informar e barra deitada lê melhor), e seis paradas com nome e valor são melhores que uma ajustável, porque cada uma é também o botão que acende a fatia. Contagem diferente, saída diferente. Com `legend={false}` o desenho vira imagem cujo nome carrega as fatias **e os valores**: sem legenda e sem dica, o dado ficaria inalcançável.
 
 Uma diferença de desenho, e ela é medida: as pontas das fatias saem **retas**. O `cornerRadius` do web vem da Recharts, que recorta o canto de uma fatia preenchida; aqui a fatia é um arco traçado, e a ponta redonda que o SVG oferece estende o traço em quase doze graus para cada lado na espessura padrão: uma fatia de 5% apareceria como 11%.
+
+O movimento é o do web: a rosca nasce pronta e, quando os dados mudam, cada fatia anda do ângulo velho ao novo com a duração e a curva dos tokens, pelo Reanimated. Com "reduzir movimento", a troca é seca.

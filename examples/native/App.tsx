@@ -63,7 +63,7 @@ import {
 /* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
    e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
    paga - e `scripts/check-fronteira-do-chart.ts` guarda essa fronteira. */
-import { ChartDonut, ChartRadial } from "../../native/src/chart";
+import { ChartBar, ChartContainer, ChartDonut, ChartRadial } from "../../native/src/chart";
 /* Copiar e anexar tem cada um o SEU subcaminho, e um peer do Expo atras de
    cada um: expo-clipboard e expo-document-picker. Um subcaminho por peer, e
    nao um por assunto - quem so copia a chave nao instala o seletor de
@@ -104,11 +104,41 @@ const WIZARD_STEPS = [
   { id: "revisao", title: "Revisão", description: "Confira antes de emitir." },
 ];
 
-const NATURE = [
-  { kind: "servico", total: 148_200 },
-  { kind: "produto", total: 71_400 },
-  { kind: "locacao", total: 27_100 },
+const NATURE_BY_MONTH = [
+  [
+    { kind: "servico", total: 148_200 },
+    { kind: "produto", total: 71_400 },
+    { kind: "locacao", total: 27_100 },
+  ],
+  [
+    { kind: "servico", total: 96_300 },
+    { kind: "produto", total: 118_900 },
+    { kind: "locacao", total: 41_800 },
+  ],
 ];
+
+const WEEKS_BY_MONTH = [
+  [
+    { week: "S1", total: 42 },
+    { week: "S2", total: 61 },
+    { week: "S3", total: 38 },
+    { week: "S4", total: 74 },
+  ],
+  [
+    { week: "S1", total: 70 },
+    { week: "S2", total: 33 },
+    { week: "S3", total: 58 },
+    { week: "S4", total: 49 },
+  ],
+];
+
+const GOAL_BY_MONTH = [82, 57];
+
+const MONTH_NAMES = ["Agosto", "Julho"];
+
+const WEEK_SERIES = { total: { label: "Notas emitidas" } } as const;
+
+const money = (value: number) => `R$ ${(value / 1000).toFixed(1).replace(".", ",")}K`;
 
 const NATURE_SERIES = {
   servico: { label: "Serviço" },
@@ -180,6 +210,10 @@ function Painel({
       </Button>
     </WizardFooter>
   );
+  const [month, setMonth] = useState(0);
+  const nature = NATURE_BY_MONTH[month]!;
+  const weeks = WEEKS_BY_MONTH[month]!;
+  const billed = nature.reduce((sum, slice) => sum + slice.total, 0);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -201,23 +235,61 @@ function Painel({
         <Card>
           <CardHeader>
             <CardTitle>Faturamento por natureza</CardTitle>
-            <CardDescription>Toque uma linha para ler a fatia.</CardDescription>
+            <CardDescription>
+              {MONTH_NAMES[month]}. Troque o mês para ver o gráfico andar até o valor novo.
+            </CardDescription>
           </CardHeader>
           <CardContent>
+            <Button
+              size="sm"
+              variant="secondary"
+              onPress={() => setMonth((current) => (current + 1) % MONTH_NAMES.length)}
+            >
+              {`Ver ${MONTH_NAMES[(month + 1) % MONTH_NAMES.length]}`}
+            </Button>
             <View className="flex-row gap-4">
               <View className="flex-1">
                 <ChartDonut
-                  data={NATURE}
+                  data={nature}
                   valueKey="total"
                   nameKey="kind"
                   config={NATURE_SERIES}
-                  centerValue="R$ 246,7K"
+                  centerValue={money(billed)}
                   centerLabel="faturado"
-                  format={(value) => `R$ ${(value / 1000).toFixed(1).replace(".", ",")}K`}
+                  format={money}
                 />
               </View>
             </View>
-            <ChartRadial value={82} centerLabel="da meta do mês" />
+            <ChartContainer
+              config={WEEK_SERIES}
+              data={weeks}
+              className="h-40"
+              label={`Notas emitidas por semana em ${MONTH_NAMES[month]}`}
+            >
+              {({ width, height, colors }) => {
+                const slot = width / weeks.length;
+                const tallest = Math.max(...weeks.map((week) => week.total));
+                return (
+                  <Svg width={width} height={height}>
+                    {weeks.map((week, index) => {
+                      const tall = tallest > 0 ? (week.total / tallest) * (height - 8) : 0;
+                      return (
+                        <ChartBar
+                          key={week.week}
+                          x={index * slot + slot * 0.2}
+                          y={height - tall}
+                          width={slot * 0.6}
+                          height={tall}
+                          fill={colors.total!}
+                          radius={4}
+                        />
+                      );
+                    })}
+                  </Svg>
+                );
+              }}
+            </ChartContainer>
+            <ChartRadial value={GOAL_BY_MONTH[month]!} centerLabel="da meta do mês" />
           </CardContent>
         </Card>
 

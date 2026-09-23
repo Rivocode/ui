@@ -64,6 +64,10 @@ export function useAnimatedStyle<T>(worklet: () => T): T {
   return worklet();
 }
 
+export function useAnimatedProps<T>(worklet: () => T): T {
+  return worklet();
+}
+
 export function useReducedMotion() {
   return AccessibilityInfo.reduceMotionNow;
 }
@@ -97,7 +101,11 @@ export const ZoomIn = builder("ZoomIn");
 const View = (props: Record<string, unknown>) => createElement("View", props);
 View.displayName = "Animated.View";
 
-export const createAnimatedComponent = <T,>(component: T): T => component;
+export const createAnimatedComponent = <T,>(component: T): T => {
+  const Animated = ({ animatedProps, ...props }: Record<string, unknown>) =>
+    createElement(component as never, { ...props, ...(animatedProps as Config | undefined) });
+  return Animated as T;
+};
 
 const Animated = { View, createAnimatedComponent };
 

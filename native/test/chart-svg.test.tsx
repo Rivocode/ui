@@ -27,6 +27,7 @@ mock.module("react-native-svg", () => {
     Circle: host("Circle"),
     Line: host("Line"),
     Path: host("Path"),
+    Rect: host("Rect"),
     G: host("G"),
   };
 });
@@ -34,6 +35,7 @@ mock.module("react-native-svg", () => {
 const { ChartContainer } = await import("../src/chart/chart");
 const { ChartDonut } = await import("../src/chart/chart-donut");
 const { ChartRadial } = await import("../src/chart/chart-radial");
+const { arcPath } = await import("../src/chart/arc");
 
 const dark = tokens.themes["rivocode-dark"];
 
@@ -413,8 +415,12 @@ describe("ChartRadial", () => {
     expect(paths(measured)).toHaveLength(2);
 
     // Em zero, so a escala: ponta redonda num arco de comprimento zero vira um
-    // ponto aceso, que se le como "ja comecou".
-    expect(paths(render(<ChartRadial value={0} />))).toHaveLength(1);
+    // ponto aceso, que se le como "ja comecou". O caminho do valor continua
+    // montado, para poder voltar andando, mas sem traco e sem tinta.
+    const zero = render(<ChartRadial value={0} />);
+    expect(paths(zero).filter(Boolean)).toHaveLength(1);
+    const reach = byType(zero, "Path").find((node) => node.props.d === "")!;
+    expect(reach.props.strokeOpacity).toBe(0);
   });
 
   test("acima do maximo o arco para no fim, e nao da a volta", () => {
@@ -427,8 +433,10 @@ describe("ChartRadial", () => {
 
   test("a volta inteira vira circulo, senao `sweep={360}` sai em branco", () => {
     const screen = render(<ChartRadial value={100} sweep={360} />);
-    expect(byType(screen, "Circle").length).toBe(2);
-    expect(paths(screen)).toHaveLength(0);
+    expect(byType(screen, "Circle").length).toBe(1);
+    const [reach] = paths(screen);
+    expect(reach).toBe(arcPath(42, -180, -180 + 359.9));
+    expect(byType(screen, "Path")[0]!.props.strokeOpacity).toBe(1);
   });
 
   test("o nome carrega a medida: sem ele, ouvir a peça nao diz nada", () => {

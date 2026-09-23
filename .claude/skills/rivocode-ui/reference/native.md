@@ -258,7 +258,7 @@ módulo nativo, que o app instala e liga ao projeto só se desenhar gráfico
 (`npx expo install react-native-svg`).
 
 ```tsx
-import { ChartContainer, ChartDonut, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
+import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
 ```
 
 Três coisas mordem. **A moldura mede e entrega**: `children` como função recebe
@@ -276,8 +276,25 @@ série sem `color` no `config` recebe o próximo dela, e é ela que o
 `ChartDonut` percorre fatia a fatia. Importe-a quando o seu desenho à mão
 precisar da mesma ordem, em vez de escrever `chart-1` de novo num canto.
 
+**Para a barra e a linha andarem, desenhe com `ChartBar` e `ChartLine`**, do
+mesmo caminho, no lugar de `Rect` e `Path` crus. Elas nascem no lugar e, quando
+o dado muda, vão até o valor novo com os tokens de movimento, pelo Reanimated;
+com "reduzir movimento", saltam. A rosca e o arco já fazem isso sozinhos.
+
+```tsx
+<ChartContainer config={SERIES} data={meses} className="h-56">
+  {({ width, height, colors }) => (
+    <Svg width={width} height={height}>
+      {meses.map((mes, index) => (
+        <ChartBar key={mes.mes} x={index * 40} y={height - mes.total} width={24} height={mes.total} fill={colors.receita} />
+      ))}
+    </Svg>
+  )}
+</ChartContainer>
+```
+
 A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
-`chart` do `Stat`, e o `Stat` sai da raiz.
+`chart` do `Stat`, e o `Stat` sai da raiz. E ela não anima, nos dois pacotes.
 
 ## Copiar e anexar: dois caminhos, e não um
 

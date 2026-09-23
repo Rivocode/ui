@@ -18,6 +18,10 @@ transforma um clique errado numa edição que ninguém pediu. **Sair do campo
 salva**: é o oposto do Escape de propósito, porque quem clicou fora seguiu
 adiante, e exigir um Enter depois disso perde o que foi escrito sem avisar.
 
+A troca entre texto e campo esmaece, curta, no tempo `--rc-duration-base`: o
+salto seco fazia a linha parecer que piscou. Na primeira pintura não há fade, e
+com "reduzir movimento" o token vai a zero e a troca volta a ser seca.
+
 Fechado, o texto é um `button`. Quem navega pelo teclado precisa saber que
 aquilo abre alguma coisa, e um `div` com `onClick` não diz isso a ninguém.
 
