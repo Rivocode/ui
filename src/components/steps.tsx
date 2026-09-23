@@ -60,6 +60,8 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center rounded-pill",
                     "font-mono text-xs",
+                    "transition-[color,background-color,border-color,box-shadow]",
+                    "duration-[var(--rc-duration-base)] ease-rc",
                     isDone && "bg-accent text-accent-fg",
                     agora && "bg-accent-subtle text-accent-text ring-2 ring-accent",
                     !isDone && !agora && "border border-border text-fg-subtle",
@@ -87,7 +89,14 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
               </button>
 
               {index < steps.length - 1 && (
-                <span aria-hidden="true" className="mt-4 h-px w-8 shrink-0 bg-border" />
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "mt-4 h-px w-8 shrink-0",
+                    "transition-colors duration-[var(--rc-duration-base)] ease-rc",
+                    isDone ? "bg-accent-text" : "bg-border",
+                  )}
+                />
               )}
             </li>
           );

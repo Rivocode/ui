@@ -26,6 +26,7 @@ export function Calendar({
   startMonth = new Date(new Date().getFullYear() - 100, 0),
   endMonth = new Date(new Date().getFullYear() + 10, 11),
   formatters,
+  animate = true,
   ...props
 }: CalendarProps) {
   const isMobile = useMobile();
@@ -35,6 +36,7 @@ export function Calendar({
       locale={locale}
       numberOfMonths={isMobile ? 1 : numberOfMonths}
       captionLayout={captionLayout}
+      animate={animate}
       startMonth={startMonth}
       endMonth={endMonth}
       formatters={{
@@ -114,6 +116,15 @@ export function Calendar({
         ),
         range_start: "rounded-l-md bg-selected",
         range_end: "rounded-r-md bg-selected",
+
+        weeks_after_enter: cn("[--rc-shift:1rem]", "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
+        weeks_before_enter: cn("[--rc-shift:-1rem]", "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
+        weeks_before_exit: cn("[--rc-shift:-1rem]", "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
+        weeks_after_exit: cn("[--rc-shift:1rem]", "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
+        caption_after_enter: "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]",
+        caption_before_enter: "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]",
+        caption_after_exit: "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]",
+        caption_before_exit: "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]",
 
         ...classNames,
       }}

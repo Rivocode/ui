@@ -130,7 +130,13 @@ export function FieldDescription({
 
 export function FieldError({ className, ...props }: ComponentProps<typeof BaseField.Error>) {
   const inside = use(FieldRootPresence);
-  const classes = cn("text-xs text-danger-text", className);
+  const classes = cn(
+    "text-xs text-danger-text",
+    "transition-[opacity,translate] duration-[var(--rc-duration-fast)] ease-rc",
+    "data-[starting-style]:-translate-y-1 data-[starting-style]:opacity-0",
+    "data-[ending-style]:-translate-y-1 data-[ending-style]:opacity-0",
+    className,
+  );
 
   useMissingFieldRootWarning("FieldError", !inside);
 

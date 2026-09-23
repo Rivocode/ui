@@ -1,16 +1,21 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Glob } from "bun";
 
 import { AlertDialog, AlertDialogContent } from "../src/components/alert-dialog";
 import { Button } from "../src/components/button";
+import { Calendar } from "../src/components/calendar";
 import { Checkbox } from "../src/components/checkbox";
+import { Clipboard } from "../src/components/clipboard";
 import { Command } from "../src/components/command";
 import { Dialog, DialogContent } from "../src/components/dialog";
+import { Field, FieldError, FieldLabel, Input } from "../src/components/field";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "../src/components/menu";
 import { Popover, PopoverContent, PopoverTrigger } from "../src/components/popover";
 import { Radio, RadioGroup } from "../src/components/radio";
+import { Steps } from "../src/components/steps";
 import { Switch } from "../src/components/switch";
+import { Tab, TabList, TabPanel, Tabs } from "../src/components/tabs";
 import { useToast } from "../src/components/toast";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../src/components/tooltip";
 import { RivoProvider } from "../src/provider/rivo-provider";
@@ -155,28 +160,47 @@ test("toda transicao dura um token, que zera quando a pessoa pede menos moviment
   expect(fixed).toEqual([]);
 });
 
-test("toda animacao em laco para quando a pessoa pede menos movimento", async () => {
+const TOKEN_TIMED = new Set(["animate-rise", "animate-fade"]);
+
+test("toda animacao para ou zera quando a pessoa pede menos movimento", async () => {
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
+
+  const forma = await Bun.file("src/tokens/forma.css").text();
+  const keyframes = new Set([...forma.matchAll(/@keyframes\s+([\w-]+)/g)].map((hit) => hit[1]!));
+  expect(keyframes.size).toBeGreaterThanOrEqual(4);
 
   let seen = 0;
   const loose: string[] = [];
   for (const file of files) {
     const code = await Bun.file(file).text();
-    for (const { text, at } of classBlocks(code)) {
-      const tokens = tokensOf(text);
-      for (const token of tokens) {
-        const hit = /^((?:[^\s:]+:)*)animate-(?!none$)[\w-]+$/.exec(token);
-        if (!hit || hit[1]!.includes("motion-reduce:")) continue;
-        seen += 1;
-        if (!tokens.includes(`motion-reduce:${hit[1]}animate-none`)) {
-          loose.push(`${file}:${lineAt(code, at)} ${token}`);
+    const blocks = classBlocks(code);
+    for (const hit of code.matchAll(/(?<![\w-])((?:[^\s"'`:]+:)*)animate-(?!none(?![\w-]))[^\s"'`]+/g)) {
+      const prefix = hit[1]!;
+      if (prefix.includes("motion-reduce:")) continue;
+      seen += 1;
+      const token = hit[0];
+      const where = `${file}:${lineAt(code, hit.index!)} ${token}`;
+      const utility = token.slice(prefix.length);
+
+      if (TOKEN_TIMED.has(utility)) continue;
+
+      const arbitrary = /^animate-\[([\w-]+)_([^\]]+)\]$/.exec(utility);
+      if (arbitrary) {
+        if (!keyframes.has(arbitrary[1]!)) loose.push(`${where} (keyframe inexistente)`);
+        if (!/var\(--rc-duration-(?:fast|base|slow|sheet)\)/.test(arbitrary[2]!)) {
+          loose.push(`${where} (duracao fora do token)`);
         }
+        continue;
       }
+
+      const block = blocks.find(({ text, at }) => hit.index! >= at && hit.index! < at + text.length);
+      const calm = block ? tokensOf(block.text).includes(`motion-reduce:${prefix}animate-none`) : false;
+      if (!calm) loose.push(`${where} (sem motion-reduce:${prefix}animate-none)`);
     }
   }
 
-  expect(seen).toBeGreaterThanOrEqual(4);
+  expect(seen).toBeGreaterThanOrEqual(10);
   expect(loose).toEqual([]);
 });
 
@@ -307,4 +331,94 @@ test("o aviso desliza de verdade, porque a transicao anima translate", () => {
   expect(tokens).toContain("data-[starting-style]:translate-x-4");
   expect(tokens).toContain("transition-[opacity,translate]");
   expect(stranded(tokens)).toEqual([]);
+});
+
+test("a mensagem de erro do campo chega descendo e sai do mesmo jeito", () => {
+  render(
+    <Field name="email" invalid>
+      <FieldLabel>Email</FieldLabel>
+      <Input />
+      <FieldError match>Email obrigatorio</FieldError>
+    </Field>,
+  );
+
+  expectAnimatedEntry(screen.getByText("Email obrigatorio"), [
+    "transition-[opacity,translate]",
+    "data-[starting-style]:-translate-y-1",
+    "data-[starting-style]:opacity-0",
+    "data-[ending-style]:opacity-0",
+  ]);
+});
+
+test("o painel da aba nova aparece esmaecendo, e o velho sai sem esperar", () => {
+  render(
+    <Tabs defaultValue="abertas">
+      <TabList>
+        <Tab value="abertas">Abertas</Tab>
+        <Tab value="pagas">Pagas</Tab>
+      </TabList>
+      <TabPanel value="abertas">doze notas abertas</TabPanel>
+      <TabPanel value="pagas">quarenta notas pagas</TabPanel>
+    </Tabs>,
+  );
+  fireEvent.click(screen.getByRole("tab", { name: "Pagas" }));
+
+  const panel = screen.getByText("quarenta notas pagas");
+  expectAnimatedEntry(panel, ["transition-opacity", "data-[starting-style]:opacity-0"]);
+  expect(tokensOfElement(panel)).toContain("data-[ending-style]:hidden");
+  expect(tokensOfElement(panel)).not.toContain("data-[ending-style]:opacity-0");
+});
+
+test("o trilho entre etapas pinta o que ja foi feito, e a marca da etapa troca de cor animada", () => {
+  const steps = [
+    { id: "a", title: "Dados" },
+    { id: "b", title: "Pagamento" },
+    { id: "c", title: "Revisao" },
+  ];
+  const { container } = render(<Steps steps={steps} current={1} />);
+
+  const rails = [...container.querySelectorAll("ol li > span[aria-hidden='true']")];
+  expect(rails).toHaveLength(2);
+  expect(tokensOfElement(rails[0]!)).toContain("bg-accent-text");
+  expect(tokensOfElement(rails[0]!)).not.toContain("bg-border");
+  expect(tokensOfElement(rails[1]!)).toContain("bg-border");
+  for (const rail of rails) expect(tokensOfElement(rail)).toContain("transition-colors");
+
+  const marker = container.querySelector("[aria-current='step'] > span");
+  const tokens = tokensOfElement(marker);
+  expect(tokens).toContain("transition-[color,background-color,border-color,box-shadow]");
+  expect(tokens).toContain("duration-[var(--rc-duration-base)]");
+});
+
+test("a confirmacao da copia aparece esmaecendo, pelo keyframe e pela duracao do token", async () => {
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText: async () => {} },
+  });
+  render(<Clipboard value="4816" />);
+
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Copiar" }));
+  });
+
+  const check = screen.getByRole("button", { name: "Copiado" }).querySelector("svg");
+  expect(tokensOfElement(check)).toContain(
+    "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]",
+  );
+});
+
+test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => {
+  const { container } = render(<Calendar defaultMonth={new Date(2026, 0, 1)} />);
+
+  fireEvent.click(screen.getByRole("button", { name: "Ir para o próximo mês" }));
+
+  const weeks = [...container.querySelectorAll("[data-animated-weeks]")];
+  const entering = weeks.find((el) =>
+    el.className.split(" ").includes("animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
+  );
+  const leaving = weeks.find((el) =>
+    el.className.split(" ").includes("animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
+  );
+  expect(tokensOfElement(entering ?? null)).toContain("[--rc-shift:1rem]");
+  expect(tokensOfElement(leaving ?? null)).toContain("[--rc-shift:-1rem]");
 });

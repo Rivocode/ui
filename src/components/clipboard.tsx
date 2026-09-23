@@ -61,7 +61,11 @@ export function Clipboard({
       className={cn("gap-1.5", className)}
     >
       {copied ? (
-        <Check size={14} aria-hidden="true" className="text-success-text" />
+        <Check
+          size={14}
+          aria-hidden="true"
+          className="animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both] text-success-text"
+        />
       ) : (
         <Copy size={14} aria-hidden="true" />
       )}

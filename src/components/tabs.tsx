@@ -78,6 +78,8 @@ export function TabPanel({ className, ...props }: ComponentProps<typeof BaseTabs
       {...props}
       className={cn(
         "pt-4 outline-none",
+        "transition-opacity duration-[var(--rc-duration-base)] ease-rc",
+        "data-[starting-style]:opacity-0 data-[ending-style]:hidden",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
         className,
       )}
