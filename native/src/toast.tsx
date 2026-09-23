@@ -8,7 +8,9 @@ import {
   type ReactNode,
 } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 
+import { useMotion } from "./motion";
 import { Text } from "./text";
 
 type ToastData = { id: number; title: string; description?: string };
@@ -38,25 +40,36 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(() => ({ add }), [add]);
+  const motion = useMotion();
 
   return (
     <ToastContext.Provider value={value}>
       {children}
       {toasts.length > 0 && (
-        <View className="absolute inset-x-4 bottom-10 gap-2" pointerEvents="none">
+        <Animated.View
+          exiting={motion.sinkOut}
+          pointerEvents="none"
+          className="absolute inset-x-4 bottom-10 gap-2"
+        >
           {toasts.map((toast) => (
-            <View
+            <Animated.View
               key={toast.id}
-              accessibilityLiveRegion="polite"
-              className="rounded-md border border-border bg-surface-raised px-4 py-3"
+              entering={motion.riseIn}
+              exiting={motion.sinkOut}
+              layout={motion.reflow}
             >
-              <Text className="text-sm font-medium text-fg">{toast.title}</Text>
-              {toast.description && (
-                <Text className="mt-0.5 text-xs text-fg-muted">{toast.description}</Text>
-              )}
-            </View>
+              <View
+                accessibilityLiveRegion="polite"
+                className="rounded-md border border-border bg-surface-raised px-4 py-3"
+              >
+                <Text className="text-sm font-medium text-fg">{toast.title}</Text>
+                {toast.description && (
+                  <Text className="mt-0.5 text-xs text-fg-muted">{toast.description}</Text>
+                )}
+              </View>
+            </Animated.View>
           ))}
-        </View>
+        </Animated.View>
       )}
     </ToastContext.Provider>
   );

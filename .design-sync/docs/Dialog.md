@@ -27,4 +27,4 @@ mostrar um texto é cobrar caro por pouco.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Dialog` - `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Dialog` - `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

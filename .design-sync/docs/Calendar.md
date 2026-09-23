@@ -19,4 +19,4 @@ desliga.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Calendar` - mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Calendar` - mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`; o mês novo entra por fade. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

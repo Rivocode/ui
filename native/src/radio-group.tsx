@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { Text } from "./text";
 
 export type RadioItem = { label: string; value: string; description?: string };
@@ -58,7 +59,9 @@ export function RadioGroup({
                 active ? "border-accent-text" : "border-border-strong"
               }`}
             >
-              {active && <View className="size-2.5 rounded-pill bg-accent-text" />}
+              <Presence show={active} enter="popIn">
+                <View className="size-2.5 rounded-pill bg-accent-text" />
+              </Presence>
             </View>
             <View className="min-w-0 flex-1">
               <Text className="text-base text-fg">{item.label}</Text>

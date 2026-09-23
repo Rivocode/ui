@@ -25,4 +25,4 @@ nada faz quem ouve esperar por um fim que nunca vem.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Progress` - `value` de 0 a 100 e `label`; sem `format`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Progress` - `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

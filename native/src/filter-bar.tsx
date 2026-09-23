@@ -8,9 +8,11 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { useMotion, useSettled } from "./motion";
 import { Text } from "./text";
 
 type ChipSize = "sm" | "md";
@@ -186,6 +188,8 @@ export function FilterBar({
   const empty = labels.empty ?? applied(0);
 
   const rtl = I18nManager.getConstants().isRTL;
+  const motion = useMotion();
+  const settled = useSettled();
 
   const frame = useRef(0);
   const content = useRef(0);
@@ -253,22 +257,28 @@ export function FilterBar({
             contentContainerClassName="flex-row items-center gap-2"
           >
             {filters.map((filter) => (
-              <FilterChip
+              <Animated.View
                 key={filter.id}
-                label={filter.label}
-                value={filter.value}
-                size={size}
-                disabled={disabled}
-                labels={labels}
-                onRemove={
-                  filter.removable === false || !canRemove
-                    ? undefined
-                    : () => {
-                        onRemove?.(filter);
-                        onFiltersChange?.(filters.filter((other) => other.id !== filter.id));
-                      }
-                }
-              />
+                entering={settled ? motion.fadeIn : undefined}
+                exiting={motion.fadeOut}
+                layout={motion.reflow}
+              >
+                <FilterChip
+                  label={filter.label}
+                  value={filter.value}
+                  size={size}
+                  disabled={disabled}
+                  labels={labels}
+                  onRemove={
+                    filter.removable === false || !canRemove
+                      ? undefined
+                      : () => {
+                          onRemove?.(filter);
+                          onFiltersChange?.(filters.filter((other) => other.id !== filter.id));
+                        }
+                  }
+                />
+              </Animated.View>
             ))}
           </ScrollView>
 

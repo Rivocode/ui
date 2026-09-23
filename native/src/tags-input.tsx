@@ -1,7 +1,9 @@
 import { useRef, useState, type ComponentRef } from "react";
 import { Pressable, View, type TextInputProps } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { cn } from "./cn";
+import { useMotion, useSettled } from "./motion";
 import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
 
@@ -54,6 +56,8 @@ export function TagsInput({
   const [focused, setFocused] = useState(false);
   const input = useRef<ComponentRef<typeof TextInput>>(null);
   const { colors } = useRivo();
+  const motion = useMotion();
+  const settled = useSettled();
 
   const full = max !== undefined && value.length >= max;
 
@@ -92,8 +96,11 @@ export function TagsInput({
       )}
     >
       {value.map((tag) => (
-        <View
+        <Animated.View
           key={tag}
+          entering={settled ? motion.popIn : undefined}
+          exiting={motion.fadeOut}
+          layout={motion.reflow}
           className="flex-row items-center gap-1.5 rounded-sm bg-accent-subtle py-1 pr-1.5 pl-2"
         >
           <Text className="text-sm text-fg">{tag}</Text>
@@ -109,7 +116,7 @@ export function TagsInput({
             <View className="absolute h-[1.5px] w-2.5 rotate-45 rounded-pill bg-fg-subtle" />
             <View className="absolute h-[1.5px] w-2.5 -rotate-45 rounded-pill bg-fg-subtle" />
           </Pressable>
-        </View>
+        </Animated.View>
       ))}
 
       <TextInput

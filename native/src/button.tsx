@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, Pressable, type PressableProps } from "react-native";
+import { ActivityIndicator, type PressableProps } from "react-native";
 
 import { tokens } from "../tokens";
 import { cn } from "./cn";
+import { AnimatedPressable, usePressScale } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -55,8 +56,12 @@ export function Button({
   loading = false,
   disabled,
   className,
+  style,
+  onPressIn,
+  onPressOut,
   ...props
 }: ButtonProps & { className?: string }) {
+  const press = usePressScale({ style, onPressIn, onPressOut });
   const blocked = disabled || loading;
   const height = { sm: "h-8", md: "h-11", lg: "h-12" }[size];
   const pad = { sm: "px-3", md: "px-4", lg: "px-5" }[size];
@@ -64,9 +69,10 @@ export function Button({
   const text = { sm: "text-sm", md: "text-base", lg: "text-md" }[size];
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       {...props}
+      {...press}
       disabled={blocked}
       accessibilityState={{ disabled: Boolean(blocked), busy: loading }}
       hitSlop={hitSlop}
@@ -81,6 +87,6 @@ export function Button({
     >
       {loading && <ButtonSpinner variant={variant} />}
       <Text className={cn("font-medium", text, LABEL[variant])}>{children}</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

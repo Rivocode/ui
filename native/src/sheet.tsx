@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Modal, Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { useReducedMotion } from "./motion";
 import { Text } from "./text";
 
 export type SheetProps = {
@@ -15,11 +16,12 @@ export type SheetProps = {
 };
 
 export function Sheet({ open, onOpenChange, title, description, children, className }: SheetProps) {
+  const reduced = useReducedMotion();
   return (
     <Modal
       visible={open}
       transparent
-      animationType="slide"
+      animationType={reduced ? "none" : "slide"}
       onRequestClose={() => onOpenChange(false)}
     >
       <View accessibilityViewIsModal className="flex-1 justify-end">

@@ -2,6 +2,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Fill, Presence } from "./motion";
 import { Text } from "./text";
 
 export type Step = {
@@ -35,17 +36,19 @@ export function Steps({ steps, current, className }: StepsProps) {
       className={cn("gap-2", className)}
     >
       <Text className="text-sm text-fg-muted">{position}</Text>
-      <Text font="display" className="text-lg font-semibold text-fg">
-        {step.title}
-      </Text>
-      {step.description !== undefined && (
-        <Text className="text-sm text-fg-muted">{step.description}</Text>
-      )}
+      <Presence swapKey={step.id} exit="none" className="gap-2">
+        <Text font="display" className="text-lg font-semibold text-fg">
+          {step.title}
+        </Text>
+        {step.description !== undefined && (
+          <Text className="text-sm text-fg-muted">{step.description}</Text>
+        )}
+      </Presence>
 
       <View className="mt-1 h-1 w-full overflow-hidden rounded-pill bg-skeleton">
-        <View
+        <Fill
+          percent={percent(index, steps.length)}
           className="h-full rounded-pill bg-accent-text"
-          style={{ width: `${percent(index, steps.length)}%` }}
         />
       </View>
     </View>

@@ -3,6 +3,7 @@ import { GlobalRegistrator } from "@happy-dom/global-registrator";
 import { mock } from "bun:test";
 import * as reactNativeMock from "./react-native-mock";
 import * as nativewindMock from "./nativewind-mock";
+import * as reanimatedMock from "./reanimated-mock";
 
 GlobalRegistrator.register();
 
@@ -15,6 +16,7 @@ GlobalRegistrator.register();
 // testes delas (native/test) recebem este dublê; os testes web nunca importam
 // react-native, entao o mock nao os toca.
 mock.module("react-native", () => reactNativeMock);
+mock.module("react-native-reanimated", () => reanimatedMock);
 
 // O nativewind so existe no app de exemplo, e o provider importa dele o
 // useCssElement, que le a cor de cada papel no CSS compilado. O duble resolve

@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { Checkbox } from "./checkbox";
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { Text } from "./text";
 
 export type TreeNode = {
@@ -130,90 +131,92 @@ export function Tree({
         </Pressable>
       )}
 
-      <View accessibilityRole="list" accessibilityLabel={levelName} className="gap-1">
-        {here.length === 0 && (
-          <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
-        )}
+      <Presence swapKey={trail.map((step) => step.id).join("/")} exit="none">
+        <View accessibilityRole="list" accessibilityLabel={levelName} className="gap-1">
+          {here.length === 0 && (
+            <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
+          )}
 
-        {here.map((node) => {
-          const branch = Boolean(node.children?.length);
-          const leaves = leavesOf(node);
-          const chosen = leaves.filter((leaf) => value.includes(leaf)).length;
-          const full = chosen > 0 && chosen === leaves.length;
+          {here.map((node) => {
+            const branch = Boolean(node.children?.length);
+            const leaves = leavesOf(node);
+            const chosen = leaves.filter((leaf) => value.includes(leaf)).length;
+            const full = chosen > 0 && chosen === leaves.length;
 
-          if (branch) {
-            return (
-              <View key={node.id} className="flex-row items-center gap-2.5">
-                {multiple && (
-                  <Checkbox
-                    accessibilityLabel={`Marcar tudo em ${node.label}`}
-                    hitSlop={{ top: 12, bottom: 12, left: 12, right: 6 }}
-                    checked={full}
+            if (branch) {
+              return (
+                <View key={node.id} className="flex-row items-center gap-2.5">
+                  {multiple && (
+                    <Checkbox
+                      accessibilityLabel={`Marcar tudo em ${node.label}`}
+                      hitSlop={{ top: 12, bottom: 12, left: 12, right: 6 }}
+                      checked={full}
+                      disabled={node.disabled}
+                      onCheckedChange={() => toggle(node)}
+                      className="pl-3"
+                    />
+                  )}
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={describeBranch(node, leaves.length, chosen, multiple)}
+                    accessibilityHint="Abre o nível de dentro"
+                    accessibilityState={{ disabled: node.disabled }}
                     disabled={node.disabled}
-                    onCheckedChange={() => toggle(node)}
-                    className="pl-3"
-                  />
-                )}
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={describeBranch(node, leaves.length, chosen, multiple)}
-                  accessibilityHint="Abre o nível de dentro"
-                  accessibilityState={{ disabled: node.disabled }}
-                  disabled={node.disabled}
-                  onPress={() => enter(node)}
-                  className={`min-h-12 flex-1 flex-row items-center gap-3 rounded-md pr-3 ${
-                    multiple ? "" : "pl-3"
-                  } ${node.disabled ? "opacity-50" : "active:bg-selected"}`}
-                >
-                  <View className="flex-1">
-                    <Text numberOfLines={1} className="text-base text-fg">
-                      {node.label}
-                    </Text>
-                    {multiple && chosen > 0 && !full && (
-                      <Text className="text-xs text-fg-subtle">
-                        {chosen} de {leaves.length} escolhidos
+                    onPress={() => enter(node)}
+                    className={`min-h-12 flex-1 flex-row items-center gap-3 rounded-md pr-3 ${
+                      multiple ? "" : "pl-3"
+                    } ${node.disabled ? "opacity-50" : "active:bg-selected"}`}
+                  >
+                    <View className="flex-1">
+                      <Text numberOfLines={1} className="text-base text-fg">
+                        {node.label}
                       </Text>
-                    )}
-                  </View>
-                  <Chevron direction="right" />
-                </Pressable>
-              </View>
-            );
-          }
+                      {multiple && chosen > 0 && !full && (
+                        <Text className="text-xs text-fg-subtle">
+                          {chosen} de {leaves.length} escolhidos
+                        </Text>
+                      )}
+                    </View>
+                    <Chevron direction="right" />
+                  </Pressable>
+                </View>
+              );
+            }
 
-          if (multiple) {
+            if (multiple) {
+              return (
+                <Checkbox
+                  key={node.id}
+                  checked={full}
+                  disabled={node.disabled}
+                  onCheckedChange={() => toggle(node)}
+                  className="min-h-12 rounded-md px-3 active:bg-selected"
+                >
+                  {node.label}
+                </Checkbox>
+              );
+            }
+
             return (
-              <Checkbox
+              <Pressable
                 key={node.id}
-                checked={full}
+                accessibilityRole="button"
+                accessibilityState={{ selected: full, disabled: node.disabled }}
                 disabled={node.disabled}
-                onCheckedChange={() => toggle(node)}
-                className="min-h-12 rounded-md px-3 active:bg-selected"
+                onPress={() => toggle(node)}
+                className={`min-h-12 flex-row items-center justify-between gap-3 rounded-md px-3 ${
+                  node.disabled ? "opacity-50" : full ? "bg-accent-subtle" : "active:bg-selected"
+                }`}
               >
-                {node.label}
-              </Checkbox>
+                <Text className={`flex-1 text-base ${full ? "text-accent-text" : "text-fg"}`}>
+                  {node.label}
+                </Text>
+                {full && <Text className="text-accent-text">✓</Text>}
+              </Pressable>
             );
-          }
-
-          return (
-            <Pressable
-              key={node.id}
-              accessibilityRole="button"
-              accessibilityState={{ selected: full, disabled: node.disabled }}
-              disabled={node.disabled}
-              onPress={() => toggle(node)}
-              className={`min-h-12 flex-row items-center justify-between gap-3 rounded-md px-3 ${
-                node.disabled ? "opacity-50" : full ? "bg-accent-subtle" : "active:bg-selected"
-              }`}
-            >
-              <Text className={`flex-1 text-base ${full ? "text-accent-text" : "text-fg"}`}>
-                {node.label}
-              </Text>
-              {full && <Text className="text-accent-text">✓</Text>}
-            </Pressable>
-          );
-        })}
-      </View>
+          })}
+        </View>
+      </Presence>
     </View>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
 
@@ -135,7 +136,7 @@ export function MonthView({
         ))}
       </View>
 
-      <View className="flex-row flex-wrap">
+      <Presence swapKey={`${year}-${month}`} exit="none" className="flex-row flex-wrap">
         {cells.map((day, index) => {
           if (day === null) return <View key={`vazio-${index}`} className="w-[14.28%] py-1" />;
 
@@ -178,7 +179,7 @@ export function MonthView({
             </View>
           );
         })}
-      </View>
+      </Presence>
     </View>
   );
 }

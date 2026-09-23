@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { cn } from "./cn";
+import { AnimatedPressable, usePressScale } from "./motion";
 import { Text } from "./text";
 
 export type ToggleProps = {
@@ -13,8 +14,10 @@ export type ToggleProps = {
 };
 
 export function Toggle({ pressed, onPressedChange, children, disabled, className }: ToggleProps) {
+  const press = usePressScale({});
   return (
-    <Pressable
+    <AnimatedPressable
+      {...press}
       accessibilityRole="togglebutton"
       accessibilityState={{ selected: pressed, disabled }}
       disabled={disabled}
@@ -29,7 +32,7 @@ export function Toggle({ pressed, onPressedChange, children, disabled, className
       <Text className={`text-sm font-medium ${pressed ? "text-accent-text" : "text-fg-muted"}`}>
         {children}
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 

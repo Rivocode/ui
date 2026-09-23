@@ -124,12 +124,22 @@ function topLevelBlocks(css: string) {
    fazem sentido. */
 const scales: Record<string, number> = {};
 
+const easings: Record<string, [number, number, number, number]> = {};
+
 for (const block of topLevelBlocks(scalesCss)) {
   if (block.header.startsWith("@media") || block.header.startsWith("@keyframes")) continue;
   if (block.header.includes('data-rc-density="compact"')) continue;
 
   for (const [name, value] of declarations(block.body)) {
     if (name.startsWith("z-") || name.startsWith("tracking-")) continue;
+    const curve = /^cubic-bezier\(([^)]+)\)$/.exec(value);
+    if (curve) {
+      const points = curve[1].split(",").map((point) => Number(point.trim()));
+      if (points.length === 4 && points.every(Number.isFinite)) {
+        easings[name] = points as [number, number, number, number];
+      }
+      continue;
+    }
     const number = toNumber(value) ?? (/^[\d.]+$/.test(value) ? Number(value) : null);
     if (number === null) continue;
     scales[name] = number;
@@ -151,6 +161,7 @@ const tokens = {
     "Gerado por scripts/gen-native-tokens.ts a partir de src/tokens/*.css. Nao editar: rode bun run gen:native.",
   palette: Object.fromEntries(palette),
   scales,
+  easings,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),

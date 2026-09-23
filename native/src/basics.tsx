@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 
 import { cn } from "./cn";
+import { Fill } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -32,7 +33,7 @@ export function Progress({ value, label, className }: ProgressProps) {
       accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped) }}
       className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
     >
-      <View className="h-full rounded-pill bg-accent-text" style={{ width: `${clamped}%` }} />
+      <Fill percent={clamped} className="h-full rounded-pill bg-accent-text" />
     </View>
   );
 }
