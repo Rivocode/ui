@@ -46,6 +46,18 @@ export const BABEL_V4 = [
   { mark: /["']nativewind\/babel["']/, why: "o `babel-preset-expo` ja liga o plugin de worklets sozinho quando acha o reanimated: aqui ele entra duas vezes" },
 ];
 
+export const REQUIRED_PEERS = Object.keys(PACKAGE.peerDependencies ?? {}).filter(
+  (name) => !PACKAGE.peerDependenciesMeta?.[name]?.optional,
+);
+
+export function missingPeers(root) {
+  const file = resolve(root, "package.json");
+  if (!existsSync(file)) return [...REQUIRED_PEERS];
+  const json = JSON.parse(readFileSync(file, "utf8"));
+  const installed = { ...json.devDependencies, ...json.dependencies };
+  return REQUIRED_PEERS.filter((name) => installed[name] === undefined);
+}
+
 export const POSTCSS_PLUGINS = ["@tailwindcss/postcss"];
 
 export const BROWSERSLIST = ["chrome 130", "safari 18", "firefox 130"];
@@ -347,7 +359,22 @@ function main() {
     );
   }
 
-  if (clashes.length + stale.length > 0) process.exit(1);
+  const missing = missingPeers(root);
+
+  if (missing.length > 0) {
+    console.error(
+      `\nFalta${missing.length > 1 ? "m" : ""} ${missing.length} peer(s) obrigatorio(s) no package.json:\n` +
+        missing.map((name) => `    ${name}`).join("\n") +
+        `\n\n    npx expo install ${missing.join(" ")}\n` +
+        "\n    O `expo install` escolhe a versao do seu SDK. Sem o" +
+        "\n    react-native-keyboard-controller o RivoProvider nao monta: e dele o" +
+        "\n    KeyboardProvider que o provider traz dentro.",
+    );
+  } else {
+    console.log(`\n  = peers obrigatorios    os ${REQUIRED_PEERS.length} estao no package.json`);
+  }
+
+  if (clashes.length + stale.length + missing.length > 0) process.exit(1);
 
   if (dry) {
     console.log("\n`--dry-run`: nada foi escrito.");

@@ -12,6 +12,7 @@ import { useCssElement } from "nativewind";
 
 import { tokens, type RivoNativeColorRole, type RivoNativeTheme } from "../tokens";
 import { FontProvider, fontComplaints, fontWarning, resolveFonts, type RivoFonts } from "./font";
+import { KeyboardRoot } from "./keyboard";
 import { ToastProvider } from "./toast";
 
 export type RivoNativeColors = Record<RivoNativeColorRole, string>;
@@ -229,8 +230,7 @@ export function RivoProvider({
     if (complaints.length > 0) console.warn(fontWarning(complaints));
   }, [sans, display, mono, isFontLoaded]);
 
-  const asked =
-    theme === "system" ? "unspecified" : theme === "rivocode-light" ? "light" : "dark";
+  const asked = theme === "system" ? "unspecified" : theme === "rivocode-light" ? "light" : "dark";
 
   useEffect(() => {
     if (typeof Appearance.setColorScheme === "function") {
@@ -280,9 +280,11 @@ export function RivoProvider({
   return (
     <RivoContext.Provider value={value}>
       <FontProvider value={families}>
-        <View className="flex-1 bg-bg">
-          <ToastProvider>{children}</ToastProvider>
-        </View>
+        <KeyboardRoot>
+          <View className="flex-1 bg-bg">
+            <ToastProvider>{children}</ToastProvider>
+          </View>
+        </KeyboardRoot>
       </FontProvider>
     </RivoContext.Provider>
   );

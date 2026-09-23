@@ -129,8 +129,9 @@ type Taken = { local: string; source: string };
 
 function takenFromReactNative(code: string): Taken[] {
   const taken: Taken[] = [];
-  for (const hit of code.matchAll(/import\s+(?:type\s+)?\{([^{}]*)\}\s+from\s+"react-native"/g)) {
-    for (const piece of hit[1]!.split(",")) {
+  for (const hit of code.matchAll(/import\s+(type\s+)?\{([^{}]*)\}\s+from\s+"react-native"/g)) {
+    if (hit[1]) continue;
+    for (const piece of hit[2]!.split(",")) {
       const clean = piece.trim();
       if (clean === "" || clean.startsWith("type ")) continue;
       const [source, local] = clean.split(/\s+as\s+/);

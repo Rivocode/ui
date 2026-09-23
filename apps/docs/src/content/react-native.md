@@ -156,7 +156,7 @@ recusa o que conseguiu medir.
 
 ## A paridade, peça por peça
 
-**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-23:** 69 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**91 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-23:** 70 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 16 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -181,14 +181,14 @@ recusa o que conseguiu medir.
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion` |
 | `ColorPicker` | ✔ traduz | sai na raiz; controlada, e sem seta: cada amostra é um alvo de 44px com o desenho de 32 por dentro, e são seis por linha, não dez |
-| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho |
+| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
 | `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
-| `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento |
+| `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado |
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
 | `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados |
 | `EventCalendar` | ✕ não porta | grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar` |
@@ -221,11 +221,11 @@ recusa o que conseguiu medir.
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
-| `ScrollArea` | ✕ não porta | rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha |
+| `ScrollArea` | ✔ traduz | a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo em foco e prende um `footer` que sobe com ele |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
 | `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
 | `Separator` | ✔ traduz | só a linha horizontal |
-| `Sheet` | ✔ traduz | só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento |
+| `Sheet` | ✔ traduz | só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado |
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Skeleton` | ✔ traduz | mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento |
 | `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório |
@@ -257,9 +257,16 @@ recusa o que conseguiu medir.
 Num app Expo:
 
 ```sh
-npx expo install nativewind@preview react-native-css tailwindcss @tailwindcss/postcss postcss
+npx expo install nativewind@preview react-native-css react-native-reanimated react-native-keyboard-controller tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 ```
+
+O `react-native-keyboard-controller` é o que impede o teclado de cobrir o
+campo, e ele vem incluído no Expo Go do SDK 57. O `KeyboardProvider` que ele
+pede **já está dentro do `RivoProvider`**: não monte outro. Se o seu app já
+tinha um por fora, o provider reaproveita o seu. A tela de formulário é o
+`ScrollArea`, que rola até o campo em foco e prende a ação num `footer` que
+sobe com o teclado; o `Sheet` e o `Dialog` sobem sozinhos.
 
 O `@preview` não é enfeite: no npm a tag `latest` do NativeWind ainda é a
 4.2.6, e este pacote pede a 5 (`nativewind: ">=5.0.0-preview.1"` no peer).

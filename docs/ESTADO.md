@@ -83,21 +83,24 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia, e o que falta nao e nosso.** Das 91 pecas do web, **74 tem
-par no celular**, e as 17 que faltam faltam por decisao escrita. Ate 28/08 eram
+**A fila esta vazia, e o que falta nao e nosso.** Das 91 pecas do web, **75 tem
+par no celular**, e as 16 que faltam faltam por decisao escrita. Ate 28/08 eram
 18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
 apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
-`Menu`". O `Menu` passou a aceitar, e ela saiu. As 17 que sobraram sao todas
+`Menu`". O `Menu` passou a aceitar, e ela saiu. Em 22/09 saiu mais uma, o `ScrollArea`:
+no celular ele virou a tela de formulario que desvia do teclado
+(`react-native-keyboard-controller`, peer obrigatorio, com o `KeyboardProvider`
+dentro do `RivoProvider`). As 16 que sobraram sao todas
 plataforma: ponteiro que nao existe no toque, teclado que o aparelho nao tem,
-navegacao que no celular e o router, e duas que a plataforma ja resolve melhor
+navegacao que no celular e o router, e uma que a plataforma ja resolve melhor
 do que nos.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
-| Traduz, mesmo nome |      69 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
+| Traduz, mesmo nome |      70 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
 | Traduz, outro nome |       5 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ContextMenu` vira `Menu`       |
 | `○ na fila`        |       0 | `FILA_DECLARADA` esta vazia, e o acordo e que continue                                       |
-| `✕ nao porta`      |      17 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
+| `✕ nao porta`      |      16 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
 O `EventCalendar` merece o paragrafo, porque ele foi o teste do acordo do nono
 artefato - e o acordo foi cumprido do jeito mais util: a fila nao foi zerada
@@ -768,7 +771,7 @@ bun run check:pecas                                # 91 pecas
 bun run check:testes                               # 1397 testes em 120 arquivos
 bun test                                           # 1397 passam, 0 falham, 3711 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
-bun run check:paridade                             # 91 linhas: 69 traduz, 5 vira, 17 nao, 0 fila
+bun run check:paridade                             # 91 linhas: 70 traduz, 5 vira, 16 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 71 tokens, 55 papeis obrigatorios

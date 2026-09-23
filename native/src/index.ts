@@ -18,6 +18,7 @@ export { Field, Input, type FieldProps, type InputProps } from "./field";
 export { Checkbox, type CheckboxProps } from "./checkbox";
 export { Switch, type SwitchProps } from "./switch";
 export { Sheet, type SheetProps } from "./sheet";
+export { ScrollArea, type ScrollAreaProps } from "./scroll-area";
 export { useToast } from "./toast";
 export { DataList, type DataListProps } from "./data-list";
 export { QueryBoundary, type QueryBoundaryProps } from "./query-boundary";

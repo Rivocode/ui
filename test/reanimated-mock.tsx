@@ -37,10 +37,11 @@ export function cancelAnimation(_value: unknown) {}
 
 export function useSharedValue<T>(initial: T) {
   const [, rerender] = useReducer((count: number) => count + 1, 0);
-  const ref = useRef<{ value: T } | null>(null);
+  const ref = useRef<{ value: T; _isReanimatedSharedValue: true } | null>(null);
   if (!ref.current) {
     let current = initial;
     ref.current = {
+      _isReanimatedSharedValue: true as const,
       get value() {
         return current;
       },
@@ -51,6 +52,12 @@ export function useSharedValue<T>(initial: T) {
     };
   }
   return ref.current;
+}
+
+export function isSharedValue(value: unknown): boolean {
+  return (
+    (value as { _isReanimatedSharedValue?: unknown } | null)?._isReanimatedSharedValue === true
+  );
 }
 
 export function useAnimatedStyle<T>(worklet: () => T): T {

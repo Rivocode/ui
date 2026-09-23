@@ -13,7 +13,7 @@ nativo em <https://ds.rivocode.com.br/react-native.md>.
 ## Instalação
 
 ```sh
-npx expo install nativewind@preview react-native-css react-native-reanimated
+npx expo install nativewind@preview react-native-css react-native-reanimated react-native-keyboard-controller
 npm install -D tailwindcss @tailwindcss/postcss postcss
 npm install @rivocode/ui-native
 npx rivocode-ui-native-init
@@ -40,6 +40,19 @@ Toda animação usa as durações e a curva do web (`tokens.scales["duration-*"]
 e `tokens.easings`) e respeita o "reduzir movimento" do sistema, lido em tempo
 real: com ele ligado nada anima, e o `Dialog` e o `Sheet` abrem sem transição.
 
+O `react-native-keyboard-controller` também é peer obrigatório, e é ele que
+impede o teclado de cobrir o campo. Não há nada para montar: o `RivoProvider`
+já traz o `KeyboardProvider` dentro, e se o seu app já tinha um por fora, ele
+reaproveita o seu em vez de montar o segundo. Com ele, o `Sheet` (e o que abre
+nele: `Select`, `Combobox`, `Menu`, `DatePicker`, `TimePicker`, `TreeSelect`)
+e o `Dialog` sobem com o teclado quadro a quadro, e a tela de formulário é o
+`ScrollArea`, que rola até o campo em foco e prende o botão de enviar num
+`footer` que sobe junto. Com o "reduzir movimento" ligado a folha e o rodapé
+pulam direto para o lugar final, sem acompanhar o teclado. Ele vem incluído no
+Expo Go do SDK 57, e o `npx expo install` escolhe a versão do seu SDK. Não use
+o `KeyboardAvoidingView` do React Native por cima das peças: ele desconta o
+teclado uma segunda vez.
+
 ### Os sete arquivos, e o que cada um segura
 
 O `npx rivocode-ui-native-init` escreve a receita inteira e imprime o que fez:
@@ -54,6 +67,8 @@ Receita do @rivocode/ui-native em meu-app/:
   + nativewind-env.d.ts   criado
   ~ app.json              expo.userInterfaceStyle: "light" -> "automatic"
   + package.json          browserslist adicionado
+
+  = peers obrigatorios    os 5 estao no package.json
 ```
 
 `+` é arquivo novo, `~` é uma chave de JSON trocada com o valor antigo à vista,
@@ -63,6 +78,13 @@ inteiro e já existe com outro conteúdo nunca é reescrito calado: ele sai como
 porque reescrever um `babel.config.js` ou um `postcss.config.mjs` apaga a
 configuração de outra biblioteca e o app quebra num lugar que não parece ter
 relação com este comando. `--dry-run` mostra o plano sem escrever nada.
+
+Depois dos arquivos ele confere os peers obrigatórios no `package.json` do app
+(os que o manifesto deste pacote não marca como opcionais: `react`,
+`react-native`, `nativewind`, `react-native-reanimated` e
+`react-native-keyboard-controller`). Faltando algum, ele imprime o
+`npx expo install` com os nomes que faltam e termina com código 1: sem o
+`react-native-keyboard-controller` o `RivoProvider` não monta.
 
 São sete, e cada um por um motivo que morde:
 

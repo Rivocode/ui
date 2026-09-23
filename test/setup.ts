@@ -4,6 +4,7 @@ import { mock } from "bun:test";
 import * as reactNativeMock from "./react-native-mock";
 import * as nativewindMock from "./nativewind-mock";
 import * as reanimatedMock from "./reanimated-mock";
+import * as keyboardMock from "./keyboard-controller-mock";
 
 GlobalRegistrator.register();
 
@@ -17,6 +18,7 @@ GlobalRegistrator.register();
 // react-native, entao o mock nao os toca.
 mock.module("react-native", () => reactNativeMock);
 mock.module("react-native-reanimated", () => reanimatedMock);
+mock.module("react-native-keyboard-controller", () => keyboardMock);
 
 // O nativewind so existe no app de exemplo, e o provider importa dele o
 // useCssElement, que le a cor de cada papel no CSS compilado. O duble resolve

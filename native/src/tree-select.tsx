@@ -74,8 +74,8 @@ export function TreeSelect({
       </Pressable>
 
       <Sheet open={open} onOpenChange={setOpen} title={label}>
-        <View className="gap-3">
-          <ScrollView className="max-h-80" keyboardShouldPersistTaps="handled">
+        <View className="shrink gap-3">
+          <ScrollView className="max-h-80 shrink" keyboardShouldPersistTaps="handled">
             <Tree
               items={items}
               value={draft}

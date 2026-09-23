@@ -2,7 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 import { Text } from "react-native";
 
 import { AlertDialog, Button, Dialog, Sheet, useToast } from "../src";
-import { act, byClass, byLabel, byRole, render, renderError, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, byType, render, renderError, textOf } from "./helpers";
 
 describe("Dialog", () => {
   test("fechado não monta nada; aberto mostra título e corpo", () => {
@@ -46,9 +46,14 @@ describe("Dialog", () => {
 
   test("o leitor de tela nao vaza para a tela de tras, e o titulo e cabecalho", () => {
     const screen = render(<Dialog open onOpenChange={() => {}} title="Nota 4813" />);
+    const modal = byType(screen, "View").filter((node) => node.props.accessibilityViewIsModal);
+    expect(modal).toHaveLength(1);
     expect(
-      byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal),
-    ).toBe(true);
+      modal[0]!.findAll((node) => node.props.accessibilityRole === "header").length,
+    ).toBeGreaterThan(0);
+    expect(
+      modal[0]!.findAll((node) => node.props.accessibilityLabel === "Fechar").length,
+    ).toBeGreaterThan(0);
     const [heading] = byRole(screen, "header");
     expect(heading).toBeDefined();
     expect(heading.props.children).toBe("Nota 4813");

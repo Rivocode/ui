@@ -34,4 +34,4 @@ que a escolha fique escrita ali, não que a página troque.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Combobox` - a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Combobox` - a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

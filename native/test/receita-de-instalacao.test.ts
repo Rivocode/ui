@@ -3,7 +3,16 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { BABEL_NAMES, BABEL_V4, RECIPE, globalCss, nativewindEnv, plan } from "../scripts/init.mjs";
+import {
+  BABEL_NAMES,
+  BABEL_V4,
+  RECIPE,
+  REQUIRED_PEERS,
+  globalCss,
+  missingPeers,
+  nativewindEnv,
+  plan,
+} from "../scripts/init.mjs";
 
 function app(extra: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), "receita-"));
@@ -262,6 +271,37 @@ describe("a receita de instalacao", () => {
       const clashes = steps.filter((step) => step.action === "conflito");
 
       expect(clashes.map((step) => step.name)).toEqual(["app.json", "package.json"]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("os peers obrigatorios", () => {
+  test("saem do manifesto, sem os opcionais, e o do teclado esta entre eles", () => {
+    const manifest = JSON.parse(readFileSync(join(import.meta.dir, "../package.json"), "utf8"));
+    const optional = Object.keys(manifest.peerDependenciesMeta);
+    expect(optional.length).toBeGreaterThan(3);
+    expect(REQUIRED_PEERS).toContain("react-native-keyboard-controller");
+    expect(REQUIRED_PEERS).toContain("react-native-reanimated");
+    for (const name of optional) expect(REQUIRED_PEERS).not.toContain(name);
+    expect(REQUIRED_PEERS.length + optional.length).toBe(
+      Object.keys(manifest.peerDependencies).length,
+    );
+  });
+
+  test("o app sem o controlador de teclado ouve o nome dele, e o app completo nao ouve nada", () => {
+    const root = app();
+    try {
+      expect(missingPeers(root)).toEqual(REQUIRED_PEERS);
+
+      const installed = Object.fromEntries(REQUIRED_PEERS.map((name: string) => [name, "*"]));
+      const { "react-native-keyboard-controller": _, ...partial } = installed;
+      writeFileSync(join(root, "package.json"), JSON.stringify({ dependencies: partial }));
+      expect(missingPeers(root)).toEqual(["react-native-keyboard-controller"]);
+
+      writeFileSync(join(root, "package.json"), JSON.stringify({ dependencies: installed }));
+      expect(missingPeers(root)).toEqual([]);
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

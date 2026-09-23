@@ -2,7 +2,7 @@ import "./generated.css";
 
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -24,6 +24,7 @@ import {
   Input,
   Progress,
   RivoProvider,
+  ScrollArea,
   Select,
   Separator,
   Sheet,
@@ -152,10 +153,40 @@ function Painel({
   const [brand, setBrand] = useState("#d4f34a");
   const [attachments, setAttachments] = useState<PickedFile[]>([]);
   const [refused, setRefused] = useState<string | null>(null);
+  const [desk, setDesk] = useState<"nota" | "movimento">("nota");
+
+  const emit = () =>
+    toast.add({ title: "Nota 4816 emitida", description: "O PDF foi para o e-mail." });
+
+  const wizardActions = (
+    <WizardFooter className="mt-0 flex-row gap-2">
+      <Button variant="secondary" disabled={wizard.isFirst} onPress={wizard.back}>
+        Voltar
+      </Button>
+      <Button
+        onPress={() =>
+          wizard.isLast
+            ? toast.add({ title: "Nota emitida", description: "Foi por e-mail." })
+            : wizard.next(() => {
+                if (wizard.step === 0 && !taker.trim()) {
+                  setTakerError("Informe o tomador para seguir.");
+                  return false;
+                }
+                return true;
+              })
+        }
+      >
+        {wizard.isLast ? "Emitir" : "Avançar"}
+      </Button>
+    </WizardFooter>
+  );
 
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView contentContainerClassName="gap-4 p-4">
+      <ScrollArea
+        contentContainerClassName="gap-4 p-4"
+        footer={desk === "movimento" ? wizardActions : <Button onPress={emit}>Emitir nota</Button>}
+      >
         <PageHeader
           title="Painel"
           description="Agosto, até agora."
@@ -312,7 +343,11 @@ function Painel({
           </CardHeader>
           <CardContent className="gap-4">
             <Field label="Razão social">
-              <Input placeholder="Quem recebe a nota" defaultValue="Clínica São Lucas" />
+              <Input
+                placeholder="Quem recebe a nota"
+                defaultValue="Clínica São Lucas"
+                onFocus={() => setDesk("nota")}
+              />
             </Field>
             <Field label="CNPJ" description="A máscara é do campo; o valor vai limpo.">
               <MaskedInput
@@ -350,7 +385,11 @@ function Painel({
               </Field>
             </Fieldset>
             <Field label="Observações">
-              <Textarea placeholder="Aparece no rodapé da nota." rows={3} />
+              <Textarea
+                placeholder="Aparece no rodapé da nota."
+                rows={3}
+                onFocus={() => setDesk("nota")}
+              />
             </Field>
             <Checkbox checked={sendEmail} onCheckedChange={setSendEmail}>
               Enviar o PDF por e-mail
@@ -358,13 +397,10 @@ function Painel({
             <Switch checked={monthly} onCheckedChange={setMonthly}>
               Emitir todo mês, sem perguntar
             </Switch>
-            <Button
-              onPress={() =>
-                toast.add({ title: "Nota 4816 emitida", description: "O PDF foi para o e-mail." })
-              }
-            >
-              Emitir nota
-            </Button>
+            <Text className="text-sm text-fg-muted">
+              O botão de emitir mora no rodapé da tela e sobe junto com o teclado; o campo em foco
+              para acima dele.
+            </Text>
           </CardContent>
         </Card>
 
@@ -383,6 +419,10 @@ function Painel({
                 { label: "Supermercado Tambaú", value: "3" },
                 { label: "Construtora Manaíra", value: "4" },
                 { label: "Hotel Ponta do Seixas", value: "5" },
+                { label: "Padaria Cabo Branco", value: "6" },
+                { label: "Escola Mangabeira", value: "7" },
+                { label: "Farmácia Bessa", value: "8" },
+                { label: "Oficina Altiplano", value: "9" },
               ]}
               value={customer}
               onValueChange={setCustomer}
@@ -444,7 +484,8 @@ function Painel({
             <CardTitle>Movimento</CardTitle>
             <CardDescription>
               Assistente, formulário, abas e toque, nos tempos e na curva do web. Com “reduzir
-              movimento” ligado no sistema, nada anima.
+              movimento” ligado no sistema, nada anima. Com o campo em foco, os botões do assistente
+              descem para o rodapé e sobem com o teclado.
             </CardDescription>
           </CardHeader>
           <CardContent className="gap-4">
@@ -459,6 +500,7 @@ function Painel({
                   }}
                   invalid={takerError !== undefined}
                   placeholder="Clínica São Lucas"
+                  onFocus={() => setDesk("movimento")}
                 />
               </Field>
             )}
@@ -472,26 +514,7 @@ function Painel({
                 Lembrar o cliente antes do vencimento
               </Checkbox>
             )}
-            <WizardFooter className="mt-0 flex-row gap-2">
-              <Button variant="secondary" disabled={wizard.isFirst} onPress={wizard.back}>
-                Voltar
-              </Button>
-              <Button
-                onPress={() =>
-                  wizard.isLast
-                    ? toast.add({ title: "Nota emitida", description: "Foi por e-mail." })
-                    : wizard.next(() => {
-                        if (wizard.step === 0 && !taker.trim()) {
-                          setTakerError("Informe o tomador para seguir.");
-                          return false;
-                        }
-                        return true;
-                      })
-                }
-              >
-                {wizard.isLast ? "Emitir" : "Avançar"}
-              </Button>
-            </WizardFooter>
+            {desk !== "movimento" && wizardActions}
 
             <Separator />
 
@@ -611,7 +634,7 @@ function Painel({
             />
           </CardContent>
         </Card>
-      </ScrollView>
+      </ScrollArea>
 
       <Sheet
         open={open !== null}

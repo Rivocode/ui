@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 import { Modal, Pressable, View } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { useKeyboardPadding } from "./keyboard";
 import { useReducedMotion } from "./motion";
 import { Text } from "./text";
+
+const PASS_THROUGH = { pointerEvents: "box-none" } as const;
 
 export type DialogProps = {
   open: boolean;
@@ -25,6 +29,7 @@ export function Dialog({
   className,
 }: DialogProps) {
   const reduced = useReducedMotion();
+  const keyboard = useKeyboardPadding();
   return (
     <Modal
       visible={open}
@@ -32,21 +37,27 @@ export function Dialog({
       animationType={reduced ? "none" : "fade"}
       onRequestClose={() => onOpenChange(false)}
     >
-      <View accessibilityViewIsModal className="flex-1 items-center justify-center p-6">
+      <Animated.View accessibilityViewIsModal className="flex-1" style={keyboard}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Fechar"
           className="absolute inset-0 bg-overlay"
           onPress={() => onOpenChange(false)}
         />
-        <View className={cn("w-full rounded-xl border border-border bg-surface p-6", className)}>
-          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
-            {title}
-          </Text>
-          {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}
-          {children && <View className="mt-4">{children}</View>}
+        <View style={PASS_THROUGH} className="flex-1 items-center justify-center p-6">
+          <View className={cn("w-full rounded-xl border border-border bg-surface p-6", className)}>
+            <Text
+              accessibilityRole="header"
+              font="display"
+              className="text-xl font-semibold text-fg"
+            >
+              {title}
+            </Text>
+            {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}
+            {children && <View className="mt-4">{children}</View>}
+          </View>
         </View>
-      </View>
+      </Animated.View>
     </Modal>
   );
 }

@@ -285,7 +285,7 @@ const PARITY: Record<string, Row> = {
   },
   Combobox: {
     state: "traduz",
-    note: "a lista abre numa folha com busca sem acento; `items` na raiz, não `ComboboxItem` por filho",
+    note: "a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho",
   },
   DatePicker: {
     state: "traduz",
@@ -297,7 +297,7 @@ const PARITY: Record<string, Row> = {
   },
   Dialog: {
     state: "traduz",
-    note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento",
+    note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado",
   },
   EmptyState: {
     state: "traduz",
@@ -530,7 +530,7 @@ const PARITY: Record<string, Row> = {
   Separator: { state: "traduz", note: "só a linha horizontal" },
   Sheet: {
     state: "traduz",
-    note: "só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento",
+    note: "só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado",
   },
   Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento" },
   Slider: {
@@ -1146,8 +1146,37 @@ const PARITY: Record<string, Row> = {
     note: "aparece ao pousar o ponteiro, e não há pousar no toque",
   },
   ScrollArea: {
-    state: "nao",
-    note: "rolagem é da plataforma: `ScrollView` e `FlatList`, com a barra que o sistema desenha",
+    state: "traduz",
+    note:
+      "a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo " +
+      "em foco e prende um `footer` que sobe com ele",
+    page:
+      "Traduz, e muda de assunto no caminho. No web a peça existe pela **barra**: a do sistema " +
+      "ocupa largura no Windows e desenha diferente em cada plataforma. No celular a barra é do " +
+      "sistema e fica sendo, e o problema de rolagem que dói é outro: **o teclado cobre o campo**. " +
+      "Formulário no fim da tela some debaixo dele, e o botão de enviar fica escondido até alguém " +
+      "fechar o teclado para achá-lo.\n\n" +
+      "Então o `ScrollArea` nativo é a tela de formulário. Por baixo é o `KeyboardAwareScrollView` " +
+      "da `react-native-keyboard-controller`: ao focar um campo, a rolagem anda até ele parar " +
+      "`bottomOffset` pontos acima do teclado (16 por padrão), no mesmo quadro em que o teclado " +
+      "sobe, nos dois sistemas. O toque num item da lista não fecha o teclado " +
+      '(`keyboardShouldPersistTaps="handled"`).\n\n' +
+      "```tsx\n" +
+      "<ScrollArea\n" +
+      '  contentContainerClassName="gap-4 p-5"\n' +
+      "  footer={<Button onPress={emitir}>Emitir nota</Button>}\n" +
+      ">\n" +
+      '  <Field label="Descrição">…</Field>\n' +
+      "</ScrollArea>\n" +
+      "```\n\n" +
+      "O `footer` é a ação presa embaixo da rolagem, e ele **sobe junto com o teclado**: o botão " +
+      "de enviar fica sempre à vista. A altura dele entra na conta de onde o campo em foco para, " +
+      'então nenhum campo fica escondido atrás do botão. Com o "reduzir movimento" ligado, o ' +
+      "rodapé pula direto para cima do teclado em vez de acompanhá-lo; a rolagem até o campo " +
+      "continua, porque sem ela o campo fica coberto.\n\n" +
+      "Não há `horizontal`: fila de cartões que rola de lado é `ScrollView` puro, e não tem campo " +
+      "para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o " +
+      "`KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.",
   },
   Sidebar: {
     state: "nao",

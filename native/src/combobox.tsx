@@ -87,14 +87,14 @@ export function Combobox(props: ComboboxProps) {
       </Pressable>
 
       <Sheet open={open} onOpenChange={close} title={label}>
-        <View className="gap-3">
+        <View className="shrink gap-3">
           <SearchInput
             value={query}
             onValueChange={setQuery}
             placeholder={searchPlaceholder}
             autoFocus
           />
-          <ScrollView className="max-h-72" keyboardShouldPersistTaps="handled">
+          <ScrollView className="max-h-72 shrink" keyboardShouldPersistTaps="handled">
             {visible.length === 0 ? (
               <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
             ) : (

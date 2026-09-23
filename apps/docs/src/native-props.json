@@ -2118,6 +2118,41 @@
       }
     ]
   },
+  "ScrollArea": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "bottomOffset",
+        "type": "number",
+        "required": false,
+        "note": "Em pontos, quanto o campo em foco fica acima do teclado - ou acima do `footer`, quando ha um."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a caixa de fora, a que ocupa a tela."
+      },
+      {
+        "name": "contentContainerClassName",
+        "type": "string",
+        "required": false,
+        "note": "Veste o conteudo que rola: `gap-4 p-5` e o comum."
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que fica preso embaixo da rolagem e sobe junto com o teclado: a acao de enviar o formulario."
+      },
+      {
+        "name": "footerClassName",
+        "type": "string",
+        "required": false,
+        "note": "Veste a faixa do `footer`: fundo, borda e respiro."
+      }
+    ]
+  },
   "SearchInput": {
     "entry": "native/src/index.ts",
     "props": [

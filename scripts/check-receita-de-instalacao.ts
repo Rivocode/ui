@@ -35,6 +35,13 @@
  * Entao o `examples/native` nao tem arquivo de Babel de proposito, o comando
  * nao escreve nenhum, e a guarda cobra que o exemplo continue assim: no dia em
  * que ele precisar de um, a receita tambem precisa, e o comando esta mentindo.
+ *
+ * Os peers obrigatorios sao o ultimo fato, e o unico que nao e arquivo: o
+ * `RivoProvider` passou a trazer o `KeyboardProvider` do
+ * `react-native-keyboard-controller` dentro, entao o app sem esse pacote nao
+ * monta a primeira tela. O comando le a lista do proprio `native/package.json`
+ * (todo peer que nao e `optional`) e cobra do app; a guarda cobra a mesma lista
+ * do exemplo, que e onde ela e medida.
  */
 import { existsSync } from "node:fs";
 import { countAtLeast } from "./varredura";
@@ -51,6 +58,8 @@ const recipe = (await import(`${import.meta.dir}/../${RECIPE}`)) as {
   USER_INTERFACE_STYLE: string;
   METRO_WRAPPER: string;
   RECIPE: { name: string }[];
+  REQUIRED_PEERS: string[];
+  missingPeers: (root: string) => string[];
   globalCss: (spec?: string) => string;
   postcssConfig: () => string;
   metroConfig: () => string;
@@ -189,6 +198,18 @@ compare(
     '\n    "Specifier, found ()".',
 );
 
+countAtLeast("peer obrigatorio da receita", recipe.REQUIRED_PEERS.length, 5);
+
+compare(
+  "package.json: faltam peers obrigatorios no exemplo.",
+  [],
+  recipe.missingPeers(EXAMPLE),
+  "O comando cobra do app todo peer que o `native/package.json` nao marca como" +
+    "\n    opcional; o exemplo que nao os tem nao roda o que a receita promete. O" +
+    "\n    `react-native-keyboard-controller` e o caso novo: o `RivoProvider` traz o" +
+    "\n    `KeyboardProvider` dele dentro, e sem o pacote o provider nao monta.",
+);
+
 const strayBabel = recipe.BABEL_NAMES.filter((name) => existsSync(`${EXAMPLE}/${name}`));
 
 countAtLeast("nome de arquivo de Babel procurado", recipe.BABEL_NAMES.length, 10);
@@ -228,6 +249,7 @@ console.log(
     `${EXAMPLE}: ${mineDirectives.length} diretivas de CSS, ${recipe.POSTCSS_PLUGINS.length} plugin de PostCSS, ` +
     `${recipe.METRO_WRAPPER}, userInterfaceStyle ${recipe.USER_INTERFACE_STYLE}, ` +
     `browserslist com ${recipe.BROWSERSLIST.length}, ${mineTyping.length} fatos de tipagem, ` +
+    `${recipe.REQUIRED_PEERS.length} peers obrigatorios instalados, ` +
     `e nenhum arquivo de Babel nos dois ` +
     `(${recipe.BABEL_V4.length} marca da v4 recusada em ${recipe.BABEL_NAMES.length} nomes).`,
 );
