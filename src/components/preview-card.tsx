@@ -29,7 +29,7 @@ export function PreviewCardContent({
             "w-64 max-w-[calc(100vw-2rem)] rounded-lg border border-border bg-surface-raised",
             "p-[var(--rc-pad-panel-sm)] shadow-3",
             "font-sans text-base text-fg outline-none",
-            "origin-[var(--transform-origin)] transition-[opacity,transform]",
+            "origin-[var(--transform-origin)] transition-[opacity,scale]",
             "duration-[var(--rc-duration-fast)] ease-rc",
             "data-[starting-style]:scale-[0.97] data-[starting-style]:opacity-0",
             "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",

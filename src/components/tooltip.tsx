@@ -95,7 +95,7 @@ export function TooltipContent({
             "max-w-[calc(100vw-1rem)] rounded-md border border-border bg-surface-raised",
             "px-2.5 py-1.5 shadow-2",
             "font-sans text-sm text-fg",
-            "origin-[var(--transform-origin)] transition-[opacity,transform]",
+            "origin-[var(--transform-origin)] transition-[opacity,scale]",
             "duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
             "data-[starting-style]:scale-[0.97] data-[starting-style]:opacity-0",
             "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",

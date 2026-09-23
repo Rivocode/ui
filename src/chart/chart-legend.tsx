@@ -50,7 +50,7 @@ export function ChartLegendContent({
             <span
               aria-hidden="true"
               className={cn(
-                "size-2 shrink-0 rounded-sm transition-opacity",
+                "size-2 shrink-0 rounded-sm transition-opacity duration-[var(--rc-duration-fast)] ease-rc",
                 escondida && "opacity-30",
               )}
               style={{ background: series.color ?? `var(--color-${key})` }}

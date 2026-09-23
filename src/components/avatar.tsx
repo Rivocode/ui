@@ -35,7 +35,17 @@ export type AvatarProps = ComponentProps<typeof BaseAvatar.Root> &
 export function Avatar({ className, size, src, alt = "", fallback, ...props }: AvatarProps) {
   return (
     <BaseAvatar.Root {...props} className={cn(avatarVariants({ size }), className)}>
-      {src && <BaseAvatar.Image src={src} alt={alt} className="size-full object-cover" />}
+      {src && (
+        <BaseAvatar.Image
+          src={src}
+          alt={alt}
+          className={cn(
+            "size-full object-cover",
+            "transition-opacity duration-[var(--rc-duration-base)] ease-rc",
+            "data-[starting-style]:opacity-0",
+          )}
+        />
+      )}
       {fallback && <BaseAvatar.Fallback delay={src ? 400 : 0}>{fallback}</BaseAvatar.Fallback>}
     </BaseAvatar.Root>
   );

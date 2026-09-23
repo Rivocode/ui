@@ -45,6 +45,20 @@
   }
 }
 
+@keyframes rc-shift-in {
+  from {
+    opacity: 0;
+    translate: var(--rc-shift, 0) 0;
+  }
+}
+
+@keyframes rc-shift-out {
+  to {
+    opacity: 0;
+    translate: var(--rc-shift, 0) 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --rc-duration-fast: 0ms;

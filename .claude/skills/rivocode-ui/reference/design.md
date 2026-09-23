@@ -135,7 +135,15 @@ Título display aperta a letra: `tracking-display` acompanha `font-display` em
 
 Movimento: `--rc-duration-fast` para retorno de toque (cor de hover),
 `--rc-duration-base` para o que entra e sai, `--rc-duration-sheet` para a folha.
-Animar `width` e `height` custa layout; prefira `opacity` e `transform`.
+Animar `width` e `height` custa layout; prefira `opacity`, `scale` e
+`translate`. No Tailwind 4, `scale-*`, `translate-*` e `rotate-*` escrevem as
+propriedades `scale`, `translate` e `rotate`, e não `transform`: com
+`transition-[opacity,transform]` o painel aparece esmaecendo e a escala entra
+de estalo. Nomeie a propriedade que muda (`transition-[opacity,scale]`) ou use
+`transition-transform`, que cobre as quatro. A duração vem sempre do token,
+`duration-[var(--rc-duration-fast)]`: `transition-colors` sozinho cai nos
+150ms do Tailwind, que não zeram com "reduzir movimento". Animação em laço
+(`animate-spin`, `animate-pulse`) leva `motion-reduce:animate-none` ao lado.
 
 Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
 aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240. **Produto de

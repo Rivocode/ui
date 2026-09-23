@@ -109,7 +109,7 @@ export function TagsInput({
             disabled={disabled}
             onClick={() => change(tags.filter((current) => current !== tag))}
             className={cn(
-              "relative text-fg-subtle transition-colors hover:text-fg",
+              "relative text-fg-subtle transition-colors duration-[var(--rc-duration-fast)] ease-rc hover:text-fg",
               "after:absolute after:-inset-1.5",
               "outline-none focus-visible:ring-2 focus-visible:ring-ring",
               classNames?.remove,

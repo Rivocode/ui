@@ -45,7 +45,7 @@ export function Switch({ className, children, labelClassName, classNames, ...pro
       <BaseSwitch.Thumb
         className={cn(
           "size-4 rounded-pill bg-fg-muted",
-          "transition-[transform,background-color] duration-[var(--rc-duration-base)] ease-rc",
+          "transition-[translate,background-color] duration-[var(--rc-duration-base)] ease-rc",
           "data-[checked]:translate-x-5",
           "data-[checked]:not-data-disabled:bg-surface-raised",
           "data-[disabled]:bg-fg-disabled",
