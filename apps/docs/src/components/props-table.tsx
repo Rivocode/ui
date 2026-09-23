@@ -32,8 +32,8 @@ export function PropsTable({
   compact?: boolean
 }) {
   // A tabela e a parte mais alta da pagina, entao ela suspende junto com o
-  // resto em vez de chegar depois: o JSON tem 520 KB, e o salto de altura ao
-  // fim do download era a maior parte do CLS da pagina de peca.
+  // resto em vez de chegar depois: o salto de altura ao fim do download era a
+  // maior parte do CLS da pagina de peca.
   const piece = use(pieceOf(component))
   const props = propsOf(piece)
 

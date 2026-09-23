@@ -10,38 +10,30 @@
  *
  * O `bun run check:props` falha quando este arquivo se afasta dos tipos.
  *
- * O JSON tem 500 KB - toda prop de toda peca, com nota e versao -, e so a
- * pagina de uma peca aberta olha para ele. Ele chega por import dinamico: como
- * import estatico, ele entrava inteiro no chunk de quem o citasse, e a tabela
- * de props e a ultima coisa que alguem le numa pagina.
+ * O JSON tem 500 KB - toda prop de toda peca, com nota e versao -, e a pagina
+ * de uma peca so le as tabelas dela. Ele chega fatiado, um chunk por pagina, pelo
+ * `propsByPage` em `vite.config.ts`: inteiro, ele era o maior download da
+ * pagina de peca e o ultimo a chegar.
  * ------------------------------------------------------------------------- */
 
+import { LOADERS } from 'virtual:component-props'
 import type { Piece, Prop } from '@/prop-types'
 
 export type { Prop, Piece } from '@/prop-types'
 
 /*
- * Uma requisicao por sessao, e nao uma por tabela. Uma pagina de peca com seis
- * partes monta sete tabelas, e sem isto seriam sete promessas do mesmo chunk.
- */
-let pending: Promise<Map<string, Piece>> | null = null
-
-function catalog() {
-  pending ??= import('@/component-props.json').then(
-    (mod) => new Map<string, Piece>(Object.entries(mod.default as Record<string, Piece>)),
-  )
-  return pending
-}
-
-/*
  * Uma promessa por peca, e nao uma por render: e por essa identidade que o
- * `use()` reconhece o dado que ja chegou.
+ * `use()` reconhece o dado que ja chegou. Peca sem tabela nao pede nada.
  */
 const byComponent = new Map<string, Promise<Piece | undefined>>()
 
 export function pieceOf(component: string): Promise<Piece | undefined> {
-  const found = byComponent.get(component) ?? catalog().then((all) => all.get(component))
-  byComponent.set(component, found)
+  let found = byComponent.get(component)
+  if (!found) {
+    const load = LOADERS[component]
+    found = load ? load().then((mod) => mod.default[component]) : Promise.resolve(undefined)
+    byComponent.set(component, found)
+  }
   return found
 }
 

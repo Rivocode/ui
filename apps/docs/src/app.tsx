@@ -1,7 +1,7 @@
 import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
 import { BookOpen, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
-import { ENTRIES, FAMILIES, entriesOfFamily } from '@/catalog'
+import { ENTRIES, FAMILIES, entriesOfFamily, preloadPage } from '@/catalog'
 import { GUIDES } from '@/guides'
 import { Logo } from '@/components/logo'
 import { Home } from '@/pages/home'
@@ -249,6 +249,9 @@ function Nav({
 
 export function App() {
   const { route, navigate } = useRoute()
+  // Idempotente: cada loader guarda a propria promessa, entao repetir a cada
+  // render so devolve o que ja esta em voo. Ver o `preloadPage`.
+  if (route.kind === 'component') preloadPage(route.slug)
   // As duas usam a janela inteira: 256px de lista de nomes ao lado de uma
   // pagina que ja e uma lista de nomes nao compra nada.
   const fullWidth = route.kind === 'home' || route.kind === 'demo'
