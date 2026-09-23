@@ -3,6 +3,7 @@ import { View, type LayoutChangeEvent } from "react-native";
 
 import { type RivoNativeColorRole } from "../tokens";
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { useRivo } from "./provider";
 
 const STROKE = 2;
@@ -64,7 +65,8 @@ export function Sparkline({
     const span = Math.max(0, ...data) - floor;
 
     return (
-      <View
+      <Entrance
+        effect="fadeIn"
         style={{ height }}
         className={cn("w-24 flex-row items-end gap-0.5", className)}
         {...access}
@@ -79,7 +81,7 @@ export function Sparkline({
             }}
           />
         ))}
-      </View>
+      </Entrance>
     );
   }
 
@@ -112,7 +114,8 @@ export function Sparkline({
         });
 
   return (
-    <View
+    <Entrance
+      effect="fadeIn"
       style={{ height }}
       className={cn("w-24 overflow-hidden", className)}
       onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}
@@ -134,6 +137,6 @@ export function Sparkline({
           }}
         />
       ))}
-    </View>
+    </Entrance>
   );
 }

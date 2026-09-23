@@ -489,7 +489,7 @@ export function DataTable<Row>({
   );
 
   const body = (
-    <TableBody>
+    <TableBody key={loading ? "loading" : "rows"} className={loading ? undefined : "animate-appear"}>
       {loading ? (
         Array.from({ length: skeletonRows }, (_, row) => (
           <TableRow key={`carregando-${row}`}>

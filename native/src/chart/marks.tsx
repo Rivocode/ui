@@ -9,11 +9,11 @@ const AnimatedPath = Animated.createAnimatedComponent(Path);
 export type ChartBarProps = {
   /** A borda esquerda, em px do quadro que a moldura mediu. */
   x: number;
-  /** O topo da barra, em px. Quando o valor muda, e ele que anda. */
+  /** O topo da barra, em px. Na entrada ele sobe da base; quando o valor muda, e ele que anda. */
   y: number;
   /** A largura, em px. */
   width: number;
-  /** A altura, em px. Anda junto com o `y`, e a base fica parada. */
+  /** A altura, em px. Na entrada cresce do zero; anda junto com o `y`, e a base fica parada. */
   height: number;
   /** A cor final, como o `colors` do quadro entrega: `colors.receita`. */
   fill: string;
@@ -22,10 +22,11 @@ export type ChartBarProps = {
 };
 
 export function ChartBar({ x, y, width, height, fill, radius = 0 }: ChartBarProps) {
+  const base = y + Math.max(0, height);
   const left = useTween(x);
-  const top = useTween(y);
+  const top = useTween(y, "slow", base);
   const wide = useTween(Math.max(0, width));
-  const tall = useTween(Math.max(0, height));
+  const tall = useTween(Math.max(0, height), "slow", 0);
 
   const animatedProps = useAnimatedProps(() => {
     "worklet";
@@ -48,10 +49,20 @@ export type ChartLineProps = {
   stroke: string;
   /** A espessura do traco, em px. */
   strokeWidth?: number;
+  /**
+   * O `y` de onde a linha sobe na entrada, em px do quadro: a base do eixo.
+   * Sem ele, a linha nasce deitada no ponto mais baixo.
+   */
+  baseline?: number;
 };
 
-export function ChartLine({ points, stroke, strokeWidth = 2 }: ChartLineProps) {
-  const flat = useTween(points.flatMap((point) => [point.x, point.y]));
+export function ChartLine({ points, stroke, strokeWidth = 2, baseline }: ChartLineProps) {
+  const floor = baseline ?? Math.max(...points.map((point) => point.y));
+  const flat = useTween(
+    points.flatMap((point) => [point.x, point.y]),
+    "slow",
+    points.flatMap((point) => [point.x, floor]),
+  );
 
   const animatedProps = useAnimatedProps(() => {
     "worklet";

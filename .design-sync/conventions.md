@@ -43,6 +43,7 @@ cor literal nem `z-index` numerico.**
 | Texto | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
 | Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
+| Entrada | `animate-enter`, `animate-appear`, `animate-pop`, `animate-fill`, `animate-reveal` |
 
 **Preencher e escrever texto sao tokens diferentes.** `bg-danger` preenche e
 recebe `text-danger-fg` por cima. `text-danger-text` e o vermelho que se le
@@ -56,6 +57,15 @@ outros dois: `--rc-z-base` para trazer um elemento de volta ao plano do
 conteudo, e `--rc-z-sticky` para **cabecalho, coluna congelada e barra de acao
 que gruda ao rolar**. Cabecalho grudado com `--rc-z-dropdown` fica na frente do
 menu que ele mesmo abre; e o erro que a falta desta linha ja produziu.
+
+**As pecas entram na montagem, e a moldura nao.** O que chega entra - o
+grafico se desenha, a barra de progresso enche do zero, o `Alert` e o
+`EmptyState` sobem 4px esmaecendo, o corpo do `DataTable` esmaece ao sair do
+esqueleto - e o que e layout (`Card`, `PageHeader`, `Sidebar`) fica parado. As
+classes de `Entrada` sao as mesmas que as pecas usam, para o que voce monta por
+fora: todas duram um token, zeram com "reduzir movimento", rodam uma vez por
+montagem e nao prendem estado depois de acabar. `animate-none` desliga numa
+instancia.
 
 **Altura de controle vem da densidade**, nunca cravada:
 `h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.
@@ -148,8 +158,9 @@ mesmo global:
   O `ChartContainer` cuida do movimento sozinho: toda marca que anima (`Line`,
   `Bar`, `Area`, `Pie`, `Radar`, `RadialBar`, `Scatter`) sai com
   `animationDuration` de `--rc-duration-slow`, `animationEasing` de `--rc-ease`
-  e `isAnimationActive` desligado no primeiro quadro e com "reduzir movimento".
-  O grafico nasce pronto e so anda quando o dado muda. Marca com
+  e `isAnimationActive` ligado antes de a marca montar, e desligado com "reduzir
+  movimento". Na primeira vez que aparece com dados, o grafico se desenha, e
+  quando o dado muda cada marca anda ate o valor novo. Marca com
   `isAnimationActive={false}` fica parada. O `useChartMotion()` devolve o mesmo
   trio para quem desenha com a Recharts fora da moldura:
 
@@ -159,8 +170,9 @@ mesmo global:
   <Line dataKey="pagas" stroke="var(--color-pagas)" {...movimento} />
   ```
 
-  A `ChartDonut` e a `ChartRadial` andam ate o valor novo do mesmo jeito; a
-  `Sparkline` fica parada, porque aparece as dezenas numa tabela.
+  A `ChartDonut` e a `ChartRadial` entram varrendo do zero e andam ate o valor
+  novo do mesmo jeito; a `Sparkline` so esmaece ao entrar, e nao anda na troca
+  de dados, porque aparece as dezenas numa tabela.
 
   Os formatadores do eixo e da dica sao os mesmos do resto da biblioteca, e
   estao logo abaixo.
@@ -311,10 +323,11 @@ import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE }
 ```
 
 `ChartBar` e `ChartLine` são as marcas que andam: desenhe a barra e a linha com
-elas, dentro da função da moldura, no lugar de `Rect` e `Path` crus. Nascem no
-lugar e, quando o dado muda, vão até o valor novo com os tokens de movimento,
-pelo Reanimated; com "reduzir movimento", saltam. A rosca e o arco já fazem isso
-sozinhos, e a `Sparkline` fica parada.
+elas, dentro da função da moldura, no lugar de `Rect` e `Path` crus. Na
+montagem elas entram (a barra cresce da base, a linha sobe da `baseline`, ou do
+ponto mais baixo) e, quando o dado muda, vão até o valor novo com os tokens de
+movimento, pelo Reanimated; com "reduzir movimento", nascem no lugar e saltam.
+A rosca e o arco fazem o mesmo sozinhos, e a `Sparkline` só esmaece ao entrar.
 
 A `Sparkline` fica fora deste subcaminho, na raiz e desenhada com `View`: ela é
 o slot `chart` do `Stat`, o `Stat` sai da raiz, e trazê-la para cá cobraria o

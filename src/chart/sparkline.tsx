@@ -60,7 +60,7 @@ export function Sparkline({
 
   return (
     <div
-      className={cn("h-8 w-24", className)}
+      className={cn("h-8 w-24 [&_.recharts-surface]:animate-appear", className)}
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}

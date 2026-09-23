@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -56,7 +57,7 @@ export function EmptyState({
   const art = illustration ?? glyph;
 
   return (
-    <View className={cn("items-center gap-2 px-6 py-10", className)}>
+    <Entrance className={cn("items-center gap-2 px-6 py-10", className)}>
       {art !== undefined && art !== null && art !== false && (
         <View {...HIDDEN} className="mb-1 items-center justify-center">
           {art}
@@ -65,6 +66,6 @@ export function EmptyState({
       <Text className="text-lg font-semibold text-fg">{title}</Text>
       <Text className="text-center text-sm text-fg-muted">{description}</Text>
       {action && <View className="mt-2">{action}</View>}
-    </View>
+    </Entrance>
   );
 }

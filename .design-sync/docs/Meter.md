@@ -14,6 +14,10 @@ Medida de quanto de uma capacidade esta em uso: espaço, cota, limite.
 o nome de um formatador da casa (`percent`, `currencyShort`, `compact`) ou uma
 função sua. Sem rótulo visível, passe `aria-label`.
 
+## Movimento
+
+A barra enche do zero na montagem (`animate-fill`, `--rc-duration-slow`), o mesmo do `Progress`, e depois anda pela largura quando o valor muda. Com "reduzir movimento", nasce no valor.
+
 ## Quando não usar
 
 Para tarefa que anda e termina (enviar um arquivo, gerar um relatório), use

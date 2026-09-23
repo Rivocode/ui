@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { ActivityIndicator, Image, View } from "react-native";
 
 import { cn } from "./cn";
-import { Fill } from "./motion";
+import { Entrance, Fill } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -33,7 +33,7 @@ export function Progress({ value, label, className }: ProgressProps) {
       accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped) }}
       className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
     >
-      <Fill percent={clamped} className="h-full rounded-pill bg-accent-text" />
+      <Fill percent={clamped} enter className="h-full rounded-pill bg-accent-text" />
     </View>
   );
 }
@@ -106,12 +106,12 @@ export type AlertProps = {
 export function Alert({ tone = "info", title, children, className }: AlertProps) {
   const styles = ALERT_TONE[tone] ?? INFO_TONE;
   return (
-    <View
+    <Entrance
       accessibilityRole="alert"
       className={cn("gap-1 rounded-md border p-4", styles.box, className)}
     >
       <Text className={`text-sm font-medium ${styles.text}`}>{title}</Text>
       {children && <Text className="text-sm text-fg-muted">{children}</Text>}
-    </View>
+    </Entrance>
   );
 }

@@ -4,6 +4,7 @@ import { useDirection } from "@base-ui/react/direction-provider";
 import { X } from "lucide-react";
 import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
+import { useArrivals } from "../lib/arrivals";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
 import { badgeVariants } from "./badge";
@@ -173,6 +174,7 @@ export function FilterBar({
   const leaving = useRef<{ id: string; index: number } | null>(null);
   const rtl = useDirection() === "rtl";
   const [more, setMore] = useState({ before: false, after: false });
+  const arrived = useArrivals(filters.map((filter) => filter.id));
 
   useEffect(() => {
     const list = listRef.current;
@@ -267,7 +269,10 @@ export function FilterBar({
           )}
         >
           {filters.map((filter, index) => (
-            <li key={filter.id} className={cn("shrink-0", classNames?.item)}>
+            <li
+              key={filter.id}
+              className={cn("shrink-0", arrived(filter.id) && "animate-pop", classNames?.item)}
+            >
               <FilterChip
                 label={filter.label}
                 value={filter.value}

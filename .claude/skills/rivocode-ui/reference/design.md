@@ -146,10 +146,37 @@ de estalo. Nomeie a propriedade que muda (`transition-[opacity,scale]`) ou use
 (`animate-spin`, `animate-pulse`) leva `motion-reduce:animate-none` ao lado.
 
 Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
-aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240. **Produto de
-operação não anima entrada**: landing e hero animam uma vez, e só. As durações
-zeram com `prefers-reduced-motion`, então quem pediu menos movimento vê o
-conteúdo já assentado.
+aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240: isso é de
+landing e hero, e não de tela de operação.
+
+**As peças entram na montagem.** A regra antiga dizia que produto de operação
+não anima entrada; o dono decidiu o contrário, e o critério agora é um só: a
+entrada ajuda a perceber o que chegou ou o que mudou. O dado que chega entra (o
+gráfico se desenha, a barra de progresso enche do zero, o aviso e o estado vazio
+sobem 4px esmaecendo, a pastilha de contagem cresce, o corpo da tabela esmaece
+ao sair do esqueleto). A moldura não entra: `Card`, `PageHeader`, `Sidebar`,
+`Separator` e controle no estado inicial ficam parados, porque a tela inteira
+piscando a cada navegação é ruído, e o `Switch` que desliza ao montar sugere uma
+mudança que não aconteceu. As peças já trazem a entrada delas; os utilitários
+estão aqui para o que você monta por fora:
+
+| Classe | Efeito | Duração |
+|---|---|---|
+| `animate-enter` | esmaece e sobe 4px | `base` |
+| `animate-appear` | só esmaece | `base` |
+| `animate-pop` | cresce de 60% esmaecendo | `fast` |
+| `animate-fill` | a barra enche do zero pela escala horizontal; junto com `origin-left` | `slow` |
+| `animate-reveal` | aparece da esquerda para a direita, por recorte | `slow` |
+
+As cinco terminam em `backwards`: vale o quadro de partida enquanto a animação
+roda, e depois dela não sobra nada, então o estado final é sempre o do próprio
+elemento, e se a animação não rodar o conteúdo continua lá. Roda uma vez por
+montagem: re-render não repete, só um nó novo no DOM. Com
+`prefers-reduced-motion` as durações zeram e nada entra animado. Para desligar
+numa instância, `className="animate-none"`. E não ponha entrada em linha que
+reordena nem em linha virtualizada: mover o nó no DOM reinicia a animação, e a
+ordenação vira um pisca-pisca. O nível certo é o corpo da tabela ou a lista
+inteira.
 
 ## Ícones
 

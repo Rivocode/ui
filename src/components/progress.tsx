@@ -68,7 +68,7 @@ export function Progress({
       >
         <BaseProgress.Indicator
           className={cn(
-            "h-full rounded-pill bg-accent-text",
+            "h-full origin-left animate-fill rounded-pill bg-accent-text",
             "transition-[width] duration-[var(--rc-duration-base)] ease-rc",
             "data-[indeterminate]:w-1/5 data-[indeterminate]:animate-indeterminate",
             "motion-reduce:data-[indeterminate]:animate-none",

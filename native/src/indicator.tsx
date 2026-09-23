@@ -2,6 +2,7 @@ import { useRef, type ReactNode } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
 
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { Text } from "./text";
 
 const WIDEST_MARKED = 48;
@@ -69,7 +70,8 @@ export function Indicator({
       {children}
 
       {show && (
-        <View
+        <Entrance
+          effect="popIn"
           accessible
           accessibilityRole="text"
           accessibilityLabel={label}
@@ -81,7 +83,7 @@ export function Indicator({
           )}
         >
           {dot !== true && <Text className="text-xs font-medium text-danger-fg">{written}</Text>}
-        </View>
+        </Entrance>
       )}
     </View>
   );

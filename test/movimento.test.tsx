@@ -160,9 +160,17 @@ test("toda transicao dura um token, que zera quando a pessoa pede menos moviment
   expect(fixed).toEqual([]);
 });
 
-const TOKEN_TIMED = new Set(["animate-rise", "animate-fade"]);
+const contract = await Bun.file("src/tokens/contract.css").text();
+const TOKEN_TIMED = new Set(
+  [...contract.matchAll(/--(animate-[\w-]+):\s*[\w-]+ var\(--rc-duration-(?:fast|base|slow|sheet)\)/g)].map(
+    (hit) => hit[1]!,
+  ),
+);
 
 test("toda animacao para ou zera quando a pessoa pede menos movimento", async () => {
+  expect([...TOKEN_TIMED]).toEqual(
+    expect.arrayContaining(["animate-rise", "animate-fade", "animate-enter", "animate-fill"]),
+  );
   const files = await sources();
   expect(files.length).toBeGreaterThan(80);
 

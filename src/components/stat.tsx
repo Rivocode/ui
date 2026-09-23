@@ -90,7 +90,7 @@ export function Stat({
 
   return (
     <Card {...rest} className={className}>
-      <CardContent className="py-4">
+      <CardContent className="animate-appear py-4">
         <div className="flex items-start justify-between gap-3">
           {icon && (
             <span

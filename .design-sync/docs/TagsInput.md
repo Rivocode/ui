@@ -61,6 +61,10 @@ qual.
 />
 ```
 
+## Movimento
+
+Só a ficha que chega depois cresce ao entrar (`animate-pop`, `--rc-duration-fast`). As que já vinham no valor nascem paradas: elas são o formulário, e não algo que acabou de acontecer.
+
 ## Quando não usar
 
 Quando as opções já existem, use `Combobox` com `multiple` e as fichas: ele

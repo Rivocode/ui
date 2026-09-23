@@ -48,7 +48,7 @@ A frase não é enfeite: ela já decide.
 
 | Quando a frase diz | Fica decidido |
 |---|---|
-| operação, o dia inteiro, muita linha | `density="compact"`, esqueleto 1 ou 2, nenhuma animação de entrada, sombra só no que flutua |
+| operação, o dia inteiro, muita linha | `density="compact"`, esqueleto 1 ou 2, entrada só do que chega (a das peças), nenhuma na moldura, sombra só no que flutua |
 | cadastro, uma vez por semana | `density="comfortable"`, esqueleto 3, `max-w-3xl` centralizado |
 | painel, para decidir | esqueleto 4, `font-display` no número, indicador antes de gráfico |
 | marca, primeira visita | respiro dobrado, `animate-rise` escalonado, `shadow-glow` num CTA só |

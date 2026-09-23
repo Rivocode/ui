@@ -215,6 +215,10 @@ A fileira sai como `<ul>` com `role="list"` explícito. O `list-style: none` do
 preflight tira a semântica de lista no Safari, e é ela que faz o leitor de tela
 anunciar "3 itens" sem que ninguém conte nada.
 
+## Movimento
+
+Só a ficha de filtro aplicada depois da montagem cresce ao entrar (`animate-pop`, `--rc-duration-fast`); as que já estavam nascem paradas.
+
 ## Quando não usar
 
 Quando as opções são poucas, fixas e cabem à vista, use `ToggleGroup`: escolher

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import Animated, { useAnimatedProps } from "react-native-reanimated";
+import Animated, { useAnimatedProps, type SharedValue } from "react-native-reanimated";
 import Svg, { Circle, Line, Path } from "react-native-svg";
 
 import type { RivoNativeColorRole } from "../../tokens";
@@ -141,7 +141,7 @@ function Band({ from, to, stroke }: { from: number; to: number; stroke: string }
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 function Reach({ from, to, stroke }: { from: number; to: number; stroke: string }) {
-  const end = useTween(to);
+  const end = useTween(to, "slow", from);
 
   const animatedProps = useAnimatedProps(() => {
     "worklet";
@@ -177,24 +177,56 @@ function SegmentedArc({
   track: string;
 }) {
   const lit = Math.round((percentage / 100) * segments);
+  const reach = useTween(lit, "slow", 0);
   const first = -sweep / 2;
   const step = segments > 1 ? sweep / (segments - 1) : 0;
 
   return (
     <>
       {Array.from({ length: segments }, (_, index) => (
-        <Line
+        <Tick
           key={index}
-          x1={0}
-          y1={-46}
-          x2={0}
-          y2={-38}
-          stroke={index < lit ? paint : track}
-          strokeWidth={2.4}
-          strokeLinecap="round"
+          index={index}
+          reach={reach}
+          paint={paint}
+          track={track}
           rotation={first + index * step}
         />
       ))}
     </>
+  );
+}
+
+const AnimatedLine = Animated.createAnimatedComponent(Line);
+
+function Tick({
+  index,
+  reach,
+  paint,
+  track,
+  rotation,
+}: {
+  index: number;
+  reach: SharedValue<number>;
+  paint: string;
+  track: string;
+  rotation: number;
+}) {
+  const animatedProps = useAnimatedProps(() => {
+    "worklet";
+    return { stroke: index < reach.value - 0.5 ? paint : track };
+  });
+
+  return (
+    <AnimatedLine
+      animatedProps={animatedProps}
+      x1={0}
+      y1={-46}
+      x2={0}
+      y2={-38}
+      strokeWidth={2.4}
+      strokeLinecap="round"
+      rotation={rotation}
+    />
   );
 }

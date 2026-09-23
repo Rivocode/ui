@@ -4,6 +4,7 @@ import { Pressable, View } from "react-native";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { EmptyState, type EmptyStateProps } from "./empty-state";
 import { Skeleton } from "./skeleton";
 import { Text } from "./text";
@@ -121,7 +122,7 @@ export function DataList<Row>({
 
   if (isError) {
     return (
-      <View className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
+      <Entrance className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
         <View className="gap-1">
           {errorTitle && <Text className="text-sm font-medium text-danger-text">{errorTitle}</Text>}
           <Text className="text-sm text-danger-text">{errorMessage}</Text>
@@ -131,7 +132,7 @@ export function DataList<Row>({
             {retryLabel}
           </Button>
         )}
-      </View>
+      </Entrance>
     );
   }
 
@@ -179,7 +180,7 @@ export function DataList<Row>({
   }
 
   return (
-    <View className={cn("gap-1", className)}>
+    <Entrance effect="fadeIn" className={cn("gap-1", className)}>
       {visible.map(({ row, key }) => {
         const content = onRowPress ? (
           <Pressable
@@ -207,6 +208,6 @@ export function DataList<Row>({
           </View>
         );
       })}
-    </View>
+    </Entrance>
   );
 }

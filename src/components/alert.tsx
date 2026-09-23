@@ -68,7 +68,7 @@ export function Alert({
     <div
       {...props}
       role={isUrgent ? "alert" : "status"}
-      className={cn(alertVariants({ tone }), className)}
+      className={cn(alertVariants({ tone }), "animate-enter", className)}
     >
       {icon && (
         <span aria-hidden="true" className="mt-0.5 shrink-0">

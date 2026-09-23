@@ -19,6 +19,10 @@ as outras não, e é essa linha que a pessoa procura quando abre a trilha.
 faz a linha prometer que ele já ocorreu, que é o erro que uma trilha de
 auditoria não pode cometer.
 
+## Movimento
+
+Cada `TimelineItem` entra esmaecendo e subindo 4px (`animate-enter`, `--rc-duration-base`), sem escalonar: na montagem a trilha inteira entra de uma vez, e depois só o evento novo entra. Com "reduzir movimento", aparece parada.
+
 ## Quando não usar
 
 Para um formulário longo em etapas, use `Steps`. O `Steps` é assistente: olha

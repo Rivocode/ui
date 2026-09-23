@@ -27,6 +27,10 @@ maior alvo legítimo do catálogo (`Avatar` grande e controle `lg` na densidade
 confortável medem exatamente isso), a peça avisa no console em desenvolvimento.
 Para marcar uma linha inteira, ponha a contagem ao lado, com um `Badge`.
 
+## Movimento
+
+A pastilha cresce de 60% esmaecendo quando aparece (`animate-pop`, `--rc-duration-fast`): ela avisa que chegou algo, e o movimento curto puxa o olho sem virar alarme. A troca de número não repete a entrada.
+
 ## No React Native
 
 Traduz, e o que muda é quem carrega o nome acessível. No web o número é escondido do leitor e um texto só para ele entra ao lado; no nativo a pastilha inteira é UM elemento de acessibilidade, e o `label` (aqui obrigatório) é o que ele anuncia. O leitor lê o filho ("Notificações, botão") e a pastilha em seguida ("3 notificações"), e nunca um "3" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não existe no React Native, e borda ali ocupa por dentro da caixa.

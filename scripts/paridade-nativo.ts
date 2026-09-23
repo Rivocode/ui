@@ -208,11 +208,13 @@ const PARITY: Record<string, Row> = {
       "parada só do leitor de tela.\n\n" +
       "**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura " +
       "vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e " +
-      "`ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`), as duas no mesmo " +
-      "caminho `/chart`. Elas nascem no lugar e, quando o valor muda, andam até o novo com a " +
+      "`ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`, `baseline`), as duas no " +
+      "mesmo caminho `/chart`. Na montagem elas entram (a barra cresce da base; a linha sobe " +
+      "da `baseline`, ou do ponto mais baixo) e, quando o valor muda, andam até o novo com a " +
       "duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o " +
-      "`react-native-svg`: a mesma decisão do web, de que o gráfico nasce pronto e só anda " +
-      'quando o dado muda. Com "reduzir movimento" elas saltam. A linha anda ponto a ponto ' +
+      "`react-native-svg`: a mesma decisão do web, de que o gráfico se desenha ao aparecer e " +
+      'anda quando o dado muda. Com "reduzir movimento" elas nascem no lugar e saltam. A linha ' +
+      "anda ponto a ponto " +
       "quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com " +
       "`Rect` e `Path` crus continua podendo, e fica parado.",
   },
@@ -569,8 +571,8 @@ const PARITY: Record<string, Row> = {
       "ele desaparece na tela do telefone sob luz) e a largura vem do pai, com a altura em " +
       "`height`. **Sem `label` ela é escondida do leitor de tela de propósito**: uma linha " +
       'sem descrição não diz nada a quem não a vê, e anunciar "imagem" seria pior do que ' +
-      "calar. E ela fica **parada**, como no web: nem a primeira pintura nem a troca de " +
-      "dados anima.",
+      "calar. E ela entra **só esmaecendo**, como no web, em `duration-base`: não se desenha " +
+      'nem anda na troca de dados, e com "reduzir movimento" aparece parada.',
   },
   Spinner: { state: "traduz", note: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
   Stat: {

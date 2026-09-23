@@ -70,6 +70,10 @@ balão é a que o ponteiro percorre nesse quadro (a 800px/s, cerca de 13px em
 só se lê com o ponteiro parado, isto está declarado como limite e não como
 defeito a corrigir.
 
+## Movimento
+
+A faixa aparece da esquerda para a direita na montagem, por recorte (`animate-reveal`, `--rc-duration-slow`): é uma linha do tempo, e se revela no sentido dela. Com "reduzir movimento", aparece inteira.
+
 ## Quando não usar
 
 Quando a grandeza é contínua e a forma da curva importa, use `Sparkline`: o

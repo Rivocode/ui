@@ -76,7 +76,7 @@ export function Indicator({
           aria-hidden={label ? "true" : undefined}
           className={cn(
             "pointer-events-none absolute -top-1 -right-1 z-[var(--rc-z-base)]",
-            "flex items-center justify-center rounded-pill bg-danger text-danger-fg",
+            "flex animate-pop items-center justify-center rounded-pill bg-danger text-danger-fg",
             "ring-2 ring-bg",
             dot ? "size-2.5" : "h-4 min-w-4 px-1 font-mono text-[0.65rem] leading-none",
             classNames?.badge,

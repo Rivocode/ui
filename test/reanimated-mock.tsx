@@ -35,10 +35,13 @@ export function withRepeat(animation: number | number[], times: number) {
 
 export function cancelAnimation(_value: unknown) {}
 
+export const sharedStarts: unknown[] = [];
+
 export function useSharedValue<T>(initial: T) {
   const [, rerender] = useReducer((count: number) => count + 1, 0);
   const ref = useRef<{ value: T; _isReanimatedSharedValue: true } | null>(null);
   if (!ref.current) {
+    sharedStarts.push(initial);
     let current = initial;
     ref.current = {
       _isReanimatedSharedValue: true as const,
@@ -78,6 +81,7 @@ export type LayoutBuilder = {
   duration: (value: number) => LayoutBuilder;
   easing: (value: unknown) => LayoutBuilder;
   reduceMotion: (value: unknown) => LayoutBuilder;
+  withInitialValues: (value: unknown) => LayoutBuilder;
 };
 
 function builder(preset: string, config: Config = {}): LayoutBuilder {
@@ -88,6 +92,7 @@ function builder(preset: string, config: Config = {}): LayoutBuilder {
     duration: next("duration"),
     easing: next("easing"),
     reduceMotion: next("reduceMotion"),
+    withInitialValues: next("initialValues"),
   };
 }
 

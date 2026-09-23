@@ -4,6 +4,7 @@ import { Field as BaseField } from "@base-ui/react/field";
 import { X } from "lucide-react";
 import { useState, type ComponentProps, type KeyboardEvent } from "react";
 
+import { useArrivals } from "../lib/arrivals";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
 import { inputVariants } from "./field";
@@ -79,6 +80,8 @@ export function TagsInput({
     }
   }
 
+  const arrived = useArrivals(tags);
+
   return (
     <div
       className={cn(
@@ -98,6 +101,7 @@ export function TagsInput({
           key={tag}
           className={cn(
             "flex items-center gap-1 rounded-sm bg-accent-subtle px-1.5 py-0.5",
+            arrived(tag) && "animate-pop",
             "text-sm text-fg",
             classNames?.tag,
           )}

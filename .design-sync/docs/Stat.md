@@ -51,6 +51,10 @@ inteiro; para casa decimal, passe a função: `deltaFormat={(value) => percent(v
 O que chega ao formatador é o **módulo** do `delta`: quem carrega o sinal é a
 seta, e o "alta de"/"queda de" que o leitor de tela ouve antes do número.
 
+## Movimento
+
+O conteúdo do cartão esmaece na montagem (`animate-appear`, `--rc-duration-base`), e a moldura fica parada: o número chega, o cartão já estava ali. Os dígitos não contam do zero, de propósito: número que corre até o valor é ilegível enquanto corre, e é ele que a pessoa veio ler.
+
 ## No React Native
 
 Traduz: o `@rivocode/ui-native` exporta `Stat` - `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

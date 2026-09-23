@@ -41,10 +41,11 @@ peça: um `Stat` ao lado, ou o título do cartão.
 
 ## Movimento
 
-Quando os dados mudam, cada fatia anda do ângulo velho ao novo, com a duração e
-a curva dos tokens (`--rc-duration-slow`, `--rc-ease`). Na primeira pintura ela
-não gira do zero: a rosca nasce pronta, pela mesma decisão do `ChartContainer`.
-Com "reduzir movimento", a troca é seca.
+Na primeira vez que aparece, a rosca varre do zero: as fatias saem juntas do
+topo e cada uma se abre até o seu ângulo. Quando os dados mudam, cada fatia anda
+do ângulo velho ao novo. Nos dois casos, com a duração e a curva dos tokens
+(`--rc-duration-slow`, `--rc-ease`), pela mesma decisão do `ChartContainer`.
+Com "reduzir movimento", a rosca nasce pronta e a troca é seca.
 
 ## As cores
 

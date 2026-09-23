@@ -73,6 +73,10 @@ voz, e o espaço reservado é o que a biblioteca garante.
 Os dois saem `aria-hidden`: o título e a descrição já dizem o que o desenho
 mostra. Se ele disser algo que o texto não diz, o que falta é texto.
 
+## Movimento
+
+O estado vazio entra na montagem: esmaece e sobe 4px em `--rc-duration-base` (`animate-enter`), o mesmo do `Alert`. Dentro do `DataTable`, do `QueryBoundary` e do `ChartContainer`, é o que marca que a consulta voltou, e voltou sem nada. Com "reduzir movimento", aparece parado.
+
 ## No React Native
 
 Traduz, com `description` obrigatória pelo mesmo motivo do web, e com os dois espaços de desenho: `icon` e `illustration`, os dois escondidos do leitor de tela.

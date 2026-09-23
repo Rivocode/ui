@@ -479,6 +479,12 @@
         "note": "A cor final do traco: `colors.receita`."
       },
       {
+        "name": "baseline",
+        "type": "number",
+        "required": false,
+        "note": "O `y` de onde a linha sobe na entrada, em px do quadro: a base do eixo."
+      },
+      {
         "name": "strokeWidth",
         "type": "number",
         "required": false,

@@ -160,6 +160,10 @@ nome e o padrão são os mesmos nas quatro peças de consulta.
 Sem `onRetry` não há botão de nova tentativa. Aviso com botão que não leva a
 lugar nenhum é pior que aviso sem botão.
 
+## Movimento
+
+O `Alert` do erro e o `EmptyState` do vazio entram pelo movimento deles. O conteúdo que você entrega não ganha entrada daqui: a moldura não embrulha os seus filhos numa caixa, porque uma caixa a mais muda o layout de quem usa (o filho que era `flex-1`, o item de grade). Quem tem caixa própria entra sozinho: o `DataTable` esmaece o corpo, e o gráfico se desenha.
+
 ## Partes
 
 `classNames` veste cada final: `loading`, `error`, `empty`. O `className` veste

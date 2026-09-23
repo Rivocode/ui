@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { Text } from "./text";
 
 export type TimelineTone = "neutral" | "accent" | "success" | "warning" | "danger";
@@ -66,7 +67,12 @@ export function Timeline({ items, label, className }: TimelineProps) {
   if (items.length === 0) return null;
 
   return (
-    <View accessibilityRole="list" accessibilityLabel={label} className={cn(className)}>
+    <Entrance
+      effect="fadeIn"
+      accessibilityRole="list"
+      accessibilityLabel={label}
+      className={cn(className)}
+    >
       {items.map((event, index) => {
         const isLast = index === items.length - 1;
         const pending = event.pending === true;
@@ -106,6 +112,6 @@ export function Timeline({ items, label, className }: TimelineProps) {
           </View>
         );
       })}
-    </View>
+    </Entrance>
   );
 }

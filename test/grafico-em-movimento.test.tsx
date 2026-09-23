@@ -1,9 +1,13 @@
 import { afterEach, beforeAll, expect, test } from "bun:test";
 import { act, fireEvent, render, screen } from "@testing-library/react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { Children, isValidElement, type ReactElement, type ReactNode } from "react";
 import { Bar, BarChart, Line, LineChart, XAxis } from "recharts";
 
 import { ChartContainer, seriesColors, type ChartConfig } from "../src/chart/chart";
+import { ChartRadial } from "../src/chart/chart-radial";
+import { Sparkline } from "../src/chart/sparkline";
 import { readChartMotion, STILL, type ChartMotion } from "../src/chart/use-chart-motion";
 import { DataTable, type Column } from "../src/components/data-table";
 import { Editable } from "../src/components/editable";
@@ -146,26 +150,54 @@ function measured() {
   };
 }
 
-test("o grafico nasce pronto: a primeira pintura nao anima, e a troca de dado anima", async () => {
+test("o grafico se desenha na primeira pintura: a marca ja monta com a animacao ligada", async () => {
   const restore = measured();
   const view = render(framed());
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, SETTLED / 2));
-  });
-  expect(seen.at(-1)!.isAnimationActive).toBe(false);
-  await settle();
-  expect(seen.length).toBeGreaterThan(1);
+  await act(async () => {});
+  expect(seen.length).toBeGreaterThan(0);
+  for (const props of seen) expect(props).toMatchObject(MOVING);
 
-  expect(seen[0]!.isAnimationActive).toBe(false);
-  expect(seen.at(-1)).toMatchObject(MOVING);
+  seen = [];
+  await settle();
+  for (const props of seen) expect(props).toMatchObject(MOVING);
 
   seen = [];
   view.rerender(framed(true));
+  expect(seen).toEqual([]);
   view.rerender(framed());
-  expect(seen[0]!.isAnimationActive).toBe(false);
-  await settle();
-  expect(seen.at(-1)!.isAnimationActive).toBe(true);
+  await act(async () => {});
+  expect(seen.length).toBeGreaterThan(0);
+  expect(seen[0]).toMatchObject(MOVING);
   restore();
+});
+
+test("no servidor o grafico nao desenha, e o cliente o desenha entrando, sem desencontro na hidratacao", async () => {
+  seen = [];
+  const html = renderToString(framed());
+  expect(seen).toEqual([]);
+  expect(html).toContain('data-rc-chart="');
+  expect(html).not.toContain("<svg");
+
+  const restore = measured();
+  const host = document.createElement("div");
+  host.innerHTML = html;
+  document.body.append(host);
+  const complaints: unknown[] = [];
+  const realError = console.error;
+  console.error = (...args: unknown[]) => complaints.push(args);
+  try {
+    await act(async () => {
+      hydrateRoot(host, framed());
+    });
+    await act(async () => {});
+  } finally {
+    console.error = realError;
+    restore();
+  }
+  expect(complaints).toEqual([]);
+  expect(seen.length).toBeGreaterThan(0);
+  expect(seen[0]).toMatchObject(MOVING);
+  host.remove();
 });
 
 test("com reduzir movimento, a moldura nunca liga a animacao", async () => {
@@ -178,7 +210,7 @@ test("com reduzir movimento, a moldura nunca liga a animacao", async () => {
   for (const props of seen) expect(props.isAnimationActive).toBe(false);
 });
 
-test("a rosca e o arco animam pelo mesmo gancho; a Sparkline fica parada nas tres formas", async () => {
+test("a rosca e o arco animam pelo mesmo gancho; a Sparkline so esmaece a superficie", async () => {
   const files = ["chart-donut", "chart-radial", "sparkline"];
   const [donut, radial, sparkline] = await Promise.all(
     files.map((name) => Bun.file(`src/chart/${name}.tsx`).text()),
@@ -191,6 +223,25 @@ test("a rosca e o arco animam pelo mesmo gancho; a Sparkline fica parada nas tre
   }
   expect(sparkline!.match(/isAnimationActive=\{false\}/g)).toHaveLength(3);
   expect(sparkline).not.toContain("useTokenMotion");
+
+  const { container } = render(<Sparkline data={[1, 3, 2]} />);
+  const tokens = (container.firstElementChild as HTMLElement).className.split(" ");
+  expect(tokens).toContain("[&_.recharts-surface]:animate-appear");
+  expect(tokens).not.toContain("animate-appear");
+});
+
+test("o arco em tracinhos acende em sequencia, do primeiro ao ultimo aceso, no tempo slow", () => {
+  const { container } = render(<ChartRadial value={50} variant="segmented" segments={10} />);
+  const ticks = [...container.querySelectorAll("[data-rc-tick]")];
+  expect(ticks).toHaveLength(10);
+  const on = ticks.filter((tick) => tick.getAttribute("data-rc-tick") === "on");
+  const off = ticks.filter((tick) => tick.getAttribute("data-rc-tick") === "off");
+  expect(on).toHaveLength(5);
+  for (const tick of on) expect(tick.getAttribute("class")!.split(" ")).toContain("animate-appear");
+  for (const tick of off) expect(tick.getAttribute("class")).toBeNull();
+  expect(on.map((tick) => (tick as SVGElement).style.animationDelay)).toEqual(
+    [0, 0.2, 0.4, 0.6, 0.8].map((step) => `calc(var(--rc-duration-slow) * ${step})`),
+  );
 });
 
 type Invoice = { id: string; amount: number };

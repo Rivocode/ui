@@ -124,6 +124,8 @@ function SegmentedArc({
           <line
             key={index}
             data-rc-tick={on ? "on" : "off"}
+            className={on ? "animate-appear" : undefined}
+            style={on ? { animationDelay: `calc(var(--rc-duration-slow) * ${index / lit})` } : undefined}
             x1={0}
             y1={-46}
             x2={0}

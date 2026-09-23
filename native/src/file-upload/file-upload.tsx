@@ -4,6 +4,7 @@ import { getDocumentAsync } from "expo-document-picker";
 
 import { Progress } from "../basics";
 import { cn } from "../cn";
+import { Entrance } from "../motion";
 import { Text } from "../text";
 
 export type PickedFile = {
@@ -218,7 +219,7 @@ export function FileUploadItem({
   className,
 }: FileUploadItemProps) {
   return (
-    <View
+    <Entrance
       className={cn(
         "flex-row items-center gap-3 rounded-md border border-border bg-surface px-3 py-2.5",
         className,
@@ -263,6 +264,6 @@ export function FileUploadItem({
       >
         <CloseIcon />
       </Pressable>
-    </View>
+    </Entrance>
   );
 }

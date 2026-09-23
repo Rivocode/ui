@@ -213,7 +213,7 @@ export function ChartContainer({
 
   const points = data ?? dataOfChild(children);
   const showsEmpty = empty !== undefined && points !== undefined && points.length === 0;
-  const motion = useTokenMotion(`[data-rc-chart="${id}"]`, !isError && !isLoading && !showsEmpty);
+  const motion = useTokenMotion(`[data-rc-chart="${id}"]`);
   const painted = seriesColors(children, config, motion);
 
   useMissingDataWarning(empty !== undefined && points === undefined);

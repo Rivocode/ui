@@ -98,6 +98,11 @@
 
   --animate-rise: rc-rise var(--rc-duration-slow) var(--rc-ease) both;
   --animate-fade: rc-fade var(--rc-duration-slow) var(--rc-ease) both;
+  --animate-enter: rc-enter var(--rc-duration-base) var(--rc-ease) backwards;
+  --animate-appear: rc-fade var(--rc-duration-base) var(--rc-ease) backwards;
+  --animate-pop: rc-pop var(--rc-duration-fast) var(--rc-ease) backwards;
+  --animate-fill: rc-fill var(--rc-duration-slow) var(--rc-ease) backwards;
+  --animate-reveal: rc-reveal var(--rc-duration-slow) var(--rc-ease) backwards;
   --animate-indeterminate: rc-indeterminate 1.4s var(--rc-ease) infinite;
 }
 

@@ -123,7 +123,7 @@ export function Tracker({
           setDismissed(null);
         }}
         className={cn(
-          "relative flex w-full items-stretch gap-0.5",
+          "relative flex w-full animate-reveal items-stretch gap-0.5",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           classNames?.track,
         )}

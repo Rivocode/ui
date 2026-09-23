@@ -277,9 +277,11 @@ série sem `color` no `config` recebe o próximo dela, e é ela que o
 precisar da mesma ordem, em vez de escrever `chart-1` de novo num canto.
 
 **Para a barra e a linha andarem, desenhe com `ChartBar` e `ChartLine`**, do
-mesmo caminho, no lugar de `Rect` e `Path` crus. Elas nascem no lugar e, quando
-o dado muda, vão até o valor novo com os tokens de movimento, pelo Reanimated;
-com "reduzir movimento", saltam. A rosca e o arco já fazem isso sozinhos.
+mesmo caminho, no lugar de `Rect` e `Path` crus. Na montagem elas entram (a
+barra cresce da base, a linha sobe da `baseline`, ou do ponto mais baixo) e,
+quando o dado muda, vão até o valor novo com os tokens de movimento, pelo
+Reanimated; com "reduzir movimento", nascem no lugar e saltam. A rosca e o arco
+já fazem isso sozinhos: entram varrendo do zero.
 
 ```tsx
 <ChartContainer config={SERIES} data={meses} className="h-56">
@@ -294,7 +296,16 @@ com "reduzir movimento", saltam. A rosca e o arco já fazem isso sozinhos.
 ```
 
 A `Sparkline` fica de fora disto, na raiz e desenhada com `View`: ela é o slot
-`chart` do `Stat`, e o `Stat` sai da raiz. E ela não anima, nos dois pacotes.
+`chart` do `Stat`, e o `Stat` sai da raiz. Ela entra só esmaecendo, nos dois
+pacotes, e não anda na troca de dados.
+
+**As peças entram na montagem, como no web.** `Alert`, `EmptyState`,
+`FileUploadItem` e o aviso de erro do `DataList` sobem 4px esmaecendo;
+`Stat`, `Tracker`, `Timeline`, `Sparkline` e a lista do `DataList` esmaecem; a
+pastilha do `Indicator` cresce; a barra do `Progress` e do `Meter` enche do
+zero. Tudo em `duration-base`, ou `fast` na pastilha e `slow` na barra, e nada
+disso roda com "reduzir movimento". A moldura (`Card`, `PageHeader`) fica
+parada, e controle no estado inicial também.
 
 ## Copiar e anexar: dois caminhos, e não um
 

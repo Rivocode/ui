@@ -25,13 +25,14 @@ para algo que não carrega.
 
 ## Movimento
 
-Quando o `value` muda, o arco anda do valor velho ao novo, com a duração e a
-curva dos tokens (`--rc-duration-slow`, `--rc-ease`). Na primeira pintura ele
-não sobe do zero: a medida nasce no lugar, pela mesma decisão do
-`ChartContainer`. Com "reduzir movimento", o arco salta.
+Na primeira vez que aparece, o arco varre do início até o valor; quando o
+`value` muda, anda do valor velho ao novo. Nos dois casos, com a duração e a
+curva dos tokens (`--rc-duration-slow`, `--rc-ease`), pela mesma decisão do
+`ChartContainer`. Com "reduzir movimento", o arco nasce no lugar e salta.
 
-O `segmented` não anda: os tracinhos acendem de uma vez. Ele é contagem, e não
-traço contínuo, e tracinho meio aceso não diz nada.
+No `segmented`, os tracinhos acesos acendem em sequência, do primeiro ao último,
+dentro do mesmo `--rc-duration-slow`. Cada um acende inteiro: ele é contagem, e
+não traço contínuo, e tracinho meio aceso não diz nada.
 
 ## O eixo escondido
 

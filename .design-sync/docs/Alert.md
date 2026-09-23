@@ -61,6 +61,10 @@ Sem `onDismiss` não há botão, que continua sendo o padrão: aviso que a pesso
 pode dispensar é o caso, e não a regra. O que bloqueia uma ação não se dispensa.
 Tirá-lo da tela é resolver o que ele aponta.
 
+## Movimento
+
+O aviso entra na montagem: esmaece e sobe 4px em `--rc-duration-base` (`animate-enter`). É o que faz o aviso que chega depois de uma ação ser visto chegando. Roda uma vez, e não repete a cada re-render; com "reduzir movimento", aparece parado. `className="animate-none"` desliga numa instância.
+
 ## Quando não usar
 
 Para a confirmação do que acabou de acontecer (nota emitida, arquivo enviado),

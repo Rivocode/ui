@@ -62,7 +62,7 @@ export function Meter({
       </View>
 
       <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <Fill percent={percent} className="h-full rounded-pill bg-accent-text" />
+        <Fill percent={percent} enter className="h-full rounded-pill bg-accent-text" />
       </View>
     </View>
   );

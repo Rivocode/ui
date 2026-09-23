@@ -6,6 +6,7 @@ const twMerge = extendTailwindMerge({
     theme: {
       radius: ["sm", "md", "lg", "xl", "pill"],
       shadow: ["1", "2", "3"],
+      animate: ["enter", "appear", "pop", "fill", "reveal", "rise", "fade", "indeterminate"],
     },
   },
 });

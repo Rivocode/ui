@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { Text } from "./text";
 
 export type TrackerPoint = {
@@ -62,7 +63,7 @@ export function Tracker({ data, label, className }: TrackerProps) {
   const step = width / data.length;
 
   return (
-    <View className={cn("gap-1.5", className)}>
+    <Entrance effect="fadeIn" className={cn("gap-1.5", className)}>
       <View
         accessible
         accessibilityRole="adjustable"
@@ -106,6 +107,6 @@ export function Tracker({ data, label, className }: TrackerProps) {
       >
         {point?.label}
       </Text>
-    </View>
+    </Entrance>
   );
 }

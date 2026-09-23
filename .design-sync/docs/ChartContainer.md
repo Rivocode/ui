@@ -122,15 +122,26 @@ ela embrulha sai com três props vestidas:
   interpola em JavaScript e não enxerga variável de CSS; por isso a moldura lê o
   token depois de montar e entrega o número. O padrão da Recharts (1500 ms, `ease`)
   não aparece em lugar nenhum.
-- **`isAnimationActive`** desligado com "reduzir movimento", e desligado também
-  no primeiro quadro: **o gráfico nasce pronto e só anda quando o dado muda.**
+- **`isAnimationActive`** ligado antes de a marca montar, e desligado com
+  "reduzir movimento": **na primeira vez que aparece com dados, o gráfico se
+  desenha, e depois anda quando o dado muda.**
 
-O segundo é decisão. Produto de operação abre o mesmo painel dezenas de vezes por
-dia, e a barra que cresce do zero a cada abertura é espera que a pessoa paga para
-ver um número que já estava ali. O que o movimento informa é a **mudança**: o
-filtro trocou, o mês virou, e a barra que anda do valor velho ao novo mostra
-quanto mudou. Pelo mesmo motivo, o gráfico que chega depois do `isLoading` também
-não anima: ele nasceu ali, e a espera já foi o esqueleto.
+O segundo é decisão do dono, e substitui a anterior, de que o gráfico nascia
+pronto. A barra cresce da base, a linha e a área se revelam da esquerda, a rosca
+e o arco varrem do zero. O gráfico que chega depois do `isLoading`, do erro ou
+do vazio também entra desenhando: o esqueleto era a espera, e o desenho é o dado
+chegando. Depois disso, o que o movimento informa é a **mudança**: o filtro
+trocou, o mês virou, e a barra que anda do valor velho ao novo mostra quanto
+mudou. A duração é uma só, a de `--rc-duration-slow`, na entrada e na troca: a
+Recharts reinicia a animação quando a duração muda, e trocar o número depois da
+entrada faria o gráfico se desenhar duas vezes.
+
+**No servidor o gráfico não desenha.** A Recharts só pinta depois de medir a
+caixa, então o HTML do SSR sai com a moldura, a legenda e o anúncio, e sem o
+SVG. A moldura lê os tokens num efeito de layout, antes de a medida chegar, e a
+primeira marca que monta no cliente já monta animada: não existe um quadro com
+o desenho pronto que depois some para crescer de novo. O `Alert` do erro e o
+`EmptyState` do vazio entram pelo movimento deles.
 
 Marca com `isAnimationActive={false}` fica parada: a moldura só liga o que
 ninguém desligou. `animationDuration` e `animationEasing` escritos à mão
@@ -146,7 +157,11 @@ const motion = useChartMotion()
 ```
 
 Dentro do `ChartContainer` ele é dispensável, e espalhá-lo não muda nada: a
-moldura veste a marca do mesmo jeito.
+moldura veste a marca do mesmo jeito. Fora dela, a entrada depende de a marca
+montar depois do primeiro efeito, e é o que acontece com o gráfico dentro de um
+`ResponsiveContainer`, que só desenha depois de medir. Num gráfico de largura e
+altura fixas, a marca monta no mesmo quadro do gancho, nasce pronta e só anda
+na troca de dado.
 
 ## As peças da Recharts que saem daqui
 
@@ -190,4 +205,4 @@ A medida chega **zerada no primeiro quadro** e verdadeira no seguinte: no telefo
 
 Duas regras a mais, as duas por causa do que não existe do lado de cá. O `config.color` pede **papel de token** (`chart-1` a `chart-8`), e não cor de CSS: a cor que a peça recebe é o valor final que vai para o desenho, e um hexadecimal escrito ali seria a única coisa da tela surda ao tema do cliente. E o `label` só vale na forma de função: com filho em JSX quem nomeia é a peça de dentro, e um `accessible` por cima dela fecharia a legenda da rosca numa parada só do leitor de tela.
 
-**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e `ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`), as duas no mesmo caminho `/chart`. Elas nascem no lugar e, quando o valor muda, andam até o novo com a duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o `react-native-svg`: a mesma decisão do web, de que o gráfico nasce pronto e só anda quando o dado muda. Com "reduzir movimento" elas saltam. A linha anda ponto a ponto quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com `Rect` e `Path` crus continua podendo, e fica parado.
+**O movimento vem em duas marcas, porque aqui não há `Line` nem `Bar` para a moldura vestir.** `ChartBar` é a barra (`x`, `y`, `width`, `height`, `fill`, `radius`) e `ChartLine` é a linha (`points` em px, `stroke`, `strokeWidth`, `baseline`), as duas no mesmo caminho `/chart`. Na montagem elas entram (a barra cresce da base; a linha sobe da `baseline`, ou do ponto mais baixo) e, quando o valor muda, andam até o novo com a duração e a curva dos tokens (`duration-slow`, `ease`), pelo Reanimated sobre o `react-native-svg`: a mesma decisão do web, de que o gráfico se desenha ao aparecer e anda quando o dado muda. Com "reduzir movimento" elas nascem no lugar e saltam. A linha anda ponto a ponto quando a contagem é a mesma de antes, e troca de uma vez quando não é. Quem desenha com `Rect` e `Path` crus continua podendo, e fica parado.

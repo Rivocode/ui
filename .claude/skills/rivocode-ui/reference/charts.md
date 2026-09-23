@@ -59,10 +59,17 @@ Também saem daqui radar, dispersão, polar e `LabelList`. O `Tooltip` e o
 A Recharts não anima por CSS, ela interpola em JS, e nenhum token a alcança
 sozinho. **O `ChartContainer` resolve isso por você**: toda marca dentro dele sai
 com a duração de `--rc-duration-slow`, a curva de `--rc-ease`, e a animação
-desligada no primeiro quadro e com "reduzir movimento". O gráfico nasce pronto e
-só anda quando o dado muda: não escreva `isAnimationActive` nem
-`animationDuration` na marca. `isAnimationActive={false}` escrito à mão continua
-valendo, para a marca que tem de ficar parada.
+ligada antes de a marca montar, e desligada com "reduzir movimento". **Na
+primeira vez que aparece com dados, o gráfico se desenha**: a barra cresce da
+base, a linha e a área se revelam, e quando o dado muda cada marca anda do valor
+velho ao novo. Sair do esqueleto, do erro ou do vazio para os dados também
+entra desenhando. Não escreva `isAnimationActive` nem `animationDuration` na
+marca. `isAnimationActive={false}` escrito à mão continua valendo, para a marca
+que tem de ficar parada.
+
+No servidor o gráfico não desenha: a Recharts só pinta depois de medir a
+caixa, então o HTML do SSR sai com a moldura, e o desenho nasce no cliente, já
+entrando. Não há o que piscar, porque não havia desenho antes.
 
 Fora da moldura, espalhe o `useChartMotion()`, que devolve o mesmo trio:
 
@@ -72,8 +79,10 @@ const motion = useChartMotion()
 <Line dataKey="paid" stroke="var(--color-paid)" {...motion} />
 ```
 
-`ChartDonut` e `ChartRadial` andam até o valor novo sozinhas; a `Sparkline`
-fica parada, porque numa tabela ela aparece às dezenas.
+`ChartDonut` e `ChartRadial` entram varrendo do zero e andam até o valor novo
+sozinhas. A `Sparkline` entra só esmaecendo, em `--rc-duration-base`, e não anda
+na troca de dados: numa tabela ela aparece às dezenas, e vinte linhas se
+desenhando ao mesmo tempo são uma onda atravessando a tela.
 
 `areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
 contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto

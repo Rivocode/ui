@@ -166,6 +166,10 @@ tela inteira, também não dizia nada. As quatro irmãs publicam a mesma região
 volta. Ela existe antes de o texto mudar e é o mesmo nó do primeiro ao último
 estado: região que nasce já com o texto dentro não dispara anúncio nenhum.
 
+## Movimento
+
+O corpo da tabela esmaece uma vez quando sai do esqueleto para as linhas (`animate-appear`, `--rc-duration-base`), inteiro, e não linha a linha: ordenar move as linhas no DOM, e a animação presa na linha recomeçaria a cada clique no cabeçalho. Com "reduzir movimento", as linhas aparecem paradas.
+
 ## Quando não usar
 
 Para a tabela que você desenha linha a linha, use `Table`. Ela compõe com

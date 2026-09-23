@@ -33,6 +33,10 @@ um número para o outro a cada aviso do envio. Subir é do app: a peça valida n
 entrada e mostra o que o app disser depois. Quem controla o envio é quem sabe
 quando ele terminou.
 
+## Movimento
+
+Cada `FileUploadItem` entra esmaecendo e subindo 4px (`animate-enter`, `--rc-duration-base`), então o arquivo recém-escolhido é visto chegando à lista. A barra de envio anda pela largura.
+
 ## No React Native
 
 Traduz, no caminho próprio `@rivocode/ui-native/file-upload`: o `expo-document-picker` é peer **opcional** e módulo nativo (`npx expo install expo-document-picker`), e tem caminho separado do `Clipboard` pela mesma conta: a regra da casa é **um subcaminho por peer**, e não um por assunto. O que não muda é o principal: **a peça continua não conhecendo rede**. Ela valida `accept` e `maxSize` na entrada, entrega os aceitos em `onSelect` e os recusados em `onReject`, cada recusa com o motivo pronto para um aviso.

@@ -229,8 +229,8 @@ function Wedge({
   band: number;
   dim: boolean;
 }) {
-  const start = useTween(from);
-  const end = useTween(to);
+  const start = useTween(from, "slow", 0);
+  const end = useTween(to, "slow", 0);
 
   const animatedProps = useAnimatedProps(() => {
     "worklet";

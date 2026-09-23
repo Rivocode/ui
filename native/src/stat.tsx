@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { Card, CardContent } from "./card";
 import { cn } from "./cn";
+import { Entrance } from "./motion";
 import { Text } from "./text";
 
 export type StatProps = {
@@ -24,7 +25,8 @@ export function Stat({ label, value, delta, deltaLabel, invert, chart, className
 
   return (
     <Card className={cn("flex-1", className)}>
-      <CardContent className="gap-1">
+      <CardContent>
+        <Entrance effect="fadeIn" className="gap-1">
         <Text className="text-sm text-fg-muted">{label}</Text>
         <Text font="display" className="text-2xl font-semibold text-fg">
           {value}
@@ -37,6 +39,7 @@ export function Stat({ label, value, delta, deltaLabel, invert, chart, className
         )}
 
         {chart && <View className="mt-2">{chart}</View>}
+        </Entrance>
       </CardContent>
     </Card>
   );

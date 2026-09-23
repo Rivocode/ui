@@ -12,6 +12,10 @@ menos e não promete um fim que ninguém sabe medir.
 `format` escreve o número do `showValue`: o nome de um formatador da casa, ou
 uma função sua.
 
+## Movimento
+
+A barra enche do zero na montagem, pela escala horizontal a partir da esquerda (`animate-fill`, `--rc-duration-slow`), e depois anda até cada valor novo pela largura. O indeterminado troca a entrada pelo vaivem dele. Com "reduzir movimento", a barra nasce no valor.
+
 ## Quando não usar
 
 Para quanto de uma capacidade está em uso (espaço em disco, cota de notas do

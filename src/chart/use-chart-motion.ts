@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { useMediaQuery } from "../lib/screen";
-import { SETTLED } from "../shared/settled";
 
 export type ChartEasing = `cubic-bezier(${number},${number},${number},${number})` | "linear";
 
 export type ChartMotion = {
   /**
-   * Espalhe em `Line`, `Bar`, `Area` e `Pie`. Fica desligado no primeiro quadro
-   * e enquanto o sistema pede menos movimento: o grafico nasce pronto e so anda
-   * quando o dado muda.
+   * Espalhe em `Line`, `Bar`, `Area` e `Pie`. Liga antes de a marca montar, entao
+   * o grafico se desenha na primeira vez que aparece e anda quando o dado muda.
+   * Fica desligado enquanto o sistema pede menos movimento.
    */
   isAnimationActive: boolean;
   /** Em ms, lido de `--rc-duration-slow`. Zero com "reduzir movimento". */
@@ -55,23 +54,20 @@ export function readChartMotion(element: Element): ChartMotion {
   return { isAnimationActive: true, animationDuration: duration, animationEasing: easing };
 }
 
-export function useTokenMotion(scope: string | null, drawing = true): ChartMotion {
+export function useTokenMotion(scope: string | null): ChartMotion {
   const reduced = useMediaQuery(REDUCED);
   const [motion, setMotion] = useState<ChartMotion>(STILL);
 
-  useEffect(() => {
-    if (reduced || !drawing) {
+  useLayoutEffect(() => {
+    if (reduced) {
       setMotion(STILL);
       return;
     }
-    const waiting = setTimeout(() => {
-      const element = scope ? document.querySelector(scope) : null;
-      setMotion(readChartMotion(element ?? document.documentElement));
-    }, SETTLED);
-    return () => clearTimeout(waiting);
-  }, [reduced, drawing, scope]);
+    const element = scope ? document.querySelector(scope) : null;
+    setMotion(readChartMotion(element ?? document.documentElement));
+  }, [reduced, scope]);
 
-  return reduced || !drawing ? STILL : motion;
+  return reduced ? STILL : motion;
 }
 
 export function useChartMotion(): ChartMotion {

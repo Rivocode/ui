@@ -50,6 +50,7 @@ export function EmptyState({
       {...props}
       className={cn(
         "flex flex-col items-center justify-center gap-3 px-6 py-14 text-center font-sans",
+        "animate-enter",
         className,
       )}
     >

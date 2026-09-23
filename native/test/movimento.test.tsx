@@ -4,31 +4,39 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { AccessibilityInfo, Text } from "react-native";
-import { repeatCalls, timingCalls } from "react-native-reanimated";
+import { repeatCalls, sharedStarts, timingCalls } from "react-native-reanimated";
 import type { ReactElement } from "react";
 
 import { tokens } from "../tokens";
 import {
   Accordion,
   AccordionItem,
+  Alert,
   AlertDialog,
   Button,
   Calendar,
   Checkbox,
   Collapsible,
+  DataList,
   Dialog,
+  EmptyState,
   Editable,
   Field,
+  Indicator,
   Meter,
   Progress,
   RadioGroup,
   RivoProvider,
   Sheet,
   Skeleton,
+  Sparkline,
+  Stat,
   Steps,
   Tabs,
   TagsInput,
+  Timeline,
   Toggle,
+  Tracker,
   useToast,
 } from "../src";
 import { act, byRole, byType, render } from "./helpers";
@@ -336,24 +344,41 @@ describe("barras que andam: Progress, Meter e Steps", () => {
       .map((node) => node.props.style as { width?: string } | undefined)
       .find((style) => typeof style?.width === "string")!.width;
 
-  test("a barra nasce no valor, sem animar, e anda ate o novo no tempo slow", () => {
+  test("a barra enche do zero na entrada e anda ate o valor novo no tempo slow", () => {
+    const slowly = {
+      duration: tokens.scales["duration-slow"],
+      easing: bezier("ease"),
+      reduceMotion: "never",
+    };
+    sharedStarts.length = 0;
     const screen = render(<Progress value={20} label="Envio" />);
+    expect(sharedStarts).toEqual([0]);
+    expect(timings()).toEqual([{ to: 20, config: slowly }]);
     expect(widthOf(screen)).toBe("20%");
 
     timingCalls.length = 0;
     swap(screen, <Progress value={60} label="Envio" />);
     expect(widthOf(screen)).toBe("60%");
-    expect(timings().at(-1)).toEqual({
-      to: 60,
-      config: {
-        duration: tokens.scales["duration-slow"],
-        easing: bezier("ease"),
-        reduceMotion: "never",
-      },
-    });
+    expect(timings()).toEqual([{ to: 60, config: slowly }]);
 
+    timingCalls.length = 0;
+    swap(screen, <Progress value={60} label="Envio" />);
+    expect(timings()).toEqual([]);
+
+    sharedStarts.length = 0;
     const meter = render(<Meter value={3} max={4} label="Cota" />);
+    expect(sharedStarts).toEqual([0]);
+    expect(timings().at(-1)).toEqual({ to: 75, config: slowly });
     expect(widthOf(meter)).toBe("75%");
+  });
+
+  test("com reduzir movimento, a barra nasce cheia no valor", () => {
+    reduceMotion(true);
+    sharedStarts.length = 0;
+    timingCalls.length = 0;
+    render(<Progress value={20} label="Envio" />);
+    expect(sharedStarts).toEqual([20]);
+    expect(timings()).toEqual([]);
   });
 
   test("o passo novo entra por fade e a barra do Steps anda; o primeiro nao anima", () => {
@@ -361,9 +386,12 @@ describe("barras que andam: Progress, Meter e Steps", () => {
       { id: "dados", title: "Dados" },
       { id: "revisao", title: "Revisão" },
     ];
+    sharedStarts.length = 0;
     const screen = render(<Steps steps={steps} current={0} />);
     expect(entered(screen)).toEqual([]);
     expect(widthOf(screen)).toBe("50%");
+    expect(sharedStarts).toEqual([50]);
+    expect(timings()).toEqual([]);
 
     swap(screen, <Steps steps={steps} current={1} />);
     expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
@@ -598,5 +626,69 @@ describe("Editable", () => {
     const screen = render(editable());
     act(() => byRole(screen, "button")[0]!.props.onLongPress());
     expect(entered(screen)).toEqual([]);
+  });
+});
+
+describe("entrada na montagem", () => {
+  const LIFT = { translateY: 4 };
+  const base = tokens.scales["duration-base"];
+  const fast = tokens.scales["duration-fast"];
+  const rows = [{ id: "1", nome: "Clínica" }];
+  const landing = (element: ReactElement) =>
+    entered(render(element)).map(({ preset, config }) => ({
+      preset,
+      duration: config.duration,
+      lift: (config as { initialValues?: unknown }).initialValues,
+      easing: config.easing,
+    }));
+
+  const cases: [string, ReactElement, string, number, unknown][] = [
+    ["Alert", <Alert title="Nota emitida" />, "FadeInDown", base, LIFT],
+    ["EmptyState", <EmptyState title="Nada" description="Ainda." />, "FadeInDown", base, LIFT],
+    ["Stat", <Stat label="Faturado" value="R$ 10" />, "FadeIn", base, undefined],
+    ["Tracker", <Tracker label="Uptime" data={[{ label: "ok" }]} />, "FadeIn", base, undefined],
+    ["Indicator", <Indicator label="3 novas" count={3}><Text>sino</Text></Indicator>, "ZoomIn", fast, undefined],
+    ["Timeline", <Timeline label="Nota" items={[{ title: "Emitida", at: "12/03" }]} />, "FadeIn", base, undefined],
+    ["Sparkline", <Sparkline data={[1, 3]} />, "FadeIn", base, undefined],
+    [
+      "DataList",
+      <DataList data={rows} keyExtractor={(row) => row.id} renderItem={(row) => <Text>{row.nome}</Text>} />,
+      "FadeIn",
+      base,
+      undefined,
+    ],
+    [
+      "DataList com erro",
+      <DataList data={undefined} isError keyExtractor={(row: { id: string }) => row.id} renderItem={() => null} />,
+      "FadeInDown",
+      base,
+      LIFT,
+    ],
+  ];
+
+  for (const [name, element, preset, duration, lift] of cases) {
+    test(`${name} entra uma vez, na montagem, com o token certo`, () => {
+      expect(landing(element)).toEqual([{ preset, duration, lift, easing: bezier("ease") }]);
+    });
+  }
+
+  test("a lista entra quando sai do esqueleto para os dados", () => {
+    const list = (loading: boolean) => (
+      <DataList
+        data={loading ? undefined : rows}
+        isLoading={loading}
+        keyExtractor={(row) => row.id}
+        renderItem={(row) => <Text>{row.nome}</Text>}
+      />
+    );
+    const screen = render(list(true));
+    expect(entered(screen)).toEqual([]);
+    swap(screen, list(false));
+    expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
+  });
+
+  test("com reduzir movimento, nada entra animado", () => {
+    reduceMotion(true);
+    for (const [, element] of cases) expect(landing(element)).toEqual([]);
   });
 });

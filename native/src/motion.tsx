@@ -4,6 +4,7 @@ import {
   Pressable,
   type GestureResponderEvent,
   type PressableProps,
+  type ViewProps,
 } from "react-native";
 import Animated, {
   Easing,
@@ -28,6 +29,7 @@ export type MotionCurve = keyof typeof tokens.easings;
 const PULSE_HALF = 1000;
 const PULSE_CURVE = [0.4, 0, 0.6, 1] as const;
 const PRESSED_SCALE = 0.97;
+const ENTER_LIFT = 4;
 
 export const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -86,6 +88,12 @@ export function useMotion() {
       fadeOut: reduced
         ? undefined
         : FadeOut.duration(milliseconds("fast")).easing(ease).reduceMotion(still),
+      enter: reduced
+        ? undefined
+        : FadeInDown.withInitialValues({ translateY: ENTER_LIFT })
+            .duration(milliseconds("base"))
+            .easing(ease)
+            .reduceMotion(still),
       popIn: reduced
         ? undefined
         : ZoomIn.duration(milliseconds("fast")).easing(ease).reduceMotion(still),
@@ -166,6 +174,14 @@ export function Presence({
   );
 }
 
+export function Entrance({
+  effect = "enter",
+  ...props
+}: ViewProps & { effect?: "enter" | "fadeIn" | "popIn"; className?: string }) {
+  const motion = useMotion();
+  return <Animated.View {...props} entering={motion[effect]} />;
+}
+
 const written = (value: number | number[]) =>
   Array.isArray(value) ? value.join(",") : String(value);
 
@@ -177,18 +193,20 @@ const sameShape = (from: number | number[], to: number | number[]) =>
 export function useTween<Value extends number | number[]>(
   target: Value,
   duration: MotionDuration = "slow",
+  from?: Value,
 ) {
   const motion = useMotion();
-  const value = useSharedValue<Value>(target);
-  const last = useRef<Value>(target);
+  const enters = from !== undefined && !motion.reduced && sameShape(from, target);
+  const value = useSharedValue<Value>(enters ? from : target);
+  const last = useRef<Value | undefined>(enters ? undefined : target);
   const now = written(target);
 
   useEffect(() => {
     const previous = last.current;
-    if (written(previous) === now) return;
+    if (previous !== undefined && written(previous) === now) return;
     const next = target;
     last.current = next;
-    if (!sameShape(previous, next)) {
+    if (previous !== undefined && !sameShape(previous, next)) {
       value.value = next;
       return;
     }
@@ -198,13 +216,16 @@ export function useTween<Value extends number | number[]>(
   return value;
 }
 
-export function Fill({ percent, className }: { percent: number; className?: string }) {
-  const motion = useMotion();
-  const width = useSharedValue(percent);
-
-  useEffect(() => {
-    width.value = withTiming(percent, motion.timing("slow"));
-  }, [percent, motion, width]);
+export function Fill({
+  percent,
+  enter = false,
+  className,
+}: {
+  percent: number;
+  enter?: boolean;
+  className?: string;
+}) {
+  const width = useTween(percent, "slow", enter ? 0 : undefined);
 
   const style = useAnimatedStyle(() => {
     "worklet";

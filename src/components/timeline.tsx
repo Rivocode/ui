@@ -53,7 +53,7 @@ export function TimelineItem({
     <li
       {...props}
       className={cn(
-        "relative flex gap-3 pb-5 last:pb-0",
+        "relative flex animate-enter gap-3 pb-5 last:pb-0",
         "before:absolute before:top-4 before:bottom-0 before:left-[0.3125rem] before:w-px",
         "before:bg-border last:before:hidden",
         className,
