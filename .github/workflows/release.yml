@@ -57,7 +57,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
@@ -67,7 +67,7 @@ jobs:
 
       # O Node entra so para o `npm publish`: o bun nao escreve o .npmrc a
       # partir do segredo, e e esse arquivo que autentica no registro.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org

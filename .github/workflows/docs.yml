@@ -30,7 +30,7 @@ jobs:
   publicar:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -39,7 +39,7 @@ jobs:
       # O CLI da Vercel roda em Node, e o build do site roda em bun. Os dois
       # precisam existir: o `vercel build` chama o `buildCommand` do
       # vercel.json, que e `cd apps/docs && bun run build`.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
