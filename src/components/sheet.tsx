@@ -105,7 +105,7 @@ export function SheetContent({ className, children, classNames, ...props }: Shee
             className,
           )}
         >
-          <BaseDrawer.Content>{children}</BaseDrawer.Content>
+          <BaseDrawer.Content className="h-full">{children}</BaseDrawer.Content>
         </BaseDrawer.Popup>
       </BaseDrawer.Viewport>
 

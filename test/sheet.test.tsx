@@ -69,3 +69,11 @@ test("o lado escolhido manda no gesto de fechar", () => {
   // esquerda, e nao para baixo.
   expect(panel.outerHTML).toContain("translateX");
 });
+
+test("o miolo da folha herda a altura do painel", () => {
+  render(<Example side="left" />);
+  const panel = screen.getByText("Navegacao").closest("[data-open]")!;
+  const body = screen.getByText("Navegacao").parentElement!;
+  expect(body.parentElement).toBe(panel as HTMLElement);
+  expect(body.className.split(" ")).toContain("h-full");
+});
