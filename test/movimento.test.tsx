@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { expect, test } from "bun:test";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { Glob } from "bun";
@@ -421,12 +424,18 @@ test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => 
   fireEvent.click(screen.getByRole("button", { name: "Ir para o próximo mês" }));
 
   const weeks = [...container.querySelectorAll("[data-animated-weeks]")];
-  const entering = weeks.find((el) =>
-    el.className.split(" ").includes("animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
-  );
-  const leaving = weeks.find((el) =>
-    el.className.split(" ").includes("animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
-  );
-  expect(tokensOfElement(entering ?? null)).toContain("[--rc-shift:1rem]");
-  expect(tokensOfElement(leaving ?? null)).toContain("[--rc-shift:-1rem]");
+  const classes = weeks.map((el) => el.className.split(" "));
+  expect(classes.some((tokens) => tokens.includes("animate-shift-in-next"))).toBe(true);
+  expect(classes.some((tokens) => tokens.includes("animate-shift-out-next"))).toBe(true);
+  expect(classes.flat()).not.toContain("animate-shift-in-previous");
+});
+
+test("a classe de animacao que o react-day-picker tira com classList.remove e um nome so", () => {
+  const source = readFileSync(join(import.meta.dir, "../src/components/calendar.tsx"), "utf8");
+  const keys = [...source.matchAll(/(?:weeks|caption)_(?:before|after)_(?:enter|exit):\s*("[^"]*"|[^,\n]+),/g)];
+  expect(keys.length).toBe(8);
+  for (const [, value] of keys) {
+    expect(value!.startsWith('"')).toBe(true);
+    expect(value!.slice(1, -1).split(" ")).toHaveLength(1);
+  }
 });

@@ -117,14 +117,14 @@ export function Calendar({
         range_start: "rounded-l-md bg-selected",
         range_end: "rounded-r-md bg-selected",
 
-        weeks_after_enter: cn("[--rc-shift:1rem]", "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
-        weeks_before_enter: cn("[--rc-shift:-1rem]", "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]"),
-        weeks_before_exit: cn("[--rc-shift:-1rem]", "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
-        weeks_after_exit: cn("[--rc-shift:1rem]", "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]"),
-        caption_after_enter: "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]",
-        caption_before_enter: "animate-[rc-shift-in_var(--rc-duration-base)_var(--rc-ease)_both]",
-        caption_after_exit: "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]",
-        caption_before_exit: "animate-[rc-shift-out_var(--rc-duration-base)_var(--rc-ease)_both]",
+        weeks_after_enter: "animate-shift-in-next",
+        weeks_before_enter: "animate-shift-in-previous",
+        weeks_before_exit: "animate-shift-out-next",
+        weeks_after_exit: "animate-shift-out-previous",
+        caption_after_enter: "animate-appear",
+        caption_before_enter: "animate-appear",
+        caption_after_exit: "animate-vanish",
+        caption_before_exit: "animate-vanish",
 
         ...classNames,
       }}

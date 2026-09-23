@@ -103,6 +103,11 @@
   --animate-pop: rc-pop var(--rc-duration-fast) var(--rc-ease) backwards;
   --animate-fill: rc-fill var(--rc-duration-slow) var(--rc-ease) backwards;
   --animate-reveal: rc-reveal var(--rc-duration-slow) var(--rc-ease) backwards;
+  --animate-vanish: rc-vanish var(--rc-duration-base) var(--rc-ease) both;
+  --animate-shift-in-next: rc-shift-in-next var(--rc-duration-base) var(--rc-ease) both;
+  --animate-shift-in-previous: rc-shift-in-previous var(--rc-duration-base) var(--rc-ease) both;
+  --animate-shift-out-next: rc-shift-out-next var(--rc-duration-base) var(--rc-ease) both;
+  --animate-shift-out-previous: rc-shift-out-previous var(--rc-duration-base) var(--rc-ease) both;
   --animate-indeterminate: rc-indeterminate 1.4s var(--rc-ease) infinite;
 }
 

@@ -45,17 +45,37 @@
   }
 }
 
-@keyframes rc-shift-in {
-  from {
+@keyframes rc-vanish {
+  to {
     opacity: 0;
-    translate: var(--rc-shift, 0) 0;
   }
 }
 
-@keyframes rc-shift-out {
+@keyframes rc-shift-in-next {
+  from {
+    opacity: 0;
+    translate: 1rem 0;
+  }
+}
+
+@keyframes rc-shift-in-previous {
+  from {
+    opacity: 0;
+    translate: -1rem 0;
+  }
+}
+
+@keyframes rc-shift-out-next {
   to {
     opacity: 0;
-    translate: var(--rc-shift, 0) 0;
+    translate: -1rem 0;
+  }
+}
+
+@keyframes rc-shift-out-previous {
+  to {
+    opacity: 0;
+    translate: 1rem 0;
   }
 }
 
