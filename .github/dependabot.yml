@@ -1,0 +1,61 @@
+version: 2
+
+# Quem prova que a atualizacao nao quebra nada e o `ci.yml`, que roda o gate
+# inteiro em todo PR. Menor e correcao chegam num PR so por pasta; major chega
+# sozinho, porque e decisao e nao rotina.
+#
+# `native/` fica de fora de proposito: ela nao e workspace, e instalar la cria
+# um segundo React (`check:instalacao`). As versoes que o nativo testa moram em
+# `examples/native`.
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Sao_Paulo"
+    commit-message:
+      prefix: "chore"
+    groups:
+      web:
+        update-types: ["minor", "patch"]
+
+  # O SDK do Expo fixa React, React Native e os modulos nativos. Subir um deles
+  # fora do SDK quebra o app, entao so correcao entra por aqui; troca de SDK e
+  # `npx expo install --fix`, feita por uma pessoa.
+  - package-ecosystem: "bun"
+    directory: "/examples/native"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+      timezone: "America/Sao_Paulo"
+    commit-message:
+      prefix: "chore"
+    groups:
+      nativo:
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-native"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-native-*"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "expo"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "expo-*"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]

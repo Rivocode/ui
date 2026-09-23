@@ -291,6 +291,20 @@ Tres respostas sao validas, e todas tem que estar ESCRITAS em
 A lista `FILA_DECLARADA` **so encolhe**, como o `DEBT` das outras guardas:
 entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
 
+## Dependencias
+
+Quem propoe atualizacao e o Dependabot (`.github/dependabot.yml`), toda
+segunda: um PR agrupado de menor e correcao para a raiz, outro para
+`examples/native`, e um PR por major. Quem aprova e o `ci.yml`, que roda o gate
+inteiro no PR - merge sem ele verde e o que nao se faz. PR de dependencia nao
+bumpa versao, entao nao publica pacote; publica so o site, como todo push na
+`main`.
+
+`native/` fica fora de proposito, pelo mesmo motivo do `bun install` acima. Em
+`examples/native` so entra correcao de React, React Native, `react-native-*` e
+`expo*`: quem fixa essas versoes e o SDK do Expo, e troca de SDK e
+`npx expo install --fix`, feita por uma pessoa.
+
 ## Commit e release
 
 Mensagem: `tipo: frase em minuscula, sem acento, em prosa, dizendo o efeito`.
