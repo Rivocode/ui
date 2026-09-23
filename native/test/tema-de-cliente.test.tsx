@@ -16,6 +16,7 @@ mock.module("react-native-svg", () => {
     Circle: host("Circle"),
     Line: host("Line"),
     Path: host("Path"),
+    Rect: host("Rect"),
     G: host("G"),
   };
 });
