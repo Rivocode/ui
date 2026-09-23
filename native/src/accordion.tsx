@@ -7,6 +7,7 @@ import { useMotion } from "./motion";
 import { Text } from "./text";
 
 const CLIP = { overflow: "hidden" } as const;
+const GLYPH_BOX = { width: 20, height: 20, alignItems: "center", justifyContent: "center" } as const;
 
 function Chevron({ open }: { open: boolean }) {
   const motion = useMotion();
@@ -22,8 +23,8 @@ function Chevron({ open }: { open: boolean }) {
   });
 
   return (
-    <Animated.View style={style}>
-      <View className="size-2.5 rotate-45 border-r-2 border-b-2 border-fg-subtle" />
+    <Animated.View style={[GLYPH_BOX, style]}>
+      <View className="-mt-1 size-2.5 rotate-45 border-r-2 border-b-2 border-fg-subtle" />
     </Animated.View>
   );
 }

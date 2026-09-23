@@ -183,7 +183,10 @@ describe("useToast", () => {
 describe("Accordion e Collapsible", () => {
   const turnOf = (screen: ReturnType<typeof render>) =>
     byType(screen, "View")
-      .map((node) => node.props.style as { transform?: { rotate: string }[] } | undefined)
+      .map(
+        (node) =>
+          Object.assign({}, ...[node.props.style].flat()) as { transform?: { rotate: string }[] },
+      )
       .find((style) => style?.transform?.[0]?.rotate !== undefined)!.transform![0]!.rotate;
 
   test("a seta gira meia volta no tempo base, e o corpo entra por fade", () => {
