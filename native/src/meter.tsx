@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
 import { cn } from "./cn";
+import { Fill } from "./motion";
 import { Text } from "./text";
 
 export type MeterProps = {
@@ -61,7 +62,7 @@ export function Meter({
       </View>
 
       <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <View className="h-full rounded-pill bg-accent-text" style={{ width: `${percent}%` }} />
+        <Fill percent={percent} className="h-full rounded-pill bg-accent-text" />
       </View>
     </View>
   );

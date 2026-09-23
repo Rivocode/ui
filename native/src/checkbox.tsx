@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, View, type PressableProps } from "react-native";
 
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { Text } from "./text";
 
 export type CheckboxProps = {
@@ -49,9 +50,9 @@ export function Checkbox({
           checked ? "border-accent-text bg-accent-text" : "border-border-strong bg-surface"
         }`}
       >
-        {checked && (
+        <Presence show={checked} enter="popIn">
           <View className="mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-surface-raised" />
-        )}
+        </Presence>
       </View>
       {children && <Text className="text-base text-fg">{children}</Text>}
     </Pressable>

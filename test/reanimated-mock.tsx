@@ -19,6 +19,22 @@ export function withTiming(to: number, config?: Config) {
   return to;
 }
 
+export type RepeatCall = { times: number; steps: number[] };
+
+export const repeatCalls: RepeatCall[] = [];
+
+export function withSequence(...steps: number[]) {
+  return steps;
+}
+
+export function withRepeat(animation: number | number[], times: number) {
+  const steps = Array.isArray(animation) ? animation : [animation];
+  repeatCalls.push({ times, steps });
+  return steps[steps.length - 1];
+}
+
+export function cancelAnimation(_value: unknown) {}
+
 export function useSharedValue<T>(initial: T) {
   const [, rerender] = useReducer((count: number) => count + 1, 0);
   const ref = useRef<{ value: T } | null>(null);
@@ -69,6 +85,7 @@ export const FadeOut = builder("FadeOut");
 export const FadeInDown = builder("FadeInDown");
 export const FadeOutDown = builder("FadeOutDown");
 export const LinearTransition = builder("LinearTransition");
+export const ZoomIn = builder("ZoomIn");
 
 const View = (props: Record<string, unknown>) => createElement("View", props);
 View.displayName = "Animated.View";

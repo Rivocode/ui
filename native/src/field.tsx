@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { useState } from "react";
 
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { useRivo } from "./provider";
 import { Text, TextInput, type TextInputProps } from "./text";
 
@@ -21,11 +22,16 @@ export function Field({ label, children, description, error, className }: FieldP
     <View className={cn("gap-1.5", className)}>
       <Text className="text-sm font-medium text-fg">{label}</Text>
       {children}
-      {error ? (
-        <Text className="text-xs text-danger-text">{error}</Text>
-      ) : description ? (
-        <Text className="text-xs text-fg-subtle">{description}</Text>
-      ) : null}
+      <Presence
+        show={Boolean(error || description)}
+        swapKey={error ? `erro:${error}` : description}
+      >
+        {error ? (
+          <Text className="text-xs text-danger-text">{error}</Text>
+        ) : (
+          <Text className="text-xs text-fg-subtle">{description}</Text>
+        )}
+      </Presence>
     </View>
   );
 }

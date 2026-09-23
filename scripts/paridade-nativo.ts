@@ -157,7 +157,7 @@ const PARITY: Record<string, Row> = {
   },
   Calendar: {
     state: "traduz",
-    note: "mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`",
+    note: "mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`; o mês novo entra por fade",
   },
   Card: {
     state: "traduz",
@@ -259,7 +259,7 @@ const PARITY: Record<string, Row> = {
   },
   Checkbox: {
     state: "traduz",
-    note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`",
+    note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`; o tique aparece crescendo ao marcar",
     page:
       "Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é " +
       "**sempre controlado**. `checked` e `onCheckedChange` são obrigatórios, não há " +
@@ -302,7 +302,7 @@ const PARITY: Record<string, Row> = {
   EmptyState: { state: "traduz", note: "`description` obrigatória, pelo mesmo motivo do web" },
   Field: {
     state: "traduz",
-    note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web",
+    note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web, e o texto que chega depois entra por fade",
   },
   FilterBar: {
     state: "traduz",
@@ -416,10 +416,10 @@ const PARITY: Record<string, Row> = {
   },
   OTPField: {
     state: "traduz",
-    note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só",
+    note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo",
   },
   PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
-  Progress: { state: "traduz", note: "`value` de 0 a 100 e `label`; sem `format`" },
+  Progress: { state: "traduz", note: "`value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo" },
   QueryBoundary: {
     state: "traduz",
     note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo",
@@ -443,7 +443,7 @@ const PARITY: Record<string, Row> = {
   },
   RadioGroup: {
     state: "traduz",
-    note: "`items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web",
+    note: "`items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo",
     page:
       "Traduz com `items` na raiz: não há `Radio` solto para compor, e tudo é controlado.\n\n" +
       "**O `label` é o `aria-label` do web com outro nome.** A página de lá já cobrava: sem " +
@@ -514,7 +514,7 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento",
   },
-  Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token" },
+  Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento" },
   Slider: {
     state: "traduz",
     note: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
@@ -544,7 +544,7 @@ const PARITY: Record<string, Row> = {
   },
   Tabs: {
     state: "traduz",
-    note: "só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo",
+    note: "só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas",
     page:
       "Traduz pela metade, de propósito. O `Tabs` nativo é **só** a caixinha " +
       '(`variant="segmented"` no web): `items`, `value`, `onValueChange`, sem `TabList`, ' +
@@ -828,7 +828,7 @@ const PARITY: Record<string, Row> = {
   },
   Meter: {
     state: "traduz",
-    note: "sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`",
+    note: "sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo",
     page:
       "Portado. A diferença é o texto do valor: no web ele sai de `format`, e no nativo vai " +
       "pronto em `valueLabel`: trazer a tabela de formatadores custaria o `Intl` num bundle " +
@@ -860,7 +860,7 @@ const PARITY: Record<string, Row> = {
   },
   Steps: {
     state: "traduz",
-    note: "só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro",
+    note: "só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade",
     page:
       'Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha "Passo 2 ' +
       'de 4", o título do passo e a barra de progresso. A régua de bolinhas não atravessa ' +
@@ -882,7 +882,7 @@ const PARITY: Record<string, Row> = {
   },
   TagsInput: {
     state: "traduz",
-    note: "Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta",
+    note: "Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta; a ficha nova entra crescendo e a que sai some por fade",
     page:
       "Traduz, com um gesto a menos. O Enter fecha a ficha e o separador digitado também, mas " +
       "ele é lido no texto, e não na tecla, porque o `onKeyPress` do Android não chega para o " +

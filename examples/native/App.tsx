@@ -49,7 +49,13 @@ import {
   Text,
   Textarea,
   ColorPicker,
+  Skeleton,
+  Steps,
+  TagsInput,
+  Toggle,
   ToggleGroup,
+  WizardFooter,
+  useWizard,
 } from "../../native/src";
 /* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
    e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
@@ -89,6 +95,12 @@ const INVOICES: Invoice[] = [
   { id: "3", number: "4815", customer: "Supermercado Tambaú", status: "Vencida", tone: "danger" },
 ];
 
+const WIZARD_STEPS = [
+  { id: "cliente", title: "Cliente", description: "Quem recebe a nota." },
+  { id: "servico", title: "Serviço", description: "O que foi feito, e por quanto." },
+  { id: "revisao", title: "Revisão", description: "Confira antes de emitir." },
+];
+
 const NATURE = [
   { kind: "servico", total: 148_200 },
   { kind: "produto", total: 71_400 },
@@ -115,6 +127,13 @@ function Painel({
   const [sendEmail, setSendEmail] = useState(true);
   const [monthly, setMonthly] = useState(false);
   const [remind, setRemind] = useState(true);
+  const wizard = useWizard(WIZARD_STEPS);
+  const [taker, setTaker] = useState("");
+  const [takerError, setTakerError] = useState<string | undefined>();
+  const [labels, setLabels] = useState<string[]>(["nfse"]);
+  const [bold, setBold] = useState(false);
+  const [lane, setLane] = useState("todas");
+  const [sent, setSent] = useState(35);
   const [period, setPeriod] = useState<string | null>("30");
   const [tab, setTab] = useState("mes");
   const [confirming, setConfirming] = useState(false);
@@ -396,24 +415,95 @@ function Painel({
           <CardHeader>
             <CardTitle>Movimento</CardTitle>
             <CardDescription>
-              Os tempos e a curva do web. Com “reduzir movimento” ligado no sistema, nada anima.
+              Assistente, formulário, abas e toque, nos tempos e na curva do web. Com “reduzir
+              movimento” ligado no sistema, nada anima.
             </CardDescription>
           </CardHeader>
           <CardContent className="gap-4">
-            <Switch checked={remind} onCheckedChange={setRemind}>
-              Lembrar o cliente antes do vencimento
-            </Switch>
+            <Steps steps={WIZARD_STEPS} current={wizard.step} />
+            {wizard.step === 0 && (
+              <Field label="Tomador" description="O nome que sai na nota." error={takerError}>
+                <Input
+                  value={taker}
+                  onChangeText={(text) => {
+                    setTaker(text);
+                    if (text.trim()) setTakerError(undefined);
+                  }}
+                  invalid={takerError !== undefined}
+                  placeholder="Clínica São Lucas"
+                />
+              </Field>
+            )}
+            {wizard.step === 1 && (
+              <Field label="Etiquetas" description="Vírgula fecha a ficha.">
+                <TagsInput value={labels} onValueChange={setLabels} placeholder="iss, retido" />
+              </Field>
+            )}
+            {wizard.step === 2 && (
+              <Checkbox checked={remind} onCheckedChange={setRemind}>
+                Lembrar o cliente antes do vencimento
+              </Checkbox>
+            )}
+            <WizardFooter className="mt-0 flex-row gap-2">
+              <Button variant="secondary" disabled={wizard.isFirst} onPress={wizard.back}>
+                Voltar
+              </Button>
+              <Button
+                onPress={() =>
+                  wizard.isLast
+                    ? toast.add({ title: "Nota emitida", description: "Foi por e-mail." })
+                    : wizard.next(() => {
+                        if (wizard.step === 0 && !taker.trim()) {
+                          setTakerError("Informe o tomador para seguir.");
+                          return false;
+                        }
+                        return true;
+                      })
+                }
+              >
+                {wizard.isLast ? "Emitir" : "Avançar"}
+              </Button>
+            </WizardFooter>
+
+            <Separator />
+
+            <Tabs
+              items={[
+                { label: "Todas", value: "todas" },
+                { label: "Pagas", value: "pagas" },
+                { label: "Vencidas", value: "vencidas" },
+              ]}
+              value={lane}
+              onValueChange={setLane}
+            />
+            <View className="gap-1.5">
+              <Text className="text-sm text-fg-muted">Envio do lote: {sent}%</Text>
+              <Progress value={sent} label={`Envio do lote: ${sent}%`} />
+            </View>
             <View className="flex-row flex-wrap gap-2">
               <Button
+                size="sm"
+                variant="secondary"
+                onPress={() => setSent((value) => (value >= 100 ? 0 : value + 25))}
+              >
+                Avançar o envio
+              </Button>
+              <Toggle pressed={bold} onPressedChange={setBold}>
+                Destacar
+              </Toggle>
+              <Button
+                size="sm"
+                variant="ghost"
                 onPress={() =>
                   toast.add({ title: "Lembrete agendado", description: "Sai três dias antes." })
                 }
               >
                 Mostrar aviso
               </Button>
-              <Button variant="secondary" onPress={() => toast.add({ title: "Rascunho salvo" })}>
-                Outro aviso
-              </Button>
+            </View>
+            <View className="gap-2">
+              <Skeleton className="h-3 w-3/4" />
+              <Skeleton className="h-3 w-1/2" />
             </View>
             <Accordion>
               <AccordionItem title="Por que o botão afunda?">

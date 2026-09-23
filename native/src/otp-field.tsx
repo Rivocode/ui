@@ -2,6 +2,7 @@ import { useRef, useState, type ComponentRef } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
+import { Presence } from "./motion";
 import { TextInput, Text } from "./text";
 
 export type OTPFieldProps = {
@@ -46,7 +47,9 @@ export function OTPField({
               active ? "border-accent" : filled ? "border-border-strong" : "border-border"
             }`}
           >
-            <Text className="text-xl font-medium text-fg">{value[index] ?? ""}</Text>
+            <Presence show={filled} swapKey={value[index]} enter="popIn" exit="none">
+              <Text className="text-xl font-medium text-fg">{value[index]}</Text>
+            </Presence>
           </View>
         );
       })}
