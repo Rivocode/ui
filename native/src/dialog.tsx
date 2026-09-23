@@ -3,6 +3,7 @@ import { Modal, Pressable, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { useReducedMotion } from "./motion";
 import { Text } from "./text";
 
 export type DialogProps = {
@@ -23,11 +24,12 @@ export function Dialog({
   children,
   className,
 }: DialogProps) {
+  const reduced = useReducedMotion();
   return (
     <Modal
       visible={open}
       transparent
-      animationType="fade"
+      animationType={reduced ? "none" : "fade"}
       onRequestClose={() => onOpenChange(false)}
     >
       <View accessibilityViewIsModal className="flex-1 items-center justify-center p-6">
@@ -69,11 +71,12 @@ export function AlertDialog({
   onAction,
   cancelLabel = "Cancelar",
 }: AlertDialogProps) {
+  const reduced = useReducedMotion();
   return (
     <Modal
       visible={open}
       transparent
-      animationType="fade"
+      animationType={reduced ? "none" : "fade"}
       onRequestClose={() => onOpenChange(false)}
     >
       <View accessibilityViewIsModal className="flex-1 items-center justify-center bg-overlay p-6">

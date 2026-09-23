@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
-import { ActivityIndicator, Pressable, type PressableProps } from "react-native";
+import { ActivityIndicator, type PressableProps } from "react-native";
+import { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { tokens } from "../tokens";
 import { cn } from "./cn";
+import { AnimatedPressable, useMotion } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -19,6 +21,8 @@ const LABEL: Record<string, string> = {
   ghost: "text-fg-muted",
   destructive: "text-danger-fg",
 };
+
+const PRESSED_SCALE = 0.97;
 
 const SPINNER_TOKEN: Record<string, keyof (typeof tokens.themes)["rivocode-dark"]> = {
   primary: "accent-fg",
@@ -55,8 +59,18 @@ export function Button({
   loading = false,
   disabled,
   className,
+  style,
+  onPressIn,
+  onPressOut,
   ...props
 }: ButtonProps & { className?: string }) {
+  const motion = useMotion();
+  const pressed = useSharedValue(0);
+  const pressStyle = useAnimatedStyle(() => {
+    "worklet";
+    return { transform: [{ scale: 1 - (1 - PRESSED_SCALE) * pressed.value }] };
+  });
+  const scales = !motion.reduced && typeof style !== "function";
   const blocked = disabled || loading;
   const height = { sm: "h-8", md: "h-11", lg: "h-12" }[size];
   const pad = { sm: "px-3", md: "px-4", lg: "px-5" }[size];
@@ -64,9 +78,18 @@ export function Button({
   const text = { sm: "text-sm", md: "text-base", lg: "text-md" }[size];
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       {...props}
+      style={scales ? [pressStyle, style] : style}
+      onPressIn={(event) => {
+        if (scales) pressed.value = withTiming(1, motion.timing("fast"));
+        onPressIn?.(event);
+      }}
+      onPressOut={(event) => {
+        if (scales) pressed.value = withTiming(0, motion.timing("base"));
+        onPressOut?.(event);
+      }}
       disabled={blocked}
       accessibilityState={{ disabled: Boolean(blocked), busy: loading }}
       hitSlop={hitSlop}
@@ -81,6 +104,6 @@ export function Button({
     >
       {loading && <ButtonSpinner variant={variant} />}
       <Text className={cn("font-medium", text, LABEL[variant])}>{children}</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }

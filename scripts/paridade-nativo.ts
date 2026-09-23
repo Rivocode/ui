@@ -126,7 +126,7 @@ const PAI: Record<string, string> = {
 const PARITY: Record<string, Row> = {
   Accordion: {
     state: "traduz",
-    note: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada",
+    note: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir",
   },
   Alert: {
     state: "traduz",
@@ -281,7 +281,7 @@ const PARITY: Record<string, Row> = {
   },
   Collapsible: {
     state: "traduz",
-    note: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`",
+    note: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion`",
   },
   Combobox: {
     state: "traduz",
@@ -297,7 +297,7 @@ const PARITY: Record<string, Row> = {
   },
   Dialog: {
     state: "traduz",
-    note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`",
+    note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento",
   },
   EmptyState: { state: "traduz", note: "`description` obrigatória, pelo mesmo motivo do web" },
   Field: {
@@ -512,7 +512,7 @@ const PARITY: Record<string, Row> = {
   Separator: { state: "traduz", note: "só a linha horizontal" },
   Sheet: {
     state: "traduz",
-    note: "só o comportamento de baixo, que já era o modo estreito do web",
+    note: "só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento",
   },
   Skeleton: { state: "traduz", note: "mesma marca de lugar, mesmo token" },
   Slider: {
@@ -540,7 +540,7 @@ const PARITY: Record<string, Row> = {
   },
   Switch: {
     state: "traduz",
-    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token",
+    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma",
   },
   Tabs: {
     state: "traduz",
@@ -602,7 +602,7 @@ const PARITY: Record<string, Row> = {
   ToastViewport: {
     state: "vira",
     native: "useToast",
-    note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo",
+    note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento",
   },
 
   Clipboard: {
@@ -1059,7 +1059,7 @@ const PARITY: Record<string, Row> = {
   },
   Button: {
     state: "traduz",
-    note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda",
+    note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento",
   },
 
   Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },

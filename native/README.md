@@ -30,7 +30,12 @@ O `react-native-reanimated` não é enfeite nem peer opcional: o
 `react-native-css` o exige em tempo de bundle, e sem ele o metro para em
 `Unable to resolve module react-native-reanimated` a partir de um arquivo que
 você nunca importou. Ele traz junto o `react-native-worklets`, que o
-`babel-preset-expo` liga sozinho.
+`babel-preset-expo` liga sozinho. As peças também o usam direto, e por isso ele
+é peer declarado (`>=4`): é por ele que o `Button` afunda no toque, o `Toast`
+sobe e desce, e o `Accordion` e o `Collapsible` abrem com a seta girando.
+Toda animação usa as durações e a curva do web (`tokens.scales["duration-*"]`
+e `tokens.easings`) e respeita o "reduzir movimento" do sistema, lido em tempo
+real: com ele ligado nada anima, e o `Dialog` e o `Sheet` abrem sem transição.
 
 ### Os sete arquivos, e o que cada um segura
 

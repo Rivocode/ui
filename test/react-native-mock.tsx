@@ -113,3 +113,25 @@ export const AppState = {
     for (const listener of appStateListeners) listener(next);
   },
 };
+
+type ReduceMotionListener = (enabled: boolean) => void;
+const reduceMotionListeners = new Set<ReduceMotionListener>();
+let reduceMotion = false;
+
+export const AccessibilityInfo = {
+  isReduceMotionEnabled: () => Promise.resolve(reduceMotion),
+  addEventListener: (type: string, listener: ReduceMotionListener) => {
+    if (type !== "reduceMotionChanged") return { remove: () => {} };
+    reduceMotionListeners.add(listener);
+    return { remove: () => reduceMotionListeners.delete(listener) };
+  },
+  /** So no duble: liga ou desliga o "reduzir movimento" do sistema. */
+  setReduceMotion: (next: boolean) => {
+    reduceMotion = next;
+    for (const listener of reduceMotionListeners) listener(next);
+  },
+  /** So no duble: o valor que o sistema responderia agora. */
+  get reduceMotionNow() {
+    return reduceMotion;
+  },
+};

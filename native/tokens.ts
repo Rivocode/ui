@@ -71,6 +71,20 @@ export const tokens = {
     "duration-slow": 320,
     "duration-sheet": 450
   },
+  "easings": {
+    "ease": [
+      0.2,
+      0,
+      0,
+      1
+    ],
+    "ease-sheet": [
+      0.32,
+      0.72,
+      0,
+      1
+    ]
+  },
   "themes": {
     "rivocode-dark": {
       "bg": "#0b0d0f",

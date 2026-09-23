@@ -21,7 +21,7 @@
     --text-2xl--line-height: 30px;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
-    --radius-sm: 6px;
+    --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
     --radius-xl: 16px;
@@ -215,6 +215,10 @@
 .size-12 {
   width: calc(var(--spacing) * 12);
   height: calc(var(--spacing) * 12);
+}
+.size-full {
+  width: 100%;
+  height: 100%;
 }
 .h-0\.5 {
   height: calc(var(--spacing) * 0.5);

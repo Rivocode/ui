@@ -114,6 +114,7 @@ function Painel({
   const [open, setOpen] = useState<Invoice | null>(null);
   const [sendEmail, setSendEmail] = useState(true);
   const [monthly, setMonthly] = useState(false);
+  const [remind, setRemind] = useState(true);
   const [period, setPeriod] = useState<string | null>("30");
   const [tab, setTab] = useState("mes");
   const [confirming, setConfirming] = useState(false);
@@ -388,6 +389,44 @@ function Painel({
                 </View>
               </AspectRatio>
             </Collapsible>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Movimento</CardTitle>
+            <CardDescription>
+              Os tempos e a curva do web. Com “reduzir movimento” ligado no sistema, nada anima.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="gap-4">
+            <Switch checked={remind} onCheckedChange={setRemind}>
+              Lembrar o cliente antes do vencimento
+            </Switch>
+            <View className="flex-row flex-wrap gap-2">
+              <Button
+                onPress={() =>
+                  toast.add({ title: "Lembrete agendado", description: "Sai três dias antes." })
+                }
+              >
+                Mostrar aviso
+              </Button>
+              <Button variant="secondary" onPress={() => toast.add({ title: "Rascunho salvo" })}>
+                Outro aviso
+              </Button>
+            </View>
+            <Accordion>
+              <AccordionItem title="Por que o botão afunda?">
+                <Text className="text-sm text-fg-muted">
+                  É o retorno do toque: 3% menor, em 120 ms, e volta ao soltar.
+                </Text>
+              </AccordionItem>
+              <AccordionItem title="E quem pediu menos movimento?">
+                <Text className="text-sm text-fg-muted">
+                  O sistema responde, e a peça troca de estado sem transição.
+                </Text>
+              </AccordionItem>
+            </Accordion>
           </CardContent>
         </Card>
 

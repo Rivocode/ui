@@ -1,16 +1,40 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Pressable, View } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { cn } from "./cn";
+import { useMotion } from "./motion";
 import { Text } from "./text";
 
+const CLIP = { overflow: "hidden" } as const;
+
 function Chevron({ open }: { open: boolean }) {
+  const motion = useMotion();
+  const turn = useSharedValue(open ? 1 : 0);
+
+  useEffect(() => {
+    turn.value = withTiming(open ? 1 : 0, motion.timing("base"));
+  }, [open, motion, turn]);
+
+  const style = useAnimatedStyle(() => {
+    "worklet";
+    return { transform: [{ rotate: `${turn.value * 180}deg` }] };
+  });
+
   return (
-    <View
-      className={`size-2.5 border-r-2 border-b-2 border-fg-subtle ${
-        open ? "-rotate-135" : "rotate-45"
-      }`}
-    />
+    <Animated.View style={style}>
+      <View className="size-2.5 rotate-45 border-r-2 border-b-2 border-fg-subtle" />
+    </Animated.View>
+  );
+}
+
+function Body({ open, children }: { open: boolean; children: ReactNode }) {
+  const motion = useMotion();
+  if (!open) return null;
+  return (
+    <Animated.View entering={motion.fadeIn} exiting={motion.fadeOut}>
+      {children}
+    </Animated.View>
   );
 }
 
@@ -28,20 +52,25 @@ export function AccordionItem({
   className,
 }: AccordionItemProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const motion = useMotion();
 
   return (
-    <View className={cn("border-b border-border", className)}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ expanded: open }}
-        onPress={() => setOpen(!open)}
-        className="min-h-12 flex-row items-center justify-between gap-3 py-3"
-      >
-        <Text className="flex-1 text-base font-medium text-fg">{title}</Text>
-        <Chevron open={open} />
-      </Pressable>
-      {open && <View className="pb-4">{children}</View>}
-    </View>
+    <Animated.View layout={motion.reflow} style={CLIP}>
+      <View className={cn("border-b border-border", className)}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          onPress={() => setOpen(!open)}
+          className="min-h-12 flex-row items-center justify-between gap-3 py-3"
+        >
+          <Text className="flex-1 text-base font-medium text-fg">{title}</Text>
+          <Chevron open={open} />
+        </Pressable>
+        <Body open={open}>
+          <View className="pb-4">{children}</View>
+        </Body>
+      </View>
+    </Animated.View>
   );
 }
 
@@ -59,19 +88,24 @@ export type CollapsibleProps = {
 
 export function Collapsible({ label, children, defaultOpen = false, className }: CollapsibleProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const motion = useMotion();
 
   return (
-    <View className={cn(className)}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityState={{ expanded: open }}
-        onPress={() => setOpen(!open)}
-        className="min-h-11 flex-row items-center gap-2 py-2"
-      >
-        <Chevron open={open} />
-        <Text className="text-sm font-medium text-fg-muted">{label}</Text>
-      </Pressable>
-      {open && <View className="pt-1">{children}</View>}
-    </View>
+    <Animated.View layout={motion.reflow} style={CLIP}>
+      <View className={cn(className)}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          onPress={() => setOpen(!open)}
+          className="min-h-11 flex-row items-center gap-2 py-2"
+        >
+          <Chevron open={open} />
+          <Text className="text-sm font-medium text-fg-muted">{label}</Text>
+        </Pressable>
+        <Body open={open}>
+          <View className="pt-1">{children}</View>
+        </Body>
+      </View>
+    </Animated.View>
   );
 }
