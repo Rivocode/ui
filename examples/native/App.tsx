@@ -182,7 +182,7 @@ function Painel({
   );
 
   return (
-    <SafeAreaView className="flex-1">
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollArea
         contentContainerClassName="gap-4 p-4"
         footer={desk === "movimento" ? wizardActions : <Button onPress={emit}>Emitir nota</Button>}

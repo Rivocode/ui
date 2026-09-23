@@ -221,7 +221,12 @@ describe("ScrollArea: a tela de formulario", () => {
     const scroll = scrollOf(screen);
     expect(scroll.props.bottomOffset).toBe(16);
     expect(scroll.props.keyboardShouldPersistTaps).toBe("handled");
-    expect(scroll.props.contentContainerClassName).toBe("gap-4 p-5");
+    expect(scroll.props.className).toBeUndefined();
+    expect(scroll.props.contentContainerClassName).toBeUndefined();
+    expect(scroll.props.style).toEqual({ flex: 1 });
+    const content = scroll.props.children.props.className.split(" ");
+    expect(content).toContain("gap-4");
+    expect(content).toContain("p-5");
   });
 
   test("a altura do rodape entra na conta, para o campo parar acima do botao", () => {

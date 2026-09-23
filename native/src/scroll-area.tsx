@@ -9,6 +9,8 @@ import { cn } from "./cn";
 import { KeyboardRiser } from "./keyboard";
 
 const GAP = 16;
+const FILL = { flex: 1 };
+const GROW = { flexGrow: 1 };
 
 export type ScrollAreaProps = Omit<
   KeyboardAwareScrollViewProps,
@@ -51,10 +53,10 @@ export function ScrollArea({
         keyboardShouldPersistTaps="handled"
         {...props}
         bottomOffset={bottomOffset + (footer ? footerHeight : 0)}
-        className="flex-1"
-        contentContainerClassName={contentContainerClassName}
+        style={FILL}
+        contentContainerStyle={GROW}
       >
-        {children}
+        <View className={cn("grow", contentContainerClassName)}>{children}</View>
       </KeyboardAwareScrollView>
       {footer && (
         <KeyboardRiser

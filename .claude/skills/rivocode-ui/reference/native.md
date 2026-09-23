@@ -439,6 +439,12 @@ na conta de onde o campo para:
 </ScrollArea>
 ```
 
+A `ScrollArea` ocupa a altura do pai (`flex-1`), então o pai precisa ter
+altura. O `SafeAreaView` do `react-native-safe-area-context` é componente de
+terceiro e **ignora `className`**: `<SafeAreaView className="flex-1">` fica sem
+altura, a rolagem some e o `footer` sobe para o topo da tela. Use
+`<SafeAreaView style={{ flex: 1 }}>`.
+
 `Sheet` e `Dialog` (e o que abre em folha: `Select`, `Combobox`, `Menu`,
 `DatePicker`, `TimePicker`, `TreeSelect`) sobem com o teclado sozinhos. Com o
 "reduzir movimento" ligado, a folha e o rodapé pulam para o lugar final em vez
