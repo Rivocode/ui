@@ -40,3 +40,12 @@ const { cleanup } = await import("@testing-library/react");
 const { afterEach } = await import("bun:test");
 
 afterEach(cleanup);
+
+const { act } = await import("react");
+afterEach(() => {
+  const mounted = (globalThis as { __rivoMounted?: { unmount: () => void }[] }).__rivoMounted;
+  if (!mounted) return;
+  for (const renderer of mounted.splice(0)) {
+    act(() => renderer.unmount());
+  }
+});

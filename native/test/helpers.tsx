@@ -5,6 +5,10 @@ import { RivoProvider, type RivoProviderProps } from "../src";
 import { declaredColor, variableDeclarations } from "./css-compilado";
 
 /** Monta dentro do provider, como todo app monta. */
+const mounted: ReactTestRenderer[] = ((
+  globalThis as { __rivoMounted?: ReactTestRenderer[] }
+).__rivoMounted ??= []);
+
 export function render(
   element: ReactElement,
   providerProps?: Omit<RivoProviderProps, "children">,
@@ -13,6 +17,7 @@ export function render(
   act(() => {
     renderer = create(<RivoProvider {...providerProps}>{element}</RivoProvider>);
   });
+  mounted.push(renderer);
   return renderer;
 }
 
