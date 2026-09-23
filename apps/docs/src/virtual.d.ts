@@ -9,3 +9,11 @@ declare module 'virtual:catalog-index' {
   export const DOC_INDEX: Array<{ name: string; family: string; summary: string }>
   export const NATIVE_PIECES: number
 }
+
+/** Por peca, o loader das props da pagina onde ela mora; gerado em vite.config.ts. */
+declare module 'virtual:component-props' {
+  export const LOADERS: Record<
+    string,
+    () => Promise<{ default: Record<string, import('./prop-types').Piece> }>
+  >
+}

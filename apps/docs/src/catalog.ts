@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import { DOC_INDEX } from 'virtual:catalog-index'
 import { dropLeadingHeading, splitFrontmatter } from '@/doc-text'
 import { findParent } from '@/parts'
+import { pieceOf } from '@/props'
 import { slugify } from '@/slug'
 
 export { importPathOf } from '@/parts'
@@ -160,3 +161,30 @@ export const findEntry = (address: string) => {
 
 /** Quantas pecas tem exemplo que roda, e nao so texto. */
 export const WITH_EXAMPLE = ENTRIES.filter((entry) => entry.loadExamples).length
+
+/**
+ * Pede de uma vez tudo que a pagina vai ler.
+ *
+ * Cada `use()` so dispara o proprio download quando o React chega nele, e o
+ * React so chega no proximo depois que o anterior resolve: os exemplos da peca,
+ * os de cada parte, a prosa e a tabela de props viravam uma fila de uma
+ * requisicao por vez. Medido no Select com a rede do Lighthouse (150 ms de
+ * ida e volta), eram oito chunks de 1 KB em fila, 1,4 s so de espera, e o JSON
+ * de props so saia depois de todos. Como cada loader guarda a promessa, os
+ * `use()` de baixo recebem estas mesmas, ja em voo.
+ *
+ * Quem chama e a casca, e nao a pagina: a pagina e um chunk preguicoso, e
+ * pedindo dali os dados so saiam depois de ela chegar. Da casca, eles descem
+ * junto com ela.
+ */
+export function preloadPage(address: string) {
+  const entry = findEntry(address)
+  if (!entry) return
+
+  for (const item of [entry, ...(entry.parts ?? [])]) {
+    const pending = [item.loadBody(), item.loadExamples?.(), item.loadSource?.(), pieceOf(item.name)]
+    // A falha e de quem le a promessa, pelo `use()` e pela fronteira; aqui ela
+    // so nao pode virar rejeicao solta antes de alguem chegar.
+    for (const promise of pending) promise?.catch(() => {})
+  }
+}

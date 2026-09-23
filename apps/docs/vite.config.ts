@@ -450,6 +450,63 @@ export const NATIVE_PIECES = ${native}
 }
 
 /**
+ * As props do catalogo, uma pagina por chunk.
+ *
+ * O `component-props.json` tem 534 KB (58 KB comprimido) - toda prop de toda
+ * peca -, e a pagina de uma peca le so as tabelas dela e das partes dela.
+ * Importado inteiro, ele era o maior chunk do site e o ultimo a chegar na
+ * pagina de peca: na rede do Lighthouse, meio segundo de download e o parse de
+ * meio megabyte antes de a tabela existir. O arquivo continua o mesmo, gerado
+ * pelo `gen:props` e guardado pelo `check:props`; so a entrega e fatiada aqui.
+ *
+ * A fatia e a da PAGINA, e nao a da peca: a parte mora na pagina de quem a
+ * compoe, entao o Select leva as tabelas das sete partes num pedido so, e nao
+ * em oito.
+ */
+function propsByPage(): Plugin {
+  const INDEX = 'virtual:component-props'
+  const PAGE = `${INDEX}/`
+
+  const groups = () => {
+    const names = new Set(readDocs().map((doc) => doc.name))
+    const byPage = new Map<string, Record<string, Piece>>()
+    const pageOf = new Map<string, string>()
+
+    for (const [name, piece] of readTypes()) {
+      const page = findParent(name, names) ?? name
+      pageOf.set(name, page)
+      byPage.set(page, { ...byPage.get(page), [name]: piece })
+    }
+
+    return { byPage, pageOf }
+  }
+
+  return {
+    name: 'rivocode-props-por-pagina',
+
+    resolveId(id) {
+      return id === INDEX || id.startsWith(PAGE) ? `\0${id}` : undefined
+    },
+
+    load(id) {
+      if (!id.startsWith(`\0${INDEX}`)) return undefined
+
+      this.addWatchFile(PROPS_FILE)
+      const { byPage, pageOf } = groups()
+
+      if (id === `\0${INDEX}`) {
+        const loaders = [...pageOf]
+          .map(([name, page]) => `  ${JSON.stringify(name)}: () => import(${JSON.stringify(PAGE + page)}),`)
+          .join('\n')
+        return `export const LOADERS = {\n${loaders}\n}\n`
+      }
+
+      return `export default ${JSON.stringify(byPage.get(id.slice(`\0${PAGE}`.length)) ?? {})}`
+    },
+  }
+}
+
+/**
  * O acervo da galeria de icones, como modulo virtual: os dados vetoriais de
  * cada icone saem dos proprios modulos do lucide-react no build, e viram um
  * chunk proprio que so a pagina /icones importa - importar o objeto `icons`
@@ -483,7 +540,7 @@ function iconGallery(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), catalogIndex(), iconGallery()],
+  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), catalogIndex(), propsByPage(), iconGallery()],
   resolve: {
     // A biblioteca resolve para a fonte, e nao para `dist`: a doc passa a
     // refletir o que esta escrito agora, sem build antes, e o HMR alcanca os
