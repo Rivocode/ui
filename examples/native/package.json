@@ -31,23 +31,23 @@
     "build:css:watch": "node scripts/css.mjs --watch"
   },
   "dependencies": {
-    "expo": "~57.0.16",
-    "expo-clipboard": "~57.0.1",
-    "expo-document-picker": "~57.0.1",
+    "expo": "~57.0.24",
+    "expo-clipboard": "~57.0.2",
+    "expo-document-picker": "~57.0.2",
     "expo-status-bar": "~57.0.1",
     "nativewind": "^5.0.0-preview.4",
-    "react": "19.2.3",
-    "react-native": "0.86.2",
+    "react": "19.2.8",
+    "react-native": "0.86.3",
     "react-native-css": "^3.0.7",
-    "react-native-reanimated": "4.5.1",
+    "react-native-reanimated": "4.5.5",
     "react-native-safe-area-context": "~5.7.0",
-    "react-native-svg": "15.15.4",
+    "react-native-svg": "15.15.5",
     "tailwind-merge": "^3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/react": "~19.2.2",
-    "postcss": "^8.5.26",
+    "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3"
   },
