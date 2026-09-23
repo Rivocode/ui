@@ -35,7 +35,7 @@
     "expo-clipboard": "~57.0.2",
     "expo-document-picker": "~57.0.2",
     "expo-status-bar": "~57.0.1",
-    "nativewind": "^5.0.0-preview.4",
+    "nativewind": "^5.0.0-rc.0",
     "react": "19.2.8",
     "react-native": "0.86.3",
     "react-native-css": "^3.0.7",
