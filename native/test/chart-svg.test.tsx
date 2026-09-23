@@ -301,6 +301,24 @@ describe("ChartDonut", () => {
     expect(byType(screen, "Circle")).toHaveLength(1);
   });
 
+  test("o valor do meio cabe no furo: uma linha, largura presa e fonte que encolhe", () => {
+    const pieces = [
+      render(
+        <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" centerValue="R$ 246,7K" />,
+      ),
+      render(<ChartRadial value={82} centerValue="R$ 1.246,7K" />),
+    ];
+    for (const screen of pieces) {
+      const middle = byType(screen, "Text").find((node) =>
+        String(node.props.children).startsWith("R$"),
+      )!;
+      expect(middle.props.numberOfLines).toBe(1);
+      expect(middle.props.adjustsFontSizeToFit).toBe(true);
+      expect(middle.props.style.width).toMatch(/^\d+%$/);
+      expect(Number.parseInt(middle.props.style.width)).toBeLessThanOrEqual(60);
+    }
+  });
+
   test("o toque na legenda acende a fatia e manda o valor para o meio", () => {
     const screen = render(
       <ChartDonut

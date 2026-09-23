@@ -11,6 +11,7 @@ import { arcPath } from "./arc";
 import { PALETTE, type ChartConfig } from "./chart";
 
 const OUTER = 44;
+const CENTER_WIDTH = { width: "52%" } as const;
 
 const GAP = 2;
 
@@ -152,16 +153,20 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
             importantForAccessibility="no-hide-descendants"
           >
             <Text
-              numberOfLines={2}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.6}
               font="display"
-              className="max-w-[52%] text-center text-xl font-semibold text-fg"
+              style={CENTER_WIDTH}
+              className="text-center text-lg font-semibold text-fg"
             >
               {read ? write(readValue) : centerValue}
             </Text>
             {(read || centerLabel) && (
               <Text
                 numberOfLines={1}
-                className="mt-0.5 max-w-[64%] text-center text-xs text-fg-subtle"
+                style={CENTER_WIDTH}
+                className="mt-0.5 text-center text-xs text-fg-subtle"
               >
                 {read ? textOf(read) : centerLabel}
               </Text>

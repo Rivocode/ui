@@ -14,6 +14,7 @@ const RADIUS = 42;
 const BAND = 8;
 
 const WHOLE = 359.9;
+const CENTER_WIDTH = { width: "60%" } as const;
 
 export type ChartRadialProps = {
   /** De 0 a `max`. Acima disso o arco para no fim, e não dá a volta. */
@@ -102,9 +103,12 @@ export function ChartRadial({
 
       <View className="absolute inset-0 items-center justify-center">
         <Text
-          numberOfLines={2}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.6}
           font="display"
-          className="max-w-[62%] text-center text-2xl font-semibold text-fg"
+          style={CENTER_WIDTH}
+          className="text-center text-xl font-semibold text-fg"
         >
           {middle}
         </Text>
