@@ -188,6 +188,7 @@ export function Command({
           className={cn(
             "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
             "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
+            "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
           )}
         />
         <BaseDialog.Popup
@@ -197,6 +198,9 @@ export function Command({
             "top-[12vh]",
             "overflow-hidden rounded-xl border border-border bg-surface shadow-3",
             "font-sans text-fg outline-none",
+            "origin-top transition-[opacity,scale] duration-[var(--rc-duration-base)] ease-rc",
+            "data-[starting-style]:scale-[0.97] data-[starting-style]:opacity-0",
+            "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",
             "max-sm:top-0 max-sm:left-0 max-sm:w-full max-sm:translate-x-0 max-sm:rounded-none",
             className,
           )}

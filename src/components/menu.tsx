@@ -24,7 +24,7 @@ export function MenuTrigger({ className, ...props }: ComponentProps<typeof BaseM
 export const floatingPanel = cn(
   "min-w-[8rem] max-w-[calc(100vw-1rem)] rounded-lg border border-border bg-surface-raised p-1 shadow-2",
   "font-sans text-fg outline-none",
-  "origin-[var(--transform-origin)] transition-[opacity,transform]",
+  "origin-[var(--transform-origin)] transition-[opacity,scale]",
   "duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
   "data-[starting-style]:scale-[0.97] data-[starting-style]:opacity-0",
   "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",

@@ -93,7 +93,7 @@ function List({ position }: { position: ToastPosition }) {
         "relative flex items-start gap-3 rounded-lg border border-border",
         "p-4 shadow-3 font-sans",
         TOM[toast.type ?? ""] ?? NEUTRO,
-        "transition-[opacity,transform] duration-[var(--rc-duration-base)]",
+        "transition-[opacity,translate] duration-[var(--rc-duration-base)]",
         "ease-[var(--rc-ease)]",
         "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
         ENTER[position],

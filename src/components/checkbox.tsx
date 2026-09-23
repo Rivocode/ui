@@ -94,7 +94,13 @@ export function Checkbox({
           <span
             {...indicatorProps}
             data-rc-check={state.indeterminate ? "indeterminate" : "checked"}
-            className={cn("flex items-center justify-center", classNames?.indicator)}
+            className={cn(
+              "flex items-center justify-center",
+              "transition-[opacity,scale] duration-[var(--rc-duration-fast)] ease-rc",
+              "data-[starting-style]:scale-50 data-[starting-style]:opacity-0",
+              "data-[ending-style]:scale-50 data-[ending-style]:opacity-0",
+              classNames?.indicator,
+            )}
           >
             {state.indeterminate ? <MixedMark /> : <CheckMark />}
           </span>

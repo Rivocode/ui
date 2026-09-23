@@ -91,7 +91,7 @@ export function NavigationMenuViewport({ className }: { className?: string }) {
             "font-sans text-fg outline-none",
             "h-[var(--popup-height)] w-[var(--popup-width)] overflow-hidden",
             "origin-[var(--transform-origin)]",
-            "transition-[opacity,transform,width,height] duration-[var(--rc-duration-base)] ease-rc",
+            "transition-[opacity,scale,width,height] duration-[var(--rc-duration-base)] ease-rc",
             "data-[starting-style]:scale-[0.97] data-[starting-style]:opacity-0",
             "data-[ending-style]:scale-[0.97] data-[ending-style]:opacity-0",
             className,

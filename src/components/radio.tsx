@@ -55,6 +55,9 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
       <BaseRadio.Indicator
         className={cn(
           "size-2 rounded-pill bg-surface-raised",
+          "transition-[opacity,scale] duration-[var(--rc-duration-fast)] ease-rc",
+          "data-[starting-style]:scale-50 data-[starting-style]:opacity-0",
+          "data-[ending-style]:scale-50 data-[ending-style]:opacity-0",
           "data-[disabled]:bg-fg-disabled",
           classNames?.indicator,
         )}

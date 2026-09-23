@@ -266,7 +266,7 @@ export function ComboboxChip({ className, children, labels = {}, ...props }: Com
       <BaseCombobox.ChipRemove
         aria-label={remove(text)}
         className={cn(
-          "text-fg-subtle transition-colors hover:text-fg",
+          "text-fg-subtle transition-colors duration-[var(--rc-duration-fast)] ease-rc hover:text-fg",
           "relative after:absolute after:-inset-1.5",
         )}
       >
