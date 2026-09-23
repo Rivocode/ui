@@ -152,7 +152,7 @@ const PARITY: Record<string, Row> = {
       "pacote oferecendo o compacto que o pacote decidiu não ter.\n\n" +
       "E a prop custaria mais do que paga. Para casar com o web ela precisaria nascer em " +
       "`md`, o que aumentaria todo selo já publicado; nascer no tamanho de hoje faria " +
-      "`size=\"md\"` desenhar coisas diferentes nos dois pacotes, que é pior do que não ter a " +
+      '`size="md"` desenhar coisas diferentes nos dois pacotes, que é pior do que não ter a ' +
       "prop. O selo nativo é `text-xs`, fixo.",
   },
   Calendar: {
@@ -175,8 +175,8 @@ const PARITY: Record<string, Row> = {
       "**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, " +
       "`errorTitle`, `errorMessage`, `retryLabel`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
       "as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora " +
-      "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`, e " +
-      "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. O botão de " +
+      "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`. O " +
+      "`empty.icon` atravessa, e aceita também a função do `EmptyState` nativo. O botão de " +
       "tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma " +
       "linha de texto.\n\n" +
       "**O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai " +
@@ -299,7 +299,25 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`",
   },
-  EmptyState: { state: "traduz", note: "`description` obrigatória, pelo mesmo motivo do web" },
+  EmptyState: {
+    state: "traduz",
+    note: "`description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados",
+    page:
+      "Traduz, com `description` obrigatória pelo mesmo motivo do web, e com os dois espaços de " +
+      "desenho: `icon` e `illustration`, os dois escondidos do leitor de tela.\n\n" +
+      "**No React Native a cor não desce da `View` para o SVG**, então o `icon` aceita também " +
+      "uma função, que recebe o `fg-subtle` do tema que pinta agora e os mesmos 32 do web:\n\n" +
+      "```tsx\n" +
+      "<EmptyState\n" +
+      "  icon={({ color, size }) => <Search color={color} size={size} />}\n" +
+      '  title="Nada encontrado para esse filtro"\n' +
+      '  description="Tente ampliar o período ou limpar o filtro de status."\n' +
+      "/>\n" +
+      "```\n\n" +
+      "A `illustration` não força nada, como no web: o tamanho é de quem desenha, e a cor vem " +
+      "dos papéis de `useRivo().colors`, nunca de cor literal. `title` e `description` são " +
+      "`string`, porque moram dentro de um `Text`.",
+  },
   Field: {
     state: "traduz",
     note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web",
@@ -390,7 +408,7 @@ const PARITY: Record<string, Row> = {
       "FONTE.\n\n" +
       "E o que elas comprariam nao cabe na tela: sete colunas em 358px dao 44,8px cada, onde a " +
       "coluna de semana existe para mostrar hora e duracao. Grade de tempo e idioma de mesa - " +
-      "ela responde \"o que choca com o que\", e essa pergunta se faz com o olho passeando, e " +
+      'ela responde "o que choca com o que", e essa pergunta se faz com o olho passeando, e ' +
       "nao com o dedo cobrindo o que ele toca.\n\n" +
       "**No telefone, a resposta e outra peca.** Compromisso por dia e lista, e a lista se monta " +
       "com o que ja existe. Data com valor - vencimento, prazo, entrega - e o `Calendar`, que " +
@@ -429,9 +447,9 @@ const PARITY: Record<string, Row> = {
       "que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a " +
       "tela escrevia.\n\n" +
       "Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
-      "`errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`, e " +
-      "`empty.icon` não existe, porque o `EmptyState` nativo ainda não tem esse slot. É a mesma " +
-      "nota que o `ChartContainer` já carrega.\n\n" +
+      "`errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`. " +
+      "O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor " +
+      "e o tamanho. É a mesma nota que o `ChartContainer` já carrega.\n\n" +
       "**`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que " +
       "ninguém alcance o nó interno por `[&_div]` e acople a tela à árvore da peça. No React " +
       "Native não há seletor de descendente, então essa escotilha não existe e a prop não teria " +
@@ -1068,7 +1086,6 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "`items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web",
   },
-
 
   ButtonGroup: {
     state: "nao",

@@ -163,12 +163,49 @@ duas marcas.
 | Dentro de controle (`Button`, `Tab`, item de menu) | `size={16}` |
 | Junto de texto `sm`/`xs` (célula, meta, eyebrow) | `size={14}` |
 | Miúdo em linha apertada (hint do `Stat`, delta) | `size={13}` |
+| Estado vazio (`icon` do `EmptyState`) | nenhum: a peça força 32px |
 
 Ícone decorativo (que acompanha um texto que já diz tudo) leva
 `aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
 `aria-label` no botão, nunca no ícone. E alvo de toque continua sendo 24px no
 mínimo: ícone menor cresce o botão e devolve o espaço com margem negativa,
 como o hint do `Stat` faz.
+
+### Ícone ou ilustração no estado vazio
+
+O `EmptyState` tem dois espaços, e cada um serve a um vazio:
+
+- **`icon`** para o vazio que acontece no meio do trabalho: filtro ou busca
+  sem resultado, lista que a pessoa esvaziou, período sem movimento. Um ícone
+  do lucide da tabela abaixo, e a peça o põe em 32px e `fg-subtle`.
+- **`illustration`** para o vazio de primeira vez: a tela inicial que ainda não
+  tem nada, o passo de onboarding. Tamanho livre, e toma o lugar do `icon`
+  quando os dois vêm.
+
+```tsx
+<EmptyState
+  icon={<Search />}
+  title="Nenhum cliente com esse nome"
+  description="Confira a grafia ou busque pelo CNPJ."
+/>
+
+<EmptyState
+  illustration={<FirstInvoiceArt className="h-24 w-auto" />}
+  title="Nenhuma nota"
+  description="Emita a primeira para ela aparecer."
+  action={<Button>Emitir nota</Button>}
+/>
+```
+
+**A ilustração pinta com `currentColor` ou com classe de token**
+(`fill-accent-subtle`, `stroke-fg-muted`), e nunca com cor literal: a mesma
+tela veste vários clientes pelo tema, e um hexadecimal dentro do SVG fica igual
+em todos eles e pode sumir no tema escuro. O invólucro já vem em
+`text-fg-subtle`, então `currentColor` acompanha sozinho. Prefira SVG em linha
+a `<img>`, que não acompanha tema nenhum. A biblioteca não tem kit de
+ilustrações, de propósito: o espaço é o que ela garante, e o desenho é do
+produto. No React Native, o `icon` aceita também uma função que recebe a cor e
+o tamanho, e a ilustração pinta com os papéis de `useRivo().colors`.
 
 ### O vocabulário
 

@@ -9735,6 +9735,12 @@
         "required": false,
         "note": "Simbolo ou ilustracao.",
         "since": "0.4.0"
+      },
+      {
+        "name": "illustration",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Desenho maior que o icone, para o vazio de primeira vez: a tela inicial sem nada ainda, o passo de onboarding."
       }
     ]
   },

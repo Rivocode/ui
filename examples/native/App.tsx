@@ -3,6 +3,7 @@ import "./generated.css";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
+import Svg, { Circle, Path } from "react-native-svg";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -18,6 +19,7 @@ import {
   AlertDialog,
   Avatar,
   DataList,
+  EmptyState,
   Field,
   Input,
   Progress,
@@ -253,6 +255,32 @@ function Painel({
                   <Badge tone={invoice.tone}>{invoice.status}</Badge>
                 </View>
               )}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Busca sem resultado</CardTitle>
+            <CardDescription>
+              O vazio do meio do trabalho leva ícone, e não ilustração.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <EmptyState
+              icon={({ color, size }) => (
+                <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+                  <Circle cx={11} cy={11} r={7} stroke={color} strokeWidth={2} />
+                  <Path d="m20 20-3.5-3.5" stroke={color} strokeWidth={2} strokeLinecap="round" />
+                </Svg>
+              )}
+              title="Nada encontrado para esse filtro"
+              description="Tente ampliar o período ou limpar o filtro de status."
+              action={
+                <Button size="sm" variant="secondary">
+                  Limpar filtros
+                </Button>
+              }
             />
           </CardContent>
         </Card>

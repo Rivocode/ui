@@ -63,6 +63,50 @@ test("o icone do estado vazio sai do caminho do leitor de tela, como o do aviso"
   expect(screen.queryByRole("img", { name: "Uma caixa aberta" })).toBeNull();
 });
 
+test("a ilustracao nao herda os 32px forcados do icone, e sai do leitor de tela", () => {
+  render(
+    <EmptyState
+      illustration={<svg data-testid="desenho" viewBox="0 0 120 80" />}
+      title="Nenhuma nota por aqui"
+      description="Quando voce emitir a primeira, ela aparece nesta lista."
+    />,
+  );
+
+  const wrapper = screen.getByTestId("desenho").parentElement!;
+  const tokens = wrapper.className.split(" ");
+  expect(wrapper.getAttribute("aria-hidden")).toBe("true");
+  expect(tokens).toContain("text-fg-subtle");
+  expect(tokens).not.toContain("[&_svg]:size-8");
+});
+
+test("o icone continua com os 32px forcados", () => {
+  render(
+    <EmptyState
+      icon={<svg data-testid="simbolo" />}
+      title="Nada encontrado"
+      description="Nenhum resultado para esse filtro."
+    />,
+  );
+
+  const tokens = screen.getByTestId("simbolo").parentElement!.className.split(" ");
+  expect(tokens).toContain("[&_svg]:size-8");
+  expect(tokens).toContain("text-fg-subtle");
+});
+
+test("com ilustracao e icone, a ilustracao toma o lugar do icone", () => {
+  render(
+    <EmptyState
+      icon={<svg data-testid="simbolo" />}
+      illustration={<svg data-testid="desenho" />}
+      title="Nenhuma nota por aqui"
+      description="Quando voce emitir a primeira, ela aparece nesta lista."
+    />,
+  );
+
+  expect(screen.getByTestId("desenho")).toBeDefined();
+  expect(screen.queryByTestId("simbolo")).toBeNull();
+});
+
 test("o estado vazio funciona sem acao, mas continua explicando o motivo", () => {
   render(<EmptyState title="Nada encontrado" description="Nenhum resultado para esse filtro." />);
   expect(screen.getByText("Nenhum resultado para esse filtro.")).toBeDefined();

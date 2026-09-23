@@ -308,7 +308,7 @@
       },
       {
         "name": "empty",
-        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
         "note": "O que aparece quando a consulta volta sem nenhum ponto."
       },
@@ -803,7 +803,7 @@
       },
       {
         "name": "empty",
-        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false
       },
       {
@@ -1108,6 +1108,18 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "icon",
+        "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
+        "required": false,
+        "note": "Simbolo do vazio."
+      },
+      {
+        "name": "illustration",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Desenho maior que o icone, para o vazio de primeira vez: a tela inicial sem nada ainda, o passo de onboarding."
       }
     ]
   },
@@ -1956,7 +1968,7 @@
       },
       {
         "name": "empty",
-        "type": "{ title: string; description: string; action?: ReactNode; }",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
         "required": false,
         "note": "O que aparece quando a consulta volta vazia."
       },

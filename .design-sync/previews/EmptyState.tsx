@@ -28,3 +28,27 @@ export function SearchWithNoResult() {
     </Card>
   )
 }
+
+/** Primeira vez, com ilustração */
+export function FirstRunIllustration() {
+  return (
+    <Card className="max-w-lg">
+      <EmptyState
+        illustration={
+          <svg viewBox="0 0 120 80" className="h-20 w-auto">
+            <rect x="20" y="10" width="80" height="60" rx="8" className="fill-accent-subtle" />
+            <path
+              d="M36 32h48M36 44h32M36 56h20"
+              stroke="currentColor"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+          </svg>
+        }
+        title="Nenhuma nota por aqui"
+        description="Quando você emitir a primeira, ela aparece nesta lista."
+        action={<Button size="sm">Emitir nota</Button>}
+      />
+    </Card>
+  )
+}

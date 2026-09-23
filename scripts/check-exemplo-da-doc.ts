@@ -81,6 +81,8 @@ export const FOREIGN = new Set([
   "Link",
   "Svg",
   "TriangleAlert",
+  "FileText",
+  "Search",
 ]);
 
 /**
