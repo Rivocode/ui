@@ -187,3 +187,25 @@ test("sem escolha, o gatilho mostra o convite", () => {
   );
   expect(screen.getByText("Escolha o setor")).toBeDefined();
 });
+
+test("o item de lista sai do mapa de papeis, e a linha fica filha direta da arvore ou do grupo", () => {
+  render(<ControlledTree />);
+  const rows = screen.getByRole("tree").querySelectorAll("[role=treeitem]");
+  expect(rows.length).toBeGreaterThan(3);
+  for (const row of rows) {
+    const holder = row.parentElement!;
+    expect(holder.tagName).toBe("LI");
+    expect(holder.getAttribute("role")).toBe("none");
+    expect(["tree", "group"]).toContain(holder.parentElement!.getAttribute("role")!);
+  }
+});
+
+test("o botao de abrir estica o alvo de 16 para 24 pixels sem crescer o desenho", () => {
+  render(<ControlledTree />);
+  const toggle = screen.getAllByRole("button", { name: "Fechar", hidden: true })[0]!;
+  const tokens = toggle.className.split(" ");
+  expect(tokens).toContain("size-4");
+  expect(tokens).toContain("relative");
+  expect(tokens).toContain("after:absolute");
+  expect(tokens).toContain("after:-inset-1");
+});

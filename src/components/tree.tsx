@@ -185,7 +185,7 @@ function Branch({
   const mixed = checkedLeaves > 0 && !full;
 
   return (
-    <li>
+    <li role="none">
       <div
         role="treeitem"
         data-id={node.id}
@@ -211,7 +211,7 @@ function Branch({
               event.stopPropagation();
               onToggleOpen(node.id);
             }}
-            className="flex size-4 shrink-0 items-center justify-center text-fg-subtle"
+            className="relative flex size-4 shrink-0 items-center justify-center text-fg-subtle after:absolute after:-inset-1"
           >
             <ChevronRight
               size={14}
