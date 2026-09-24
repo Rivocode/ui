@@ -7,7 +7,8 @@ export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText"> & {
    * pontuacao. O CNPJ alfanumerico leva `*` nas doze primeiras casas e `#` nos
    * dois verificadores. Com `*` no molde o teclado deixa de ser so numerico.
    * `boleto` e o unico nome: escolhe sozinho entre a linha de banco (47
-   * digitos) e a de convenio (48, quando o primeiro digito e 8).
+   * digitos) e a de convenio (48, quando o primeiro digito e 8), e deixa sem
+   * pontuacao os 44 do codigo de barras colado.
    */
   mask: "boleto" | (string & {});
   /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. */

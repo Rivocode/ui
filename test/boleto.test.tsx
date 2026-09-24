@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 
 import { MaskedInput, applyMask, boletoLineToBarcode, isValidBoletoLine, parseBoleto } from "../src/index";
 import { boletoDueDate } from "../src/shared/boleto";
@@ -181,6 +181,36 @@ test("o molde boleto pontua a linha de banco e troca para o de convenio quando c
   expect(applyMask(`${BANK_LINES[0]}999`, "boleto")).toBe(
     "10492.00650 61000.100042 00997.263900 9 89810000021403",
   );
+});
+
+const BANK_BARCODE = "10499898100000214032006561000100040099726390";
+const COLLECTION_BARCODE = "84630000000299902962020041013600000200644114";
+
+test("os 44 digitos do codigo de barras colados no molde boleto ficam sem a pontuacao da linha", () => {
+  expect(applyMask(BANK_BARCODE, "boleto")).toBe(BANK_BARCODE);
+  expect(applyMask(COLLECTION_BARCODE, "boleto")).toBe(COLLECTION_BARCODE);
+  expect(applyMask(` ${BANK_BARCODE}\n`, "boleto")).toBe(BANK_BARCODE);
+
+  expect(applyMask(BANK_LINES[0]!.slice(0, 44), "boleto")).toBe(
+    "10492.00650 61000.100042 00997.263900 9 89810000021",
+  );
+  expect(applyMask(COLLECTION_LINES[0]!.slice(0, 44), "boleto")).toBe(
+    "84630000000-3 29990296202-4 00410136000-8 00200644",
+  );
+});
+
+test("no MaskedInput, o codigo de barras colado fica cru, e o valor limpo e o mesmo", () => {
+  const values: string[][] = [];
+  const { getByRole } = render(
+    <MaskedInput
+      mask="boleto"
+      aria-label="Linha digitável"
+      onValueChange={(masked, clean) => values.push([masked, clean])}
+    />,
+  );
+  fireEvent.change(getByRole("textbox"), { target: { value: BANK_BARCODE } });
+  expect(values.at(-1)).toEqual([BANK_BARCODE, BANK_BARCODE]);
+  expect((getByRole("textbox") as HTMLInputElement).value).toBe(BANK_BARCODE);
 });
 
 test("o MaskedInput de boleto abre o teclado numerico", () => {

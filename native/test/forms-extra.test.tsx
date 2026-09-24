@@ -131,6 +131,29 @@ describe("MaskedInput", () => {
     );
     expect(onValueChange).toHaveBeenCalledWith("846300000003299902962024004101360008002006441147");
   });
+
+  test("os 44 digitos do codigo de barras colados no molde boleto ficam sem a pontuacao da linha", () => {
+    const barcode = "10499898100000214032006561000100040099726390";
+    const onValueChange = mock(() => {});
+    const screen = render(<MaskedInput mask="boleto" value={barcode} onValueChange={onValueChange} />);
+
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.value).toBe(barcode);
+
+    act(() => input.props.onChangeText(` ${barcode}\n`));
+    expect(onValueChange).toHaveBeenCalledWith(barcode);
+
+    const line = render(
+      <MaskedInput
+        mask="boleto"
+        value={"10492006506100010004200997263900989810000021403".slice(0, 44)}
+        onValueChange={() => {}}
+      />,
+    );
+    expect(line.root.findByType("TextInput" as never).props.value).toBe(
+      "10492.00650 61000.100042 00997.263900 9 89810000021",
+    );
+  });
 });
 
 describe("NumberField", () => {

@@ -17,7 +17,9 @@ muda com o tempo e o dado deixa de bater. O dinheiro sai também em centavos, po
 O telefone troca de molde entre o fixo e o celular sozinho, e o boleto também:
 a linha começa no molde de banco, de 47 dígitos, e passa para o de convênio, de
 48 em quatro blocos (`84630000000-3 29990296202-4 …`), quando o primeiro dígito
-é 8, que é como toda conta de consumo e todo tributo começam.
+é 8, que é como toda conta de consumo e todo tributo começam. Os 44 dígitos do
+código de barras, colados de um leitor óptico ou de um PDF, ficam sem
+pontuação: eles não são a linha, e a pontuação de 47 casas neles mentiria.
 
 O CNPJ aceita letra: desde julho de 2026 a Receita emite CNPJ alfanumérico,
 com letra ou dígito nas doze primeiras casas e dígito nos dois verificadores. A

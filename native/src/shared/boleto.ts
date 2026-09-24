@@ -72,27 +72,33 @@ function collectionBarcodeIsValid(barcode: string): boolean {
   return check(barcode.slice(0, 3) + barcode.slice(4)) === Number(barcode[3]);
 }
 
-function bankLineIsValid(line: string): boolean {
+function bankFieldsAreValid(line: string): boolean {
   const fields: Array<[start: number, end: number]> = [
     [0, 9],
     [10, 20],
     [21, 31],
   ];
-  for (const [start, end] of fields) {
-    if (mod10(line.slice(start, end)) !== Number(line[end])) return false;
-  }
-  return bankBarcodeIsValid(bankLineToBarcode(line));
+  return fields.every(([start, end]) => mod10(line.slice(start, end)) === Number(line[end]));
 }
 
-function collectionLineIsValid(line: string): boolean {
-  const barcode = collectionLineToBarcode(line);
-  const check = collectionCheck(barcode);
+function bankLineIsValid(line: string): boolean {
+  return bankFieldsAreValid(line) && bankBarcodeIsValid(bankLineToBarcode(line));
+}
+
+function collectionBlocksAreValid(line: string, blocks: number): boolean {
+  const check = collectionCheck(line);
   if (!check) return false;
-  for (let block = 0; block < 4; block += 1) {
+  for (let block = 0; block < blocks; block += 1) {
     const start = block * 12;
     if (check(line.slice(start, start + 11)) !== Number(line[start + 11])) return false;
   }
-  return collectionBarcodeIsValid(barcode);
+  return true;
+}
+
+function collectionLineIsValid(line: string): boolean {
+  return (
+    collectionBlocksAreValid(line, 4) && collectionBarcodeIsValid(collectionLineToBarcode(line))
+  );
 }
 
 function bankLineToBarcode(line: string): string {
@@ -151,10 +157,21 @@ export function boletoLineToBarcode(text: string): string | null {
   return isCollection(line) ? collectionLineToBarcode(line) : bankLineToBarcode(line);
 }
 
+function looksLikeBarcode(digits: string): boolean {
+  if (digits.length !== BARCODE_LENGTH) return false;
+  if (isCollection(digits)) {
+    return collectionBarcodeIsValid(digits) && !collectionBlocksAreValid(digits, 3);
+  }
+  return bankBarcodeIsValid(digits) && !bankFieldsAreValid(digits);
+}
+
 export function boletoPatternFor(text: string, slot = "9"): string {
-  const pattern = isCollection(onlyDigits(text))
-    ? "99999999999-9 99999999999-9 99999999999-9 99999999999-9"
-    : "99999.99999 99999.999999 99999.999999 9 99999999999999";
+  const digits = onlyDigits(text);
+  const pattern = looksLikeBarcode(digits)
+    ? "9".repeat(BARCODE_LENGTH)
+    : isCollection(digits)
+      ? "99999999999-9 99999999999-9 99999999999-9 99999999999-9"
+      : "99999.99999 99999.999999 99999.999999 9 99999999999999";
   return slot === "9" ? pattern : pattern.replace(/9/g, slot);
 }
 
