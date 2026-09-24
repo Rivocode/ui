@@ -18,6 +18,9 @@
   --color-selected: var(--rc-selected);
   --color-skeleton: var(--rc-skeleton);
 
+  --color-code-ink: var(--rc-code-ink);
+  --color-code-paper: var(--rc-code-paper);
+
   --color-chart-1: var(--rc-chart-1);
   --color-chart-2: var(--rc-chart-2);
   --color-chart-3: var(--rc-chart-3);

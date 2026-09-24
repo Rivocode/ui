@@ -419,6 +419,15 @@ densidade no lugar errado, para isso existe `density="compact"`, e ele muda a
 escala inteira de uma vez. Escala de texto e empilhamento seguem a mesma
 regra: são estrutura, e mudar deixaria de ser tema.
 
+`--rc-code-ink` e `--rc-code-paper` também moram lá, e por outro motivo: são a
+tinta e o papel do código lido por máquina, o `QRCode` e o `PixCode`. Código
+lido por câmera é sempre escuro sobre claro, e o reflexo invertido (módulo
+claro sobre fundo escuro) é um QR que parte dos apps de banco não lê. Se o par
+fosse papel de tema, todo cliente teria de declarar duas cores cuja única
+resposta certa é preto e branco, e um tema escuro poderia inverter o código sem
+querer. O `check-theme` não os cobra; se um tema os declarar mesmo assim, ele
+mede a tinta sobre o papel a 15:1 e reprova a tinta mais clara que o papel.
+
 ## Um tema de cliente, do começo ao fim
 
 Digamos que o cliente é azul.

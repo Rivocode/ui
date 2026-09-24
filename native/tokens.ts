@@ -111,6 +111,10 @@ export const tokens = {
       1
     ]
   },
+  "code": {
+    "code-ink": "#0b0d0f",
+    "code-paper": "#ffffff"
+  },
   "themes": {
     "rivocode-dark": {
       "bg": "#0b0d0f",

@@ -522,6 +522,27 @@ export const CSS_CHECKED = "--rc-accent-text";
 export const CSS_UNCHECKED = "--rc-border-strong";
 export const CSS_CHECKED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
 export const CSS_SERIES = Array.from({ length: 8 }, (_, index) => `--rc-chart-${index + 1}`);
+export const MIN_CODE = 15;
+export const CSS_CODE = { ink: "--rc-code-ink", paper: "--rc-code-paper" };
+export const MAP_CODE = { ink: "code-ink", paper: "code-paper" };
+export function checkCodePair(name, ink, paper) {
+  const findings = [{ ok: true, line: `
+${name}` }];
+  const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
+  if (!ink || !paper) {
+    say(false, "FALTA  tinta ou papel do código lido por máquina");
+    return findings;
+  }
+  if (!toHex(ink) || !toHex(paper)) {
+    say(false, "FALHA  tinta ou papel do código lido por máquina não resolveu para uma cor opaca");
+    return findings;
+  }
+  const ratio = contrastRatio(ink, paper);
+  const dark = luminance(ink) < luminance(paper);
+  const ok = ratio >= MIN_CODE && dark;
+  say(ok, `${ok ? "ok   " : "FALHA"} tinta sobre papel do código lido por máquina  ${ratio.toFixed(2)}:1` + ` (min ${MIN_CODE}, e a tinta ${dark ? "mais escura" : "MAIS CLARA"} que o papel` + `${dark ? "" : ": o código sai invertido, e leitor de banco não lê"})`);
+  return findings;
+}
 function clippedHex(value) {
   const color = readColor(value);
   return color ? hexOf(color) : value.trim();

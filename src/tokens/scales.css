@@ -23,6 +23,9 @@
 
   --rc-ring-width: 2px;
   --rc-ring-offset: 2px;
+
+  --rc-code-ink: var(--rc-p-graphite-950);
+  --rc-code-paper: var(--rc-p-white);
 }
 
 :root,

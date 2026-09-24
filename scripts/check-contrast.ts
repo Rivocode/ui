@@ -372,8 +372,43 @@
  * `rivocode-ui-native-theme` dava 3,00:1 arredondado no success do escuro -
  * abaixo dos 3 - e o gerador deixava de aprovar o proprio tema. O anel nao
  * existe la.
+ *
+ * ## O codigo lido por maquina, e o par que nao e de tema
+ *
+ * O `QRCode` e o `PixCode` nasceram pintando o modulo em `fg` e o fundo em
+ * `surface`. No tema escuro isso da modulo CLARO sobre fundo ESCURO - o
+ * reflexo invertido. A ISO/IEC 18004 permite, a camera do sistema le, e uma
+ * parte dos leitores e dos apps de banco nao le: para o Pix, isso e pagamento
+ * que nao acontece, e nenhum retrato de tela mostra a falha. Todos os pares
+ * acima passavam, porque `fg` sobre `surface` mede 16:1 nos dois temas - e a
+ * conta de contraste e SIMETRICA, entao ela nunca ia ver a inversao.
+ *
+ * Dai o par `--rc-code-ink` / `--rc-code-paper`, e dai as duas diferencas
+ * dele para todo o resto desta tabela:
+ *
+ * - **Ele nao e papel de tema.** Mora em `src/tokens/scales.css`, no `:root`,
+ *   com o mesmo valor para a casa inteira, e nao em `THEME_ROLES`: o
+ *   `check-theme` nao o cobra, o gerador de tema nativo nao o deriva, e um
+ *   tema de cliente nao consegue inverter o QR sem ESCREVER o nome dele. Papel
+ *   obrigatorio teria obrigado cada cliente a declarar duas cores cuja unica
+ *   resposta certa e "preto e branco", e aberto a porta para o erro que o par
+ *   existe para fechar.
+ * - **Ele mede a POLARIDADE, e nao so a razao.** `checkCodePair` exige a tinta
+ *   mais escura que o papel, alem do minimo. Sem isso, trocar os dois valores
+ *   passaria com os mesmos 19,47:1.
+ *
+ * O minimo e `MIN_CODE`, 15:1, e nao os 7:1 do corpo de texto. A norma de
+ * leitura grada o simbolo pela diferenca de REFLETANCIA, e nota A pede 70% -
+ * com papel branco, tinta de ate 30%, que em razao WCAG da so 3:1. So que a
+ * camera que le o Pix nao le papel impresso sob luz de mesa: le uma tela
+ * fotografada por outra, com brilho baixo, reflexo e moire, e cada um desses
+ * come o contraste antes do binarizador. 15:1 deixa folga para isso e ainda
+ * aceita um "quase preto" de marca; a casa mede 19,47:1.
+ *
+ * Tema da casa que declare o par e erro aqui: o valor e um so, e duas fontes
+ * para ele e como um tema escuro volta a inverter o codigo sem ninguem ver.
  */
-import { checkThemeCss, readTokens } from "../src/lib/contrast";
+import { CSS_CODE, checkCodePair, checkThemeCss, readTokens } from "../src/lib/contrast";
 import { countAtLeast, scanAtLeast } from "./varredura";
 
 const palette = await Bun.file("src/tokens/palette.css").text();
@@ -392,6 +427,29 @@ for (const file of files) {
     if (!finding.ok) failed++;
     console.log(finding.line);
   }
+}
+
+const fixed = readTokens(palette + "\n" + (await Bun.file("src/tokens/scales.css").text()));
+for (const finding of checkCodePair(
+  "src/tokens/scales.css",
+  fixed[CSS_CODE.ink],
+  fixed[CSS_CODE.paper],
+)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
+}
+
+for (const file of files) {
+  const css = await Bun.file(file).text();
+  const declared = Object.values(CSS_CODE).filter((role) => css.includes(`${role}:`));
+  if (declared.length === 0) continue;
+  failed++;
+  console.error(
+    `\n${file} declara ${declared.join(" e ")}.\n` +
+      "    O par do codigo lido por maquina tem valor unico, em src/tokens/scales.css,\n" +
+      "    e nao e papel de tema: e assim que o QR continua escuro sobre claro no\n" +
+      "    tema escuro. Apague a declaracao do tema.",
+  );
 }
 
 if (failed > 0) {

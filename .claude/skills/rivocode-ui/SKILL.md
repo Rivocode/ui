@@ -131,6 +131,7 @@ responder ao tema do cliente.
 | Linha e foco | `border-border`, `border-border-strong`, `ring-ring` |
 | Estado | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
 | Seleção e carga | `bg-selected`, `bg-skeleton` |
+| Código lido por máquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e não são papel de tema |
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |

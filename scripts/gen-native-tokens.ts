@@ -156,12 +156,23 @@ async function themeColors(path: string) {
   return colors;
 }
 
+const code: Record<string, string> = {};
+for (const block of topLevelBlocks(scalesCss)) {
+  if (block.header !== ":root") continue;
+  for (const [name, value] of declarations(block.body)) {
+    if (!name.startsWith("code-")) continue;
+    const color = toNativeColor(value, palette);
+    if (color) code[name] = color;
+  }
+}
+
 const tokens = {
   $comment:
     "Gerado por scripts/gen-native-tokens.ts a partir de src/tokens/*.css. Nao editar: rode bun run gen:native.",
   palette: Object.fromEntries(palette),
   scales,
   easings,
+  code,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),

@@ -5,9 +5,11 @@ import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
+  CSS_CODE,
   type Finding,
   MAP_ROLES,
   type ThemeMap,
+  checkCodePair,
   checkThemeCss,
   checkThemeMap,
   readTokens,
@@ -359,6 +361,15 @@ async function checkTheme(args: string[]) {
   for (const block of themeBlocks(sources)) {
     if (!reports.some((theme) => theme.selector === block.selector)) continue;
     findings.push(...checkThemeCss(block.selector, resolveTokens(block.tokens, lookup)));
+  }
+
+  const house = readTokens(readCssTree(HOUSE_CSS));
+  for (const block of themeBlocks(sources)) {
+    if (!Object.values(CSS_CODE).some((role) => role in block.tokens)) continue;
+    const worn = { ...house, ...resolveTokens(block.tokens, { ...house, ...lookup }) };
+    findings.push(
+      ...checkCodePair(`${block.selector}, código lido por máquina`, worn[CSS_CODE.ink], worn[CSS_CODE.paper]),
+    );
   }
 
   for (const { file, name, map } of maps) {

@@ -202,6 +202,8 @@ import {
   MAP_BOUNDARIES,
   MAP_LAYER_PAIRS,
   MAP_CHECKED_OVER,
+  MAP_CODE,
+  checkCodePair,
 } from "../src/lib/contrast";
 import { tokens } from "../native/tokens";
 
@@ -283,6 +285,15 @@ for (const [name, map] of maps) {
     if (!finding.ok) failed++;
     console.log(finding.line);
   }
+}
+
+for (const finding of checkCodePair(
+  "native/tokens.ts: code",
+  tokens.code[MAP_CODE.ink],
+  tokens.code[MAP_CODE.paper],
+)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
 }
 
 // A divida: mede, mostra o numero e nao arma. Ela e SEMPRE medida no tema da

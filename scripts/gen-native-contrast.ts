@@ -32,7 +32,7 @@
  * de pegar o que nao e nosso. Quem quiser o byte exato roda
  * `bun run gen:native:contrast`, que reescreve.
  */
-import { checkThemeMap } from "../src/lib/contrast";
+import { checkCodePair, checkThemeMap } from "../src/lib/contrast";
 
 const SOURCE = "src/lib/contrast.ts";
 const MIRROR = "native/scripts/contrast.mjs";
@@ -89,14 +89,23 @@ if (process.argv.includes("--check")) {
   // A prova de que o espelho MEDE, e nao so de que ele existe: o mesmo mapa
   // pelos dois caminhos tem que dar a mesma linha. Comparar texto pega o
   // arquivo editado; isto pega o arquivo que virou inerte.
-  const { checkThemeMap: mirrored } = (await import(`../${MIRROR}`)) as {
+  const { checkThemeMap: mirrored, checkCodePair: mirroredCode } = (await import(
+    `../${MIRROR}`
+  )) as {
     checkThemeMap: typeof checkThemeMap;
+    checkCodePair: typeof checkCodePair;
   };
   const { tokens } = await import("../native/tokens");
   const map = { light: tokens.themes["rivocode-light"], dark: tokens.themes["rivocode-dark"] };
 
-  const here = checkThemeMap("prova", map).map((finding) => finding.line);
-  const there = mirrored("prova", map).map((finding) => finding.line);
+  const ink = tokens.code["code-ink"];
+  const paper = tokens.code["code-paper"];
+  const here = [...checkThemeMap("prova", map), ...checkCodePair("prova", ink, paper)].map(
+    (finding) => finding.line,
+  );
+  const there = [...mirrored("prova", map), ...mirroredCode("prova", ink, paper)].map(
+    (finding) => finding.line,
+  );
 
   if (here.join("\n") !== there.join("\n")) {
     console.error(
