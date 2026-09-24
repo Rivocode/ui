@@ -1,0 +1,61 @@
+/**
+ * O orcamento de tamanho do pacote, em bytes de gzip, com o motivo de cada
+ * numero. Quem confere e o `check:tamanho` (`scripts/check-tamanho-do-pacote.ts`).
+ *
+ * Todo limite nasceu como o medido em 24/09/2026 mais 10%, arredondado para
+ * cima na centena de bytes. Os 10% sao a folga do que ninguem decide: o
+ * minificador e o gzip mudam de versao - a CI roda `bun-version: latest` -, e
+ * um ajuste de classe numa peca mexe em dezenas de bytes. Acima disso o
+ * crescimento e escolha, e escolha se escreve aqui.
+ *
+ * Para subir um limite de proposito: no MESMO commit que fez crescer, troque o
+ * `limit` pelo numero que a guarda sugere (o medido mais 10%) e reescreva o
+ * `why` dizendo o que entrou e por que vale o peso. O piso vale ao contrario:
+ * medida abaixo de 80% do limite reprova, e o limite desce no commit que
+ * encolheu.
+ */
+export type Budget = { limit: number; why: string };
+
+/**
+ * A linha do tree-shaking. `mark` e uma classe que so o `Button` escreve: o
+ * pacote medido tem que conte-la, senao o numero e de um arquivo vazio.
+ */
+export const BUTTON_ALONE = {
+  name: "Button sozinho",
+  mark: "motion-safe:active:scale-[0.985]",
+};
+
+export const BUDGET: Record<string, Budget> = {
+  ".": {
+    limit: 128_400,
+    why: "113,9 KB em 153 arquivos: as pecas do indice da raiz, sem dependencia nenhuma - Base UI, TanStack, react-day-picker e tailwind-merge sao de quem instala e ficam de fora da conta. Quase ninguem baixa isto inteiro; e o teto de quem importa tudo, e o que cresce a cada peca nova. Peca nova que custa mais que uns 2 KB em gzip merece a pergunta de se nao e subcaminho.",
+  },
+  "./styles.css": {
+    limit: 20_200,
+    why: "17,9 KB: a CSS que o Tailwind gera das classes das pecas, mais os tokens dos dois temas e das duas densidades. Todo mundo baixa ela inteira, em toda tela, e por isso o limite e o mais apertado em proporcao ao que entrega.",
+  },
+  "./form": {
+    limit: 2_700,
+    why: "2,3 KB: a ponte com o react-hook-form e o zod, que sao peers opcionais e nao entram na conta. O subcaminho e pequeno de proposito - quem nao usa formulario nao paga nem isto.",
+  },
+  "./chart": {
+    limit: 12_100,
+    why: "10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
+  },
+  "./ai": {
+    limit: 12_300,
+    why: "10,9 KB: as pecas de conversa com modelo. Subcaminho sem peer, separado pelo peso: quem nao tem tela de IA nao paga os 10 KB.",
+  },
+  "./dnd": {
+    limit: 10_300,
+    why: "9,1 KB: o arrastar e soltar sobre o dnd-kit, que e peer opcional e fica fora da conta.",
+  },
+  "./editor": {
+    limit: 19_900,
+    why: "17,6 KB: a barra, os comandos e o `RichTextView` sobre o Tiptap 3, que e peer opcional e fica fora.",
+  },
+  "Button sozinho": {
+    limit: 13_900,
+    why: "12,3 KB, e 36,9 KB minificados, com as dependencias DENTRO e so os peers de fora: o Button, o `cn` com o tailwind-merge (a maior parte), o `useRender` da Base UI e o cva. Antes do `unbundle` no tsdown.config.ts este numero era 129 KB, porque o indice unico arrastava a Base UI inteira. Se ele pular para a casa das centenas, o tree-shaking quebrou de novo - e o `sideEffects` do package.json e o primeiro lugar a olhar.",
+  },
+};

@@ -40,8 +40,8 @@
  *
  * As duas de cima leem fonte, que e o que o gate tem. Como `bun run build` roda
  * depois do gate, o `dist/` de uma construcao anterior costuma estar ali - e
- * quando esta, a guarda procura em `dist/index.js` uma frase que so existe
- * dentro do modulo de ferramenta. E a unica das tres que responde pela pergunta
+ * quando esta, a guarda procura no que `dist/index.js` e os subcaminhos
+ * alcancam uma frase que so existe dentro do modulo de ferramenta. E a unica das tres que responde pela pergunta
  * de verdade, que nao e "quem importa quem" e sim "o que o cliente baixa".
  * Sem `dist/`, ela diz que nao rodou em vez de calar.
  */
@@ -171,7 +171,7 @@ for (const item of TOOL_ONLY) {
   if (!(await Bun.file(item.file).text()).includes(item.mark)) {
     problems.push(
       `  ${item.file} nao contem mais "${item.mark}".\n` +
-        "    A `mark` e o que esta guarda procura em dist/index.js. Frase que\n" +
+        "    A `mark` e o que esta guarda procura no dist/. Frase que\n" +
         "    saiu da fonte nunca aparece no bundle, e a linha fica verde sem\n" +
         "    olhar nada. Aponte para uma frase que o arquivo ainda tenha.",
     );
@@ -187,16 +187,43 @@ for (const item of TOOL_ONLY) {
   }
 }
 
-const bundle = await Bun.file("dist/index.js")
-  .text()
-  .catch(() => "");
+/**
+ * O texto de tudo que um conjunto de entradas do `dist/` alcanca.
+ *
+ * Desde que o `tsdown` passou a emitir um arquivo por modulo (`unbundle`), o
+ * `dist/index.js` e so uma lista de reexportacoes: procurar a frase nele
+ * ficaria verde sem ler um byte de peca. A leitura segue os imports relativos,
+ * que e o mesmo caminho que o empacotador de quem instala percorre.
+ */
+async function artifactOf(entries: string[]) {
+  const present: string[] = [];
+  for (const entry of entries) if (await Bun.file(entry).exists()) present.push(entry);
+  if (present.length === 0) return undefined;
+
+  const files = [...(await reach(present)).keys()];
+  const texts = await Promise.all(files.map((file) => Bun.file(file).text()));
+  return { files: files.length, text: texts.join("\n") };
+}
+
+const toDist = (entry: string) => entry.replace(/^src\//, "dist/").replace(/\.tsx?$/, ".js");
+
+const bundle = await artifactOf(LIBRARY.map(toDist));
+const toolBundle = await artifactOf([toDist(TOOL)]);
 
 if (bundle) {
   for (const item of TOOL_ONLY) {
-    if (bundle.includes(item.mark)) {
+    if (bundle.text.includes(item.mark)) {
       problems.push(
-        `  dist/index.js carrega "${item.mark}", que so existe em ${item.file}.\n` +
+        `  o dist/ da biblioteca carrega "${item.mark}", que so existe em ${item.file}.\n` +
           `    ${item.why}`,
+      );
+    }
+    if (toolBundle && !toolBundle.text.includes(item.mark)) {
+      problems.push(
+        `  o dist/cli.js, com o que ele importa, nao carrega "${item.mark}".\n` +
+          "    A frase existe na fonte e a ferramenta alcanca o modulo, entao a leitura\n" +
+          "    do artefato e que parou de achar: uma busca que nao acha nem onde a\n" +
+          "    frase TEM que estar tambem nao acharia onde ela nao pode estar.",
       );
     }
   }
@@ -218,7 +245,7 @@ if (problems.length > 0) {
 
 const names = TOOL_ONLY.map((item) => item.file).join(", ");
 const measured = bundle
-  ? "e nenhuma frase deles esta em dist/index.js"
+  ? `e nenhuma frase deles esta nos ${bundle.files} arquivo(s) do dist/ que as entradas da biblioteca alcancam`
   : "e dist/index.js nao existe agora, entao a medida do artefato nao rodou - a leitura do grafo acima ja responde o mesmo pelo fonte";
 
 console.log(`Fora do bundle da biblioteca, e dentro do ${TOOL}: ${names} - ${measured}.`);

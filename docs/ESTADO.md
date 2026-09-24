@@ -35,7 +35,7 @@ com procedencia - o endpoint de attestations do npm responde para
 `@rivocode/ui@0.15.0` e para `@rivocode/ui-native@0.10.0`. O `origin/main` esta
 em `2812b47`, e o `origin` tem **25 tags**; `gh release list` continua vazio.
 
-O gate esta verde. `bun run check` roda **trinta e cinco verificacoes** mais a
+O gate esta verde. `bun run check` roda **trinta e seis verificacoes** mais a
 suite e sai com codigo zero; a suite tem **1932 testes em 161 arquivos**, com
 11922 chamadas de `expect`, dos quais 584 testes em 47 arquivos sao do nativo.
 
@@ -460,8 +460,9 @@ dessa marca, a mesma frase teria sido compativel com nao ter medido nada.
 
 ## O gate, medido
 
-`bun run check` sao **trinta e cinco passos** mais `bun test`, em sequencia,
-parando no primeiro que falhar. Em 28/08 eram trinta e tres.
+`bun run check` sao **trinta e seis passos** mais `bun test`, em sequencia,
+parando no primeiro que falhar. Em 28/08 eram trinta e tres; o trigesimo sexto e
+o `check:tamanho`, de 24/09.
 
 Ha um par que **nao** esta no gate e nao e esquecimento: `gen:props:nativo` e
 `check:props:nativo` rodam no job `nativo` da CI, porque so ali existe o
@@ -756,7 +757,7 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e cinco verificacoes mais os 1932 testes
+bun run check        # trinta e seis verificacoes mais os 1932 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas

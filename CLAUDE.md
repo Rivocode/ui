@@ -114,15 +114,15 @@ documentacao da arvore em que foi construido.
 
 ## O gate
 
-`bun run check` roda TRINTA E CINCO passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E SETE passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
 literal, alfa sobre cor, contraste do web, contraste do mapa nativo, espelho do contraste,
 temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
-grupos de classe, fronteira do chart, fronteira do CLI, skill, lista da skill,
-tokens nativos, gerador de tema nativo, codigo compartilhado, paridade,
-assinatura nativa, contagem de pecas, vitrine, retratos declarados, receita de
-instalacao, script fora do gate, piso de varredura, contagem de testes, e por
-fim `bun test`.
+grupos de classe, fronteira do chart, fronteira do CLI, tamanho do pacote,
+skill, lista da skill, tokens nativos, gerador de tema nativo, codigo
+compartilhado, paridade, assinatura nativa, contagem de pecas, vitrine,
+retratos declarados, receita de instalacao, script fora do gate, piso de
+varredura, contagem de testes, e por fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -225,7 +225,23 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   deixa o caminho indireto aberto. Confere tambem o sentido inverso, para nao
   virar decoracao, e que a frase-marca de cada arquivo ainda existe na fonte -
   essa ultima assercao faltava, e a guarda ficou verde por vacuidade quando um
-  rename levou a frase embora.
+  rename levou a frase embora. No artefato ela le o que `dist/index.js` e os
+  subcaminhos ALCANCAM, e nao o `dist/index.js` sozinho: desde o `unbundle` ele
+  e so reexportacao, e procurar a frase nele passaria sem ler peca nenhuma.
+- `check:tamanho` - o gzip de cada entrada do `exports` (a raiz, os cinco
+  subcaminhos e a `styles.css`) e do `Button` importado sozinho, contra
+  `scripts/orcamento-de-tamanho.ts`, onde cada limite tem o motivo escrito.
+  Nasceu porque `import { Button } from "@rivocode/ui"` levava 129 KB em gzip
+  de 307 KB possiveis: o `tsdown` juntava as pecas num `index.js` so, e o
+  `"sideEffects": ["*.css"]` do package.json - que ja dizia a coisa certa - so
+  descarta ARQUIVO inteiro. Com `unbundle` o mesmo `Button` custa 12,3 KB, e as
+  duas metades sao necessarias: sem o `sideEffects` ele volta a 144 KB. Ela
+  constroi numa pasta propria em vez de ler o `dist/`, porque o gate roda antes
+  do build e o `dist/` que estiver ali e de outro codigo; custa menos de um
+  segundo. Tem teto e piso: acima do limite reprova, e abaixo de 80% dele
+  tambem - o limite desce no commit que encolheu. Subir e decisao: no mesmo
+  commit que cresceu, o `limit` vira o numero que a guarda sugere e o `why`
+  diz o que entrou.
 - `check:native:contrast` - `native/scripts/contrast.mjs` e espelho GERADO de
   `src/lib/contrast.ts`, porque o pacote nativo publica FONTE e nao alcanca o
   `src/` do web. Ela confere o texto E que o espelho MEDE: importa os dois e

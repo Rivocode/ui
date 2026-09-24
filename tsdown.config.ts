@@ -12,6 +12,7 @@ export default defineConfig({
   ],
   format: "esm",
   dts: true,
+  unbundle: true,
   clean: true,
   // O pacote e "type": "module", entao .js ja e ESM. Sem isto o tsdown emite
   // .mjs e .d.mts, e os exports do package.json deixam de resolver.
