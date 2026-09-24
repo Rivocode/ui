@@ -86,13 +86,13 @@ export function Calendar({
 
         month_grid: "w-full border-collapse",
         weekdays: "flex",
-        weekday: "w-11 text-xs font-normal text-fg-subtle sm:w-[var(--rc-day)]",
+        weekday: "w-[min(2.75rem,calc((100vw_-_3.5rem)/7))] text-xs font-normal text-fg-subtle sm:w-[var(--rc-day)]",
         weeks: "",
         week: "mt-1 flex w-full",
 
-        day: "relative size-11 p-0 text-center sm:size-[var(--rc-day)]",
+        day: "relative size-[min(2.75rem,calc((100vw_-_3.5rem)/7))] p-0 text-center sm:size-[var(--rc-day)]",
         day_button: cn(
-          "size-11 rounded-md text-base text-fg sm:size-[var(--rc-day)]",
+          "size-[min(2.75rem,calc((100vw_-_3.5rem)/7))] rounded-md text-base text-fg sm:size-[var(--rc-day)]",
           "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
           "hover:bg-accent-subtle",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",

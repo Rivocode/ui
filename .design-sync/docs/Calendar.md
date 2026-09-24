@@ -11,7 +11,9 @@ entra só como motor: nenhuma folha de estilo dela e importada, todo o desenho v
 dos nossos tokens. O locale padrão e `pt-BR`.
 
 Em largura de celular mostra um mes só, mesmo quando pedem mais, e o dia ganha
-44px de alvo.
+44px de alvo. Na tela mais estreita que isso, abaixo de uns 360px, o dia encolhe
+junto com a tela para as sete colunas caberem sem rolar para o lado: a 320px
+cada dia fica com uns 38px, ainda acima dos 24 da WCAG 2.5.8.
 
 A troca de mês anima: o mês novo entra pelo lado para onde a pessoa andou, em
 200ms, e com "reduzir movimento" ligado a troca é instantânea. `animate={false}`

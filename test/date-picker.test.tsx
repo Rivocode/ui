@@ -232,3 +232,16 @@ test("a legenda do mes vira lista de mes e ano", () => {
   const listas = screen.getAllByRole("combobox");
   expect(listas.length).toBe(2);
 });
+
+test("no celular estreito o dia do calendario encolhe com a tela, para as sete colunas caberem em 320 pixels", () => {
+  render(
+    <RivoProvider scope="local">
+      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+    </RivoProvider>,
+  );
+  const shrinking = "size-[min(2.75rem,calc((100vw_-_3.5rem)/7))]";
+  const button = screen.getAllByRole("button").find((node) => node.textContent === "12")!;
+  expect(button.className.split(" ")).toContain(shrinking);
+  expect(button.className.split(" ")).not.toContain("size-11");
+  expect(button.parentElement!.className.split(" ")).toContain(shrinking);
+});
