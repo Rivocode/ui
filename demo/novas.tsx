@@ -803,7 +803,13 @@ function Consent({ customize }: { customize?: boolean }) {
       ref={box}
       className="relative h-[44rem] overflow-hidden rounded-lg border border-dashed border-border sm:h-[34rem]"
     >
-      <CookieConsent open policyHref="#privacidade" onDecision={() => {}} className="absolute" />
+      <CookieConsent
+        open
+        policyHref="#privacidade"
+        onDecision={() => {}}
+        className="absolute"
+        classNames={{ panel: "max-h-[calc(44rem-2rem)] sm:max-h-[calc(34rem-2rem)]" }}
+      />
     </div>
   );
 }

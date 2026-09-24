@@ -121,6 +121,25 @@ test("recusar tem o mesmo peso visual que aceitar", () => {
   expect(pair.children).toHaveLength(2);
 });
 
+test("a ordem do Tab e a ordem que o celular mostra, e a mesa inverte so o desenho", () => {
+  const { dialog } = consent();
+  fireEvent.click(button(dialog, "Personalizar"));
+
+  const order = [...dialog.querySelectorAll("button")]
+    .map((node) => node.textContent)
+    .filter((text) => text !== "");
+  expect(order).toEqual(["Aceitar todos", "Recusar não essenciais", "Salvar escolhas", "Personalizar"]);
+
+  const inner = button(dialog, "Aceitar todos").parentElement!;
+  const outer = button(dialog, "Personalizar").parentElement!;
+  for (const row of [inner, outer]) {
+    expect(tokens(row)).toContain("flex-col");
+    expect(tokens(row)).not.toContain("flex-col-reverse");
+    expect(tokens(row)).toContain("sm:flex-row-reverse");
+    expect(tokens(row)).not.toContain("sm:flex-row");
+  }
+});
+
 test("Personalizar abre as categorias: necessarios ligados e travados, o resto desligado", () => {
   const { dialog } = consent();
   const customize = button(dialog, "Personalizar");

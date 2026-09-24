@@ -265,10 +265,23 @@ export function CookieConsent({
 
         <div
           className={cn(
-            "flex flex-col-reverse gap-2 sm:flex-row sm:flex-wrap sm:items-center",
+            "flex flex-col gap-2 sm:flex-row-reverse sm:flex-wrap sm:items-center",
             classNames?.actions,
           )}
         >
+          <div className="flex flex-col gap-2 sm:flex-row-reverse">
+            <Button variant="secondary" onClick={() => decide("acceptAll")}>
+              {said.acceptAll}
+            </Button>
+            <Button variant="secondary" onClick={() => decide("rejectOptional")}>
+              {said.rejectOptional}
+            </Button>
+          </div>
+          {customizing && (
+            <Button variant="secondary" onClick={() => decide("save")}>
+              {said.save}
+            </Button>
+          )}
           <Button
             variant="ghost"
             aria-expanded={customizing}
@@ -278,19 +291,6 @@ export function CookieConsent({
           >
             {said.customize}
           </Button>
-          {customizing && (
-            <Button variant="secondary" onClick={() => decide("save")}>
-              {said.save}
-            </Button>
-          )}
-          <div className="flex flex-col-reverse gap-2 sm:flex-row">
-            <Button variant="secondary" onClick={() => decide("rejectOptional")}>
-              {said.rejectOptional}
-            </Button>
-            <Button variant="secondary" onClick={() => decide("acceptAll")}>
-              {said.acceptAll}
-            </Button>
-          </div>
         </div>
       </div>
     </div>
