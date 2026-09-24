@@ -39,7 +39,7 @@
     "react": "19.2.8",
     "react-native": "0.86.3",
     "react-native-css": "^3.0.7",
-    "react-native-keyboard-controller": "1.21.9",
+    "react-native-keyboard-controller": "1.21.14",
     "react-native-reanimated": "4.5.5",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-svg": "15.15.5",
