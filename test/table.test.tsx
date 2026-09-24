@@ -95,3 +95,11 @@ test("o espacamento da celula segue a densidade", () => {
   render(<Example />);
   expect(screen.getAllByRole("cell")[0]!.className).toContain("--rc-control-pad");
 });
+
+test("a moldura que rola e o bloco de posicao, para o texto sr-only da celula nao alargar a pagina", () => {
+  const { container } = render(<Example />);
+  const frame = container.querySelector("table")!.parentElement!;
+  const tokens = frame.className.split(" ");
+  expect(tokens).toContain("overflow-x-auto");
+  expect(tokens).toContain("relative");
+});

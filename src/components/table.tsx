@@ -5,7 +5,7 @@ import { cn } from "../lib/cn";
 
 export function Table({ className, ...props }: ComponentPropsWithoutRef<"table">) {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="relative w-full overflow-x-auto">
       <table {...props} className={cn("w-full border-collapse text-base", className)} />
     </div>
   );

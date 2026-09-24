@@ -337,6 +337,13 @@ test("sem pedir nada, quinhentas linhas continuam saindo inteiras", () => {
   expect(container.querySelector("[data-rc-viewport]")).toBeNull();
 });
 
+test("com altura maxima, a moldura que rola e o bloco de posicao do sr-only das celulas", () => {
+  const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
+  const tokens = container.querySelector("[data-rc-viewport]")!.className.split(" ");
+  expect(tokens).toContain("overflow-auto");
+  expect(tokens).toContain("relative");
+});
+
 test("com virtual, so um punhado de linhas vai para o DOM", () => {
   const { container } = table({ data: LOG, virtual: true, maxHeight: VIEWPORT_HEIGHT });
 

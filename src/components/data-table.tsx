@@ -579,7 +579,7 @@ export function DataTable<Row>({
           ref={viewport}
           data-rc-viewport=""
           style={{ maxHeight }}
-          className="w-full overflow-auto rounded-md border border-border bg-surface"
+          className="relative w-full overflow-auto rounded-md border border-border bg-surface"
         >
           <table
             aria-rowcount={virtualized ? rows.length + (foot ? 2 : 1) : undefined}
