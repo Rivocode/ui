@@ -165,6 +165,30 @@ test("toda transicao dura um token, que zera quando a pessoa pede menos moviment
   expect(fixed).toEqual([]);
 });
 
+test("toda transicao nomeia uma curva da casa, e nao herda a do Tailwind", async () => {
+  const files = await sources();
+  expect(files.length).toBeGreaterThan(80);
+
+  let seen = 0;
+  const loose: string[] = [];
+  for (const file of files) {
+    const code = await Bun.file(file).text();
+    for (const { text, at } of classBlocks(code)) {
+      const tokens = tokensOf(text);
+      const moves = tokens.filter((token) => /^(?:[\w-]+:)*transition(?:-|$)/.test(token));
+      if (moves.length === 0) continue;
+      seen += 1;
+      const curved = tokens.some((token) =>
+        /^(?:[\w-]+:)*ease-(?:rc(?:-[\w]+)?|\[var\(--rc-ease(?:-[\w]+)?\)\])$/.test(token),
+      );
+      if (!curved) loose.push(`${file}:${lineAt(code, at)} ${moves.join(" ")}`);
+    }
+  }
+
+  expect(seen).toBeGreaterThan(60);
+  expect(loose).toEqual([]);
+});
+
 const contract = await Bun.file("src/tokens/contract.css").text();
 const TOKEN_TIMED = new Set(
   [...contract.matchAll(/--(animate-[\w-]+):\s*[\w-]+ var\(--rc-duration-(?:fast|base|slow|sheet)\)/g)].map(

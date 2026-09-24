@@ -414,7 +414,7 @@ export function DataTable<Row>({
                     "inline-flex items-center gap-1.5 rounded-sm",
                     "uppercase",
                     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    "transition-colors duration-[var(--rc-duration-fast)] hover:text-fg",
+                    "transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects hover:text-fg",
                     direcao && "text-fg",
                   )}
                 >

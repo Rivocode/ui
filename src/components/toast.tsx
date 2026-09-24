@@ -107,7 +107,7 @@ function List({ position }: { position: ToastPosition }) {
         aria-label="Fechar aviso"
         className={cn(
           "ml-auto shrink-0 rounded-sm p-1 text-fg-subtle outline-none",
-          "transition-colors duration-[var(--rc-duration-fast)]",
+          "transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects",
           "hover:text-fg focus-visible:ring-2 focus-visible:ring-ring",
         )}
       >

@@ -128,7 +128,7 @@ export function Banner({
           onClick={onDismiss}
           className={cn(
             "-my-1 -mr-1 shrink-0 rounded-sm p-1 outline-none",
-            "transition-colors duration-[var(--rc-duration-fast)]",
+            "transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects",
             "hover:text-fg focus-visible:ring-2 focus-visible:ring-ring",
             "[&_svg]:size-4",
             TONE_TEXT[tone],

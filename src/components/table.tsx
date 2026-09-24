@@ -77,7 +77,7 @@ export function TableRow({ className, selected, labels, children, ...props }: Ta
     <tr
       {...props}
       className={cn(
-        "border-b border-border transition-colors duration-[var(--rc-duration-fast)]",
+        "border-b border-border transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects",
         "hover:bg-accent-subtle",
         selected && "bg-selected shadow-[inset_2px_0_0_var(--rc-accent)]",
         className,

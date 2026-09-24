@@ -400,7 +400,7 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
       className={cn(
         "absolute top-1/2 right-1 -translate-y-1/2",
         "flex size-6 items-center justify-center rounded-sm text-fg-subtle",
-        "opacity-0 transition-opacity duration-[var(--rc-duration-fast)]",
+        "opacity-0 transition-opacity duration-[var(--rc-duration-fast)] ease-rc-effects",
         "group-hover/linha:opacity-100 focus-visible:opacity-100",
         "hover:bg-accent-subtle hover:text-fg",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -555,6 +555,7 @@ export function SidebarRail({ className, ...props }: ComponentProps<"button">) {
         "absolute inset-y-0 -right-2 z-[var(--rc-z-sticky)] hidden w-4 cursor-col-resize sm:block",
         "after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2",
         "after:bg-transparent after:transition-colors after:duration-[var(--rc-duration-fast)]",
+        "after:ease-rc-effects",
         "hover:after:bg-accent",
         className,
       )}
