@@ -74,7 +74,16 @@ export const tokens = {
     "duration-fast": 120,
     "duration-base": 200,
     "duration-slow": 320,
-    "duration-sheet": 450
+    "duration-sheet": 450,
+    "spring-spatial-damping": 0.9,
+    "spring-spatial-stiffness": 700,
+    "duration-spatial": 320,
+    "spring-expressive-damping": 0.8,
+    "spring-expressive-stiffness": 380,
+    "duration-expressive": 440,
+    "spring-effects-damping": 1,
+    "spring-effects-stiffness": 1600,
+    "duration-effects": 240
   },
   "easings": {
     "ease": [
@@ -82,6 +91,18 @@ export const tokens = {
       0,
       0,
       1
+    ],
+    "ease-enter": [
+      0.05,
+      0.7,
+      0.1,
+      1
+    ],
+    "ease-exit": [
+      0.3,
+      0,
+      0.8,
+      0.15
     ],
     "ease-sheet": [
       0.32,

@@ -268,7 +268,7 @@ vira vidro fosco.
 ### Forma e movimento
 
 Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
-"futurista" antes de qualquer cor, e esses nove tokens vivem em
+"futurista" antes de qualquer cor, e esses tokens vivem em
 `src/tokens/forma.css`, fora da escala, justamente para o tema poder redefinir:
 
 | Token | O que decide |
@@ -278,6 +278,8 @@ Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
 | `--rc-duration-fast`, `--rc-duration-base`, `--rc-duration-slow` | O tempo de cada transição |
 | `--rc-duration-sheet`, `--rc-ease-sheet` | O tempo e a curva da folha lateral, que segue o dedo |
 | `--rc-ease` | A curva de todo o resto: seca e mecânica, ou macia |
+| `--rc-ease-enter`, `--rc-ease-exit` | A curva do que chega e a do que sai |
+| `--rc-ease-spatial`, `--rc-ease-expressive`, `--rc-ease-effects` | As três molas, com a duração de cada uma. Veja Movimento, logo abaixo |
 | `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
 
 Redefina no mesmo seletor do tema, junto com os papéis de cor:
@@ -292,6 +294,60 @@ Redefina no mesmo seletor do tema, junto com os papéis de cor:
 
 A ordem já está resolvida pelo preset: `forma.css` entra antes dos temas, e
 `:root` e `[data-rc-theme="x"]` têm a mesma especificidade, então o tema vence.
+
+### Movimento
+
+O movimento tem nome de intenção, e não de número. A duração diz quanto a coisa
+anda; a curva diz como ela chega.
+
+| Duração | Utilitário | Para quê |
+|---|---|---|
+| `--rc-duration-fast`, 120ms | `duration-fast` | Mudança de estado: cor, borda, a marca que aparece |
+| `--rc-duration-base`, 200ms | `duration-base` | O painel que abre, o diálogo que entra |
+| `--rc-duration-slow`, 320ms | `duration-slow` | O que percorre a tela: gráfico que se desenha, barra que enche |
+| `--rc-duration-sheet`, 450ms | `duration-sheet` | A folha lateral, que segue o dedo |
+
+| Curva | Utilitário | Para quê |
+|---|---|---|
+| `--rc-ease` | `ease-rc` | O padrão: sai rápido e assenta devagar |
+| `--rc-ease-enter` | `ease-rc-enter` | O que entra na tela: chega freando |
+| `--rc-ease-exit` | `ease-rc-exit` | O que sai: acelera e some, sem chamar o olho de volta |
+| `--rc-ease-sheet` | `ease-rc-sheet` | A folha lateral |
+
+As molas vêm do M3 Expressive, que separa o que se **desloca** do que só
+**muda de aparência**. Mola que passa do alvo e volta é boa para posição e
+tamanho, e ruim para cor e opacidade: cor que passa do alvo pisca.
+
+| Mola | Utilitários | Para quê |
+|---|---|---|
+| `--rc-ease-spatial`, `--rc-duration-spatial` | `ease-rc-spatial duration-spatial` | Posição e tamanho. Passa do alvo por um fio, e é a mola padrão |
+| `--rc-ease-expressive`, `--rc-duration-expressive` | `ease-rc-expressive duration-expressive` | O mesmo, com mais corpo: passa do alvo 1,5% e volta. Para o momento que merece ser notado |
+| `--rc-ease-effects`, `--rc-duration-effects` | `ease-rc-effects duration-effects` | Cor e opacidade: chega sem passar |
+
+```tsx
+<div className="transition-[translate] duration-spatial ease-rc-spatial" />
+```
+
+A curva de mola é um `linear()` do CSS: a posição da mola amostrada em 41
+pontos, do começo até ela assentar a um milésimo do alvo. A receita de cada uma
+está ao lado dela, em `--rc-spring-spatial-damping` e
+`--rc-spring-spatial-stiffness`, `--rc-spring-expressive-damping` e
+`--rc-spring-expressive-stiffness`, `--rc-spring-effects-damping` e
+`--rc-spring-effects-stiffness`: o amortecimento (1 chega sem passar, menos que
+1 passa e volta) e a rigidez (mais rígida, mais rápida). **O navegador lê só o
+`linear()` e a duração.** Os dois números são o que o React Native e o Figma
+leem, porque nenhum dos dois tem `linear()`. Mudou a receita num tema, recalcule
+a curva e a duração junto; na biblioteca, um teste refaz a conta e acusa a
+divergência com a linha certa para colar.
+
+Quando a pessoa pede menos movimento no sistema, **toda** duração vai a zero,
+as das molas inclusive. A curva fica, mas uma transição de 0ms não tem curva
+para mostrar.
+
+Seis transições do catálogo, em `Alert`, `DataTable`, `Sidebar`, `Table` e
+`Toast`, ainda correm na curva padrão do Tailwind, e não em `ease-rc`. A
+duração delas já é token. Trocar a curva muda o que se vê, então elas ficam
+como estão até alguém olhar as cinco peças de novo.
 
 ## O que o tema precisa garantir
 

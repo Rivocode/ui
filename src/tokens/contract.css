@@ -94,7 +94,20 @@
   --tracking-tight: var(--rc-tracking-tight);
 
   --ease-rc: var(--rc-ease);
+  --ease-rc-enter: var(--rc-ease-enter);
+  --ease-rc-exit: var(--rc-ease-exit);
+  --ease-rc-spatial: var(--rc-ease-spatial);
+  --ease-rc-expressive: var(--rc-ease-expressive);
+  --ease-rc-effects: var(--rc-ease-effects);
   --ease-rc-sheet: var(--rc-ease-sheet);
+
+  --transition-duration-fast: var(--rc-duration-fast);
+  --transition-duration-base: var(--rc-duration-base);
+  --transition-duration-slow: var(--rc-duration-slow);
+  --transition-duration-sheet: var(--rc-duration-sheet);
+  --transition-duration-spatial: var(--rc-duration-spatial);
+  --transition-duration-expressive: var(--rc-duration-expressive);
+  --transition-duration-effects: var(--rc-duration-effects);
 
   --animate-rise: rc-rise var(--rc-duration-slow) var(--rc-ease) both;
   --animate-fade: rc-fade var(--rc-duration-slow) var(--rc-ease) both;

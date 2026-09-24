@@ -271,6 +271,13 @@ function typed(name: string, literal: string): Typed {
     }
   }
 
+  if (literal.startsWith("linear(")) {
+    return {
+      reason:
+        "a curva de mola é linear(), e o DTCG só tem curva cubic-bezier: a mola sai pelos números de amortecimento e rigidez, em spring.*",
+    };
+  }
+
   return { reason: "não tem tipo no DTCG 2025.10" };
 }
 

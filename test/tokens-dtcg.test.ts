@@ -182,7 +182,11 @@ test("todo token que o contrato do Tailwind le esta no export, nos dois temas", 
         (token) => (token.$extensions as Record<string, { css: string }>)[EXTENSION]!.css,
       ),
     );
-    expect(CONTRACT.filter((variable) => !present.has(variable))).toEqual([]);
+    const spring = new Set(
+      result.skipped.filter((item) => item.value.startsWith("linear(")).map((item) => item.variable),
+    );
+    expect(spring.size).toBeGreaterThanOrEqual(3);
+    expect(CONTRACT.filter((variable) => !present.has(variable) && !spring.has(variable))).toEqual([]);
   }
 });
 
@@ -229,8 +233,10 @@ test("o resolver aponta so para arquivos que o export escreveu", () => {
   expect(resolver.resolutionOrder).toHaveLength(3);
 });
 
-test("o que fica de fora e so o gancho vazio, com o motivo", () => {
-  expect(result.skipped.every((item) => item.value === "none")).toBe(true);
+test("o que fica de fora e so o gancho vazio e a curva de mola, com o motivo", () => {
+  expect(
+    result.skipped.every((item) => item.value === "none" || item.value.startsWith("linear(")),
+  ).toBe(true);
   expect(result.skipped.map((item) => item.variable)).toContain("--rc-accent-image");
 });
 

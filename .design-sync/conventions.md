@@ -67,6 +67,15 @@ fora: todas duram um token, zeram com "reduzir movimento", rodam uma vez por
 montagem e nao prendem estado depois de acabar. `animate-none` desliga numa
 instancia.
 
+**Movimento tem nome de intencao.** Duracao: `duration-fast`, `duration-base`,
+`duration-slow`. Curva: `ease-rc` (padrao), `ease-rc-enter` (o que chega),
+`ease-rc-exit` (o que sai). Mola, com a duracao do mesmo nome:
+`ease-rc-spatial duration-spatial` para posicao e tamanho,
+`ease-rc-expressive duration-expressive` para o mesmo com mais corpo, e
+`ease-rc-effects duration-effects` para cor e opacidade, que nao podem passar do
+alvo. Toda duracao zera com "reduzir movimento". Nunca `duration-150` nem
+`ease-[cubic-bezier(...)]`.
+
 **Altura de controle vem da densidade**, nunca cravada:
 `h-[var(--rc-control-md)]`, com `sm` e `lg` disponiveis.
 

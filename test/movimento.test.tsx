@@ -153,7 +153,9 @@ test("toda transicao dura um token, que zera quando a pessoa pede menos moviment
       if (moves.length === 0) continue;
       seen += 1;
       const lasts = tokens.some((token) =>
-        /^(?:[\w-]+:)*duration-\[var\(--rc-duration-(?:fast|base|slow|sheet)\)\]$/.test(token),
+        /^(?:[\w-]+:)*duration-(?:\[var\(--rc-duration-(?:fast|base|slow|sheet)\)\]|fast|base|slow|sheet|spatial|expressive|effects)$/.test(
+          token,
+        ),
       );
       if (!lasts) fixed.push(`${file}:${lineAt(code, at)} ${moves.join(" ")}`);
     }

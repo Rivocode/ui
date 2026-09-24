@@ -141,9 +141,17 @@ propriedades `scale`, `translate` e `rotate`, e não `transform`: com
 `transition-[opacity,transform]` o painel aparece esmaecendo e a escala entra
 de estalo. Nomeie a propriedade que muda (`transition-[opacity,scale]`) ou use
 `transition-transform`, que cobre as quatro. A duração vem sempre do token,
-`duration-[var(--rc-duration-fast)]`: `transition-colors` sozinho cai nos
-150ms do Tailwind, que não zeram com "reduzir movimento". Animação em laço
-(`animate-spin`, `animate-pulse`) leva `motion-reduce:animate-none` ao lado.
+`duration-fast` (ou `duration-[var(--rc-duration-fast)]`, que é o mesmo):
+`transition-colors` sozinho cai nos 150ms do Tailwind, que não zeram com
+"reduzir movimento". Animação em laço (`animate-spin`, `animate-pulse`) leva
+`motion-reduce:animate-none` ao lado.
+
+A curva também tem nome de intenção: `ease-rc` é o padrão, `ease-rc-enter` para
+o que chega e `ease-rc-exit` para o que sai. As molas andam com a duração do
+mesmo nome: `ease-rc-spatial duration-spatial` para posição e tamanho,
+`ease-rc-expressive duration-expressive` quando o gesto merece ser notado, e
+`ease-rc-effects duration-effects` para cor e opacidade, que não podem passar do
+alvo.
 
 Entrada de marca: `animate-rise` sobe um passo e assenta, `animate-fade` só
 aparece. Escalone irmãos com `[animation-delay:80ms]`, 160, 240: isso é de
