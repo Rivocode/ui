@@ -221,6 +221,76 @@ test("com reduzir movimento, a rotacao nao comeca, e a pausa oferece retomar", a
   }
 });
 
+test("com reduzir movimento, quem aperta retomar ve a rotacao andar, e o slide troca sem deslizar", async () => {
+  const restore = reducedMotion(true);
+  try {
+    carousel({ autoplay: 20 });
+    fireEvent.click(screen.getByRole("button", { name: "Retomar a rotação" }));
+    expect(screen.getByRole("button", { name: "Pausar a rotação" })).toBeDefined();
+    await wait(70);
+    expect(Number(region().getAttribute("data-index"))).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "Pausar a rotação" }));
+    const paused = region().getAttribute("data-index");
+    await wait(60);
+    expect(region().getAttribute("data-index")).toBe(paused);
+  } finally {
+    restore();
+  }
+});
+
+function withLayout() {
+  const width = 300;
+  const calls: ScrollToOptions[] = [];
+  const box = Object.getOwnPropertyDescriptors(HTMLElement.prototype);
+  const scrollTo = Element.prototype.scrollTo;
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    get() {
+      return width;
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
+    configurable: true,
+    get(this: HTMLElement) {
+      return width * Math.max(1, this.children.length);
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, "offsetLeft", {
+    configurable: true,
+    get(this: HTMLElement) {
+      const siblings = this.parentElement ? [...this.parentElement.children] : [this];
+      return siblings.indexOf(this) * width;
+    },
+  });
+  Element.prototype.scrollTo = function (options?: ScrollToOptions | number) {
+    if (typeof options === "object") calls.push(options);
+  } as typeof Element.prototype.scrollTo;
+
+  return {
+    calls,
+    restore() {
+      for (const name of ["clientWidth", "scrollWidth", "offsetLeft"] as const) {
+        if (box[name]) Object.defineProperty(HTMLElement.prototype, name, box[name]);
+      }
+      Element.prototype.scrollTo = scrollTo;
+    },
+  };
+}
+
+test("com defaultIndex, o carrossel ja monta no slide pedido, sem deslizar desde o primeiro", () => {
+  const layout = withLayout();
+  try {
+    carousel({ defaultIndex: 2 });
+    expect(layout.calls[0]).toEqual({ left: 600, behavior: "auto" });
+
+    fireEvent.click(next());
+    expect(layout.calls.at(-1)).toEqual({ left: 900, behavior: "smooth" });
+  } finally {
+    layout.restore();
+  }
+});
+
 test("slidesPerView responsivo escreve uma variavel por ponto, herdando do menor", () => {
   carousel({ slidesPerView: { base: 1, md: 3 } });
   const style = region().style;

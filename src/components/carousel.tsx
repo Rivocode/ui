@@ -84,8 +84,10 @@ export type CarouselProps = Omit<ComponentPropsWithoutRef<"section">, "children"
   /**
    * Avanca sozinho: `true` a cada 5 segundos, ou o intervalo em milissegundos.
    * Desligado por padrao. Ligado, aparece o botao de pausa, e a rotacao para
-   * com o ponteiro em cima, com o foco dentro e quando o sistema pede para
-   * reduzir movimento. Sempre volta ao primeiro depois do ultimo.
+   * com o ponteiro em cima e com o foco dentro. Quando o sistema pede para
+   * reduzir movimento ela nasce parada, e so anda se a pessoa apertar
+   * retomar, com o slide trocando sem deslizar. Sempre volta ao primeiro
+   * depois do ultimo.
    */
   autoplay?: boolean | number;
   /** Os textos que o leitor de tela ouve, para trocar o idioma ou o termo. */
@@ -143,6 +145,7 @@ export function Carousel({
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef<number | null>(null);
+  const placedRef = useRef(false);
   const [inner, setInner] = useState(defaultIndex);
   const [measuredLast, setMeasuredLast] = useState<number | null>(null);
   const lastStart = Math.min(measuredLast ?? total - 1, Math.max(0, total - 1));
@@ -153,7 +156,7 @@ export function Carousel({
   const [playing, setPlaying] = useState(interval > 0 && !reduced);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
-  const rotating = interval > 0 && playing && !reduced && !hovered && !focused && total > 1;
+  const rotating = interval > 0 && playing && !hovered && !focused && total > 1;
 
   const commit = useCallback(
     (next: number) => {
@@ -214,9 +217,11 @@ export function Carousel({
     const viewport = viewportRef.current;
     const slide = viewport?.children[current] as HTMLElement | undefined;
     if (!viewport || !slide || viewport.clientWidth === 0) return;
+    const placed = placedRef.current;
+    placedRef.current = true;
     if (nearest() === current) return;
     pendingRef.current = current;
-    viewport.scrollTo({ left: slide.offsetLeft, behavior: reduced ? "auto" : "smooth" });
+    viewport.scrollTo({ left: slide.offsetLeft, behavior: reduced || !placed ? "auto" : "smooth" });
   }, [current, nearest, reduced]);
 
   function handleScroll() {

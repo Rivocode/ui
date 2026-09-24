@@ -97,7 +97,12 @@ ou o intervalo em milissegundos. A peça cumpre a 2.2.2 da WCAG sozinha:
 - a rotação para com o ponteiro em cima e com o foco em qualquer ponto do
   carrossel, e volta quando os dois saem;
 - quando o sistema pede para reduzir movimento, ela não começa: o botão nasce
-  oferecendo retomar, e só anda se a pessoa pedir.
+  oferecendo retomar, e só anda se a pessoa pedir. O pedido dela vence a
+  preferência do sistema, que continua valendo no resto: o slide troca sem
+  deslizar.
+
+Com `defaultIndex`, o carrossel já monta no slide pedido, sem deslizar desde o
+primeiro.
 
 ## Partes
 
