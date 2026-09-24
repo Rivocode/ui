@@ -1,9 +1,10 @@
 "use client";
 
 import { Toast as BaseToast } from "@base-ui/react/toast";
-import { useMemo, useRef, type ComponentProps } from "react";
+import { useEffect, useMemo, useRef, type ComponentProps, type RefObject } from "react";
 
 import { cn } from "../lib/cn";
+import { focusIsLost } from "../lib/focus";
 
 type Manager = ReturnType<typeof BaseToast.useToastManager>;
 
@@ -82,8 +83,30 @@ const TOM: Record<string, string> = {
 
 const NEUTRO = "bg-surface-raised text-fg";
 
-function List({ position }: { position: ToastPosition }) {
+function List({
+  position,
+  viewport,
+  cameFrom,
+}: {
+  position: ToastPosition;
+  viewport: RefObject<HTMLDivElement | null>;
+  cameFrom: RefObject<Element | null>;
+}) {
   const { toasts } = BaseToast.useToastManager();
+  const closing = useRef<string | null>(null);
+
+  useEffect(() => {
+    const id = closing.current;
+    if (id === null || toasts.some((toast) => toast.id === id)) return;
+    closing.current = null;
+    if (!focusIsLost(document.activeElement)) return;
+
+    const neighbor = viewport.current?.querySelector<HTMLElement>("[data-rc-toast-close]");
+    const back = cameFrom.current;
+    if (neighbor) neighbor.focus();
+    else if (back instanceof HTMLElement && !focusIsLost(back)) back.focus();
+    else viewport.current?.focus();
+  }, [toasts, viewport, cameFrom]);
 
   return toasts.map((toast) => (
     <BaseToast.Root
@@ -105,8 +128,13 @@ function List({ position }: { position: ToastPosition }) {
       </BaseToast.Content>
       <BaseToast.Close
         aria-label="Fechar aviso"
+        data-rc-toast-close=""
+        onClick={(event) => {
+          if (event.currentTarget === document.activeElement) closing.current = toast.id;
+        }}
         className={cn(
-          "ml-auto shrink-0 rounded-sm p-1 text-fg-subtle outline-none",
+          "relative ml-auto shrink-0 rounded-sm p-1 text-fg-subtle outline-none",
+          "after:absolute after:-inset-1",
           "transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects",
           "hover:text-fg focus-visible:ring-2 focus-visible:ring-ring",
         )}
@@ -134,12 +162,22 @@ export function ToastViewport({
   className,
   container,
   position = "bottom-right",
+  onFocus,
   ...props
 }: ToastViewportProps) {
+  const viewport = useRef<HTMLDivElement>(null);
+  const cameFrom = useRef<Element | null>(null);
+
   return (
     <BaseToast.Portal container={container ?? undefined}>
       <BaseToast.Viewport
         {...props}
+        ref={viewport}
+        onFocus={(event) => {
+          onFocus?.(event);
+          const from = event.relatedTarget;
+          if (from instanceof Element && !event.currentTarget.contains(from)) cameFrom.current = from;
+        }}
         className={cn(
           "fixed z-[var(--rc-z-toast)]",
           ANCHOR[position],
@@ -147,7 +185,7 @@ export function ToastViewport({
           className,
         )}
       >
-        <List position={position} />
+        <List position={position} viewport={viewport} cameFrom={cameFrom} />
       </BaseToast.Viewport>
     </BaseToast.Portal>
   );

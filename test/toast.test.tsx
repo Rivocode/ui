@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { Button } from "../src/components/button";
 import { useToast } from "../src/components/toast";
@@ -140,4 +140,62 @@ test("o aviso sem tom continua neutro, que e o padrao", () => {
 
   expect(balao().className).toContain("bg-surface-raised");
   expect(balao().className).not.toContain("subtle");
+});
+
+function closeButtons(count: number) {
+  const found = [...document.querySelectorAll<HTMLElement>('[aria-label="Fechar aviso"]')];
+  expect(found.length).toBe(count);
+  return found;
+}
+
+function TwoNotices() {
+  const toast = useToast();
+  return (
+    <Button
+      onClick={() => {
+        toast.add({ title: "Nota 4816 emitida", timeout: 0 });
+        toast.add({ title: "Nota 4817 emitida", timeout: 0 });
+      }}
+    >
+      Emitir duas
+    </Button>
+  );
+}
+
+test("fechar o aviso leva o foco para o aviso vizinho, e o ultimo devolve o foco a quem estava antes", async () => {
+  render(
+    <RivoProvider>
+      <TwoNotices />
+    </RivoProvider>,
+  );
+  const trigger = screen.getByRole("button", { name: "Emitir duas" });
+  fireEvent.click(trigger);
+  trigger.focus();
+
+  const closers = await waitFor(() => closeButtons(2));
+  closers[0]!.focus();
+  fireEvent.click(closers[0]!);
+
+  const [last] = await waitFor(() => closeButtons(1));
+  await waitFor(() => expect(last!.closest("[role=dialog]")!.contains(document.activeElement)).toBe(true));
+
+  last!.focus();
+  fireEvent.click(last!);
+  await waitFor(() => closeButtons(0));
+  await waitFor(() => expect(document.activeElement).toBe(trigger));
+});
+
+test("o xis do aviso estica o alvo por fora do desenho", () => {
+  render(
+    <RivoProvider>
+      <Disparo />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Emitir" }));
+  const [closer] = closeButtons(1);
+  expect(closer!.getAttribute("aria-label")).toBe("Fechar aviso");
+  const tokens = closer!.className.split(" ");
+  expect(tokens).toContain("relative");
+  expect(tokens).toContain("after:absolute");
+  expect(tokens).toContain("after:-inset-1");
 });

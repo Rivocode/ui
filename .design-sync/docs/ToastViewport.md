@@ -72,6 +72,14 @@ Vale sair do padrão quando o aviso responde a uma ação que acontece longe dal
 ou quando aquele canto já está ocupado por outra coisa fixa, como um botão
 flutuante.
 
+## O foco depois de fechar
+
+Fechar um aviso pelo teclado não joga o foco para o começo da página. Ele vai
+para o aviso vizinho quando há outro na pilha, e, fechado o último, volta para
+onde estava antes de entrar nos avisos. Sem esse lugar, fica na região dos
+avisos, e o próximo Tab segue dali. O xis tem 22 pixels desenhados e área de
+toque de 30.
+
 ## Quando não usar
 
 Aviso é para o que já aconteceu, e o que já aconteceu não precisa de resposta.
