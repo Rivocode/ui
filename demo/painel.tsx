@@ -329,10 +329,16 @@ function Layout() {
               </Card>
             ))}
           </Grid>
-          <Grid columns={3} gap="sm">
-            <Badge className="justify-self-start" tone="success">Autorizadas: 41</Badge>
-            <Badge className="justify-self-start" tone="warning">Na fila: 2</Badge>
-            <Badge className="justify-self-start" tone="danger">Rejeitadas: 3</Badge>
+          <Grid minItemWidth="10rem" gap="sm">
+            <Badge className="justify-self-start" tone="success">
+              Autorizadas: 41
+            </Badge>
+            <Badge className="justify-self-start" tone="warning">
+              Na fila: 2
+            </Badge>
+            <Badge className="justify-self-start" tone="danger">
+              Rejeitadas: 3
+            </Badge>
           </Grid>
         </Stack>
       </Container>

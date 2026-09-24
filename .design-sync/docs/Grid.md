@@ -26,6 +26,13 @@ o próprio mínimo, o item ocupa a linha inteira em vez de vazar para o lado.
 o número de colunas é parte do desenho, como três indicadores lado a lado num
 painel. Não muda com a tela, então confira em 390px antes de escolher.
 
+Coluna fixa não protege conteúdo que não quebra. Cada coluna encolhe até caber
+na tela, mas o que está dentro dela, não: `Badge`, botão e número em fonte
+mono ficam numa linha só e passam por cima da coluna vizinha. Três `Badge`
+com contagem em `columns={3}` se sobrepõem num celular de 390px. Para item
+que não quebra, use `minItemWidth`, que desce para menos colunas quando falta
+largura, ou um `Stack` em linha com `wrap`.
+
 As duas juntas não combinam, e `minItemWidth` vence. Sem nenhuma das duas, sai
 uma coluna só, com o vão entre as linhas.
 
