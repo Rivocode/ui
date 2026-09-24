@@ -75,16 +75,46 @@ test("encolhida, o submenu vira menu ao lado em vez de sumir", () => {
   expect(screen.getByRole("menuitem", { name: "Clientes" })).toBeDefined();
 });
 
-test("o gatilho abre e fecha, e diz qual dos dois no aria", () => {
+test("na mesa o gatilho recolhe e expande a barra, e diz qual dos dois no nome e no aria", () => {
   sidebar(true);
 
-  const trigger = screen.getByRole("button", { name: "Fechar menu" });
+  const trigger = screen.getByRole("button", { name: "Recolher barra lateral" });
   expect(trigger.getAttribute("aria-expanded")).toBe("true");
+  expect(screen.queryByRole("button", { name: "Fechar menu" })).toBeNull();
 
   fireEvent.click(trigger);
-  expect(screen.getByRole("button", { name: "Abrir menu" }).getAttribute("aria-expanded")).toBe(
-    "false",
+  expect(
+    screen.getByRole("button", { name: "Expandir barra lateral" }).getAttribute("aria-expanded"),
+  ).toBe("false");
+});
+
+test("o item solto no rodape nao vira li fora de lista, e o de dentro do menu nao ganha marcador", () => {
+  const { container } = render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen>
+        <Sidebar>
+          <SidebarContent>
+            <SidebarMenu>
+              <SidebarMenuItem href="#painel">Painel</SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarContent>
+          <SidebarFooter>
+            <SidebarMenuItem href="#preferencias">Preferências</SidebarMenuItem>
+          </SidebarFooter>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
   );
+
+  const loose = screen.getByRole("link", { name: "Preferências" });
+  expect(loose.closest("li") === null).toBe(true);
+  expect(loose.parentElement!.tagName).not.toBe("UL");
+
+  for (const li of container.querySelectorAll("li")) {
+    expect(li.parentElement!.tagName).toBe("UL");
+    expect((li.getAttribute("class") ?? "").split(" ")).toContain("list-none");
+  }
+  expect(container.querySelectorAll("li").length).toBeGreaterThan(0);
 });
 
 test("a marca de lugar avisa que esta carregando, e nao finge uma lista", () => {

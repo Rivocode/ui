@@ -51,6 +51,8 @@ const FlyoutContext = createContext(false);
 
 const RowContext = createContext(false);
 
+const ListContext = createContext(false);
+
 export type SidebarProviderProps = ComponentProps<"div"> & {
   /** Comeca aberta na mesa. No celular ela sempre comeca fechada. */
   defaultOpen?: boolean;
@@ -308,7 +310,11 @@ export function SidebarGroup({ className, label, children, ...props }: SidebarGr
 }
 
 export function SidebarMenu({ className, ...props }: ComponentProps<"ul">) {
-  return <ul {...props} className={cn("flex flex-col gap-0.5", className)} />;
+  return (
+    <ListContext value={true}>
+      <ul {...props} className={cn("flex list-none flex-col gap-0.5", className)} />
+    </ListContext>
+  );
 }
 
 const rowClass = cn(
@@ -340,6 +346,7 @@ export function SidebarMenuItem({
   const { collapsed, isMobile, close } = useSidebar();
   const inFlyout = use(FlyoutContext);
   const inRow = use(RowContext);
+  const inList = use(ListContext);
 
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     onClick?.(event);
@@ -385,7 +392,8 @@ export function SidebarMenuItem({
     row
   );
 
-  return inRow ? cell : <li>{cell}</li>;
+  if (inRow || !inList) return cell;
+  return <li className="list-none">{cell}</li>;
 }
 
 export function SidebarMenuAction({ className, ...props }: ComponentProps<"button">) {
@@ -413,7 +421,7 @@ export function SidebarMenuAction({ className, ...props }: ComponentProps<"butto
 export function SidebarMenuRow({ className, ...props }: ComponentProps<"li">) {
   return (
     <RowContext value={true}>
-      <li {...props} className={cn("group/linha relative", className)} />
+      <li {...props} className={cn("group/linha relative list-none", className)} />
     </RowContext>
   );
 }
@@ -442,7 +450,7 @@ export function SidebarMenuSub({
 
   if (collapsed) {
     return (
-      <li className={className}>
+      <li className={cn("list-none", className)}>
         <Menu>
           <MenuTrigger
             render={
@@ -466,7 +474,7 @@ export function SidebarMenuSub({
   }
 
   return (
-    <li>
+    <li className="list-none">
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -487,9 +495,11 @@ export function SidebarMenuSub({
       </button>
 
       {open && (
-        <ul className="mt-0.5 ml-4 flex flex-col gap-0.5 border-l border-border pl-2">
-          {children}
-        </ul>
+        <ListContext value={true}>
+          <ul className="mt-0.5 ml-4 flex list-none flex-col gap-0.5 border-l border-border pl-2">
+            {children}
+          </ul>
+        </ListContext>
       )}
     </li>
   );
@@ -518,14 +528,21 @@ export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarM
 }
 
 export function SidebarTrigger({ className, ...props }: ComponentProps<"button">) {
-  const { toggle, open } = useSidebar();
+  const { toggle, open, isMobile } = useSidebar();
+  const label = isMobile
+    ? open
+      ? "Fechar menu"
+      : "Abrir menu"
+    : open
+      ? "Recolher barra lateral"
+      : "Expandir barra lateral";
 
   return (
     <button
       type="button"
       onClick={toggle}
       aria-expanded={open}
-      aria-label={open ? "Fechar menu" : "Abrir menu"}
+      aria-label={label}
       {...props}
       className={cn(
         "inline-flex size-[var(--rc-control-md)] items-center justify-center rounded-md",

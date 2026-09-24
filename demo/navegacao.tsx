@@ -64,9 +64,11 @@ function ScreenWithSidebar({ theme, isOpen }: { theme: RivoTheme; isOpen: boolea
           </SidebarContent>
 
           <SidebarFooter>
-            <SidebarMenuItem href="#" icon={<Settings size={16} aria-hidden="true" />}>
-              Ajustes
-            </SidebarMenuItem>
+            <SidebarMenu>
+              <SidebarMenuItem href="#" icon={<Settings size={16} aria-hidden="true" />}>
+                Ajustes
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
 

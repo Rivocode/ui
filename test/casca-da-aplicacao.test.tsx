@@ -189,6 +189,6 @@ test("controlado: open e onOpenChange passam ao SidebarProvider", () => {
   expect(container.querySelector("[data-rc-sidebar]")!.getAttribute("data-rc-sidebar")).toBe(
     "closed",
   );
-  fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+  fireEvent.click(screen.getByRole("button", { name: "Expandir barra lateral" }));
   expect(asked).toBe(true);
 });

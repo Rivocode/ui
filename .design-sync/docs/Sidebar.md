@@ -44,7 +44,13 @@ Aqui cada peça sabe o que fazer nessa largura:
 secundário que aparece ao passar o mouse. `SidebarMenuSkeleton` ocupa o lugar
 enquanto a navegação vem do servidor. `SidebarRail` é a faixa fina na borda que
 abre e fecha ao ser clicada, e `SidebarTrigger` é o botão que faz o mesmo pelo
-teclado.
+teclado. O nome dele acompanha o que ele faz ali: na mesa, "Recolher barra
+lateral" e "Expandir barra lateral", porque a barra vira a coluna de ícones e
+não some; no celular, "Abrir menu" e "Fechar menu", porque ali ela é uma folha.
+
+`SidebarMenuItem` é item de lista dentro de `SidebarMenu`, e link solto fora
+dele. No `SidebarFooter`, embrulhe os itens num `SidebarMenu` quando forem mais
+de um; um item só pode ficar solto, sem virar `li` fora de lista.
 
 `SidebarInset` é a área da página, ao lado da barra.
 `SidebarBrand` é a marca no topo, e encolhe junto com a barra: aberta mostra o

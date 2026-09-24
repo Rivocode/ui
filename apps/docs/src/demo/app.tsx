@@ -236,9 +236,11 @@ export function DemoApp() {
             </SidebarContent>
 
             <SidebarFooter>
-              <SidebarMenuItem href="#" icon={<LogOut size={16} />}>
-                Sair
-              </SidebarMenuItem>
+              <SidebarMenu>
+                <SidebarMenuItem href="#" icon={<LogOut size={16} />}>
+                  Sair
+                </SidebarMenuItem>
+              </SidebarMenu>
             </SidebarFooter>
           </Sidebar>
 

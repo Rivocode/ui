@@ -967,9 +967,11 @@ function Shells() {
                 </SidebarGroup>
               </SidebarContent>
               <SidebarFooter>
-                <SidebarMenuItem href="#" icon={<Settings size={16} />}>
-                  Preferencias
-                </SidebarMenuItem>
+                <SidebarMenu>
+                  <SidebarMenuItem href="#" icon={<Settings size={16} />}>
+                    Preferências
+                  </SidebarMenuItem>
+                </SidebarMenu>
               </SidebarFooter>
             </>
           }
@@ -982,7 +984,7 @@ function Shells() {
           footer="RivoCode - Emissao de notas fiscais"
         >
           <Heading level={2}>Notas fiscais</Heading>
-          <Text tone="muted" className="mt-2">
+          <Text tone="muted" className="mt-2 mb-4">
             As notas emitidas neste mes, da mais nova para a mais antiga.
           </Text>
           <Invoices

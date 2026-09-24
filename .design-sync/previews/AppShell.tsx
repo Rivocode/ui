@@ -40,9 +40,11 @@ const NAVIGATION = (
       </SidebarGroup>
     </SidebarContent>
     <SidebarFooter>
-      <SidebarMenuItem href="#" icon={<Settings size={16} />}>
-        Preferências
-      </SidebarMenuItem>
+      <SidebarMenu>
+        <SidebarMenuItem href="#" icon={<Settings size={16} />}>
+          Preferências
+        </SidebarMenuItem>
+      </SidebarMenu>
     </SidebarFooter>
   </>
 )

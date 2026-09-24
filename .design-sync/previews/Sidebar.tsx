@@ -64,7 +64,9 @@ export function OperationScreen() {
           </SidebarContent>
 
           <SidebarFooter>
-            <SidebarMenuItem href="#">Sair</SidebarMenuItem>
+            <SidebarMenu>
+              <SidebarMenuItem href="#">Sair</SidebarMenuItem>
+            </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
 
