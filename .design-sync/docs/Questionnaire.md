@@ -93,7 +93,12 @@ formulário de verdade, e o `onSubmit` recebe a mesma resposta de duas formas:
 ```
 
 Pergunta pulada fica **ausente** dos dois, e não com texto vazio. Pular também
-limpa o que já estava marcado nela.
+limpa o que já estava marcado nela, e a limpeza passa pelo `onChange` de cada
+controle: um `QuestionnaireInput` controlado recebe o texto vazio como se a
+pessoa tivesse apagado, e o estado de quem controla acompanha a tela.
+
+No servidor, a pergunta aberta já sai no HTML: `item`, `defaultItem` ou, sem
+nenhum dos dois, a primeira na ordem da página, com os botões dela.
 
 Sozinho no item, o `QuestionnaireInput` é a resposta livre, e o nome dele é o
 título da pergunta. Ao lado de opções ele é a resposta "outra", e o nome falado

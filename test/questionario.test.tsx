@@ -1,6 +1,7 @@
 import { expect, mock, test } from "bun:test";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { useState } from "react";
+import { renderToString } from "react-dom/server";
 
 import {
   Questionnaire,
@@ -458,6 +459,129 @@ test("parte fora do questionario reclama pelo nome", () => {
     console.error = original;
   }
   expect(within(document.body).queryByText("Solta")).toBeNull();
+});
+
+test("pular com o campo livre CONTROLADO limpa a tela, o estado de quem controla e o envio", () => {
+  const onSubmit = mock((_answers: QuestionnaireAnswers, _data: FormData) => {});
+  function Controlled() {
+    const [text, setText] = useState("");
+    return (
+      <Questionnaire onSubmit={onSubmit}>
+        <QuestionnaireItem name="a">
+          <QuestionnaireTitle>A?</QuestionnaireTitle>
+          <QuestionnaireInput value={text} onChange={(event) => setText(event.target.value)} />
+        </QuestionnaireItem>
+        <QuestionnaireItem name="b">
+          <QuestionnaireTitle>B?</QuestionnaireTitle>
+          <QuestionnaireInput />
+        </QuestionnaireItem>
+        <QuestionnaireFooter>
+          <QuestionnairePrevious />
+          <QuestionnaireSkip />
+          <QuestionnaireNext />
+          <QuestionnaireSubmit />
+        </QuestionnaireFooter>
+        <output>{text}</output>
+      </Questionnaire>
+    );
+  }
+  const { container } = render(<Controlled />);
+  const first = container.querySelectorAll("input")[0] as HTMLInputElement;
+
+  fireEvent.change(first, { target: { value: "resposta" } });
+  expect(screen.getByRole("status").textContent).toBe("resposta");
+
+  fireEvent.click(screen.getByRole("button", { name: "Pular" }));
+  expect(first.value).toBe("");
+  expect(screen.getByRole("status").textContent).toBe("");
+
+  fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+  expect(first.value).toBe("");
+  expect(items(container)[0]!.dataset.status).toBe("skipped");
+
+  fireEvent.click(screen.getByRole("button", { name: "Pular" }));
+  fireEvent.click(screen.getByRole("button", { name: "Pular" }));
+  expect(onSubmit).toHaveBeenCalledTimes(1);
+  expect(onSubmit.mock.calls[0]![0]).toEqual({});
+});
+
+test("marcar a opcao com o campo livre CONTROLADO ao lado limpa o estado de quem controla", () => {
+  function Controlled() {
+    const [text, setText] = useState("");
+    return (
+      <Questionnaire>
+        <QuestionnaireItem name="como">
+          <QuestionnaireTitle>Como nos conheceu?</QuestionnaireTitle>
+          <QuestionnaireChoices>
+            <QuestionnaireChoice value="busca">Busca</QuestionnaireChoice>
+          </QuestionnaireChoices>
+          <QuestionnaireInput value={text} onChange={(event) => setText(event.target.value)} />
+        </QuestionnaireItem>
+        <output>{text}</output>
+      </Questionnaire>
+    );
+  }
+  render(<Controlled />);
+  const other = screen.getByRole("textbox", { name: "Outra resposta" }) as HTMLInputElement;
+
+  fireEvent.change(other, { target: { value: "Evento" } });
+  fireEvent.click(screen.getByRole("radio", { name: "Busca" }));
+  expect(other.value).toBe("");
+  expect(screen.getByRole("status").textContent).toBe("");
+});
+
+test("no servidor, a primeira pergunta ja sai aberta e com os botoes", () => {
+  const survey = (props: Partial<QuestionnaireProps> = {}) =>
+    renderToString(
+      <Questionnaire {...props}>
+        <QuestionnaireItem name="a">
+          <QuestionnaireTitle>A?</QuestionnaireTitle>
+          <QuestionnaireInput />
+        </QuestionnaireItem>
+        <QuestionnaireItem name="b">
+          <QuestionnaireTitle>B?</QuestionnaireTitle>
+          <QuestionnaireInput />
+        </QuestionnaireItem>
+        <QuestionnaireFooter>
+          <QuestionnairePrevious />
+          <QuestionnaireSkip />
+          <QuestionnaireNext />
+          <QuestionnaireSubmit />
+        </QuestionnaireFooter>
+      </Questionnaire>,
+    );
+  const open = (html: string) => {
+    const page = document.createElement("div");
+    page.innerHTML = html;
+    return [...page.querySelectorAll("fieldset")]
+      .filter((fieldset) => !fieldset.hidden)
+      .map((fieldset) => fieldset.getAttribute("name"));
+  };
+
+  const plain = survey();
+  expect(open(plain)).toEqual(["a"]);
+  expect(plain).toContain("Próxima");
+  expect(plain).toContain("Pular");
+  expect(plain).not.toContain("Enviar");
+
+  const last = survey({ defaultItem: "b" });
+  expect(open(last)).toEqual(["b"]);
+  expect(last).toContain("Enviar");
+  expect(last).not.toContain("Próxima");
+
+  expect(open(survey({ item: "b", onItemChange: () => {} }))).toEqual(["b"]);
+});
+
+test("o nome do campo livre da pergunta opcional separa o titulo do Opcional", () => {
+  render(
+    <Questionnaire>
+      <QuestionnaireItem name="obs">
+        <QuestionnaireTitle>Outra?</QuestionnaireTitle>
+        <QuestionnaireInput />
+      </QuestionnaireItem>
+    </Questionnaire>,
+  );
+  expect(screen.getByRole("textbox", { name: /^Outra\?\s*,\s*Opcional$/ })).toBeDefined();
 });
 
 test("toda parte leva ao DOM o className de quem a chama", () => {

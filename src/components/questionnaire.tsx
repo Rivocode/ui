@@ -61,6 +61,7 @@ type Meta = Omit<Entry, "element">;
 
 type RootContext = {
   names: string[];
+  rendered: { name: string; meta: Meta }[] | null;
   meta: Record<string, Meta>;
   active: string | undefined;
   direction: Direction | null;
@@ -136,17 +137,29 @@ function controlsOf(element: HTMLFieldSetElement) {
 
 function hasAnswer(element: HTMLFieldSetElement) {
   return controlsOf(element).some((control) =>
-    control instanceof HTMLInputElement && CHECKABLE.has(control.type)
-      ? control.checked
-      : control.value.trim() !== "",
+    isCheckable(control) ? control.checked : control.value.trim() !== "",
   );
 }
 
-function clearAnswer(element: HTMLFieldSetElement) {
-  for (const control of controlsOf(element)) {
-    if (control instanceof HTMLInputElement && CHECKABLE.has(control.type)) control.checked = false;
-    else control.value = "";
+function isCheckable(control: HTMLInputElement | HTMLTextAreaElement): control is HTMLInputElement {
+  return control instanceof HTMLInputElement && CHECKABLE.has(control.type);
+}
+
+function clearControl(control: HTMLInputElement | HTMLTextAreaElement) {
+  const prototype = Object.getPrototypeOf(control) as object;
+  if (isCheckable(control)) {
+    if (!control.checked) return;
+    Object.getOwnPropertyDescriptor(prototype, "checked")?.set?.call(control, false);
+    control.dispatchEvent(new Event("click", { bubbles: true }));
+    return;
   }
+  if (control.value === "") return;
+  Object.getOwnPropertyDescriptor(prototype, "value")?.set?.call(control, "");
+  control.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function clearAnswer(element: HTMLFieldSetElement) {
+  for (const control of controlsOf(element)) clearControl(control);
 }
 
 function focusFirstControl(element: HTMLFieldSetElement) {
@@ -207,7 +220,13 @@ export function Questionnaire({
   const labels = useMemo(() => ({ ...QUESTIONNAIRE_LABELS, ...labelsProp }), [labelsProp]);
 
   const wanted = item ?? chosen;
-  const active = wanted !== undefined && names.includes(wanted) ? wanted : names[0];
+  const active =
+    names.length === 0
+      ? wanted
+      : wanted !== undefined && names.includes(wanted)
+        ? wanted
+        : names[0];
+  const rendered = names.length === 0 ? [] : null;
 
   const setStatus = useCallback((name: string, status: QuestionnaireItemStatus) => {
     if (statusRef.current[name] === status) return;
@@ -402,6 +421,7 @@ export function Questionnaire({
   const context = useMemo<RootContext>(
     () => ({
       names,
+      rendered,
       meta,
       active,
       direction,
@@ -417,6 +437,7 @@ export function Questionnaire({
     }),
     [
       names,
+      rendered,
       meta,
       active,
       direction,
@@ -545,7 +566,10 @@ export function QuestionnaireItem({
     onStatusChange?.(status);
   }, [status, onStatusChange]);
 
-  const isActive = root.active === name;
+  if (root.rendered && !root.rendered.some((entry) => entry.name === name)) {
+    root.rendered.push({ name, meta: { required, multiple, disabled } });
+  }
+  const isActive = (root.active ?? root.rendered?.[0]?.name) === name;
   const verdict = root.errors[name];
   const invalid = verdict !== undefined;
 
@@ -556,14 +580,12 @@ export function QuestionnaireItem({
     if (element && !multiple && target instanceof HTMLInputElement) {
       if (target.type === "radio" && target.checked) {
         for (const control of controlsOf(element)) {
-          if (!(control instanceof HTMLInputElement && CHECKABLE.has(control.type))) {
-            control.value = "";
-          }
+          if (!isCheckable(control)) clearControl(control);
         }
       } else if (!CHECKABLE.has(target.type) && target.value.trim() !== "") {
         for (const control of controlsOf(element)) {
           if (control instanceof HTMLInputElement && control.type === "radio") {
-            control.checked = false;
+            clearControl(control);
           }
         }
       }
@@ -638,6 +660,7 @@ export function QuestionnaireTitle({ className, children, ...props }: Questionna
       )}
     >
       {children}
+      {!required && <span className="sr-only">, </span>}
       {!required && (
         <span className="ml-2 align-middle font-sans text-xs tracking-normal text-fg-subtle">
           {labels.optional}
@@ -847,8 +870,14 @@ export function QuestionnaireFooter({ className, ...props }: QuestionnaireFooter
 
 function useNavigation(part: string) {
   const root = useRoot(part);
-  const index = root.active === undefined ? -1 : root.names.indexOf(root.active);
-  return { root, index, last: index === root.names.length - 1 };
+  const names = root.rendered ? root.rendered.map((entry) => entry.name) : root.names;
+  const current = root.active ?? names[0];
+  const index = current === undefined ? -1 : names.indexOf(current);
+  const meta =
+    current === undefined
+      ? undefined
+      : (root.meta[current] ?? root.rendered?.find((entry) => entry.name === current)?.meta);
+  return { root, index, last: index === names.length - 1, meta };
 }
 
 function withAction(
@@ -892,8 +921,7 @@ export function QuestionnaireSkip({
   variant = "ghost",
   ...props
 }: QuestionnaireNavProps) {
-  const { root } = useNavigation("QuestionnaireSkip");
-  const meta = root.active === undefined ? undefined : root.meta[root.active];
+  const { root, meta } = useNavigation("QuestionnaireSkip");
   if (!meta || meta.required) return null;
 
   return (
