@@ -194,7 +194,11 @@ function ListAndDetail() {
                 }
               >
                 <span className="truncate text-base text-fg">{invoice.cliente}</span>
-                <span className="font-mono text-xs text-fg-subtle">
+                <span
+                  className={
+                    "font-mono text-xs " + (index === 0 ? "text-fg-muted" : "text-fg-subtle")
+                  }
+                >
                   {invoice.id} · {invoice.value}
                 </span>
               </li>
