@@ -347,6 +347,7 @@ export { Carousel, type CarouselLabels, type CarouselProps } from "./components/
 export { Stack, type LayoutGap, type StackProps } from "./components/stack";
 export { Grid, type GridProps } from "./components/grid";
 export { Container, type ContainerProps } from "./components/container";
+export { AppShell, type AppShellLabels, type AppShellProps } from "./components/app-shell";
 export {
   Command,
   type CommandGroup,
@@ -375,6 +376,7 @@ export { PageHeader, type PageHeaderProps } from "./components/page-header";
 export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/collapsible";
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";
 export { Slider, type SliderProps } from "./components/slider";
+export { Rating, type RatingLabels, type RatingProps } from "./components/rating";
 export { Meter, type MeterProps } from "./components/meter";
 export { NumberField, type NumberFieldProps } from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
@@ -382,6 +384,14 @@ export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export { Clipboard, type ClipboardProps } from "./components/clipboard";
 export { Indicator, type IndicatorProps } from "./components/indicator";
+export {
+  NotificationCenter,
+  type NotificationCenterLabels,
+  type NotificationCenterProps,
+  type NotificationFilter,
+  type NotificationItem,
+  type NotificationTone,
+} from "./components/notification-center";
 export { PasswordInput, type PasswordInputProps } from "./components/password-input";
 export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
 export { QRCode, type QRCodeProps } from "./components/qr-code";

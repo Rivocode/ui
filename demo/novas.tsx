@@ -1,20 +1,32 @@
-import { Download, FileText, Pencil, RefreshCw, Trash2 } from "lucide-react";
+import {
+  Download,
+  FileText,
+  Heart,
+  Home,
+  Pencil,
+  RefreshCw,
+  Settings,
+  Trash2,
+  Users,
+  Waves,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
   ActionBar,
+  AppShell,
   Badge,
   Banner,
+  buildPixPayload,
   Button,
   Card,
-  CardDescription,
-  Carousel,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
+  Carousel,
   CookieConsent,
-  type Column,
   DataTable,
   Field,
   FieldDescription,
@@ -31,20 +43,31 @@ import {
   ItemDescription,
   ItemTitle,
   Link,
+  NotificationCenter,
   parseTime,
+  PixCode,
   Popconfirm,
   PostalCodeField,
-  PixCode,
   QRCode,
-  buildPixPayload,
-  type PostalAddress,
   QueryBoundary,
+  Rating,
   RivoProvider,
+  SearchInput,
+  SidebarBrand,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
   Skeleton,
   Text,
   TimeField,
   TimePicker,
   type AppliedFilter,
+  type Column,
+  type NotificationItem,
+  type PostalAddress,
   type RivoDensity,
   type RivoTheme,
   useMobile,
@@ -858,6 +881,176 @@ function Carousels() {
 }
 
 const QR_LINK = "https://nfse.rivocode.com.br/consulta/35240612345678000199550010000048131234567890";
+function Shells() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="h-[30rem] overflow-hidden rounded-lg border border-border">
+        <AppShell
+          contained
+          container="md"
+          header={
+            <>
+              <SearchInput placeholder="Buscar notas" className="max-w-xs" />
+              <Button size="sm" className="ml-auto">
+                Nova nota
+              </Button>
+            </>
+          }
+          sidebar={
+            <>
+              <SidebarHeader>
+                <SidebarBrand mark={<Waves size={18} className="text-accent-text" />}>
+                  RivoCode
+                </SidebarBrand>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarGroup label="Operacao">
+                  <SidebarMenu>
+                    <SidebarMenuItem href="#" icon={<Home size={16} />}>
+                      Painel
+                    </SidebarMenuItem>
+                    <SidebarMenuItem
+                      href="#"
+                      icon={<FileText size={16} />}
+                      active
+                      badge={<Badge size="sm">4</Badge>}
+                    >
+                      Notas fiscais
+                    </SidebarMenuItem>
+                    <SidebarMenuItem href="#" icon={<Users size={16} />}>
+                      Clientes
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
+              <SidebarFooter>
+                <SidebarMenuItem href="#" icon={<Settings size={16} />}>
+                  Preferencias
+                </SidebarMenuItem>
+              </SidebarFooter>
+            </>
+          }
+          aside={
+            <div className="flex flex-col gap-2 text-sm">
+              <p className="font-medium text-fg">Resumo do mes</p>
+              <p className="text-fg-muted">42 notas emitidas, 3 canceladas.</p>
+            </div>
+          }
+          footer="RivoCode - Emissao de notas fiscais"
+        >
+          <Heading level={2}>Notas fiscais</Heading>
+          <Text tone="muted" className="mt-2">
+            As notas emitidas neste mes, da mais nova para a mais antiga.
+          </Text>
+          <Invoices
+            invoices={[
+              { id: "1", cliente: "Padaria Aurora", value: "R$ 1.280,00", status: "Paga" },
+              { id: "2", cliente: "Mercado Tambau", value: "R$ 860,00", status: "Aberta" },
+            ]}
+          />
+        </AppShell>
+      </div>
+    </div>
+  );
+}
+
+const BASE_TIME = new Date("2026-09-24T12:00:00-03:00");
+
+const NOTIFICATIONS: NotificationItem[] = [
+  {
+    id: "1",
+    title: "Nota 1042 autorizada",
+    description: "A prefeitura aceitou a nota da Padaria Aurora.",
+    time: new Date(BASE_TIME.getTime() - 5 * 60_000),
+    read: false,
+    tone: "success",
+    icon: <FileText />,
+  },
+  {
+    id: "2",
+    title: "Certificado digital vence em 5 dias",
+    description: "Renove antes de 29/09 para nao parar a emissao.",
+    time: new Date(BASE_TIME.getTime() - 3 * 3_600_000),
+    read: false,
+    tone: "warning",
+  },
+  {
+    id: "3",
+    title: "Ana Beatriz entrou na equipe",
+    time: new Date(BASE_TIME.getTime() - 2 * 86_400_000),
+    read: true,
+    icon: <Users />,
+  },
+];
+
+function Notifications({ openPanel }: { openPanel: boolean }) {
+  const [items, setItems] = useState(NOTIFICATIONS);
+  const bar = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!openPanel) return;
+    const timer = setTimeout(() => bar.current?.querySelector("button")?.click(), 90);
+    return () => clearTimeout(timer);
+  }, [openPanel]);
+
+  return (
+    <div className={openPanel ? "flex min-h-[32rem] items-start gap-6" : "flex items-start gap-6"}>
+      <div
+        ref={bar}
+        className="flex w-full max-w-md items-center justify-between rounded-lg border border-border px-4 py-2"
+      >
+        <span className="font-display text-base text-fg">RivoCode</span>
+        <NotificationCenter
+          items={items}
+          now={BASE_TIME}
+          onMarkRead={(id) =>
+            setItems((current) =>
+              current.map((item) => (item.id === id ? { ...item, read: true } : item)),
+            )
+          }
+          onMarkAllRead={() =>
+            setItems((current) => current.map((item) => ({ ...item, read: true })))
+          }
+          onItemClick={() => {}}
+          hasMore
+          onLoadMore={() => {}}
+        />
+      </div>
+      <NotificationCenter items={[]} labels={{ trigger: "Notificacoes (vazio)" }} />
+      <NotificationCenter items={[]} isLoading labels={{ trigger: "Notificacoes (carregando)" }} />
+    </div>
+  );
+}
+
+function Ratings() {
+  const [value, setValue] = useState(3);
+  const [half, setHalf] = useState(3.5);
+
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <div className="flex flex-col gap-3">
+        <Rating value={value} onValueChange={setValue} clearable size="lg" />
+        <Rating allowHalf value={half} onValueChange={setHalf} aria-label="Nota do produto" />
+        <Rating size="sm" defaultValue={2} />
+      </div>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <Rating readOnly value={4.3} size="sm" />
+          <span className="text-sm text-fg">4,3</span>
+          <span className="text-sm text-fg-muted">(128 avaliacoes)</span>
+        </div>
+        <Rating icon={<Heart />} max={3} defaultValue={2} labels={{ group: "Gostou?" }} />
+        <Rating disabled defaultValue={2} />
+        <Card className="max-w-xs">
+          <CardContent className="flex flex-col gap-2">
+            <p className="text-sm text-fg">Sobre superficie</p>
+            <Rating defaultValue={4} />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
 function QrCodes() {
   return (
@@ -933,6 +1126,18 @@ function Sample({
 
         <Block title="QRCode">
           <QrCodes />
+        </Block>
+
+        <Block title="AppShell">
+          <Shells />
+        </Block>
+
+        <Block title="NotificationCenter">
+          <Notifications openPanel={!openPicker && !isMobile} />
+        </Block>
+
+        <Block title="Rating">
+          <Ratings />
         </Block>
 
         <Block title="Carousel">

@@ -634,6 +634,36 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "description", native: "description", note: "`description` é `string`" },
     ],
   },
+  NotificationCenter: {
+    rows: [
+      {
+        web: "open",
+        native: "open",
+        note: "vira obrigatório, com `onOpenChange`: não há `defaultOpen`",
+      },
+      {
+        web: null,
+        native: "icon",
+        note: "o sino entra por `icon`, obrigatório, porque o pacote não traz ícone; a função recebe a cor do botão",
+      },
+      {
+        web: "onItemClick",
+        native: "onItemPress",
+        note: "a linha não é link: sem `href` no item, quem navega é o router a partir do item recebido",
+      },
+      {
+        web: "defaultFilter",
+        native: null,
+        note: "o filtro começa em `all`; `filter` com `onFilterChange` controla",
+      },
+      {
+        web: "align",
+        native: null,
+        note: "a lista é sempre uma folha de baixo, e não um painel ancorado ao sino",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, no botão do sino" },
+    ],
+  },
   Indicator: {
     rows: [
       {
@@ -989,6 +1019,26 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "só de baixo, que já era o modo estreito do web; `snapPoints` sai junto",
       },
       { web: null, native: "title", note: "`title` é prop obrigatória e `description` é prop" },
+    ],
+  },
+  Rating: {
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe",
+      },
+      {
+        web: "icon",
+        native: "icon",
+        note: "é função, e recebe `{ color, size, filled }`: a cor não desce da `View` para o SVG",
+      },
+      {
+        web: "name",
+        native: null,
+        note: "não há `<form>` para levar a nota num campo escondido",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
     ],
   },
   Slider: {

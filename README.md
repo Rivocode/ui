@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-113 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+116 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -153,6 +153,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
 | `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
 | `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
+| `Rating`                        | nota em estrelas, com meia estrela e a média só leitura dita "4,5 de 5"   |
 | `EventCalendar`                 | a agenda: o que acontece, quando e por quanto tempo. O `Calendar` escolhe uma data; este mostra compromisso no tempo |
 
 ### Flutuante
@@ -172,6 +173,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
 | Peça         | Para que serve                                                           |
 | ------------ | ------------------------------------------------------------------------ |
+| `AppShell`   | o esqueleto do app: cabeçalho fixo, `Sidebar`, `main`, link de pular     |
 | `Sidebar`    | barra lateral que encolhe até a coluna de ícones e vira folha no celular |
 | `Tabs`       | abas com risco deslizante; rolam de lado quando não cabem                |
 | `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo              |
@@ -203,6 +205,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |
 | `Meter`      | capacidade em uso, que **sobe e desce**: cota, limite       |
 | `EmptyState` | estado vazio, com descrição e saída obrigatórias            |
+| `NotificationCenter` | o sininho com a contagem dita e a lista: ler, marcar, filtrar, carregar mais |
 
 ### IA
 

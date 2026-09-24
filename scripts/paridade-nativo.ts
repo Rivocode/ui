@@ -639,6 +639,27 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento",
   },
+  Rating: {
+    state: "traduz",
+    note: "um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função",
+    page:
+      "Traduz, com os mesmos `max`, `allowHalf`, `clearable`, `readOnly` e `size`. O `value` é " +
+      "controlado, como em todo o pacote nativo, e sem `onValueChange` a peça só exibe.\n\n" +
+      "**Para o leitor de tela, as estrelas são um controle só.** No web a escolha é um " +
+      "`radiogroup` com uma opção por estrela; aqui o grupo é `adjustable`, o mesmo contrato do " +
+      "`Slider`: o VoiceOver e o TalkBack dizem \"Avaliação, 3 estrelas\", e o gesto de subir e " +
+      "descer anda uma estrela (meia, com `allowHalf`). Cinco paradas de foco para uma nota " +
+      "seriam cinco toques de navegação para chegar ao botão de enviar.\n\n" +
+      "**O alvo de toque de cada estrela é sempre 44pt.** O `size` troca só o desenho. Com " +
+      "`allowHalf`, o toque na metade da esquerda dá a meia estrela. Não há prévia: no toque " +
+      "não existe pousar.\n\n" +
+      "A estrela padrão é o caractere ★ na cor do tema, porque o pacote não traz ícone. Para " +
+      "outro desenho, a função recebe a cor já resolvida, o tamanho e a camada: " +
+      "`icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.\n\n" +
+      "```tsx\n" +
+      "<Rating value={nota} onValueChange={setNota} allowHalf />\n" +
+      "```",
+  },
   Slider: {
     state: "traduz",
     note: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
@@ -960,6 +981,33 @@ const PARITY: Record<string, Row> = {
       "string crua e não com um evento: espalhar o campo nele guardaria no formulário um " +
       "objeto de evento que não existe. Ele leva o `ref` junto, e aí o `form.setFocus()` " +
       "funciona de verdade: `TextInput` tem `focus()`.",
+  },
+  NotificationCenter: {
+    state: "traduz",
+    note: "a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href`",
+    page:
+      "Traduz, com a lista numa `Sheet` que sobe de baixo, que é o que o web já faz no " +
+      "celular. `items`, `unreadCount`, `onMarkRead`, `onMarkAllRead`, o filtro, `hasMore`, " +
+      "`onLoadMore`, `isLoadingMore`, `isLoading` e `labels` têm o mesmo nome e o mesmo " +
+      "sentido, e os textos saem da mesma fonte.\n\n" +
+      "**`open` é controlado**, com `onOpenChange`, como em todo o pacote nativo. **O sino " +
+      "entra por `icon`**, porque o pacote não traz ícone, e a forma que pinta na cor do " +
+      "botão é a função: `icon={({ color, size }) => <Bell color={color} size={size} />}`.\n\n" +
+      "**A linha não é link.** No celular quem navega é o router, então a notificação não " +
+      "tem `href`: `onItemPress` recebe o item e decide para onde ir. Abrir continua " +
+      "contando como ler, e a folha fecha.\n\n" +
+      "A contagem é o nome do botão (\"3 notificações não lidas\"), e quando ela muda o " +
+      "leitor de tela ouve a frase nova pelo anúncio do sistema.\n\n" +
+      "```tsx\n" +
+      "<NotificationCenter\n" +
+      "  items={notificacoes}\n" +
+      "  open={aberto}\n" +
+      "  onOpenChange={setAberto}\n" +
+      "  icon={sino}\n" +
+      "  onItemPress={abrir}\n" +
+      "  onMarkRead={marcar}\n" +
+      "/>\n" +
+      "```",
   },
   Indicator: {
     state: "traduz",
@@ -1401,6 +1449,20 @@ const PARITY: Record<string, Row> = {
       "Não há `horizontal`: fila de cartões que rola de lado é `ScrollView` puro, e não tem campo " +
       "para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o " +
       "`KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.",
+  },
+  AppShell: {
+    state: "nao",
+    note: "o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha",
+    page:
+      "Não porta, por decisão. No celular o esqueleto da aplicação não é desenhado pela " +
+      "biblioteca de componentes: é o router (Expo Router, React Navigation) que monta a tab " +
+      "bar, o drawer, a barra de título de cada tela e a área segura, com o gesto de voltar, " +
+      "o histórico e o estado de cada aba de graça. Uma casca nossa por cima disso seria um " +
+      "segundo esqueleto disputando as mesmas bordas da tela.\n\n" +
+      "O que a casca do web resolve para a acessibilidade também já vem do sistema: o " +
+      "VoiceOver e o TalkBack anunciam a tab bar e o título da tela, e não existe link de " +
+      "pular para quem navega pelo toque. O topo de cada tela continua sendo o `PageHeader`, " +
+      "que traduz.",
   },
   Sidebar: {
     state: "nao",

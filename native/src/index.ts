@@ -35,6 +35,14 @@ export {
 } from "./image-viewer";
 export { Badge, type BadgeProps } from "./badge";
 export { Indicator, type IndicatorProps } from "./indicator";
+export {
+  NotificationCenter,
+  type NotificationCenterLabels,
+  type NotificationCenterProps,
+  type NotificationFilter,
+  type NotificationItem,
+  type NotificationTone,
+} from "./notification-center";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
 export { Stat, type StatProps } from "./stat";
 export { Sparkline, type SparklineProps } from "./sparkline";
@@ -107,6 +115,7 @@ export { TagsInput, type TagsInputProps } from "./tags-input";
 export { Fieldset, type FieldsetProps } from "./fieldset";
 export { Combobox, type ComboboxItem, type ComboboxProps } from "./combobox";
 export { Slider, type SliderProps } from "./slider";
+export { Rating, type RatingLabels, type RatingProps } from "./rating";
 export {
   Calendar,
   DatePicker,

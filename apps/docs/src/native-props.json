@@ -2358,6 +2358,116 @@
       }
     ]
   },
+  "NotificationCenter": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "icon",
+        "type": "Glyph",
+        "required": true,
+        "note": "O sino do botao."
+      },
+      {
+        "name": "items",
+        "type": "NotificationItem[]",
+        "required": true,
+        "note": "As notificacoes ja carregadas, da mais nova para a mais antiga."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "(open: boolean) => void",
+        "required": true
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true,
+        "note": "A folha aberta."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o botao do sino."
+      },
+      {
+        "name": "filter",
+        "type": "NotificationFilter",
+        "required": false,
+        "note": "O filtro, controlado."
+      },
+      {
+        "name": "hasMore",
+        "type": "boolean",
+        "required": false,
+        "note": "Ha mais para carregar: liga o \"Carregar mais\" no fim da lista."
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false,
+        "note": "A primeira carga ainda nao voltou: a lista vira marca de lugar."
+      },
+      {
+        "name": "isLoadingMore",
+        "type": "boolean",
+        "required": false,
+        "note": "A proxima pagina esta chegando: o botao gira e nao aceita toque."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<NotificationCenterLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma ou o termo."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O teto do numero no sino: acima dele sai \"99+\"."
+      },
+      {
+        "name": "now",
+        "type": "Date",
+        "required": false,
+        "note": "O agora das datas relativas, para teste e tela congelada."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "((filter: NotificationFilter) => void)",
+        "required": false
+      },
+      {
+        "name": "onItemPress",
+        "type": "((item: NotificationItem) => void)",
+        "required": false,
+        "note": "Chamado ao tocar numa notificacao."
+      },
+      {
+        "name": "onLoadMore",
+        "type": "(() => void)",
+        "required": false
+      },
+      {
+        "name": "onMarkAllRead",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o \"Marcar todas como lidas\" no topo da folha."
+      },
+      {
+        "name": "onMarkRead",
+        "type": "((id: string) => void)",
+        "required": false,
+        "note": "Liga o botao de marcar como lida em cada nao lida."
+      },
+      {
+        "name": "unreadCount",
+        "type": "number",
+        "required": false,
+        "note": "Quantas nao lidas existem, quando o servidor sabe mais do que a pagina carregada."
+      }
+    ]
+  },
   "NumberField": {
     "entry": "native/src/index.ts",
     "props": [
@@ -2973,6 +3083,76 @@
         "type": "string",
         "required": false,
         "note": "O nome do grupo para o leitor de tela."
+      }
+    ]
+  },
+  "Rating": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "A nota, controlada."
+      },
+      {
+        "name": "allowHalf",
+        "type": "boolean",
+        "required": false,
+        "note": "Aceita meia estrela: o toque na metade da esquerda da `n - 0,5`, e o ajuste anda de meio em meio."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "note": "Tocar de novo na nota escolhida volta a zero."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Desliga a escolha."
+      },
+      {
+        "name": "icon",
+        "type": "((glyph: { color: string; size: number; filled: boolean; }) => ReactNode)",
+        "required": false,
+        "note": "Troca a estrela."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RatingLabels>",
+        "required": false,
+        "note": "Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Quantas estrelas."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: number) => void)",
+        "required": false,
+        "note": "Chamado com a nota nova: pelo toque na estrela ou pelo gesto de ajuste do leitor de tela."
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "note": "So exibe: a media de um produto."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "O tamanho do desenho."
       }
     ]
   },

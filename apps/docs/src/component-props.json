@@ -403,6 +403,92 @@
     "forwardsRoot": true,
     "props": []
   },
+  "AppShell": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "aside",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Coluna ao lado do conteudo: ajuda, resumo, atividade recente."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"aside\" | \"body\" | \"column\" | \"footer\" | \"header\" | \"main\" | \"sidebar\" | \"skipLink\", string>>",
+        "required": false
+      },
+      {
+        "name": "contained",
+        "type": "boolean",
+        "required": false,
+        "note": "Ocupa a caixa do pai em vez da janela: a barra lateral e a coluna de conteudo passam a rolar por dentro."
+      },
+      {
+        "name": "container",
+        "type": "\"full\" | \"lg\" | \"md\" | \"sm\" | \"xl\" | boolean",
+        "required": false,
+        "note": "Poe o conteudo num `Container` da casa, com a largura maxima e o respiro lateral dele e o respiro de cima e de baixo do painel."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Comeca aberta na mesa."
+      },
+      {
+        "name": "footer",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O rodape da aplicacao, embaixo do conteudo."
+      },
+      {
+        "name": "header",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que mora no cabecalho fixo: marca, busca, sininho, menu da conta."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<AppShellLabels>",
+        "required": false,
+        "note": "Os textos do link de pular e os nomes das regioes que o leitor de tela anuncia."
+      },
+      {
+        "name": "mainId",
+        "type": "string",
+        "required": false,
+        "note": "O `id` do `<main>`, alvo do link de pular."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "shortcut",
+        "type": "string | null",
+        "required": false,
+        "note": "Atalho de teclado que abre e fecha."
+      },
+      {
+        "name": "sidebar",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O miolo da barra lateral: `SidebarHeader`, `SidebarContent`, `SidebarFooter` e o resto da familia do `Sidebar`."
+      },
+      {
+        "name": "sidebarSide",
+        "type": "\"left\" | \"right\"",
+        "required": false,
+        "note": "De que lado mora a barra lateral."
+      }
+    ]
+  },
   "Area": {
     "forwardsRoot": true,
     "props": [
@@ -13593,6 +13679,129 @@
     "forwardsRoot": true,
     "props": []
   },
+  "NotificationCenter": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "items",
+        "type": "NotificationItem[]",
+        "required": true,
+        "note": "As notificacoes ja carregadas, da mais nova para a mais antiga."
+      },
+      {
+        "name": "align",
+        "type": "\"end\" | \"start\"",
+        "required": false,
+        "note": "De que lado do sininho o painel se alinha, na mesa."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"filters\" | \"footer\" | \"header\" | \"item\" | \"list\" | \"panel\" | \"trigger\", string>>",
+        "required": false
+      },
+      {
+        "name": "defaultFilter",
+        "type": "NotificationFilter",
+        "required": false,
+        "note": "O filtro ao montar, quando ninguem controla."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "O painel aberto ao montar, quando ninguem controla."
+      },
+      {
+        "name": "filter",
+        "type": "NotificationFilter",
+        "required": false,
+        "note": "O filtro, controlado: `all` ou `unread`."
+      },
+      {
+        "name": "hasMore",
+        "type": "boolean",
+        "required": false,
+        "note": "Ha mais para carregar: liga o \"Carregar mais\" no fim da lista."
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false,
+        "note": "A primeira carga ainda nao voltou: a lista vira marca de lugar, e o leitor ouve \"Carregando\"."
+      },
+      {
+        "name": "isLoadingMore",
+        "type": "boolean",
+        "required": false,
+        "note": "A proxima pagina esta chegando: o botao gira e nao aceita clique."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<NotificationCenterLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma ou o termo."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O teto do numero no sininho: acima dele sai \"99+\"."
+      },
+      {
+        "name": "now",
+        "type": "Date",
+        "required": false,
+        "note": "O agora das datas relativas, para teste e para renderizacao no servidor."
+      },
+      {
+        "name": "onFilterChange",
+        "type": "((filter: NotificationFilter) => void)",
+        "required": false,
+        "note": "Chamado quando a pessoa troca o filtro."
+      },
+      {
+        "name": "onItemClick",
+        "type": "((item: NotificationItem) => void)",
+        "required": false,
+        "note": "Chamado quando a pessoa escolhe uma notificacao."
+      },
+      {
+        "name": "onLoadMore",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo \"Carregar mais\"."
+      },
+      {
+        "name": "onMarkAllRead",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o \"Marcar todas como lidas\" no topo do painel."
+      },
+      {
+        "name": "onMarkRead",
+        "type": "((id: string) => void)",
+        "required": false,
+        "note": "Liga o botao de marcar como lida em cada nao lida."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "O painel aberto, controlado."
+      },
+      {
+        "name": "unreadCount",
+        "type": "number",
+        "required": false,
+        "note": "Quantas nao lidas existem, quando o servidor sabe mais do que a pagina carregada."
+      }
+    ]
+  },
   "NumberField": {
     "forwardsRoot": true,
     "props": [
@@ -20969,6 +21178,88 @@
         "required": false,
         "note": "The controlled value of the radio item that should be currently selected.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "Rating": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "allowHalf",
+        "type": "boolean",
+        "required": false,
+        "note": "Aceita meia estrela: cada estrela vira duas metades, e as setas andam de meio em meio."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"filled\" | \"item\", string>>",
+        "required": false
+      },
+      {
+        "name": "clearable",
+        "type": "boolean",
+        "required": false,
+        "note": "Clicar de novo na nota escolhida volta a nenhuma."
+      },
+      {
+        "name": "defaultValue",
+        "type": "number",
+        "required": false,
+        "note": "A nota ao montar, quando ninguem controla."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Desliga a escolha."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Troca a estrela por outro icone do lucide (`<Heart />`, `<ThumbsUp />`)."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RatingLabels>",
+        "required": false,
+        "note": "Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Quantas estrelas."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Nome do campo num `<form>`: a nota vai num `input` escondido."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: number) => void)",
+        "required": false,
+        "note": "Chamado com a nota nova: pelo clique, pelas setas, por Home e End."
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "note": "So exibe: a media de um produto, a nota que outra pessoa deu."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "O tamanho da estrela."
+      },
+      {
+        "name": "value",
+        "type": "number",
+        "required": false,
+        "note": "A nota escolhida, controlada."
       }
     ]
   },

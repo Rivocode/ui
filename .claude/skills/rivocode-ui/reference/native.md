@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**202 divergências de assinatura em 83 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**212 divergências de assinatura em 85 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -198,6 +198,12 @@ escritos em lugar nenhum.
 | `Message` | `classNames` | — | um `className` só, na linha da mensagem |
 | `Meter` | `format` | `valueLabel` | o texto vai pronto: resolver nome de formatador custaria o `Intl` no bundle do celular |
 | `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
+| `NotificationCenter` | `open` | `open` | vira obrigatório, com `onOpenChange`: não há `defaultOpen` |
+| `NotificationCenter` | — | `icon` | o sino entra por `icon`, obrigatório, porque o pacote não traz ícone; a função recebe a cor do botão |
+| `NotificationCenter` | `onItemClick` | `onItemPress` | a linha não é link: sem `href` no item, quem navega é o router a partir do item recebido |
+| `NotificationCenter` | `defaultFilter` | — | o filtro começa em `all`; `filter` com `onFilterChange` controla |
+| `NotificationCenter` | `align` | — | a lista é sempre uma folha de baixo, e não um painel ancorado ao sino |
+| `NotificationCenter` | `classNames` | `className` | um `className` só, no botão do sino |
 | `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
 | `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
 | `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
@@ -236,6 +242,10 @@ escritos em lugar nenhum.
 | `Questionnaire` | `onSubmit` | `onSubmit` | vira obrigatório e recebe só as respostas: não há `FormData` fora do navegador |
 | `Questionnaire` | `shortcuts` | — | sem teclado físico, não há atalho de letra nem de número |
 | `Questionnaire` | — | `onStatusChange` | um só na raiz, com o `name` da pergunta; no web ele é de cada `QuestionnaireItem` |
+| `Rating` | `value` | `value` | vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe |
+| `Rating` | `icon` | `icon` | é função, e recebe `{ color, size, filled }`: a cor não desce da `View` para o SVG |
+| `Rating` | `name` | — | não há `<form>` para levar a nota num campo escondido |
+| `Rating` | `classNames` | `className` | um `className` só, na raiz |
 | `RivoProvider` | `density` | — | a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura |
 | `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
 | `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
@@ -390,7 +400,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**113 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 89 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**116 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 91 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 20 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -399,6 +409,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
+| `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
 | `Avatar` | ✔ traduz | `src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar |
@@ -455,6 +466,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
 | `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
+| `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props |
@@ -471,6 +483,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
+| `Rating` | ✔ traduz | um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `ResizablePanelGroup` | ✕ não porta | painel que se arrasta para dividir a largura é idioma de mesa; no celular cada área é uma tela do router, ou uma folha por cima |
 | `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
