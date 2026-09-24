@@ -249,6 +249,7 @@ export { Skeleton } from "./components/skeleton";
 export { Kbd, kbdVariants, keyName, type KbdProps } from "./components/kbd";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { AspectRatio, type AspectRatioProps } from "./components/aspect-ratio";
+export { Carousel, type CarouselLabels, type CarouselProps } from "./components/carousel";
 export { Stack, type LayoutGap, type StackProps } from "./components/stack";
 export { Grid, type GridProps } from "./components/grid";
 export { Container, type ContainerProps } from "./components/container";

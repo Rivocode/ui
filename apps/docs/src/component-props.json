@@ -4087,6 +4087,82 @@
     "forwardsRoot": true,
     "props": []
   },
+  "Carousel": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome do carrossel, obrigatorio: vira o `aria-label` da regiao, que o leitor de tela anuncia junto com \"carrossel\"."
+      },
+      {
+        "name": "autoplay",
+        "type": "number | boolean",
+        "required": false,
+        "note": "Avanca sozinho: `true` a cada 5 segundos, ou o intervalo em milissegundos."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"footer\" | \"indicator\" | \"indicators\" | \"next\" | \"pause\" | \"previous\" | \"slide\" | \"viewport\", string>>",
+        "required": false
+      },
+      {
+        "name": "controls",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra os botoes anterior e proximo."
+      },
+      {
+        "name": "defaultIndex",
+        "type": "number",
+        "required": false,
+        "note": "O slide da frente ao montar, quando ninguem controla."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\"",
+        "required": false,
+        "note": "O vao entre os slides, lido de `--rc-gap-*`: encolhe com a densidade."
+      },
+      {
+        "name": "index",
+        "type": "number",
+        "required": false,
+        "note": "O slide da frente, controlado."
+      },
+      {
+        "name": "indicators",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra um indicador por posicao, que tambem leva ate ela."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CarouselLabels>",
+        "required": false,
+        "note": "Os textos que o leitor de tela ouve, para trocar o idioma ou o termo."
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "note": "Do ultimo, o proximo volta ao primeiro, e vice-versa."
+      },
+      {
+        "name": "onIndexChange",
+        "type": "((index: number) => void)",
+        "required": false,
+        "note": "Chamado quando o slide da frente muda: pelos botoes, pelo teclado, pelos indicadores ou pelo arrasto, quando a rolagem assenta."
+      },
+      {
+        "name": "slidesPerView",
+        "type": "number | \"auto\" | Partial<Record<\"base\" | \"lg\" | \"md\" | \"sm\" | \"xl\", number>>",
+        "required": false,
+        "note": "Quantos slides cabem lado a lado."
+      }
+    ]
+  },
   "CartesianGrid": {
     "forwardsRoot": true,
     "props": [

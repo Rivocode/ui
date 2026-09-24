@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-99 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+100 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -208,6 +208,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Stack`       | empilha numa direção, com o vão da escala que acompanha a densidade    |
 | `Grid`        | colunas fixas ou quantas couberem por `minItemWidth`, sem media query  |
 | `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
+| `Carousel`    | slides de lado por scroll-snap; `Tabs` se compara, `Grid` se cabe tudo |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 

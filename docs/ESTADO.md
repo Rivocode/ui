@@ -47,7 +47,7 @@ novo sao os dois de 13:09.
 
 ### O catalogo, por familia
 
-Sao **99 pecas** e **185 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **100 pecas** e **186 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
@@ -69,7 +69,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
 com acento. Nenhuma peca esta sem documento, e nenhum documento esta sem codigo
-por tras: `check:doc` confere os dois sentidos sobre as 185 paginas.
+por tras: `check:doc` confere os dois sentidos sobre as 186 paginas.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
@@ -84,7 +84,7 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia, e o que falta nao e nosso.** Das 99 pecas do web, **82 tem
+**A fila esta vazia, e o que falta nao e nosso.** Das 100 pecas do web, **83 tem
 par no celular**, e as 17 que faltam faltam por decisao escrita. Ate 28/08 eram
 18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
 apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
@@ -467,10 +467,10 @@ O que cada guarda mede hoje, em numero:
 
 | Guarda                   | O que ela diz hoje                                                            |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `check:pecas`            | 99 pecas, e e o que o README e o `package.json` anunciam                       |
-| `check:doc`              | 185 paginas, todas com codigo por tras                                        |
-| `check:props`            | 258 pecas, 3968 props                                                         |
-| `check:paridade`         | 99 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
+| `check:pecas`            | 100 pecas, e e o que o README e o `package.json` anunciam                       |
+| `check:doc`              | 186 paginas, todas com codigo por tras                                        |
+| `check:props`            | 259 pecas, 3980 props                                                         |
+| `check:paridade`         | 100 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
 | `check:assinatura`       | 147 divergencias de assinatura em 66 pecas, conferidas contra os dois catalogos |
 | `check:temas`            | 71 tokens de tema e forma, e 55 papeis obrigatorios                            |
 | `check:contrast`         | 152 pares em dois temas, 76 por tema                                          |
@@ -484,8 +484,8 @@ O que cada guarda mede hoje, em numero:
 | `check:skill`            | 68 props citadas nos exemplos da skill, todas existentes                      |
 | `check:lista-skill`      | 11 arquivos de referencia, todos no indice E no laco `curl` do site           |
 | `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
-| `check:demo`             | 96 de 99 pecas na vitrine, em 16 paginas                                      |
-| `check:readme`           | 58 de 99 pecas citadas no `README.md`                                         |
+| `check:demo`             | 97 de 100 pecas na vitrine, em 16 paginas                                     |
+| `check:readme`           | 59 de 100 pecas citadas no `README.md`                                        |
 | `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
 | `check:testes`           | 1397 testes em 120 arquivos, e e o numero que a home exibe                     |
@@ -518,7 +518,7 @@ declarada; junto veio o `FILA_DECLARADA`, que zerou. A outra e que
 `check:scripts` cresceu de 5 para 6, e o crescimento tem motivo escrito - o
 `props-do-catalogo-nativo` precisa de um app que nao e workspace -, mas cresceu.
 
-O aviso e o `OUT_OF_README`, com 41 de 99. E a maior divida declarada do
+O aviso e o `OUT_OF_README`, com 41 de 100. E a maior divida declarada do
 repositorio, e a que menos incomoda quem trabalha aqui, o que e exatamente o
 motivo de ela ser a maior. Ela nasceu porque o digito estava certo e a lista
 embaixo dele nao: o `check:pecas` guardava o "90 pecas." e o arquivo inteiro
@@ -779,12 +779,12 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 185 documentos
-bun run check:pecas                                # 99 pecas
+ls .design-sync/docs/*.md | wc -l                  # 186 documentos
+bun run check:pecas                                # 100 pecas
 bun run check:testes                               # 1397 testes em 120 arquivos
 bun test                                           # 1397 passam, 0 falham, 3711 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
-bun run check:paridade                             # 99 linhas: 77 traduz, 5 vira, 17 nao, 0 fila
+bun run check:paridade                             # 100 linhas: 78 traduz, 5 vira, 17 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
@@ -793,8 +793,8 @@ bun run check:contrast:nativo                      # 89 pares por esquema, 1 map
 bun run check:tema:nativo                          # 8 sementes, 37 derivados, 45 no @theme
 bun run check:classes                              # 196 arquivos, sem excecao
 bun run check:colors                               # 98 arquivos sem cor literal
-bun run check:demo                                 # 96 de 99 na vitrine, 3 declaradas fora
-bun run check:readme                               # 58 de 99 citadas, 41 declaradas fora
+bun run check:demo                                 # 97 de 100 na vitrine, 3 declaradas fora
+bun run check:readme                               # 59 de 100 citadas, 41 declaradas fora
 bun run check:retratos                             # 12 retratos de secao sobre 6 areas
 bun run check:receita                              # 7 arquivos de receita, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
@@ -814,7 +814,7 @@ curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.1   # 
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.4.1   # idem
 gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit e37084d
 gh run list --workflow=release-native --limit 5    # o ensaio e a publicacao da 0.4.1
-curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 99 e 185
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 100 e 186
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false, e e a divida da secao "Divida de codigo"
 ```
 

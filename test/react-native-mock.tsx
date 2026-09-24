@@ -5,7 +5,7 @@
  * DataList. Cada componente vira um host element com o mesmo nome, e o
  * react-test-renderer deixa ler as props direto da arvore.
  */
-import { createElement } from "react";
+import { createElement, Fragment, useImperativeHandle, type ReactNode, type Ref } from "react";
 
 type AnyProps = Record<string, unknown>;
 
@@ -23,6 +23,35 @@ export const Image = host("Image");
 export const ScrollView = host("ScrollView");
 export const Pressable = host("Pressable");
 export const Switch = host("Switch");
+
+type ListProps = AnyProps & {
+  data?: unknown[];
+  renderItem: (info: { item: unknown; index: number }) => ReactNode;
+  keyExtractor?: (item: unknown, index: number) => string;
+  ref?: Ref<unknown>;
+};
+
+const listScrolls: Array<{ offset?: number; index?: number; animated?: boolean }> = [];
+
+export const FlatList = ({ data = [], renderItem, keyExtractor, ref, ...props }: ListProps) => {
+  useImperativeHandle(ref, () => ({
+    scrollToOffset: (args: { offset: number; animated?: boolean }) => listScrolls.push(args),
+    scrollToIndex: (args: { index: number; animated?: boolean }) => listScrolls.push(args),
+  }));
+  return createElement(
+    "FlatList",
+    { ...props, data },
+    data.map((item, index) =>
+      createElement(
+        Fragment,
+        { key: keyExtractor?.(item, index) ?? String(index) },
+        renderItem({ item, index }),
+      ),
+    ),
+  );
+};
+
+export const flatListScrolls = listScrolls;
 
 /** Como no aparelho: com visible={false} o conteudo do Modal nao existe. */
 export const Modal = (props: AnyProps & { visible?: boolean }) =>

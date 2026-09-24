@@ -7,6 +7,8 @@ import {
   Banner,
   Button,
   Card,
+  CardDescription,
+  Carousel,
   CardContent,
   CardHeader,
   CardTitle,
@@ -652,6 +654,63 @@ function Banners() {
   );
 }
 
+const PLANS = [
+  { name: "Basico", price: "R$ 49", notes: "30 notas por mes" },
+  { name: "Profissional", price: "R$ 99", notes: "150 notas por mes" },
+  { name: "Empresa", price: "R$ 199", notes: "600 notas por mes" },
+  { name: "Contador", price: "R$ 349", notes: "Ate 20 empresas" },
+  { name: "Franquia", price: "Sob consulta", notes: "Unidades ilimitadas" },
+];
+
+function PlanCard({ plan }: { plan: (typeof PLANS)[number] }) {
+  return (
+    <Card className="h-full">
+      <CardHeader>
+        <CardTitle>{plan.name}</CardTitle>
+        <CardDescription>{plan.notes}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="font-display text-2xl text-fg">{plan.price}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
+function Carousels() {
+  return (
+    <div className="flex flex-col gap-8">
+      <Carousel label="Planos" slidesPerView={{ base: 1, sm: 2, lg: 3 }} indicators>
+        {PLANS.map((plan) => (
+          <PlanCard key={plan.name} plan={plan} />
+        ))}
+      </Carousel>
+
+      <Carousel
+        label="Planos em largura fixa"
+        slidesPerView="auto"
+        gap="sm"
+        classNames={{ slide: "w-56" }}
+      >
+        {PLANS.map((plan) => (
+          <PlanCard key={plan.name} plan={plan} />
+        ))}
+      </Carousel>
+
+      <Carousel label="Novidades" autoplay={600000} indicators defaultIndex={1}>
+        {PLANS.slice(0, 3).map((plan) => (
+          <Card key={plan.name}>
+            <CardContent>
+              <p className="text-sm text-fg">
+                O plano {plan.name} agora inclui o relatorio de impostos retidos.
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </Carousel>
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -670,6 +729,10 @@ function Sample({
       </p>
 
       <div className="flex flex-col gap-12">
+        <Block title="Carousel">
+          <Carousels />
+        </Block>
+
         <Block title="Banner">
           <Banners />
         </Block>

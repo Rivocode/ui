@@ -137,6 +137,31 @@ const PARITY: Record<string, Row> = {
     note: "`actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web",
   },
   AspectRatio: { state: "traduz", note: "`ratio` numérico, igual" },
+  Carousel: {
+    state: "traduz",
+    note: "sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay`",
+    page:
+      "Traduz sobre a `FlatList` horizontal do core: com um slide por vez ela pagina pela " +
+      "largura inteira (`pagingEnabled`), e com mais de um assenta de slide em slide " +
+      "(`snapToInterval`). O arrasto é o do próprio sistema, e `onIndexChange` chega quando a " +
+      "rolagem assenta.\n\n" +
+      "**A lista vem por `items` e `renderItem`, e o `index` é controlado**, como em todo o " +
+      "pacote nativo. `slidesPerView` é um número só: a largura do telefone não muda no meio " +
+      'da tela, e o objeto por largura e o `"auto"` do web não atravessam.\n\n' +
+      "**Não há `autoplay`.** No toque, a fileira que anda sozinha briga com o dedo que está " +
+      "prestes a arrastar, e o botão de pausa ficaria a um polegar de distância do conteúdo " +
+      'que se move. Sem os pontos, um contador "2 de 5" fica entre os botões, numa região ' +
+      "viva educada que diz o slide novo ao leitor de tela.\n\n" +
+      "```tsx\n" +
+      "<Carousel\n" +
+      '  label="Planos"\n' +
+      "  items={planos}\n" +
+      "  index={index}\n" +
+      "  onIndexChange={setIndex}\n" +
+      "  renderItem={(plano) => <Card>{plano.nome}</Card>}\n" +
+      "/>\n" +
+      "```",
+  },
   Avatar: {
     state: "traduz",
     note: "`src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar",

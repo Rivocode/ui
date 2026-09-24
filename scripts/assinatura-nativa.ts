@@ -227,6 +227,31 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "tooltipSide", native: null, note: "sai junto com o `tooltip`" },
     ],
   },
+  Carousel: {
+    rows: [
+      {
+        web: null,
+        native: "items",
+        note: "os slides vêm por `items` e `renderItem`, e não como filhos",
+      },
+      {
+        web: "index",
+        native: "index",
+        note: "vira obrigatório, com `onIndexChange`: não há `defaultIndex`",
+      },
+      {
+        web: "slidesPerView",
+        native: "slidesPerView",
+        note: 'só número: o objeto por largura e o `"auto"` não portam',
+      },
+      {
+        web: "autoplay",
+        native: null,
+        note: "no toque a fileira que anda sozinha briga com o dedo; não há rotação nem pausa",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+    ],
+  },
   Calendar: {
     rows: [
       {

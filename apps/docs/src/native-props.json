@@ -333,6 +333,84 @@
       }
     ]
   },
+  "Carousel": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "index",
+        "type": "number",
+        "required": true,
+        "note": "O slide da frente, contando de zero."
+      },
+      {
+        "name": "items",
+        "type": "Item[]",
+        "required": true
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome do carrossel, obrigatorio: o leitor de tela o anuncia ao entrar na fileira."
+      },
+      {
+        "name": "onIndexChange",
+        "type": "(index: number) => void",
+        "required": true,
+        "note": "Chamado pelos botoes, pelos pontos e pelo arrasto, quando a rolagem assenta."
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: Item, index: number) => ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "controls",
+        "type": "boolean",
+        "required": false,
+        "note": "Os botoes anterior e proximo, embaixo da fileira."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\"",
+        "required": false,
+        "note": "O vao entre os slides, em pontos: 0, 8, 12 ou 16."
+      },
+      {
+        "name": "indicators",
+        "type": "boolean",
+        "required": false,
+        "note": "Um ponto por posicao no lugar do contador \"2 de 5\"."
+      },
+      {
+        "name": "keyExtractor",
+        "type": "((item: Item, index: number) => string)",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CarouselLabels>",
+        "required": false
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "note": "Do ultimo, o proximo volta ao primeiro, e vice-versa."
+      },
+      {
+        "name": "slidesPerView",
+        "type": "number",
+        "required": false,
+        "note": "Quantos slides cabem lado a lado."
+      }
+    ]
+  },
   "ChartBar": {
     "entry": "native/src/chart/index.ts",
     "props": [
