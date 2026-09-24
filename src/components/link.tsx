@@ -83,7 +83,7 @@ export function Link({
           {children}
           <ArrowUpRight
             aria-hidden="true"
-            className="ml-0.5 inline-block size-[0.9em] shrink-0 align-[-0.1em]"
+            className="-mr-[0.2em] ml-0.5 inline-block size-[0.9em] shrink-0 align-[-0.1em]"
           />
           <span className="sr-only">{` ${externalLabel}`}</span>
         </>
