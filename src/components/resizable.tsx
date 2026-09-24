@@ -661,6 +661,7 @@ export function ResizableHandle({
     now: number;
     min: number;
     max: number;
+    edge: "start" | "end" | null;
   } | null = null;
   if (group) {
     const early = group.panels.length === 0 ? group.estimate : null;
@@ -675,14 +676,18 @@ export function ResizableHandle({
           });
       const entry = early ? undefined : group.entries.current.get(group.panels[pivot]!);
       const bounds = boundsAt(sizes, constraints, pivot);
+      const before = sizes.slice(0, pivot + 1).reduce((sum, size) => sum + size, 0);
+      const after = sizes.slice(pivot + 1).reduce((sum, size) => sum + size, 0);
       info = {
         controls: early ? (early.ids[pivot] ?? "") : entry?.kind === "panel" ? entry.domId : "",
         now: Math.round(sizes[pivot]!),
         min: Math.round(bounds.min),
         max: Math.round(bounds.max),
+        edge: near(before, 0) ? "start" : near(after, 0) ? "end" : null,
       };
     }
   }
+  const edge = info?.edge;
 
   const Grip = vertical ? GripHorizontal : GripVertical;
 
@@ -715,6 +720,8 @@ export function ResizableHandle({
         "hover:bg-line-hover focus-visible:bg-accent",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         vertical ? "h-px w-full cursor-row-resize" : "w-px cursor-col-resize",
+        edge === "start" && (vertical ? "mt-1.5" : "ms-1.5"),
+        edge === "end" && (vertical ? "mb-1.5" : "me-1.5"),
         vertical
           ? "after:absolute after:inset-x-0 after:-inset-y-3"
           : "after:absolute after:inset-y-0 after:-inset-x-3",

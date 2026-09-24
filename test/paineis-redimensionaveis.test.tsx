@@ -469,3 +469,46 @@ test("a linha da divisoria pinta em border-strong, que mede 3:1 sobre o fundo, e
   expect(measured).toContain("--rc-bg");
   expect(measured).toContain("--rc-surface");
 });
+
+test("com o painel da ponta recolhido, a divisoria se afasta da borda para a pega e o anel caberem", () => {
+  function Edge({ vertical = false }: { vertical?: boolean }) {
+    return (
+      <ResizablePanelGroup orientation={vertical ? "vertical" : "horizontal"}>
+        <ResizablePanel id={vertical ? "topo" : "inicio"} defaultSize={25} collapsible>
+          A
+        </ResizablePanel>
+        <ResizableHandle withHandle aria-label={vertical ? "Deitada" : "Em pé"} />
+        <ResizablePanel defaultSize={50}>B</ResizablePanel>
+        <ResizableHandle aria-label={vertical ? "Deitada do fim" : "Em pé do fim"} />
+        <ResizablePanel id={vertical ? "base" : "fim"} defaultSize={25} collapsible>
+          C
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    );
+  }
+  withTheme(
+    <>
+      <Edge />
+      <Edge vertical />
+    </>,
+  );
+
+  const tokens = (name: string) => screen.getByRole("separator", { name }).className.split(" ");
+  expect(tokens("Em pé")).not.toContain("ms-1.5");
+
+  fireEvent.keyDown(screen.getByRole("separator", { name: "Em pé" }), { key: "Enter" });
+  expect(flex("inicio")).toBe("0");
+  expect(tokens("Em pé")).toContain("ms-1.5");
+
+  fireEvent.keyDown(screen.getByRole("separator", { name: "Em pé do fim" }), { key: "Enter" });
+  expect(flex("fim")).toBe("0");
+  expect(tokens("Em pé do fim")).toContain("me-1.5");
+
+  fireEvent.keyDown(screen.getByRole("separator", { name: "Deitada" }), { key: "Enter" });
+  expect(flex("topo")).toBe("0");
+  expect(tokens("Deitada")).toContain("mt-1.5");
+  expect(tokens("Deitada")).not.toContain("ms-1.5");
+
+  fireEvent.keyDown(screen.getByRole("separator", { name: "Em pé" }), { key: "Enter" });
+  expect(tokens("Em pé")).not.toContain("ms-1.5");
+});
