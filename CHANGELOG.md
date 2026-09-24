@@ -7,6 +7,16 @@ de 109 a 121. E a primeira versao que passou por revisao de codigo, de
 acessibilidade e visual antes de sair, e a vitrine inteira passa no
 `bun run a11y` sem nenhum achado.
 
+### Importar uma peca deixa de carregar a biblioteca inteira
+
+O `dist/` saia num arquivo so, e o bundler de quem usa nao conseguia descartar
+o que nao foi importado: `import { Button } from "@rivocode/ui"` custava 129 KB
+em gzip. Agora sai um arquivo por modulo, e o mesmo import custa 12 KB. A API
+publica e a mesma, com as mesmas exportacoes e os mesmos tipos; muda so o
+formato do `dist/`. De quebra, as pecas que declaram `"use client"` passam a
+levar a diretiva no arquivo publicado, o que o Next precisa. Uma guarda nova,
+`check:tamanho`, mede cada entrada contra um orcamento escrito.
+
 ### Pecas novas
 
 - `ResizablePanelGroup`, `ResizablePanel` e `ResizableHandle`: N paineis,
