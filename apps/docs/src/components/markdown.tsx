@@ -35,6 +35,9 @@ const CLASSES = [
   '[&_code]:bg-accent-subtle [&_code]:rounded-sm [&_code]:px-1.5 [&_code]:py-0.5',
   '[&_pre]:my-5 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:border [&_pre]:border-border',
   '[&_pre]:bg-surface [&_pre]:p-4',
+  // No celular a linha longa quebra em vez de rolar de lado: sem barra visivel,
+  // o fim do comando parecia cortado, e quem copia o comando nao via o resto.
+  'max-sm:[&_pre]:whitespace-pre-wrap max-sm:[&_pre]:wrap-anywhere',
   '[&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-fg [&_pre_code]:text-sm',
 
   // A margem da tabela vive na moldura, e nao aqui: dentro de um contentor que

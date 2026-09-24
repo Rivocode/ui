@@ -236,7 +236,7 @@ export function ExampleStage({
         </TabPanel>
 
         <TabPanel value="code" className="p-0">
-          <pre className="overflow-x-auto bg-bg p-4 font-mono text-xs leading-relaxed text-fg">
+          <pre className="overflow-x-auto bg-bg p-4 font-mono text-xs leading-relaxed text-fg max-sm:whitespace-pre-wrap max-sm:wrap-anywhere">
             <code>{source}</code>
           </pre>
         </TabPanel>
