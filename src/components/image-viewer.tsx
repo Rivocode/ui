@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react";
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ComponentPropsWithoutRef,
@@ -19,6 +20,7 @@ import { IconButton } from "./icon-button";
 import { Spinner } from "./spinner";
 
 const SWIPE = 50;
+const PAN_STEP = 40;
 
 export type ImageViewerImage = {
   src: string;
@@ -186,10 +188,22 @@ export function ImageViewer({
     return () => stage.removeEventListener("wheel", onWheel);
   }, [stage, maxZoom]);
 
+  function pan(dx: number, dy: number) {
+    const from = viewRef.current;
+    setView(clampView({ zoom: from.zoom, x: from.x + dx, y: from.y + dy }));
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const zoomed = view.zoom > 1;
     const moves: Record<string, () => void> = {
-      ArrowLeft: () => step(-1),
-      ArrowRight: () => step(1),
+      ArrowLeft: () => (zoomed ? pan(PAN_STEP, 0) : step(-1)),
+      ArrowRight: () => (zoomed ? pan(-PAN_STEP, 0) : step(1)),
+      ...(zoomed && {
+        ArrowUp: () => pan(0, PAN_STEP),
+        ArrowDown: () => pan(0, -PAN_STEP),
+      }),
+      PageUp: () => step(-1),
+      PageDown: () => step(1),
       "+": () => zoomAt(view.zoom * ZOOM_STEP),
       "=": () => zoomAt(view.zoom * ZOOM_STEP),
       "-": () => zoomAt(view.zoom / ZOOM_STEP),
@@ -264,10 +278,25 @@ export function ImageViewer({
     zoomAt(2, dx, dy);
   }
 
-  if (total === 0) return null;
-
   const atStart = !loop && current === 0;
   const atEnd = !loop && current === total - 1;
+  const zoomOutOff = view.zoom <= 1;
+  const zoomInOff = view.zoom >= maxZoom || status !== "ready";
+
+  const previousRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const zoomOutRef = useRef<HTMLButtonElement>(null);
+  const zoomInRef = useRef<HTMLButtonElement>(null);
+  useLayoutEffect(() => {
+    const active = document.activeElement;
+    const stranded = [previousRef, nextRef, zoomOutRef, zoomInRef].some(
+      (ref) => ref.current !== null && ref.current === active && ref.current.disabled,
+    );
+    if (stranded) stage?.focus();
+  }, [atStart, atEnd, zoomOutOff, zoomInOff, stage]);
+
+  if (total === 0) return null;
+
   const counter = current === null ? "" : text.counter(current + 1, total);
 
   return (
@@ -352,8 +381,9 @@ export function ImageViewer({
               <IconButton
                 size="sm"
                 variant="secondary"
+                ref={zoomOutRef}
                 label={text.zoomOut}
-                disabled={view.zoom <= 1}
+                disabled={zoomOutOff}
                 onClick={() => zoomAt(view.zoom / ZOOM_STEP)}
               >
                 <ZoomOut />
@@ -361,8 +391,9 @@ export function ImageViewer({
               <IconButton
                 size="sm"
                 variant="secondary"
+                ref={zoomInRef}
                 label={text.zoomIn}
-                disabled={view.zoom >= maxZoom || status !== "ready"}
+                disabled={zoomInOff}
                 onClick={() => zoomAt(view.zoom * ZOOM_STEP)}
               >
                 <ZoomIn />
@@ -379,6 +410,7 @@ export function ImageViewer({
 
           <div
             ref={setStage}
+            tabIndex={-1}
             aria-busy={status === "loading" || undefined}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
@@ -386,7 +418,8 @@ export function ImageViewer({
             onPointerCancel={handlePointerUp}
             onDoubleClick={handleDoubleClick}
             className={cn(
-              "relative min-h-0 flex-1 touch-none overflow-hidden select-none",
+              "relative min-h-0 flex-1 touch-none overflow-hidden outline-none select-none",
+              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
               view.zoom > 1 ? (dragging ? "cursor-grabbing" : "cursor-grab") : "cursor-zoom-in",
               classNames?.stage,
             )}
@@ -430,6 +463,7 @@ export function ImageViewer({
             {total > 1 && (
               <>
                 <IconButton
+                  ref={previousRef}
                   variant="secondary"
                   label={text.previous}
                   disabled={atStart}
@@ -439,6 +473,7 @@ export function ImageViewer({
                   <ChevronLeft />
                 </IconButton>
                 <IconButton
+                  ref={nextRef}
                   variant="secondary"
                   label={text.next}
                   disabled={atEnd}

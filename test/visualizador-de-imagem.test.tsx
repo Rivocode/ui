@@ -207,8 +207,9 @@ test("trocar de imagem volta o zoom ao tamanho que cabe", async () => {
   viewer();
   await openAt(1);
   fireEvent.keyDown(dialog(), { key: "+" });
-  fireEvent.keyDown(dialog(), { key: "ArrowRight" });
+  fireEvent.click(screen.getByRole("button", { name: "Próxima imagem" }));
   await settle();
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-2.jpg`);
   expect(scale()).toBe("1");
 });
 
@@ -291,4 +292,93 @@ test("a conta do zoom segura a foto aproximada dentro da tela e aproxima no pont
   const zoomed = zoomAround(ZOOM_REST, 2, 100, 0, 4, 400, 300);
   expect(zoomed).toEqual({ zoom: 2, x: -100, y: 0 });
   expect(zoomAround(zoomed, 1, 0, 0, 4, 400, 300)).toEqual(ZOOM_REST);
+});
+
+const focusState = () => {
+  const active = document.activeElement as HTMLElement | null;
+  return {
+    inDialog: Boolean(active && dialog().contains(active)),
+    disabled: (active as HTMLButtonElement | null)?.disabled === true,
+  };
+};
+
+test("na ultima imagem, o Proxima focado desabilita e o foco desce ao palco, e as setas seguem", async () => {
+  viewer();
+  await openAt(7);
+  const next = screen.getByRole("button", { name: "Próxima imagem" });
+  next.focus();
+  fireEvent.click(next);
+  await settle();
+
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-8.jpg`);
+  expect(focusState()).toEqual({ inDialog: true, disabled: false });
+  expect(document.activeElement).toBe(big().closest("[tabindex='-1']"));
+
+  fireEvent.keyDown(document.activeElement!, { key: "ArrowLeft" });
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-7.jpg`);
+});
+
+test("na primeira imagem, o Anterior focado desabilita e o foco desce ao palco", async () => {
+  viewer();
+  await openAt(2);
+  const previous = screen.getByRole("button", { name: "Imagem anterior" });
+  previous.focus();
+  fireEvent.click(previous);
+  await settle();
+
+  expect(focusState()).toEqual({ inDialog: true, disabled: false });
+});
+
+test("o zoom no teto e no piso nao deixa o foco num botao desabilitado", async () => {
+  viewer({ maxZoom: 2 });
+  await openAt(1);
+  const zoomIn = screen.getByRole("button", { name: "Aumentar o zoom" });
+  zoomIn.focus();
+  fireEvent.click(zoomIn);
+  fireEvent.click(zoomIn);
+  await settle();
+  expect(scale()).toBe("2");
+  expect(focusState()).toEqual({ inDialog: true, disabled: false });
+
+  const zoomOut = screen.getByRole("button", { name: "Diminuir o zoom" });
+  zoomOut.focus();
+  fireEvent.click(zoomOut);
+  fireEvent.click(zoomOut);
+  await settle();
+  expect(scale()).toBe("1");
+  expect(focusState()).toEqual({ inDialog: true, disabled: false });
+});
+
+test("com zoom, as setas percorrem a foto aproximada e nao trocam de imagem", async () => {
+  viewer();
+  await openAt(3);
+  const stage = big().closest("[class*='touch-none']") as HTMLElement;
+  stage.getBoundingClientRect = () =>
+    ({ width: 400, height: 300, left: 0, top: 0, right: 400, bottom: 300 }) as DOMRect;
+  fireEvent.keyDown(dialog(), { key: "+" });
+  fireEvent.keyDown(dialog(), { key: "+" });
+  expect(scale()).toBe("2.25");
+
+  fireEvent.keyDown(dialog(), { key: "ArrowRight" });
+  fireEvent.keyDown(dialog(), { key: "ArrowDown" });
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-3.jpg`);
+  expect(big().style.transform).toBe("translate(-40px, -40px) scale(2.25)");
+
+  for (let press = 0; press < 20; press += 1) fireEvent.keyDown(dialog(), { key: "ArrowLeft" });
+  expect(big().style.transform).toBe("translate(250px, -40px) scale(2.25)");
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-3.jpg`);
+});
+
+test("PageDown e PageUp trocam de imagem com ou sem zoom, e a troca zera o zoom", async () => {
+  viewer();
+  await openAt(3);
+  fireEvent.keyDown(dialog(), { key: "PageDown" });
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-4.jpg`);
+
+  fireEvent.load(big());
+  fireEvent.keyDown(dialog(), { key: "+" });
+  fireEvent.keyDown(dialog(), { key: "PageUp" });
+  await settle();
+  expect(big().getAttribute("src")).toBe(`${HOST}/fotos/sala-3.jpg`);
+  expect(scale()).toBe("1");
 });

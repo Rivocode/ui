@@ -37,9 +37,13 @@ diz: quando foi tirada, quem enviou, o que a pessoa deve reparar.
 
 ## Navegar
 
-As setas na lateral, as setas do teclado e o deslizar de lado passam de imagem.
-O contador "3 de 8" fica no alto, à esquerda. Na primeira e na última, a seta
-daquele lado desabilita; com `loop`, a navegação dá a volta.
+As setas na lateral, as setas do teclado, `PageUp` e `PageDown` e o deslizar de
+lado passam de imagem. O contador "3 de 8" fica no alto, à esquerda. Na primeira
+e na última, a seta daquele lado desabilita; com `loop`, a navegação dá a volta.
+
+Se a seta desabilita com o foco nela, o foco desce para a área da imagem, e não
+se perde na página: as teclas do visualizador continuam valendo. O mesmo vale
+para o mais e o menos do zoom, no máximo e no tamanho que cabe.
 
 A vizinha de cada lado é carregada antes de a pessoa pedir, então a troca de
 imagem não espera a rede. Enquanto a imagem aberta carrega, um giro ocupa o
@@ -56,7 +60,12 @@ de dois dedos aproxima direto.
 Aproximada, a imagem se arrasta para ver o resto, e o deslizar deixa de trocar
 de imagem: o dedo que arrasta a foto aproximada não pode, de repente, mudar de
 foto. No teclado, `+` e `-` aproximam e afastam, e `0` volta ao tamanho que
-cabe. Trocar de imagem sempre volta o zoom ao começo.
+cabe.
+
+**Com zoom, as quatro setas percorrem a foto**, de 40 em 40 pixels, sem passar
+da borda, e são o arrastar de quem não usa ponteiro. A troca de imagem fica com
+`PageUp`, `PageDown` e os botões da lateral. Trocar de imagem sempre volta o
+zoom ao começo.
 
 ## Fechar e voltar
 
