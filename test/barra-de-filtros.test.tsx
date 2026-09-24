@@ -1,5 +1,5 @@
 import { expect, mock, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 
 import {
@@ -634,17 +634,56 @@ test("era a ultima e nao ha limpar, entao o foco volta para o xis anterior", () 
 });
 
 test("sobrando so ficha travada, o foco pousa no trecho que rola, e nao no body", () => {
-  render(
-    <Controlada
-      inicial={[APPLIED[0]!, { id: "branch", label: "Filial", value: "Matriz", removable: false }]}
-      clearFrom={Infinity}
-    />,
-  );
+  const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollWidth");
+  Object.defineProperty(HTMLElement.prototype, "scrollWidth", { configurable: true, get: () => 0 });
+  try {
+    render(
+      <Controlada
+        inicial={[
+          APPLIED[0]!,
+          { id: "branch", label: "Filial", value: "Matriz", removable: false },
+        ]}
+        clearFrom={Infinity}
+      />,
+    );
 
-  tira("Remover filtro Situacao: Em aberto");
+    tira("Remover filtro Situacao: Em aberto");
 
-  expect(document.activeElement).toBe(screen.getByRole("list"));
-  expect(screen.getByRole("list").getAttribute("tabindex")).toBe("-1");
+    expect(document.activeElement).toBe(screen.getByRole("list"));
+    expect(screen.getByRole("list").getAttribute("tabindex")).toBe("-1");
+  } finally {
+    if (width) Object.defineProperty(HTMLElement.prototype, "scrollWidth", width);
+    else delete (HTMLElement.prototype as { scrollWidth?: number }).scrollWidth;
+  }
+});
+
+test("sobrando so ficha travada numa lista que rola, o foco pousa nela, que ja e parada de tab", async () => {
+  const width = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollWidth");
+  Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
+    configurable: true,
+    get: () => 900,
+  });
+  try {
+    render(
+      <Controlada
+        inicial={[
+          APPLIED[0]!,
+          { id: "branch", label: "Filial", value: "Matriz", removable: false },
+        ]}
+        clearFrom={Infinity}
+      />,
+    );
+
+    tira("Remover filtro Situacao: Em aberto");
+    await act(async () => {});
+
+    const list = screen.getByRole("list");
+    expect(document.activeElement).toBe(list);
+    expect(list.getAttribute("tabindex")).toBe("0");
+  } finally {
+    if (width) Object.defineProperty(HTMLElement.prototype, "scrollWidth", width);
+    else delete (HTMLElement.prototype as { scrollWidth?: number }).scrollWidth;
+  }
 });
 
 test("saiu o ultimo filtro, o foco pousa na raiz, que e quem ainda tem nome", () => {
