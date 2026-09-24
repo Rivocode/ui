@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useState } from "react";
 
-import { useMediaQuery } from "../lib/screen";
+import { useReducedMotion } from "../hooks/environment";
 
 export type ChartEasing = `cubic-bezier(${number},${number},${number},${number})` | "linear";
 
@@ -21,7 +21,6 @@ export type ChartMotion = {
 
 const DURATION = "--rc-duration-slow";
 const CURVE = "--rc-ease";
-const REDUCED = "(prefers-reduced-motion: reduce)";
 
 export const STILL: ChartMotion = {
   isAnimationActive: false,
@@ -55,7 +54,7 @@ export function readChartMotion(element: Element): ChartMotion {
 }
 
 export function useTokenMotion(scope: string | null): ChartMotion {
-  const reduced = useMediaQuery(REDUCED);
+  const reduced = useReducedMotion();
   const [motion, setMotion] = useState<ChartMotion>(STILL);
 
   useLayoutEffect(() => {

@@ -1,8 +1,9 @@
 "use client";
 
 import { Check, Copy } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
+import { useClipboard } from "../hooks/clipboard";
 import { cn } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 
@@ -32,22 +33,11 @@ export function Clipboard({
 }: ClipboardProps) {
   const { copy: copyLabel = "Copiar", copied: copiedLabel = "Copiado" } = labels;
 
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
+  const clipboard = useClipboard({ timeout });
+  const { copied } = clipboard;
 
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(value);
-    } catch {
-      return;
-    }
-
-    setCopied(true);
-    onCopy?.(value);
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => setCopied(false), timeout);
+    if (await clipboard.copy(value)) onCopy?.(value);
   }
 
   return (

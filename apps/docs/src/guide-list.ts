@@ -39,6 +39,11 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     summary: 'Um conjunto, um conceito por ícone, e o tamanho de cada contexto.',
   },
   {
+    slug: 'hooks',
+    title: 'Hooks',
+    summary: 'Abrir e fechar, esperar a digitação, lembrar entre visitas: os hooks que toda tela reescreve.',
+  },
+  {
     slug: 'react-native',
     title: 'React Native',
     summary: 'O mesmo vocabulário no celular, com tema que troca em runtime.',

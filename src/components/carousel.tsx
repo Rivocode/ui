@@ -14,11 +14,10 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
-import { useMediaQuery } from "../lib/screen";
+import { useReducedMotion } from "../hooks/environment";
 import type { Slots } from "../lib/slots";
 import { IconButton } from "./icon-button";
 
-const REDUCED = "(prefers-reduced-motion: reduce)";
 const DEFAULT_INTERVAL = 5000;
 
 type Breakpoint = "base" | "sm" | "md" | "lg" | "xl";
@@ -149,7 +148,7 @@ export function Carousel({
   const lastStart = Math.min(measuredLast ?? total - 1, Math.max(0, total - 1));
   const current = Math.min(Math.max(index ?? inner, 0), lastStart);
 
-  const reduced = useMediaQuery(REDUCED);
+  const reduced = useReducedMotion();
   const interval = typeof autoplay === "number" ? autoplay : autoplay ? DEFAULT_INTERVAL : 0;
   const [playing, setPlaying] = useState(interval > 0 && !reduced);
   const [hovered, setHovered] = useState(false);

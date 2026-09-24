@@ -39,8 +39,40 @@ import { rm } from "node:fs/promises";
 const SOURCE = "src/shared";
 const MIRROR = "native/src/shared";
 
-const banner = (file: string) =>
-  `/* Gerado de ${SOURCE}/${file} por bun run gen:compartilhado. Nao editar. */\n\n`;
+/**
+ * O segundo espelho: hook que so depende do React.
+ *
+ * Os hooks utilitarios que fazem sentido nos dois lados - `useDisclosure`,
+ * `useDebouncedCallback`, `useListState` e o resto de `src/hooks/common/` -
+ * nao cabem em `src/shared/`, porque importam `react`. Deixa-los copiados a
+ * mao seria encher o `COPIA_DECLARADA` com onze linhas de uma vez, e cada uma
+ * e exatamente o risco que esta guarda existe para cortar: o conserto de um
+ * `useThrottledCallback` que chega num pacote e nao no outro. Entao eles
+ * atravessam do mesmo jeito que o `src/shared/`, com a pureza trocada por uma
+ * lista fechada de imports: `react`, um arquivo da propria pasta, e
+ * `../../shared/<arquivo>` - que resolve no espelho de `src/shared/` dos dois
+ * lados, porque as duas arvores tem a mesma forma.
+ *
+ * O calculo continua em `src/shared/`, e o hook e so a amarracao ao React. O
+ * global de plataforma continua proibido: hook que precisa de `window` e do
+ * web, e mora em `src/hooks/`, fora do espelho.
+ */
+const HOOKS_SOURCE = "src/hooks/common";
+const HOOKS_MIRROR = "native/src/hooks/common";
+
+type Pair = { source: string; mirror: string; imports?: RegExp };
+
+const PAIRS: Pair[] = [
+  { source: SOURCE, mirror: MIRROR },
+  {
+    source: HOOKS_SOURCE,
+    mirror: HOOKS_MIRROR,
+    imports: /^(?:react|\.\/[\w-]+|\.\.\/\.\.\/shared\/[\w-]+)$/,
+  },
+];
+
+const banner = (source: string, file: string) =>
+  `/* Gerado de ${source}/${file} por bun run gen:compartilhado. Nao editar. */\n\n`;
 
 /**
  * Globais que compilam nos dois lados e falham num.
@@ -87,19 +119,23 @@ const COPIA_DECLARADA: Record<string, string> = {
 };
 
 /** O espelho pode nao existir ainda, e varrer pasta que nao ha e erro. */
-async function* mirrored() {
-  if (!existsSync(MIRROR)) return;
-  for (const file of await scanAtLeast("**/*", 1, { cwd: MIRROR })) yield file;
+async function* mirrored(mirror: string) {
+  if (!existsSync(mirror)) return;
+  for (const file of await scanAtLeast("**/*", 1, { cwd: mirror })) yield file;
 }
 
 const problems: string[] = [];
 
-const sources: Array<{ file: string; code: string }> = [];
-for (const file of await scanAtLeast("**/*", 1, { cwd: SOURCE })) {
-  const code = await Bun.file(`${SOURCE}/${file}`).text();
-  sources.push({ file, code });
+const sources: Array<{ pair: Pair; file: string; code: string }> = [];
+for (const pair of PAIRS) {
+  for (const file of await scanAtLeast("**/*", 1, { cwd: pair.source })) {
+    const code = await Bun.file(`${pair.source}/${file}`).text();
+    sources.push({ pair, file, code });
+  }
 }
-sources.sort((one, other) => one.file.localeCompare(other.file));
+sources.sort((one, other) =>
+  `${one.pair.source}/${one.file}`.localeCompare(`${other.pair.source}/${other.file}`),
+);
 
 /* -------------------------------------------------------------------------
  * Regra 1: pureza
@@ -107,16 +143,35 @@ sources.sort((one, other) => one.file.localeCompare(other.file));
 
 const impure: string[] = [];
 
-for (const { file, code } of sources) {
+const hookImpure: string[] = [];
+
+for (const { pair, file, code } of sources) {
   if (!file.endsWith(".ts") || file.endsWith(".d.ts")) {
-    impure.push(`  ${SOURCE}/${file}  nao e .ts: JSX e superficie, e as duas superficies diferem.`);
+    impure.push(
+      `  ${pair.source}/${file}  nao e .ts: JSX e superficie, e as duas superficies diferem.`,
+    );
     continue;
   }
 
-  code.split("\n").forEach((line, index) => {
-    const at = `  ${SOURCE}/${file}:${index + 1}`;
+  if (pair.imports) {
+    for (const found of code.matchAll(
+      /^\s*(?:import|export)\s[^;]*?\sfrom\s+"([^"]+)"|^\s*import\s+"([^"]+)"/gm,
+    )) {
+      const specifier = found[1] ?? found[2] ?? "";
+      if (pair.imports.test(specifier)) continue;
+      const line = code.slice(0, found.index).split("\n").length;
+      hookImpure.push(
+        `  ${pair.source}/${file}:${line}  importa "${specifier}", que nao atravessa para o nativo.`,
+      );
+    }
+  }
 
-    if (/^\s*import\s/.test(line) || /\bimport\s*\(/.test(line) || /\brequire\s*\(/.test(line)) {
+  code.split("\n").forEach((line, index) => {
+    const at = `  ${pair.source}/${file}:${index + 1}`;
+
+    if (/\bimport\s*\(/.test(line) || /\brequire\s*\(/.test(line)) {
+      impure.push(`${at}  importa em tempo de execucao, e o espelho nao acompanha.`);
+    } else if (!pair.imports && /^\s*import\s/.test(line)) {
       impure.push(`${at}  importa alguma coisa. Codigo puro compila com zero imports.`);
     }
 
@@ -129,7 +184,7 @@ for (const { file, code } of sources) {
 
 if (impure.length > 0) {
   problems.push(
-    `${impure.length} quebra(s) de pureza em ${SOURCE}/:\n` +
+    `${impure.length} quebra(s) de pureza no que atravessa para native/:\n` +
       impure.join("\n") +
       `\n\n    O criterio e binario de proposito: puro e o que compila sem\n` +
       `    nenhum import. "Nao toca o DOM" e descricao, e descricao se\n` +
@@ -138,25 +193,43 @@ if (impure.length > 0) {
   );
 }
 
+if (hookImpure.length > 0) {
+  problems.push(
+    `${hookImpure.length} import(s) fora da lista em ${HOOKS_SOURCE}/:\n` +
+      hookImpure.join("\n") +
+      `\n\n    Hook do espelho so importa \`react\`, arquivo da propria pasta e\n` +
+      `    \`../../shared/<arquivo>\`. Qualquer outra coisa nao existe dentro de\n` +
+      `    native/ do mesmo jeito, e o hook pertence a src/hooks/, fora do espelho.`,
+  );
+}
+
 /* -------------------------------------------------------------------------
  * Regra 2: espelho em dia
  * ---------------------------------------------------------------------- */
 
-const wanted = new Map(sources.map(({ file, code }) => [file, banner(file) + code]));
+const wanted = new Map(
+  sources.map(({ pair, file, code }) => [
+    `${pair.mirror}/${file}`,
+    banner(pair.source, file) + code,
+  ]),
+);
 
 const stale: string[] = [];
 
-for (const [file, content] of wanted) {
-  const committed = await Bun.file(`${MIRROR}/${file}`)
+for (const [path, content] of wanted) {
+  const committed = await Bun.file(path)
     .text()
     .catch(() => undefined);
 
-  if (committed === undefined) stale.push(`  ${MIRROR}/${file}  nao existe.`);
-  else if (committed !== content) stale.push(`  ${MIRROR}/${file}  divergiu da fonte.`);
+  if (committed === undefined) stale.push(`  ${path}  nao existe.`);
+  else if (committed !== content) stale.push(`  ${path}  divergiu da fonte.`);
 }
 
-for await (const file of mirrored()) {
-  if (!wanted.has(file)) stale.push(`  ${MIRROR}/${file}  sobrou: nao ha fonte para ele.`);
+for (const { mirror } of PAIRS) {
+  for await (const file of mirrored(mirror)) {
+    const path = `${mirror}/${file}`;
+    if (!wanted.has(path)) stale.push(`  ${path}  sobrou: nao ha fonte para ele.`);
+  }
 }
 
 /* -------------------------------------------------------------------------
@@ -219,11 +292,11 @@ const nameOfDeclaration = (text: string) =>
 
 const flat = (text: string) => text.replace(/\s+/g, " ").trim();
 
-async function collect(pattern: string, skip: string) {
+async function collect(pattern: string, skip: string[]) {
   const map = new Map<string, { file: string; line: number; name: string }>();
 
   for (const file of await scanAtLeast(pattern, 40)) {
-    if (file.startsWith(skip)) continue;
+    if (skip.some((prefix) => file.startsWith(prefix))) continue;
 
     for (const found of declarations(await Bun.file(file).text())) {
       const key = flat(found.text);
@@ -236,8 +309,14 @@ async function collect(pattern: string, skip: string) {
   return map;
 }
 
-const web = await collect("src/**/*.{ts,tsx}", `${SOURCE}/`);
-const native = await collect("native/src/**/*.{ts,tsx}", `${MIRROR}/`);
+const web = await collect(
+  "src/**/*.{ts,tsx}",
+  PAIRS.map(({ source }) => `${source}/`),
+);
+const native = await collect(
+  "native/src/**/*.{ts,tsx}",
+  PAIRS.map(({ mirror }) => `${mirror}/`),
+);
 
 const copies: Array<{ name: string; here: string; there: string }> = [];
 
@@ -301,21 +380,26 @@ if (process.argv.includes("--check")) {
   }
 
   console.log(
-    `${wanted.size} arquivo(s) de ${SOURCE}/ espelhado(s) em ${MIRROR}/, sem import e sem global de plataforma.` +
+    `${wanted.size} arquivo(s) espelhado(s) de ${PAIRS.map(({ source }) => `${source}/`).join(" e ")}` +
+      ` em native/, sem global de plataforma e sem import fora da lista.` +
       ` Copia declarada: ${Object.keys(COPIA_DECLARADA).length}.`,
   );
   process.exit(0);
 }
 
-for await (const file of mirrored()) {
-  if (!wanted.has(file)) await rm(`${MIRROR}/${file}`);
+for (const { mirror } of PAIRS) {
+  for await (const file of mirrored(mirror)) {
+    if (!wanted.has(`${mirror}/${file}`)) await rm(`${mirror}/${file}`);
+  }
 }
 
-for (const [file, content] of wanted) await Bun.write(`${MIRROR}/${file}`, content);
+for (const [path, content] of wanted) await Bun.write(path, content);
 
 if (problems.length > 0) {
   for (const problem of problems) console.error(`${problem}\n`);
   process.exit(1);
 }
 
-console.log(`${wanted.size} arquivo(s) escrito(s) em ${MIRROR}/ a partir de ${SOURCE}/.`);
+console.log(
+  `${wanted.size} arquivo(s) escrito(s) em native/ a partir de ${PAIRS.length} fonte(s).`,
+);

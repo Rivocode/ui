@@ -306,6 +306,44 @@ palpite.
 Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
 valor, e evita um segundo assinante da mesma media query.
 
+### Hooks utilitarios
+
+A raiz exporta os hooks que toda tela reescreve, sem dependencia nova. Antes de
+escrever `useEffect` com `setTimeout`, `addEventListener` ou `localStorage`,
+procure aqui. Todos limpam timer, escuta e observer no desmonte, e todos
+renderizam no servidor sem tocar em `window`.
+
+- **Estado:** `useDisclosure` (`[aberto, { open, close, toggle }]`),
+  `useToggle`, `useCounter` (piso, teto, passo), `useListState` (`append`,
+  `prepend`, `insert`, `remove`, `reorder`, `swap`, `replace`, `update`,
+  `filter`, todos imutaveis), `useSetState` (mescla o parcial), `usePrevious`
+  (o valor anterior DIFERENTE).
+- **Tempo:** `useDebouncedValue`, `useDebouncedCallback`,
+  `useThrottledCallback` (com `cancel`, `flush`, `isPending`), `useInterval` e
+  `useTimeout` (atraso `null` pausa), `useIdle`.
+- **Navegador:** `useLocalStorage` e `useSessionStorage` (JSON, padrao no
+  servidor, sincroniza entre abas pelo evento `storage`, cai para memoria se o
+  armazenamento lancar), `useClickOutside`, `useHotkeys` (`mod` e Cmd no Mac e
+  Ctrl fora; ignora campo de texto por padrao), `useInfiniteScroll`
+  (sentinela, `hasMore`, `loading`), `useIntersection`, `useElementSize`,
+  `useClipboard` (`copied` volta sozinho), `useReducedMotion`,
+  `useDocumentTitle`, `useNetworkStatus`, `useMounted`, `useIsFirstRender`.
+
+```tsx
+const [query, setQuery] = useState('')
+const [settled] = useDebouncedValue(query, 300)
+const [opened, { open, close }] = useDisclosure()
+```
+
+A peca vem antes do hook: `Popover`, `Menu`, `Dialog` e `Sheet` ja fecham no
+clique fora, e o `Clipboard` ja e o botao de copiar. `useFocusTrap` nao existe
+de proposito: a Base UI prende o foco nas sobreposicoes modais.
+
+No nativo, a raiz exporta os doze que nao dependem do navegador, gerados da
+mesma fonte do web: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
+`useSetState`, `usePrevious`, `useIsFirstRender`, `useDebouncedValue`,
+`useDebouncedCallback`, `useThrottledCallback`, `useInterval` e `useTimeout`.
+
 ### O pacote nativo, e os cinco subcaminhos dele
 
 `@rivocode/ui-native` é o mesmo catálogo em React Native, publicado como

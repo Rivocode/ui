@@ -23,6 +23,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Escolher entre duas peças parecidas | [reference/components.md](reference/components.md) |
 | Nome acessível, alvo, foco, teclado, ordem de títulos | [reference/a11y.md](reference/a11y.md) |
 | Formulário com validação | [reference/forms.md](reference/forms.md) |
+| Abrir e fechar, esperar a digitação, lembrar entre visitas, atalho, lista infinita | [reference/hooks.md](reference/hooks.md) |
 | Gráfico e número de painel | [reference/charts.md](reference/charts.md) |
 | Conversa com assistente, chamada de ferramenta, selo de IA | [reference/ai.md](reference/ai.md) |
 | Vestir com a cor de outro cliente | [reference/theming.md](reference/theming.md) |

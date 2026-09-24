@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { useInterval } from "../hooks/common/timers";
 import { cn } from "../lib/cn";
 import {
   addDays,
@@ -569,10 +570,7 @@ export function EventCalendar({
     latestRange.current?.({ start: new Date(startMs), end: new Date(endMs) });
   }, [startMs, endMs]);
 
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
+  useInterval(() => setNow(new Date()), 60000);
 
   const loading = isLoading || events === undefined;
 

@@ -29,8 +29,16 @@ const SKILL_DIR = ".claude/skills/rivocode-ui";
  * le o contrato nao descobre que a peca existe, e quem le a skill escreve a
  * importacao da raiz, que nao tem a peca. Tirar as quatro linhas de baixo
  * devolve o ponto cego inteiro.
+ *
+ * Os hooks utilitarios entram pelo mesmo motivo, apesar de sairem da raiz e
+ * nao de subcaminho: sao vinte e tantos nomes que o indice de pecas nao
+ * enumera - hook nao tem pagina -, e a lista deles no contrato e na skill e
+ * escrita a mao. As duas linhas leem o barril de cada pacote, e nao o
+ * `index.ts` da raiz, para cobrar so os hooks e nao o catalogo inteiro.
  */
 const TARGETS = [
+  { file: "src/hooks/public.ts", name: "@rivocode/ui (hooks)" },
+  { file: "native/src/hooks/common/index.ts", name: "@rivocode/ui-native (hooks)" },
   { file: "src/chart/index.ts", name: "@rivocode/ui/chart" },
   { file: "src/form/index.ts", name: "@rivocode/ui/form" },
   { file: "src/ai/index.ts", name: "@rivocode/ui/ai" },

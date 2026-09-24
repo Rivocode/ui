@@ -60,6 +60,7 @@ const REFERENCE_SLUG: Record<string, string> = {
   components: "escolha-de-peca",
   a11y: "acessibilidade",
   forms: "formularios",
+  hooks: "hooks-utilitarios",
   charts: "graficos",
   theming: "vestir-cliente",
   native: "tela-nativa",
