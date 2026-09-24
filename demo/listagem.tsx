@@ -98,7 +98,7 @@ function LoadingRows() {
           <Skeleton className="h-4 w-14" />
           <Skeleton className="h-4 flex-1" />
           <Skeleton className="h-5 w-16 rounded-pill" />
-          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-4 w-24 max-sm:hidden" />
         </div>
       ))}
     </div>
@@ -170,7 +170,9 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                   <TableHead>Emissao</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="w-12" />
+                  <TableHead className="w-12">
+                    <span className="sr-only">Ações</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
