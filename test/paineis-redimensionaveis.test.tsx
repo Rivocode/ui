@@ -12,6 +12,7 @@ import {
   type ResizableStorage,
 } from "../src/components/resizable";
 import { Splitter } from "../src/components/splitter";
+import { CSS_BOUNDARIES } from "../src/lib/contrast";
 
 function withTheme(node: React.ReactNode, dir: "ltr" | "rtl" = "ltr") {
   return render(
@@ -442,4 +443,29 @@ test("o ref do grupo e do Splitter chega ao no raiz", () => {
 
   expect(group.current).toBe(screen.getByTestId("grupo"));
   expect(splitter.current).toBe(screen.getByTestId("divisor"));
+});
+
+test("a linha da divisoria pinta em border-strong, que mede 3:1 sobre o fundo, e nao em border", () => {
+  withTheme(
+    <>
+      <ResizablePanelGroup>
+        <ResizablePanel>A</ResizablePanel>
+        <ResizableHandle aria-label="Do grupo" />
+        <ResizablePanel>B</ResizablePanel>
+      </ResizablePanelGroup>
+      <Splitter label="Do divisor" start="C" end="D" />
+    </>,
+  );
+
+  for (const name of ["Do grupo", "Do divisor"]) {
+    const tokens = screen.getByRole("separator", { name }).className.split(" ");
+    expect(tokens).toContain("bg-border-strong");
+    expect(tokens).not.toContain("bg-border");
+  }
+
+  const measured = CSS_BOUNDARIES.filter(([front]) => front === "--rc-border-strong").map(
+    ([, over]) => over,
+  );
+  expect(measured).toContain("--rc-bg");
+  expect(measured).toContain("--rc-surface");
 });

@@ -63,6 +63,9 @@ do `Splitter`, que hoje é montado por cima desta família:
   transparente estica 12px para cada lado sem o desenho engordar. O
   `withHandle` põe a pegadinha no meio da linha, para quem precisa ver onde
   pegar; o alvo é o mesmo com ou sem ela.
+- **A linha pinta em `border-strong`, e não em `border`.** Ela é o único
+  desenho de um controle que recebe foco, e a WCAG 1.4.11 pede 3:1 contra o
+  fundo: `border` mede 1,23:1 e sumiria, `border-strong` passa nos dois temas.
 
 O teclado é o do padrão de divisória de janela da WAI-ARIA:
 

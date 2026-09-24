@@ -710,7 +710,7 @@ export function ResizableHandle({
         if (!event.defaultPrevented) actions?.keyDown(key, event);
       }}
       className={cn(
-        "relative flex shrink-0 items-center justify-center bg-border",
+        "relative flex shrink-0 items-center justify-center bg-border-strong",
         "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
         "hover:bg-line-hover focus-visible:bg-accent",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
