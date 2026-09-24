@@ -39,6 +39,40 @@ test("a ficha mostra o campo e o valor, e o valor tem o peso", () => {
   expect(screen.getByText("Clinica Sao Lucas").className).toContain("font-medium");
 });
 
+test("a ficha inativa marca a raiz com data-disabled, e a barra inativa se anuncia inativa", () => {
+  const { container } = render(
+    <FilterBar
+      filters={[...APPLIED, { id: "branch", label: "Filial", value: "Centro", removable: false }]}
+      onFiltersChange={() => {}}
+      disabled
+    />,
+  );
+
+  const bar = screen.getByRole("group");
+  expect(bar.getAttribute("aria-disabled")).toBe("true");
+  expect(bar.hasAttribute("data-disabled")).toBe(true);
+
+  const chips = [...container.querySelectorAll("li > span")];
+  expect(chips.length).toBe(3);
+  for (const chip of chips) expect(chip.hasAttribute("data-disabled")).toBe(true);
+
+  const branch = screen.getByText("Filial").parentElement!;
+  expect(branch.querySelector("button")).toBeNull();
+  expect(branch.hasAttribute("data-disabled")).toBe(true);
+
+  for (const cross of screen.getAllByRole("button", { name: /Remover filtro/ })) {
+    expect((cross as HTMLButtonElement).disabled).toBe(true);
+  }
+});
+
+test("a ficha ativa e a barra ativa nao carregam marca de inativo", () => {
+  const { container } = render(<FilterBar filters={APPLIED} onFiltersChange={() => {}} />);
+  expect(screen.getByRole("group").hasAttribute("aria-disabled")).toBe(false);
+  const chips = [...container.querySelectorAll("li > span")];
+  expect(chips.length).toBe(2);
+  for (const chip of chips) expect(chip.hasAttribute("data-disabled")).toBe(false);
+});
+
 test("o xis da ficha diz qual filtro sai, e nao so 'Remover'", () => {
   render(<FilterChip label="Cliente" value="Clinica Sao Lucas" onRemove={() => {}} />);
 

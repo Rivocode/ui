@@ -62,6 +62,7 @@ export function FilterChip({
   return (
     <span
       {...props}
+      data-disabled={disabled ? "" : undefined}
       className={cn(
         badgeVariants({ size }),
         "max-w-full gap-1",
@@ -241,6 +242,8 @@ export function FilterBar({
       ref={rootRef}
       role="group"
       aria-label={name}
+      aria-disabled={disabled || undefined}
+      data-disabled={disabled ? "" : undefined}
       className={cn(
         "flex w-full items-center gap-2 font-sans",
         (total > 0 || reserve) && "min-h-[var(--rc-control-sm)]",

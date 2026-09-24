@@ -187,6 +187,11 @@ recorte.
 já foi pedida de novo e ainda não voltou: sem ele, o segundo toque dispara uma
 consulta que a primeira ainda vai sobrescrever.
 
+O grupo leva `aria-disabled`, e o leitor de tela anuncia a fileira inteira como
+indisponível, e não só cada xis. Cada ficha leva `data-disabled` na raiz, a
+mesma marca que as outras peças usam para o inativo: o texto apagado é de
+componente inativo, que a WCAG 1.4.3 isenta do contraste de texto.
+
 ## O nome da fileira
 
 `label` é a única porta do nome, e o padrão é "Filtros aplicados". Passar
