@@ -1,6 +1,59 @@
 # Mudancas
 
-## Nao publicado
+## 0.15.0
+
+Oito pecas novas, e o catalogo vai de 91 a 99. Esta versao fecha a primeira
+leva da comparacao com os design systems de mercado.
+
+### Quebra pequena: o nome `Link` agora e nosso
+
+Quem importa o `Link` de um router e o do `@rivocode/ui` no mesmo arquivo
+precisa renomear um dos dois no import. A pagina do `Link` mostra como.
+
+### A mascara de `cnpj` aceita o CNPJ alfanumerico
+
+Desde 31/07/2026 a Receita emite CNPJ com letra nas doze primeiras casas, e o
+molde `99.999.999/9999-99` recusava a letra. O molde passa a
+`**.***.***/****-99`, a letra sobe a caixa sozinha, e o CNPJ so de numeros sai
+igual. O campo `cnpj` deixa de abrir o teclado numerico no celular, porque a
+letra precisa entrar. Molde escrito a mao com `*` tambem deixa de abrir o
+teclado numerico.
+
+### `isValidCpf` e `isValidCnpj`
+
+Conferem os digitos verificadores, com ou sem pontuacao, e o `isValidCnpj` ja
+faz a conta do CNPJ alfanumerico (cada letra vale o codigo menos 48). Com o
+zod: `z.string().refine(isValidCnpj, 'CNPJ inválido')`.
+
+### `Stack`, `Grid` e `Container`
+
+Primitivas de layout. `Stack` empilha numa direcao, `Grid` faz grade por
+`columns` ou por `minItemWidth` (auto-fill, sem media query), e `Container`
+centraliza com largura maxima. O vao sai da escala nova `--rc-gap-*`
+(`xs` a `xl`), que a densidade compacta aperta.
+
+### `Heading`, `Text` e `Link`, na familia nova Tipografia
+
+`Heading` separa `level` (a tag) de `size` (o tamanho), para a ordem de titulos
+nao depender da aparencia. `Text` tem `size`, `tone`, `weight`, `truncate` e
+`lineClamp`, e sem props herda de quem o cerca. `Link` traz os tons, o
+sublinhado e o `external`, que abre em nova aba com o aviso para leitor de
+tela.
+
+### Tokens em DTCG
+
+`rivocode-ui tokens --out <pasta>` exporta paleta, escalas, densidades e temas
+em JSON DTCG 2025.10, importavel pelo Tokens Studio e pelas variaveis do Figma.
+Os arquivos do tema da casa saem no pacote, em `@rivocode/ui/tokens/*`, e no
+site, em `/tokens/*.json`. Passando o CSS de um tema de cliente, o comando
+exporta esse tema.
+
+### Movimento como token
+
+Curvas `--rc-ease-enter` e `--rc-ease-exit`, e tres molas em `linear()`
+(`spatial`, `expressive` e `effects`), com as classes `duration-*` e `ease-rc-*`
+correspondentes. Tudo vai a zero quando o sistema pede menos movimento.
+
 
 ### O `Sheet` de baixo nao some mais atras da barra do navegador
 

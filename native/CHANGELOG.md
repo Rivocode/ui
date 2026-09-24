@@ -1,6 +1,37 @@
 # Mudancas
 
-## Nao publicado
+## 0.10.0
+
+### Mudanca de comportamento: o `MaskedInput` aceita letra com `*`
+
+O molde ganha o `*`, que aceita letra ou digito e sobe a caixa. O CNPJ
+alfanumerico e `**.***.***/****-##`. Com `*` no molde o `value` pode trazer
+letra, e o teclado passa a ser de texto em caixa alta. Molde so com `#`
+continua igual: teclado numerico e valor so com digitos.
+
+### `isValidCpf` e `isValidCnpj`
+
+A mesma conta do web, pelo espelho de `src/shared`, com o CNPJ alfanumerico.
+
+### `Stack` e `Grid`
+
+Sobre `View`, com o vao da escala nova `gap-*` dos tokens, a mesma do web. O
+`Grid` com `minItemWidth` mede a propria largura e sai com uma coluna antes da
+primeira medida. O `Container` nao porta: o menor passo e mais largo que
+qualquer celular em pe.
+
+### `Heading`, `Link`, e o `Text` com props
+
+O `Text` que ja existia ganha `size`, `tone`, `weight`, `truncate` e
+`lineClamp`; sem elas, a classe de quem chama passa intacta. `Heading` sai com
+`accessibilityRole="header"`, e `Link` abre o `href` pelo `Linking` quando nao
+ha `onPress`.
+
+### Tokens de movimento
+
+`native/tokens.ts` traz as curvas de entrada e de saida e os numeros das tres
+molas.
+
 
 ### `IconButton` e `Banner`, no mesmo dia do web
 
