@@ -2706,7 +2706,7 @@
       },
       {
         "name": "labels",
-        "type": "{ payload?: string | undefined; expired?: string | undefined; renew?: string | undefined; invalid?: string | undefined; }",
+        "type": "Partial<PixCodeLabels>",
         "required": false,
         "note": "Os textos da peca, para quem precisa de outro idioma ou outro tom."
       },
@@ -2714,7 +2714,7 @@
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto."
+        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto, e o aviso ao leitor de tela."
       },
       {
         "name": "onRenew",
@@ -2726,7 +2726,7 @@
         "name": "receiver",
         "type": "string",
         "required": false,
-        "note": "O nome do recebedor."
+        "note": "O nome do recebedor como a tela deve mostrar, com acento."
       },
       {
         "name": "renderCopy",

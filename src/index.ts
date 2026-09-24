@@ -411,7 +411,7 @@ export {
 export { PasswordInput, type PasswordInputProps } from "./components/password-input";
 export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
 export { QRCode, type QRCodeProps } from "./components/qr-code";
-export { PixCode, type PixCodeProps } from "./components/pix-code";
+export { PixCode, type PixCodeLabels, type PixCodeProps } from "./components/pix-code";
 export {
   buildPixPayload,
   parsePixPayload,

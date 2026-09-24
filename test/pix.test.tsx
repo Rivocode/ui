@@ -2,6 +2,7 @@ import { expect, mock, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { PixCode } from "../src/components/pix-code";
+import type { PixCodeLabels } from "../src/index";
 import { buildPixPayload, isValidPixKey, parsePixPayload } from "../src/index";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { formatBrl, pixCrc } from "../src/shared/pix";
@@ -335,4 +336,76 @@ test("carregando com o valor ja conhecido mostra o valor, e so o QR espera", () 
   pix({ loading: true, payload: "", amount: 1284.5 });
   expect(screen.getByText("R$ 1.284,50")).toBeDefined();
   expect(screen.queryByRole("img")).toBeNull();
+});
+
+test("o copia e cola com espaco e quebra de linha em volta vai aparado para o QR, para a tela e para o copiar", async () => {
+  const written: string[] = [];
+  Object.defineProperty(navigator, "clipboard", {
+    configurable: true,
+    value: { writeText: async (text: string) => void written.push(text) },
+  });
+
+  const { container } = pix({ payload: `\n  ${COMPOSITE_WITH_AMOUNT} \n`, size: 240 });
+  const svg = container.querySelector("svg")!;
+  const viewBox = Number(svg.getAttribute("viewBox")!.split(" ")[2]);
+  expect(readQr(viewBox, 240, shapesOf(svg))).toBe(COMPOSITE_WITH_AMOUNT);
+  expect(screen.getByText(COMPOSITE_WITH_AMOUNT).textContent).toBe(COMPOSITE_WITH_AMOUNT);
+
+  fireEvent.click(screen.getByRole("button", { name: "Copiar código" }));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  expect(written).toEqual([COMPOSITE_WITH_AMOUNT]);
+});
+
+test("todo texto da peca sai de labels, inclusive o para do recebedor e o nome do QR", () => {
+  const labels: Partial<PixCodeLabels> = {
+    receiver: (name) => `to ${name}`,
+    code: (amount, receiver) => `Pix QR ${amount ?? ""} ${receiver ?? ""}`.trim(),
+  };
+  pix({ labels });
+  expect(screen.getByText("to Fulano de Tal")).toBeDefined();
+  expect(screen.getByRole("img", { name: "Pix QR R$ 100,50 Fulano de Tal" })).toBeDefined();
+});
+
+test("o receiver mostra o nome com acento, que o codigo guarda em ASCII", () => {
+  const payload = buildPixPayload({
+    key: "+5583988112233",
+    name: "Clínica São Lucas",
+    city: "João Pessoa",
+  });
+  pix({ payload });
+  expect(screen.getByText("para Clinica Sao Lucas")).toBeDefined();
+
+  pix({ payload, receiver: "Clínica São Lucas" });
+  expect(screen.getByText("para Clínica São Lucas")).toBeDefined();
+  expect(screen.getByRole("img", { name: "QR Code Pix para Clínica São Lucas" })).toBeDefined();
+});
+
+test("expirar chega ao leitor de tela: a regiao viva ja existia, e so o texto dela muda", () => {
+  const { container, rerender } = pix();
+  const region = container.querySelector("[role='status']")!;
+  expect(region).not.toBeNull();
+  expect(region.getAttribute("aria-live")).toBe("polite");
+  expect(region.textContent).toBe("");
+
+  rerender(
+    <RivoProvider scope="local" theme="rivocode-dark">
+      <PixCode payload={COMPOSITE_WITH_AMOUNT} expired />
+    </RivoProvider>,
+  );
+  expect(container.querySelector("[role='status']")).toBe(region);
+  expect(region.textContent).toBe("Este código Pix expirou.");
+});
+
+test("carregar e terminar de carregar chegam ao leitor de tela, pela mesma regiao viva", () => {
+  const { container, rerender } = pix({ loading: true, payload: "" });
+  const region = container.querySelector("[role='status']")!;
+  expect(region.textContent).toBe("Gerando o código Pix…");
+
+  rerender(
+    <RivoProvider scope="local" theme="rivocode-dark">
+      <PixCode payload={COMPOSITE_WITH_AMOUNT} />
+    </RivoProvider>,
+  );
+  expect(container.querySelector("[role='status']")).toBe(region);
+  expect(region.textContent).toBe("Código Pix pronto.");
 });

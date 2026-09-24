@@ -17,7 +17,13 @@ o banco recusa é pior do que nenhum.
 ```
 
 O valor e o nome saem do próprio código (campos 54 e 59). `amount` e `receiver`
-vencem os dois: use-os quando a tela sabe mais do que o código diz. No QR
+vencem os dois: use-os quando a tela sabe mais do que o código diz. O nome
+gravado no código é ASCII, sem acento (o `buildPixPayload` tira), então a
+"Clínica São Lucas" aparece como "Clinica Sao Lucas"; passe o nome com acento
+em `receiver` para a tela e o leitor de tela dizerem certo.
+
+O copia e cola é aparado antes de tudo: espaço e quebra de linha que vieram
+colados da resposta do PSP não entram no QR nem no que o botão copia. No QR
 dinâmico o valor gravado no código **não aparece**, porque o manual do Banco
 Central manda o pagador ignorá-lo e ler o da cobrança; ali o valor entra só por
 `amount`.
@@ -50,8 +56,17 @@ const payload = buildPixPayload({
 })
 ```
 
-O acento sai do nome, da cidade e do texto livre, porque o tamanho de cada
-campo é contado em caractere e banco nenhum garante o resto. O que passa dos
+O acento sai do nome, da cidade e do texto livre, e a letra fica: "Jørgen
+Ångström" vira "Jorgen Angstrom". O código sai inteiro em ASCII, porque o
+tamanho de cada campo e o CRC são contados em caractere e o QR grava byte, e
+banco nenhum garante o resto.
+
+A chave é gravada como o DICT a guarda: CPF e CNPJ perdem a pontuação,
+celular digitado com máscara ganha o `+55`, e-mail e chave aleatória descem
+para minúsculas. Chave que depois disso não passa no `isValidPixKey` é recusada
+com `RangeError`, porque um código com chave que o DICT não acha é cobrança que
+não paga. O valor é arredondado ao centavo antes de conferir: `0.004` é
+recusado, e `1.005` grava `1.01`. O que passa dos
 limites do manual e do EMV (chave até 77, nome até 25, cidade até 15, txid até
 25 letras e dígitos, chave mais texto livre até 99) é recusado com
 `RangeError`, e não cortado: nome cortado em silêncio é cobrança que ninguém
@@ -65,7 +80,9 @@ chave, e `unique` quando o código só vale um pagamento) e o composto
 `isValidPixKey` confere a chave como o DICT a guarda: CPF e CNPJ (inclusive o
 alfanumérico) sem pontuação e com o dígito verificador certo, e-mail em
 minúsculas, celular com `+55` e a chave aleatória com os hifens. Tire a máscara
-do campo antes de conferir.
+do campo antes de conferir. O `parsePixPayload` recusa o código cujo campo 54
+não é valor em reais maior que zero, com até duas casas: `-5`, `1e3` e `0x10`
+não passam.
 
 ## Estados
 
@@ -74,12 +91,27 @@ fica desligado. `expired` troca o QR por um aviso e tira o copiar: código
 vencido não se oferece para pagar. Com `onRenew`, o aviso ganha o botão de
 gerar outro.
 
+Os dois chegam ao leitor de tela por uma região viva que a peça monta sempre,
+e que só troca de texto: "Gerando o código Pix…" enquanto carrega, "Código Pix
+pronto." quando termina, e o aviso de expirado quando vence. Região que nasce
+junto com o texto não é anunciada, e `aria-busy` sozinho não é lido por
+ninguém.
+
 ## Partes
 
 `classNames` alcança `code` (o QR, a marca de lugar ou o aviso de expirado),
 `amount`, `receiver`, `payload` (o texto do copia e cola) e `copy` (o botão).
-`labels` troca os textos: `copy`, `copied`, `payload`, `expired`, `renew` e
-`invalid`.
+`labels` troca os textos, e o tipo sai como `PixCodeLabels`: `copy`, `copied`,
+`payload`, `expired`, `renew`, `invalid`, `loading` e `ready`, mais duas
+funções - `receiver(nome)`, a linha "para Fulano", e `code(valor, nome)`, o
+nome do QR para o leitor de tela.
+
+```tsx
+<PixCode
+  payload={payload}
+  labels={{ receiver: (name) => `to ${name}`, code: (amount, name) => `Pix QR ${amount} ${name}` }}
+/>
+```
 
 ## Quando não usar
 

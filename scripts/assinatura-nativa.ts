@@ -377,12 +377,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: null,
         native: "renderCopy",
-        note: "o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro",
-      },
-      {
-        web: "labels",
-        native: "labels",
-        note: "sem `copy` e `copied`: os nomes do botão são do `Clipboard` que você passa",
+        note: "o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied`",
       },
       { web: "classNames", native: "className", note: "um `className` só, na raiz" },
     ],

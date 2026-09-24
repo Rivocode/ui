@@ -8,7 +8,7 @@ export {
 export { ChartDonut, type ChartDonutProps } from "./chart-donut";
 export { ChartRadial, type ChartRadialProps } from "./chart-radial";
 export { QRCode, type QRCodeProps } from "./qr-code";
-export { PixCode, type PixCodeProps } from "./pix-code";
+export { PixCode, type PixCodeLabels, type PixCodeProps } from "./pix-code";
 export {
   ChartBar,
   ChartLine,

@@ -1,8 +1,10 @@
 import { expect, mock, test } from "bun:test";
 import { createElement } from "react";
-import { Text } from "react-native";
+import { AccessibilityInfo, Text } from "react-native";
 
-import { buildPixPayload, isValidPixKey, parsePixPayload } from "../src";
+import type { PixCodeLabels } from "../src/chart";
+
+import { buildPixPayload, isValidPixKey, parsePixPayload, RivoProvider } from "../src";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 import { readQr, type Shape } from "../../test/leitor-de-qr";
 
@@ -102,4 +104,50 @@ test("carregando marca o lugar e diz que esta ocupado", () => {
   expect(busy.length).toBeGreaterThan(0);
   expect(byRole(screen, "image")).toHaveLength(0);
   expect(byRole(screen, "alert")).toHaveLength(0);
+});
+
+const spoken = AccessibilityInfo as unknown as {
+  announced: readonly string[];
+  clearAnnouncements: () => void;
+};
+
+test("o copia e cola com espaco em volta vai aparado para o QR, para a tela e para o copiar", () => {
+  const renderCopy = mock((_payload: string) => <Text>copiar</Text>);
+  const screen = render(<PixCode payload={`\n  ${PAYLOAD} \n`} size={240} renderCopy={renderCopy} />);
+  const [svg] = byType(screen, "Svg");
+  const viewBox = Number(String(svg!.props.viewBox).split(" ")[2]);
+  const shapes: Shape[] = [...byType(screen, "Rect"), ...byType(screen, "Path")].map((node) => ({
+    color: String(node.props.fill),
+    d: node.type === "Rect" ? `M0 0H${node.props.width}V${node.props.height}H0Z` : String(node.props.d),
+  }));
+
+  expect(readQr(viewBox, 240, shapes)).toBe(PAYLOAD);
+  expect(renderCopy).toHaveBeenCalledWith(PAYLOAD);
+  expect(byType(screen, "Text").some((node) => node.props.children === PAYLOAD)).toBe(true);
+});
+
+test("todo texto da peca sai de labels, inclusive o para do recebedor e o nome do QR", () => {
+  const labels: Partial<PixCodeLabels> = {
+    receiver: (name) => `to ${name}`,
+    code: (amount, receiver) => `Pix QR ${amount ?? ""} ${receiver ?? ""}`.trim(),
+  };
+  const screen = render(<PixCode payload={PAYLOAD} labels={labels} />);
+  expect(textOf(screen)).toContain("to Clinica Sao Lucas");
+  expect(byLabel(screen, "Pix QR R$ 1.284,50 Clinica Sao Lucas")).toHaveLength(1);
+});
+
+test("expirar, carregar e terminar de carregar sao ditos ao leitor de tela", () => {
+  spoken.clearAnnouncements();
+  const screen = render(<PixCode payload="" loading />);
+  expect(spoken.announced).toEqual(["Gerando o código Pix…"]);
+
+  act(() => screen.update(<RivoProvider><PixCode payload={PAYLOAD} /></RivoProvider>));
+  expect(spoken.announced).toEqual(["Gerando o código Pix…", "Código Pix pronto."]);
+
+  act(() => screen.update(<RivoProvider><PixCode payload={PAYLOAD} expired /></RivoProvider>));
+  expect(spoken.announced).toEqual([
+    "Gerando o código Pix…",
+    "Código Pix pronto.",
+    "Este código Pix expirou.",
+  ]);
 });

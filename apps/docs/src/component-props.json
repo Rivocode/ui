@@ -15815,7 +15815,7 @@
       },
       {
         "name": "labels",
-        "type": "{ copy?: string | undefined; copied?: string | undefined; payload?: string | undefined; expired?: string | undefined; renew?: string | undefined; invalid?: string | undefined; }",
+        "type": "Partial<PixCodeLabels>",
         "required": false,
         "note": "Os textos da peca, para quem precisa de outro idioma ou outro tom."
       },
@@ -15823,7 +15823,7 @@
         "name": "loading",
         "type": "boolean",
         "required": false,
-        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto, com `aria-busy`."
+        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto, com `aria-busy`, e o aviso na regiao viva."
       },
       {
         "name": "onRenew",
@@ -15835,7 +15835,7 @@
         "name": "receiver",
         "type": "string",
         "required": false,
-        "note": "O nome do recebedor."
+        "note": "O nome do recebedor como a tela deve mostrar, com acento."
       },
       {
         "name": "size",
