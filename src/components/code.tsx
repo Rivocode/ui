@@ -26,6 +26,11 @@ export type CodeBlockProps = Omit<ComponentProps<"pre">, "children"> & {
   copyable?: boolean;
   /** Nome do arquivo ou da origem, no topo do bloco. */
   title?: ReactNode;
+  /**
+   * O nome da regiao que o leitor de tela anuncia ao chegar no bloco pelo Tab.
+   * Sem ele, o `title` quando e texto, e "Bloco de código" no resto.
+   */
+  label?: string;
 };
 
 export function CodeBlock({
@@ -34,6 +39,7 @@ export function CodeBlock({
   lineNumbers,
   copyable,
   title,
+  label,
   ...props
 }: CodeBlockProps) {
   const lines = children.replace(/\n$/, "").split("\n");
@@ -51,8 +57,15 @@ export function CodeBlock({
       )}
 
       <pre
+        tabIndex={0}
+        role="region"
+        aria-label={label ?? (typeof title === "string" ? title : "Bloco de código")}
         {...props}
-        className={cn("overflow-x-auto p-3 font-mono text-xs leading-relaxed text-fg", className)}
+        className={cn(
+          "overflow-x-auto p-3 font-mono text-xs leading-relaxed text-fg",
+          "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+          className,
+        )}
       >
         <code>
           {lineNumbers

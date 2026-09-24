@@ -11,6 +11,11 @@ próprio bloco a linha longa empurra a largura da página, e o vazamento
 horizontal só aparece no celular de quem usa, nunca no monitor de quem
 escreveu.
 
+Rolagem própria só serve se o teclado também rola. Por isso o bloco entra na
+ordem do Tab, como uma região com nome, e as setas o percorrem de lado: quem
+não usa mouse chega ao fim da linha longa. O nome é o `title` quando ele é
+texto, "Bloco de código" sem ele, e `label` troca os dois.
+
 Sem realce de sintaxe: destacar palavra-chave exige uma gramática por
 linguagem, e isso é peso que toda tela paga pelo que poucas usam. Quem precisa
 traz o seu e passa o resultado como filho.

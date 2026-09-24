@@ -103,6 +103,23 @@ test("o bloco rola sozinho, em vez de esticar a pagina", () => {
   expect(pre.className).toContain("overflow-x-auto");
 });
 
+test("o bloco que rola de lado e alcancavel pelo teclado, como regiao com nome", () => {
+  const view = withTheme(<CodeBlock>{"const nota = 4813;"}</CodeBlock>);
+  const region = screen.getByRole("region", { name: "Bloco de código" });
+
+  expect(region.tagName).toBe("PRE");
+  expect(region.getAttribute("tabindex")).toBe("0");
+  expect(region.className.split(" ")).toContain("focus-visible:ring-2");
+  view.unmount();
+
+  const titled = withTheme(<CodeBlock title="Entrada">{"{}"}</CodeBlock>);
+  expect(screen.getByRole("region", { name: "Entrada" })).toBeDefined();
+  titled.unmount();
+
+  withTheme(<CodeBlock label="Resposta da SEFAZ">{"<xml />"}</CodeBlock>);
+  expect(screen.getByRole("region", { name: "Resposta da SEFAZ" })).toBeDefined();
+});
+
 test("o bloco numera as linhas quando se pede", () => {
   withTheme(<CodeBlock lineNumbers>{"um\ndois\ntres"}</CodeBlock>);
 

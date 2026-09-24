@@ -171,10 +171,20 @@ export function ToolCall({
               )}
             >
               {input !== undefined && (
-                <CodeBlock title={labels.input ?? "Entrada"}>{asText(input)}</CodeBlock>
+                <CodeBlock
+                  title={labels.input ?? "Entrada"}
+                  label={`${labels.input ?? "Entrada"}: ${name}`}
+                >
+                  {asText(input)}
+                </CodeBlock>
               )}
               {output !== undefined && (
-                <CodeBlock title={labels.output ?? "Saída"}>{asText(output)}</CodeBlock>
+                <CodeBlock
+                  title={labels.output ?? "Saída"}
+                  label={`${labels.output ?? "Saída"}: ${name}`}
+                >
+                  {asText(output)}
+                </CodeBlock>
               )}
               {error && (
                 <p

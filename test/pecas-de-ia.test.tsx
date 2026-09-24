@@ -468,6 +468,8 @@ describe("ToolCall", () => {
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getByText(/"mes": 8/)).toBeDefined();
     expect(screen.getByText("3 notas")).toBeDefined();
+    expect(screen.getByRole("region", { name: "Entrada: buscar_notas" })).toBeDefined();
+    expect(screen.getByRole("region", { name: "Saída: buscar_notas" })).toBeDefined();
   });
 
   test("erro abre sozinho e mostra a frase", () => {

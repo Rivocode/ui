@@ -8630,6 +8630,12 @@
         "since": "0.5.0"
       },
       {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da regiao que o leitor de tela anuncia ao chegar no bloco pelo Tab."
+      },
+      {
         "name": "lineNumbers",
         "type": "boolean",
         "required": false,
