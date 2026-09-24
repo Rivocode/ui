@@ -62,7 +62,7 @@ export function QRCode({
       "e a peça desenha o aviso no lugar do código. Encurte o texto, troque por um link ou baixe o nível.",
   );
 
-  if (!encoded || failure) {
+  if (!encoded || encoded instanceof RangeError) {
     return (
       <View
         accessible

@@ -69,7 +69,7 @@ export function QRCode({
     );
   }, [failure, value.length, chosen]);
 
-  if (!encoded || failure) {
+  if (!encoded || encoded instanceof RangeError) {
     return (
       <div
         {...props}
