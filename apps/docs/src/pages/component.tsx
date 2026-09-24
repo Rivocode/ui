@@ -1,5 +1,6 @@
 import { Badge, EmptyState } from '@rivocode/ui'
 import { FileCode2, FileText } from 'lucide-react'
+import { CopyMarkdown } from '@/components/copy-markdown'
 import { Examples } from '@/components/examples'
 import { Markdown } from '@/components/markdown'
 import { PropsTable } from '@/components/props-table'
@@ -87,6 +88,7 @@ export function ComponentPage({ slug }: { slug: string }) {
           >
             <FileCode2 size={13} />/componentes/{entry.slug}.md
           </a>
+          <CopyMarkdown href={`/componentes/${entry.slug}.md`} />
           <span className="text-fg-subtle">
             markdown cru, para quem lê com agent em vez de olho
           </span>

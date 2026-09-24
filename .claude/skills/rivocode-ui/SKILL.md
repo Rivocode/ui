@@ -227,6 +227,7 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 | O quê | Onde |
 |---|---|
 | Índice de tudo | <https://ds.rivocode.com.br/llms.txt> |
+| Tudo num arquivo só | <https://ds.rivocode.com.br/llms-full.txt> |
 | Contrato completo | <https://ds.rivocode.com.br/convencoes.md> |
 | Uma peça | `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md` |
 | Um guia | `https://ds.rivocode.com.br/<slug>.md`, como `/temas.md` |

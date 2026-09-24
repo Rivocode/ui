@@ -3,255 +3,28 @@ import react from '@vitejs/plugin-react'
 import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
-import { dropLeadingHeading, firstSentence, splitFrontmatter } from './src/doc-text'
-import { sliceSource, storyNamesOf, titleFromSource, withoutAutoOpen } from './src/example-source'
-import { GUIDE_LIST } from './src/guide-list'
-import { indexLine, partNote } from './src/agent-address'
-import { findParent, importPathOf } from './src/parts'
-import { renderDoc, type Part } from './src/render-md'
-import type { Prop } from './src/props'
-import { slugify } from './src/slug'
+import { agentFiles, readDocs, readTypes, type Piece } from './src/agent-docs'
+import { firstSentence } from './src/doc-text'
+import { withoutAutoOpen } from './src/example-source'
+import { findParent } from './src/parts'
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
-const DOCS_DIR = here('../../.design-sync/docs')
-const PREVIEWS_DIR = here('../../.design-sync/previews')
 const PROPS_FILE = here('./src/component-props.json')
-const CONVENTIONS = here('../../.design-sync/conventions.md')
-/*
- * A skill mora onde o Claude Code procura, e nao numa pasta so para o site: uma
- * segunda copia divergiria da primeira no dia seguinte, e a que o site entrega
- * e justamente a que precisa estar certa.
- */
-const SKILL_DIR = here('../../.claude/skills/rivocode-ui')
 const GUIDES_DIR = here('./src/content')
 
-/** Os arquivos da skill, na ordem em que o corpo dela os cita. */
-function skillFiles(): string[] {
-  const refs = readdirSync(`${SKILL_DIR}/reference`)
-    .filter((file) => file.endsWith('.md'))
-    .map((file) => `reference/${file}`)
-
-  return ['SKILL.md', ...refs]
-}
-
-type Doc = { name: string; slug: string; family: string; body: string }
-
-function readDocs(): Doc[] {
-  return readdirSync(DOCS_DIR)
-    .filter((file) => file.endsWith('.md'))
-    .map((file) => {
-      const { family, body } = splitFrontmatter(readFileSync(`${DOCS_DIR}/${file}`, 'utf8'))
-      return {
-        name: file.replace(/\.md$/, ''),
-        slug: slugify(file.replace(/\.md$/, '')),
-        family,
-        body,
-      }
-    })
-}
-
-/**
- * Os guias em prosa, por slug, com o titulo.
- *
- * Sao servidos crus como as paginas de peca. O guia e onde mora o porque - como
- * se escreve um tema, por que densidade e um atributo so -, e e disso que um
- * agente precisa antes da primeira linha. Enquanto eles eram so HTML, entregar
- * o contrato de tema a alguem era colar o texto na conversa.
- */
-const GUIDE_TITLES: Record<string, string> = Object.fromEntries(
-  GUIDE_LIST.map((guide) => [guide.slug, guide.title]),
-)
-
-function readGuides() {
-  const guides = new Map<string, { title: string; body: string }>()
-
-  for (const [slug, title] of Object.entries(GUIDE_TITLES)) {
-    try {
-      guides.set(slug, { title, body: readFileSync(`${GUIDES_DIR}/${slug}.md`, 'utf8') })
-    } catch {
-      // Guia listado aqui e ainda nao escrito simplesmente nao e servido.
-    }
-  }
-
-  return guides
-}
-
-function readPreviews() {
-  const sources = new Map<string, string>()
-  for (const file of readdirSync(PREVIEWS_DIR)) {
-    if (!file.endsWith('.tsx')) continue
-    sources.set(file.replace(/\.tsx$/, ''), readFileSync(`${PREVIEWS_DIR}/${file}`, 'utf8'))
-  }
-  return sources
-}
-
-/**
- * O `.d.ts` de cada peca, por nome, lido do arquivo que a extracao escreve. Ele
- * sai do compilador em `scripts/props-do-catalogo.ts`, e o `check:props` falha
- * quando o comitado diverge da fonte.
- */
-type Piece = { forwardsRoot: boolean; props: Prop[] }
-
-function readTypes() {
-  try {
-    return new Map<string, Piece>(
-      Object.entries(JSON.parse(readFileSync(PROPS_FILE, 'utf8')) as Record<string, Piece>),
-    )
-  } catch {
-    // Ainda nao gerado: as tabelas saem vazias, e a pagina serve assim mesmo.
-    return new Map<string, Piece>()
-  }
-}
-
-/**
- * Uma leitura por request, e uma por build - e nao uma por documento. Varrer o
- * `ds-bundle` cento e seis vezes para escrever cento e seis arquivos e o
- * desperdicio que so aparece como build lento que ninguem sabe explicar.
- */
-function readAll(docs: Doc[]) {
-  const previews = readPreviews()
-  const types = readTypes()
-  return { previews, types, names: new Set([...docs.map((item) => item.name), ...previews.keys()]) }
-}
-
-type Sources = ReturnType<typeof readAll>
-
-/** O corpo de `/componentes/<slug>.md`, dos mesmos arquivos que a pagina le. */
-function buildMarkdown(doc: Doc, docs: Doc[], { previews, types, names }: Sources) {
-  const partOf = (name: string) => findParent(name, names)
-
-  const partNames = [...names].filter((name) => partOf(name) === doc.name).sort()
-
-  /*
-   * Os exemplos da peça, e os das partes dela — a mesma regra da página. Uma
-   * parte nao tem `.md` proprio, entao o preview dela so tem este endereco
-   * para chegar a quem le. Sem isto, `RadioGroup.md` saia sem um exemplo
-   * sequer, com dois escritos em `Radio.tsx`.
-   */
-  const stories = [doc.name, ...partNames].flatMap((name) => {
-    const source = previews.get(name)
-    if (!source) return []
-    return storyNamesOf(source)
-      .map((story) => ({
-        title: titleFromSource(source, story),
-        code: sliceSource(source, story) ?? '',
-      }))
-      .filter((story) => story.code)
-  })
-
-  const parts: Part[] = partNames
-    .map((name) => ({
-      name,
-      body: dropLeadingHeading(docs.find((item) => item.name === name)?.body ?? ''),
-      props: types.get(name)?.props ?? [],
-    }))
-
-  const related = docs
-    .filter((item) => item.family === doc.family && item.name !== doc.name && !partOf(item.name))
-    .slice(0, 6)
-    .map((item) => ({ name: item.name, slug: item.slug }))
-
-  return renderDoc({
-    name: doc.name,
-    body: doc.body.trimStart(),
-    importPath: importPathOf(doc.name),
-    props: types.get(doc.name)?.props ?? [],
-    forwardsRootProps: types.get(doc.name)?.forwardsRoot ?? false,
-    stories,
-    parts,
-    related,
-  })
-}
-
-/*
- * O indice que o agente le.
- *
- * Parte entra debaixo da peca que ela compoe, e nao ao lado. Quarenta e cinco
- * das entradas daqui sao partes - CardHeader, DialogFooter, SelectItem -, e
- * lista-las no mesmo nivel faz o agente contar cento e vinte e seis pecas,
- * gastar contexto abrindo CardTitle.md como se ela existisse sozinha, e perder
- * a unica coisa que importa sobre ela: que so existe dentro do Card.
- */
-function indexForAgents(docs: Doc[]) {
-  const names = new Set(docs.map((doc) => doc.name))
-  const parentOf = (name: string) => findParent(name, names)
-
-  const byFamily = new Map<string, Doc[]>()
-  for (const doc of docs) {
-    const list = byFamily.get(doc.family) ?? []
-    list.push(doc)
-    byFamily.set(doc.family, list)
-  }
-
-  const pieces = docs.filter((doc) => !parentOf(doc.name)).length
-
-  const sections = [...byFamily.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([family, items]) => {
-      const lines = items
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((doc) => {
-          const parent = parentOf(doc.name)
-          const owner = parent ? docs.find((item) => item.name === parent) : undefined
-          return indexLine(doc.name, doc.slug, owner && { name: owner.name, slug: owner.slug })
-        })
-        .join('\n')
-      return `## ${family}\n\n${lines}`
-    })
-    .join('\n\n')
-
-  return `# @rivocode/ui
-
-Design system da RivoCode: ${pieces} peças em ${docs.length} documentos, tokens em três
-camadas, dois temas e duas densidades. Cada endereço abaixo entrega markdown cru,
-sem HTML em volta, para leitura por agent.
-
-## Comece por aqui: instale a skill
-
-Se você é um agent que lê skills — Claude Code, Cursor, Codex, qualquer um que
-carregue uma pasta com \`SKILL.md\` —, **instale a nossa antes de ler o resto desta
-página**:
-
-\`\`\`bash
-npx rivocode-ui skill
-\`\`\`
-
-Sem a biblioteca no projeto, use \`npx -y @rivocode/ui skill\`. O comando escreve
-\`.claude/skills/rivocode-ui/\` e o agent \`rivocode-ui\` em \`.claude/agents/\`, e
-copia a skill da versão instalada, que é a que fala das peças que o projeto tem.
-
-Ela traz o contrato inteiro em disco — o método de montar uma tela, a forma da
-tarefa, o texto da interface, o Provider, o vocabulário de classes, a escolha
-entre peças parecidas, acessibilidade, formulário, gráfico, tema e React Native
-—, em arquivos que você abre só quando o trabalho pede. Sem ela, cada peça custa uma busca nesta página e a API volta a ser
-adivinhada pelo nome.
-
-Instruções completas, inclusive sem gerenciador de pacote: [/skill.md](/skill.md).
-Para ler sem instalar: [/skill/SKILL.md](/skill/SKILL.md).
-
-## Se não der para instalar
-
-Leia [/convencoes.md](/convencoes.md): é o contrato de uso da biblioteca, com o
-RivoProvider, o vocabulário de classes e as regras que valem para todo componente.
-Depois, o documento da peça que interessa, na lista abaixo.
-
-## Guias
-
-${[...readGuides()]
-  .map(([slug, guide]) => `- [${guide.title}](/${slug}.md)`)
-  .join('\n')}
-
-${sections}
-`
+const CONTENT_TYPES: Record<string, string> = {
+  md: 'text/markdown; charset=utf-8',
+  txt: 'text/plain; charset=utf-8',
 }
 
 /**
  * Serve a documentacao crua.
  *
- * O site inteiro existe para gente; o agente que le `/Button.md` nao quer o
- * HTML em volta. Sao os mesmos arquivos que as paginas renderizam, entao nada
- * e duplicado e nada envelhece por conta propria.
+ * O site inteiro existe para gente; o agente que le `/componentes/button.md`
+ * nao quer o HTML em volta. Sao os mesmos arquivos que as paginas renderizam,
+ * entao nada e duplicado e nada envelhece por conta propria. A lista inteira
+ * sai de `agentFiles`, a mesma no `vite dev`, no build e no teste.
  */
 function rawDocs(): Plugin {
   return {
@@ -260,107 +33,20 @@ function rawDocs(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const path = (req.url ?? '').split('?')[0]
+        const kind = /\.(md|txt)$/.exec(path)?.[1]
+        if (!kind) return next()
 
-        if (path === '/llms.txt') {
-          res.setHeader('content-type', 'text/plain; charset=utf-8')
-          res.end(indexForAgents(readDocs()))
-          return
-        }
+        const found = agentFiles().get(decodeURIComponent(path.slice(1)))
+        if (found === undefined) return next()
 
-        if (path === '/convencoes.md') {
-          res.setHeader('content-type', 'text/markdown; charset=utf-8')
-          res.end(readFileSync(CONVENTIONS, 'utf8'))
-          return
-        }
-
-        const guide = /^\/([a-z0-9-]+)\.md$/.exec(path)
-        if (guide) {
-          const found = readGuides().get(guide[1])
-          if (found) {
-            res.setHeader('content-type', 'text/markdown; charset=utf-8')
-            res.end(`# ${found.title}\n\n${found.body.trimStart()}`)
-            return
-          }
-        }
-
-        // A skill, servida crua no endereço que o comando de instalação usa.
-        // Os arquivos de `reference/` vão junto: o corpo da skill aponta para
-        // eles, e um link que dá 404 é pior do que não ter o link.
-        const skillHit = /^\/skill\/(SKILL\.md|reference\/[a-z0-9-]+\.md)$/.exec(path)
-        if (skillHit) {
-          res.setHeader('content-type', 'text/markdown; charset=utf-8')
-          res.end(readFileSync(`${SKILL_DIR}/${skillHit[1]}`, 'utf8'))
-          return
-        }
-
-        const hit = /^\/componentes\/([a-z0-9-]+)\.md$/.exec(path)
-        if (hit) {
-          const docs = readDocs()
-          const doc = docs.find((item) => item.slug === hit[1])
-          if (doc) {
-            res.setHeader('content-type', 'text/markdown; charset=utf-8')
-            res.end(buildMarkdown(doc, docs, readAll(docs)))
-            return
-          }
-        }
-
-        next()
+        res.setHeader('content-type', CONTENT_TYPES[kind])
+        res.end(found)
       })
     },
 
     generateBundle() {
-      const docs = readDocs()
-
-      this.emitFile({ type: 'asset', fileName: 'llms.txt', source: indexForAgents(docs) })
-      this.emitFile({
-        type: 'asset',
-        fileName: 'convencoes.md',
-        source: readFileSync(CONVENTIONS, 'utf8'),
-      })
-      for (const file of skillFiles()) {
-        this.emitFile({
-          type: 'asset',
-          fileName: `skill/${file}`,
-          source: readFileSync(`${SKILL_DIR}/${file}`, 'utf8'),
-        })
-      }
-
-      for (const [slug, guide] of readGuides()) {
-        this.emitFile({
-          type: 'asset',
-          fileName: `${slug}.md`,
-          source: `# ${guide.title}\n\n${guide.body.trimStart()}`,
-        })
-      }
-
-      const sources = readAll(docs)
-
-      const names = new Set(docs.map((doc) => doc.name))
-
-      for (const doc of docs) {
-        const parent = findParent(doc.name, names)
-
-        /*
-         * Parte nao ganha pagina propria.
-         *
-         * Ela ja e publicada inteira - prosa, props e o exemplo que a monta -
-         * dentro da pagina de quem a compoe, e a versao solta dela nunca teve
-         * exemplo: nao ha o que exemplificar sem a peca em volta. Setenta e
-         * seis dos cento e cinquenta e sete arquivos eram isso, e cada um
-         * custava ao agente uma busca que nao acrescentava nada.
-         *
-         * O endereco antigo continua respondendo, com um bilhete de tres
-         * linhas: agente que guardou o link nao pode encontrar o vazio.
-         */
-        const owner = parent ? docs.find((item) => item.name === parent) : undefined
-
-        this.emitFile({
-          type: 'asset',
-          fileName: `componentes/${doc.slug}.md`,
-          source: owner
-            ? partNote(doc.name, { name: owner.name, slug: owner.slug })
-            : buildMarkdown(doc, docs, sources),
-        })
+      for (const [fileName, source] of agentFiles()) {
+        this.emitFile({ type: 'asset', fileName, source })
       }
     },
   }

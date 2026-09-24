@@ -52,12 +52,21 @@ const CARD = { name: "Card", slug: "card" };
 
 test("a parte aponta para dentro da pagina de quem a monta", () => {
   expect(indexLine("CardHeader", "card-header", CARD)).toBe(
-    "  - [CardHeader](/componentes/card.md#cardheader), parte de Card",
+    "  - [CardHeader](/componentes/card.md#cardheader): parte de Card",
   );
 });
 
 test("a peca continua com endereco proprio, e sem indentacao", () => {
   expect(indexLine("Card", "card")).toBe("- [Card](/componentes/card.md)");
+});
+
+test("a nota da linha segue o formato do llmstxt.org", () => {
+  expect(indexLine("Card", "card", undefined, "Agrupa um assunto.")).toBe(
+    "- [Card](/componentes/card.md): Agrupa um assunto.",
+  );
+  expect(indexLine("CardHeader", "card-header", CARD, "O topo.")).toBe(
+    "  - [CardHeader](/componentes/card.md#cardheader): parte de Card. O topo.",
+  );
 });
 
 test("o endereco antigo da parte responde com o caminho, e nao com o vazio", () => {

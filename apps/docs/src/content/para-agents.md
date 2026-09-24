@@ -18,18 +18,23 @@ Se você é um agent lendo esta página para montar uma tela, este é o primeiro
 comando a rodar. O guia [Skill](/skill.md) tem as variantes por gerenciador de
 pacote e a instalação por `curl`, para quando não há nenhum.
 
-## Os quatro endereços
+## Os endereços
 
 | Endereço                       | O que entrega                                              |
 | ------------------------------ | ---------------------------------------------------------- |
 | `/skill/SKILL.md`              | a skill crua, para ler sem instalar                        |
-| `/llms.txt`                    | o índice, por família, com link para cada documento        |
-| `/componentes/<nome>.md`       | o documento de uma peça, cru                               |
+| `/llms.txt`                    | o índice no formato de [llmstxt.org](https://llmstxt.org), por família, com uma linha sobre cada documento |
+| `/llms-full.txt`               | tudo num arquivo só: convenções, guias e cada peça         |
+| `/componentes/<nome>.md`       | o documento de uma peça: prosa, importação, exemplos, props e React Native |
+| `/<guia>.md`                   | um guia, como `/temas.md`                                  |
 | `/convencoes.md`               | o contrato da biblioteca: Provider, tokens, vocabulário    |
 
 O nome no endereço é o mesmo da página: `ToggleGroup` mora em
 `/componentes/toggle-group`, e o markdown dele em
 `/componentes/toggle-group.md`.
+
+Na página de cada peça, o botão **Copiar como Markdown** põe esse mesmo
+documento na área de transferência, para colar na conversa com o agent.
 
 **São os mesmos arquivos que as páginas renderizam.** Não há uma segunda cópia
 para manter, o que você lê como agent é o que a página mostra.
@@ -48,6 +53,13 @@ Para trabalho maior, o índice primeiro:
 
 ```
 Comece por https://ds.rivocode.com.br/llms.txt e leia o que precisar.
+```
+
+Para agent com contexto de sobra e sem acesso à rede depois do primeiro
+fetch, o arquivo inteiro de uma vez:
+
+```
+Leia https://ds.rivocode.com.br/llms-full.txt antes de começar.
 ```
 
 ## De onde isso vem

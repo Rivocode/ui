@@ -19,12 +19,22 @@ export function addressOf(slug: string, part?: { name: string; ownerSlug: string
   return `/componentes/${part.ownerSlug}.md#${part.name.toLowerCase()}`
 }
 
-/** Uma linha do indice. Parte fica indentada sob a peca, e diz que e parte. */
-export function indexLine(name: string, slug: string, owner?: { name: string; slug: string }) {
-  if (!owner) return `- [${name}](${addressOf(slug)})`
+/**
+ * Uma linha do indice, no formato de llmstxt.org: `- [nome](endereco): nota`.
+ * Parte fica indentada sob a peca, e a nota abre dizendo que e parte.
+ */
+export function indexLine(
+  name: string,
+  slug: string,
+  owner?: { name: string; slug: string },
+  summary?: string,
+) {
+  const note = summary?.trim()
+
+  if (!owner) return `- [${name}](${addressOf(slug)})${note ? `: ${note}` : ''}`
 
   const address = addressOf(slug, { name, ownerSlug: owner.slug })
-  return `  - [${name}](${address}), parte de ${owner.name}`
+  return `  - [${name}](${address}): parte de ${owner.name}${note ? `. ${note}` : ''}`
 }
 
 /**
