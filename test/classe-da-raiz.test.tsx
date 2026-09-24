@@ -124,6 +124,7 @@ const REQUIRES_PARENT: Record<string, string> = {
   ComboboxChip: "Combobox",
   ComboboxChips: "Combobox",
   ComboboxContent: "Combobox",
+  ComboboxGroup: "Combobox",
   ComboboxGroupLabel: "ComboboxGroup",
   ComboboxInput: "Combobox",
   ComboboxItem: "Combobox",

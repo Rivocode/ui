@@ -1863,14 +1863,14 @@
       },
       {
         "name": "filter",
-        "type": "((itemValue: Items[number][\"items\"][number], query: string, itemToString?: ((itemValue: Items[number][\"items\"][number]) => string) | undefined) => boolean) | null",
+        "type": "((item: Items[number][\"items\"][number], query: string, itemToString?: ((item: Items[number][\"items\"][number]) => string) | undefined) => boolean) | null",
         "required": false,
-        "note": "Filter function used to match items vs input query.",
+        "note": "Filter function used to match items against the input query.",
         "since": "0.4.0"
       },
       {
         "name": "filteredItems",
-        "type": "readonly any[] | readonly Group<any>[]",
+        "type": "readonly Group<Items[number][\"items\"][number]>[] | readonly Items[number][\"items\"][number][]",
         "required": false,
         "note": "Filtered items to display in the list.",
         "since": "0.4.0"
@@ -1975,7 +1975,7 @@
       },
       {
         "name": "onOpenChange",
-        "type": "((open: boolean, eventDetails: ChangeEventDetails) => void)",
+        "type": "((open: boolean, eventDetails: AutocompleteRootChangeEventDetails) => void)",
         "required": false,
         "note": "Event handler called when the popup is opened or closed.",
         "since": "0.4.0"
@@ -1989,7 +1989,7 @@
       },
       {
         "name": "onValueChange",
-        "type": "((value: string, eventDetails: ChangeEventDetails) => void)",
+        "type": "((value: string, eventDetails: AutocompleteRootChangeEventDetails) => void)",
         "required": false,
         "note": "Event handler called when the input value of the autocomplete changes.",
         "since": "0.4.0"
@@ -8765,14 +8765,14 @@
       },
       {
         "name": "filter",
-        "type": "((itemValue: Value, query: string, itemToString?: ((itemValue: Value) => string) | undefined) => boolean) | null",
+        "type": "((item: Value, query: string, itemToString?: ((item: Value) => string) | undefined) => boolean) | null",
         "required": false,
         "note": "Filter function used to match items vs input query.",
         "since": "0.4.0"
       },
       {
         "name": "filteredItems",
-        "type": "readonly any[] | readonly Group<any>[]",
+        "type": "readonly Value[] | readonly Group<Value>[]",
         "required": false,
         "note": "Filtered items to display in the list.",
         "since": "0.4.0"
@@ -8828,7 +8828,7 @@
       },
       {
         "name": "items",
-        "type": "readonly any[] | readonly Group<any>[]",
+        "type": "ComboboxItemCollection<Value, Value> | readonly any[] | readonly Group<any>[]",
         "required": false,
         "note": "The items to be displayed in the list.",
         "since": "0.4.0"
@@ -9281,7 +9281,6 @@
         "name": "closeParentOnEsc",
         "type": "boolean",
         "required": false,
-        "note": "When in a submenu, determines whether pressing the Escape key closes the entire menu, or only the current child menu.",
         "since": "0.4.0"
       },
       {
@@ -10289,7 +10288,7 @@
       },
       {
         "name": "validate",
-        "type": "((value: unknown, formValues: Record<string, any>) => string | string[] | Promise<string | string[] | null> | null)",
+        "type": "((value: unknown, formValues: Record<string, any>) => void | string | string[] | Promise<void | string | string[] | null> | null)",
         "required": false,
         "note": "A function for custom validation.",
         "since": "0.4.0"
@@ -13568,6 +13567,12 @@
   "NavigationMenuTrigger": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Whether the component should ignore user interaction."
+      },
       {
         "name": "nativeButton",
         "type": "boolean",
