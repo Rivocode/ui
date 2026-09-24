@@ -1,12 +1,14 @@
 # Onde paramos
 
-Atualizado em 28/08/2026, no fim da manha. Este arquivo e o "onde paramos" do
+Atualizado em 24/09/2026, no fim da tarde. Este arquivo e o "onde paramos" do
 repositorio: serve a quem chega frio, humano ou agente, e responde tres coisas:
 o que existe, o que falta de verdade, e o que esta parado esperando uma pessoa.
 
-Todo numero aqui foi medido com comando, nesta arvore, hoje. A secao **Como
-conferir cada numero** no fim diz qual comando produziu cada um, para que a
-proxima pessoa nao precise acreditar em nada: mede de novo.
+Os numeros das tabelas, do resumo do topo e da secao **Como conferir cada
+numero** foram remedidos com comando, nesta arvore, em 24/09. Aquela secao diz
+qual comando produziu cada um, para que a proxima pessoa nao precise acreditar
+em nada: mede de novo. As secoes que contam o dia 27/08 e o 28/08 sao historia,
+e os numeros dentro delas sao os daquele dia.
 
 Isso nao e cerimonia. Em 27/08 duas versoes deste pacote sairam para o npm **sem
 procedencia** porque alguem confiou num relato em vez de abrir o arquivo, e
@@ -24,30 +26,38 @@ quem consome mora em `.design-sync/conventions.md` e em
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
 | `@rivocode/ui`              | este repo, `src/`                           | **0.15.0** no npm, na tag `v0.15.0`, e igual ao `package.json`       |
 | `@rivocode/ui-native`       | este repo, `native/`                        | **0.10.0** no npm, na tag `native-v0.10.0`, e igual ao manifesto dele  |
-| `@rivocode/ui-mcp`          | este repo, `mcp/`                           | **0.1.0** so no manifesto: nunca publicado, e sem tag `mcp-v*`         |
-| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `e37084d`                   |
+| Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `2812b47`                   |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
 
-Foram **12 commits em 28/08**, todos empurrados, e **cinco publicacoes**, todas
-por tag automatica: `0.10.0` e `0.11.0` do web, `0.5.0`, `0.6.0` e `0.7.0` do
-nativo. **O `HEAD` e o `origin/main` sao o mesmo commit**, `ca8e3b3`, e
-`git log --oneline origin/main..HEAD` devolve zero.
+As ultimas publicacoes sairam em 24/09, as duas por tag automatica e as duas
+com procedencia - o endpoint de attestations do npm responde para
+`@rivocode/ui@0.15.0` e para `@rivocode/ui-native@0.10.0`. O `origin/main` esta
+em `2812b47`, e o `origin` tem **25 tags**; `gh release list` continua vazio.
 
-A arvore **nao** esta limpa: `git status --short` devolve **4 linhas** - o aviso
-de que o miolo do `ChartDonut` apaga durante a leitura, escrito na peca e na
-pagina, a tabela de props regerada, e esta pagina. E o unico trabalho que ainda
-nao esta no ar.
+O gate esta verde. `bun run check` roda **trinta e cinco verificacoes** mais a
+suite e sai com codigo zero; a suite tem **1868 testes em 157 arquivos**, com
+11386 chamadas de `expect`, dos quais 575 testes em 46 arquivos sao do nativo.
 
-O gate esta verde. `bun run check` roda **trinta e quatro verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1397 testes em 120 arquivos**, com
-3711 chamadas de `expect`, dos quais 417 testes em 32 arquivos sao do nativo. O
-`bun run build` rodou junto do ultimo commit: `dist/index.js` e o commit mais
-novo sao os dois de 13:09.
+**Parado esperando uma pessoa: o PR agrupado do Dependabot (#8).** Ele sobe 21
+dependencias e fica vermelho por tres motivos, medidos um a um trocando so a
+versao suspeita. O `happy-dom` 20.14 passou a implementar `getAnimations`, e a
+espera de animacao do Base UI trava o fechamento de dialogo e folha na suite
+(seis arquivos passam do minuto, dois falham); o conserto e o
+`BASE_UI_ANIMATIONS_DISABLED` em `test/setup.ts`, que vale para as duas versoes
+e pode entrar na `main` antes do bump. O
+`@base-ui/react` 1.8 muda a tabela de props (o `NavigationMenuTrigger` ganha
+`disabled`, e cinco tipos de `Autocomplete` e `Combobox` mudam de texto) e faz o
+`ComboboxGroup` cobrar a raiz do `Combobox`; esses dois so se consertam junto do
+bump, e estao num commit pronto para entrar no PR. O vermelho do workflow
+"Dependabot Updates" de 23/09 e outra coisa: `NoChangeError` do proprio
+atualizador no `lucide-react`, que so e declarado em `apps/docs` e como par na
+raiz. Ele nao impediu o PR, e a corrida de 24/09 subiu o `lucide-react` sem
+erro, com a mesma configuracao.
 
 ### O catalogo, por familia
 
-Sao **101 pecas** e **187 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **109 pecas** e **195 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
@@ -69,7 +79,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
 com acento. Nenhuma peca esta sem documento, e nenhum documento esta sem codigo
-por tras: `check:doc` confere os dois sentidos sobre as 187 paginas.
+por tras: `check:doc` confere os dois sentidos sobre as 195 paginas.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
@@ -84,24 +94,24 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia, e o que falta nao e nosso.** Das 101 pecas do web, **84 tem
-par no celular**, e as 17 que faltam faltam por decisao escrita. Ate 28/08 eram
+**A fila esta vazia, e o que falta nao e nosso.** Das 109 pecas do web, **91 tem
+par no celular**, e as 18 que faltam faltam por decisao escrita. Ate 28/08 eram
 18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
 apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
 `Menu`". O `Menu` passou a aceitar, e ela saiu. Em 22/09 saiu mais uma, o `ScrollArea`:
 no celular ele virou a tela de formulario que desvia do teclado
 (`react-native-keyboard-controller`, peer obrigatorio, com o `KeyboardProvider`
-dentro do `RivoProvider`). As 16 que sobraram sao todas
+dentro do `RivoProvider`). As 17 que sobraram sao todas
 plataforma: ponteiro que nao existe no toque, teclado que o aparelho nao tem,
 navegacao que no celular e o router, e uma que a plataforma ja resolve melhor
 do que nos.
 
 | No React Native    | Quantas | O que significa                                                                              |
 | ------------------ | ------: | -------------------------------------------------------------------------------------------- |
-| Traduz, mesmo nome |      70 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
+| Traduz, mesmo nome |      86 | mesma peca, mesmo nome de prop: a assinatura muda, veja abaixo                               |
 | Traduz, outro nome |       5 | `Autocomplete` vira `Combobox`, `DataTable` vira `DataList`, `ContextMenu` vira `Menu`       |
 | `○ na fila`        |       0 | `FILA_DECLARADA` esta vazia, e o acordo e que continue                                       |
-| `✕ nao porta`      |      16 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
+| `✕ nao porta`      |      18 | decisao, nao atraso: idioma de mesa que nao tem sentido no toque                              |
 
 O `EventCalendar` merece o paragrafo, porque ele foi o teste do acordo do nono
 artefato - e o acordo foi cumprido do jeito mais util: a fila nao foi zerada
@@ -119,9 +129,10 @@ Uma coisa que ele cobrava ja foi paga: o calculo de layout dele e funcao pura
 sem DOM, e nao havia mecanismo para compartilhar codigo puro entre os dois
 pacotes. Hoje ha - `src/shared/` espelhado em `native/src/shared/`, com
 `check:compartilhado` conferindo que o espelho nao tem import nem global de
-plataforma. Sao **dois arquivos** atravessando por enquanto, `settled.ts` e
-`time.ts`, e o `settled.ts` e a espera de 200ms que os dois `ChartContainer`
-usam para nao acusar um pai que mede em dois passes.
+plataforma. Sao **quatro arquivos** atravessando por enquanto, `settled.ts`,
+`tax-id.ts`, `time.ts` e `typography.ts`, e o `settled.ts` e a espera de 200ms
+que os dois `ChartContainer` usam para nao acusar um pai que mede em dois
+passes.
 
 **Aviso que vale mais que a tabela:** nome igual nao e API igual. No nativo tudo
 e controlado (sem `defaultValue`) e a lista vem por `items`, nao por composicao.
@@ -449,9 +460,8 @@ dessa marca, a mesma frase teria sido compativel com nao ter medido nada.
 
 ## O gate, medido
 
-`bun run check` sao **trinta e tres passos** mais `bun test`, em sequencia,
-parando no primeiro que falhar. Ontem eram trinta e um. Os dois que entraram
-hoje: `check:assinatura` e `check:receita`.
+`bun run check` sao **trinta e cinco passos** mais `bun test`, em sequencia,
+parando no primeiro que falhar. Em 28/08 eram trinta e tres.
 
 Ha um par que **nao** esta no gate e nao e esquecimento: `gen:props:nativo` e
 `check:props:nativo` rodam no job `nativo` da CI, porque so ali existe o
@@ -459,7 +469,7 @@ Ha um par que **nao** esta no gate e nao e esquecimento: `gen:props:nativo` e
 do `check:scripts`, e ele e do tipo que vale ler antes de tentar mover: sem os
 peers o gerador nao falha, ele PASSA mentindo.
 
-O numero trinta e tres esta escrito no `CLAUDE.md` de proposito, e a linha ao
+O numero de passos esta escrito no `CLAUDE.md` de proposito, e a linha ao
 lado diz por que: quando ele nao bate com o `scripts.check` do `package.json`, o
 gate cresceu e a pagina nao acompanhou.
 
@@ -467,32 +477,33 @@ O que cada guarda mede hoje, em numero:
 
 | Guarda                   | O que ela diz hoje                                                            |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `check:pecas`            | 101 pecas, e e o que o README e o `package.json` anunciam                       |
-| `check:doc`              | 187 paginas, todas com codigo por tras                                        |
-| `check:props`            | 260 pecas, 3989 props                                                         |
-| `check:paridade`         | 101 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
-| `check:assinatura`       | 147 divergencias de assinatura em 66 pecas, conferidas contra os dois catalogos |
-| `check:temas`            | 71 tokens de tema e forma, e 55 papeis obrigatorios                            |
-| `check:contrast`         | 152 pares em dois temas, 76 por tema                                          |
-| `check:contrast:nativo`  | 1 mapa, 89 pares por esquema, 7 papeis sem par por declaracao                  |
-| `check:native:contrast`  | espelho de 177 linhas em dia com `src/lib/contrast.ts`                        |
+| `check:pecas`            | 109 pecas, e e o que o README e o `package.json` anunciam                       |
+| `check:doc`              | 195 paginas, todas com codigo por tras                                        |
+| `check:props`            | 268 pecas, 4066 props                                                         |
+| `check:paridade`         | 109 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
+| `check:assinatura`       | 163 divergencias de assinatura em 71 pecas, conferidas contra os dois catalogos |
+| `check:temas`            | 85 tokens de tema e forma, e 55 papeis obrigatorios                            |
+| `check:contrast`         | 208 pares em dois temas, 104 por tema                                         |
+| `check:contrast:nativo`  | 1 mapa, 103 pares por esquema, 7 papeis sem par por declaracao                 |
+| `check:native:contrast`  | espelho de 208 linhas em dia com `src/lib/contrast.ts`                        |
 | `check:tema:nativo`      | 8 sementes, 37 derivados, 45 no `@theme`                                      |
-| `check:classes`          | 196 arquivos, sem lista de excecao                                            |
-| `check:colors`           | 98 arquivos sem cor literal fora de `src/tokens/`                             |
+| `check:classes`          | 220 arquivos, sem lista de excecao                                            |
+| `check:colors`           | 107 arquivos sem cor literal fora de `src/tokens/`                            |
 | `check:opacidade`        | 4 usos de opacidade parcial em `src/`, todos declarados, e 2 medidas de alfa  |
 | `check:grupos`           | 3 seletores de grupo, todos com quem declare                                  |
-| `check:skill`            | 68 props citadas nos exemplos da skill, todas existentes                      |
+| `check:skill`            | 74 props citadas nos exemplos da skill, todas existentes                      |
 | `check:lista-skill`      | 11 arquivos de referencia, todos no indice E no laco `curl` do site           |
-| `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
-| `check:demo`             | 98 de 101 pecas na vitrine, em 16 paginas                                     |
-| `check:readme`           | 60 de 101 pecas citadas no `README.md`                                        |
-| `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
-| `check:compartilhado`    | 5 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1397 testes em 120 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1397 passam, 0 falham, 3711 `expect`; 417 sao do nativo, em 32 arquivos       |
+| `check:retratos`         | 12 retratos de secao sobre 6 areas, 23256 quadrados, 53 marcadores            |
+| `check:demo`             | 106 de 109 pecas na vitrine, em 17 paginas                                      |
+| `check:readme`           | 69 de 109 pecas citadas no `README.md`                                         |
+| `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois   |
+| `check:compartilhado`    | 4 arquivos de `src/shared/` espelhados, sem import de plataforma              |
+| `check:testes`           | 1868 testes em 157 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1868 passam, 0 falham, 11386 `expect`; 575 sao do nativo, em 46 arquivos       |
 
-Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **82 pecas e 447
-props** - o catalogo que da ao `check:assinatura` o lado nativo da comparacao.
+Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **91 pecas e 506
+props** no `native-props.json` comitado - o catalogo que da ao
+`check:assinatura` o lado nativo da comparacao.
 
 ## As listas de divida declarada, e o tamanho de hoje
 
@@ -518,7 +529,7 @@ declarada; junto veio o `FILA_DECLARADA`, que zerou. A outra e que
 `check:scripts` cresceu de 5 para 6, e o crescimento tem motivo escrito - o
 `props-do-catalogo-nativo` precisa de um app que nao e workspace -, mas cresceu.
 
-O aviso e o `OUT_OF_README`, com 41 de 101. E a maior divida declarada do
+O aviso e o `OUT_OF_README`, com 40 de 109. E a maior divida declarada do
 repositorio, e a que menos incomoda quem trabalha aqui, o que e exatamente o
 motivo de ela ser a maior. Ela nasceu porque o digito estava certo e a lista
 embaixo dele nao: o `check:pecas` guardava o "90 pecas." e o arquivo inteiro
@@ -588,8 +599,8 @@ assinaturas visuais desatualizadas tambem cairam**: `bun run visual` responde
 `new Set(["reference/native.md"])`, e o JSDoc acima dele diz por que: "Enquanto
 o `@rivocode/ui-native` nao gerar tabela propria, este arquivo fica de fora".
 
-**Agora gera.** `apps/docs/src/native-props.json` existe desde hoje, com 82
-pecas e 447 props, e `check:props:nativo` o mantem em dia no job `nativo` da CI.
+**Agora gera.** `apps/docs/src/native-props.json` existe desde 28/08, hoje com
+91 pecas e 506 props, e `check:props:nativo` o mantem em dia no job `nativo` da CI.
 A condicao escrita na propria excecao deixou de valer, e o efeito e concreto: os
 exemplos `tsx` de `reference/native.md` sao o unico pedaco da skill cujas props
 ninguem confere - e e justamente o arquivo onde `Button` e `Card` tem props
@@ -611,18 +622,6 @@ decisao foi tomada, escrita e medida, e a linha dele na tabela de paridade e
 `nao`. A fila do nativo esta vazia.
 
 ## O que esta bloqueado esperando acao humana
-
-**0. O primeiro release do `@rivocode/ui-mcp`.** O pacote nasceu em 24/09/2026
-com o `mcp/CHANGELOG.md` ja aberto em `## 0.1.0`, entao o primeiro merge na
-`main` com o `ci` verde faz o `tag.yml` criar `mcp-v0.1.0` e chamar o
-`release-mcp.yml` - `npm view` responde `E404` para pacote inexistente, e as
-duas guardas leem isso como "pode publicar". Antes, confira que o `NPM_TOKEN`
-pode publicar pacote NOVO no escopo `@rivocode` (token granular restrito aos
-pacotes existentes nao cria o terceiro). O ensaio so roda depois do merge,
-porque `workflow_dispatch` exige o workflow na branch padrao: o caminho sem
-voo cego e mergear com `[no-release]` no ASSUNTO, rodar
-`gh workflow run release-mcp --field ensaio=true`, e deixar o proximo empurrao
-na `main` criar a tag - as quatro guardas continuam passando para a 0.1.0.
 
 Duas coisas, e em nenhuma delas ha codigo a escrever.
 
@@ -757,17 +756,16 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e quatro verificacoes mais os 1397 testes
+bun run check        # trinta e cinco verificacoes mais os 1868 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
 cd apps/docs && bun run dev   # o site de documentacao, local
 ```
 
-O primeiro passo pendente nao e nenhum desses: e empurrar. O `0.10.0` e o
-`0.5.0` ja estao comitados com os dois CHANGELOGs fechados, entao o `ci` verde
-na `main` cria `v0.10.0` e `native-v0.5.0` e publica as duas sem mais nenhum
-comando. Para ver a decisao antes, sem criar tag nenhuma:
+Nao ha versao comitada esperando publicacao: a `0.15.0` e a `0.10.0` ja estao
+no npm. O primeiro passo pendente e o PR #8 do Dependabot, descrito no topo.
+Para ver a decisao de tag antes de um empurrao, sem criar tag nenhuma:
 `gh workflow run tag`, que vem com o ensaio marcado.
 
 O contrato de uso da biblioteca esta em `.design-sync/conventions.md` e no ar em
@@ -779,42 +777,44 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 187 documentos
-bun run check:pecas                                # 101 pecas
-bun run check:testes                               # 1397 testes em 120 arquivos
-bun test                                           # 1397 passam, 0 falham, 3711 expect()
-bun test native/test                               # 404 deles, em 31 arquivos
-bun run check:paridade                             # 101 linhas: 79 traduz, 5 vira, 17 nao, 0 fila
-bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
+ls .design-sync/docs/*.md | wc -l                  # 195 documentos
+bun run check:pecas                                # 109 pecas
+bun run check:testes                               # 1868 testes em 157 arquivos
+bun test                                           # 1868 passam, 0 falham, 11386 expect()
+bun test native/test                               # 523 deles, em 41 arquivos
+grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 109 linhas: 86 traduz, 5 vira, 18 nao, 0 fila
+bun run check:assinatura                           # 163 divergencias de assinatura, em 71 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
-bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
-bun run check:contrast                             # 152 pares nos dois temas
-bun run check:contrast:nativo                      # 89 pares por esquema, 1 mapa
+bun run check:temas                                # 85 tokens, 55 papeis obrigatorios
+bun run check:contrast | grep -c '^  ok'           # 208 pares nos dois temas
+bun run check:contrast:nativo                      # 103 pares por esquema (60 + 39 + 1 + 3), 1 mapa
+bun run check:native:contrast                      # espelho de 208 linhas
 bun run check:tema:nativo                          # 8 sementes, 37 derivados, 45 no @theme
-bun run check:classes                              # 196 arquivos, sem excecao
-bun run check:colors                               # 98 arquivos sem cor literal
-bun run check:demo                                 # 98 de 101 na vitrine, 3 declaradas fora
-bun run check:readme                               # 60 de 101 citadas, 41 declaradas fora
-bun run check:retratos                             # 12 retratos de secao sobre 6 areas
-bun run check:receita                              # 7 arquivos de receita, e nenhum Babel nos dois
+bun run check:classes                              # 220 arquivos, sem excecao
+bun run check:colors                               # 107 arquivos sem cor literal
+bun run check:skill                                # 74 props citadas
+bun run check:demo                                 # 106 de 109 na vitrine, 3 declaradas fora
+bun run check:readme                               # 69 de 109 citadas, 40 declaradas fora
+bun run check:retratos                             # 12 retratos de secao sobre 6 areas, 23256 quadrados, 53 marcadores
+bun run check:receita                              # 7 arquivos de receita, 5 peers, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
 bun run check:piso                                 # os 2 fora do piso, com o motivo
-bun run check:compartilhado                        # 5 espelhados, 16 copias declaradas
-bun run check:props:nativo                         # 82 pecas, 447 props - so roda no job `nativo` da CI
-bun run visual                                     # 44 retratos, e recusa build velho
+bun run check:compartilhado                        # 4 espelhados, 16 copias declaradas
+node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 91 pecas, 506 props - o check:props:nativo so roda no job `nativo` da CI
+bun run visual                                     # 44 retratos; em 24/09, 4 divergem do comitado - veja "O que nao foi medido"
 node -e 'p=require("./demo/assinaturas.json");console.log(Object.keys(p).length)'       # 44, sendo 32 de vitrine e 12 de secao
-node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 34, ou seja 33 mais bun test
-git status --short | wc -l                         # 6: so o workflow de tag automatica, o script, o teste e as tres paginas
-git log --oneline origin/main..HEAD | wc -l        # 0 - o HEAD e o origin/main sao e37084d
-git tag --list                                     # v0.11.0 e native-v0.7.0 sao as ultimas
-gh release list                                    # vazio: as dezessete tags nao viraram release
-npm view @rivocode/ui version                      # 0.11.0, igual ao package.json
-npm view @rivocode/ui-native version               # 0.7.0, igual ao native/package.json
-curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.1   # responde: assinada
-curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.4.1   # idem
-gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit e37084d
-gh run list --workflow=release-native --limit 5    # o ensaio e a publicacao da 0.4.1
-curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 101 e 187
+node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 36, ou seja 35 mais bun test
+git log -1 --format=%h origin/main                 # 2812b47
+git tag --list | wc -l                             # 25; v0.15.0 e native-v0.10.0 sao as ultimas
+gh release list                                    # vazio: as tags nao viraram release
+npm view @rivocode/ui version                      # 0.15.0, igual ao package.json
+npm view @rivocode/ui-native version               # 0.10.0, igual ao native/package.json
+curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.15.0   # responde: assinada
+curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.10.0   # idem
+gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit 2812b47
+gh run list --workflow=release-native --limit 5    # a publicacao da 0.10.0, por workflow_dispatch do tag.yml
+gh pr checks 8                                     # o PR do Dependabot, vermelho no check:props
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 109 e 195
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false, e e a divida da secao "Divida de codigo"
 ```
 
@@ -849,13 +849,16 @@ dizendo os dois numeros. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
 - **Se o sync com o claude.ai/design chegou a subir alguma coisa em 24/08.** O
   que se sabe e a data do ultimo log local. O estado do lado de la nao foi
   consultado.
-- **O `bun run build` de hoje nao foi disparado por mim.** O `dist/` e de 10:40,
-  depois do ultimo commit, e as tres coisas que valia conferir nele foram
-  conferidas: zero `@font-face` em `dist/styles.css` contra catorze em
-  `dist/fonts.css`, e zero ocorrencia de `contrastRatio` ou `oklch` em
-  `dist/index.js`, contra 52 KB de `dist/cli.js`. Um build limpo, do zero, nao
-  foi feito - e o `dist/` e anterior aos bumps para 0.10.0 e 0.5.0.
-- **O `bun run visual` de hoje.** As 44 assinaturas comitadas foram CONTADAS
-  (32 de vitrine, 12 de secao) e o `check:retratos` confere que cada secao
-  declarada tem a sua, mas nenhum retrato foi tirado nesta sessao: isso pede
-  Chrome em caminho fixo do macOS, e o script vive fora do gate por isso.
+- **O `bun run build` de 24/09 so foi conferido nas tres coisas de sempre.** Ele
+  sai verde, com um unico aviso, o do TypeScript 7 sem API estavel: zero
+  `@font-face` em `dist/styles.css` contra catorze em `dist/fonts.css`, e zero
+  ocorrencia de `contrastRatio` ou `oklch` em `dist/index.js`, contra 69 KB de
+  `dist/cli.js`. O pacote nao foi instalado num consumidor depois dele.
+- **Por que quatro retratos divergem.** Em 24/09 o `bun run visual` rodou sobre
+  build novo e acusou `novas`, `novas-celular`, `painel` e `painel-celular`
+  (de 38% a 63% dos quadrados), com os mesmos numeros ANTES e DEPOIS das
+  mudancas daquele dia - entao a divergencia e anterior a elas, e nenhum commit
+  depois de `75ccd5c`, que gravou as assinaturas, tocou essas duas paginas. As
+  imagens foram olhadas e estao certas; a causa nao foi medida, e as assinaturas
+  nao foram aceitas. Suspeitos: texto relativo ao relogio ("ha 6 horas") e a
+  maquina que fotografou.
