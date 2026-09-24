@@ -150,6 +150,10 @@ A 390px sobra só o título, em 160px, e a linha do tempo rola de lado **dentro
 da própria moldura**: a página não rola de lado nunca. A divisória sai, porque
 não há o que dividir, e a linha ganha os 44px de alvo de toque.
 
+**Nos 160px o título quebra em até duas linhas**, que cabem nos 44px da linha,
+e só então corta. O nome inteiro fica no `title` do cabeçalho da linha, no
+celular e na mesa, e é também o que o leitor de tela anuncia.
+
 ## Acessibilidade
 
 A peça é uma grade de verdade, e o motivo é que ela **é** uma tabela: uma linha

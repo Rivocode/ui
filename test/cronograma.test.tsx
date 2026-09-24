@@ -548,6 +548,41 @@ test("no celular sobra so o titulo, e a divisoria da tabela sai", () => {
   }
 });
 
+test("no celular o titulo quebra em duas linhas, e o cabecalho da linha guarda o nome inteiro", () => {
+  const original = window.matchMedia;
+  window.matchMedia = ((query: string) =>
+    ({
+      matches: query.includes("max-width"),
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+
+  const long = "Ordem de serviço 1042 da manutenção preventiva do galpão";
+  try {
+    const { container } = gantt({
+      tasks: [{ ...TASKS[2]!, id: "os", title: long, group: "Oficina" }],
+    });
+    const header = cell(container, "t:os", 0);
+    expect(header.getAttribute("title")).toBe(long);
+    const text = header.querySelector("span")!;
+    expect(text.className.split(" ")).toContain("line-clamp-2");
+    expect(text.className.split(" ")).not.toContain("truncate");
+
+    const group = cell(container, "g:Oficina", 0);
+    expect(group.getAttribute("title")).toBe("Oficina");
+  } finally {
+    window.matchMedia = original;
+  }
+});
+
+test("na mesa o titulo corta numa linha, e o nome inteiro continua no title", () => {
+  const { container } = gantt();
+  const header = cell(container, "t:servidor", 0);
+  expect(header.getAttribute("title")).toBe("Instalar servidor");
+  expect(header.querySelector("span")!.className.split(" ")).toContain("truncate");
+});
+
 test("a divisoria da tabela anda pelo teclado e respeita o piso", () => {
   gantt();
 

@@ -855,6 +855,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
               aria-colspan={C > 1 ? C : undefined}
               {...cellProps(row, 0)}
               onClick={() => setGroup(row.name, !row.expanded)}
+              title={row.name}
               style={{ width: tableWidth }}
               className={cn(cellClass, "cursor-pointer gap-1.5 font-rc-medium text-fg")}
             >
@@ -867,7 +868,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                   className={cn("shrink-0 text-fg-muted", rtl && "rotate-180")}
                 />
               )}
-              <span className="truncate">{row.name}</span>
+              <span className={isMobile ? "line-clamp-2 break-words" : "truncate"}>{row.name}</span>
               <span className="shrink-0 text-xs font-rc-regular text-fg-subtle max-sm:hidden">
                 {row.tasks.length === 1 ? "1 tarefa" : `${row.tasks.length} tarefas`}
               </span>
@@ -879,6 +880,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                 role={col === 0 ? "rowheader" : "gridcell"}
                 {...cellProps(row, col)}
                 onClick={col === 0 && onTaskSelect ? () => onTaskSelect(row.task) : undefined}
+                title={col === 0 ? row.task.title : undefined}
                 style={{ width: col === 0 ? titleWidth : column.width }}
                 className={cn(
                   cellClass,
@@ -887,7 +889,9 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                     : "text-fg-muted tabular-nums",
                 )}
               >
-                <span className="truncate">{column.cell(row.task)}</span>
+                <span className={col === 0 && isMobile ? "line-clamp-2 break-words" : "truncate"}>
+                  {column.cell(row.task)}
+                </span>
               </div>
             ))
           )}
