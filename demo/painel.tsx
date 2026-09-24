@@ -329,7 +329,7 @@ function Layout() {
               </Card>
             ))}
           </Grid>
-          <Grid minItemWidth="10rem" gap="sm">
+          <Grid minItemWidth="8rem" gap="sm">
             <Badge className="justify-self-start" tone="success">
               Autorizadas: 41
             </Badge>
