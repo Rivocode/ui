@@ -115,6 +115,14 @@ export const tokens = {
     "code-ink": "#0b0d0f",
     "code-paper": "#ffffff"
   },
+  "media": {
+    "media-stage": "#0b0d0f",
+    "media-control": "#14171a",
+    "media-fg": "#f2f3f0",
+    "media-fg-muted": "#b9bfc6",
+    "media-border": "#8b9199",
+    "media-disabled": "#5b6169"
+  },
   "themes": {
     "rivocode-dark": {
       "bg": "#0b0d0f",

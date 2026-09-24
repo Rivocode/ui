@@ -546,6 +546,59 @@ ${name}` }];
   say(ok, `${ok ? "ok   " : "FALHA"} tinta sobre papel do código lido por máquina  ${ratio.toFixed(2)}:1` + ` (min ${MIN_CODE}, e a tinta ${dark ? "mais escura" : "MAIS CLARA"} que o papel` + `${dark ? "" : ": o código sai invertido, e leitor de banco não lê"})`);
   return findings;
 }
+export const MAX_STAGE_OVER_BLACK = 1.2;
+export const CSS_MEDIA = {
+  stage: "--rc-media-stage",
+  control: "--rc-media-control",
+  fg: "--rc-media-fg",
+  fgMuted: "--rc-media-fg-muted",
+  border: "--rc-media-border",
+  disabled: "--rc-media-disabled"
+};
+export const MAP_MEDIA = {
+  stage: "media-stage",
+  control: "media-control",
+  fg: "media-fg",
+  fgMuted: "media-fg-muted",
+  border: "media-border",
+  disabled: "media-disabled"
+};
+const MEDIA_PAIRS = [
+  ["fg", "stage", MIN_TEXT, "legenda sobre o palco"],
+  ["fgMuted", "stage", MIN_TEXT, "contador, erro e espera sobre o palco"],
+  ["fg", "control", MIN_TEXT, "ícone do controle sobre o fundo dele"],
+  ["fg", "stage", MIN_NON_TEXTUAL, "anel de foco sobre o palco"],
+  ["border", "stage", MIN_NON_TEXTUAL, "contorno do controle sobre o palco"],
+  ["border", "control", MIN_NON_TEXTUAL, "contorno do controle sobre o fundo dele"]
+];
+export function checkMediaStage(name, colors) {
+  const findings = [{ ok: true, line: `
+${name}` }];
+  const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
+  const missing = Object.keys(CSS_MEDIA).filter((role) => !colors[role] || !toHex(colors[role]));
+  if (missing.length > 0) {
+    say(false, `FALTA  papel do palco de mídia sem cor opaca: ${missing.join(", ")}`);
+    return findings;
+  }
+  const color = (role) => colors[role];
+  const black = (luminance(color("stage")) + 0.05) / 0.05;
+  const dark = black <= MAX_STAGE_OVER_BLACK;
+  say(dark, `${dark ? "ok   " : "FALHA"} palco de mídia escuro  ${black.toFixed(2)}:1 sobre o preto` + ` (max ${MAX_STAGE_OVER_BLACK}${dark ? "" : ": a foto deixa de sair num palco escuro"})`);
+  for (const [front, back, min, what] of MEDIA_PAIRS) {
+    const ratio = contrastRatio(color(front), color(back));
+    const ok = ratio >= min && luminance(color(front)) > luminance(color(back));
+    say(ok, `${ok ? "ok   " : "FALHA"} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, claro sobre escuro)`);
+  }
+  const where = { stage: "o palco", control: "o fundo do controle" };
+  for (const back of ["stage", "control"]) {
+    const ratio = contrastRatio(color("disabled"), color(back));
+    const live = contrastRatio(color("border"), color(back));
+    const visible = ratio >= MIN_DISABLED;
+    const weaker = live / ratio >= LIVE_OVER_DISABLED;
+    say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} controle inativo sobre ${where[back]}  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, e o vivo pesa ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
+  }
+  return findings;
+}
 function clippedHex(value) {
   const color = readColor(value);
   return color ? hexOf(color) : value.trim();

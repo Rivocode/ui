@@ -40,6 +40,7 @@ cor literal nem `z-index` numerico.**
 | Estado | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
 | Selecao e carga | `bg-selected`, `bg-skeleton` |
 | Codigo lido por maquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e nao sao papel de tema |
+| Palco de midia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e nao sao papel de tema. Sao do `ImageViewer` em tela cheia |
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Texto | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |

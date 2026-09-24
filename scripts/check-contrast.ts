@@ -407,8 +407,33 @@
  *
  * Tema da casa que declare o par e erro aqui: o valor e um so, e duas fontes
  * para ele e como um tema escuro volta a inverter o codigo sem ninguem ver.
+ *
+ * ## O palco de midia, o segundo conjunto que nao e de tema
+ *
+ * O `ImageViewer` em tela cheia pintava o fundo em `bg`: no tema claro a foto
+ * saia sobre papel quase branco, com os controles em `surface`. Galeria de
+ * celular, Google Fotos e lightbox de biblioteca abrem a foto num palco
+ * ESCURO nos dois esquemas, porque o fundo claro briga com a imagem e estoura
+ * o brilho em volta dela. Os `--rc-media-*` moram em `scales.css` pelo mesmo
+ * motivo do par do codigo: se fossem papel de tema, um tema de cliente claro
+ * clarearia o palco sem querer, e todo cliente teria de declarar seis cores
+ * cuja unica resposta certa e "escuro". A alternativa descartada foi vestir a
+ * camada com `data-rc-theme="rivocode-dark"`: ela troca o acento e a fonte do
+ * cliente pelos da casa e depende de o consumidor ter carregado o CSS do tema
+ * escuro da RivoCode, que quem veste so o tema dele nao carrega.
+ *
+ * `checkMediaStage` cobra que o palco seja escuro (no maximo 1,2:1 sobre o
+ * preto), os pares de texto a 4,5 e os de icone e contorno a 3, todos claro
+ * sobre escuro, e o controle inativo visivel e mais fraco que o vivo.
  */
-import { CSS_CODE, checkCodePair, checkThemeCss, readTokens } from "../src/lib/contrast";
+import {
+  CSS_CODE,
+  CSS_MEDIA,
+  checkCodePair,
+  checkMediaStage,
+  checkThemeCss,
+  readTokens,
+} from "../src/lib/contrast";
 import { countAtLeast, scanAtLeast } from "./varredura";
 
 const palette = await Bun.file("src/tokens/palette.css").text();
@@ -439,17 +464,36 @@ for (const finding of checkCodePair(
   console.log(finding.line);
 }
 
+const media = Object.fromEntries(
+  Object.entries(CSS_MEDIA).map(([role, token]) => [role, fixed[token]]),
+);
+for (const finding of checkMediaStage("src/tokens/scales.css: palco de midia", media)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
+}
+
 for (const file of files) {
   const css = await Bun.file(file).text();
   const declared = Object.values(CSS_CODE).filter((role) => css.includes(`${role}:`));
-  if (declared.length === 0) continue;
-  failed++;
-  console.error(
-    `\n${file} declara ${declared.join(" e ")}.\n` +
-      "    O par do codigo lido por maquina tem valor unico, em src/tokens/scales.css,\n" +
-      "    e nao e papel de tema: e assim que o QR continua escuro sobre claro no\n" +
-      "    tema escuro. Apague a declaracao do tema.",
-  );
+  if (declared.length > 0) {
+    failed++;
+    console.error(
+      `\n${file} declara ${declared.join(" e ")}.\n` +
+        "    O par do codigo lido por maquina tem valor unico, em src/tokens/scales.css,\n" +
+        "    e nao e papel de tema: e assim que o QR continua escuro sobre claro no\n" +
+        "    tema escuro. Apague a declaracao do tema.",
+    );
+  }
+  const stage = Object.values(CSS_MEDIA).filter((role) => css.includes(`${role}:`));
+  if (stage.length > 0) {
+    failed++;
+    console.error(
+      `\n${file} declara ${stage.join(", ")}.\n` +
+        "    O palco de midia tem valor unico, em src/tokens/scales.css, e nao e papel\n" +
+        "    de tema: e assim que a foto em tela cheia continua num palco escuro no\n" +
+        "    tema claro e em todo tema de cliente. Apague a declaracao do tema.",
+    );
+  }
 }
 
 if (failed > 0) {

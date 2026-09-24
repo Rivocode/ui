@@ -157,12 +157,14 @@ async function themeColors(path: string) {
 }
 
 const code: Record<string, string> = {};
+const media: Record<string, string> = {};
 for (const block of topLevelBlocks(scalesCss)) {
   if (block.header !== ":root") continue;
   for (const [name, value] of declarations(block.body)) {
-    if (!name.startsWith("code-")) continue;
+    const group = name.startsWith("code-") ? code : name.startsWith("media-") ? media : null;
+    if (!group) continue;
     const color = toNativeColor(value, palette);
-    if (color) code[name] = color;
+    if (color) group[name] = color;
   }
 }
 
@@ -173,6 +175,7 @@ const tokens = {
   scales,
   easings,
   code,
+  media,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),

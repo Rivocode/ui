@@ -374,7 +374,11 @@ const PARITY: Record<string, Row> = {
       "botões de mais, menos, anterior e próximo continuam lá, porque o leitor de tela não " +
       "faz pinça.\n\n" +
       "`caption` é `string`, a vizinha de cada lado é pedida antes por `Image.prefetch`, e o " +
-      'contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.',
+      'contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.\n\n' +
+      "O palco é escuro nos dois esquemas, como no web: as cores saem de " +
+      "`tokens.media`, e não do tema, então o `Modal` não clareia no tema claro nem no " +
+      "tema de cliente. O controle desabilitado segue a regra do pacote, a camada " +
+      "inteira a 50%.",
   },
   EmptyState: {
     state: "traduz",

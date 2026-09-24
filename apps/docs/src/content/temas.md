@@ -428,6 +428,12 @@ resposta certa é preto e branco, e um tema escuro poderia inverter o código se
 querer. O `check-theme` não os cobra; se um tema os declarar mesmo assim, ele
 mede a tinta sobre o papel a 15:1 e reprova a tinta mais clara que o papel.
 
+Os `--rc-media-*` também: são o palco do `ImageViewer` em tela cheia, escuro
+nos dois esquemas, como a galeria do celular. Se fossem papel de tema, um tema
+claro de cliente clarearia a tela da foto sem querer. O `check:contrast` da
+casa mede os pares do palco (texto a 4,5:1, ícone, contorno e anel a 3:1) e
+reprova o tema da casa que os declare.
+
 ## Um tema de cliente, do começo ao fim
 
 Digamos que o cliente é azul.

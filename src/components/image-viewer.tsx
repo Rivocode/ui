@@ -20,6 +20,14 @@ import { IconButton } from "./icon-button";
 import { Spinner } from "./spinner";
 
 const SWIPE = 50;
+
+const CONTROL = cn(
+  "border border-media-border bg-media-control text-media-fg",
+  "hover:border-media-fg hover:bg-media-control",
+  "focus-visible:ring-media-fg focus-visible:ring-offset-media-stage",
+  "not-data-loading:disabled:border-media-disabled not-data-loading:disabled:bg-media-control",
+  "not-data-loading:disabled:text-media-disabled",
+);
 const PAN_STEP = 40;
 
 export type ImageViewerImage = {
@@ -355,7 +363,7 @@ export function ImageViewer({
           }}
           className={cn(
             "inset-0 top-0 left-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0",
-            "max-h-none overflow-hidden rounded-none border-0 bg-bg p-0 shadow-none",
+            "max-h-none overflow-hidden rounded-none border-0 bg-media-stage p-0 text-media-fg shadow-none",
             "max-sm:top-0 max-sm:rounded-none max-sm:border-0",
             classNames?.viewer,
           )}
@@ -373,7 +381,7 @@ export function ImageViewer({
           >
             <p
               aria-hidden="true"
-              className={cn("text-sm text-fg-muted tabular-nums", classNames?.counter)}
+              className={cn("text-sm text-media-fg-muted tabular-nums", classNames?.counter)}
             >
               {counter}
             </p>
@@ -384,6 +392,7 @@ export function ImageViewer({
                 ref={zoomOutRef}
                 label={text.zoomOut}
                 disabled={zoomOutOff}
+                className={CONTROL}
                 onClick={() => zoomAt(view.zoom / ZOOM_STEP)}
               >
                 <ZoomOut />
@@ -394,13 +403,14 @@ export function ImageViewer({
                 ref={zoomInRef}
                 label={text.zoomIn}
                 disabled={zoomInOff}
+                className={CONTROL}
                 onClick={() => zoomAt(view.zoom * ZOOM_STEP)}
               >
                 <ZoomIn />
               </IconButton>
               <DialogClose
                 render={
-                  <IconButton size="sm" variant="secondary" label={text.close}>
+                  <IconButton size="sm" variant="secondary" label={text.close} className={CONTROL}>
                     <X />
                   </IconButton>
                 }
@@ -419,7 +429,7 @@ export function ImageViewer({
             onDoubleClick={handleDoubleClick}
             className={cn(
               "relative min-h-0 flex-1 touch-none overflow-hidden outline-none select-none",
-              "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              "focus-visible:ring-2 focus-visible:ring-media-fg focus-visible:ring-inset",
               view.zoom > 1 ? (dragging ? "cursor-grabbing" : "cursor-grab") : "cursor-zoom-in",
               classNames?.stage,
             )}
@@ -447,14 +457,14 @@ export function ImageViewer({
             )}
 
             {status === "loading" && (
-              <div className="absolute inset-0 flex items-center justify-center text-fg-muted">
+              <div className="absolute inset-0 flex items-center justify-center text-media-fg-muted">
                 <Spinner size="lg" label={text.loading} />
               </div>
             )}
 
             {status === "error" && (
               <div className="absolute inset-0 flex items-center justify-center p-6">
-                <p role="alert" className="text-center text-sm text-fg-muted">
+                <p role="alert" className="text-center text-sm text-media-fg-muted">
                   {text.error}
                 </p>
               </div>
@@ -468,7 +478,7 @@ export function ImageViewer({
                   label={text.previous}
                   disabled={atStart}
                   onClick={() => step(-1)}
-                  className="absolute top-1/2 left-3 -translate-y-1/2"
+                  className={cn(CONTROL, "absolute top-1/2 left-3 -translate-y-1/2")}
                 >
                   <ChevronLeft />
                 </IconButton>
@@ -478,7 +488,7 @@ export function ImageViewer({
                   label={text.next}
                   disabled={atEnd}
                   onClick={() => step(1)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
+                  className={cn(CONTROL, "absolute top-1/2 right-3 -translate-y-1/2")}
                 >
                   <ChevronRight />
                 </IconButton>
@@ -489,7 +499,7 @@ export function ImageViewer({
           {image?.caption && (
             <div
               className={cn(
-                "px-[var(--rc-pad-panel)] py-3 text-center text-sm text-fg",
+                "px-[var(--rc-pad-panel)] py-3 text-center text-sm text-media-fg",
                 classNames?.caption,
               )}
             >

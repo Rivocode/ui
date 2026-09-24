@@ -26,6 +26,13 @@
 
   --rc-code-ink: var(--rc-p-graphite-950);
   --rc-code-paper: var(--rc-p-white);
+
+  --rc-media-stage: var(--rc-p-graphite-950);
+  --rc-media-control: var(--rc-p-graphite-800);
+  --rc-media-fg: var(--rc-p-gray-100);
+  --rc-media-fg-muted: var(--rc-p-gray-300);
+  --rc-media-border: var(--rc-p-gray-500);
+  --rc-media-disabled: var(--rc-p-gray-700);
 }
 
 :root,

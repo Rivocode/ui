@@ -132,6 +132,7 @@ responder ao tema do cliente.
 | Estado | `bg-success`, `text-success-text`, `bg-danger-subtle`, e o mesmo para `warning` e `info` |
 | Seleção e carga | `bg-selected`, `bg-skeleton` |
 | Código lido por máquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e não são papel de tema |
+| Palco de mídia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e não são papel de tema. São do `ImageViewer` em tela cheia |
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |

@@ -21,6 +21,13 @@
   --color-code-ink: var(--rc-code-ink);
   --color-code-paper: var(--rc-code-paper);
 
+  --color-media-stage: var(--rc-media-stage);
+  --color-media-control: var(--rc-media-control);
+  --color-media-fg: var(--rc-media-fg);
+  --color-media-fg-muted: var(--rc-media-fg-muted);
+  --color-media-border: var(--rc-media-border);
+  --color-media-disabled: var(--rc-media-disabled);
+
   --color-chart-1: var(--rc-chart-1);
   --color-chart-2: var(--rc-chart-2);
   --color-chart-3: var(--rc-chart-3);

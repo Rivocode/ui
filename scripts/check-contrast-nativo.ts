@@ -203,7 +203,9 @@ import {
   MAP_LAYER_PAIRS,
   MAP_CHECKED_OVER,
   MAP_CODE,
+  MAP_MEDIA,
   checkCodePair,
+  checkMediaStage,
 } from "../src/lib/contrast";
 import { tokens } from "../native/tokens";
 
@@ -291,6 +293,19 @@ for (const finding of checkCodePair(
   "native/tokens.ts: code",
   tokens.code[MAP_CODE.ink],
   tokens.code[MAP_CODE.paper],
+)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
+}
+
+for (const finding of checkMediaStage(
+  "native/tokens.ts: media",
+  Object.fromEntries(
+    Object.entries(MAP_MEDIA).map(([role, name]) => [
+      role,
+      (tokens.media as Record<string, string>)[name],
+    ]),
+  ),
 )) {
   if (!finding.ok) failed++;
   console.log(finding.line);

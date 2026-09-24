@@ -21,6 +21,26 @@ exatamente para onde estava.
 É montada sobre o `Dialog` da casa: o foco fica preso dentro, `Esc` fecha, o
 fundo fica inerte para o leitor de tela e o tema acompanha o portal.
 
+## O palco é sempre escuro
+
+A tela cheia abre num palco escuro nos dois temas, como a galeria do celular e
+os visualizadores de foto de mercado: fundo claro em volta da foto briga com
+ela e estoura o brilho. O fundo, a legenda, o contador e os controles (fechar,
+setas e zoom) leem os papéis fixos `media-*` (`bg-media-stage`,
+`bg-media-control`, `text-media-fg`, `text-media-fg-muted`,
+`border-media-border` e `media-disabled` para o controle desabilitado), e não
+os papéis do tema.
+
+Eles moram em `scales.css`, fora dos temas, pelo mesmo motivo do par do
+`QRCode`: o palco continua escuro no tema claro e em todo tema de cliente, sem
+o cliente declarar nada. O `check:contrast` mede os pares: o palco escuro,
+legenda e contador a 4,5:1, ícone, contorno e anel de foco a 3:1, e o controle
+desabilitado visível e mais fraco que o vivo. A grade de miniaturas continua na
+página, e com as cores do tema.
+
+O tema não declara `--rc-media-*`. Para mudar o palco num produto, vista as
+partes pelo `classNames` (`viewer`, `counter`, `caption`), com token.
+
 ## As imagens
 
 `images` é a lista, na ordem da navegação. Cada imagem tem `src`, `alt`
@@ -116,3 +136,5 @@ Traduz sobre o `Modal` do core, com as imagens numa `FlatList` horizontal com `p
 **A pinça sai do `PanResponder` do core, e não do react-native-gesture-handler.** O pacote já exige o reanimated, mas não o gesture-handler, e um visualizador de imagem não justifica um peer obrigatório a mais para todo app. Dois dedos aproximam até `maxZoom`, um dedo arrasta a foto aproximada, e o toque duplo dobra e desfaz o zoom. Com zoom, a fileira para de rolar: o dedo que arrasta a foto não troca de foto. Os botões de mais, menos, anterior e próximo continuam lá, porque o leitor de tela não faz pinça.
 
 `caption` é `string`, a vizinha de cada lado é pedida antes por `Image.prefetch`, e o contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.
+
+O palco é escuro nos dois esquemas, como no web: as cores saem de `tokens.media`, e não do tema, então o `Modal` não clareia no tema claro nem no tema de cliente. O controle desabilitado segue a regra do pacote, a camada inteira a 50%.

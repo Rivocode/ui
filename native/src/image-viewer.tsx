@@ -17,11 +17,18 @@ import { ChevronGlyph, CrossGlyph, PlusGlyph } from "./glyph";
 import { Grid } from "./grid";
 import { IconButton } from "./icon-button";
 import { useReducedMotion } from "./motion";
-import { useRivo } from "./provider";
+import { tokens } from "../tokens";
 import { ZOOM_REST, ZOOM_STEP, clampZoom, zoomAround, type ZoomView } from "./shared/zoom";
 import { Text } from "./text";
 
 const DOUBLE_TAP = 300;
+
+const MEDIA = tokens.media;
+
+const CONTROL = {
+  backgroundColor: MEDIA["media-control"],
+  borderColor: MEDIA["media-border"],
+} as const;
 
 export type ImageViewerImage = {
   src: string;
@@ -90,7 +97,6 @@ export function ImageViewer({
   className,
 }: ImageViewerProps) {
   const text = { ...LABELS, ...labels };
-  const { colors } = useRivo();
   const reduced = useReducedMotion();
   const total = images.length;
   const current = index !== null && index >= 0 && index < total ? index : null;
@@ -236,12 +242,17 @@ export function ImageViewer({
         onRequestClose={() => change(null)}
         supportedOrientations={["portrait", "landscape"]}
       >
-        <View accessibilityViewIsModal className="flex-1 bg-bg pt-12 pb-8">
+        <View
+          accessibilityViewIsModal
+          style={{ backgroundColor: MEDIA["media-stage"] }}
+          className="flex-1 pt-12 pb-8"
+        >
           <View className="flex-row items-center gap-2 px-4 pb-3">
             <Text
               accessibilityLiveRegion="polite"
               accessibilityLabel={image ? `${counter}: ${image.alt}` : counter}
-              className="text-sm text-fg-muted"
+              style={{ color: MEDIA["media-fg-muted"] }}
+              className="text-sm"
             >
               {counter}
             </Text>
@@ -249,25 +260,28 @@ export function ImageViewer({
               <IconButton
                 accessibilityLabel={text.zoomOut}
                 variant="secondary"
+                style={CONTROL}
                 disabled={view.zoom <= 1}
                 onPress={() => setView(around(view, view.zoom / ZOOM_STEP))}
               >
-                <PlusGlyph minus />
+                <PlusGlyph minus color={MEDIA["media-fg"]} />
               </IconButton>
               <IconButton
                 accessibilityLabel={text.zoomIn}
                 variant="secondary"
+                style={CONTROL}
                 disabled={view.zoom >= maxZoom || status !== "ready"}
                 onPress={() => setView(around(view, view.zoom * ZOOM_STEP))}
               >
-                <PlusGlyph />
+                <PlusGlyph color={MEDIA["media-fg"]} />
               </IconButton>
               <IconButton
                 accessibilityLabel={text.close}
                 variant="secondary"
+                style={CONTROL}
                 onPress={() => change(null)}
               >
-                <CrossGlyph />
+                <CrossGlyph color={MEDIA["media-fg"]} />
               </IconButton>
             </View>
           </View>
@@ -330,7 +344,7 @@ export function ImageViewer({
                 <ActivityIndicator
                   accessibilityLabel={text.loading}
                   size="large"
-                  color={colors["fg-subtle"]}
+                  color={MEDIA["media-fg-muted"]}
                 />
               </View>
             )}
@@ -340,7 +354,11 @@ export function ImageViewer({
                 pointerEvents="none"
                 className="absolute inset-0 items-center justify-center p-6"
               >
-                <Text accessibilityRole="alert" className="text-center text-sm text-fg-muted">
+                <Text
+                  accessibilityRole="alert"
+                  style={{ color: MEDIA["media-fg-muted"] }}
+                  className="text-center text-sm"
+                >
                   {text.error}
                 </Text>
               </View>
@@ -349,25 +367,29 @@ export function ImageViewer({
 
           <View className="gap-3 px-4 pt-3">
             {image?.caption ? (
-              <Text className="text-center text-sm text-fg">{image.caption}</Text>
+              <Text style={{ color: MEDIA["media-fg"] }} className="text-center text-sm">
+                {image.caption}
+              </Text>
             ) : null}
             {total > 1 && (
               <View className="flex-row items-center justify-center gap-3">
                 <IconButton
                   accessibilityLabel={text.previous}
                   variant="secondary"
+                  style={CONTROL}
                   disabled={atStart}
                   onPress={() => step(-1)}
                 >
-                  <ChevronGlyph direction="left" />
+                  <ChevronGlyph direction="left" color={MEDIA["media-fg"]} />
                 </IconButton>
                 <IconButton
                   accessibilityLabel={text.next}
                   variant="secondary"
+                  style={CONTROL}
                   disabled={atEnd}
                   onPress={() => step(1)}
                 >
-                  <ChevronGlyph direction="right" />
+                  <ChevronGlyph direction="right" color={MEDIA["media-fg"]} />
                 </IconButton>
               </View>
             )}
