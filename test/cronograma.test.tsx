@@ -601,3 +601,56 @@ test("a linha segue a densidade: 40 no confortavel, 32 no compacto", () => {
     compact.container.querySelector<HTMLElement>('[data-rc-row="task"]')!.style.height,
   ).toBe("32px");
 });
+
+test("mover por mes desloca o inicio e leva o fim junto, sem perder dia no fim do mes", () => {
+  const cases: [Date, Date, number][] = [
+    [new Date(2027, 0, 29), new Date(2027, 1, 1), 3],
+    [new Date(2027, 0, 30), new Date(2027, 0, 31), 1],
+    [new Date(2027, 0, 31), new Date(2027, 1, 2), 2],
+    [new Date(2027, 1, 28), new Date(2027, 2, 3), 3],
+    [new Date(2028, 0, 30), new Date(2028, 1, 1), 2],
+  ];
+  expect(cases.length).toBeGreaterThan(3);
+
+  for (const [start, end, length] of cases) {
+    for (const amount of [1, -1, 2]) {
+      const moved = moveTask({ start, end }, "month", amount);
+      expect(Math.round((moved.end.getTime() - moved.start.getTime()) / 86400000)).toBe(length);
+    }
+  }
+
+  expect(moveTask({ start: new Date(2027, 0, 30), end: new Date(2027, 0, 31) }, "month", 1)).toEqual({
+    start: new Date(2027, 1, 28),
+    end: new Date(2027, 2, 1),
+  });
+  expect(moveTask({ start: new Date(2027, 0, 29), end: new Date(2027, 1, 1) }, "month", 1)).toEqual({
+    start: new Date(2027, 1, 28),
+    end: new Date(2027, 2, 3),
+  });
+  expect(moveTask({ start: new Date(2028, 0, 29), end: new Date(2028, 0, 29) }, "month", 1)).toEqual({
+    start: new Date(2028, 1, 29),
+    end: new Date(2028, 1, 29),
+  });
+});
+
+test("seta na escala por mes nao transforma a tarefa curta em marco", () => {
+  const onChange = mock();
+  const initial: GanttTask[] = [
+    { id: "revisao", title: "Revisão", start: new Date(2027, 0, 30), end: new Date(2027, 0, 31) },
+  ];
+  const { container } = render(
+    <RivoProvider scope="local">
+      <Controlled onChange={onChange} initial={initial} scale="month" />
+    </RivoProvider>,
+  );
+
+  fireEvent.keyDown(cell(container, "t:revisao", 3), { key: "ArrowRight" });
+  expect(onChange.mock.calls[0]![1]).toEqual({
+    start: new Date(2027, 1, 28),
+    end: new Date(2027, 2, 1),
+    kind: "move",
+  });
+  const timeline = cell(container, "t:revisao", 3);
+  expect(timeline.querySelector("[data-rc-milestone]")).toBeNull();
+  expect(timeline.querySelector("[data-rc-bar]")).not.toBeNull();
+});

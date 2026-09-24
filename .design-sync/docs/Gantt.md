@@ -66,7 +66,12 @@ nesse dia e continua sendo "12 a 18 de outubro".
 |---|---|---|---|
 | `day` | 40px | mês em cima, dia com a inicial da semana embaixo; fim de semana pintado | um dia |
 | `week` | 18px | mês em cima, a segunda-feira de cada semana embaixo | uma semana |
-| `month` | 5px | ano em cima, mês embaixo | um mês, com o dia e a hora preservados |
+| `month` | 5px | ano em cima, mês embaixo | um mês, pelo começo; o fim vem junto e a duração em dias não muda |
+
+Na escala por mês a seta desloca o começo, e o fim é recalculado com a mesma
+duração em dias. O começo no dia 31 cai no último dia de um mês mais curto, e a
+tarefa de um dia em 30 de janeiro continua tendo um dia em fevereiro: ela não vira
+marco nem perde dia pelo caminho.
 
 O período desenhado sai das tarefas, com folga de uma unidade de cada lado;
 `range` o fixa. A linha vermelha é hoje (`today`, ou o relógio do aparelho), e

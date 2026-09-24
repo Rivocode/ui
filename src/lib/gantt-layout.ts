@@ -108,7 +108,9 @@ export function shiftDate(date: Date, scale: GanttScale, amount: number): Date {
 }
 
 export function moveTask(task: { start: Date; end: Date }, scale: GanttScale, amount: number) {
-  return { start: shiftDate(task.start, scale, amount), end: shiftDate(task.end, scale, amount) };
+  const start = shiftDate(task.start, scale, amount);
+  const end = withTime(addDays(startOfDay(start), daysBetween(task.start, task.end)), task.end);
+  return { start, end };
 }
 
 export function resizeTask(task: { start: Date; end: Date }, scale: GanttScale, amount: number) {
