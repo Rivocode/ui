@@ -166,6 +166,13 @@ export function ExampleFrame({
       // vertical dela nunca passaria de uma tarja de cromo por cima do
       // exemplo. Rolar para o lado continua sendo de quem la dentro pediu.
       inner.documentElement.style.overflowY = 'hidden'
+      // Quando o `color-scheme` do documento de dentro difere do da pagina, o
+      // navegador pinta um fundo OPACO na cor do esquema dele atras do iframe:
+      // branco, numa pagina escura. Ele aparecia na faixa entre o fim do
+      // conteudo e o fim da moldura, justamente quando o exemplo encolhia e a
+      // altura ainda nao tinha sido medida de novo.
+      inner.documentElement.style.colorScheme = getComputedStyle(node).colorScheme
+      inner.documentElement.style.background = 'transparent'
       setDoc(inner)
     }
 
