@@ -62,7 +62,15 @@ export function Link({
       onPress(event);
       return;
     }
-    if (href) void Linking.openURL(href);
+    if (!href) return;
+    Linking.openURL(href).catch((error: unknown) => {
+      if (!__DEV__) return;
+      console.warn(
+        `Link: o Linking não abriu "${href}". Endereço relativo não tem app que o abra: ` +
+          "navegue pelo onPress, com o router do app.",
+        error,
+      );
+    });
   };
 
   return (

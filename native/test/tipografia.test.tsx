@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, spyOn, test } from "bun:test";
 import { Linking } from "react-native";
 import { act, type ReactTestInstance } from "react-test-renderer";
 
@@ -101,6 +101,24 @@ describe("Link nativo", () => {
 
     expect(opened().length).toBe(before + 1);
     expect(opened().at(-1)).toBe("mailto:contato@rivocode.com.br");
+  });
+
+  test("endereco que o Linking recusa nao vira promessa rejeitada solta: vira aviso em dev", async () => {
+    const linking = Linking as unknown as { openURL: (url: string) => Promise<unknown> };
+    const original = linking.openURL;
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    linking.openURL = () => Promise.reject(new Error("No app to open /notas"));
+    try {
+      const screen = render(<Link href="/notas">Notas</Link>);
+      act(() => byRole(screen, "link")[0]!.props.onPress({}));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(String(warn.mock.calls[0]![0])).toContain('"/notas"');
+    } finally {
+      linking.openURL = original;
+      warn.mockRestore();
+    }
   });
 
   test("com onPress, quem navega e o router, e o Linking fica quieto", () => {
