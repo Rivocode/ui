@@ -135,3 +135,15 @@ export const AccessibilityInfo = {
     return reduceMotion;
   },
 };
+
+const openedUrls: string[] = [];
+
+export const Linking = {
+  openURL: (url: string) => {
+    openedUrls.push(url);
+    return Promise.resolve(true);
+  },
+  get opened() {
+    return openedUrls;
+  },
+};

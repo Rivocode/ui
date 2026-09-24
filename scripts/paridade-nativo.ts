@@ -1250,6 +1250,48 @@ const PARITY: Record<string, Row> = {
       "rótulo escrito ao lado, ou um `accessibilityLabel`, que resolve para o leitor de " +
       "tela e não resolve para quem enxerga.",
   },
+  Heading: {
+    state: "traduz",
+    note: '`level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível',
+    page:
+      "Traduz, com os mesmos `level`, `size` e `truncate` do web, e o mesmo tamanho para cada " +
+      'nível quando `size` não vem. Sai como `Text` com `accessibilityRole="header"`, na família ' +
+      "`display` do provider.\n\n" +
+      "**O nível não é anunciado.** O VoiceOver e o TalkBack dizem “cabeçalho” e param aí: não " +
+      "há `h1` a `h6` no toque. O `level` continua obrigatório mesmo assim, por dois motivos: " +
+      "ele decide o tamanho quando `size` não vem, e a tela porta do web sem reescrever a " +
+      "chamada.",
+  },
+  Link: {
+    state: "traduz",
+    note: '`Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router',
+    page:
+      'Traduz, como um `Text` com `accessibilityRole="link"`, e por isso vai dentro da frase ' +
+      'como no web: `<Text>Veja o <Link href="…">espelho</Link>.</Text>` quebra linha junto ' +
+      "com o texto em volta. `tone` tem os mesmos quatro valores, e o sublinhado é fixo.\n\n" +
+      "**Quem navega é o `onPress`, e não um `render`.** Não há âncora no React Native para " +
+      "trocar pela do router, então a composição do web vira callback: " +
+      '`onPress={() => router.push("/notas")}`. Sem `onPress`, o toque abre o `href` pelo ' +
+      "`Linking`, que é o caminho para `https:`, `mailto:` e `tel:`.\n\n" +
+      "**`external` desenha a seta e avisa pela dica**, a `accessibilityHint`, que o leitor " +
+      "de tela lê depois do nome; o texto é o `externalLabel`, e o padrão é “Abre fora do app.”. " +
+      "Quando o filho é texto puro, o nome acessível é ele, sem a seta. Não há `underline`: " +
+      "no toque não existe passar por cima, e o sublinhado é sempre o do texto corrido.",
+  },
+  Text: {
+    state: "traduz",
+    note: "o mesmo `Text` que as outras peças vestem, com `size`, `tone`, `weight`, `truncate` e `lineClamp`; sem eles, herda do `Text` de fora",
+    page:
+      "Traduz, e o `Text` nativo é o mesmo primitivo que as outras peças do pacote já " +
+      "vestem, agora com `size`, `tone`, `weight`, `truncate` e `lineClamp`, os mesmos nomes " +
+      "e os mesmos valores do web. `truncate` e `lineClamp` viram `numberOfLines`.\n\n" +
+      "**Sem as props novas, ele herda, como no web.** Um `Text` dentro de outro `Text` leva " +
+      "o corpo e a cor do de fora, e é isso que faz o trecho em negrito no meio da frase " +
+      "funcionar. A diferença está no topo: o React Native não herda cor de `View`, então o " +
+      "parágrafo de fora sem `tone` sai na cor padrão do aparelho, e não na do tema. Passe " +
+      "`tone` no `Text` de fora.\n\n" +
+      "Não há `render`: o elemento do celular é sempre `Text`, e o bloco é uma `View` em volta.",
+  },
 };
 
 /* --------------------------------------------------------------------------

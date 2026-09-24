@@ -1583,6 +1583,29 @@
       }
     ]
   },
+  "Heading": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "level",
+        "type": "HeadingLevel",
+        "required": true,
+        "note": "O lugar do titulo no esboco da tela, de 1 a 6."
+      },
+      {
+        "name": "size",
+        "type": "HeadingSize",
+        "required": false,
+        "note": "O corpo na escala da casa, de `sm` (13px) a `3xl` (30px)."
+      },
+      {
+        "name": "truncate",
+        "type": "boolean",
+        "required": false,
+        "note": "Corta em uma linha com reticencias no fim."
+      }
+    ]
+  },
   "Indicator": {
     "entry": "native/src/index.ts",
     "props": [
@@ -1748,6 +1771,41 @@
         "type": "\"outline\" | \"plain\"",
         "required": false,
         "note": "`plain` para lista dentro de card ou folha; `outline` para grade de escolhas."
+      }
+    ]
+  },
+  "Link": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "external",
+        "type": "boolean",
+        "required": false,
+        "note": "Sai do app: desenha a seta de saida e avisa o leitor de tela com o `externalLabel`, como dica depois do nome."
+      },
+      {
+        "name": "externalLabel",
+        "type": "string",
+        "required": false,
+        "note": "A dica que o leitor de tela le depois do nome de um link `external`."
+      },
+      {
+        "name": "href",
+        "type": "string",
+        "required": false,
+        "note": "O endereco que o toque abre pelo `Linking` do React Native: `https:`, `mailto:`, `tel:`."
+      },
+      {
+        "name": "onPress",
+        "type": "((event: GestureResponderEvent) => void)",
+        "required": false,
+        "note": "Quem navega dentro do app: `onPress={() => router.push(\"/notas\")}`."
+      },
+      {
+        "name": "tone",
+        "type": "LinkTone",
+        "required": false,
+        "note": "O papel de cor, os mesmos quatro do web."
       }
     ]
   },
@@ -2699,6 +2757,36 @@
         "type": "RivoFontRole",
         "required": false,
         "note": "Qual das tres familias do provider veste este texto: `sans` no corrido, `display` no titulo, `mono` onde a largura fixa alinha coluna."
+      },
+      {
+        "name": "lineClamp",
+        "type": "1 | 2 | 3 | 4 | 5 | 6",
+        "required": false,
+        "note": "Corta depois de tantas linhas, de 1 a 6."
+      },
+      {
+        "name": "size",
+        "type": "TextSize",
+        "required": false,
+        "note": "O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e o `Heading`."
+      },
+      {
+        "name": "tone",
+        "type": "TextTone",
+        "required": false,
+        "note": "O papel de cor, os mesmos oito do web."
+      },
+      {
+        "name": "truncate",
+        "type": "boolean",
+        "required": false,
+        "note": "Corta em uma linha com reticencias no fim."
+      },
+      {
+        "name": "weight",
+        "type": "TextWeight",
+        "required": false,
+        "note": "O peso da letra."
       }
     ]
   },

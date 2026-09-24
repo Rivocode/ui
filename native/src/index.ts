@@ -1,9 +1,4 @@
-export {
-  RivoProvider,
-  useRivo,
-  type RivoProviderProps,
-  type RivoNativeColors,
-} from "./provider";
+export { RivoProvider, useRivo, type RivoProviderProps, type RivoNativeColors } from "./provider";
 export { useRivoFonts, type RivoFontRole, type RivoFonts, type RivoResolvedFonts } from "./font";
 export { Button, type ButtonProps } from "./button";
 export { Badge, type BadgeProps } from "./badge";
@@ -40,7 +35,17 @@ export { Select, type SelectItem, type SelectProps } from "./select";
 export { Tabs, type TabItem, type TabsProps } from "./tabs";
 export { RadioGroup, type RadioGroupProps, type RadioItem } from "./radio-group";
 export { CheckboxGroup, type CheckboxGroupItem, type CheckboxGroupProps } from "./checkbox-group";
-export { Text, TextInput, type TextProps, type TextInputProps } from "./text";
+export {
+  Text,
+  TextInput,
+  type TextInputProps,
+  type TextProps,
+  type TextSize,
+  type TextTone,
+  type TextWeight,
+} from "./text";
+export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from "./heading";
+export { Link, type LinkProps, type LinkTone } from "./link";
 export { Textarea, type TextareaProps } from "./textarea";
 export { MaskedInput, type MaskedInputProps } from "./masked-input";
 export { isValidCnpj, isValidCpf } from "./shared/tax-id";

@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 94 peças. O índice de todas fica em
+O catálogo tem 97 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -26,6 +26,9 @@ exemplos que rodam e a tabela de props.
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
 | Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
 | Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
+| Título de seção menor sem pular nível | `Heading` com `size` | `level` decide a tag de `h1` a `h6`; `size` muda só o desenho, e a ordem dos títulos fica inteira |
+| Texto secundário, legenda ou frase num tom de estado | `Text` com `tone` | Só os papéis de texto do tema; sem `size` e `tone`, herda da frase em volta |
+| Ir para outra página ou outro site | `Link` | Navega; o `Button` age. `external` abre em outra aba e avisa quem ouve, e o router entra pelo `render` |
 | Nome de arquivo, comando ou chave de JSON no texto | `Code` | O `Kbd` promete "aperte isto"; este é para ler ou copiar |
 | Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
 | Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |

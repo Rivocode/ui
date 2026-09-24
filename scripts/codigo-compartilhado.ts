@@ -70,6 +70,8 @@ const COPIA_DECLARADA: Record<string, string> = {
   leavesOf:
     "corpo igual por acaso: os dois `TreeNode` sao tipos diferentes (`label` e `ReactNode` no web e `string` no nativo, e o nativo nao tem `search`). Para atravessar teria que virar generica sobre `{ id, children }`, o que muda a assinatura exportada dos dois pacotes.",
   TONE: "mapa de classe, e nao calculo. O `check:grupos` ja olha classe nos dois lados.",
+  SIZE: "mapa de classe, e nao calculo, como o TONE. No `src/shared/` ele sairia do `@source` do Tailwind nos tres CSS que compilam o web.",
+  WEIGHT: "mapa de classe, e nao calculo, pelo mesmo motivo do SIZE.",
   RivoContext: "identico por inevitabilidade da API do React, e o tipo dele e de cada pacote.",
   normalizeColor:
     "puro e copia de verdade: fila do ColorPicker, junto com fromWheel, nameOf, valueOf e HEX.",

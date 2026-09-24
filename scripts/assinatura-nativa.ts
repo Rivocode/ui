@@ -575,6 +575,30 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  Link: {
+    rows: [
+      {
+        web: "render",
+        native: "onPress",
+        note: 'o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar',
+      },
+      {
+        web: "underline",
+        native: null,
+        note: "o sublinhado é fixo: sem ponteiro, não existe o `hover`",
+      },
+    ],
+  },
+  Text: {
+    rows: [
+      {
+        web: "render",
+        native: null,
+        note: "o elemento é sempre `Text`; o bloco é uma `View` em volta",
+      },
+      { web: null, native: "font", note: "escolhe o papel de fonte, que o web resolve por classe" },
+    ],
+  },
   MaskedInput: {
     rows: [
       {

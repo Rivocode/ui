@@ -125,6 +125,7 @@ export const ENTRIES: Entry[] = ALL.filter((entry) => !entry.partOf)
  * depois o que entra nela, depois o que responde de volta. */
 const FAMILY_ORDER = [
   'Fundação',
+  'Tipografia',
   'Ações',
   'Formulário',
   'Estrutura',

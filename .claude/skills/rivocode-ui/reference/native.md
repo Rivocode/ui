@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**151 divergências de assinatura em 67 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**155 divergências de assinatura em 69 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -160,6 +160,8 @@ escritos em lugar nenhum.
 | `InputGroup` | — | `value` | a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro |
 | `Item` | — | `title` | `title`, `description`, `media` e `actions` viram props: sem `ItemTitle`, `ItemDescription` e `ItemMedia` |
 | `Item` | `interactive` | `onPress` | quem torna a linha tocável é o `onPress`, e não um booleano |
+| `Link` | `render` | `onPress` | o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar |
+| `Link` | `underline` | — | o sublinhado é fixo: sem ponteiro, não existe o `hover` |
 | `MaskedInput` | `mask` | `mask` | no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é sempre molde literal, o dígito é `#` e letra ou dígito é `*` |
 | `MaskedInput` | `value` | `value` | no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo |
 | `MaskedInput` | `onValueChange` | `onValueChange` | no web chega `(masked, raw)`; no nativo chega só o limpo |
@@ -218,6 +220,8 @@ escritos em lugar nenhum.
 | `Tabs` | `value` | `value` | o valor é `string`, e não o genérico do web |
 | `TagsInput` | `labels` | `removeLabel` | uma função só, e não um objeto de rótulos |
 | `TagsInput` | — | `max` | o teto de fichas é prop, porque não há como cortar por CSS |
+| `Text` | `render` | — | o elemento é sempre `Text`; o bloco é uma `View` em volta |
+| `Text` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `Textarea` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText`, como o `Input` |
 | `TimeField` | — | `label` | `label` é obrigatório, e as setas viram dois botões de passo |
 | `TimePicker` | — | `label` | `label` é obrigatório, e a folha tem duas colunas: NÃO embute o `TimeField` |
@@ -336,7 +340,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**94 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-24:** 72 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**97 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-24:** 75 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -380,11 +384,13 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `FilterChip` | ✔ traduz | a faixa de toque tem 44pt e a pilula pintada continua com 28; `size` muda o desenho, nunca o alvo |
 | `Form` | ✔ traduz | vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText` |
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
+| `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
 | `Item` | ✔ traduz | `title`, `description`, `media` e `actions` como props; o corte com reticências é `numberOfLines`, que lá é prop e não classe |
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
+| `Link` | ✔ traduz | `Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router |
 | `MaskedInput` | ✔ traduz | o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
@@ -421,6 +427,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta; a ficha nova entra crescendo e a que sai some por fade |
+| `Text` | ✔ traduz | o mesmo `Text` que as outras peças vestem, com `size`, `tone`, `weight`, `truncate` e `lineClamp`; sem eles, herda do `Text` de fora |
 | `Textarea` | ✔ traduz | `rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange` |
 | `TimeField` | ✔ traduz | digita com mascara e teclado numerico; as setas viram dois botoes de passo, no molde do `NumberField` |
 | `TimePicker` | ✔ traduz | gatilho mais folha de baixo com duas colunas; NAO embute o TimeField, ao contrario do web |

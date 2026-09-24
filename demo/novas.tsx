@@ -14,15 +14,18 @@ import {
   FieldLabel,
   FilterBar,
   FilterChip,
+  Heading,
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
+  Link,
   Popconfirm,
   QueryBoundary,
   RivoProvider,
   Skeleton,
+  Text,
   TimeField,
   TimePicker,
   VirtualList,
@@ -452,6 +455,105 @@ function Lists() {
   );
 }
 
+function Headings() {
+  return (
+    <div className="flex flex-col gap-2">
+      <Heading level={2}>Notas fiscais</Heading>
+      <Heading level={3}>Emitidas em agosto</Heading>
+      <Heading level={4}>Clínica São Lucas</Heading>
+      <Heading level={2} size="md">
+        Nivel 2 no corpo md
+      </Heading>
+      <div className="w-56">
+        <Heading level={3} truncate>
+          Clínica São Lucas Serviços Médicos Ltda
+        </Heading>
+      </div>
+    </div>
+  );
+}
+
+function Texts() {
+  return (
+    <div className="flex max-w-md flex-col gap-2">
+      <Text size="base" tone="neutral">
+        Texto corrido, com{" "}
+        <Text render={<span />} weight="semibold">
+          R$ 48.310,00
+        </Text>{" "}
+        no meio.
+      </Text>
+      <Text size="base" tone="muted">
+        Secundario, no tom muted.
+      </Text>
+      <Text size="sm" tone="subtle">
+        Legenda no tom subtle.
+      </Text>
+      <div className="flex flex-wrap gap-4">
+        <Text size="sm" tone="accent">
+          accent
+        </Text>
+        <Text size="sm" tone="success">
+          success
+        </Text>
+        <Text size="sm" tone="warning">
+          warning
+        </Text>
+        <Text size="sm" tone="danger">
+          danger
+        </Text>
+        <Text size="sm" tone="info">
+          info
+        </Text>
+      </div>
+      <div className="w-64 rounded-md bg-surface-raised p-3 shadow-2">
+        <Text size="sm" tone="success">
+          success sobre surface-raised
+        </Text>
+        <Text size="sm" tone="warning">
+          warning sobre surface-raised
+        </Text>
+        <Text size="sm" tone="info">
+          info sobre surface-raised
+        </Text>
+      </div>
+      <div className="w-64">
+        <Text size="sm" tone="muted" lineClamp={2}>
+          {REASONS[0]}
+        </Text>
+      </div>
+    </div>
+  );
+}
+
+function Links() {
+  return (
+    <div className="flex max-w-md flex-col gap-3">
+      <Text size="base" tone="muted">
+        Veja o <Link href="#">espelho da nota</Link> ou o{" "}
+        <Link href="https://www.gov.br/nfse" external>
+          Portal da NFS-e
+        </Link>
+        .
+      </Text>
+      <nav aria-label="Rodape" className="flex gap-4 text-sm">
+        <Link href="#" tone="neutral" underline="hover">
+          Termos
+        </Link>
+        <Link href="#" tone="muted" underline="hover">
+          Privacidade
+        </Link>
+      </nav>
+      <Text size="sm" tone="danger">
+        Nota rejeitada.{" "}
+        <Link href="#" tone="inherit">
+          Ver motivo
+        </Link>
+      </Text>
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -470,6 +572,18 @@ function Sample({
       </p>
 
       <div className="flex flex-col gap-12">
+        <Block title="Heading">
+          <Headings />
+        </Block>
+
+        <Block title="Text">
+          <Texts />
+        </Block>
+
+        <Block title="Link">
+          <Links />
+        </Block>
+
         <Block title="QueryBoundary">
           <Boundaries />
         </Block>

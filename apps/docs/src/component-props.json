@@ -10381,6 +10381,34 @@
       }
     ]
   },
+  "Heading": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "level",
+        "type": "HeadingLevel",
+        "required": true,
+        "note": "O lugar do titulo no esboco da pagina, de 1 a 6: decide a tag, de `h1` a `h6`, e e o que o leitor de tela usa para saltar de secao em secao."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLHeadingElement>",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "HeadingSize",
+        "required": false,
+        "note": "O corpo na escala da casa, de `sm` (13px) a `3xl` (30px)."
+      },
+      {
+        "name": "truncate",
+        "type": "boolean",
+        "required": false,
+        "note": "Corta em uma linha com reticencias, para titulo dentro de coluna estreita."
+      }
+    ]
+  },
   "Indicator": {
     "forwardsRoot": true,
     "props": [
@@ -12000,6 +12028,46 @@
         "required": false,
         "note": "The width of chart container.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "Link": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "external",
+        "type": "boolean",
+        "required": false,
+        "note": "Abre em outra aba, com `rel=\"noopener noreferrer\"`, desenha a seta de saida e avisa o leitor de tela com o `externalLabel`."
+      },
+      {
+        "name": "externalLabel",
+        "type": "string",
+        "required": false,
+        "note": "O aviso que o leitor de tela ouve depois do texto de um link `external`."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLAnchorElement>",
+        "required": false
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento mantendo a aparencia, para o link do router: `<Link render={<RouterLink to=\"/notas\" />}>`."
+      },
+      {
+        "name": "tone",
+        "type": "LinkTone",
+        "required": false,
+        "note": "O papel de cor."
+      },
+      {
+        "name": "underline",
+        "type": "\"always\" | \"hover\"",
+        "required": false,
+        "note": "`always` sublinha sempre, e e o que a pagina precisa quando o link mora no meio de uma frase: a cor sozinha nao basta para quem nao distingue a cor."
       }
     ]
   },
@@ -23027,6 +23095,52 @@
         "required": false,
         "note": "As fichas de agora, quando quem usa guarda a lista.",
         "since": "0.5.0"
+      }
+    ]
+  },
+  "Text": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "lineClamp",
+        "type": "1 | 2 | 3 | 4 | 5 | 6",
+        "required": false,
+        "note": "Corta depois de tantas linhas, de 1 a 6, com reticencias na ultima."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLParagraphElement>",
+        "required": false
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento mantendo a aparencia: `<Text render={<span />}>` para o trecho dentro de uma frase, `<Text render={<div />}>` para o bloco que contem outro bloco."
+      },
+      {
+        "name": "size",
+        "type": "TextSize",
+        "required": false,
+        "note": "O corpo na escala da casa, de `xs` (12px) a `lg` (18px); acima disso e titulo, e o titulo e o `Heading`."
+      },
+      {
+        "name": "tone",
+        "type": "TextTone",
+        "required": false,
+        "note": "O papel de cor: `neutral` e o texto corrido, `muted` o secundario, `subtle` a legenda, e os tons de estado sao os `-text`, os que se leem sobre o fundo da pagina."
+      },
+      {
+        "name": "truncate",
+        "type": "boolean",
+        "required": false,
+        "note": "Corta em uma linha com reticencias."
+      },
+      {
+        "name": "weight",
+        "type": "TextWeight",
+        "required": false,
+        "note": "O peso da letra."
       }
     ]
   },

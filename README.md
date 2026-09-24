@@ -113,9 +113,17 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-94 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+97 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
+
+### Tipografia
+
+| Peça      | Para que serve                                                                    |
+| --------- | --------------------------------------------------------------------------------- |
+| `Heading` | título de `h1` a `h6`, com o tamanho separado do nível                            |
+| `Text`    | parágrafo ou trecho nos tons de texto do tema; sem `size` e `tone`, herda da frase |
+| `Link`    | âncora sublinhada, `external` com aviso a quem ouve, e o router pelo `render`     |
 
 ### Ação
 

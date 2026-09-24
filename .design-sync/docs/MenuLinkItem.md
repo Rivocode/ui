@@ -13,7 +13,7 @@ navegador mostra para onde o item leva antes do clique.
 ```tsx
 <MenuContent>
   <MenuLinkItem href="/perfil">Meu perfil</MenuLinkItem>
-  <MenuLinkItem render={<Link to="/assinatura" />}>Assinatura</MenuLinkItem>
+  <MenuLinkItem render={<NavLink to="/assinatura" />}>Assinatura</MenuLinkItem>
 </MenuContent>
 ```
 

@@ -305,6 +305,20 @@ export {
 } from "./components/timeline";
 export { Code, CodeBlock, type CodeProps, type CodeBlockProps } from "./components/code";
 export {
+  Heading,
+  type HeadingLevel,
+  type HeadingProps,
+  type HeadingSize,
+} from "./components/heading";
+export {
+  Text,
+  type TextProps,
+  type TextSize,
+  type TextTone,
+  type TextWeight,
+} from "./components/text";
+export { Link, type LinkProps, type LinkTone } from "./components/link";
+export {
   RelativeTime,
   type RelativeTimeProps,
   type RelativeUnit,

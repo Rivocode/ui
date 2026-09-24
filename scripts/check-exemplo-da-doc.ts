@@ -15,7 +15,7 @@
  *
  * Ela nao compila os blocos: confere que todo `useAlgo(` e toda tag `<Algo`
  * citados existam na SUPERFICIE PUBLICA dos dois pacotes. Nome de fora que nao
- * e nosso - o `useState` do React, o `<Svg>` do react-native-svg, o `<Link>`
+ * e nosso - o `useState` do React, o `<Svg>` do react-native-svg, o `<NavLink>`
  * do roteador - mora em `FOREIGN`, e essa lista e fechada de proposito: ela
  * nomeia o que vem de biblioteca de terceiro, e NUNCA abriga excecao nossa.
  * Peca nossa citada errada se conserta na pagina ou no `index.ts`, jamais
@@ -78,7 +78,7 @@ export const FOREIGN = new Set([
   "useSyncExternalStore",
   "useLayoutEffect",
   "useForm",
-  "Link",
+  "NavLink",
   "Svg",
   "TriangleAlert",
   "FileText",
