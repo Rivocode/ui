@@ -64,6 +64,11 @@ export const TOOL_ONLY: Array<{ file: string; mark: string; why: string }> = [
     why: "As consequencias escritas de cada papel faltando - paragrafos de portugues, um por papel. E material de diagnostico do CLI, e o que ele diagnostica e um tema que ainda nao subiu.",
   },
   {
+    file: "src/tokens/dtcg.ts",
+    mark: "não tem tipo no DTCG 2025.10",
+    why: "A traducao das tres camadas para o JSON do W3C Design Tokens. Serve ao `rivocode-ui tokens`, ao `build:tokens` e ao site; o navegador de quem usa as pecas ja tem os tokens como CSS, e nao tem o que fazer com um parser de CSS e um escritor de JSON.",
+  },
+  {
     file: "src/tokens/theme-roles.ts",
     mark: "--rc-text-hero",
     why: "O catalogo de papeis que o `gen:temas` escreve a partir do CSS. Em tempo de execucao o navegador ja tem os papeis: eles sao o proprio CSS carregado. A lista existe para o CLI cobrar o tema de quem instala.",

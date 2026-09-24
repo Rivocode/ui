@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { cpSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -14,6 +14,7 @@ import {
   resolveTokens,
 } from "./lib/contrast";
 import { type ThemeReport, checkThemes, reportOf, themeBlocks } from "./lib/theme-check";
+import { type CssSource, exportDtcg, readCssTree } from "./tokens/dtcg";
 import { THEME_ROLES } from "./tokens/theme-roles";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -21,6 +22,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SKILL_SOURCE = resolve(HERE, "../skill");
 const AGENT = resolve(HERE, "../agent/rivocode-ui.md");
 const PACKAGE = resolve(HERE, "../package.json");
+const HOUSE_CSS = resolve(HERE, "preset.css");
 
 const HELP = `
 @rivocode/ui
@@ -31,6 +33,10 @@ const HELP = `
   rivocode-ui check-theme <css...>     confere os papéis e mede o contraste do seu tema
   rivocode-ui check-theme <mapa.ts>    o mesmo, no mapa que o React Native veste
   rivocode-ui check-theme <...> --json a mesma conferência, em JSON, para o seu CI
+
+  rivocode-ui tokens --out <pasta>     escreve os tokens da casa em JSON DTCG 2025.10
+  rivocode-ui tokens <css...> --out <pasta>
+                                       o mesmo, com o seu tema no lugar dos da casa
 
 A skill ensina a biblioteca a um agente: o contrato, a escolha entre as peças
 parecidas, e os endereços da documentação crua.
@@ -48,6 +54,12 @@ do web, e o comando junta as declarações por seletor; \`.ts\`, \`.mjs\` ou \`.
 recebe, e o comando importa o módulo. São dois formatos do mesmo tema, e um
 comando só para os dois — dois CLIs divergiriam na primeira correção que só um
 deles recebesse.
+
+O tokens traduz as três camadas para o formato do W3C Design Tokens Community
+Group, que o Tokens Studio e a importação de variáveis do Figma leem direto: um
+arquivo para a paleta, um para a escala, um por densidade, um por tema, e um
+resolver que diz como juntá-los. O papel continua apontando para a paleta por
+alias, como no CSS.
 `;
 
 function version() {
@@ -370,12 +382,96 @@ async function checkTheme(args: string[]) {
   if (failed) process.exit(1);
 }
 
+function tokens(args: string[]) {
+  const options = new Map<string, string>();
+  const files: string[] = [];
+
+  for (let at = 0; at < args.length; at++) {
+    const argument = args[at]!;
+    if (argument === "--out" || argument === "--format") {
+      const value = args[at + 1];
+      if (!value || value.startsWith("-")) {
+        console.error(`Falta o valor de ${argument}.`);
+        process.exit(1);
+      }
+      options.set(argument, value);
+      at++;
+    } else if (argument.startsWith("-")) {
+      console.error(`Não conheço ${argument}. O tokens aceita --out e --format.`);
+      process.exit(1);
+    } else {
+      files.push(argument);
+    }
+  }
+
+  const format = options.get("--format") ?? "dtcg";
+  if (format !== "dtcg") {
+    console.error(`Não sei escrever o formato "${format}". Por enquanto é só dtcg.`);
+    process.exit(1);
+  }
+
+  const out = options.get("--out");
+  if (!out) {
+    console.error("Diga onde eu escrevo: rivocode-ui tokens --out tokens");
+    process.exit(1);
+  }
+
+  const strange = files.filter((file) => extname(file) !== CSS);
+  if (strange.length > 0) {
+    console.error(`Não sei ler ${strange.join(", ")}. O tokens lê o tema em .css, a camada 3 do web.`);
+    process.exit(1);
+  }
+
+  const result = exportDtcg(readCssTree(HOUSE_CSS), cssSources(files) as CssSource[]);
+
+  if (result.themes.length === 0) {
+    console.error(`Nenhum [data-rc-theme="..."] em ${files.join(", ")}.`);
+    console.error(
+      "É o seletor que declara a camada 3. Sem ele eu escreveria a paleta e a escala da casa e diria que exportei o seu tema.",
+    );
+    process.exit(1);
+  }
+
+  try {
+    mkdirSync(out, { recursive: true });
+    for (const [name, content] of Object.entries(result.files)) {
+      writeFileSync(join(out, name), `${JSON.stringify(content, undefined, 2)}\n`);
+    }
+  } catch (error) {
+    console.error(`Não consegui escrever em ${out}.`);
+    console.error(error instanceof Error ? error.message : error);
+    process.exit(1);
+  }
+
+  console.log(
+    `${count(result.count, "token", "tokens")} em ${Object.keys(result.files).length} arquivos, em ${out}: ` +
+      `${result.themes.join(", ")}.`,
+  );
+
+  if (result.skipped.length > 0) {
+    console.log("\nFicaram de fora, porque o formato não tem como dizer:");
+    const grouped = new Map<string, { scopes: string[]; reason: string }>();
+    for (const item of result.skipped) {
+      const key = `${item.variable}: ${item.value}`;
+      const seen = grouped.get(key) ?? { scopes: [], reason: item.reason };
+      seen.scopes.push(item.scope);
+      grouped.set(key, seen);
+    }
+    for (const [key, { scopes, reason }] of grouped) {
+      console.log(`  ${key}   (${scopes.join(", ")})`);
+      console.log(wrap(reason, "    ").join("\n"));
+    }
+  }
+}
+
 const [command, ...rest] = process.argv.slice(2);
 
 if (command === "skill") {
   install(rest.includes("--global") || rest.includes("-g"));
 } else if (command === "check-theme") {
   await checkTheme(rest);
+} else if (command === "tokens") {
+  tokens(rest);
 } else if (command === "--help" || command === "-h" || command === undefined) {
   console.log(HELP.trim());
 } else {

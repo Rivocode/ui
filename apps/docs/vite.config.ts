@@ -7,6 +7,7 @@ import { agentFiles, readDocs, readTypes, type Piece } from './src/agent-docs'
 import { firstSentence } from './src/doc-text'
 import { withoutAutoOpen } from './src/example-source'
 import { findParent } from './src/parts'
+import { exportDtcg, readCssTree } from '../../src/tokens/dtcg.ts'
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
@@ -225,8 +226,50 @@ function iconGallery(): Plugin {
   }
 }
 
+/**
+ * Os tokens da casa em JSON DTCG, em `/tokens/<arquivo>`.
+ *
+ * Saem da mesma funcao que o `rivocode-ui tokens` e o `build:tokens` do pacote
+ * chamam, lendo o mesmo `src/preset.css`: o site nao guarda copia comitada, e
+ * por isso nao ha copia que possa envelhecer. O endereco e o que o guia de
+ * tokens ensina a colar no Tokens Studio.
+ */
+function designTokens(): Plugin {
+  const build = () => exportDtcg(readCssTree(here('../../src/preset.css'))).files
+  const json = (content: object) => `${JSON.stringify(content, undefined, 2)}\n`
+
+  return {
+    name: 'rivocode-tokens-dtcg',
+
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        const hit = /^\/tokens\/([\w.-]+\.json)$/.exec((req.url ?? '').split('?')[0])
+        const content = hit ? build()[hit[1]] : undefined
+        if (!content) return next()
+        res.setHeader('content-type', 'application/json; charset=utf-8')
+        res.end(json(content))
+      })
+    },
+
+    generateBundle() {
+      for (const [name, content] of Object.entries(build())) {
+        this.emitFile({ type: 'asset', fileName: `tokens/${name}`, source: json(content) })
+      }
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), rawDocs(), previewsClosed(), catalogIndex(), propsByPage(), iconGallery()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    rawDocs(),
+    previewsClosed(),
+    catalogIndex(),
+    propsByPage(),
+    iconGallery(),
+    designTokens(),
+  ],
   resolve: {
     // A biblioteca resolve para a fonte, e nao para `dist`: a doc passa a
     // refletir o que esta escrito agora, sem build antes, e o HMR alcanca os

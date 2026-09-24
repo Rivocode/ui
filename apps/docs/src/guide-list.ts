@@ -24,6 +24,11 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     summary: 'As três camadas de token, e um tema de cliente do começo ao fim.',
   },
   {
+    slug: 'tokens',
+    title: 'Tokens no Figma',
+    summary: 'As três camadas em JSON DTCG, para o Tokens Studio e as variáveis do Figma.',
+  },
+  {
     slug: 'densidade',
     title: 'Densidade',
     summary: 'A mesma tela em duas alturas, sem dois catálogos.',
