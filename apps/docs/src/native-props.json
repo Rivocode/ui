@@ -1113,6 +1113,68 @@
       }
     ]
   },
+  "CurrencyInput": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "onValueChange",
+        "type": "(cents: number | null) => void",
+        "required": true,
+        "note": "Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia."
+      },
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": true,
+        "note": "O valor em centavos inteiros: `123456` e R$ 1.234,56."
+      },
+      {
+        "name": "allowNegative",
+        "type": "boolean",
+        "required": false,
+        "note": "Aceita valor negativo, com o `-` em qualquer ponto do campo; um segundo `-` tira o sinal."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a raiz, que embrulha o campo e o \"R$\"."
+      },
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "A familia do provider que veste o que se digita."
+      },
+      {
+        "name": "inputClassName",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O maior valor aceito, em centavos."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "note": "O menor valor aceito, em centavos."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false
+      }
+    ]
+  },
   "DataList": {
     "entry": "native/src/index.ts",
     "props": [

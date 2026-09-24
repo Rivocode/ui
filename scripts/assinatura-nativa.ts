@@ -794,6 +794,20 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  CurrencyInput: {
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "vira obrigatório, com `onValueChange`: não há `defaultValue`",
+      },
+      {
+        web: "classNames",
+        native: "inputClassName",
+        note: "`className` veste a raiz e `inputClassName` o campo; o \"R$\" não se veste",
+      },
+    ],
+  },
   PostalCodeField: {
     rows: [
       {

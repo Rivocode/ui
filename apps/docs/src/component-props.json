@@ -9532,6 +9532,64 @@
       }
     ]
   },
+  "CurrencyInput": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "allowNegative",
+        "type": "boolean",
+        "required": false,
+        "note": "Aceita valor negativo."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"prefix\", string>>",
+        "required": false,
+        "note": "Classe por parte: `input` e `prefix` (o \"R$\")."
+      },
+      {
+        "name": "defaultValue",
+        "type": "number | null",
+        "required": false,
+        "note": "O valor inicial em centavos, quando o campo controla o proprio estado."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "O maior valor aceito, em centavos."
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "note": "O menor valor aceito, em centavos."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((cents: number | null) => void)",
+        "required": false,
+        "note": "Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "number | null",
+        "required": false,
+        "note": "O valor em centavos inteiros: `123456` e R$ 1.234,56."
+      }
+    ]
+  },
   "DataTable": {
     "forwardsRoot": true,
     "props": [

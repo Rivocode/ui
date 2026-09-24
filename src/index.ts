@@ -213,6 +213,7 @@ export {
 } from "./components/alert-dialog";
 export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
 export { MaskedInput, type MaskedInputProps } from "./components/masked-input";
+export { CurrencyInput, type CurrencyInputProps } from "./components/currency-input";
 export { PostalCodeField, type PostalCodeFieldProps } from "./components/postal-code-field";
 export {
   Questionnaire,

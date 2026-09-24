@@ -505,6 +505,19 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega",
   },
+  CurrencyInput: {
+    state: "traduz",
+    note: "os mesmos centavos, a mesma digitação da direita e a mesma leitura do colado; o campo é controlado",
+    page:
+      "Traduz, com a mesma conta: o valor em centavos, a digitação que anda da direita para a " +
+      "esquerda, o `-` que põe e tira o sinal e a leitura do texto colado moram num arquivo só, " +
+      "compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e " +
+      "`onValueChange` são obrigatórios.\n\n" +
+      "O React Native não avisa quando a pessoa cola, então o campo lê a seleção de antes da " +
+      "troca para saber o que entrou por cima. Com `allowNegative`, o teclado passa a ser o de " +
+      "números e pontuação, que é o que tem o sinal no iPhone. Não há `name`: formulário " +
+      "escondido não existe no celular.",
+  },
   PostalCodeField: {
     state: "traduz",
     note: "a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação",

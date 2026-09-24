@@ -46,6 +46,11 @@ guarda: CPF e CNPJ **sem** pontuação, e-mail em minúsculas, celular com `+55`
 a chave aleatória com os hifens. Tire a máscara antes de conferir. O copia e
 cola sai de `buildPixPayload`, e o `PixCode` o desenha.
 
+Dinheiro é `CurrencyInput`, que entrega centavos inteiros (`number | null`)
+pelo `onValueChange` e entra no `FormField` por `{...forValue(field)}`, com o
+schema em `z.number().int()`. `min` e `max` são em centavos e só marcam o campo
+inválido: a mensagem é do schema.
+
 Boleto é `MaskedInput` com `mask="boleto"`, que pontua a linha de banco e troca
 sozinho para a de convênio quando o primeiro dígito é 8. `isValidBoletoLine`
 confere todos os verificadores, e `parseBoleto(linha)` devolve `bank`,

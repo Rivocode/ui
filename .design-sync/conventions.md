@@ -354,6 +354,12 @@ o copia e cola estatico no padrao BR Code do Banco Central, com o CRC16 no fim;
 pontuacao, e-mail em minusculas, celular com `+55`, chave aleatoria com os
 hifens). O desenho e o `PixCode`.
 
+Dinheiro digitado e o `CurrencyInput`: `value` e `onValueChange` em centavos
+inteiros (`number | null`, vazio e `null`), `min` e `max` em centavos que so
+marcam invalido, `allowNegative` e `name` que poe os centavos num campo
+escondido. No `FormField`, `{...forValue(field)}`. O nativo tem o mesmo nome,
+controlado.
+
 O boleto tem tres: `isValidBoletoLine` confere a linha digitavel inteira - a de
 banco, de 47 digitos, com os tres campos no modulo 10 e o verificador geral no
 11, e a de convenio, de 48 e comecando com 8, no modulo que a terceira casa

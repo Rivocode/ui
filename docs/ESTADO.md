@@ -36,8 +36,8 @@ com procedencia - o endpoint de attestations do npm responde para
 em `2812b47`, e o `origin` tem **25 tags**; `gh release list` continua vazio.
 
 O gate esta verde. `bun run check` roda **trinta e cinco verificacoes** mais a
-suite e sai com codigo zero; a suite tem **1868 testes em 157 arquivos**, com
-11386 chamadas de `expect`, dos quais 575 testes em 46 arquivos sao do nativo.
+suite e sai com codigo zero; a suite tem **1932 testes em 161 arquivos**, com
+11922 chamadas de `expect`, dos quais 584 testes em 47 arquivos sao do nativo.
 
 **Parado esperando uma pessoa: o PR agrupado do Dependabot (#8).** Ele sobe 21
 dependencias e fica vermelho por tres motivos, medidos um a um trocando so a
@@ -497,11 +497,11 @@ O que cada guarda mede hoje, em numero:
 | `check:demo`             | 107 de 110 pecas na vitrine, em 17 paginas                                      |
 | `check:readme`           | 70 de 110 pecas citadas no `README.md`                                         |
 | `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois   |
-| `check:compartilhado`    | 4 arquivos de `src/shared/` espelhados, sem import de plataforma              |
-| `check:testes`           | 1868 testes em 157 arquivos, e e o numero que a home exibe                     |
-| `bun test`               | 1868 passam, 0 falham, 11386 `expect`; 575 sao do nativo, em 46 arquivos       |
+| `check:compartilhado`    | 11 arquivos de `src/shared/` espelhados, sem import de plataforma             |
+| `check:testes`           | 1932 testes em 161 arquivos, e e o numero que a home exibe                     |
+| `bun test`               | 1932 passam, 0 falham, 11922 `expect`; 584 sao do nativo, em 47 arquivos       |
 
-Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **91 pecas e 506
+Fora do gate, no job `nativo` da CI: `check:props:nativo`, com **101 pecas e 609
 props** no `native-props.json` comitado - o catalogo que da ao
 `check:assinatura` o lado nativo da comparacao.
 
@@ -600,7 +600,7 @@ assinaturas visuais desatualizadas tambem cairam**: `bun run visual` responde
 o `@rivocode/ui-native` nao gerar tabela propria, este arquivo fica de fora".
 
 **Agora gera.** `apps/docs/src/native-props.json` existe desde 28/08, hoje com
-91 pecas e 506 props, e `check:props:nativo` o mantem em dia no job `nativo` da CI.
+101 pecas e 609 props, e `check:props:nativo` o mantem em dia no job `nativo` da CI.
 A condicao escrita na propria excecao deixou de valer, e o efeito e concreto: os
 exemplos `tsx` de `reference/native.md` sao o unico pedaco da skill cujas props
 ninguem confere - e e justamente o arquivo onde `Button` e `Card` tem props
@@ -756,7 +756,7 @@ estavam todas verdes, e todas honestamente relatadas como verdes.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install
-bun run check        # trinta e cinco verificacoes mais os 1868 testes
+bun run check        # trinta e cinco verificacoes mais os 1932 testes
 bun run build        # ha quebra que so aparece ao empacotar
 bun run shot         # gera a vitrine e os retratos em demo/dist/
 bun run visual       # compara com as 44 assinaturas comitadas
@@ -799,8 +799,8 @@ bun run check:retratos                             # 12 retratos de secao sobre 
 bun run check:receita                              # 7 arquivos de receita, 5 peers, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
 bun run check:piso                                 # os 2 fora do piso, com o motivo
-bun run check:compartilhado                        # 4 espelhados, 16 copias declaradas
-node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 91 pecas, 506 props - o check:props:nativo so roda no job `nativo` da CI
+bun run check:compartilhado                        # 11 espelhados, 16 copias declaradas
+node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 101 pecas, 609 props - o check:props:nativo so roda no job `nativo` da CI
 bun run visual                                     # 44 retratos; em 24/09, 4 divergem do comitado - veja "O que nao foi medido"
 node -e 'p=require("./demo/assinaturas.json");console.log(Object.keys(p).length)'       # 44, sendo 32 de vitrine e 12 de secao
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 36, ou seja 35 mais bun test

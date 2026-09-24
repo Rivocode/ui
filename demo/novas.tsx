@@ -27,6 +27,7 @@ import {
   CardTitle,
   Carousel,
   CookieConsent,
+  CurrencyInput,
   DataTable,
   Field,
   FieldDescription,
@@ -733,6 +734,42 @@ function Typed({
   );
 }
 
+function Currencies() {
+  const [charge, setCharge] = useState<number | null>(248000);
+  const [adjustment, setAdjustment] = useState<number | null>(-1590);
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <Field>
+        <FieldLabel>Valor da cobranca</FieldLabel>
+        <CurrencyInput value={charge} onValueChange={setCharge} />
+        <FieldDescription>{charge === null ? "Vazio" : `${charge} centavos`}</FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel>Vazio</FieldLabel>
+        <CurrencyInput />
+      </Field>
+      <Field>
+        <FieldLabel>Ajuste com sinal</FieldLabel>
+        <CurrencyInput value={adjustment} onValueChange={setAdjustment} allowNegative />
+      </Field>
+      <Field invalid>
+        <FieldLabel>Acima do limite</FieldLabel>
+        <CurrencyInput defaultValue={750000} max={500000} />
+        <FieldDescription>Ate R$ 5.000,00 por transferencia.</FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel>Pequeno</FieldLabel>
+        <CurrencyInput size="sm" defaultValue={1990} />
+      </Field>
+      <Field disabled>
+        <FieldLabel>Desabilitado</FieldLabel>
+        <CurrencyInput defaultValue={48000} disabled />
+      </Field>
+    </div>
+  );
+}
+
 function PostalCodes() {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -1154,6 +1191,10 @@ function Sample({
 
         <Block title="PostalCodeField">
           <PostalCodes />
+        </Block>
+
+        <Block title="CurrencyInput">
+          <Currencies />
         </Block>
 
         <Block title="CookieConsent">

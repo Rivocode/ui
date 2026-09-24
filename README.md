@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-120 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+121 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -141,7 +141,8 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | ------------------------------- | -------------------------------------------------------------------------- |
 | `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
 | `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
-| `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, dinheiro, molde à mão |
+| `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, boleto, molde à mão   |
+| `CurrencyInput`                 | dinheiro em centavos inteiros, digitado da direita, com sinal e limite     |
 | `PostalCodeField`               | CEP que busca o endereço pela `lookup` que você escreve, e preenche o resto |
 | `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
 | `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
@@ -334,16 +335,17 @@ O molde usa `9` para dígito, `A` para letra e `*` para os dois. O resto é
 literal, e a máscara põe sozinha.
 
 ```tsx
-import { MaskedInput, aplicarMascara, emCentavos } from "@rivocode/ui";
+import { CurrencyInput, MaskedInput } from "@rivocode/ui";
 
 <MaskedInput mask="cnpj" onValueChange={(comPontuacao, cru) => guardar(cru)} />
-<MaskedInput mask="moeda" onValueChange={(texto) => guardar(emCentavos(texto))} />
 <MaskedInput mask="99-99/9999" />
+<CurrencyInput value={centavos} onValueChange={setCentavos} />
 ```
 
 **Guarde o valor cru**, não o pontuado: a pontuação muda com o tempo e o dado
-deixa de bater. O dinheiro sai em centavos, para o servidor receber inteiro em
-vez de ponto flutuante.
+deixa de bater. O dinheiro é o `CurrencyInput`, que entrega centavos inteiros,
+para o servidor receber inteiro em vez de ponto flutuante; ele lê também o
+valor colado como `R$ 1.234,56`.
 
 Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
 `cartao`, `boleto` e `moeda`. O telefone troca de molde entre o fixo e o celular
