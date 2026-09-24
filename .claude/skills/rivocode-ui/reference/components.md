@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 97 peças. O índice de todas fica em
+O catálogo tem 99 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -15,6 +15,8 @@ exemplos que rodam e a tabela de props.
 | Situação | Peça certa | Por quê |
 |---|---|---|
 | Aviso que fica na tela | `Alert` | O `Toast` passa, e quem estava olhando para outro canto perde |
+| Aviso da página inteira: manutenção, fatura em atraso, modo de teste | `Banner` | Faixa de largura total no topo da área; o `Alert` mora junto do trecho de que fala |
+| Botão só com ícone | `IconButton` | O `label` é obrigatório e vira o nome; `tooltip` mostra a dica sem repetir o nome |
 | Confirmação destrutiva | `AlertDialog` | Ele exige resposta; o `Dialog` deixa fechar clicando fora |
 | Escolha entre poucas opções fixas | `Select` | O `Combobox` pede digitação sem precisar |
 | Lista longa, ou vinda do servidor | `Combobox` | Não cabe na cabeça de quem escolhe |

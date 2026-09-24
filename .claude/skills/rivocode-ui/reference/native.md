@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**155 divergências de assinatura em 69 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**163 divergências de assinatura em 71 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -96,6 +96,9 @@ escritos em lugar nenhum.
 | `Autocomplete` → `Combobox` | `mode` | — | não há completar inline: a folha filtra e a pessoa toca |
 | `Autocomplete` → `Combobox` | `items` | `items` | grupos (`Group[]`) não portam: a folha recebe uma lista rasa de `{ label, value }` |
 | `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
+| `Banner` | `description` | `description` | `title` e `description` viram `string`: texto no nativo mora dentro de um `Text` |
+| `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
+| `Banner` | `classNames` | — | um `className` só, na raiz da faixa |
 | `Button` | `size` | `size` | `cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop` |
 | `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `Calendar` | — | `value` | o web é o react-day-picker (`mode`, `selected`, `onSelect`); o nativo é um mês desenhado à mão com `value`/`onValueChange` |
@@ -152,6 +155,11 @@ escritos em lugar nenhum.
 | `Form` | — | `children` | `children` é função e recebe `{ submit, isSubmitting }`: nada envia sozinho, porque não há `<form>` nem `type="submit"` |
 | `FormField` | `label` | `label` | `label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle |
 | `FormField` | `description` | `description` | `description` é `string` |
+| `IconButton` | `label` | `accessibilityLabel` | o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele |
+| `IconButton` | `variant` | `variant` | `outline` não porta, como no `Button` nativo |
+| `IconButton` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
+| `IconButton` | `tooltip` | — | no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto |
+| `IconButton` | `tooltipSide` | — | sai junto com o `tooltip` |
 | `Indicator` | `label` | `label` | `label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase |
 | `Indicator` | `classNames` | `badgeClassName` | uma classe só, a da pastilha: não há `classNames` no pacote nativo |
 | `Input` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText` |
@@ -340,7 +348,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**97 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-24:** 75 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**99 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-24:** 77 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -351,6 +359,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
 | `Avatar` | ✔ traduz | `src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar |
 | `Badge` | ✔ traduz | os mesmos tons; o texto e filho; NAO tem `size`, porque no nativo so ha uma densidade |
+| `Banner` | ✔ traduz | `title` e `description` em texto; o ícone é opcional e entra por função, porque o pacote não traz ícone |
 | `Breadcrumb` | ✕ não porta | o caminho de volta é o botão de voltar do router |
 | `Button` | ✔ traduz | contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento |
 | `ButtonGroup` | ✕ não porta | `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo |
@@ -385,6 +394,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Form` | ✔ traduz | vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText` |
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
 | `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
+| `IconButton` | ✔ traduz | `accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |

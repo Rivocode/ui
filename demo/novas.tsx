@@ -1,9 +1,10 @@
-import { FileText, Trash2 } from "lucide-react";
+import { Download, FileText, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
   Badge,
+  Banner,
   Button,
   Card,
   CardContent,
@@ -14,13 +15,16 @@ import {
   FieldLabel,
   FilterBar,
   FilterChip,
+  formatTime,
   Heading,
+  IconButton,
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
   Link,
+  parseTime,
   Popconfirm,
   QueryBoundary,
   RivoProvider,
@@ -28,13 +32,11 @@ import {
   Text,
   TimeField,
   TimePicker,
-  VirtualList,
-  formatTime,
-  parseTime,
-  useMobile,
   type AppliedFilter,
   type RivoDensity,
   type RivoTheme,
+  useMobile,
+  VirtualList,
 } from "../src/index";
 import { stepTime, timeWindow } from "../src/components/time-field";
 
@@ -554,6 +556,102 @@ function Links() {
   );
 }
 
+function IconButtons() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <IconButton label="Nova nota">
+          <Pencil />
+        </IconButton>
+        <IconButton variant="secondary" label="Baixar PDF">
+          <Download />
+        </IconButton>
+        <IconButton variant="outline" label="Atualizar lista">
+          <RefreshCw />
+        </IconButton>
+        <IconButton variant="ghost" label="Editar nota" tooltip>
+          <Pencil />
+        </IconButton>
+        <IconButton variant="destructive" label="Excluir nota">
+          <Trash2 />
+        </IconButton>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        <IconButton size="sm" variant="secondary" label="Baixar PDF pequeno">
+          <Download />
+        </IconButton>
+        <IconButton size="md" variant="secondary" label="Baixar PDF medio">
+          <Download />
+        </IconButton>
+        <IconButton size="lg" variant="secondary" label="Baixar PDF grande">
+          <Download />
+        </IconButton>
+        <IconButton variant="secondary" label="Sincronizando" loading>
+          <RefreshCw />
+        </IconButton>
+        <IconButton variant="secondary" label="Indisponivel" disabled>
+          <Download />
+        </IconButton>
+        <Field className="w-48">
+          <FieldLabel>Mesma altura do campo</FieldLabel>
+          <div className="flex items-center gap-2">
+            <input
+              aria-label="Numero da nota"
+              className="h-[var(--rc-control-md)] min-w-0 flex-1 rounded-md border border-border-strong bg-surface px-2 text-fg"
+            />
+            <IconButton variant="secondary" label="Buscar nota">
+              <FileText />
+            </IconButton>
+          </div>
+        </Field>
+      </div>
+    </div>
+  );
+}
+
+function Banners() {
+  return (
+    <div className="flex flex-col gap-3">
+      <Banner
+        tone="info"
+        title="Manutencao programada"
+        description="A emissao de notas fica fora do ar domingo, 28/09, das 2h as 4h."
+        onDismiss={() => {}}
+      />
+      <Banner
+        tone="success"
+        description="Sua conta foi verificada. A emissao em producao esta liberada."
+      />
+      <Banner
+        tone="warning"
+        title="Voce esta no modo de teste"
+        description="As notas emitidas aqui nao tem validade fiscal."
+        actions={
+          <Button size="sm" variant="secondary">
+            Ir para producao
+          </Button>
+        }
+      />
+      <Banner
+        tone="danger"
+        title="Fatura em atraso"
+        description="A fatura de agosto venceu ha 5 dias. A emissao sera suspensa em 10/10."
+        actions={
+          <>
+            <Button size="sm" variant="secondary">
+              Ver fatura
+            </Button>
+            <Button size="sm" variant="secondary">
+              Pagar com Pix
+            </Button>
+          </>
+        }
+        onDismiss={() => {}}
+      />
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -572,6 +670,14 @@ function Sample({
       </p>
 
       <div className="flex flex-col gap-12">
+        <Block title="Banner">
+          <Banners />
+        </Block>
+
+        <Block title="IconButton">
+          <IconButtons />
+        </Block>
+
         <Block title="Heading">
           <Headings />
         </Block>

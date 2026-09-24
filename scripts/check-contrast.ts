@@ -352,6 +352,26 @@
  * entra na regra de 4,5:1. A norma pede 3:1 para objeto grafico que precisa
  * ser percebido, e e essa que vale aqui: uma linha de grafico que some no
  * fundo nao e legivel de outro jeito.
+ *
+ * ## A faixa do Banner, e os tres pares que ela estreou
+ *
+ * O `Banner` pinta `<estado>-subtle` na largura toda e escreve a descricao em
+ * `fg` por cima - o `Alert` escreve em `fg-muted` e ninguem media nenhum dos
+ * dois sobre o tom. Os oito pares de `fg` sobre `<estado>-subtle`, em `bg` e
+ * em `surface`, entram em `CSS_COMPOSED_PAIRS` a 7:1, porque e corpo de texto.
+ * Medidos no dia: o pior e 12,13:1, no escuro.
+ *
+ * As acoes da faixa sao `Button` secundario, e a fronteira dele e
+ * `border-strong` sobre o tom composto. Esse numero e apertado - 3,19:1 no
+ * danger do claro, 3,30:1 no success do escuro sobre o cartao -, e e por isso
+ * que ele e linha: um tema de cliente que escureca `<estado>-subtle` um passo
+ * faz o botao da faixa perder a borda sem nada acusar. O anel de foco do xis
+ * pousa no mesmo fundo, sem `ring-offset`, e entra junto. O lado do mapa
+ * nativo ganhou os mesmos `fg`, e o `border-strong` so sobre `bg`: no celular
+ * a faixa e o topo da tela, e sobre `surface` a paleta minima de 8 sementes do
+ * `rivocode-ui-native-theme` dava 3,00:1 arredondado no success do escuro -
+ * abaixo dos 3 - e o gerador deixava de aprovar o proprio tema. O anel nao
+ * existe la.
  */
 import { checkThemeCss, readTokens } from "../src/lib/contrast";
 import { countAtLeast, scanAtLeast } from "./varredura";

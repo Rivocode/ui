@@ -33,7 +33,7 @@ Tela nova segue o laço de [reference/method.md](reference/method.md): seis
 passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
 todos eles.
 
-1. **Confira se a peça já existe.** São 97, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 99, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em
@@ -218,7 +218,7 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 - `outline-none` sem repor `focus-visible:ring-2 focus-visible:ring-ring`.
 - Usar `placeholder` como se fosse rótulo. Ele some ao digitar, e vários
   leitores de tela não o anunciam: o campo fica sem nome.
-- Botão só com ícone sem `aria-label`.
+- Botão só com ícone sem nome. Use `IconButton`, que exige `label`.
 - Texto de interface em inglês. **Código em inglês, conteúdo em PT-BR.** Termo
   do ecossistema não se traduz: é "agents", não "agentes".
 

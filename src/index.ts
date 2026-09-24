@@ -14,6 +14,7 @@ export {
 } from "./provider/rivo-provider";
 
 export { Button, buttonVariants, type ButtonProps } from "./components/button";
+export { IconButton, type IconButtonProps } from "./components/icon-button";
 export {
   Card,
   CardContent,
@@ -243,6 +244,7 @@ export {
   alertVariants,
   type AlertProps,
 } from "./components/alert";
+export { Banner, bannerVariants, type BannerProps, type BannerTone } from "./components/banner";
 export { Skeleton } from "./components/skeleton";
 export { Kbd, kbdVariants, keyName, type KbdProps } from "./components/kbd";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";

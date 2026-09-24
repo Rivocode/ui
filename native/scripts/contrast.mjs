@@ -476,7 +476,15 @@ export const CSS_COMPOSED_PAIRS = [
   ["--rc-accent-text", "--rc-selected", "--rc-surface", MIN_TEXT],
   ["--rc-fg", "--rc-selected", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-selected", "--rc-surface", MIN_BODY],
-  ["--rc-fg", "--rc-selected", "--rc-surface-raised", MIN_BODY]
+  ["--rc-fg", "--rc-selected", "--rc-surface-raised", MIN_BODY],
+  ["--rc-fg", "--rc-info-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-info-subtle", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-success-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-success-subtle", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-warning-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-warning-subtle", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-danger-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-danger-subtle", "--rc-surface", MIN_BODY]
 ];
 export const CSS_BOUNDARIES = [
   ["--rc-border-strong", "--rc-bg", MIN_NON_TEXTUAL],
@@ -488,7 +496,23 @@ export const CSS_BOUNDARIES = [
   ["--rc-surface-raised", "--rc-accent-text", MIN_NON_TEXTUAL],
   ["--rc-accent-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-accent-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
-  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface-raised"], MIN_NON_TEXTUAL]
+  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface-raised"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-info-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-info-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-success-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-success-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-warning-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-warning-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-danger-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-danger-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-info-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-info-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-success-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-success-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-warning-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-warning-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-danger-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-danger-subtle", "--rc-surface"], MIN_NON_TEXTUAL]
 ];
 export const CSS_DISABLED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
 export const CSS_CHECKED = "--rc-accent-text";
@@ -606,6 +630,10 @@ for (const background of BACKGROUNDS) {
   pair("fg", ["selected", background], MIN_BODY);
   for (const state of STATES)
     pair(`${state}-text`, [`${state}-subtle`, background], MIN_TEXT);
+  if (background !== "surface-raised") {
+    for (const state of STATES)
+      pair("fg", [`${state}-subtle`, background], MIN_BODY, "faixa do Banner");
+  }
 }
 pair("accent-fg", ["accent"], MIN_TEXT);
 for (const state of STATES)
@@ -625,6 +653,14 @@ for (const background of BACKGROUNDS) {
       continue;
     MAP_BOUNDARIES.push({ front: `chart-${index}`, layers: [background], min: MIN_NON_TEXTUAL });
   }
+}
+for (const state of STATES) {
+  MAP_BOUNDARIES.push({
+    front: "border-strong",
+    layers: [`${state}-subtle`, "bg"],
+    min: MIN_NON_TEXTUAL,
+    note: "botão secundário dentro do Banner"
+  });
 }
 MAP_BOUNDARIES.push({
   front: "border-strong",

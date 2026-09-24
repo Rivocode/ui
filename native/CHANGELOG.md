@@ -1,5 +1,18 @@
 # Mudancas
 
+## Nao publicado
+
+### `IconButton` e `Banner`, no mesmo dia do web
+
+`IconButton` exige `accessibilityLabel` pelo tipo, reusa as classes do `Button`
+e nunca tem alvo abaixo de 44pt: o `sm` desenha 32 e ganha `hitSlop` de 6 nos
+quatro lados. O icone pode ser funcao, e recebe a cor da variante. Sem
+`tooltip`, porque no toque nao ha pousar.
+
+`Banner` traduz com os mesmos tons, `title`, `description`, `actions` e
+`onDismiss`. `danger` e `warning` saem como `alert` com anuncio imediato; `info`
+e `success` em regiao viva educada. O icone e opcional e entra por funcao.
+
 ## 0.9.0
 
 ### Quebra: dois peers novos, e os dois obrigatorios

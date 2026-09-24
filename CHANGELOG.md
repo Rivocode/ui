@@ -1,5 +1,31 @@
 # Mudancas
 
+## Nao publicado
+
+### `IconButton` e `Banner` entram no catalogo
+
+**`IconButton`** e o botao so com icone. O `label` e obrigatorio e vira o nome
+acessivel; `aria-label` e `aria-labelledby` saem do tipo, para o nome ter um
+caminho so. Por dentro ele e o `Button` - mesmas variantes, mesma `shape`,
+mesmo `render` -, com tres quadrados lidos de `--rc-control-sm/md/lg`. Em
+`loading` a espera toma o lugar do icone, entao o quadrado nao alarga. `tooltip`
+mostra o `label` numa dica sem amarra-la por `aria-describedby`: a dica repete o
+nome, e o leitor de tela ouviria a mesma frase duas vezes. Os tamanhos `icon` e
+`iconSm` do `Button` continuam funcionando, e a pagina dele passa a apontar para
+o `IconButton`.
+
+**`Banner`** e o aviso de pagina: faixa de largura total no topo da area, para
+manutencao, fatura em atraso, modo de teste. Quatro tons, `title` opcional,
+`description` obrigatoria, `actions`, `onDismiss` com "Fechar aviso", e
+`classNames` por parte. `danger` e `warning` saem `role="alert"`, `info` e
+`success` saem `role="status"`, como no `Alert`. O icone do tom vem sozinho,
+porque cor nunca e o unico sinal.
+
+Pares novos de contraste, medidos nos dois temas: `fg` sobre `<estado>-subtle`
+(corpo da faixa, pior caso 12,13:1), e `border-strong` e `ring` sobre
+`<estado>-subtle` (o botao secundario e o foco do xis dentro da faixa, pior caso
+3,19:1).
+
 ## 0.14.1
 
 ### O `Sheet` volta a deixar a lista de dentro rolar

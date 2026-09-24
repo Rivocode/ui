@@ -7,7 +7,7 @@ import { AnimatedPressable, usePressScale } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
-const CONTAINER: Record<string, string> = {
+export const BUTTON_CONTAINER: Record<string, string> = {
   primary: "bg-accent active:bg-accent-active",
   secondary: "bg-surface border border-border-strong active:bg-surface-raised",
   ghost: "active:bg-accent-subtle",
@@ -21,16 +21,16 @@ const LABEL: Record<string, string> = {
   destructive: "text-danger-fg",
 };
 
-const SPINNER_TOKEN: Record<string, keyof (typeof tokens.themes)["rivocode-dark"]> = {
+export const BUTTON_INK: Record<string, keyof (typeof tokens.themes)["rivocode-dark"]> = {
   primary: "accent-fg",
   secondary: "fg",
   ghost: "fg-muted",
   destructive: "danger-fg",
 };
 
-function ButtonSpinner({ variant }: { variant: string }) {
+export function ButtonSpinner({ variant }: { variant: string }) {
   const { colors } = useRivo();
-  const token = SPINNER_TOKEN[variant] ?? "fg";
+  const token = BUTTON_INK[variant] ?? "fg";
   return (
     <ActivityIndicator
       accessibilityElementsHidden
@@ -43,7 +43,7 @@ function ButtonSpinner({ variant }: { variant: string }) {
 
 export type ButtonProps = Omit<PressableProps, "children"> & {
   children: ReactNode;
-  variant?: keyof typeof CONTAINER;
+  variant?: keyof typeof BUTTON_CONTAINER;
   size?: "sm" | "md" | "lg";
   /** Em espera: nao aceita toque e anuncia `busy`. O mesmo nome do web. */
   loading?: boolean;
@@ -80,7 +80,7 @@ export function Button({
         "flex-row items-center justify-center gap-2 rounded-md",
         height,
         pad,
-        CONTAINER[variant],
+        BUTTON_CONTAINER[variant],
         blocked && "opacity-50",
         className,
       )}

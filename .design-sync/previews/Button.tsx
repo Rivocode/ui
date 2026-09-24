@@ -1,4 +1,4 @@
-import { Download, MessageCircle, Trash2 } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import { Button } from '@rivocode/ui'
 
 /** Variantes */
@@ -35,12 +35,6 @@ export function States() {
     <div className="flex flex-wrap items-center gap-3">
       <Button loading>Emitindo nota</Button>
       <Button disabled>Indisponível</Button>
-      <Button size="icon" variant="secondary" aria-label="Baixar">
-        <Download size={16} aria-hidden="true" />
-      </Button>
-      <Button size="icon" variant="ghost" aria-label="Excluir">
-        <Trash2 size={16} aria-hidden="true" />
-      </Button>
     </div>
   )
 }

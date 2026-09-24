@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-97 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+99 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -129,7 +129,8 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
 | Peça                    | Para que serve                                                       |
 | ----------------------- | -------------------------------------------------------------------- |
-| `Button`                | cinco variantes, quatro tamanhos, forma em pílula e botão de ícone   |
+| `Button`                | cinco variantes, quatro tamanhos, forma em pílula                    |
+| `IconButton`            | botão só com ícone: `label` obrigatório vira o nome, dica opcional   |
 | `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro       |
 | `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
 
@@ -188,6 +189,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | Peça         | Para que serve                                              |
 | ------------ | ----------------------------------------------------------- |
 | `Alert`      | aviso que fica, com o papel de leitor de tela certo por tom |
+| `Banner`     | aviso de página, em faixa no topo: manutenção, fatura, teste |
 | `Skeleton`   | marca de lugar enquanto o dado não chegou                   |
 | `Spinner`    | espera sem fim previsto                                     |
 | `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |

@@ -179,6 +179,58 @@
       }
     ]
   },
+  "Banner": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "description",
+        "type": "string",
+        "required": true,
+        "note": "O que aconteceu e o que a pessoa faz a respeito."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes da faixa, embaixo do texto."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "dismissLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome acessivel do xis."
+      },
+      {
+        "name": "icon",
+        "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
+        "required": false,
+        "note": "O simbolo a esquerda, escondido do leitor de tela."
+      },
+      {
+        "name": "onDismiss",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o xis de fechar."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "note": "A frase curta antes da descricao, na cor do tom."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"info\" | \"success\" | \"warning\"",
+        "required": false,
+        "note": "O tom decide a cor e a urgencia: `danger` e `warning` saem como `alert` e sao lidos na hora; `info` e `success` esperam, em regiao viva educada."
+      }
+    ]
+  },
   "Button": {
     "entry": "native/src/index.ts",
     "props": [
@@ -1603,6 +1655,40 @@
         "type": "boolean",
         "required": false,
         "note": "Corta em uma linha com reticencias no fim."
+      }
+    ]
+  },
+  "IconButton": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "accessibilityLabel",
+        "type": "string",
+        "required": true,
+        "note": "O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao nao tem outro texto."
+      },
+      {
+        "name": "children",
+        "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
+        "required": true,
+        "note": "O icone."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Em espera: troca o icone pelo giro, nao aceita toque e anuncia `busy`."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "O lado do quadrado: 32, 44 ou 48."
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"primary\" | \"secondary\"",
+        "required": false
       }
     ]
   },

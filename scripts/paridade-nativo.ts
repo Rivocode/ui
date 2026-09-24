@@ -1111,6 +1111,44 @@ const PARITY: Record<string, Row> = {
     note: "contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento",
   },
 
+  IconButton: {
+    state: "traduz",
+    note: "`accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar",
+    page:
+      "Traduz, com o nome obrigatório do mesmo jeito: lá ele é `accessibilityLabel`, que é o " +
+      "nome que o React Native já usa, e o tipo recusa o botão sem ele.\n\n" +
+      "**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; " +
+      "o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem " +
+      "crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, " +
+      "`ghost`, `destructive`), lidas das mesmas classes: `outline` e `shape` não atravessam, " +
+      "pelo mesmo motivo de lá.\n\n" +
+      "**Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. " +
+      "Se o ícone não se lê sozinho, o botão pede texto: use `Button`.\n\n" +
+      "O ícone entra como filho, e a forma que pinta na cor da variante é a função, porque a " +
+      "cor não desce da `View` para o SVG:\n\n" +
+      "```tsx\n" +
+      '<IconButton accessibilityLabel="Excluir nota" variant="ghost" onPress={excluir}>\n' +
+      "  {({ color, size }) => <Trash2 color={color} size={size} />}\n" +
+      "</IconButton>\n" +
+      "```",
+  },
+
+  Banner: {
+    state: "traduz",
+    note: "`title` e `description` em texto; o ícone é opcional e entra por função, porque o pacote não traz ícone",
+    page:
+      "Traduz, com os mesmos quatro tons, o mesmo `title`, `description`, `actions` e " +
+      "`onDismiss`, e o xis com o mesmo nome acessível (\"Fechar aviso\"). `title` e " +
+      "`description` são `string`, porque texto no nativo mora dentro de um `Text`.\n\n" +
+      "**A urgência sai por região viva.** `danger` e `warning` saem com " +
+      '`accessibilityRole="alert"` e anúncio imediato; `info` e `success` saem em região viva ' +
+      "educada, que espera a frase terminar. É a mesma divisão do `role` do web.\n\n" +
+      "**O ícone não vem sozinho.** O pacote nativo não traz biblioteca de ícones, então o " +
+      "`icon` é opcional e a forma que pinta na cor do tom é a função: " +
+      "`icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`. As ações " +
+      "ficam embaixo do texto, que é onde cabem na largura do telefone.",
+  },
+
   Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
 
   ToggleGroup: {

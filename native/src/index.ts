@@ -1,6 +1,8 @@
 export { RivoProvider, useRivo, type RivoProviderProps, type RivoNativeColors } from "./provider";
 export { useRivoFonts, type RivoFontRole, type RivoFonts, type RivoResolvedFonts } from "./font";
 export { Button, type ButtonProps } from "./button";
+export { IconButton, type IconButtonProps } from "./icon-button";
+export { Banner, type BannerProps } from "./banner";
 export { Badge, type BadgeProps } from "./badge";
 export { Indicator, type IndicatorProps } from "./indicator";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";

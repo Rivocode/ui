@@ -19,12 +19,13 @@ devolve o espaço com margem negativa, como o hint do `Stat` faz.
 
 Ícone decorativo (que acompanha um texto que já diz tudo) leva
 `aria-hidden="true"`. Ícone que é o único conteúdo de um botão exige
-`aria-label` **no botão**, nunca no ícone:
+nome **no botão**, nunca no ícone. O `IconButton` cobra isso pelo tipo: o
+`label` é obrigatório e vira o nome, e o ícone sai `aria-hidden` sozinho.
 
 ```tsx
-<Button size="icon" aria-label="Mais filtros">
-  <SlidersHorizontal size={16} aria-hidden="true" />
-</Button>
+<IconButton variant="secondary" label="Mais filtros">
+  <SlidersHorizontal />
+</IconButton>
 ```
 
 ## O vocabulário

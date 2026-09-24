@@ -82,6 +82,7 @@ export const FOREIGN = new Set([
   "Svg",
   "TriangleAlert",
   "FileText",
+  "Trash2",
   "Search",
 ]);
 

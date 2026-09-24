@@ -2052,6 +2052,58 @@
       }
     ]
   },
+  "Banner": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": true,
+        "note": "O que aconteceu e o que a pessoa faz a respeito."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes da faixa, a direita do texto e embaixo dele no celular."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"content\" | \"description\" | \"dismiss\" | \"icon\" | \"title\", string>>",
+        "required": false
+      },
+      {
+        "name": "dismissLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome acessivel do xis."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Troca o icone do tom."
+      },
+      {
+        "name": "onDismiss",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o xis de fechar, no fim da faixa."
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A frase curta em negrito, antes da descricao."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"info\" | \"success\" | \"warning\"",
+        "required": false,
+        "note": "O tom decide a cor, o icone padrao e o papel para o leitor de tela: `danger` e `warning` saem `role=\"alert\"` e interrompem; `info` e `success` saem `role=\"status\"` e esperam a frase terminar."
+      }
+    ]
+  },
   "Bar": {
     "forwardsRoot": true,
     "props": [
@@ -10406,6 +10458,74 @@
         "type": "boolean",
         "required": false,
         "note": "Corta em uma linha com reticencias, para titulo dentro de coluna estreita."
+      }
+    ]
+  },
+  "IconButton": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o texto da dica quando `tooltip` esta ligado."
+      },
+      {
+        "name": "aria-label",
+        "type": "undefined",
+        "required": false,
+        "note": "Recusado pelo tipo: o nome acessivel tem um caminho so, que e o `label`."
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "undefined",
+        "required": false,
+        "note": "Recusado pelo tipo, pelo mesmo motivo do `aria-label`."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo a aparencia."
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "O lado do quadrado, lido de `--rc-control-*`: encolhe com a densidade."
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra o `label` numa dica ao pousar o ponteiro ou focar pelo teclado."
+      },
+      {
+        "name": "tooltipSide",
+        "type": "\"bottom\" | \"left\" | \"right\" | \"top\"",
+        "required": false,
+        "note": "O lado em que a dica abre, quando `tooltip` esta ligado."
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
       }
     ]
   },

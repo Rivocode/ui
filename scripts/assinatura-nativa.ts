@@ -181,6 +181,21 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  Banner: {
+    rows: [
+      {
+        web: "description",
+        native: "description",
+        note: "`title` e `description` viram `string`: texto no nativo mora dentro de um `Text`",
+      },
+      {
+        web: "icon",
+        native: "icon",
+        note: "sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho",
+      },
+      { web: "classNames", native: null, note: "um `className` só, na raiz da faixa" },
+    ],
+  },
   Button: {
     rows: [
       {
@@ -189,6 +204,27 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "`cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop`",
       },
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
+    ],
+  },
+  IconButton: {
+    rows: [
+      {
+        web: "label",
+        native: "accessibilityLabel",
+        note: "o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele",
+      },
+      {
+        web: "variant",
+        native: "variant",
+        note: "`outline` não porta, como no `Button` nativo",
+      },
+      { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
+      {
+        web: "tooltip",
+        native: null,
+        note: "no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto",
+      },
+      { web: "tooltipSide", native: null, note: "sai junto com o `tooltip`" },
     ],
   },
   Calendar: {
