@@ -138,3 +138,21 @@ test("classNames alcanca cada parte pelo nome", () => {
     expect(document.querySelectorAll(`.${part}`)).toHaveLength(1);
   }
 });
+
+test("rotulo longo quebra dentro do botao da acao, e a faixa nao alarga a pagina a 320px", () => {
+  banner({ actions: <Button size="sm">Reagendar a manutenção para outro domingo</Button> });
+
+  const action = screen.getByRole("button", { name: /Reagendar/ });
+  const actions = (action.parentElement!.getAttribute("class") ?? "").split(" ");
+  for (const token of [
+    "min-w-0",
+    "[&>button]:h-auto",
+    "[&>button]:min-h-[var(--rc-control-sm)]",
+    "[&>button]:max-w-full",
+    "[&>button]:shrink",
+    "[&>button]:whitespace-normal",
+  ]) {
+    expect(actions).toContain(token);
+  }
+  expect(actions).not.toContain("shrink-0");
+});

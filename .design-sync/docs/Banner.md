@@ -46,7 +46,9 @@ faixa.
 
 `actions` recebe os botões, à direita do texto na mesa e embaixo dele no
 celular. Use `Button` com `size="sm"` e `variant="secondary"`: a borda dele é a
-fronteira medida contra o fundo dos quatro tons, nos dois temas.
+fronteira medida contra o fundo dos quatro tons, nos dois temas. Rótulo longo
+quebra dentro do botão em vez de empurrar a página para o lado, e a faixa cabe
+em 320px, que é a tela de quem usa zoom de 400%.
 
 ```tsx
 <Banner

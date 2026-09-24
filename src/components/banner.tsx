@@ -115,7 +115,14 @@ export function Banner({
         </div>
 
         {actions && (
-          <div className={cn("flex shrink-0 flex-wrap items-center gap-2", classNames?.actions)}>
+          <div
+            className={cn(
+              "flex min-w-0 flex-wrap items-center gap-2",
+              "[&>button]:h-auto [&>button]:min-h-[var(--rc-control-sm)] [&>button]:max-w-full",
+              "[&>button]:shrink [&>button]:py-1 [&>button]:whitespace-normal",
+              classNames?.actions,
+            )}
+          >
             {actions}
           </div>
         )}
