@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
@@ -78,8 +78,10 @@ export function CurrencyInput({
   onPaste,
   ref,
   "aria-invalid": invalidProp,
+  "aria-describedby": describedByProp,
   ...props
 }: CurrencyInputProps) {
+  const unitId = useId();
   const controlled = value !== undefined;
   const [internal, setInternal] = useState<number | null>(defaultValue);
   const cents = controlled ? value : internal;
@@ -88,6 +90,14 @@ export function CurrencyInput({
   const shown = cents === null ? (minus && allowNegative ? "-" : "") : formatCents(cents);
 
   const input = useRef<HTMLInputElement | null>(null);
+  const attach = useCallback(
+    (node: HTMLInputElement | null) => {
+      input.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
 
   useLayoutEffect(() => {
     const node = input.current;
@@ -118,15 +128,14 @@ export function CurrencyInput({
       >
         R$
       </span>
+      <span id={unitId} hidden>
+        em reais
+      </span>
 
       <Input
         autoComplete="off"
         {...props}
-        ref={(node: HTMLInputElement | null) => {
-          input.current = node;
-          if (typeof ref === "function") ref(node);
-          else if (ref) ref.current = node;
-        }}
+        ref={attach}
         size={size}
         disabled={disabled}
         placeholder={placeholder}
@@ -134,6 +143,7 @@ export function CurrencyInput({
         inputMode={allowNegative ? "text" : "numeric"}
         value={shown}
         aria-invalid={invalid}
+        aria-describedby={describedByProp ? `${unitId} ${describedByProp}` : unitId}
         onChange={(event) => {
           const reading = readCurrencyInput(event.target.value, shown, allowNegative);
 
@@ -159,7 +169,7 @@ export function CurrencyInput({
         )}
       />
 
-      {name ? <input type="hidden" name={name} value={cents ?? ""} /> : null}
+      {name ? <input type="hidden" name={name} value={cents ?? ""} disabled={disabled} /> : null}
     </div>
   );
 }

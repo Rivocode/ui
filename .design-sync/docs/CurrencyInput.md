@@ -32,8 +32,18 @@ e a pontuação é assunto de tela. O campo para em doze dígitos, R$
 Colar substitui o valor, e o texto colado é lido como a pessoa o escreveria:
 `R$ 1.234,56`, `1234,56`, `1.234,5` e `1234.56` entram como R$ 1.234,56, e
 `150` entra como R$ 150,00. O separador de centavos é a vírgula ou o ponto que
-tiver um ou dois dígitos depois; os outros são milhar. Texto sem número nenhum
-não apaga o que estava.
+tiver um ou dois dígitos depois; os outros são milhar. O sinal vem pelo `-`,
+antes ou depois do número, ou pelos parênteses da contabilidade: `(10,00)` é
+R$ -10,00.
+
+O colado é recusado inteiro, e o valor que estava fica, quando não é só um
+valor: texto sem número, texto misturado ao número (`R$ 10 - desconto 2`,
+`Total: R$ 10,00`) e valor com mais de doze dígitos. Nada é cortado em
+silêncio para caber.
+
+Desabilitado, o campo fica fora do formulário, como qualquer campo
+desabilitado do HTML. O leitor de tela ouve o número e, na descrição, "em
+reais": o "R$" desenhado ao lado é só visual.
 
 ## Sinal
 

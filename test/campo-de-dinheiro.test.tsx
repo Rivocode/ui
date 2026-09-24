@@ -254,7 +254,7 @@ test("para em doze digitos, e o valor nunca vira ponto flutuante", () => {
   const onValueChange = mock((_cents: number | null) => {});
   const { input } = field({ onValueChange });
 
-  paste(input, "99999999999,99");
+  paste(input, "9999999999,99");
   typeKey(input, "9");
   expect(input.value).toBe("9.999.999.999,99");
   expect(onValueChange).toHaveBeenLastCalledWith(999999999999);
@@ -307,4 +307,76 @@ test("com o FormField e o forValue, o schema recebe centavos e o erro sai embaix
   await act(async () => fireEvent.click(screen.getByText("Cobrar")));
   await waitFor(() => expect(onSubmit).toHaveBeenCalled());
   expect(onSubmit.mock.calls[0]![0]).toEqual({ amount: 123456 });
+});
+
+test("desabilitado, o campo fica fora do formulario nativo, como qualquer campo desabilitado", () => {
+  const { container } = render(
+    <form>
+      <CurrencyInput aria-label="Valor" name="amount" defaultValue={500} disabled />
+    </form>,
+  );
+  const data = new FormData(container.querySelector("form")!);
+  expect(data.has("amount")).toBe(false);
+});
+
+test("a ref do consumidor recebe o campo uma vez, e nao a cada render", () => {
+  const calls: (HTMLInputElement | null)[] = [];
+  const ref = (node: HTMLInputElement | null) => {
+    calls.push(node);
+  };
+  const { rerender } = render(<CurrencyInput aria-label="Valor" ref={ref} defaultValue={1} />);
+  rerender(<CurrencyInput aria-label="Valor" ref={ref} defaultValue={1} placeholder="a" />);
+  rerender(<CurrencyInput aria-label="Valor" ref={ref} defaultValue={1} placeholder="b" />);
+  expect(calls).toHaveLength(1);
+  expect(calls[0]).toBeInstanceOf(HTMLInputElement);
+});
+
+test("o leitor de tela ouve que o numero e em reais, sem perder a descricao do Field", () => {
+  const { input } = field({ "aria-describedby": "outra" });
+  const ids = (input.getAttribute("aria-describedby") ?? "").split(" ");
+  const said = ids.map((id) => document.getElementById(id)?.textContent);
+
+  expect(said).toContain("em reais");
+  expect(said).toContain("Em reais.");
+  expect(ids).toContain("outra");
+});
+
+test("colar mais que doze digitos e recusado, e nao cortado em silencio", () => {
+  expect(parseCurrencyText("1234567890123,45")).toBeNull();
+  expect(parseCurrencyText("R$ 12.345.678.901,23")).toBeNull();
+  expect(parseCurrencyText("9.999.999.999,99")).toBe(999999999999);
+  expect(parseCurrencyText("0000001,00")).toBe(100);
+
+  const onValueChange = mock((_cents: number | null) => {});
+  const { input } = field({ onValueChange, defaultValue: 500 });
+  paste(input, "1234567890123,45");
+  expect(input.value).toBe("5,00");
+  expect(onValueChange).not.toHaveBeenCalled();
+
+  replaceWith(input, "1234567890123,45");
+  expect(input.value).toBe("5,00");
+});
+
+test("texto misturado ao numero e recusado, e parenteses de contabilidade sao o sinal", () => {
+  expect(parseCurrencyText("R$ 10 - desconto 2")).toBeNull();
+  expect(parseCurrencyText("10 reais e 2 centavos")).toBeNull();
+  expect(parseCurrencyText("Total: R$ 10,00")).toBeNull();
+  expect(parseCurrencyText("10,00 e 20,00")).toBeNull();
+  expect(parseCurrencyText("--10,00")).toBeNull();
+  expect(parseCurrencyText("(10,00")).toBeNull();
+
+  expect(parseCurrencyText("(10,00)")).toBe(-1000);
+  expect(parseCurrencyText("(R$ 10,00)")).toBe(-1000);
+  expect(parseCurrencyText("10,00 -")).toBe(-1000);
+  expect(parseCurrencyText("R$ -10,00")).toBe(-1000);
+  expect(parseCurrencyText("R$ 1.234,56")).toBe(123456);
+  expect(parseCurrencyText("r$ 1 234,56")).toBe(123456);
+});
+
+test("o que chega de uma vez sem colar, com texto que nao e valor, deixa o valor que estava", () => {
+  expect(readCurrencyInput("sem valor", "5,00", false)).toEqual({ cents: 500, minus: false });
+  expect(readCurrencyInput("R$ 10 - desconto 2", "-5,00", true)).toEqual({
+    cents: -500,
+    minus: false,
+  });
 });

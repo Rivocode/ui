@@ -48,7 +48,7 @@ export function CurrencyInput({
   ...props
 }: CurrencyInputProps) {
   const [minus, setMinus] = useState(false);
-  const selection = useRef<TextSelection | undefined>(undefined);
+  const selection = useRef<{ range: TextSelection; shown: string } | undefined>(undefined);
 
   const shown = value === null ? (minus && allowNegative ? "-" : "") : formatCents(value);
   const outside = outsideCents(value, min, max);
@@ -62,11 +62,13 @@ export function CurrencyInput({
         value={shown}
         invalid={invalid || outside}
         onSelectionChange={(event) => {
-          selection.current = event.nativeEvent.selection;
+          selection.current = { range: event.nativeEvent.selection, shown };
           onSelectionChange?.(event);
         }}
         onChangeText={(text) => {
-          const reading = readCurrencyInput(text, shown, allowNegative, selection.current);
+          const known = selection.current;
+          const range = known?.shown === shown ? known.range : undefined;
+          const reading = readCurrencyInput(text, shown, allowNegative, range, false);
           selection.current = undefined;
           setMinus(reading.minus);
           if (reading.cents !== value) onValueChange(reading.cents);

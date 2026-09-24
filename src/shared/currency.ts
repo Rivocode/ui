@@ -12,16 +12,24 @@ export function formatCents(cents: number | null): string {
 
 const capped = (digits: string) => digits.replace(/^0+(?=\d)/, "").slice(0, CURRENCY_MAX_DIGITS);
 
-export function parseCurrencyText(text: string): number | null {
-  const negative = /-/.test(text.replace(/\d[\s\S]*$/, "")) || /-\s*$/.test(text);
-  const clean = text.replace(/[^\d.,]/g, "");
-  if (!/\d/.test(clean)) return null;
+const PASTED =
+  /^(\()?([-\u2212])?(?:R\$)?([-\u2212])?([\d.,]*\d[\d.,]*)([-\u2212])?(\))?$/i;
 
-  const decimal = /[.,](\d{1,2})$/.exec(clean);
-  const whole = (decimal ? clean.slice(0, decimal.index) : clean).replace(/\D/g, "");
+export function parseCurrencyText(text: string): number | null {
+  const match = PASTED.exec(text.replace(/\s/g, ""));
+  if (!match) return null;
+
+  const [, open, before, after, clean, trailing, close] = match;
+  const signs = [before, after, trailing].filter(Boolean).length;
+  if (Boolean(open) !== Boolean(close) || signs > 1 || (open && signs > 0)) return null;
+  const negative = Boolean(open) || signs === 1;
+
+  const decimal = /[.,](\d{1,2})$/.exec(clean!);
+  const whole = (decimal ? clean!.slice(0, decimal.index) : clean!).replace(/\D/g, "");
   const fraction = decimal ? decimal[1]!.padEnd(2, "0") : "00";
 
-  const digits = capped(`${whole}${fraction}`);
+  const digits = `${whole}${fraction}`.replace(/^0+(?=\d)/, "");
+  if (digits.length > CURRENCY_MAX_DIGITS) return null;
   const cents = Number(digits);
   return negative && cents !== 0 ? -cents : cents;
 }
@@ -39,7 +47,11 @@ function edit(previous: string, next: string, selection?: TextSelection) {
       next.startsWith(previous.slice(0, start)) &&
       next.endsWith(previous.slice(end))
     ) {
-      return { added: next.slice(start, next.length - kept), removed: end > start };
+      return {
+        added: next.slice(start, next.length - kept),
+        removed: end > start,
+        known: true,
+      };
     }
   }
 
@@ -58,6 +70,7 @@ function edit(previous: string, next: string, selection?: TextSelection) {
   return {
     added: next.slice(start, next.length - end),
     removed: previous.length - start - end > 0,
+    known: false,
   };
 }
 
@@ -76,11 +89,22 @@ export function readCurrencyInput(
   previous: string,
   allowNegative: boolean,
   selection?: TextSelection,
+  pasteEvent = true,
 ): CurrencyReading {
-  const { added, removed } = edit(previous, next, selection);
+  const { added, removed, known } = edit(previous, next, selection);
 
-  if (added.replace(/\s/g, "").length > 1) {
-    return { cents: readPastedCurrency(removed ? next : added, allowNegative), minus: false };
+  const lostComma =
+    !pasteEvent &&
+    !known &&
+    (added !== "" || previous.length - next.length > 1) &&
+    previous.includes(",") &&
+    !next.includes(",") &&
+    next.replace(/\D/g, "").length > 1;
+
+  if (lostComma || added.replace(/\s/g, "").length > 1) {
+    const pasted = readPastedCurrency(lostComma || removed ? next : added, allowNegative);
+    if (pasted === null) return { cents: parseCurrencyText(previous), minus: previous === "-" };
+    return { cents: pasted, minus: false };
   }
 
   const minus = allowNegative && (next.match(/-/g)?.length ?? 0) % 2 === 1;

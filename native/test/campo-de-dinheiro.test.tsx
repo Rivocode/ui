@@ -99,4 +99,63 @@ describe("CurrencyInput", () => {
     replace("100,00");
     expect(input().props.className.split(" ")).not.toContain("border-danger");
   });
+
+  test("no iOS, o cursor de depois da colagem chegando antes do texto nao vira digitacao", () => {
+    const { input, select, replace } = mount({ start: 123456 });
+
+    select(0, 8);
+    select(2, 2);
+    replace("10");
+    expect(input().props.value).toBe("10,00");
+  });
+
+  test("sem evento de selecao, colar por cima de tudo e lido como colagem inteira", () => {
+    const { input, replace } = mount({ start: 123456 });
+
+    replace("16");
+    expect(input().props.value).toBe("16,00");
+  });
+
+  test("a selecao gravada so vale para o texto que estava na tela quando ela chegou", () => {
+    const onValueChange = mock((_cents: number | null) => {});
+    let setOutside: (cents: number) => void = () => {};
+    function Outside() {
+      const [cents, setCents] = useState(123456);
+      setOutside = setCents;
+      return <CurrencyInput value={cents} onValueChange={onValueChange} />;
+    }
+    const screen = render(<Outside />);
+    const input = () => byType(screen, "TextInput")[0]!;
+
+    act(() => input().props.onSelectionChange({ nativeEvent: { selection: { start: 0, end: 8 } } }));
+    act(() => setOutside(567890));
+    expect(input().props.value).toBe("5.678,90");
+
+    act(() => input().props.onChangeText("5.678,901"));
+    expect(onValueChange).toHaveBeenLastCalledWith(5678901);
+  });
+
+  test("apagar a virgula ou digitar um so digito por cima de tudo continua sendo digitacao", () => {
+    const { input, replace } = mount({ start: 123456 });
+
+    replace("1.23456");
+    expect(input().props.value).toBe("1.234,56");
+
+    replace("5");
+    expect(input().props.value).toBe("0,05");
+  });
+
+  test("colar texto que nao e valor, ou valor grande demais, deixa o que estava", () => {
+    const onCents = mock((_cents: number | null) => {});
+    const { input, select, replace } = mount({ start: 500, onCents });
+
+    select(0, 4);
+    replace("R$ 10 - desconto 2");
+    expect(input().props.value).toBe("5,00");
+
+    select(0, 4);
+    replace("1234567890123,45");
+    expect(input().props.value).toBe("5,00");
+    expect(onCents).not.toHaveBeenCalled();
+  });
 });
