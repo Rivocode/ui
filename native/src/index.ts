@@ -100,7 +100,7 @@ export {
   type QuestionnaireQuestion,
 } from "./questionnaire";
 export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
-export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/tax-id";
+export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/pix";
 export {
   buildPixPayload,
   parsePixPayload,

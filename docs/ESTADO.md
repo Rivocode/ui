@@ -130,7 +130,7 @@ sem DOM, e nao havia mecanismo para compartilhar codigo puro entre os dois
 pacotes. Hoje ha - `src/shared/` espelhado em `native/src/shared/`, com
 `check:compartilhado` conferindo que o espelho nao tem import nem global de
 plataforma. Sao **quatro arquivos** atravessando por enquanto, `settled.ts`,
-`tax-id.ts`, `time.ts` e `typography.ts`, e o `settled.ts` e a espera de 200ms
+`pix.ts`, `time.ts` e `typography.ts`, e o `settled.ts` e a espera de 200ms
 que os dois `ChartContainer` usam para nao acusar um pai que mede em dois
 passes.
 

@@ -118,6 +118,97 @@ test("o build recusa o que o manual e o EMV nao aceitam", () => {
   expect(() => buildPixPayload({ ...base, name: "  " })).toThrow(RangeError);
 });
 
+const emv = (amount: string) => {
+  const body =
+    "0002012625" +
+    "0014br.gov.bcb.pix0103a@b" +
+    `54${String(amount.length).padStart(2, "0")}${amount}` +
+    "53039865802BR5901A6001B62070503***6304";
+  return body + pixCrc(body);
+};
+
+test("o parse recusa campo 54 que nao e valor em reais", () => {
+  for (const amount of ["-5", "0x10", "1e3", " ", "0", "0.00", "1.234", "+5", ".5", "5.", "12345678901"]) {
+    expect(parsePixPayload(emv(amount))).toBeNull();
+  }
+  expect(parsePixPayload(emv("1.5"))!.amount).toBe(1.5);
+  expect(parsePixPayload(emv("100.50"))!.amount).toBe(100.5);
+  expect(parsePixPayload(emv("7"))!.amount).toBe(7);
+});
+
+test("o build grava a chave como o DICT a guarda, tirando a pontuacao de CPF, CNPJ e telefone", () => {
+  const keyOf = (key: string) =>
+    parsePixPayload(buildPixPayload({ key, name: "Fulano", city: "Joao Pessoa" }))!.key;
+
+  expect(keyOf("529.982.247-25")).toBe("52998224725");
+  expect(keyOf(" 00.038.166/0001-05 ")).toBe("00038166000105");
+  expect(keyOf("12.abc.345/01de-35")).toBe("12ABC34501DE35");
+  expect(keyOf("(83) 98811-2233")).toBe("+5583988112233");
+  expect(keyOf("+55 (83) 98811-2233")).toBe("+5583988112233");
+  expect(keyOf("+55 83 98811 2233")).toBe("+5583988112233");
+  expect(keyOf("Fulano@Example.com")).toBe("fulano@example.com");
+  expect(keyOf("123E4567-E12B-12D1-A456-426655440000")).toBe("123e4567-e12b-12d1-a456-426655440000");
+});
+
+test("o build recusa chave que o DICT nao acharia, em vez de gerar um codigo que nao paga", () => {
+  const base = { name: "Fulano", city: "Joao Pessoa" };
+  for (const key of [
+    "529.982.247-24",
+    "83988112233",
+    "(83) 3234-5678",
+    "fulano@exemplo",
+    "joão@exemplo.com",
+    "chave qualquer",
+  ]) {
+    expect(() => buildPixPayload({ ...base, key })).toThrow(RangeError);
+  }
+});
+
+test("o codigo sai so em ASCII, entao o tamanho do TLV e o crc contam o mesmo que os bytes do QR", () => {
+  const payload = buildPixPayload({
+    key: "fulano@example.com",
+    name: "Jørgen Ångström Œuvre",
+    city: "São Paulo",
+    description: "Café ☕ – nº 4",
+  });
+
+  expect(new TextEncoder().encode(payload).length).toBe(payload.length);
+  expect(parsePixPayload(payload)).not.toBeNull();
+});
+
+test("o nome perde o acento e fica com a letra: Jørgen Ångström vira Jorgen Angstrom", () => {
+  const parsed = parsePixPayload(
+    buildPixPayload({ key: "fulano@example.com", name: "Jørgen Ångström", city: "São Paulo" }),
+  )!;
+  expect(parsed.name).toBe("Jorgen Angstrom");
+  expect(parsed.city).toBe("Sao Paulo");
+
+  const decomposed = parsePixPayload(
+    buildPixPayload({ key: "fulano@example.com", name: "João".normalize("NFD"), city: "Brasília" }),
+  )!;
+  expect(decomposed.name).toBe("Joao");
+  expect(decomposed.city).toBe("Brasilia");
+});
+
+test("o valor e conferido depois de arredondado a centavo: 0.004 e recusado, 1.005 nao vira 1.00", () => {
+  const base = { key: "fulano@example.com", name: "Fulano", city: "Joao Pessoa" };
+  expect(() => buildPixPayload({ ...base, amount: 0.004 })).toThrow(RangeError);
+  expect(() => buildPixPayload({ ...base, amount: -1 })).toThrow(RangeError);
+  expect(parsePixPayload(buildPixPayload({ ...base, amount: 1.005 }))!.amount).toBe(1.01);
+  expect(parsePixPayload(buildPixPayload({ ...base, amount: 0.005 }))!.amount).toBe(0.01);
+  expect(parsePixPayload(buildPixPayload({ ...base, amount: 1284.5 }))!.amount).toBe(1284.5);
+});
+
+test("formatBrl devolve traco para o que nao e valor, e nao escreve menos zero", () => {
+  expect(formatBrl(Number.NaN)).toBe("-");
+  expect(formatBrl(Number.POSITIVE_INFINITY)).toBe("-");
+  expect(formatBrl(1e21)).toBe("-");
+  expect(formatBrl(-0.001)).toBe("R$ 0,00");
+  expect(formatBrl(-0)).toBe("R$ 0,00");
+  expect(formatBrl(-12.5)).toBe("-R$ 12,50");
+  expect(formatBrl(999999999999.99)).toBe("R$ 999.999.999.999,99");
+});
+
 test("isValidPixKey aceita as cinco formas do DICT, como o manual as escreve", () => {
   expect(isValidPixKey("52998224725")).toBe(true);
   expect(isValidPixKey("00038166000105")).toBe(true);

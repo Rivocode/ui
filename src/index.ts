@@ -258,7 +258,7 @@ export {
   type Mask,
   type MaskName,
 } from "./lib/mask";
-export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/tax-id";
+export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/pix";
 export {
   isValidCnh,
   isValidPis,
