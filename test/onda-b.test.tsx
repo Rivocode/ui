@@ -172,7 +172,7 @@ test("o caminho marca onde voce esta e nao deixa a ultima virar link", () => {
   const current = screen.getByText("4813");
   expect(current.getAttribute("aria-current")).toBe("page");
   expect(current.tagName).not.toBe("A");
-  expect(screen.getByText("Inicio").tagName).toBe("A");
+  expect(screen.getByRole("link", { name: "Inicio" }).tagName).toBe("A");
 });
 
 test("caminho comprido dobra o meio em reticencia", () => {

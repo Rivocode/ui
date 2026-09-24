@@ -132,6 +132,23 @@ test("o link da migalha estica o alvo so na altura, para nao pegar o clique do v
   expect(link.className).not.toContain("after:-inset-x");
 });
 
+test("o link da migalha nao corta o proprio halo: quem trunca e o texto de dentro", () => {
+  withTheme(
+    <Breadcrumb
+      items={[{ label: "Clientes", href: "/clientes" }, { label: "Clinica Sao Lucas" }]}
+    />,
+  );
+
+  const link = screen.getByRole("link", { name: "Clientes" });
+  const clipping = ["truncate", "overflow-hidden", "overflow-clip"];
+  for (const token of clipping) expect(link.className.split(" ")).not.toContain(token);
+
+  const text = screen.getByText("Clientes");
+  expect(text.parentElement).toBe(link);
+  expect(text.className.split(" ")).toContain("truncate");
+  expect(text.className.split(" ")).toContain("block");
+});
+
 test("a opcao com rotulo tem 24 pixels de altura no label, e o circulo sozinho estica o alvo", () => {
   withTheme(
     <RadioGroup defaultValue="pix">

@@ -56,14 +56,14 @@ export function Breadcrumb({ className, items, max = 4, ...props }: BreadcrumbPr
                     href={crumb.href}
                     title={fullLabel}
                     className={cn(
-                      "block truncate rounded-sm text-fg-muted",
+                      "block rounded-sm text-fg-muted",
                       "relative after:absolute after:inset-x-0 after:-inset-y-1.5",
                       "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
                       "hover:text-fg",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     )}
                   >
-                    {crumb.label}
+                    <span className="block truncate">{crumb.label}</span>
                   </a>
                 ) : (
                   <span
