@@ -45,6 +45,46 @@ describe("useDisclosure", () => {
     const { result } = renderHook(() => useDisclosure(true));
     expect(result.current[0]).toBe(true);
   });
+
+  test("duas chamadas no mesmo act leem o estado da primeira, e nao o do render", () => {
+    const onOpen = mock(() => {});
+    const onClose = mock(() => {});
+    const { result } = renderHook(() => useDisclosure(false, { onOpen, onClose }));
+
+    act(() => {
+      result.current[1].toggle();
+      result.current[1].toggle();
+    });
+    expect(result.current[0]).toBe(false);
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      result.current[1].open();
+      result.current[1].open();
+    });
+    expect(result.current[0]).toBe(true);
+    expect(onOpen).toHaveBeenCalledTimes(2);
+  });
+
+  test("os handlers sao os mesmos entre renders, abrindo ou fechando", () => {
+    const { result } = renderHook(() => useDisclosure(false, { onOpen: () => {} }));
+    const before = result.current[1];
+    act(() => result.current[1].open());
+    expect(result.current[1]).toBe(before);
+  });
+
+  test("o onOpen chamado e o do render mais novo", () => {
+    const first = mock(() => {});
+    const second = mock(() => {});
+    const { result, rerender } = renderHook(({ onOpen }) => useDisclosure(false, { onOpen }), {
+      initialProps: { onOpen: first },
+    });
+    rerender({ onOpen: second });
+    act(() => result.current[1].open());
+    expect(first).not.toHaveBeenCalled();
+    expect(second).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("useCounter", () => {
@@ -108,6 +148,11 @@ describe("useToggle", () => {
   test("nextOption volta ao comeco depois da ultima", () => {
     expect(nextOption(["a", "b"], "b")).toBe("a");
   });
+
+  test("nextOption sem opcao devolve o valor atual, e nao undefined", () => {
+    expect(nextOption([], "a")).toBe("a");
+    expect(nextOption<number>([], 0)).toBe(0);
+  });
 });
 
 describe("useListState", () => {
@@ -168,6 +213,14 @@ describe("useListState", () => {
     expect(removeItems(list, [8])).toEqual([1, 2, 3]);
     expect(insertItems(list, 99, [4])).toEqual([1, 2, 3, 4]);
     expect(appendItems(list, [])).not.toBe(list);
+  });
+
+  test("insertItems com indice que nao e numero poe no fim, e fracao arredonda para baixo", () => {
+    const list = Object.freeze([1, 2, 3]);
+    expect(insertItems(list, Number.NaN, [4])).toEqual([1, 2, 3, 4]);
+    expect(insertItems(list, Number.POSITIVE_INFINITY, [4])).toEqual([1, 2, 3, 4]);
+    expect(insertItems(list, Number.NEGATIVE_INFINITY, [4])).toEqual([4, 1, 2, 3]);
+    expect(insertItems(list, 1.7, [4])).toEqual([1, 4, 2, 3]);
   });
 });
 

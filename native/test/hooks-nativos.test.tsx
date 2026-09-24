@@ -141,3 +141,61 @@ describe("os hooks que atravessam para o nativo", () => {
     expect(jest.getTimerCount()).toBe(0);
   });
 });
+
+describe("os consertos que atravessam pelo espelho", () => {
+  test("disclosure: duas alternancias no mesmo act voltam a fechado e avisam uma vez cada", () => {
+    const onOpen = mock(() => {});
+    const onClose = mock(() => {});
+    const { result } = renderHook(() => useDisclosure(false, { onOpen, onClose }), undefined);
+    const before = result.current[1];
+
+    act(() => {
+      result.current[1].toggle();
+      result.current[1].toggle();
+    });
+    expect(result.current[0]).toBe(false);
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      result.current[1].open();
+      result.current[1].open();
+    });
+    expect(result.current[0]).toBe(true);
+    expect(onOpen).toHaveBeenCalledTimes(2);
+    expect(result.current[1]).toBe(before);
+  });
+
+  test("debounce: trocar o wait nao perde a chamada pendente", () => {
+    const callback = mock((value: string) => void value);
+    const { result, rerender } = renderHook(
+      (wait: number) => useDebouncedCallback(callback, wait),
+      100,
+    );
+    act(() => result.current("a"));
+    rerender(300);
+    act(() => void jest.advanceTimersByTime(100));
+    expect(callback.mock.calls).toEqual([["a"]]);
+  });
+
+  test("throttle: trocar o wait entrega a que esperava", () => {
+    const callback = mock((value: number) => void value);
+    const { result, rerender } = renderHook(
+      (wait: number) => useThrottledCallback(callback, wait),
+      100,
+    );
+    act(() => {
+      result.current(1);
+      result.current(2);
+    });
+    rerender(300);
+    act(() => void jest.advanceTimersByTime(100));
+    expect(callback.mock.calls).toEqual([[1], [2]]);
+  });
+
+  test("insert com indice que nao e numero vai para o fim", () => {
+    const { result } = renderHook(() => useListState([1, 2]), undefined);
+    act(() => result.current[1].insert(Number.NaN, 3));
+    expect(result.current[0]).toEqual([1, 2, 3]);
+  });
+});

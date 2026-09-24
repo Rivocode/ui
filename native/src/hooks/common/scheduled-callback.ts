@@ -19,10 +19,11 @@ function useScheduled<Args extends unknown[]>(
   wait: number,
 ): ScheduledCallback<Args> {
   const latest = useLatest(callback);
+  const delay = useLatest(wait);
 
   const scheduled: Scheduled<Args> = useMemo(
-    () => schedule((...args: Args) => latest.current(...args), wait),
-    [schedule, latest, wait],
+    () => schedule((...args: Args) => latest.current(...args), () => delay.current),
+    [schedule, latest, delay],
   );
 
   useEffect(() => () => scheduled.cancel(), [scheduled]);

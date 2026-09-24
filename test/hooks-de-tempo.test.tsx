@@ -164,6 +164,65 @@ describe("useDebouncedCallback e useThrottledCallback", () => {
   });
 });
 
+describe("trocar o wait com uma chamada pendente", () => {
+  test("o debounce entrega a pendente, e a funcao devolvida continua a mesma", () => {
+    const callback = mock((value: string) => void value);
+    const { result, rerender } = renderHook(({ wait }) => useDebouncedCallback(callback, wait), {
+      initialProps: { wait: 100 },
+    });
+    const before = result.current;
+
+    act(() => result.current("a"));
+    rerender({ wait: 300 });
+    expect(result.current).toBe(before);
+    expect(result.current.isPending()).toBe(true);
+    advance(100);
+    expect(callback.mock.calls).toEqual([["a"]]);
+
+    act(() => result.current("b"));
+    advance(299);
+    expect(callback).toHaveBeenCalledTimes(1);
+    advance(1);
+    expect(callback.mock.calls).toEqual([["a"], ["b"]]);
+  });
+
+  test("o throttle entrega a que esperava no fim da janela, e a janela seguinte usa o wait novo", () => {
+    const callback = mock((value: number) => void value);
+    const { result, rerender } = renderHook(({ wait }) => useThrottledCallback(callback, wait), {
+      initialProps: { wait: 100 },
+    });
+
+    act(() => {
+      result.current(1);
+      result.current(2);
+    });
+    rerender({ wait: 300 });
+    expect(result.current.isPending()).toBe(true);
+    advance(100);
+    expect(callback.mock.calls).toEqual([[1], [2]]);
+
+    act(() => result.current(3));
+    advance(299);
+    expect(callback.mock.calls).toEqual([[1], [2]]);
+    advance(1);
+    expect(callback.mock.calls).toEqual([[1], [2], [3]]);
+  });
+
+  test("desmontar depois de trocar o wait continua cancelando", () => {
+    const callback = mock(() => {});
+    const { result, rerender, unmount } = renderHook(
+      ({ wait }) => useDebouncedCallback(callback, wait),
+      { initialProps: { wait: 100 } },
+    );
+    act(() => result.current());
+    rerender({ wait: 50 });
+    unmount();
+    jest.advanceTimersByTime(500);
+    expect(callback).not.toHaveBeenCalled();
+    expect(jest.getTimerCount()).toBe(0);
+  });
+});
+
 describe("useInterval e useTimeout", () => {
   test("o intervalo repete, pausa com null e para no desmonte", () => {
     const tick = mock(() => {});

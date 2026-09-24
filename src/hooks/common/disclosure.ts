@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+
+import { useLatest } from "./latest";
 
 export type UseDisclosureOptions = {
   /** Chamado so na passagem de fechado para aberto, e nao a cada `open()`. */
@@ -20,21 +22,23 @@ export function useDisclosure(
   options: UseDisclosureOptions = {},
 ): [boolean, DisclosureHandlers] {
   const [opened, setOpened] = useState(initial);
-  const { onOpen, onClose } = options;
+  const current = useRef(initial);
+  const latest = useLatest(options);
 
   const handlers = useMemo<DisclosureHandlers>(() => {
-    const open = () => {
-      if (opened) return;
-      setOpened(true);
-      onOpen?.();
+    const change = (next: boolean) => {
+      if (current.current === next) return;
+      current.current = next;
+      setOpened(next);
+      if (next) latest.current.onOpen?.();
+      else latest.current.onClose?.();
     };
-    const close = () => {
-      if (!opened) return;
-      setOpened(false);
-      onClose?.();
+    return {
+      open: () => change(true),
+      close: () => change(false),
+      toggle: () => change(!current.current),
     };
-    return { open, close, toggle: () => (opened ? close() : open()) };
-  }, [opened, onOpen, onClose]);
+  }, [latest]);
 
   return [opened, handlers];
 }

@@ -9,8 +9,9 @@ export type Scheduled<Args extends unknown[]> = {
 
 export function debounce<Args extends unknown[]>(
   callback: (...args: Args) => void,
-  wait: number,
+  wait: number | (() => number),
 ): Scheduled<Args> {
+  const delay = () => (typeof wait === "function" ? wait() : wait);
   let timer: ReturnType<typeof setTimeout> | undefined;
   let waiting: Args | undefined;
 
@@ -25,7 +26,7 @@ export function debounce<Args extends unknown[]>(
     run: (...args) => {
       waiting = args;
       clearTimeout(timer);
-      timer = setTimeout(fire, wait);
+      timer = setTimeout(fire, delay());
     },
     cancel: () => {
       clearTimeout(timer);
@@ -42,8 +43,9 @@ export function debounce<Args extends unknown[]>(
 
 export function throttle<Args extends unknown[]>(
   callback: (...args: Args) => void,
-  wait: number,
+  wait: number | (() => number),
 ): Scheduled<Args> {
+  const delay = () => (typeof wait === "function" ? wait() : wait);
   let timer: ReturnType<typeof setTimeout> | undefined;
   let waiting: Args | undefined;
 
@@ -55,14 +57,14 @@ export function throttle<Args extends unknown[]>(
       return;
     }
     callback(...args);
-    timer = setTimeout(release, wait);
+    timer = setTimeout(release, delay());
   };
 
   return {
     run: (...args) => {
       if (timer === undefined) {
         callback(...args);
-        timer = setTimeout(release, wait);
+        timer = setTimeout(release, delay());
         return;
       }
       waiting = args;

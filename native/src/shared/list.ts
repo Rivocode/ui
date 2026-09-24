@@ -9,7 +9,7 @@ export function prependItems<T>(list: readonly T[], items: readonly T[]): T[] {
 }
 
 export function insertItems<T>(list: readonly T[], index: number, items: readonly T[]): T[] {
-  const at = Math.max(0, Math.min(index, list.length));
+  const at = Number.isNaN(index) ? list.length : Math.max(0, Math.min(Math.trunc(index), list.length));
   return [...list.slice(0, at), ...items, ...list.slice(at)];
 }
 

@@ -5,6 +5,7 @@ export function clampCount(value: number, min = -Infinity, max = Infinity): numb
 }
 
 export function nextOption<T>(options: readonly T[], current: T): T {
+  if (options.length === 0) return current;
   const index = options.indexOf(current);
   return options[(index + 1) % options.length] as T;
 }
