@@ -243,9 +243,15 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
 
 `bun run a11y` fica FORA do gate, como o `shot` e o `visual`, porque precisa do
 Chrome: monta a vitrine e mede cada pagina com o axe-core (as regras de layout
-de vitrine que ele ignora estao em `IGNORED_RULES`, cada uma com o motivo), o
+de vitrine que ele ignora estao em `IGNORED_RULES`, cada uma com o motivo, e o
+no de biblioteca que ele ignora sem desligar a regra esta em `IGNORED_NODES`), o
 foco que sobrevive a acao (`FOCUS_TARGETS`), o alvo de 24px e o reflow a 320px,
-e sai com codigo 1 quando acha.
+e sai com codigo 1 quando acha. O alvo mede a area que recebe o clique - o
+`::after` absoluto em inset negativo conta, confirmado por `elementFromPoint`,
+entao pseudo recortado por `overflow` nao conta - e so escapa pela excecao de
+frase o link ou botao de texto que divide a linha com o texto em volta. Antes da
+vitrine, a sonda roda em `TARGET_CALIBRATION`, casos dos dois lados, e para
+tudo se um deles mudar de lado.
 
 `bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
 constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com

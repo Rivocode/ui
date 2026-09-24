@@ -20,9 +20,11 @@ estado com alfa composto, fronteira e anel a 3:1), `check:props`,
 
 `bun run a11y` (em `scripts/acessibilidade.ts`) monta a vitrine e mede cada
 página de `demo/` no Chrome: axe-core com as regras de layout de vitrine
-ignoradas e justificadas em `IGNORED_RULES`, foco que sobrevive à ação para
-cada botão declarado em `FOCUS_TARGETS`, alvo menor que 24x24 e reflow a
-320px. Rode-a primeiro e parta da saída dela: o que ela acusa já é achado
+ignoradas e justificadas em `IGNORED_RULES` (e o nó de biblioteca, como a
+sentinela de foco da Base UI, em `IGNORED_NODES`), foco que sobrevive à ação
+para cada botão declarado em `FOCUS_TARGETS`, alvo menor que 24x24 medido pela
+área que recebe o clique (o `::after` ampliado conta, se não estiver recortado)
+e reflow a 320px. Rode-a primeiro e parta da saída dela: o que ela acusa já é achado
 binário, e o seu trabalho é o que ela não alcança. Ação nova que tira o botão
 da tela - remover, fechar, marcar como lida - ganha linha em `FOCUS_TARGETS`.
 

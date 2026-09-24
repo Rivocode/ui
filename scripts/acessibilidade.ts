@@ -21,6 +21,21 @@ const IGNORED_RULES: Record<string, string> = {
     "A pagina de vitrine abre cada amostra com o nome da secao; o `h1` e da tela de quem consome.",
 };
 
+// Excecao por NO, e nao por regra: desligar a regra inteira esconderia o proximo
+// elemento aria-hidden focavel de verdade - o svg do Recharts em `graficos` e um
+// deles, e continua acusado. O seletor casa so a forma exata que a biblioteca
+// desenha, com aria-hidden E tabindex=0 E vazia, para uma sentinela que ganhe
+// conteudo voltar a ser medida.
+const IGNORED_NODES: Record<string, { selector: string; reason: string }[]> = {
+  "aria-hidden-focus": [
+    {
+      selector: 'span[data-base-ui-focus-guard][aria-hidden="true"][tabindex="0"]:empty',
+      reason:
+        "Sentinela de armadilha de foco da Base UI: o span vazio recebe o Tab so para devolver o foco para dentro (ou para fora) do painel, e nunca e lido. E aria-hidden e focavel por desenho, e o Radix e o Floating UI desenham a mesma coisa.",
+    },
+  ],
+};
+
 const EXEMPT_FROM_CONTRAST =
   "Texto de componente inativo nao entra na 1.4.3: o axe so reconhece `disabled` nativo, e as pecas marcam o inativo com `data-disabled` e `aria-disabled` no controle de fora.";
 
@@ -217,18 +232,31 @@ async function open(page: string, width: number, height: number) {
 
 type AxeViolation = { id: string; impact: string; help: string; nodes: { target: string; summary: string }[] };
 
+let ignoredNodes = 0;
+
 async function runAxe() {
   await chrome.evaluate(`${axeSource};true`);
   const rules = Object.fromEntries(Object.keys(IGNORED_RULES).map((id) => [id, { enabled: false }]));
-  return chrome.evaluate<AxeViolation[]>(`axe
+  const skip = Object.fromEntries(
+    Object.entries(IGNORED_NODES).map(([id, entries]) => [id, entries.map((entry) => entry.selector)]),
+  );
+  const { violations, ignored } = await chrome.evaluate<{ violations: AxeViolation[]; ignored: number }>(`axe
     .run(document, { resultTypes: ["violations"], rules: ${JSON.stringify(rules)} })
-    .then((result) => result.violations.map((violation) => violation.id !== "color-contrast" ? violation : {
+    .then((result) => {
+      const skip = ${JSON.stringify(skip)};
+      let ignored = 0;
+      const kept = result.violations.map((violation) => ({
       ...violation,
       nodes: violation.nodes.filter((node) => {
         const element = node.target.length === 1 ? document.querySelector(node.target[0]) : null;
+        if (element && (skip[violation.id] ?? []).some((selector) => element.matches(selector))) {
+          ignored++;
+          return false;
+        }
+        if (violation.id !== "color-contrast") return true;
         return !element?.closest('[data-disabled], [aria-disabled="true"], :disabled');
       }),
-    }).filter((violation) => violation.nodes.length > 0).map((violation) => ({
+    })).filter((violation) => violation.nodes.length > 0).map((violation) => ({
       id: violation.id,
       impact: violation.impact,
       help: violation.help,
@@ -245,20 +273,108 @@ async function runAxe() {
           summary: (node.failureSummary || "").split("\\n").slice(1).join(" ").trim(),
         };
       }),
-    })))`);
+    }));
+      return { violations: kept, ignored };
+    })`);
+  ignoredNodes += ignored;
+  return violations;
 }
 
 type SmallTarget = { label: string; size: string };
 
+// Duas medidas que a primeira versao errava para o lado do alarme.
+//
+// A AREA: o getBoundingClientRect so ve a caixa desenhada, e as pecas ampliam o
+// alvo com um ::after absoluto em inset negativo - o AILabel mede 22x20 e
+// recebe o clique em 36x34. O `hitBox` soma os dois pseudo-elementos quando eles sao absolutos, tem
+// conteudo e nao tem pointer-events none, e so CONFIA na soma depois de sondar
+// com elementFromPoint a borda e o meio da area somada: se um vizinho cobre um
+// canto, ou um ancestral recorta com overflow, a sonda cai fora do elemento e a
+// medida volta para a caixa desenhada. E o que segura o link do Breadcrumb:
+// ele declara -inset-y-1.5, mas o `truncate` do proprio link recorta o pseudo,
+// e o clique continua nos 20px desenhados. Pseudo de elemento `static` nao conta,
+// porque o bloco que o contem e outro ancestral e a conta de posicao mentiria.
+//
+// A FRASE: a excecao Inline da 2.5.8 vale para qualquer alvo cujo tamanho e
+// preso pela altura da linha de texto em volta, e nao so para link. Um botao
+// "Tentar de novo" no fim da mensagem de erro esta na frase tanto quanto um
+// link. O criterio e o mesmo para os dois: o alvo tem texto visivel proprio
+// (icone solto nao e frase), e um no de texto de fora dele, no mesmo bloco,
+// divide a LINHA com ele - sobrepoe na vertical, a no maximo um em de
+// distancia na horizontal, e o alvo nao e mais alto que o line-height dessa
+// linha (o retangulo do Range e so a caixa do glifo, 14px numa fonte de 12, e
+// nao serve de altura de linha). A distancia
+// e o que separa a frase do rotulo solto no outro canto de uma fileira flex.
 const TARGET_PROBE = `(() => {
   const min = ${MIN_TARGET};
   const inSentence = (element) => {
-    if (!getComputedStyle(element).display.startsWith("inline")) return false;
+    if (!(element.innerText || "").trim()) return false;
     let block = element.parentElement;
     while (block && getComputedStyle(block).display.startsWith("inline")) block = block.parentElement;
     if (!block) return false;
-    const own = (element.textContent || "").trim().length;
-    return (block.textContent || "").trim().length > own + 1;
+    const em = parseFloat(getComputedStyle(element).fontSize) || 16;
+    const own = [...element.getClientRects()].filter((rect) => rect.width > 0);
+    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (element.contains(node) || !(node.textContent || "").trim()) continue;
+      const parent = node.parentElement;
+      if (parent && (parent.closest('[aria-hidden="true"]') || getComputedStyle(parent).visibility === "hidden")) continue;
+      const lineStyle = getComputedStyle(parent ?? block);
+      const line = parseFloat(lineStyle.lineHeight) || (parseFloat(lineStyle.fontSize) || 16) * 1.2;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const text of range.getClientRects()) {
+        if (text.width <= 0) continue;
+        const sameLine = own.some((box) =>
+          text.top < box.bottom && text.bottom > box.top &&
+          box.height <= Math.max(text.height, line) + 2 &&
+          Math.max(text.left - box.right, box.left - text.right) <= em,
+        );
+        if (sameLine) return true;
+      }
+    }
+    return false;
+  };
+  const hitBox = (element) => {
+    let own = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    if (style.position === "static") return own;
+    const reach = (rect) => {
+      let box = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+      for (const which of ["::before", "::after"]) {
+        const pseudo = getComputedStyle(element, which);
+        if (pseudo.content === "none" || pseudo.content === "normal") continue;
+        if (pseudo.position !== "absolute" || pseudo.pointerEvents === "none") continue;
+        if (pseudo.display === "none" || pseudo.visibility === "hidden") continue;
+        const left = rect.left + parseFloat(style.borderLeftWidth) + parseFloat(pseudo.left);
+        const top = rect.top + parseFloat(style.borderTopWidth) + parseFloat(pseudo.top);
+        const width = parseFloat(pseudo.width);
+        const height = parseFloat(pseudo.height);
+        if (![left, top, width, height].every(Number.isFinite)) continue;
+        box = {
+          left: Math.min(box.left, left),
+          top: Math.min(box.top, top),
+          right: Math.max(box.right, left + width),
+          bottom: Math.max(box.bottom, top + height),
+        };
+      }
+      return box;
+    };
+    const first = reach(own);
+    if (first.right - first.left <= own.width && first.bottom - first.top <= own.height) return own;
+    element.scrollIntoView({ block: "center", inline: "center" });
+    own = element.getBoundingClientRect();
+    const box = reach(own);
+    const edge = 0.5;
+    const xs = [box.left + edge, (box.left + box.right) / 2, box.right - edge];
+    const ys = [box.top + edge, (box.top + box.bottom) / 2, box.bottom - edge];
+    for (const x of xs) {
+      for (const y of ys) {
+        const hit = document.elementFromPoint(x, y);
+        if (!hit || !element.contains(hit)) return own;
+      }
+    }
+    return { width: box.right - box.left, height: box.bottom - box.top };
   };
   const describe = (element) => {
     const role = element.getAttribute("role");
@@ -280,7 +396,9 @@ const TARGET_PROBE = `(() => {
     const own = element.getBoundingClientRect();
     if (own.width <= 1 || own.height <= 1) continue;
     const label = element.closest("label");
-    const box = label ? label.getBoundingClientRect() : own;
+    let box = label ? label.getBoundingClientRect() : own;
+    if (box.width >= min && box.height >= min) continue;
+    if (!label) box = hitBox(element);
     if (box.width >= min && box.height >= min) continue;
     if (element.getAttribute("role") !== "radio" && inSentence(element)) continue;
     found.push({ label: describe(element), size: Math.round(box.width) + "x" + Math.round(box.height) });
@@ -339,7 +457,94 @@ let smallTotal = 0;
 let reflowTotal = 0;
 let focusTotal = 0;
 
+// A sonda de alvo pulou de "mede a caixa" para "mede a area clicavel e acha a
+// frase", e cada um desses passos pode ficar frouxo sem nada acusar: bastaria o
+// hitBox aceitar qualquer pseudo, ou o inSentence aceitar qualquer texto na
+// fileira, para a vitrine inteira ficar verde. Esta bancada roda a sonda num
+// HTML com os casos que ja enganaram - de cada lado - e para tudo se um deles
+// mudar de lado. O `true` e o que tem que continuar passando; o `false` e o
+// alvo pequeno de verdade, que tem que continuar sendo acusado.
+const TARGET_CALIBRATION: { name: string; passes: boolean; html: string }[] = [
+  {
+    name: "selo com ::after em -8px, como o AILabel",
+    passes: true,
+    html: `<button class="grow" style="width:22px;height:20px" aria-label="selo ampliado">IA</button>`,
+  },
+  {
+    name: "botao de 12px sem area ampliada",
+    passes: false,
+    html: `<button style="width:12px;height:12px" aria-label="xis pequeno"></button>`,
+  },
+  {
+    name: "::after com pointer-events none nao recebe clique",
+    passes: false,
+    html: `<button class="grow inert-grow" style="width:12px;height:12px" aria-label="xis de pseudo inerte"></button>`,
+  },
+  {
+    name: "::after recortado por overflow hidden do pai",
+    passes: false,
+    html: `<div style="overflow:hidden;width:12px;height:12px"><button class="grow" style="width:12px;height:12px" aria-label="xis recortado"></button></div>`,
+  },
+  {
+    name: "link no meio da frase",
+    passes: true,
+    html: `<p style="font-size:12px;line-height:16px">Leia os <a href="#">termos de uso</a> antes de seguir.</p>`,
+  },
+  {
+    name: "botao de texto no fim da mensagem, em p flex",
+    passes: true,
+    html: `<p style="display:flex;font-size:12px;line-height:18px">A conexao caiu. <button style="height:18px;padding:0">Tentar de novo</button></p>`,
+  },
+  {
+    name: "icone solto ao lado do rotulo nao e frase",
+    passes: false,
+    html: `<div style="display:flex;gap:4px;font-size:14px">Financeiro<button style="width:16px;height:16px" aria-label="fechar ficha"></button></div>`,
+  },
+  {
+    name: "botao de texto no outro canto da fileira nao e frase",
+    passes: false,
+    html: `<div style="display:flex;justify-content:space-between;width:400px;font-size:12px;line-height:18px">3 selecionadas<button style="height:18px;padding:0">Limpar tudo</button></div>`,
+  },
+  {
+    name: "botao de texto sozinho no bloco nao e frase",
+    passes: false,
+    html: `<div style="font-size:12px"><button style="height:20px;padding:0">+4 mais</button></div>`,
+  },
+];
+
+async function calibrateTargets() {
+  const style =
+    "<style>body{font-family:sans-serif;margin:40px}section{margin:40px 0}button{font:inherit;border:0}" +
+    ".grow{position:relative}.grow::after{content:'';position:absolute;inset:-8px}" +
+    ".inert-grow::after{pointer-events:none}</style>";
+  const body = TARGET_CALIBRATION.map((entry) => `<section>${entry.html}</section>`).join("");
+  await chrome.send("Emulation.setDeviceMetricsOverride", { ...DESK, deviceScaleFactor: 1, mobile: false });
+  await chrome.send("Page.navigate", {
+    url: `data:text/html;charset=utf-8,${encodeURIComponent(`<!doctype html>${style}${body}`)}`,
+  });
+  await Bun.sleep(500);
+  const verdicts = await chrome.evaluate<boolean[]>(`(() => {
+    const found = ${TARGET_PROBE};
+    return [...document.querySelectorAll("section")].map((section) => {
+      const target = section.querySelector("button, a[href]");
+      const name = (target.getAttribute("aria-label") || target.textContent).trim();
+      return !found.some((item) => item.label.includes('"' + name + '"'));
+    });
+  })()`);
+  if (verdicts.length !== TARGET_CALIBRATION.length) {
+    throw new Error(`a calibracao do alvo leu ${verdicts.length} caso(s), e declara ${TARGET_CALIBRATION.length}`);
+  }
+  const wrong = TARGET_CALIBRATION.filter((entry, index) => verdicts[index] !== entry.passes);
+  if (wrong.length > 0) {
+    throw new Error(
+      "a sonda de alvo errou a calibracao, entao a medida da vitrine nao vale:\n" +
+        wrong.map((entry) => `  ${entry.name}: devia ${entry.passes ? "passar" : "ser acusado"}`).join("\n"),
+    );
+  }
+}
+
 try {
+  await calibrateTargets();
   for (const page of pages) {
     const lines: string[] = [];
 
@@ -424,15 +629,15 @@ try {
 const focusDeclared = FOCUS_TARGETS.filter((target) => pages.includes(target.page)).length;
 
 console.log(
-  `\n${pages.length} pagina(s). axe: ${axeTotal} no(s) em violacao, com ${Object.keys(IGNORED_RULES).length} regra(s) de layout de vitrine ignorada(s).` +
+  `\n${pages.length} pagina(s). axe: ${axeTotal} no(s) em violacao, com ${Object.keys(IGNORED_RULES).length} regra(s) de layout de vitrine ignorada(s) e ${ignoredNodes} no(s) ignorado(s) por IGNORED_NODES.` +
     ` Alvo pequeno: ${smallTotal}. Reflow a ${REFLOW_WIDTH}px: ${reflowTotal} pagina(s).` +
     ` Foco: ${focusTotal} de ${focusDeclared} acao(oes) declarada(s).`,
 );
 
 if (problems > 0) {
   console.log(
-    "\nAs regras ignoradas e o motivo de cada uma estao em IGNORED_RULES, em scripts/acessibilidade.ts." +
-      "\nAlvo pequeno segue a 2.5.8 sem a excecao de espacamento: so link dentro de frase escapa, e o radio conta o `label` que o envolve." +
+    "\nAs regras e os nos ignorados, e o motivo de cada um, estao em IGNORED_RULES e IGNORED_NODES, em scripts/acessibilidade.ts." +
+      "\nAlvo pequeno segue a 2.5.8 sem a excecao de espacamento: so escapa link ou botao de texto que divide a linha com a frase, a area conta o ::before e o ::after absolutos que recebem o clique, e o radio conta o `label` que o envolve." +
       `\nContraste: ${EXEMPT_FROM_CONTRAST}`,
   );
   process.exit(1);
