@@ -5,6 +5,7 @@ import {
   compactWords,
   currency,
   currencyShort,
+  currencyShortWords,
   dayMonth,
   integer,
   monthShort,
@@ -21,18 +22,27 @@ test("o eixo abrevia a grandeza, porque tick nao tem largura para centavo", () =
   expect(compact(12_400)).toBe("12,4K");
   expect(compact(1_200_000)).toBe("1,2M");
   expect(compact(3_000_000_000)).toBe("3B");
-  expect(currencyShort(12_400)).toBe("R$ 12,4K");
+  expect(currencyShort(12_400)).toBe("R$\u00a012,4K");
+});
+
+test("o dinheiro abreviado nao quebra entre o R$ e o numero, como o do Intl", () => {
+  const symbol = currency(2480).slice(0, 3);
+  expect(symbol).toBe("R$\u00a0");
+  expect(currencyShort(12_400).startsWith(symbol)).toBe(true);
+  expect(currencyShortWords(12_400).startsWith(symbol)).toBe(true);
+  expect(currencyShort(12_400)).not.toContain(" ");
+  expect(currencyShortWords(12_400)).toBe("R$\u00a012,4\u00a0mil");
 });
 
 test("a forma por extenso existe para texto corrido, onde ela le melhor", () => {
-  expect(compactWords(12_400)).toBe("12,4 mil");
-  expect(compactWords(1_200_000)).toBe("1,2 mi");
-  expect(compactWords(3_000_000_000)).toBe("3 bi");
+  expect(compactWords(12_400)).toBe("12,4\u00a0mil");
+  expect(compactWords(1_200_000)).toBe("1,2\u00a0mi");
+  expect(compactWords(3_000_000_000)).toBe("3\u00a0bi");
 });
 
 test("o negativo abrevia pelo tamanho, e nao pelo sinal", () => {
   expect(compact(-12_400)).toBe("-12,4K");
-  expect(compactWords(-12_400)).toBe("-12,4 mil");
+  expect(compactWords(-12_400)).toBe("-12,4\u00a0mil");
 });
 
 test("o integer separa milhar e nao inventa decimal", () => {

@@ -102,5 +102,8 @@ test("o formatador do delta e o mesmo do resto da casa", () => {
   // Nao e um segundo Intl escondido no Stat: e o `currencyShort` que o eixo,
   // a tabela e a legenda ja usam.
   stat({ delta: 12_400, deltaFormat: "currencyShort" });
-  expect(screen.getByText(new RegExp(currencyShort(12_400).replace("$", "\\$")))).toBeDefined();
+  const written = currencyShort(12_400)
+    .replace("$", "\\$")
+    .replace(/\u00a0/g, "\\s");
+  expect(screen.getByText(new RegExp(written))).toBeDefined();
 });

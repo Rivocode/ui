@@ -49,6 +49,6 @@ test("os formatadores sao um so, e o grafico nao e dono deles", async () => {
   // importar do subcaminho do grafico.
   const fromChart = await import("../src/chart/format");
 
-  expect(formatters.currencyShort(2480)).toBe("R$ 2,5K");
+  expect(formatters.currencyShort(2480)).toBe("R$\u00a02,5K");
   expect(fromChart.formatters.currencyShort).toBe(formatters.currencyShort);
 });

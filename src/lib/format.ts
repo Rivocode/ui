@@ -1,4 +1,5 @@
 const LOCALE = "pt-BR";
+const NBSP = "\u00a0";
 
 const cache = new Map<string, Intl.NumberFormat>();
 
@@ -24,7 +25,7 @@ const SUFFIXES = {
 function abbreviate(value: number, shape: keyof typeof SUFFIXES) {
   const { billion, million, thousand, tight } = SUFFIXES[shape];
   const size = Math.abs(value);
-  const space = tight ? "" : " ";
+  const space = tight ? "" : NBSP;
 
   const write = (divided: number, suffix: string) =>
     `${numberFormat({ maximumFractionDigits: 1 }).format(divided)}${space}${suffix}`;
@@ -45,11 +46,11 @@ export function compactWords(value: number) {
 }
 
 export function currencyShort(value: number) {
-  return `R$ ${compact(value)}`;
+  return `R$${NBSP}${compact(value)}`;
 }
 
 export function currencyShortWords(value: number) {
-  return `R$ ${compactWords(value)}`;
+  return `R$${NBSP}${compactWords(value)}`;
 }
 
 export function integer(value: number) {
