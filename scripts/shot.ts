@@ -1,6 +1,7 @@
 /** Fotografa a vitrine, para revisao visual sem abrir navegador na mao. */
 import {
   BUILD_KEYWORD,
+  CHROME,
   SECTIONS,
   SHOTS as SHOTS_DIR,
   address,
@@ -9,8 +10,6 @@ import {
   slug,
 } from "./retratos";
 import { servir } from "./serve";
-
-const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 /**
  * Cada pagina sai duas vezes: na largura de mesa e na de celular. O retrato

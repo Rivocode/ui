@@ -2,6 +2,8 @@ import { Glob } from "bun";
 
 export const SHOTS = "demo/dist";
 
+export const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+
 export const SIGNATURES = "demo/assinaturas.json";
 
 export const SECTION_PREFIX = "secao-";

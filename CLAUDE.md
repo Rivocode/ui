@@ -241,6 +241,12 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
   milissegundos e sem navegador, porque o retrato em si vive fora do gate.
 
+`bun run a11y` fica FORA do gate, como o `shot` e o `visual`, porque precisa do
+Chrome: monta a vitrine e mede cada pagina com o axe-core (as regras de layout
+de vitrine que ele ignora estao em `IGNORED_RULES`, cada uma com o motivo), o
+foco que sobrevive a acao (`FOCUS_TARGETS`), o alvo de 24px e o reflow a 320px,
+e sai com codigo 1 quando acha.
+
 `bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
 constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com
 `node` pelo stdio e confere as sete ferramentas - a CI roda os dois, nessa

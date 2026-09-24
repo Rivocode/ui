@@ -45,6 +45,8 @@ const OUT: Record<string, string> = {
     "Compara retrato com assinatura tirada NESTA maquina: precisa dos PNG do `bun run shot` (Chrome em caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run shot && bun run visual` antes de criar a tag. O que o gate alcanca dela e o `check:retratos`, que cobra a declaracao de cada retrato de secao sem precisar de navegador.",
   "scripts/shot.ts":
     "Fotografa a vitrine e as secoes chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
+  "scripts/acessibilidade.ts":
+    "Bancada de acessibilidade da vitrine (`bun run a11y`): roda o axe-core, o foco depois da acao, o alvo de 24px e o reflow a 320px dentro do Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem, e le o `demo/dist` que so existe depois do `bun run demo`. Ela acusa o que as pecas tem HOJE, e entrar no gate antes de a lista zerar deixaria o `check` vermelho em toda arvore.",
   "scripts/serve.ts":
     "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
   "scripts/props-do-catalogo-nativo.ts":
