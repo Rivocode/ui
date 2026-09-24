@@ -159,7 +159,9 @@ export function ActionBar({
           {children !== undefined && children !== null && (
             <div
               className={cn(
-                "flex flex-wrap items-center gap-2 border-border max-sm:order-last max-sm:w-full sm:border-l sm:pl-3",
+                "flex min-w-0 flex-wrap items-center gap-2 border-border max-sm:order-last max-sm:w-full sm:border-l sm:pl-3",
+                "[&>button]:h-auto [&>button]:min-h-[var(--rc-control-sm)] [&>button]:max-w-full",
+                "[&>button]:shrink [&>button]:py-1 [&>button]:whitespace-normal",
                 classNames?.actions,
               )}
             >
@@ -172,7 +174,10 @@ export function ActionBar({
               size="sm"
               variant="ghost"
               onClick={onClear}
-              className={cn("ml-auto", classNames?.clear)}
+              className={cn(
+                "ml-auto h-auto min-h-[var(--rc-control-sm)] max-w-full shrink py-1 whitespace-normal",
+                classNames?.clear,
+              )}
             >
               {labels.clear ?? CLEAR_SELECTION}
             </Button>

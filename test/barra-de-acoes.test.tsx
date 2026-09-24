@@ -248,3 +248,29 @@ test("com o DataTable: marcar linha abre a barra, e limpar desmarca a tabela", (
     expect(checkbox.getAttribute("aria-checked")).toBe("false");
   }
 });
+
+test("rotulo longo quebra dentro do botao, e a barra nao alarga a pagina a 320px", () => {
+  bar({
+    count: 3,
+    onClear: () => {},
+    children: <Button size="sm">Reenviar as notas selecionadas por e-mail ao contador</Button>,
+  });
+
+  const action = screen.getByRole("button", { name: /Reenviar/ });
+  const actions = tokens(action.parentElement!);
+  for (const token of [
+    "[&>button]:h-auto",
+    "[&>button]:min-h-[var(--rc-control-sm)]",
+    "[&>button]:max-w-full",
+    "[&>button]:shrink",
+    "[&>button]:whitespace-normal",
+  ]) {
+    expect(actions).toContain(token);
+  }
+
+  const clear = tokens(screen.getByRole("button", { name: "Limpar seleção" }));
+  expect(clear).toContain("whitespace-normal");
+  expect(clear).not.toContain("whitespace-nowrap");
+  expect(clear).toContain("h-auto");
+  expect(clear).not.toContain("h-[var(--rc-control-sm)]");
+});

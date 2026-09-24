@@ -75,6 +75,25 @@ lugar embaixo da tabela, então a paginação nunca fica escondida atrás dela.
 ocupa lugar nenhum. É para listagem que ocupa a tela inteira; numa tela com
 mais de uma área, a `sticky` diz melhor de qual lista ela fala.
 
+Como a `fixed` não ocupa lugar, ela pode cobrir o controle que recebe o foco
+pelo Tab no pé da tela, e o navegador não rola para tirá-lo de baixo dela.
+Reserve a altura da barra na rolagem da página enquanto ela está aberta:
+
+```css
+html {
+  scroll-padding-bottom: 6rem;
+}
+```
+
+Com Tailwind é a classe `scroll-pb-24` no `html`. Se a página rola dentro de um
+contêiner, a regra vai nele, e não no `html`. Os `6rem` cobrem a barra de uma
+linha com a área segura; com ações que quebram em duas linhas no celular, suba
+o valor.
+
+Os botões dentro dela quebram o rótulo longo em mais de uma linha em vez de
+empurrar a página para o lado, então a barra cabe em 320px, que é a tela de
+quem usa zoom de 400%.
+
 Nos dois casos ela empilha em `--rc-z-sticky`: fica acima do conteúdo que rola
 e abaixo de menu, diálogo e aviso.
 
