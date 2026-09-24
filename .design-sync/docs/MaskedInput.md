@@ -51,6 +51,10 @@ A máscara põe a pontuação, e não diz se o número existe. Quem confere é
 texto com ou sem pontuação, e o `isValidCnpj` já faz a conta do CNPJ
 alfanumérico: cada letra vale o código dela menos 48.
 
+CNH, título de eleitor, PIS, RENAVAM e placa têm a sua: `isValidCnh`,
+`isValidVoterId`, `isValidPis`, `isValidRenavam` e `isValidPlate`. O guia
+[Documentos brasileiros](/documentos-brasileiros) diz o que cada conta confere.
+
 ```tsx
 const schema = z.object({
   cnpj: z.string().refine(isValidCnpj, 'CNPJ inválido'),

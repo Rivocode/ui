@@ -34,7 +34,12 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 
 CPF e CNPJ se conferem pelo dígito verificador com `isValidCpf` e
 `isValidCnpj`, do pacote principal: `z.string().refine(isValidCnpj, 'CNPJ
-inválido')`. Os dois já aceitam o CNPJ alfanumérico e o texto com máscara.
+inválido')`. Os dois já aceitam o CNPJ alfanumérico e o texto com máscara. Os
+outros documentos seguem o mesmo molde: `isValidCnh`, `isValidVoterId` (título
+de eleitor), `isValidPis` (PIS, PASEP, NIT e NIS), `isValidRenavam` e
+`isValidPlate` (placa antiga e Mercosul). Nenhuma consulta cadastro: elas dizem
+que o número pode existir, e não que está ativo. As sete existem com o mesmo
+nome no `@rivocode/ui-native`.
 
 A chave Pix se confere com `isValidPixKey`, que quer a chave como o DICT a
 guarda: CPF e CNPJ **sem** pontuação, e-mail em minúsculas, celular com `+55` e

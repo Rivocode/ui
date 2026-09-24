@@ -106,6 +106,13 @@ export {
   type PixPayload,
   type PixPayloadInput,
 } from "./shared/pix";
+export {
+  isValidCnh,
+  isValidPis,
+  isValidPlate,
+  isValidRenavam,
+  isValidVoterId,
+} from "./shared/documents";
 export { NumberField, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";
 export { SearchInput, type SearchInputProps } from "./search-input";

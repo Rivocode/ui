@@ -340,8 +340,12 @@ Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
 `applyCurrencyMask`, `unmask`, `toCents` e `phonePatternFor` para os moldes de
 `MASKS`. Formatar CPF numa celula de tabela nao precisa de um campo por perto.
 `isValidCpf` e `isValidCnpj` conferem os digitos verificadores, com ou sem
-pontuacao e com o CNPJ alfanumerico. Os dois existem tambem no nativo, pela
-mesma conta.
+pontuacao e com o CNPJ alfanumerico. `isValidCnh`, `isValidVoterId` (titulo de
+eleitor), `isValidPis` (PIS, PASEP, NIT e NIS), `isValidRenavam` (o de 9 digitos
+continua valendo) e `isValidPlate` (a antiga e a Mercosul) seguem o mesmo
+molde: texto com ou sem pontuacao, `true` ou `false`, e nenhuma consulta a
+cadastro. Todas existem tambem no nativo, pela mesma conta, e o guia
+"Documentos brasileiros" do site diz o que cada uma confere.
 
 O Pix tem as tres dele, nos dois pacotes e pela raiz: `buildPixPayload` monta
 o copia e cola estatico no padrao BR Code do Banco Central, com o CRC16 no fim;

@@ -259,6 +259,13 @@ export {
 } from "./lib/mask";
 export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/tax-id";
 export {
+  isValidCnh,
+  isValidPis,
+  isValidPlate,
+  isValidRenavam,
+  isValidVoterId,
+} from "./shared/documents";
+export {
   InputAction,
   InputGroup,
   InputPrefix,
