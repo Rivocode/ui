@@ -346,7 +346,10 @@ deixa de bater. O dinheiro sai em centavos, para o servidor receber inteiro em
 vez de ponto flutuante.
 
 Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
-`cartao` e `moeda`. O telefone troca de molde entre o fixo e o celular sozinho.
+`cartao`, `boleto` e `moeda`. O telefone troca de molde entre o fixo e o celular
+sozinho, e o boleto troca da linha de banco para a de convênio quando começa
+com 8. `isValidBoletoLine` e `parseBoleto` conferem a linha e leem dela o banco,
+o valor e o vencimento.
 
 ## Listagem com estados de consulta
 

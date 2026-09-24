@@ -57,6 +57,64 @@ quem está, ou que a placa está emplacada. Isso é pergunta para o serviço do
 Sequência de um dígito só, como `111.111.111-11`, passa na conta de vários deles
 e não existe em nenhum: as funções recusam.
 
+## Boleto
+
+A linha digitável tem duas formas, e o primeiro dígito diz qual é:
+
+- **Boleto de banco**, a ficha de compensação: 47 dígitos em cinco campos,
+  `00190.00009 01149.718601 68524.522114 6 75860000102656`. Os três primeiros
+  campos têm verificador próprio no módulo 10, e o quarto é o verificador geral
+  do código de barras, no módulo 11 da Carta-Circular 2.926 do Banco Central.
+- **Convênio**, a conta de consumo e o tributo: 48 dígitos em quatro blocos de
+  onze, cada um com o seu verificador, e começa sempre com 8:
+  `84630000000-3 29990296202-4 00410136000-8 00200644114-7`. A terceira casa
+  diz o módulo: 6 e 7 são módulo 10, e 8 e 9 são módulo 11, como está no leiaute
+  de arrecadação da FEBRABAN.
+
+`isValidBoletoLine` confere todos os verificadores das duas formas, inclusive o
+geral, que é o único que pega um dígito trocado no valor ou no vencimento.
+`boletoLineToBarcode` devolve os 44 dígitos do código de barras, ou `null`
+quando a linha não confere. E `parseBoleto` lê o que o número carrega:
+
+```tsx
+import { parseBoleto } from '@rivocode/ui'
+
+const boleto = parseBoleto('00190.00009 01149.718601 68524.522114 6 75860000102656')
+// { kind: 'bank', bank: '001', amount: 102656, dueDate: 15/07/2018, … }
+```
+
+| Campo | No boleto de banco | No convênio |
+| --- | --- | --- |
+| `kind` | `bank` | `collection` |
+| `bank` | o código de compensação, com três dígitos | `null` |
+| `amount` | o valor em centavos, ou `null` quando vem zerado | o valor em centavos quando a terceira casa é 6 ou 8; `null` quando é 7 ou 9, que carregam referência e não reais |
+| `dueDate` | o vencimento, ou `null` com o fator `0000` | `null`: o convênio não tem fator |
+| `segment` | `null` | 1 prefeitura, 2 saneamento, 3 energia e gás, 4 telecomunicações, 5 órgão de governo, 6 carnê, 7 multa de trânsito, 9 uso do banco |
+| `line`, `barcode` | os dois, só dígitos | os dois, só dígitos |
+
+`parseBoleto` aceita também os 44 dígitos que o leitor ótico devolve, e monta a
+linha a partir deles. Número que não confere devolve `null`, e não metade dos
+campos.
+
+### O fator de vencimento voltou a 1000
+
+O vencimento do boleto de banco é um fator de quatro dígitos: quantos dias
+depois de 07/10/1997. O fator chegou a 9999 em 21/02/2025, e a FEBRABAN o
+reiniciou em 1000 no dia seguinte, 22/02/2025. Desde então o mesmo fator serve
+a duas datas com 9.000 dias de distância, e o número sozinho não diz qual é.
+
+`parseBoleto` escolhe a data mais perto de hoje, que é a que um boleto em
+circulação tem. Quem lê boleto antigo guardado, ou quer um resultado que não
+mude com o relógio, passa o dia de referência:
+
+```tsx
+parseBoleto(linha, { today: new Date(2018, 6, 1) })
+```
+
+O `MaskedInput` tem o molde `boleto`, que começa no de banco e passa sozinho
+para o de convênio quando o primeiro dígito é 8. No celular é o mesmo nome, no
+`MaskedInput` do `@rivocode/ui-native`.
+
 ## Sem campo por perto
 
 As funções não dependem de peça nenhuma, então servem também fora do

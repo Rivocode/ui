@@ -46,7 +46,7 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
   {
     slug: 'documentos-brasileiros',
     title: 'Documentos brasileiros',
-    summary: 'CPF, CNPJ, CNH, título, PIS, RENAVAM e placa: a conta de cada um.',
+    summary: 'CPF, CNPJ, CNH, título, PIS, RENAVAM, placa e boleto: a conta de cada um.',
   },
   {
     slug: 'react-native',

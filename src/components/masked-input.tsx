@@ -61,4 +61,5 @@ const NUMERIC_PATTERNS = {
   hora: true,
   cartao: true,
   telefone: true,
+  boleto: true,
 } as const;

@@ -46,6 +46,13 @@ guarda: CPF e CNPJ **sem** pontuação, e-mail em minúsculas, celular com `+55`
 a chave aleatória com os hifens. Tire a máscara antes de conferir. O copia e
 cola sai de `buildPixPayload`, e o `PixCode` o desenha.
 
+Boleto é `MaskedInput` com `mask="boleto"`, que pontua a linha de banco e troca
+sozinho para a de convênio quando o primeiro dígito é 8. `isValidBoletoLine`
+confere todos os verificadores, e `parseBoleto(linha)` devolve `bank`,
+`amount` em centavos e `dueDate`, ou `null` quando a linha não confere. O fator
+de vencimento voltou a 1000 em 22/02/2025, então passe `{ today }` quando o
+boleto for antigo: sem ele vale a data mais perto de hoje.
+
 O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 

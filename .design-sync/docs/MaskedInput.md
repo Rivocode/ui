@@ -8,20 +8,23 @@ Campo com mascara guiada por molde: `9` e digito, `A` e letra, `*` e os dois, e
 o resto e literal que a mascara poe sozinha.
 
 Moldes prontos: `cpf`, `cnpj`, `cep`, `telefone`, `data`, `hora`, `placa`,
-`cartao` e `moeda`. Aceita molde escrito na mao, como `99-99/9999`.
+`cartao`, `boleto` e `moeda`. Aceita molde escrito na mao, como `99-99/9999`.
 
 `onValueChange` entrega o texto pontuado e o cru. **Guarde o cru**: a pontuacao
 muda com o tempo e o dado deixa de bater. O dinheiro sai também em centavos, por
 `toCents()`, para o servidor receber inteiro em vez de ponto flutuante.
 
-O telefone troca de molde entre o fixo e o celular sozinho.
+O telefone troca de molde entre o fixo e o celular sozinho, e o boleto também:
+a linha começa no molde de banco, de 47 dígitos, e passa para o de convênio, de
+48 em quatro blocos (`84630000000-3 29990296202-4 …`), quando o primeiro dígito
+é 8, que é como toda conta de consumo e todo tributo começam.
 
 O CNPJ aceita letra: desde julho de 2026 a Receita emite CNPJ alfanumérico,
 com letra ou dígito nas doze primeiras casas e dígito nos dois verificadores. A
 letra sobe a caixa sozinha, e o CNPJ só de números continua saindo igual. Por
 isso o `cnpj` abre o teclado de texto no celular, e não o numérico.
 
-## Os nove moldes
+## Os dez moldes
 
 | Nome | Molde | Sai como |
 |---|---|---|
@@ -33,10 +36,11 @@ isso o `cnpj` abre o teclado de texto no celular, e não o numérico.
 | `hora` | `99:99` | `14:30` |
 | `placa` | `AAA9A99` | `ABC1D23` |
 | `cartao` | `9999 9999 9999 9999` | `4111 1111 1111 1111` |
+| `boleto` | `99999.99999 99999.999999 99999.999999 9 99999999999999` | `00190.00009 01149.718601 68524.522114 6 75860000102656` |
 | `moeda` | - | `2.480,00` |
 
 `moeda` é o único sem molde: em dinheiro os centavos vêm primeiro e a casa anda
-para a esquerda a cada dígito, o contrário de todo o resto. Os oito primeiros
+para a esquerda a cada dígito, o contrário de todo o resto. Os nove primeiros
 vivem em `MASKS`, e `MaskName` é o nome de um deles. O tipo `Mask` da prop
 aceita esse nome, `moeda`, ou um molde escrito à mão.
 
@@ -52,7 +56,9 @@ texto com ou sem pontuação, e o `isValidCnpj` já faz a conta do CNPJ
 alfanumérico: cada letra vale o código dela menos 48.
 
 CNH, título de eleitor, PIS, RENAVAM e placa têm a sua: `isValidCnh`,
-`isValidVoterId`, `isValidPis`, `isValidRenavam` e `isValidPlate`. O guia
+`isValidVoterId`, `isValidPis`, `isValidRenavam` e `isValidPlate`. A linha
+digitável do boleto se confere com `isValidBoletoLine`, e `parseBoleto` lê
+dela o banco, o valor em centavos e o vencimento. O guia
 [Documentos brasileiros](/documentos-brasileiros) diz o que cada conta confere.
 
 ```tsx

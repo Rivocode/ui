@@ -354,6 +354,18 @@ o copia e cola estatico no padrao BR Code do Banco Central, com o CRC16 no fim;
 pontuacao, e-mail em minusculas, celular com `+55`, chave aleatoria com os
 hifens). O desenho e o `PixCode`.
 
+O boleto tem tres: `isValidBoletoLine` confere a linha digitavel inteira - a de
+banco, de 47 digitos, com os tres campos no modulo 10 e o verificador geral no
+11, e a de convenio, de 48 e comecando com 8, no modulo que a terceira casa
+pede -, `boletoLineToBarcode` devolve os 44 digitos do codigo de barras ou
+`null`, e `parseBoleto` devolve `BoletoData` (`kind`, `bank`, `amount` em
+centavos, `dueDate`, `segment`, `line` e `barcode`) ou `null`. Ele aceita
+tambem os 44 digitos do leitor otico. O fator de vencimento voltou a 1000 em
+22/02/2025, e o mesmo fator serve a duas datas: `parseBoleto` escolhe a mais
+perto de hoje, e `{ today }` fixa o dia de referencia. `MASKS` ganha o molde
+`boleto`, que troca para o de convenio quando o primeiro digito e 8, e o
+`MaskedInput` nativo aceita o mesmo nome.
+
 ### O que o CSS nao alcanca
 
 `useMobile()` e verdadeiro abaixo do `sm` do Tailwind, no mesmo corte que a

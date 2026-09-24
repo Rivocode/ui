@@ -1,3 +1,5 @@
+import { boletoPatternFor } from "../shared/boleto";
+
 export const MASKS = {
   cpf: "999.999.999-99",
   cnpj: "**.***.***/****-99",
@@ -8,6 +10,8 @@ export const MASKS = {
   cartao: "9999 9999 9999 9999",
   /** Fixo e celular no mesmo campo: a nona casa so aparece quando existe. */
   telefone: "(99) 99999-9999",
+  /** Banco e convenio no mesmo campo: o molde de 48 digitos entra quando o primeiro e 8. */
+  boleto: "99999.99999 99999.999999 99999.999999 9 99999999999999",
 } as const;
 
 export type MaskName = keyof typeof MASKS;
@@ -64,6 +68,8 @@ export function applyMask(text: string, mask: Mask): string {
   if (mask === "telefone") return applyPattern(text, phonePatternFor(text));
 
   if (mask === "cnpj") return applyPattern(text.toUpperCase(), MASKS.cnpj);
+
+  if (mask === "boleto") return applyPattern(text, boletoPatternFor(text));
 
   const pattern = MASKS[mask as MaskName];
   if (pattern) return applyPattern(text, pattern);

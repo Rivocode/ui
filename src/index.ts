@@ -266,6 +266,14 @@ export {
   isValidVoterId,
 } from "./shared/documents";
 export {
+  boletoLineToBarcode,
+  isValidBoletoLine,
+  parseBoleto,
+  type BoletoData,
+  type BoletoKind,
+  type ParseBoletoOptions,
+} from "./shared/boleto";
+export {
   InputAction,
   InputGroup,
   InputPrefix,

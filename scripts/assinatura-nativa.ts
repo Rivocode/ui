@@ -745,7 +745,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "mask",
         native: "mask",
-        note: "no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é sempre molde literal, o dígito é `#` e letra ou dígito é `*`",
+        note: "no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é molde literal, o dígito é `#` e letra ou dígito é `*`, e o único nome é `boleto`",
       },
       {
         web: "value",

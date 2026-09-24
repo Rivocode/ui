@@ -111,6 +111,26 @@ describe("MaskedInput", () => {
     const input = screen.root.findByType("TextInput" as never);
     expect(input.props.keyboardType).toBe("number-pad");
   });
+
+  test("o molde boleto pontua a linha de banco e troca para a de convenio quando comeca com 8", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <MaskedInput
+        mask="boleto"
+        value="10492006506100010004200997263900989810000021403"
+        onValueChange={onValueChange}
+      />,
+    );
+
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.value).toBe("10492.00650 61000.100042 00997.263900 9 89810000021403");
+    expect(input.props.keyboardType).toBe("number-pad");
+
+    act(() =>
+      input.props.onChangeText("84630000000-3 29990296202-4 00410136000-8 00200644114-79"),
+    );
+    expect(onValueChange).toHaveBeenCalledWith("846300000003299902962024004101360008002006441147");
+  });
 });
 
 describe("NumberField", () => {

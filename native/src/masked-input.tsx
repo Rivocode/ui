@@ -1,12 +1,15 @@
 import { Input, type InputProps } from "./field";
+import { boletoPatternFor } from "./shared/boleto";
 
 export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText"> & {
   /**
    * O molde: `#` onde entra digito, `*` onde entra letra ou digito, e o resto e
    * pontuacao. O CNPJ alfanumerico leva `*` nas doze primeiras casas e `#` nos
    * dois verificadores. Com `*` no molde o teclado deixa de ser so numerico.
+   * `boleto` e o unico nome: escolhe sozinho entre a linha de banco (47
+   * digitos) e a de convenio (48, quando o primeiro digito e 8).
    */
-  mask: string;
+  mask: "boleto" | (string & {});
   /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. */
   value: string;
   onValueChange: (clean: string) => void;
@@ -41,6 +44,9 @@ const applyMask = (mask: string, clean: string) => {
   return out;
 };
 
+const patternFor = (mask: string, text: string) =>
+  mask === "boleto" ? boletoPatternFor(text, "#") : mask;
+
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
   const alphanumeric = mask.includes("*");
 
@@ -50,8 +56,8 @@ export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInpu
       keyboardType={alphanumeric ? "default" : "number-pad"}
       autoCapitalize={props.autoCapitalize ?? (alphanumeric ? "characters" : undefined)}
       autoCorrect={props.autoCorrect ?? (alphanumeric ? false : undefined)}
-      value={applyMask(mask, value)}
-      onChangeText={(text) => onValueChange(cleanFor(mask, text))}
+      value={applyMask(patternFor(mask, value), value)}
+      onChangeText={(text) => onValueChange(cleanFor(patternFor(mask, text), text))}
     />
   );
 }

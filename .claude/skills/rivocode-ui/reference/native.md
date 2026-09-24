@@ -186,7 +186,7 @@ escritos em lugar nenhum.
 | `Item` | `interactive` | `onPress` | quem torna a linha tocável é o `onPress`, e não um booleano |
 | `Link` | `render` | `onPress` | o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar |
 | `Link` | `underline` | — | o sublinhado é fixo: sem ponteiro, não existe o `hover` |
-| `MaskedInput` | `mask` | `mask` | no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é sempre molde literal, o dígito é `#` e letra ou dígito é `*` |
+| `MaskedInput` | `mask` | `mask` | no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é molde literal, o dígito é `#` e letra ou dígito é `*`, e o único nome é `boleto` |
 | `MaskedInput` | `value` | `value` | no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo |
 | `MaskedInput` | `onValueChange` | `onValueChange` | no web chega `(masked, raw)`; no nativo chega só o limpo |
 | `Menu` | — | `actions` | os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo |

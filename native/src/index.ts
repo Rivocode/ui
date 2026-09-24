@@ -113,6 +113,14 @@ export {
   isValidRenavam,
   isValidVoterId,
 } from "./shared/documents";
+export {
+  boletoLineToBarcode,
+  isValidBoletoLine,
+  parseBoleto,
+  type BoletoData,
+  type BoletoKind,
+  type ParseBoletoOptions,
+} from "./shared/boleto";
 export { NumberField, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";
 export { SearchInput, type SearchInputProps } from "./search-input";
