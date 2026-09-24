@@ -13,7 +13,11 @@ import {
   FieldsetLegend,
   FieldLabel,
   Input,
+  Menu,
+  MenuContent,
+  MenuItem,
   Menubar,
+  MenubarTrigger,
   Meter,
   NumberField,
   OTPField,
@@ -131,9 +135,25 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
           <Block title="Barra de menus">
             <Menubar aria-label="Principal">
-              <span className="px-2 text-base text-fg-muted">Arquivo</span>
-              <span className="px-2 text-base text-fg-muted">Editar</span>
-              <span className="px-2 text-base text-fg-muted">Exibir</span>
+              <Menu>
+                <MenubarTrigger>Arquivo</MenubarTrigger>
+                <MenuContent>
+                  <MenuItem>Nova nota</MenuItem>
+                  <MenuItem>Exportar XML</MenuItem>
+                </MenuContent>
+              </Menu>
+              <Menu>
+                <MenubarTrigger>Editar</MenubarTrigger>
+                <MenuContent>
+                  <MenuItem>Desfazer</MenuItem>
+                </MenuContent>
+              </Menu>
+              <Menu>
+                <MenubarTrigger>Exibir</MenubarTrigger>
+                <MenuContent>
+                  <MenuItem>Modo compacto</MenuItem>
+                </MenuContent>
+              </Menu>
             </Menubar>
           </Block>
 
