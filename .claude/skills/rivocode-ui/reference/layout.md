@@ -156,7 +156,7 @@ verticalmente rola de lado sem ninguém pedir, e o vazamento não aparece no
 ## Largura de leitura e alinhamento
 
 - Texto corrido: `max-w-prose`. Linha de 200 caracteres não se lê.
-- Formulário: `max-w-3xl` centralizado com `mx-auto`.
+- Formulário: `max-w-3xl` centralizado com `mx-auto`, que é o `<Container size="md">`.
 - Painel e listagem: largura toda, porque a informação é a densidade.
 - Número em tabela: `text-right` e `font-mono`. Alinhados à direita e com dígito
   de largura fixa, os valores se comparam na vertical sem esforço.
@@ -165,8 +165,9 @@ verticalmente rola de lado sem ninguém pedir, e o vazamento não aparece no
 
 ## Densidade, e o que ela move
 
-`density="compact"` encolhe altura de controle, `--rc-item-y` e o respiro dos
-painéis. Ela **não** mexe no seu `gap` nem no seu `padding`.
+`density="compact"` encolhe altura de controle, `--rc-item-y`, o respiro dos
+painéis e o `gap` de `Stack` e `Grid`, que sai de `--rc-gap-*`. Ela **não** mexe
+no `gap` nem no `padding` que você escreve à mão.
 
 Por isso: altura de controle sempre por token.
 

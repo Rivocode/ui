@@ -20,6 +20,10 @@ controle lê. Botão, campo, item de menu, linha de tabela, item de lista, nenhu
 | `--rc-control-md`     | 2.5rem      | 2.25rem  |
 | `--rc-control-lg`     | 3rem        | 2.75rem  |
 | `--rc-item-y`         | 0.5rem      | 0.375rem |
+| `--rc-gap-sm`         | 8px         | 6px      |
+| `--rc-gap-md`         | 12px        | 8px      |
+| `--rc-gap-lg`         | 16px        | 12px     |
+| `--rc-gap-xl`         | 24px        | 16px     |
 
 Por isso a troca alcança o catálogo inteiro de uma vez, e por isso um componente
 novo entra já obedecendo: ele pede `h-[var(--rc-control-md)]`, não `h-10`.

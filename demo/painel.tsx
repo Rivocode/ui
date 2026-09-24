@@ -12,8 +12,10 @@ import {
   CardTitle,
   Code,
   CodeBlock,
+  Container,
   DescriptionItem,
   DescriptionList,
+  Grid,
   Kbd,
   Menu,
   MenuContent,
@@ -23,6 +25,7 @@ import {
   RelativeTime,
   RivoProvider,
   Splitter,
+  Stack,
   Stat,
   Timeline,
   TimelineItem,
@@ -254,6 +257,42 @@ function Trail() {
   );
 }
 
+function Layout() {
+  return (
+    <div className="rounded-lg border border-dashed border-border">
+      <Container size="md" className="py-6">
+        <Stack gap="lg">
+          <Stack direction="row" align="center" justify="between" gap="sm" wrap>
+            <p className="text-base text-fg">Notas em aberto</p>
+            <Button size="sm" variant="secondary">
+              Cobrar todas
+            </Button>
+          </Stack>
+          <Grid minItemWidth="13rem" gap="md">
+            {INVOICES.map((invoice) => (
+              <Card key={invoice.id}>
+                <CardContent className="py-4">
+                  <Stack gap="xs">
+                    <p className="truncate text-base text-fg">{invoice.cliente}</p>
+                    <p className="font-mono text-sm text-fg-muted">
+                      #{invoice.id} · {invoice.value}
+                    </p>
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))}
+          </Grid>
+          <Grid columns={3} gap="sm">
+            <Badge className="justify-self-start" tone="success">Autorizadas: 41</Badge>
+            <Badge className="justify-self-start" tone="warning">Na fila: 2</Badge>
+            <Badge className="justify-self-start" tone="danger">Rejeitadas: 3</Badge>
+          </Grid>
+        </Stack>
+      </Container>
+    </div>
+  );
+}
+
 function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   return (
     <RivoProvider scope="local" theme={theme} density={density} className="p-8">
@@ -291,6 +330,10 @@ function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) 
 
         <Block title="Stat, Sparkline e Tracker">
           <Numbers />
+        </Block>
+
+        <Block title="Container, Stack e Grid">
+          <Layout />
         </Block>
 
         <Block title="Splitter e DescriptionList">

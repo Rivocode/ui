@@ -432,6 +432,10 @@ const PARITY: Record<string, Row> = {
       "esta pedindo a tela de mesa num aparelho que nao a comporta.",
   },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
+  Grid: {
+    state: "traduz",
+    note: "`columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas",
+  },
   Input: {
     state: "traduz",
     note: "a borda acende no foco: não há `focus-visible` em tela de toque",
@@ -575,6 +579,10 @@ const PARITY: Record<string, Row> = {
       'nem anda na troca de dados, e com "reduzir movimento" aparece parada.',
   },
   Spinner: { state: "traduz", note: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
+  Stack: {
+    state: "traduz",
+    note: "mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta",
+  },
   Stat: {
     state: "traduz",
     note: "`value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche",
@@ -1221,6 +1229,17 @@ const PARITY: Record<string, Row> = {
   Toolbar: {
     state: "nao",
     note: "superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem",
+  },
+  Container: {
+    state: "nao",
+    note: "o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura",
+    page:
+      "Não porta, e não é fila. O `Container` limita a largura de uma página que pode ter " +
+      "1920px, e o menor passo dele, `sm`, tem 36rem: mais largo que qualquer celular em pé. " +
+      "No toque ele seria só um respiro lateral, e o respiro de uma tela nativa não é de uma " +
+      "peça, é da tela: um `View` com `px-4` dentro da área segura, ou o " +
+      "`contentContainerClassName` do `ScrollArea`. Para arrumar o que vai dentro, " +
+      "`Stack` e `Grid` portam.",
   },
   Tooltip: {
     state: "nao",

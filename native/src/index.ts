@@ -78,6 +78,8 @@ export {
 export { PageHeader, type PageHeaderProps } from "./page-header";
 export { DescriptionItem, DescriptionList, type DescriptionItemProps } from "./description-list";
 export { AspectRatio, type AspectRatioProps } from "./aspect-ratio";
+export { Stack, type LayoutGap, type StackProps } from "./stack";
+export { Grid, type GridProps } from "./grid";
 export { Menu, type MenuAction, type MenuProps } from "./menu";
 export {
   Steps,

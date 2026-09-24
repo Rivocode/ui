@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 91 peças. O índice de todas fica em
+O catálogo tem 94 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -40,6 +40,9 @@ exemplos que rodam e a tabela de props.
 | Corrigir um valor sem sair da tela | `Editable` | Escape desfaz, sair do campo salva; fechado é um `button` |
 | Escolher a cor de marca de um cliente | `ColorPicker` | Grade de amostras que anda por seta e diz qual está escolhida, mais o hexadecimal colado do manual |
 | Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |
+| Empilhar blocos com vão que acompanha a densidade | `Stack` | `gap` é escala (`xs` a `xl`), não pixel; `direction="row"` põe lado a lado |
+| Cartões em colunas que se ajustam à tela | `Grid` | `minItemWidth` põe quantas couberem, sem media query; `columns` fixa o número |
+| Largura de leitura da página, centralizada | `Container` | `size` de `sm` a `xl`, respiro lateral por token; só no web |
 | Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
 | Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |

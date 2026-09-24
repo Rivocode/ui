@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-91 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+94 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -195,6 +195,9 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Accordion`   | seções que se fecham entre si                                          |
 | `Collapsible` | um bloco só, sem moldura e sem coordenação entre irmãos                |
 | `ScrollArea`  | barra de rolagem própria, para quando a do sistema atrapalha o desenho |
+| `Stack`       | empilha numa direção, com o vão da escala que acompanha a densidade    |
+| `Grid`        | colunas fixas ou quantas couberem por `minItemWidth`, sem media query  |
+| `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 

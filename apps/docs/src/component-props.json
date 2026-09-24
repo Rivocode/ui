@@ -9036,6 +9036,23 @@
       }
     ]
   },
+  "Container": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo a largura: `<Container render={<main />}>`, `<Container render={<section />}>`."
+      },
+      {
+        "name": "size",
+        "type": "\"full\" | \"lg\" | \"md\" | \"sm\" | \"xl\"",
+        "required": false,
+        "note": "A largura maxima."
+      }
+    ]
+  },
   "ContextMenu": {
     "forwardsRoot": false,
     "props": [
@@ -10332,6 +10349,35 @@
         "type": "ReactNode",
         "required": false,
         "since": "0.4.0"
+      }
+    ]
+  },
+  "Grid": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "note": "Quantas colunas, fixas e de largura igual."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
+        "required": false,
+        "note": "O vao entre linhas e colunas, na mesma escala e com a mesma densidade do `Stack`."
+      },
+      {
+        "name": "minItemWidth",
+        "type": "string | number",
+        "required": false,
+        "note": "A largura minima de cada item: numero em pixels ou medida CSS (`\"16rem\"`)."
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo o arranjo: `<Grid render={<ul />}>`."
       }
     ]
   },
@@ -22494,6 +22540,47 @@
         "required": false,
         "note": "Controlado, quando o app quer guardar a escolha entre sessoes.",
         "since": "0.5.0"
+      }
+    ]
+  },
+  "Stack": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "align",
+        "type": "\"baseline\" | \"center\" | \"end\" | \"start\" | \"stretch\"",
+        "required": false,
+        "note": "O alinhamento no eixo cruzado."
+      },
+      {
+        "name": "direction",
+        "type": "\"column\" | \"row\"",
+        "required": false,
+        "note": "O eixo dos filhos."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
+        "required": false,
+        "note": "O vao entre os filhos, na escala da casa: `xs` 4, `sm` 8, `md` 12, `lg` 16 e `xl` 24 pixels na densidade confortavel."
+      },
+      {
+        "name": "justify",
+        "type": "\"between\" | \"center\" | \"end\" | \"start\"",
+        "required": false,
+        "note": "A distribuicao no eixo principal."
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca o elemento renderizado mantendo o arranjo: `<Stack render={<ul />}>`, `<Stack render={<nav />}>`."
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa os filhos quebrarem linha quando nao cabem."
       }
     ]
   },

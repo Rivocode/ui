@@ -1550,6 +1550,39 @@
       }
     ]
   },
+  "Grid": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "columns",
+        "type": "number",
+        "required": false,
+        "note": "Quantas colunas, fixas e de largura igual."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
+        "required": false,
+        "note": "O vao entre linhas e colunas, na mesma escala do `Stack`."
+      },
+      {
+        "name": "minItemWidth",
+        "type": "number",
+        "required": false,
+        "note": "A largura minima de cada item, em pontos."
+      }
+    ]
+  },
   "Indicator": {
     "entry": "native/src/index.ts",
     "props": [
@@ -2440,6 +2473,51 @@
         "name": "size",
         "type": "\"large\" | \"small\"",
         "required": false
+      }
+    ]
+  },
+  "Stack": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "align",
+        "type": "\"baseline\" | \"center\" | \"end\" | \"start\" | \"stretch\"",
+        "required": false,
+        "note": "O alinhamento no eixo cruzado."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "direction",
+        "type": "\"column\" | \"row\"",
+        "required": false,
+        "note": "O eixo dos filhos."
+      },
+      {
+        "name": "gap",
+        "type": "\"lg\" | \"md\" | \"none\" | \"sm\" | \"xl\" | \"xs\"",
+        "required": false,
+        "note": "O vao entre os filhos, na escala da casa: `xs` 4, `sm` 8, `md` 12, `lg` 16 e `xl` 24 pontos."
+      },
+      {
+        "name": "justify",
+        "type": "\"between\" | \"center\" | \"end\" | \"start\"",
+        "required": false,
+        "note": "A distribuicao no eixo principal."
+      },
+      {
+        "name": "wrap",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa os filhos quebrarem linha quando nao cabem."
       }
     ]
   },

@@ -40,6 +40,12 @@
   --rc-box: 18px;
   --rc-day: 36px;
 
+  --rc-gap-xs: 4px;
+  --rc-gap-sm: 8px;
+  --rc-gap-md: 12px;
+  --rc-gap-lg: 16px;
+  --rc-gap-xl: 24px;
+
   --rc-sidebar: 16rem;
   --rc-sidebar-icon: 3.5rem;
 }
@@ -57,4 +63,10 @@
   --rc-item-y: 4px;
   --rc-box: 16px;
   --rc-day: 32px;
+
+  --rc-gap-xs: 4px;
+  --rc-gap-sm: 6px;
+  --rc-gap-md: 8px;
+  --rc-gap-lg: 12px;
+  --rc-gap-xl: 16px;
 }

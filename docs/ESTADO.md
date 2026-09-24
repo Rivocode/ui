@@ -46,18 +46,18 @@ novo sao os dois de 13:09.
 
 ### O catalogo, por familia
 
-Sao **91 pecas** e **177 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **94 pecas** e **180 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
-ancora propria. Quem conta os 177 arquivos como catalogo passa a gastar contexto
+ancora propria. Quem conta os 180 arquivos como catalogo passa a gastar contexto
 abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 `apps/docs/src/parts.ts` e a guarda que a segura em `test/indice.test.ts`.
 
 | Familia      | Quais                                                                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect |
-| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, DataTable, DescriptionList, FilterBar, FilterChip, Item, PageHeader, ScrollArea, Separator, Splitter, Stat, Table, VirtualList                                                                                                                                                   |
+| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, Container, DataTable, DescriptionList, FilterBar, FilterChip, Grid, Item, PageHeader, ScrollArea, Separator, Splitter, Stack, Stat, Table, VirtualList                                                                                                                                                   |
 | Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                          |
 | Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                |
 | Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                  |
@@ -68,7 +68,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
 com acento. Nenhuma peca esta sem documento, e nenhum documento esta sem codigo
-por tras: `check:doc` confere os dois sentidos sobre as 177 paginas.
+por tras: `check:doc` confere os dois sentidos sobre as 180 paginas.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
@@ -83,8 +83,8 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia, e o que falta nao e nosso.** Das 91 pecas do web, **75 tem
-par no celular**, e as 16 que faltam faltam por decisao escrita. Ate 28/08 eram
+**A fila esta vazia, e o que falta nao e nosso.** Das 94 pecas do web, **77 tem
+par no celular**, e as 17 que faltam faltam por decisao escrita. Ate 28/08 eram
 18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
 apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
 `Menu`". O `Menu` passou a aceitar, e ela saiu. Em 22/09 saiu mais uma, o `ScrollArea`:
@@ -319,7 +319,7 @@ Ela morava em `scripts/`, que nao e publicado. Hoje mora em `src/lib/contrast.ts
 zero ocorrencias de `contrastRatio` ou `oklch` no bundle da biblioteca, contra
 51 KB de `cli.js`. O pacote nativo publica FONTE e nao alcanca o `src/` do web,
 entao ha um espelho gerado, `native/scripts/contrast.mjs`, exportado como
-`@rivocode/ui-native/contrast`, e `check:native:contrast` confere as **180
+`@rivocode/ui-native/contrast`, e `check:native:contrast` confere as **177
 linhas** do espelho E que ele mede igual.
 
 A conta lia so sRGB. Hoje le hexadecimal de 3, 4, 6 e 8 digitos, `rgb`, `hsl`,
@@ -466,15 +466,15 @@ O que cada guarda mede hoje, em numero:
 
 | Guarda                   | O que ela diz hoje                                                            |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `check:pecas`            | 91 pecas, e e o que o README e o `package.json` anunciam                       |
-| `check:doc`              | 177 paginas, todas com codigo por tras                                        |
+| `check:pecas`            | 94 pecas, e e o que o README e o `package.json` anunciam                       |
+| `check:doc`              | 180 paginas, todas com codigo por tras                                        |
 | `check:props`            | 250 pecas, 3918 props                                                         |
-| `check:paridade`         | 91 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
+| `check:paridade`         | 94 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
 | `check:assinatura`       | 147 divergencias de assinatura em 66 pecas, conferidas contra os dois catalogos |
 | `check:temas`            | 71 tokens de tema e forma, e 55 papeis obrigatorios                            |
 | `check:contrast`         | 152 pares em dois temas, 76 por tema                                          |
 | `check:contrast:nativo`  | 1 mapa, 89 pares por esquema, 7 papeis sem par por declaracao                  |
-| `check:native:contrast`  | espelho de 180 linhas em dia com `src/lib/contrast.ts`                        |
+| `check:native:contrast`  | espelho de 177 linhas em dia com `src/lib/contrast.ts`                        |
 | `check:tema:nativo`      | 8 sementes, 37 derivados, 45 no `@theme`                                      |
 | `check:classes`          | 196 arquivos, sem lista de excecao                                            |
 | `check:colors`           | 98 arquivos sem cor literal fora de `src/tokens/`                             |
@@ -483,8 +483,8 @@ O que cada guarda mede hoje, em numero:
 | `check:skill`            | 68 props citadas nos exemplos da skill, todas existentes                      |
 | `check:lista-skill`      | 11 arquivos de referencia, todos no indice E no laco `curl` do site           |
 | `check:retratos`         | 12 retratos de secao sobre 6 areas, 22200 quadrados, 47 marcadores            |
-| `check:demo`             | 88 de 91 pecas na vitrine, em 16 paginas                                      |
-| `check:readme`           | 50 de 91 pecas citadas no `README.md`                                         |
+| `check:demo`             | 91 de 94 pecas na vitrine, em 16 paginas                                      |
+| `check:readme`           | 53 de 94 pecas citadas no `README.md`                                         |
 | `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, e nenhum Babel nos dois lados      |
 | `check:compartilhado`    | 2 arquivos de `src/shared/` espelhados, sem import de plataforma              |
 | `check:testes`           | 1397 testes em 120 arquivos, e e o numero que a home exibe                     |
@@ -517,7 +517,7 @@ declarada; junto veio o `FILA_DECLARADA`, que zerou. A outra e que
 `check:scripts` cresceu de 5 para 6, e o crescimento tem motivo escrito - o
 `props-do-catalogo-nativo` precisa de um app que nao e workspace -, mas cresceu.
 
-O aviso e o `OUT_OF_README`, com 41 de 91. E a maior divida declarada do
+O aviso e o `OUT_OF_README`, com 41 de 94. E a maior divida declarada do
 repositorio, e a que menos incomoda quem trabalha aqui, o que e exatamente o
 motivo de ela ser a maior. Ela nasceu porque o digito estava certo e a lista
 embaixo dele nao: o `check:pecas` guardava o "90 pecas." e o arquivo inteiro
@@ -766,12 +766,12 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 177 documentos
-bun run check:pecas                                # 91 pecas
+ls .design-sync/docs/*.md | wc -l                  # 180 documentos
+bun run check:pecas                                # 94 pecas
 bun run check:testes                               # 1397 testes em 120 arquivos
 bun test                                           # 1397 passam, 0 falham, 3711 expect()
 bun test native/test                               # 404 deles, em 31 arquivos
-bun run check:paridade                             # 91 linhas: 70 traduz, 5 vira, 16 nao, 0 fila
+bun run check:paridade                             # 94 linhas: 72 traduz, 5 vira, 17 nao, 0 fila
 bun run check:assinatura                           # 147 divergencias de assinatura, em 66 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 71 tokens, 55 papeis obrigatorios
@@ -780,8 +780,8 @@ bun run check:contrast:nativo                      # 89 pares por esquema, 1 map
 bun run check:tema:nativo                          # 8 sementes, 37 derivados, 45 no @theme
 bun run check:classes                              # 196 arquivos, sem excecao
 bun run check:colors                               # 98 arquivos sem cor literal
-bun run check:demo                                 # 88 de 91 na vitrine, 3 declaradas fora
-bun run check:readme                               # 50 de 91 citadas, 41 declaradas fora
+bun run check:demo                                 # 91 de 94 na vitrine, 3 declaradas fora
+bun run check:readme                               # 53 de 94 citadas, 41 declaradas fora
 bun run check:retratos                             # 12 retratos de secao sobre 6 areas
 bun run check:receita                              # 7 arquivos de receita, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
@@ -801,7 +801,7 @@ curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.9.1   # 
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.4.1   # idem
 gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit e37084d
 gh run list --workflow=release-native --limit 5    # o ensaio e a publicacao da 0.4.1
-curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 91 e 177
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 94 e 180
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false, e e a divida da secao "Divida de codigo"
 ```
 
