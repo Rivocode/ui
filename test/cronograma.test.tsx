@@ -602,6 +602,45 @@ test("a linha segue a densidade: 40 no confortavel, 32 no compacto", () => {
   ).toBe("32px");
 });
 
+test("a divisoria para de seguir o ponteiro quando o arrasto e cancelado ou perde a captura", () => {
+  for (const ending of ["pointerCancel", "lostPointerCapture"] as const) {
+    const { unmount } = gantt();
+    const handle = screen.getByRole("separator", { name: "Largura da tabela" });
+
+    fireEvent.pointerDown(handle, { button: 0, clientX: 532, pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 400, pointerId: 1 });
+    const during = handle.getAttribute("aria-valuenow");
+    expect(during).not.toBe("532");
+
+    fireEvent[ending](handle, { pointerId: 1 });
+    fireEvent.pointerMove(handle, { clientX: 600, pointerId: 1 });
+    expect(handle.getAttribute("aria-valuenow")).toBe(during);
+    unmount();
+  }
+});
+
+test("desmontar no meio do arrasto da divisoria solta os ouvintes", () => {
+  const { unmount } = gantt();
+  const handle = screen.getByRole("separator", { name: "Largura da tabela" });
+  const added: string[] = [];
+  const removed: string[] = [];
+  const add = handle.addEventListener.bind(handle);
+  const remove = handle.removeEventListener.bind(handle);
+  handle.addEventListener = ((type: string, ...rest: [never, never]) => {
+    added.push(type);
+    return add(type, ...rest);
+  }) as typeof handle.addEventListener;
+  handle.removeEventListener = ((type: string, ...rest: [never, never]) => {
+    removed.push(type);
+    return remove(type, ...rest);
+  }) as typeof handle.removeEventListener;
+
+  fireEvent.pointerDown(handle, { button: 0, clientX: 532, pointerId: 1 });
+  expect(added).toContain("pointermove");
+  unmount();
+  expect(removed.sort()).toEqual(added.sort());
+});
+
 test("mover por mes desloca o inicio e leva o fim junto, sem perder dia no fim do mes", () => {
   const cases: [Date, Date, number][] = [
     [new Date(2027, 0, 29), new Date(2027, 1, 1), 3],

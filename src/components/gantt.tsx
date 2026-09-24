@@ -324,6 +324,9 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   const [watch, setWatch] = useState<Watch | null>(null);
   const [now, setNow] = useState<Date>(() => new Date());
   const focusWanted = useRef(false);
+  const stopTableDrag = useRef<(() => void) | null>(null);
+
+  useEffect(() => () => stopTableDrag.current?.(), []);
 
   const offered = scales.length > 0 ? scales : ALL_SCALES;
   const wantedScale = scaleProp ?? scaleState;
@@ -639,15 +642,20 @@ export function Gantt<Task extends GanttTask = GanttTask>({
     const handle = event.currentTarget;
     handle.setPointerCapture?.(event.pointerId);
 
+    stopTableDrag.current?.();
+
     const onMove = (pointer: PointerEvent) => {
       resizeTable(rtl ? box.right - pointer.clientX : pointer.clientX - box.left);
     };
-    const onUp = () => {
+    const endings = ["pointerup", "pointercancel", "lostpointercapture"] as const;
+    const stop = () => {
       handle.removeEventListener("pointermove", onMove);
-      handle.removeEventListener("pointerup", onUp);
+      for (const name of endings) handle.removeEventListener(name, stop);
+      if (stopTableDrag.current === stop) stopTableDrag.current = null;
     };
     handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", onUp);
+    for (const name of endings) handle.addEventListener(name, stop);
+    stopTableDrag.current = stop;
   }
 
   const watched = watch ? byId.get(watch.id) : undefined;
