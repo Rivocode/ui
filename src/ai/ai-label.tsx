@@ -76,7 +76,8 @@ export function AILabel({
         aria-label={label}
         className={cn(
           classes,
-          "cursor-pointer transition-colors duration-[var(--rc-duration-fast)] ease-rc",
+          "relative cursor-pointer after:absolute after:-inset-2",
+          "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
           "hover:border-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         )}
       >

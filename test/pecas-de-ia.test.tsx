@@ -554,6 +554,20 @@ describe("AILabel", () => {
     expect(screen.getByText("Gerado por IA")).toBeDefined();
   });
 
+  test("com explicacao, a area de toque cresce por fora do desenho, e o selo mudo nao", () => {
+    const view = withTheme(<AILabel explanation="Resumo feito pelo modelo." />);
+    const button = screen.getByRole("button", { name: "Conteúdo gerado por IA" });
+
+    expect(tokens(button)).toContain("relative");
+    expect(tokens(button)).toContain("after:absolute");
+    expect(tokens(button)).toContain("after:-inset-2");
+    expect(tokens(button)).toContain("h-5");
+    view.unmount();
+
+    withTheme(<AILabel />);
+    expect(tokens(screen.getByText("IA").parentElement!)).not.toContain("after:-inset-2");
+  });
+
   test("o tom sai de papel da casa", () => {
     withTheme(<AILabel tone="neutral" />);
     const badge = screen.getByText("IA").parentElement!;

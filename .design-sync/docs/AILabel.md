@@ -25,7 +25,9 @@ ouve "Conteúdo gerado por IA", ou o que `label` disser.
 
 Com `explanation`, o selo vira botão com esse mesmo nome e abre um `Popover`
 com o título "Gerado por IA" (`title` troca) e a explicação embaixo. `side`
-decide o lado em que ele abre.
+decide o lado em que ele abre. O desenho continua o do selo, de 20 pixels de
+altura, mas a área de toque do botão passa dele por 8 pixels de cada lado: o
+dedo não precisa acertar um alvo menor que os 24 da WCAG 2.5.8.
 
 Escreva a explicação para quem vai decidir se confia: a origem ("a partir das
 notas de agosto"), o limite ("não lê notas canceladas") e o que conferir. "Este
