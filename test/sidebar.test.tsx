@@ -266,6 +266,28 @@ test("encolhida, o destino de filho estruturado tambem tem nome", () => {
   expect(screen.getByRole("link", { name: "Feedback" })).toBeDefined();
 });
 
+test("encolhida, o menu do rodape ocupa a largura da trilha, e a linha nao encolhe ate o icone", () => {
+  render(
+    <RivoProvider scope="local">
+      <SidebarProvider defaultOpen={false}>
+        <Sidebar>
+          <SidebarFooter>
+            <SidebarMenu>
+              <SidebarMenuItem href="#ajustes">Ajustes</SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
+        </Sidebar>
+      </SidebarProvider>
+    </RivoProvider>,
+  );
+
+  const link = screen.getByRole("link", { name: "Ajustes" });
+  const footer = link.closest("ul")!.parentElement!;
+  expect(footer.className.split(" ")).toContain("items-center");
+  expect(link.closest("ul")!.className.split(" ")).toContain("self-stretch");
+  expect(link.className.split(" ")).toContain("w-full");
+});
+
 test("aberta, o nome vem do texto na linha, sem rotulo repetido", () => {
   // Larga, o texto esta visivel e um `aria-label` por cima so criaria uma
   // segunda fonte de verdade para o mesmo nome.

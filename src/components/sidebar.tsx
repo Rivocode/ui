@@ -312,7 +312,7 @@ export function SidebarGroup({ className, label, children, ...props }: SidebarGr
 export function SidebarMenu({ className, ...props }: ComponentProps<"ul">) {
   return (
     <ListContext value={true}>
-      <ul {...props} className={cn("flex list-none flex-col gap-0.5", className)} />
+      <ul {...props} className={cn("flex list-none flex-col gap-0.5 self-stretch", className)} />
     </ListContext>
   );
 }
