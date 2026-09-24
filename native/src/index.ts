@@ -91,7 +91,13 @@ export {
   type QuestionnaireQuestion,
 } from "./questionnaire";
 export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
-export { isValidCnpj, isValidCpf } from "./shared/tax-id";
+export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/tax-id";
+export {
+  buildPixPayload,
+  parsePixPayload,
+  type PixPayload,
+  type PixPayloadInput,
+} from "./shared/pix";
 export { NumberField, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";
 export { SearchInput, type SearchInputProps } from "./search-input";

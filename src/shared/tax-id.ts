@@ -27,3 +27,14 @@ export function isValidCnpj(text: string): boolean {
   const second = checkDigit(values.slice(0, 13), [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
   return first === values[12] && second === values[13];
 }
+
+const EMAIL = /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/;
+const PHONE = /^\+55[1-9]{2}9\d{8}$/;
+const RANDOM = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+export function isValidPixKey(key: string): boolean {
+  if (key.length === 0 || key.length > 77) return false;
+  if (/^\d{11}$/.test(key)) return isValidCpf(key);
+  if (/^[A-Z0-9]{12}\d{2}$/.test(key)) return isValidCnpj(key);
+  return EMAIL.test(key) || PHONE.test(key) || RANDOM.test(key);
+}

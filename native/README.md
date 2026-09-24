@@ -393,7 +393,7 @@ O formulário, o gráfico, o copiar e o anexar não saem do índice da raiz:
 
 ```tsx
 import { Form, FormField, forText, useZodForm } from "@rivocode/ui-native/form";
-import { ChartContainer, ChartDonut, ChartRadial } from "@rivocode/ui-native/chart";
+import { ChartContainer, ChartDonut, ChartRadial, PixCode, QRCode } from "@rivocode/ui-native/chart";
 import { Clipboard } from "@rivocode/ui-native/clipboard";
 import { FileUpload, FileUploadItem, FileUploadList } from "@rivocode/ui-native/file-upload";
 ```
@@ -405,7 +405,7 @@ bytes: são módulos nativos, que o app liga ao projeto de iOS e Android e
 reconstrói.
 
 ```sh
-npx expo install react-native-svg         # só quem desenha gráfico
+npx expo install react-native-svg         # só quem desenha gráfico ou QR Code
 npx expo install expo-clipboard           # só quem copia
 npx expo install expo-document-picker     # só quem anexa
 ```

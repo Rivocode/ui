@@ -34,6 +34,9 @@ import {
   parseTime,
   Popconfirm,
   PostalCodeField,
+  PixCode,
+  QRCode,
+  buildPixPayload,
   type PostalAddress,
   QueryBoundary,
   RivoProvider,
@@ -854,6 +857,58 @@ function Carousels() {
   );
 }
 
+const QR_LINK = "https://nfse.rivocode.com.br/consulta/35240612345678000199550010000048131234567890";
+
+function QrCodes() {
+  return (
+    <div className="flex flex-wrap items-start gap-8">
+      <div className="flex flex-col items-center gap-2">
+        <Card className="p-4">
+          <QRCode value={QR_LINK} label="QR Code para consultar a nota 4813" />
+        </Card>
+        <p className="text-xs text-fg-subtle">surface, nivel M</p>
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <QRCode value={QR_LINK} label="QR Code para consultar a nota 4813" background="bg" level="Q" />
+        <p className="text-xs text-fg-subtle">bg, nivel Q</p>
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <QRCode
+          value={QR_LINK}
+          label="QR Code para consultar a nota 4813"
+          size={200}
+          logo={<span className="font-display text-sm font-semibold text-fg">R</span>}
+        />
+        <p className="text-xs text-fg-subtle">logo, nivel H</p>
+      </div>
+      <div className="flex flex-col items-center gap-2">
+        <QRCode value="" label="QR Code ainda sem conteudo" size={120} />
+        <p className="text-xs text-fg-subtle">sem valor</p>
+      </div>
+    </div>
+  );
+}
+
+const PIX_CHARGE = buildPixPayload({
+  key: "+5583988112233",
+  name: "Clínica São Lucas",
+  city: "João Pessoa",
+  amount: 1284.5,
+  txid: "NF4813",
+  description: "Nota 4813",
+});
+
+function PixCodes() {
+  return (
+    <div className="flex flex-wrap items-start gap-6">
+      <PixCode payload={PIX_CHARGE} />
+      <PixCode payload="" loading amount={1284.5} />
+      <PixCode payload={PIX_CHARGE} expired onRenew={() => {}} />
+      <PixCode payload={`${PIX_CHARGE.slice(0, -4)}0000`} />
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -872,6 +927,14 @@ function Sample({
       </p>
 
       <div className="flex flex-col gap-12">
+        <Block title="PixCode">
+          <PixCodes />
+        </Block>
+
+        <Block title="QRCode">
+          <QrCodes />
+        </Block>
+
         <Block title="Carousel">
           <Carousels />
         </Block>

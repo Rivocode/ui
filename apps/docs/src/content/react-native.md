@@ -156,7 +156,7 @@ recusa o que conseguiu medir.
 
 ## A paridade, peça por peça
 
-**111 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 87 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**113 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 89 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -226,12 +226,14 @@ recusa o que conseguiu medir.
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
+| `PixCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, junto do `QRCode`; o copiar entra por `renderCopy`, porque o `Clipboard` mora em outro caminho |
 | `Popconfirm` | ✔ vira `AlertDialog` | vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |
+| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, as cores saem do tema e não há `classNames` |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |

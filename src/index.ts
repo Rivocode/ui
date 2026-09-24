@@ -257,7 +257,7 @@ export {
   type Mask,
   type MaskName,
 } from "./lib/mask";
-export { isValidCnpj, isValidCpf } from "./shared/tax-id";
+export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/tax-id";
 export {
   InputAction,
   InputGroup,
@@ -384,6 +384,14 @@ export { Clipboard, type ClipboardProps } from "./components/clipboard";
 export { Indicator, type IndicatorProps } from "./components/indicator";
 export { PasswordInput, type PasswordInputProps } from "./components/password-input";
 export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
+export { QRCode, type QRCodeProps } from "./components/qr-code";
+export { PixCode, type PixCodeProps } from "./components/pix-code";
+export {
+  buildPixPayload,
+  parsePixPayload,
+  type PixPayload,
+  type PixPayloadInput,
+} from "./shared/pix";
 export { TagsInput, type TagsInputProps } from "./components/tags-input";
 export { Splitter, type SplitterProps } from "./components/splitter";
 export {

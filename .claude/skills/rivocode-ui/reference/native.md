@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**198 divergências de assinatura em 81 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**202 divergências de assinatura em 83 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -207,6 +207,9 @@ escritos em lugar nenhum.
 | `PageHeader` | — | `badge` | a pastilha ao lado do título vira prop |
 | `PageHeader` | `titleAs` | — | não há nível de título: o cabeçalho é uma parada só do leitor de tela |
 | `PasswordInput` | `labels` | `labels` | `labels.show` e `labels.hide` são obrigatórios juntos, porque o botão troca de nome com o estado |
+| `PixCode` | — | `renderCopy` | o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro |
+| `PixCode` | `labels` | `labels` | sem `copy` e `copied`: os nomes do botão são do `Clipboard` que você passa |
+| `PixCode` | `classNames` | `className` | um `className` só, na raiz |
 | `Popconfirm` → `AlertDialog` | `trigger` | — | não há ancoragem: você desenha o próprio botão e controla `open` |
 | `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | e não devolve promessa: o modal não segura o botão em espera |
 | `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
@@ -223,6 +226,7 @@ escritos em lugar nenhum.
 | `PromptInput` | `value` | `value` | obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado |
 | `PromptInput` | `defaultValue` | — | sem estado próprio: quem limpa o campo depois do envio é quem chamou |
 | `PromptInput` | `classNames` | — | um `className` só, na moldura do campo |
+| `QRCode` | `classNames` | `className` | um `className` só, na raiz; o `svg` e o logo não se vestem por parte |
 | `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`, e o `icon` sai |
 | `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
 | `Questionnaire` | — | `items` | as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho |
@@ -302,10 +306,13 @@ função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põ
 `ChartContainer`, `ChartDonut` e `ChartRadial` vivem em
 `@rivocode/ui-native/chart` e pedem `react-native-svg`, peer **opcional** e
 módulo nativo, que o app instala e liga ao projeto só se desenhar gráfico
-(`npx expo install react-native-svg`).
+(`npx expo install react-native-svg`). O `QRCode` mora no mesmo caminho pelo
+mesmo peer, e o `PixCode` com ele: a regra é um subcaminho por peer, e não um
+por assunto. O copiar do `PixCode` entra por `renderCopy`, com o `Clipboard` de
+`@rivocode/ui-native/clipboard`.
 
 ```tsx
-import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE } from '@rivocode/ui-native/chart'
+import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE, PixCode, QRCode } from '@rivocode/ui-native/chart'
 ```
 
 Três coisas mordem. **A moldura mede e entrega**: `children` como função recebe
@@ -383,7 +390,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**111 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 87 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**113 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 89 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -453,12 +460,14 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
+| `PixCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, junto do `QRCode`; o copiar entra por `renderCopy`, porque o `Clipboard` mora em outro caminho |
 | `Popconfirm` | ✔ vira `AlertDialog` | vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |
+| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, as cores saem do tema e não há `classNames` |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |

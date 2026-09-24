@@ -283,6 +283,13 @@ Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
 pontuacao e com o CNPJ alfanumerico. Os dois existem tambem no nativo, pela
 mesma conta.
 
+O Pix tem as tres dele, nos dois pacotes e pela raiz: `buildPixPayload` monta
+o copia e cola estatico no padrao BR Code do Banco Central, com o CRC16 no fim;
+`parsePixPayload` le de volta e devolve `null` quando o CRC nao confere; e
+`isValidPixKey` confere a chave como o DICT a guarda (CPF e CNPJ sem
+pontuacao, e-mail em minusculas, celular com `+55`, chave aleatoria com os
+hifens). O desenho e o `PixCode`.
+
 ### O que o CSS nao alcanca
 
 `useMobile()` e verdadeiro abaixo do `sm` do Tailwind, no mesmo corte que a
@@ -367,7 +374,7 @@ explicado mais abaixo.
 | Subcaminho | O peer que ele custa | O que sai por ele |
 |---|---|---|
 | `@rivocode/ui-native/form` | `react-hook-form`, mais `zod` e `@hookform/resolvers` no `useZodForm` | `Form`, `FormField`, `useZodForm` e os adaptadores `forText`, `forValue`, `forChecked`, `forDate` |
-| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, e a `PALETTE` |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, e o `QRCode` e o `PixCode`, que desenham com o mesmo peer |
 | `@rivocode/ui-native/clipboard` | `expo-clipboard` | `Clipboard` |
 | `@rivocode/ui-native/file-upload` | `expo-document-picker` | `FileUpload`, `FileUploadList`, `FileUploadItem` |
 

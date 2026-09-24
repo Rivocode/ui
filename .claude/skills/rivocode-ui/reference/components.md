@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 111 peças. O índice de todas fica em
+O catálogo tem 113 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -37,6 +37,8 @@ exemplos que rodam e a tabela de props.
 | Nome de arquivo, comando ou chave de JSON no texto | `Code` | O `Kbd` promete "aperte isto"; este é para ler ou copiar |
 | Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
 | Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
+| Cobrar por Pix: QR, valor e copia e cola | `PixCode` | Recebe o copia e cola pronto e confere o CRC; monte o estático com `buildPixPayload` |
+| Um link ou código que a câmera de outro aparelho lê | `QRCode` | SVG com as cores do tema e a margem de 4 módulos; `label` obrigatório, e `logo` só com `level="H"` |
 | "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
 | O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
 | Contagem por cima do sino, da aba, do menu | `Indicator` | Posiciona sozinho, e a contagem é dita e não só vista |

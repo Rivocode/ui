@@ -36,6 +36,11 @@ CPF e CNPJ se conferem pelo dígito verificador com `isValidCpf` e
 `isValidCnpj`, do pacote principal: `z.string().refine(isValidCnpj, 'CNPJ
 inválido')`. Os dois já aceitam o CNPJ alfanumérico e o texto com máscara.
 
+A chave Pix se confere com `isValidPixKey`, que quer a chave como o DICT a
+guarda: CPF e CNPJ **sem** pontuação, e-mail em minúsculas, celular com `+55` e
+a chave aleatória com os hifens. Tire a máscara antes de conferir. O copia e
+cola sai de `buildPixPayload`, e o `PixCode` o desenha.
+
 O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 

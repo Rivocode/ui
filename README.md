@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-111 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+113 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -188,6 +188,8 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Badge`     | selo de estado, seis tons                                        |
 | `Avatar`    | foto de pessoa, com a inicial por trás                           |
 | `Timeline`  | o que já aconteceu, em ordem, com quem e quando                  |
+| `QRCode`    | o texto que a câmera do outro lê, em SVG com as cores do tema    |
+| `PixCode`   | a cobrança Pix: QR, valor, recebedor e o copia e cola que confere o CRC |
 
 ### Estado
 

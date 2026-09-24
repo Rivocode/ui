@@ -2506,6 +2506,70 @@
       }
     ]
   },
+  "PixCode": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "payload",
+        "type": "string",
+        "required": true,
+        "note": "O Pix copia e cola inteiro, como o PSP ou o `buildPixPayload` devolvem."
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "required": false,
+        "note": "O valor em reais em destaque, que vence o do codigo; no QR dinamico so vale este."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "expired",
+        "type": "boolean",
+        "required": false,
+        "note": "Troca o QR por um aviso e tira o copiar: codigo vencido nao se oferece para pagar."
+      },
+      {
+        "name": "labels",
+        "type": "{ payload?: string | undefined; expired?: string | undefined; renew?: string | undefined; invalid?: string | undefined; }",
+        "required": false,
+        "note": "Os textos da peca, para quem precisa de outro idioma ou outro tom."
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Enquanto a cobranca e gerada: marca de lugar no QR e no texto."
+      },
+      {
+        "name": "onRenew",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o botao de gerar outro codigo, no aviso de expirado."
+      },
+      {
+        "name": "receiver",
+        "type": "string",
+        "required": false,
+        "note": "O nome do recebedor."
+      },
+      {
+        "name": "renderCopy",
+        "type": "((payload: string) => ReactNode)",
+        "required": false,
+        "note": "O botao de copiar, que mora em `@rivocode/ui-native/clipboard` por causa do `expo-clipboard`."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "note": "O lado do QR em px."
+      }
+    ]
+  },
   "PostalCodeField": {
     "entry": "native/src/index.ts",
     "props": [
@@ -2690,6 +2754,52 @@
         "type": "string",
         "required": false,
         "note": "O nome do botao de enviar."
+      }
+    ]
+  },
+  "QRCode": {
+    "entry": "native/src/chart/index.ts",
+    "props": [
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome que o leitor de tela ouve, dizendo para que o codigo serve, e nao o conteudo cru."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O texto que o codigo carrega: link, copia e cola do Pix, chave de acesso."
+      },
+      {
+        "name": "background",
+        "type": "\"bg\" | \"surface\"",
+        "required": false,
+        "note": "O fundo, com a margem de silencio de 4 modulos: `surface` dentro de cartao, `bg` solto na tela."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "level",
+        "type": "\"H\" | \"L\" | \"M\" | \"Q\"",
+        "required": false,
+        "note": "A correcao de erro, de `L` (recupera 7% do simbolo) a `H` (30%), com `M` (15%) sem logo e `H` com logo."
+      },
+      {
+        "name": "logo",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A marca no centro, que so aparece com `level=\"H\"`: os modulos embaixo dela sao apagados."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "required": false,
+        "note": "O lado do quadrado em px, com a margem de silencio incluida."
       }
     ]
   },

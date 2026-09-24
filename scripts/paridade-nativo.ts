@@ -734,6 +734,53 @@ const PARITY: Record<string, Row> = {
     note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento",
   },
 
+  QRCode: {
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o " +
+      "mesmo, as cores saem do tema e não há `classNames`",
+    page:
+      "Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o " +
+      "`react-native-svg`, e a regra da casa é **um subcaminho por peer**, e não um por assunto. " +
+      "Desenhar com `View` custaria centenas de caixas por código, uma por trecho de módulos " +
+      "escuros, e o Pix de uma cobrança passa de dois mil módulos.\n\n" +
+      "**O codificador é o mesmo dos dois lados, linha por linha**: ele mora em `src/shared/` e " +
+      "atravessa por espelho, então versão, máscara e correção de erro não divergem. O teste " +
+      "do nativo rasteriza o caminho que a peça desenha e o decodifica de volta, como o do web.\n\n" +
+      "As cores saem do tema do `RivoProvider` (`fg` nos módulos, `surface` ou `bg` no fundo), " +
+      "e `level`, `size` e `logo` têm o mesmo contrato: com `logo` o nível nasce H, e com outro " +
+      "nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.\n\n" +
+      "```tsx\n" +
+      "import { QRCode } from '@rivocode/ui-native/chart'\n\n" +
+      '<QRCode value={link} label="QR Code para consultar a nota 4813" />\n' +
+      "```",
+  },
+  PixCode: {
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/chart`, junto do `QRCode`; o copiar entra por `renderCopy`, " +
+      "porque o `Clipboard` mora em outro caminho",
+    page:
+      "Traduz, no caminho `@rivocode/ui-native/chart`, porque o QR é o `QRCode` nativo, " +
+      "desenhado com o `react-native-svg`. As funções puras (`buildPixPayload`, " +
+      "`parsePixPayload` e `isValidPixKey`) saem da raiz: não pedem peer nenhum, e o arquivo é " +
+      "o mesmo do web, pelo espelho do código compartilhado. O valor sai formatado sem `Intl`, " +
+      "igual nos dois lados.\n\n" +
+      "**O copiar entra por `renderCopy`.** O `Clipboard` nativo mora em " +
+      "`@rivocode/ui-native/clipboard` por causa do `expo-clipboard`, e a regra da casa é " +
+      "**um subcaminho por peer**: se a peça o importasse, quem desenha um QR teria de instalar " +
+      "o módulo de área de transferência. A função recebe o copia e cola e só é chamada quando " +
+      "há o que copiar (nem carregando, nem expirado, nem com o CRC errado), então o botão some " +
+      "junto com o código. O texto é `selectable` de todo jeito, e o toque longo copia mesmo sem o botão.\n\n" +
+      "```tsx\n" +
+      "import { PixCode } from '@rivocode/ui-native/chart'\n" +
+      "import { Clipboard } from '@rivocode/ui-native/clipboard'\n\n" +
+      "<PixCode\n" +
+      "  payload={cobranca.pixCopiaECola}\n" +
+      '  renderCopy={(payload) => <Clipboard value={payload}>Copiar código</Clipboard>}\n' +
+      "/>\n" +
+      "```",
+  },
   Clipboard: {
     state: "traduz",
     note:

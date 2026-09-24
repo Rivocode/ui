@@ -367,6 +367,26 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  QRCode: {
+    rows: [
+      { web: "classNames", native: "className", note: "um `className` só, na raiz; o `svg` e o logo não se vestem por parte" },
+    ],
+  },
+  PixCode: {
+    rows: [
+      {
+        web: null,
+        native: "renderCopy",
+        note: "o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro",
+      },
+      {
+        web: "labels",
+        native: "labels",
+        note: "sem `copy` e `copied`: os nomes do botão são do `Clipboard` que você passa",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+    ],
+  },
   Code: {
     rows: [
       {
