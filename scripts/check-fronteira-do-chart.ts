@@ -133,12 +133,32 @@ const FRONTIERS: Frontier[] = [
   {
     pkg: "@rivocode/ui",
     core: "src",
+    dir: "src/dnd/",
+    entry: "@rivocode/ui/dnd",
+    peer: /^@dnd-kit\//,
+    why:
+      "O @dnd-kit/core e o @dnd-kit/sortable sao peers opcionais: quem nao\n" +
+      "    reordena lista nem monta quadro nao instala nenhum dos dois.",
+  },
+  {
+    pkg: "@rivocode/ui",
+    core: "src",
     dir: "src/ai/",
     entry: "@rivocode/ui/ai",
     why:
       "O subcaminho de IA nao tem peer: o que ele custa e peso. Quem monta tela\n" +
       "    de nota fiscal nao carrega o campo de prompt, a conversa e o cartao de\n" +
       "    ferramenta por ter importado um Button.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    dir: "native/src/dnd/",
+    entry: "@rivocode/ui-native/dnd",
+    why:
+      "O subcaminho de arrastar no nativo nao tem peer - o gesto e o PanResponder\n" +
+      "    do core -, e existe para a linha de import ser a mesma do web. Nada de\n" +
+      "    fora entra la, senao o indice da raiz passa a compilar a lista junto.",
   },
   {
     pkg: "@rivocode/ui-native",

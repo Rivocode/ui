@@ -44,7 +44,7 @@ const RAIZ = process.cwd();
 const TARGET = "apps/docs/src/native-props.json";
 const PROJECT = "native/tsconfig.check.json";
 
-/** Os seis indices do pacote. Os mesmos que a tabela de paridade mede. */
+/** Os sete indices do pacote. Os mesmos que a tabela de paridade mede. */
 const ENTRY_POINTS = [
   "native/src/index.ts",
   "native/src/form/index.ts",
@@ -52,6 +52,7 @@ const ENTRY_POINTS = [
   "native/src/clipboard/index.ts",
   "native/src/file-upload/index.ts",
   "native/src/ai/index.ts",
+  "native/src/dnd/index.ts",
 ];
 
 /**
@@ -73,7 +74,7 @@ export type NativeProp = {
 };
 
 export type NativePiece = {
-  /** O indice por onde a peca sai: a raiz, `/form`, `/chart`, `/clipboard`, `/file-upload`, `/ai`. */
+  /** O indice por onde a peca sai: a raiz, `/form`, `/chart`, `/clipboard`, `/file-upload`, `/ai`, `/dnd`. */
   entry: string;
   props: NativeProp[];
 };

@@ -232,6 +232,41 @@ sempre resolve.
   **A altura da `Conversation` e sua, por classe**, como a do grafico: sem ela
   a conversa cresce e empurra a pagina.
 
+- **`@rivocode/ui/dnd`**, arrastar e soltar. Peer opcional: `@dnd-kit/core` e
+  `@dnd-kit/sortable`, instalados por quem importa este caminho, e por mais
+  ninguem.
+
+  ```bash
+  npm install @dnd-kit/core @dnd-kit/sortable
+  ```
+
+  ```tsx
+  import { Kanban, SortableList } from '@rivocode/ui/dnd'
+
+  <SortableList
+    items={notas}
+    getKey={(nota) => nota.id}
+    getLabel={(nota) => `Nota ${nota.numero}`}
+    onReorder={setNotas}
+    renderItem={(nota) => nota.cliente}
+  />
+  ```
+
+  | Peca | Para que |
+  |---|---|
+  | `SortableList` | A lista que a pessoa ordena a mao: alca com o icone de pegar, vertical ou horizontal, e `handle={false}` com `handleProps` para a alca ser sua |
+  | `Kanban` | O quadro de colunas: cartao entre colunas e dentro delas, contagem, `limit` que avisa e nao tranca, coluna vazia que recebe |
+
+  **As duas sao controladas.** A ordem nova sai pronta em `onReorder`, e a
+  mudanca do quadro sai em `onMove({ itemId, from, to, index })`; quem troca
+  `items` ou `columns` e a sua tela. Sem trocar, o item volta ao lugar.
+
+  **O teclado nao e opcional**: Espaco pega, setas movem, Espaco solta, Esc
+  cancela, e cada passo e anunciado em portugues ("Item Nota 1043 movido para
+  a posicao 3 de 8"). `getLabel` da o nome que o anuncio fala, e `labels` troca
+  qualquer frase. Os vizinhos andam com a mola espacial dos tokens, e com
+  "reduzir movimento" trocam de lugar sem deslizar.
+
 ### Formatar o numero
 
 Um vocabulario so, para o eixo, a dica, o indicador, a celula da tabela e o
@@ -442,8 +477,8 @@ import { Clipboard } from '@rivocode/ui-native/clipboard'
 import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
 
-**As peças de IA moram em `@rivocode/ui-native/ai`, e esse é o único caminho
-sem peer.** A regra do peer continua valendo para os outros quatro; este existe
+**As peças de IA moram em `@rivocode/ui-native/ai`, um dos dois caminhos sem
+peer.** A regra do peer continua valendo para os outros quatro; este existe
 pelo peso. O metro não sacode árvore: importar um `Button` do índice da raiz
 compila tudo o que ele alcança, e a conversa com um modelo não pode entrar no
 aplicativo de quem só emite nota. É o mesmo caminho do web, trocando o nome do
@@ -458,6 +493,25 @@ A `Conversation` vem por `items`, `renderItem` e `keyExtractor`, sobre uma
 porque o retorno do teclado do celular quebra a linha; a `Message` tem `onCopy`
 no lugar do `copyValue`, porque copiar é do `expo-clipboard`; e a explicação do
 `AILabel` abre numa `Sheet`.
+
+**A `SortableList` mora em `@rivocode/ui-native/dnd`, o outro caminho sem
+peer.** No web ela carrega o dnd-kit; aqui o gesto é o `PanResponder` do core,
+o mesmo do `Slider`, e o `react-native-gesture-handler` não é pedido. O caminho
+próprio existe para a linha de import ser a mesma nos dois pacotes. **Só a
+alça arrasta** (44pt, e ela segura o gesto até o dedo sair), porque a linha
+inteira como alça transformaria todo gesto de rolar num arrasto; o leitor de
+tela move por duas ações, "Mover para cima" e "Mover para baixo", com os
+mesmos anúncios do web.
+
+```tsx
+import { SortableList } from '@rivocode/ui-native/dnd'
+```
+
+**O `Kanban` não porta, por decisão.** A 390px cabe uma coluna, e arrastar um
+cartão para a coluna que não está na tela disputa o dedo com a rolagem. No
+aplicativo, cada coluna vira uma lista (`Tabs` ou seções) e mudar de coluna é
+um `Menu` com "Mover para"; o `onMove` do lado de quem guarda o estado é o
+mesmo.
 
 **Tema de cliente aqui é decisão de BUILD, e não prop de runtime.** Os dois
 temas de casa trocam com a tela aberta, porque foram compilados como

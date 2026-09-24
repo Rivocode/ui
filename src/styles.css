@@ -3,6 +3,7 @@
 @source './ai';
 @source './chart';
 @source './components';
+@source './dnd';
 @source './form';
 @source './provider';
 

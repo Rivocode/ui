@@ -41,7 +41,7 @@ import { scanAtLeast } from "./varredura";
 
 const DOCS = ".design-sync/docs";
 /**
- * Os indices do pacote nativo - os SEIS, e os cinco de baixo nao sao detalhe.
+ * Os indices do pacote nativo - os SETE, e os seis de baixo nao sao detalhe.
  *
  * O formulario, o grafico, o copiar e o anexar moram em caminhos proprios
  * (`@rivocode/ui-native/form`, `/chart`, `/clipboard`, `/file-upload`) pela
@@ -61,6 +61,12 @@ const DOCS = ".design-sync/docs";
  * de IA so serve a app que conversa com um modelo, e o caminho e o mesmo do
  * web, `@rivocode/ui/ai`.
  *
+ * O setimo, `/dnd`, tambem nao tem peer, mas por outro motivo: no web ele
+ * carrega o dnd-kit, e no celular o gesto e o `PanResponder` do core. O
+ * caminho proprio existe para a linha de import ser a mesma nos dois pacotes
+ * (`@rivocode/ui/dnd` e `@rivocode/ui-native/dnd`), e para a lista
+ * reordenavel nao entrar no aparelho de quem so importa um Button.
+ *
  * Medindo so o indice da raiz, o `--check` diria que o Form nao portou no dia
  * seguinte ao porte.
  */
@@ -71,6 +77,7 @@ const NATIVE_INDEXES = [
   "native/src/clipboard/index.ts",
   "native/src/file-upload/index.ts",
   "native/src/ai/index.ts",
+  "native/src/dnd/index.ts",
 ];
 
 type State =
@@ -1618,6 +1625,44 @@ const PARITY: Record<string, Row> = {
       "**A explicação abre numa `Sheet`.** O painel ancorado ao selo ficaria embaixo do dedo " +
       "que tocou nele, a mesma razão por que o `Popover` não porta. Por isso não há `side`, e " +
       "`explanation` é `string`: ela vira a descrição da folha.",
+  },
+  SortableList: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/dnd`, com os mesmos `items`, `getKey`, " +
+      "`renderItem`, `onReorder`, `getLabel`, `handle`, `orientation`, `disabled` e `labels`.\n\n" +
+      "**Sem peer novo.** O gesto é o `PanResponder` do React Native, o mesmo do `Slider`, e " +
+      "não o react-native-gesture-handler: arrastar pela alça, num eixo só, é um gesto que o " +
+      "core resolve sozinho. A alça tem 44pt e segura o gesto até o dedo sair (ela não cede à " +
+      "rolagem da tela no meio do arrasto), e o resto da linha continua rolando a lista, como " +
+      "na alça de reordenar do iOS. Por isso, no celular, **só a alça arrasta**: com a linha " +
+      "inteira como alça, todo toque para rolar viraria um arrasto.\n\n" +
+      "**O leitor de tela não arrasta: ele move.** Cada alça traz duas ações, \"Mover para " +
+      "cima\" e \"Mover para baixo\" (ou esquerda e direita, na horizontal), e cada uma anda um " +
+      "passo e anuncia a posição nova com o mesmo texto do web: \"Item Nota 1043 movido para a " +
+      "posição 3 de 8\". O arrasto também anuncia ao pegar, a cada posição e ao soltar.\n\n" +
+      "Durante o arrasto uma cópia do item segue o dedo por cima da lista, e os vizinhos abrem " +
+      "espaço com a duração `base` dos tokens, sem movimento quando o sistema pede para " +
+      "reduzir. `handleProps` são o gesto e as ações, para espalhar numa `View` sua com " +
+      "`handle={false}`.",
+  },
+  Kanban: {
+    state: "nao",
+    note: "o quadro é idioma de mesa: a 390px cabe uma coluna, e levar o cartão a outra é um menu \"Mover para\", e não um arrasto",
+    page:
+      "Não porta, e não é fila: é decisão. **O quadro existe para o olho ver as colunas lado a " +
+      "lado**, e a 390px cabe uma. Arrastar um cartão para a coluna ao lado quer dizer segurar " +
+      "o dedo enquanto a fileira rola por baixo dele até uma coluna que ainda não está na tela, " +
+      "e o dedo que arrasta é o mesmo que precisaria rolar. No navegador do celular o " +
+      "`Kanban` do web continua de pé, com a fileira rolando uma coluna por vez e o cartão " +
+      "saindo do lugar só depois de o dedo segurá-lo, mas é o recurso de quem abriu uma tela de " +
+      "mesa no telefone, e não o desenho de um aplicativo.\n\n" +
+      "**No telefone, cada coluna é uma lista, e mudar de coluna é uma ação.** As colunas viram " +
+      "`Tabs` (ou seções de uma `DataList`), a ordem dentro da coluna é a `SortableList` de " +
+      "`@rivocode/ui-native/dnd`, e cada cartão ganha um `Menu` com \"Mover para\" e o nome das " +
+      "outras colunas. É o mesmo `onMove({ itemId, from, to, index })` do web do lado de quem " +
+      "guarda o estado, e é o caminho que o leitor de tela já faria de qualquer jeito.",
   },
 };
 

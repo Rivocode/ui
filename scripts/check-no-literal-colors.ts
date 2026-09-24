@@ -2,13 +2,22 @@
  * Guarda do white-label: cor so pode existir em src/tokens. Um hexadecimal
  * dentro de um componente amarra a biblioteca a uma marca, e e a coisa mais
  * facil de fazer sem perceber.
+ *
+ * A varredura cobria so `components`, `provider` e `lib`, e os quatro
+ * subcaminhos - `ai`, `chart`, `form` e `dnd` - ficavam fora dela sem ninguem
+ * ter decidido isso: uma cor ou um `z-10` escrito no `Kanban` passaria calado.
+ * Medido no dia em que o `dnd` entrou, os quatro estavam limpos. A lista abaixo
+ * e o `src/` inteiro menos `tokens`, que e o unico lugar onde a cor pode morar.
  */
 import { scanAtLeast } from "./varredura";
 
 const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/;
 const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/;
 
-const files = await scanAtLeast("src/{components,provider,lib}/**/*.{ts,tsx,css}", 70);
+const files = await scanAtLeast(
+  "src/{components,provider,lib,shared,ai,chart,form,dnd}/**/*.{ts,tsx,css}",
+  90,
+);
 
 let failed = 0;
 for (const file of files) {

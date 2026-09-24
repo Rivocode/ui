@@ -3411,6 +3411,75 @@
       }
     ]
   },
+  "SortableList": {
+    "entry": "native/src/dnd/index.ts",
+    "props": [
+      {
+        "name": "getKey",
+        "type": "(item: Item) => string | number",
+        "required": true,
+        "note": "A identidade de cada item."
+      },
+      {
+        "name": "items",
+        "type": "readonly Item[]",
+        "required": true,
+        "note": "Os itens, na ordem de agora."
+      },
+      {
+        "name": "onReorder",
+        "type": "(items: Item[], move: SortableListMove) => void",
+        "required": true,
+        "note": "A ordem nova, ja montada, ao soltar num lugar diferente de onde o item saiu, ou a cada acao de mover do leitor de tela."
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: Item, state: SortableItemState) => ReactNode",
+        "required": true,
+        "note": "O desenho de cada item."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "{ item?: string | undefined; handle?: string | undefined; content?: string | undefined; }",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o gesto e as acoes de mover."
+      },
+      {
+        "name": "getLabel",
+        "type": "((item: Item) => string)",
+        "required": false,
+        "note": "O nome do item nos anuncios e no nome da alca: \"Nota 1043\"."
+      },
+      {
+        "name": "handle",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha a alca de 44pt no inicio de cada item, e so ela arrasta: o resto da linha continua rolando a tela."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<NativeSortableListLabels>",
+        "required": false,
+        "note": "Os textos dos anuncios, do nome da alca, da dica e das duas acoes de mover (`earlier` e `later`), para outra lingua."
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "note": "O eixo da lista."
+      }
+    ]
+  },
   "Sparkline": {
     "entry": "native/src/index.ts",
     "props": [

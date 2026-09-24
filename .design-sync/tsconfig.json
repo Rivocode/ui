@@ -9,7 +9,8 @@
       "@rivocode/ui": ["../src/index.ts"],
       "@rivocode/ui/form": ["../src/form/index.ts"],
       "@rivocode/ui/chart": ["../src/chart/index.ts"],
-      "@rivocode/ui/ai": ["../src/ai/index.ts"]
+      "@rivocode/ui/ai": ["../src/ai/index.ts"],
+      "@rivocode/ui/dnd": ["../src/dnd/index.ts"]
     }
   },
   "include": ["previews"]

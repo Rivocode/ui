@@ -32,6 +32,7 @@
     "./clipboard": "./src/clipboard/index.ts",
     "./file-upload": "./src/file-upload/index.ts",
     "./ai": "./src/ai/index.ts",
+    "./dnd": "./src/dnd/index.ts",
     "./tokens": "./tokens.ts",
     "./contrast": "./scripts/contrast.mjs",
     "./theme.css": "./theme.css"

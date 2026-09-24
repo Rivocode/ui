@@ -11065,6 +11065,58 @@
     "forwardsRoot": true,
     "props": []
   },
+  "Kanban": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "columns",
+        "type": "readonly KanbanColumn<Item>[]",
+        "required": true,
+        "note": "As colunas, com os cartoes de cada uma."
+      },
+      {
+        "name": "getKey",
+        "type": "(item: Item) => UniqueIdentifier",
+        "required": true,
+        "note": "A identidade de cada cartao, unica no quadro inteiro, e nao so na coluna."
+      },
+      {
+        "name": "onMove",
+        "type": "(move: KanbanMove) => void",
+        "required": true,
+        "note": "Chamado ao soltar o cartao num lugar diferente de onde ele saiu, de outra coluna ou da mesma."
+      },
+      {
+        "name": "renderCard",
+        "type": "(item: Item, state: KanbanCardState) => ReactNode",
+        "required": true,
+        "note": "O conteudo do cartao."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"card\" | \"column\" | \"count\" | \"empty\" | \"header\" | \"list\" | \"title\", string>>",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o arrasto no quadro inteiro."
+      },
+      {
+        "name": "getLabel",
+        "type": "((item: Item) => string)",
+        "required": false,
+        "note": "O nome do cartao nos anuncios: \"Nota 1043\"."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<KanbanLabels>",
+        "required": false,
+        "note": "Os textos da contagem, da coluna vazia, do limite e dos anuncios, para outra lingua."
+      }
+    ]
+  },
   "Kbd": {
     "forwardsRoot": true,
     "props": [
@@ -23944,6 +23996,70 @@
         "required": false,
         "note": "The value of the slider.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "SortableList": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "getKey",
+        "type": "(item: Item) => UniqueIdentifier",
+        "required": true,
+        "note": "A identidade de cada item."
+      },
+      {
+        "name": "items",
+        "type": "readonly Item[]",
+        "required": true,
+        "note": "Os itens, na ordem de agora."
+      },
+      {
+        "name": "onReorder",
+        "type": "(items: Item[], move: SortableListMove) => void",
+        "required": true,
+        "note": "A ordem nova, ja montada, ao soltar num lugar diferente de onde o item saiu."
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: Item, state: SortableItemState) => ReactNode",
+        "required": true,
+        "note": "O desenho de cada item."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"handle\" | \"item\", string>>",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o arrasto inteiro, e a alca sai desabilitada."
+      },
+      {
+        "name": "getLabel",
+        "type": "((item: Item) => string)",
+        "required": false,
+        "note": "O nome do item nos anuncios e no nome da alca: \"Nota 1043\" vira \"Item Nota 1043 movido para a posicao 3 de 8\"."
+      },
+      {
+        "name": "handle",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha a alca, um `IconButton` com o icone de pegar, no inicio de cada item, e so ela arrasta."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SortableListLabels>",
+        "required": false,
+        "note": "Os textos dos anuncios, da instrucao e do nome da alca, para outra lingua ou outro nome de coisa (\"Etapa\" em vez de \"Item\")."
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "note": "O eixo da lista."
       }
     ]
   },

@@ -6,6 +6,7 @@ import { useState, type ReactNode } from "react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { AILabel, Conversation, Message, PromptInput, ToolCall } from "../src/ai/index";
 import * as ai from "../src/ai/index";
+import * as dnd from "../src/dnd/index";
 import * as chart from "../src/chart/index";
 import * as form from "../src/form/index";
 import * as root from "../src/index";
@@ -417,6 +418,7 @@ describe("o subcaminho", () => {
 
     const entries: [string, Record<string, unknown>][] = [
       ["@rivocode/ui/ai", ai],
+      ["@rivocode/ui/dnd", dnd],
       ["@rivocode/ui/chart", chart],
       ["@rivocode/ui/form", form],
       ["@rivocode/ui", root],

@@ -3,6 +3,7 @@
 @source '../src/ai';
 @source '../src/chart';
 @source '../src/components';
+@source '../src/dnd';
 @source '../src/form';
 @source '../src/lib';
 @source '../src/provider';

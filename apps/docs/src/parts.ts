@@ -110,10 +110,17 @@ const isChart = (name: string) => name.startsWith('Chart') || name === 'Sparklin
  */
 const AI_SUBPATH = new Set(['AILabel', 'Conversation', 'Message', 'PromptInput', 'ToolCall'])
 
+/**
+ * O que vem de `@rivocode/ui/dnd`, atras do peer opcional do dnd-kit. Lista
+ * escrita, como a da IA: `Kanban` e `SortableList` nao tem prefixo comum.
+ */
+const DND_SUBPATH = new Set(['Kanban', 'SortableList'])
+
 /** De qual entrada a peca vem; os subcaminhos sao opcionais de proposito. */
 export function importPathOf(name: string) {
   if (FORM_SUBPATH.has(name)) return '@rivocode/ui/form'
   if (isChart(name)) return '@rivocode/ui/chart'
   if (AI_SUBPATH.has(name)) return '@rivocode/ui/ai'
+  if (DND_SUBPATH.has(name)) return '@rivocode/ui/dnd'
   return '@rivocode/ui'
 }

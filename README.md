@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-116 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+118 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -219,6 +219,21 @@ mensagem entra por prop, e o que a pessoa faz sai por evento.
 | `Conversation` | a lista que gruda no fim enquanto o texto chega; a `Timeline` olha para trás      |
 | `ToolCall`     | a chamada de ferramenta, com estado, entrada, saída e aprovar ou recusar          |
 | `AILabel`      | o selo "IA" do conteúdo gerado, com explicação; estado de registro é `Badge`      |
+
+### Arrastar e soltar
+
+Em `@rivocode/ui/dnd`, atrás do `@dnd-kit/core` e do `@dnd-kit/sortable`, que só
+quem importa este caminho instala. As duas são controladas, e as duas andam
+pelo teclado com anúncio em português.
+
+```sh
+npm install @dnd-kit/core @dnd-kit/sortable
+```
+
+| Peça           | Para que serve                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| `SortableList` | a ordem que só a pessoa sabe, arrastada pela alça; ordem por critério é `sortable` no `DataTable` |
+| `Kanban`       | cartões que andam entre colunas de situação, com contagem e limite que avisa e não tranca   |
 
 ### Estrutura
 
