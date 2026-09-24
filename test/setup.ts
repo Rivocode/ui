@@ -7,6 +7,7 @@ import * as reanimatedMock from "./reanimated-mock";
 import * as keyboardMock from "./keyboard-controller-mock";
 
 GlobalRegistrator.register();
+(globalThis as { BASE_UI_ANIMATIONS_DISABLED?: boolean }).BASE_UI_ANIMATIONS_DISABLED = true;
 
 // O `__DEV__` e global do metro, e as pecas nativas leem dele para so avisar
 // em desenvolvimento. Fora do metro ele nao existe, e ler um global ausente e
