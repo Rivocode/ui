@@ -2,6 +2,8 @@
 
 import { ArrowUp, Square } from "lucide-react";
 import {
+  useCallback,
+  useEffect,
   useId,
   useLayoutEffect,
   useRef,
@@ -15,6 +17,19 @@ import {
 import { IconButton } from "../components/icon-button";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
+
+export type PromptInputLabels = {
+  hint: string;
+  count: (count: number, max?: number) => string;
+  limit: (max: number) => string;
+};
+
+const LABELS: PromptInputLabels = {
+  hint: "Enter envia, Shift+Enter quebra a linha.",
+  count: (count, max) =>
+    max === undefined ? `${count} caracteres` : `${count} de ${max} caracteres`,
+  limit: (max) => `Limite de ${max} caracteres atingido.`,
+};
 
 export type PromptInputProps = Omit<
   ComponentPropsWithoutRef<"form">,
@@ -64,6 +79,12 @@ export type PromptInputProps = Omit<
   attachments?: ReactNode;
   /** Os botoes do rodape, a esquerda: anexar, escolher modelo, ditar. */
   actions?: ReactNode;
+  /**
+   * Os textos que o leitor de tela ouve, para trocar o idioma: `hint` e a dica
+   * do teclado ligada ao campo, `count` o que se ouve do contador e `limit` o
+   * aviso ao bater no teto. Passe so os que mudam.
+   */
+  labels?: Partial<PromptInputLabels>;
   classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;
 };
 
@@ -84,6 +105,7 @@ export function PromptInput({
   showCount = false,
   attachments,
   actions,
+  labels: labelsProp,
   className,
   classNames,
   ...props
@@ -91,19 +113,54 @@ export function PromptInput({
   const [own, setOwn] = useState(defaultValue);
   const controlled = value !== undefined;
   const text = controlled ? value : own;
+  const labels = { ...LABELS, ...labelsProp };
   const area = useRef<HTMLTextAreaElement>(null);
+  const button = useRef<HTMLButtonElement>(null);
   const hintId = useId();
+  const countId = useId();
 
   const empty = text.trim() === "";
   const blocked = disabled || streaming || empty;
   const full = maxLength !== undefined && text.length >= maxLength;
 
-  useLayoutEffect(() => {
+  const fit = useCallback(() => {
     const node = area.current;
     if (!node) return;
     node.style.height = "auto";
     node.style.height = `${node.scrollHeight}px`;
-  }, [text]);
+  }, []);
+
+  useLayoutEffect(fit, [text, fit]);
+
+  useEffect(() => {
+    const node = area.current;
+    if (!node) return;
+    let alive = true;
+    let width = node.getBoundingClientRect().width;
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver((entries) => {
+            const next = entries[0]?.contentRect.width ?? width;
+            if (next === width) return;
+            width = next;
+            fit();
+          });
+    observer?.observe(node);
+    document.fonts?.ready.then(() => {
+      if (alive) fit();
+    });
+    return () => {
+      alive = false;
+      observer?.disconnect();
+    };
+  }, [fit]);
+
+  const buttonOff = !streaming && blocked;
+  useLayoutEffect(() => {
+    const node = button.current;
+    if (buttonOff && node && node === document.activeElement && !disabled) area.current?.focus();
+  }, [buttonOff, streaming, disabled]);
 
   function change(next: string) {
     if (!controlled) setOwn(next);
@@ -157,7 +214,7 @@ export function PromptInput({
         placeholder={placeholder}
         maxLength={maxLength}
         aria-label={label}
-        aria-describedby={hintId}
+        aria-describedby={showCount ? `${hintId} ${countId}` : hintId}
         style={{ maxHeight: `calc(${maxRows} * var(--rc-leading-normal) * 1em + 1rem)` }}
         className={cn(
           "w-full resize-none overflow-y-auto bg-transparent px-2 py-2 text-base text-fg",
@@ -167,7 +224,7 @@ export function PromptInput({
         )}
       />
       <span id={hintId} className="sr-only">
-        Enter envia, Shift+Enter quebra a linha.
+        {labels.hint}
       </span>
 
       <div className={cn("flex items-center gap-2", classNames?.footer)}>
@@ -175,6 +232,7 @@ export function PromptInput({
 
         {showCount && (
           <span
+            aria-hidden="true"
             className={cn(
               "font-mono text-xs tabular-nums",
               full ? "text-danger-text" : "text-fg-subtle",
@@ -184,9 +242,20 @@ export function PromptInput({
             {maxLength === undefined ? text.length : `${text.length}/${maxLength}`}
           </span>
         )}
+        {showCount && (
+          <span id={countId} className="sr-only">
+            {labels.count(text.length, maxLength)}
+          </span>
+        )}
+        {maxLength !== undefined && (
+          <span role="status" className="sr-only">
+            {full ? labels.limit(maxLength) : ""}
+          </span>
+        )}
 
         {streaming ? (
           <IconButton
+            ref={button}
             type="button"
             label={stopLabel}
             size="sm"
@@ -198,6 +267,7 @@ export function PromptInput({
           </IconButton>
         ) : (
           <IconButton
+            ref={button}
             type="submit"
             label={submitLabel}
             size="sm"

@@ -18820,6 +18820,12 @@
         "note": "O nome do campo para o leitor de tela."
       },
       {
+        "name": "labels",
+        "type": "Partial<PromptInputLabels>",
+        "required": false,
+        "note": "Os textos que o leitor de tela ouve, para trocar o idioma: `hint` e a dica do teclado ligada ao campo, `count` o que se ouve do contador e `limit` o aviso ao bater no teto."
+      },
+      {
         "name": "maxLength",
         "type": "number",
         "required": false,

@@ -35,9 +35,16 @@ que ela já usa.
 - **Em `streaming`, o botão vira o de parar**, com o nome "Parar resposta", e
   chama o `onStop`. O campo continua aceitando texto para a próxima pergunta:
   só o envio espera.
+- **O foco não se perde quando o botão desabilita.** Quem aperta Enter no
+  "Parar resposta", ou está nele quando a resposta termina, vê o botão voltar a
+  ser o de enviar, desabilitado porque o campo está vazio. O foco volta para o
+  campo, e não cai no começo da página a cada turno. O mesmo vale para quem
+  envia pelo botão.
 
 O campo cresce até `maxRows` linhas (8, sem a prop) e, dali em diante, rola por
-dentro.
+dentro. A altura se refaz também quando a largura muda e quando a fonte da casa
+termina de carregar: o texto de duas linhas não fica cortado no celular nem
+depois de a janela encolher.
 
 ## Controlado ou não
 
@@ -68,7 +75,10 @@ seletor é seu.
 
 `showCount` mostra a contagem de caracteres, como `120/4000` quando há
 `maxLength`. Ao bater no teto a contagem vai para o tom de perigo, e o campo
-recusa o que passa dele.
+recusa o que passa dele. O contador está ligado ao campo por
+`aria-describedby`, dito por extenso ("120 de 4000 caracteres"), e o teto é
+avisado numa região viva ("Limite de 4000 caracteres atingido."): quem não vê a
+cor fica sabendo por que a tecla parou de escrever.
 
 ```tsx
 <PromptInput
@@ -88,6 +98,20 @@ recusa o que passa dele.
 O campo se chama "Mensagem", o botão "Enviar mensagem" e o de parar "Parar
 resposta". `label`, `submitLabel` e `stopLabel` trocam os três, para outra
 língua ou para um assistente com nome próprio.
+
+`labels` troca o que o leitor de tela ouve além dos nomes: `hint` (a dica do
+teclado), `count` (função da contagem e do teto) e `limit` (o aviso do teto).
+
+```tsx
+<PromptInput
+  label="Message"
+  labels={{
+    hint: 'Enter sends, Shift+Enter adds a line.',
+    count: (count, max) => `${count} of ${max} characters`,
+    limit: (max) => `${max} character limit reached.`,
+  }}
+/>
+```
 
 ## Partes
 

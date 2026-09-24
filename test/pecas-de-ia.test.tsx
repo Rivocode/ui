@@ -117,6 +117,122 @@ describe("PromptInput", () => {
     withTheme(<PromptInput attachments={<span>nota-agosto.pdf</span>} />);
     expect(screen.getByText("nota-agosto.pdf")).toBeDefined();
   });
+
+  function Turn({ initial = false }: { initial?: boolean }) {
+    const [streaming, setStreaming] = useState(initial);
+    return (
+      <PromptInput
+        streaming={streaming}
+        onSubmit={() => setStreaming(true)}
+        onStop={() => setStreaming(false)}
+      />
+    );
+  }
+
+  test("Enter no Parar devolve o foco ao campo, e nao o larga no botao desabilitado", () => {
+    withTheme(<Turn initial />);
+    const stop = screen.getByRole("button", { name: "Parar resposta" });
+    stop.focus();
+    act(() => {
+      fireEvent.click(stop);
+    });
+
+    const send = screen.getByRole("button", { name: "Enviar mensagem" }) as HTMLButtonElement;
+    expect(send.disabled).toBe(true);
+    expect(document.activeElement).toBe(screen.getByRole("textbox"));
+  });
+
+  test("a resposta que termina com o foco no Parar devolve o foco ao campo", () => {
+    const view = withTheme(<PromptInput streaming onStop={() => {}} />);
+    screen.getByRole("button", { name: "Parar resposta" }).focus();
+    view.rerender(
+      <RivoProvider scope="local">
+        <PromptInput streaming={false} onStop={() => {}} />
+      </RivoProvider>,
+    );
+
+    expect(document.activeElement).toBe(screen.getByRole("textbox"));
+  });
+
+  test("enviar pelo botao, sem resposta chegando, devolve o foco ao campo que se limpou", () => {
+    withTheme(<PromptInput defaultValue="Quanto faturei?" />);
+    const send = screen.getByRole("button", { name: "Enviar mensagem" });
+    send.focus();
+    act(() => {
+      fireEvent.click(send);
+    });
+
+    expect((send as HTMLButtonElement).disabled).toBe(true);
+    expect(document.activeElement).toBe(screen.getByRole("textbox"));
+  });
+
+  test("a altura se refaz quando a largura muda e quando a fonte chega, e nao so com o texto", async () => {
+    const OriginalObserver = globalThis.ResizeObserver;
+    const fonts = Object.getOwnPropertyDescriptor(document, "fonts");
+    const observed: Array<(entries: Array<{ contentRect: { width: number } }>) => void> = [];
+    globalThis.ResizeObserver = class {
+      constructor(callback: (entries: Array<{ contentRect: { width: number } }>) => void) {
+        observed.push(callback);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    let loaded!: () => void;
+    Object.defineProperty(document, "fonts", {
+      configurable: true,
+      value: { ready: new Promise<void>((resolve) => (loaded = resolve)) },
+    });
+
+    try {
+      let scroll = 40;
+      withTheme(<PromptInput defaultValue="Quanto faturei em agosto com as notas da filial?" />);
+      const field = screen.getByRole("textbox") as HTMLTextAreaElement;
+      Object.defineProperty(field, "scrollHeight", { configurable: true, get: () => scroll });
+      expect(observed.length).toBeGreaterThan(0);
+
+      scroll = 64;
+      await act(async () => {
+        loaded();
+        await Promise.resolve();
+      });
+      expect(field.style.height).toBe("64px");
+
+      scroll = 88;
+      act(() => {
+        for (const callback of observed) callback([{ contentRect: { width: 300 } }]);
+      });
+      expect(field.style.height).toBe("88px");
+    } finally {
+      globalThis.ResizeObserver = OriginalObserver;
+      if (fonts) Object.defineProperty(document, "fonts", fonts);
+      else delete (document as { fonts?: unknown }).fonts;
+    }
+  });
+
+  const described = (field: HTMLElement) =>
+    (field.getAttribute("aria-describedby") ?? "")
+      .split(" ")
+      .map((id) => document.getElementById(id)?.textContent ?? "");
+
+  test("a dica do teclado sai de labels, para trocar o idioma", () => {
+    withTheme(<PromptInput labels={{ hint: "Enter sends, Shift+Enter breaks the line." }} />);
+    expect(described(screen.getByRole("textbox"))).toContain(
+      "Enter sends, Shift+Enter breaks the line.",
+    );
+  });
+
+  test("o contador esta ligado ao campo, e o teto e avisado", () => {
+    const view = withTheme(<PromptInput showCount maxLength={5} defaultValue="123" />);
+    expect(described(screen.getByRole("textbox"))).toContain("3 de 5 caracteres");
+    expect(screen.getByRole("status").textContent).toBe("");
+    view.unmount();
+
+    withTheme(<PromptInput showCount maxLength={5} defaultValue="12345" />);
+    expect(described(screen.getByRole("textbox"))).toContain("5 de 5 caracteres");
+    expect(screen.getByRole("status").textContent).toBe("Limite de 5 caracteres atingido.");
+    expect(screen.getByText("5/5").getAttribute("aria-hidden")).toBe("true");
+  });
 });
 
 describe("Message", () => {
