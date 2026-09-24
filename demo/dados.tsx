@@ -132,11 +132,11 @@ function Sample({ theme }: { theme: RivoTheme }) {
           <Block title="Campo com encosto">
             <InputGroup>
               <InputPrefix>R$</InputPrefix>
-              <MaskedInput mask="moeda" defaultValue="248000" />
+              <MaskedInput aria-label="Valor" mask="moeda" defaultValue="248000" />
             </InputGroup>
 
             <InputGroup>
-              <MaskedInput mask="" placeholder="minha-empresa" />
+              <MaskedInput aria-label="Subdomínio" mask="" placeholder="minha-empresa" />
               <InputSuffix>.rivocode.com</InputSuffix>
             </InputGroup>
           </Block>
