@@ -17,6 +17,8 @@ export type QRCodeProps = Omit<ComponentProps<"div">, "children"> & {
   level?: "L" | "M" | "Q" | "H";
   /** A marca no centro, que so aparece com `level="H"`: os modulos embaixo dela sao apagados. */
   logo?: ReactNode;
+  /** Os textos da peca. `tooLong` aparece no lugar do codigo quando o texto passa do que a versao 40 guarda no nivel escolhido. */
+  labels?: { tooLong?: string };
   /** Classe por parte: `code` (o svg) e `logo`. */
   classNames?: Slots<"code" | "logo">;
 };
@@ -27,11 +29,13 @@ export function QRCode({
   size = 160,
   level,
   logo,
+  labels,
   className,
   classNames,
   style,
   ...props
 }: QRCodeProps) {
+  const tooLong = labels?.tooLong ?? "Conteúdo longo demais para um QR Code.";
   const chosen = level ?? (logo ? "H" : "M");
   const misused = Boolean(logo) && chosen !== "H";
   const withLogo = Boolean(logo) && !misused;
@@ -44,9 +48,49 @@ export function QRCode({
     );
   }, [misused, chosen]);
 
-  const matrix = useMemo(() => (value ? encodeQr(value, chosen) : null), [value, chosen]);
-  const side = (matrix?.size ?? 21) + QR_QUIET_ZONE * 2;
-  const hole = matrix && withLogo ? qrLogoArea(matrix.size) : null;
+  const encoded = useMemo(() => {
+    if (!value) return null;
+    try {
+      return encodeQr(value, chosen);
+    } catch (error) {
+      if (error instanceof RangeError) return error;
+      throw error;
+    }
+  }, [value, chosen]);
+
+  const failure = encoded instanceof RangeError ? encoded : null;
+
+  useEffect(() => {
+    if (!failure || process.env.NODE_ENV === "production") return;
+    console.warn(
+      `QRCode: o texto de ${value.length} caracteres não cabe num QR Code de nível "${chosen}", ` +
+        "e a peça desenha o aviso no lugar do código. Encurte o texto, troque por um link ou baixe o nível.",
+      failure,
+    );
+  }, [failure, value.length, chosen]);
+
+  if (!encoded || failure) {
+    return (
+      <div
+        {...props}
+        role="img"
+        aria-label={failure ? `${label}: ${tooLong}` : label}
+        data-level={chosen}
+        data-state={failure ? "error" : "empty"}
+        style={{ width: size, height: size, ...style }}
+        className={cn(
+          "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md border border-dashed border-border-strong bg-surface p-3 text-center",
+          className,
+        )}
+      >
+        {failure ? <span className="text-xs text-fg-muted">{tooLong}</span> : null}
+      </div>
+    );
+  }
+
+  const matrix = encoded;
+  const side = matrix.size + QR_QUIET_ZONE * 2;
+  const hole = withLogo ? qrLogoArea(matrix.size) : null;
 
   return (
     <div
@@ -66,7 +110,7 @@ export function QRCode({
         className={cn("block", classNames?.code)}
       >
         <rect width={side} height={side} className="fill-code-paper" />
-        {matrix ? <path d={qrPath(matrix, { hole: withLogo })} className="fill-code-ink" /> : null}
+        <path d={qrPath(matrix, { hole: withLogo })} className="fill-code-ink" />
       </svg>
 
       {hole ? (

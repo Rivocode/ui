@@ -104,8 +104,36 @@ test("logo com nivel abaixo de H nao aparece, e o aviso diz por que", () => {
   warn.mockRestore();
 });
 
-test("sem valor, o quadrado guarda o lugar e nao desenha modulo", () => {
+test("sem valor, o quadrado guarda o lugar com traco pontilhado na superficie, e nao com a placa branca", () => {
   const screen = render(<QRCode value="" label="Código" size={144} />);
+  const [image] = byRole(screen, "image");
+  const classes = String(image!.props.className).split(" ");
+
   expect(byType(screen, "Path")).toHaveLength(0);
-  expect(byType(screen, "Rect")).toHaveLength(1);
+  expect(image!.props.style.width).toBe(144);
+  expect(image!.props.style.height).toBe(144);
+  expect(image!.props.style.backgroundColor).toBeUndefined();
+  expect(classes).toContain("border-dashed");
+  expect(classes).toContain("bg-surface");
+});
+
+test("texto que nao cabe em QR nenhum desenha o aviso no lugar, sem derrubar a arvore, e avisa em dev", () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+  try {
+    const screen = render(<QRCode value={"a".repeat(5000)} label="QR Code da nota" size={160} />);
+    const [image] = byRole(screen, "image");
+
+    expect(byType(screen, "Path")).toHaveLength(0);
+    expect(String(image!.props.accessibilityLabel)).toContain("QR Code da nota");
+    expect(String(image!.props.accessibilityLabel)).toContain("longo demais");
+    expect(String(image!.props.className).split(" ")).toContain("border-dashed");
+    expect(warn.mock.calls.flat().join(" ")).toContain("QRCode");
+
+    const other = render(
+      <QRCode value={"a".repeat(5000)} label="Outro" labels={{ tooLong: "Too long." }} />,
+    );
+    expect(byType(other, "Text").some((node) => node.props.children === "Too long.")).toBe(true);
+  } finally {
+    warn.mockRestore();
+  }
 });

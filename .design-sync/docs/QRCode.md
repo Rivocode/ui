@@ -76,8 +76,22 @@ quê.
 <QRCode value={linkDaNota} label="QR Code para consultar a nota 4813" logo={<img src="/marca.svg" alt="" />} />
 ```
 
-Sem `value`, o quadrado guarda o lugar com o papel e nenhum módulo, para a
-tela não pular quando o texto chegar.
+Sem `value`, o quadrado guarda o lugar com um traço pontilhado sobre a
+superfície, sem módulo nenhum, para a tela não pular quando o texto chegar. Não
+é a placa branca: no tema escuro um quadrado branco vazio parece um código que
+falhou ao desenhar.
+
+## Texto que não cabe
+
+A versão 40 guarda 2953 bytes no nível L e 1273 no H. Texto maior não cabe em
+QR nenhum, e a peça **não derruba a tela** por isso: no lugar do código ela
+desenha o mesmo quadrado pontilhado com o aviso de `labels.tooLong`, o nome da
+imagem ganha o aviso junto, e o console avisa em desenvolvimento. A saída é
+encurtar o texto, trocar por um link que leve a ele ou baixar o nível.
+
+```tsx
+<QRCode value={texto} label="QR Code do cardápio" labels={{ tooLong: 'Cardápio longo demais para o QR.' }} />
+```
 
 ## Partes
 

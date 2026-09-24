@@ -18908,6 +18908,12 @@
         "note": "Classe por parte: `code` (o svg) e `logo`."
       },
       {
+        "name": "labels",
+        "type": "{ tooLong?: string | undefined; }",
+        "required": false,
+        "note": "Os textos da peca."
+      },
+      {
         "name": "level",
         "type": "\"H\" | \"L\" | \"M\" | \"Q\"",
         "required": false,

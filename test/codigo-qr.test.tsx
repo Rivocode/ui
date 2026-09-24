@@ -133,11 +133,49 @@ test("e uma imagem com nome, e o desenho fica fora da arvore de acessibilidade",
   expect(image.textContent).toBe("");
 });
 
-test("sem valor, o quadrado guarda o lugar e nao desenha modulo nenhum", () => {
-  const { svg, width } = draw({ value: "", size: 144 });
-  expect(width).toBe(144);
-  expect(svg.querySelector("path")).toBeNull();
-  expect(svg.querySelector("rect")).not.toBeNull();
+test("sem valor, o quadrado guarda o lugar com traco pontilhado na superficie, e nao com a placa branca", () => {
+  for (const theme of THEMES) {
+    const { container } = render(
+      <RivoProvider scope="local" theme={theme}>
+        <QRCode label="Código de teste" value="" size={144} />
+      </RivoProvider>,
+    );
+    const image = container.querySelector("[role='img']") as HTMLElement;
+    const classes = image.getAttribute("class")!.split(" ");
+
+    expect(image.style.width).toBe("144px");
+    expect(image.style.height).toBe("144px");
+    expect(classes).toContain("border-dashed");
+    expect(classes).toContain("bg-surface");
+    expect(classes).not.toContain("bg-code-paper");
+    expect(image.querySelector("path")).toBeNull();
+    expect(image.getAttribute("data-state")).toBe("empty");
+  }
+});
+
+test("texto que nao cabe em QR nenhum desenha o aviso no lugar, sem derrubar a arvore, e avisa em dev", () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+  try {
+    render(
+      <div>
+        <p>vizinho</p>
+        <QRCode value={"a".repeat(5000)} label="QR Code da nota" size={160} />
+      </div>,
+    );
+
+    expect(screen.getByText("vizinho")).toBeDefined();
+    const image = screen.getByRole("img", { name: /QR Code da nota/ });
+    expect(image.getAttribute("data-state")).toBe("error");
+    expect(image.getAttribute("aria-label")).toContain("longo demais");
+    expect(image.querySelector("path")).toBeNull();
+    expect(image.getAttribute("class")!.split(" ")).not.toContain("bg-code-paper");
+    expect(warn.mock.calls.flat().join(" ")).toContain("QRCode");
+
+    render(<QRCode value={"a".repeat(5000)} label="Outro" labels={{ tooLong: "Too long." }} />);
+    expect(screen.getByText("Too long.")).toBeDefined();
+  } finally {
+    warn.mockRestore();
+  }
 });
 
 test("a versao 1 guarda 17, 14, 11 e 7 bytes, e a 40 guarda 2953 no L e 1273 no H", () => {
