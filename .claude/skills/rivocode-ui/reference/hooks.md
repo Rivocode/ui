@@ -59,7 +59,10 @@ sobreposições modais. Se a tela precisa de foco preso, ela precisa de um
 **Atalho não rouba letra de quem digita.** `useHotkeys` não dispara com o foco
 num campo de texto; passe `ignoreFields: false` só no atalho que precisa valer
 dentro do campo, como `mod+k` de uma paleta. Os modificadores batem
-exatamente: `mod+k` não dispara com `mod+shift+k`.
+exatamente: `mod+k` não dispara com `mod+shift+k`. A exceção é o símbolo: em
+`?`, `+` ou num dígito o shift não conta, porque é o layout que o exige.
+Escreva o caractere que sai (`?`), e não `shift+/`. A tecla vale pelo
+caractere, e a posição física só quando o caractere não diz qual é a tecla.
 
 ```tsx
 useHotkeys([['mod+k', () => setPaletteOpen(true)]], { ignoreFields: false })

@@ -170,8 +170,25 @@ atalho precisar valer dentro do campo.
 useHotkeys([
   ['mod+k', () => setPaletteOpen(true)],
   ['shift+n', () => startInvoice()],
+  ['?', () => setHelpOpen(true)],
 ])
 ```
+
+A tecla é comparada pelo caractere que ela digita, e não pela posição no
+teclado. Três regras saem disso:
+
+- **Símbolo ignora o shift.** Em `?`, `+`, `!` ou nos dígitos, o shift é o que
+  o layout exige para chegar ao caractere, então ele não conta: `?` dispara com
+  o `shift+/` do teclado americano e com a tecla própria do ABNT2, e `1` dispara
+  no AZERTY, onde o dígito pede shift. Escreva o caractere que sai (`?`), e não
+  a combinação que o produz: `shift+/` também é aceito, mas é traduzido pelo
+  teclado americano. Em letra o shift conta, e `a` não dispara com `A`.
+- **Letra vale pelo caractere.** No AZERTY, `z` dispara na tecla que digita
+  `z`, e não na tecla que fica onde o `Z` americano fica.
+- **A posição só vale quando o caractere não diz qual é a tecla**: o `˚` do
+  Option+K no Mac, a letra cirílica do Ctrl+C num teclado russo, o
+  `Unidentified`. A fileira de números vale sempre pela posição, para `mod+1`
+  funcionar no AZERTY, onde a tecla digita `&`.
 
 ### useInfiniteScroll
 

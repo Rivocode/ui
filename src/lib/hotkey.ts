@@ -19,6 +19,32 @@ const ALIASES: Record<string, string> = {
   plus: "+",
 };
 
+const SHIFTED: Record<string, string> = {
+  "`": "~",
+  "1": "!",
+  "2": "@",
+  "3": "#",
+  "4": "$",
+  "5": "%",
+  "6": "^",
+  "7": "&",
+  "8": "*",
+  "9": "(",
+  "0": ")",
+  "-": "_",
+  "=": "+",
+  "[": "{",
+  "]": "}",
+  "\\": "|",
+  ";": ":",
+  "'": '"',
+  ",": "<",
+  ".": ">",
+  "/": "?",
+};
+
+const isSymbol = (key: string) => [...key].length === 1 && key !== " " && !/\p{L}/u.test(key);
+
 export function isApple(platform: string): boolean {
   return /mac|iphone|ipad|ipod/i.test(platform);
 }
@@ -41,28 +67,30 @@ export function parseHotkey(combo: string, apple: boolean): Hotkey {
     else hotkey.key = ALIASES[part] ?? part;
   });
 
+  if (hotkey.shift && SHIFTED[hotkey.key]) hotkey.key = SHIFTED[hotkey.key];
+  if (isSymbol(hotkey.key)) hotkey.shift = false;
+
   return hotkey;
 }
 
 type KeyLike = Pick<KeyboardEvent, "key" | "code" | "altKey" | "ctrlKey" | "metaKey" | "shiftKey">;
 
-function physicalKey(code: string): string | undefined {
-  if (/^Key[A-Z]$/.test(code)) return code.slice(3).toLowerCase();
+const isAsciiPrintable = (key: string) => /^[\x20-\x7e]$/.test(key);
+
+function physicalKey(code: string, key: string): string | undefined {
   if (/^Digit\d$/.test(code)) return code.slice(5);
+  if (/^Key[A-Z]$/.test(code) && !isAsciiPrintable(key)) return code.slice(3).toLowerCase();
   return undefined;
 }
 
 export function matchesHotkey(hotkey: Hotkey, event: KeyLike): boolean {
-  if (
-    event.altKey !== hotkey.alt ||
-    event.ctrlKey !== hotkey.ctrl ||
-    event.metaKey !== hotkey.meta ||
-    event.shiftKey !== hotkey.shift
-  ) {
+  if (event.altKey !== hotkey.alt || event.ctrlKey !== hotkey.ctrl || event.metaKey !== hotkey.meta) {
     return false;
   }
-  const key = (event.key ?? "").toLowerCase();
-  return key === hotkey.key || physicalKey(event.code ?? "") === hotkey.key;
+  const key = event.key ?? "";
+  const shift = event.shiftKey === hotkey.shift;
+  if (key.toLowerCase() === hotkey.key) return shift || (isSymbol(hotkey.key) && isSymbol(key));
+  return shift && physicalKey(event.code ?? "", key) === hotkey.key;
 }
 
 const NOT_TYPED = new Set([

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import { act, fireEvent, render, renderHook, screen } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Clipboard,
@@ -113,6 +113,33 @@ describe("useLocalStorage e useSessionStorage", () => {
     act(() => result.current[1](2));
     expect(sessionStorage.getItem("passo")).toBe("2");
     expect(localStorage.getItem("passo")).toBeNull();
+  });
+
+  test("padrao escrito como literal nao muda de identidade a cada render", () => {
+    let effects = 0;
+    function Probe() {
+      const [value] = useLocalStorage({ key: "vazia", defaultValue: { page: 1 } });
+      const [, setCount] = useState(0);
+      useEffect(() => {
+        effects += 1;
+        if (effects < 10) setCount((count) => count + 1);
+      }, [value]);
+      return null;
+    }
+    render(<Probe />);
+    expect(effects).toBe(1);
+  });
+
+  test("o setter com funcao parte do padrao inicial, e o setter e estavel", () => {
+    const { result, rerender } = renderHook(() =>
+      useSessionStorage({ key: "vazia", defaultValue: { page: 1 } }),
+    );
+    const [first, setter] = result.current;
+    rerender();
+    expect(result.current[0]).toBe(first);
+    expect(result.current[1]).toBe(setter);
+    act(() => result.current[1]((current) => ({ page: current.page + 1 })));
+    expect(result.current[0]).toEqual({ page: 2 });
   });
 
   test("desmontar tira a escuta da janela", () => {
@@ -244,6 +271,63 @@ describe("useHotkeys", () => {
         altKey: true,
       }),
     ).toBe(true);
+  });
+
+  const press = (event: Partial<KeyboardEvent>) => ({
+    key: "",
+    code: "",
+    altKey: false,
+    ctrlKey: false,
+    metaKey: false,
+    shiftKey: false,
+    ...event,
+  });
+
+  test("simbolo que pede shift casa pelo caractere, com o shift que o teclado exigiu", () => {
+    const question = press({ key: "?", code: "Slash", shiftKey: true });
+    expect(matchesHotkey(parseHotkey("?", false), question)).toBe(true);
+    expect(matchesHotkey(parseHotkey("shift+/", false), question)).toBe(true);
+    expect(matchesHotkey(parseHotkey("/", false), question)).toBe(false);
+    expect(matchesHotkey(parseHotkey("/", false), press({ key: "/", code: "Slash" }))).toBe(true);
+    expect(
+      matchesHotkey(parseHotkey("mod+plus", false), press({ key: "+", code: "Equal", ctrlKey: true, shiftKey: true })),
+    ).toBe(true);
+    expect(
+      matchesHotkey(parseHotkey("1", false), press({ key: "1", code: "Digit1", shiftKey: true })),
+    ).toBe(true);
+  });
+
+  test("em letra o shift continua contando", () => {
+    expect(
+      matchesHotkey(parseHotkey("shift+a", false), press({ key: "A", code: "KeyA", shiftKey: true })),
+    ).toBe(true);
+    expect(matchesHotkey(parseHotkey("a", false), press({ key: "A", code: "KeyA", shiftKey: true }))).toBe(
+      false,
+    );
+    expect(
+      matchesHotkey(parseHotkey("space", false), press({ key: " ", code: "Space", shiftKey: true })),
+    ).toBe(false);
+  });
+
+  test("a tecla fisica so vale quando o caractere nao diz qual e a tecla", () => {
+    const azertyW = press({ key: "w", code: "KeyZ" });
+    expect(matchesHotkey(parseHotkey("z", false), azertyW)).toBe(false);
+    expect(matchesHotkey(parseHotkey("w", false), azertyW)).toBe(true);
+    expect(
+      matchesHotkey(parseHotkey("ctrl+c", false), press({ key: "с", code: "KeyC", ctrlKey: true })),
+    ).toBe(true);
+    expect(
+      matchesHotkey(parseHotkey("mod+1", false), press({ key: "&", code: "Digit1", ctrlKey: true })),
+    ).toBe(true);
+    expect(
+      matchesHotkey(parseHotkey("k", false), press({ key: "Unidentified", code: "KeyK" })),
+    ).toBe(true);
+    expect(
+      matchesHotkey(
+        parseHotkey("mod+1", false),
+        press({ key: "!", code: "Digit1", ctrlKey: true, shiftKey: true }),
+      ),
+    ).toBe(false);
   });
 
   test("campo de texto e o que recebe digitacao, e caixa de marcar nao e", () => {

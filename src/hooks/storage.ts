@@ -2,6 +2,8 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 
+import { useLatest } from "./common/latest";
+
 type Area = "localStorage" | "sessionStorage";
 
 const CHANGED = "rivo:storage";
@@ -43,7 +45,7 @@ function writeRaw(area: Area, key: string, raw: string | null) {
 export type UseStorageOptions<T> = {
   /** A chave no armazenamento. Duas chamadas com a mesma chave andam juntas, inclusive entre abas. */
   key: string;
-  /** O valor enquanto nada foi gravado, no servidor e quando o gravado nao se le. */
+  /** O valor enquanto nada foi gravado, no servidor e quando o gravado nao se le. Vale o do primeiro render de cada chave: literal novo a cada render nao muda o valor devolvido. */
   defaultValue: T;
   /** Como o valor vira texto. `JSON.stringify` por padrao. */
   serialize?: (value: T) => string;
@@ -54,7 +56,10 @@ export type UseStorageOptions<T> = {
 export type StorageHandlers<T> = [T, (value: T | ((current: T) => T)) => void, () => void];
 
 function useStorage<T>(area: Area, options: UseStorageOptions<T>): StorageHandlers<T> {
-  const { key, defaultValue, serialize = JSON.stringify, deserialize = JSON.parse } = options;
+  const { key, serialize = JSON.stringify, deserialize = JSON.parse } = options;
+  const initial = options.defaultValue;
+  const fallback = useMemo(() => ({ current: initial }), [area, key]);
+  const codec = useLatest({ serialize, deserialize });
 
   const subscribe = useCallback(
     (notify: () => void) => {
@@ -85,29 +90,29 @@ function useStorage<T>(area: Area, options: UseStorageOptions<T>): StorageHandle
   );
 
   const value = useMemo(() => {
-    if (raw === null) return defaultValue;
+    if (raw === null) return fallback.current;
     try {
-      return deserialize(raw) as T;
+      return codec.current.deserialize(raw) as T;
     } catch {
-      return defaultValue;
+      return fallback.current;
     }
-  }, [raw, defaultValue, deserialize]);
+  }, [raw, codec, fallback]);
 
   const setValue = useCallback(
     (next: T | ((current: T) => T)) => {
       const stored = readRaw(area, key);
-      let current = defaultValue;
+      let current = fallback.current;
       if (stored !== null) {
         try {
-          current = deserialize(stored) as T;
+          current = codec.current.deserialize(stored) as T;
         } catch {
-          current = defaultValue;
+          current = fallback.current;
         }
       }
       const resolved = typeof next === "function" ? (next as (current: T) => T)(current) : next;
-      writeRaw(area, key, serialize(resolved));
+      writeRaw(area, key, codec.current.serialize(resolved));
     },
-    [area, key, defaultValue, serialize, deserialize],
+    [area, key, fallback, codec],
   );
 
   const remove = useCallback(() => writeRaw(area, key, null), [area, key]);
