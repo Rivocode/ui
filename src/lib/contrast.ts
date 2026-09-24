@@ -537,7 +537,11 @@ export const CSS_COMPOSED_PAIRS: Array<[string, string, string, number]> = [
   ["--rc-accent-text", "--rc-selected", "--rc-surface", MIN_TEXT],
   ["--rc-fg", "--rc-selected", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-selected", "--rc-surface", MIN_BODY],
-  ["--rc-fg", "--rc-selected", "--rc-surface-raised", MIN_BODY],  ["--rc-fg", "--rc-info-subtle", "--rc-bg", MIN_BODY],
+  ["--rc-fg", "--rc-selected", "--rc-surface-raised", MIN_BODY],
+  ["--rc-accent-text", "--rc-selected", "--rc-bg", MIN_TEXT],
+  ["--rc-fg-muted", "--rc-selected", "--rc-bg", MIN_TEXT],
+  ["--rc-fg-muted", "--rc-selected", "--rc-surface", MIN_TEXT],
+  ["--rc-fg", "--rc-info-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-info-subtle", "--rc-surface", MIN_BODY],
   ["--rc-fg", "--rc-success-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-success-subtle", "--rc-surface", MIN_BODY],
@@ -560,7 +564,8 @@ export const CSS_BOUNDARIES: Array<[string, string | string[], number]> = [
   ["--rc-surface-raised", "--rc-accent-text", MIN_NON_TEXTUAL],
   ["--rc-accent-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-accent-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
-  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface-raised"], MIN_NON_TEXTUAL],  ["--rc-border-strong", ["--rc-info-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-accent-text", ["--rc-skeleton", "--rc-surface-raised"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-info-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-border-strong", ["--rc-info-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-border-strong", ["--rc-success-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-border-strong", ["--rc-success-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
@@ -774,7 +779,8 @@ for (const background of BACKGROUNDS) {
   pair("fg", ["selected", background], MIN_BODY);
   for (const state of STATES) pair(`${state}-text`, [`${state}-subtle`, background], MIN_TEXT);
   if (background !== "surface-raised") {
-    for (const state of STATES) pair("fg", [`${state}-subtle`, background], MIN_BODY, "faixa do Banner");
+    for (const state of STATES)
+      pair("fg", [`${state}-subtle`, background], MIN_BODY, "faixa do Banner");
   }
 }
 

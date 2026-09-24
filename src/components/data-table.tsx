@@ -489,7 +489,10 @@ export function DataTable<Row>({
   );
 
   const body = (
-    <TableBody key={loading ? "loading" : "rows"} className={loading ? undefined : "animate-appear"}>
+    <TableBody
+      key={loading ? "loading" : "rows"}
+      className={loading ? undefined : "animate-appear"}
+    >
       {loading ? (
         Array.from({ length: skeletonRows }, (_, row) => (
           <TableRow key={`carregando-${row}`}>
@@ -522,7 +525,11 @@ export function DataTable<Row>({
               onClick={
                 onRowClick ? (event) => openRow(event, linha.original as unknown as Row) : undefined
               }
-              className={cn(onRowClick && "cursor-pointer", classNames?.row)}
+              className={cn(
+                "data-[selected]:bg-selected data-[selected]:shadow-[inset_2px_0_0_var(--rc-accent)]",
+                onRowClick && "cursor-pointer",
+                classNames?.row,
+              )}
               data-selected={linha.getIsSelected() || undefined}
             >
               {selectable && (

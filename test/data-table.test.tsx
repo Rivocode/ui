@@ -2,6 +2,7 @@ import { afterAll, beforeAll, expect, test } from "bun:test";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 
 import { DataTable, type Column } from "../src/components/data-table";
+import { CSS_COMPOSED_PAIRS } from "../src/lib/contrast";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
@@ -212,6 +213,28 @@ test("selecionar uma linha devolve a chave do rowKey", () => {
   const row = screen.getByText("Padaria Aurora").closest("tr")!;
   fireEvent.click(within(row).getByRole("checkbox"));
   expect(selecionadas).toEqual(["3"]);
+});
+
+test("a linha selecionada se pinta, e o fundo dela tem o contraste do texto medido", () => {
+  table({ selectable: true, value: ["2"] });
+
+  const chosen = screen.getByText("Transportes Cabo Branco").closest("tr")!;
+  const other = screen.getByText("Padaria Aurora").closest("tr")!;
+  expect(chosen.hasAttribute("data-selected")).toBe(true);
+  expect(other.hasAttribute("data-selected")).toBe(false);
+
+  const tokens = chosen.className.split(" ");
+  expect(tokens).toContain("data-[selected]:bg-selected");
+  expect(tokens).toContain("data-[selected]:shadow-[inset_2px_0_0_var(--rc-accent)]");
+
+  const measured = CSS_COMPOSED_PAIRS.filter(([, layer]) => layer === "--rc-selected").map(
+    ([front, , under]) => `${front} ${under}`,
+  );
+  for (const under of ["--rc-bg", "--rc-surface"]) {
+    expect(measured).toContain(`--rc-fg ${under}`);
+    expect(measured).toContain(`--rc-fg-muted ${under}`);
+    expect(measured).toContain(`--rc-accent-text ${under}`);
+  }
 });
 
 test("o checkbox do cabecalho seleciona a pagina visivel, nao o mundo", () => {
