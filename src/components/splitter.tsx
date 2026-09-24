@@ -37,7 +37,6 @@ export function Splitter({
   classNames,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
-  ref: _ref,
   ...props
 }: SplitterProps) {
   const [internal, setInternal] = useState(defaultSize);
@@ -60,7 +59,7 @@ export function Splitter({
       className={cn("h-auto", !vertical && "max-md:flex-col", className)}
     >
       <ResizablePanel
-        defaultSize={defaultSize}
+        defaultSize={current}
         minSize={min}
         maxSize={100 - min}
         className={classNames?.start}
@@ -74,7 +73,7 @@ export function Splitter({
         className={cn(!vertical && "max-md:hidden", classNames?.handle)}
       />
 
-      <ResizablePanel minSize={min} className={classNames?.end}>
+      <ResizablePanel defaultSize={100 - current} minSize={min} className={classNames?.end}>
         {end}
       </ResizablePanel>
     </ResizablePanelGroup>

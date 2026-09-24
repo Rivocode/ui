@@ -29,7 +29,8 @@ function settle(c: PanelConstraints, proposed: number, from: number, snap: Snap)
   if (proposed >= c.minSize) return proposed;
   if (!c.collapsible) return c.minSize;
   if (proposed <= c.collapsedSize) return c.collapsedSize;
-  if (snap === "eager") return proposed < from && near(from, c.minSize) ? c.collapsedSize : c.minSize;
+  if (snap === "eager")
+    return proposed < from && near(from, c.minSize) ? c.collapsedSize : c.minSize;
   return proposed < (c.collapsedSize + c.minSize) / 2 ? c.collapsedSize : c.minSize;
 }
 
@@ -88,14 +89,25 @@ export function boundsAt(sizes: number[], constraints: PanelConstraints[], pivot
   return { min: Math.min(min, left), max: Math.max(max, left) };
 }
 
-export function normalize(sizes: number[], constraints: PanelConstraints[]): number[] {
+export function normalize(
+  sizes: number[],
+  constraints: PanelConstraints[],
+  fresh: boolean[] = [],
+): number[] {
   const next = sizes.map((size, index) => {
     const c = constraints[index]!;
     return fits(c, size) ? size : Math.min(c.maxSize, Math.max(c.minSize, size));
   });
 
+  const backwards = next.map((_, index) => next.length - 1 - index);
+  const order = [
+    ...backwards.filter((index) => !fresh[index]),
+    ...backwards.filter((index) => fresh[index]),
+  ];
+
   let diff = 100 - total(next);
-  for (let index = next.length - 1; index >= 0 && Math.abs(diff) > EPSILON; index--) {
+  for (const index of order) {
+    if (Math.abs(diff) <= EPSILON) break;
     const c = constraints[index]!;
     if (isCollapsed(c, next[index]!)) continue;
 

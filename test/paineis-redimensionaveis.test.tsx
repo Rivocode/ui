@@ -11,6 +11,7 @@ import {
   type ResizablePanelHandle,
   type ResizableStorage,
 } from "../src/components/resizable";
+import { Splitter } from "../src/components/splitter";
 
 function withTheme(node: React.ReactNode, dir: "ltr" | "rtl" = "ltr") {
   return render(
@@ -250,9 +251,7 @@ test("grupo aninhado: a divisoria de dentro mexe so no grupo de dentro", () => {
   fireEvent.keyDown(handle, { key: "ArrowDown" });
   expect(inner.at(-1)).toEqual([72, 28]);
   expect(outer).toEqual([]);
-  expect(screen.getByRole("separator", { name: "Fora" }).getAttribute("aria-valuenow")).toBe(
-    "30",
-  );
+  expect(screen.getByRole("separator", { name: "Fora" }).getAttribute("aria-valuenow")).toBe("30");
 });
 
 function memory(): ResizableStorage & { data: Map<string, string> } {
@@ -390,4 +389,57 @@ test("painel e divisoria fora de um grupo montam sem quebrar, e a divisoria solt
   const handle = screen.getByRole("separator");
   expect(handle.hasAttribute("tabindex")).toBe(false);
   expect(handle.hasAttribute("aria-valuenow")).toBe(false);
+});
+
+test("o painel que volta a aparecer volta no defaultSize, e o espaco sai de quem ja estava", () => {
+  function Group({ show }: { show: boolean }) {
+    return (
+      <RivoProvider scope="local">
+        <ResizablePanelGroup>
+          <ResizablePanel id="lista" defaultSize={20}>
+            Lista
+          </ResizablePanel>
+          <ResizableHandle aria-label="Entre lista e nota" />
+          <ResizablePanel id="nota" defaultSize={50}>
+            Nota
+          </ResizablePanel>
+          {show && (
+            <>
+              <ResizableHandle aria-label="Entre nota e inspetor" />
+              <ResizablePanel id="inspetor" defaultSize={30}>
+                Inspetor
+              </ResizablePanel>
+            </>
+          )}
+        </ResizablePanelGroup>
+      </RivoProvider>
+    );
+  }
+
+  const view = render(<Group show />);
+  expect([flex("lista"), flex("nota"), flex("inspetor")]).toEqual(["20", "50", "30"]);
+
+  view.rerender(<Group show={false} />);
+  expect([flex("lista"), flex("nota")]).toEqual(["20", "80"]);
+
+  view.rerender(<Group show />);
+  expect([flex("lista"), flex("nota"), flex("inspetor")]).toEqual(["20", "50", "30"]);
+});
+
+test("o ref do grupo e do Splitter chega ao no raiz", () => {
+  const group = createRef<HTMLDivElement>();
+  const splitter = createRef<HTMLDivElement>();
+  withTheme(
+    <>
+      <ResizablePanelGroup ref={group} data-testid="grupo">
+        <ResizablePanel>A</ResizablePanel>
+        <ResizableHandle aria-label="Do grupo" />
+        <ResizablePanel>B</ResizablePanel>
+      </ResizablePanelGroup>
+      <Splitter ref={splitter} data-testid="divisor" label="Do divisor" start="C" end="D" />
+    </>,
+  );
+
+  expect(group.current).toBe(screen.getByTestId("grupo"));
+  expect(splitter.current).toBe(screen.getByTestId("divisor"));
 });

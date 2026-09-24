@@ -3,7 +3,11 @@
 import { useDirection } from "@base-ui/react/direction-provider";
 import { GripHorizontal, GripVertical } from "lucide-react";
 import {
+  Children,
+  Fragment,
   createContext,
+  isValidElement,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -12,9 +16,11 @@ import {
   useMemo,
   useRef,
   useState,
+  type ComponentProps,
   type ComponentPropsWithoutRef,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
   type Ref,
   type RefObject,
 } from "react";
@@ -38,7 +44,7 @@ export type ResizableStorage = {
   setItem: (name: string, value: string) => void;
 };
 
-export type ResizablePanelGroupProps = Omit<ComponentPropsWithoutRef<"div">, "onChange"> & {
+export type ResizablePanelGroupProps = Omit<ComponentProps<"div">, "onChange"> & {
   /** `horizontal` poe os paineis lado a lado; `vertical` empilha, e a divisoria deita. */
   orientation?: "horizontal" | "vertical";
   /** Controlado: a medida de cada painel, em porcentagem e na ordem do documento, somando 100. */
@@ -115,8 +121,16 @@ type Actions = {
   sizeOf: (key: string) => number | undefined;
 };
 
+type Estimate = {
+  sizes: number[];
+  constraints: PanelConstraints[];
+  ids: string[];
+  claim: (key: string, kind: "panel" | "handle", domId?: string) => number;
+};
+
 type GroupContextValue = {
   vertical: boolean;
+  estimate: Estimate | null;
   actions: Actions;
   sizes: number[];
   panels: string[];
@@ -128,6 +142,70 @@ const GroupContext = createContext<GroupContextValue | null>(null);
 
 const STEP = 2;
 const EMPTY: Arrangement = { panels: [], pivots: {}, sizes: [] };
+const FREE: PanelConstraints = { minSize: 0, maxSize: 100, collapsible: false, collapsedSize: 0 };
+
+function constraintsFrom(props: ResizablePanelProps): PanelConstraints {
+  return {
+    minSize: props.minSize ?? 10,
+    maxSize: props.maxSize ?? 100,
+    collapsible: props.collapsible ?? false,
+    collapsedSize: props.collapsedSize ?? 0,
+  };
+}
+
+function panelsIn(children: ReactNode): ResizablePanelProps[] | null {
+  const found: ResizablePanelProps[] = [];
+  let readable = true;
+
+  const visit = (node: ReactNode) => {
+    Children.forEach(node, (child) => {
+      if (!readable || !isValidElement(child)) return;
+      const props = child.props as { children?: ReactNode };
+      if (child.type === ResizablePanel) found.push(child.props as ResizablePanelProps);
+      else if (child.type === ResizableHandle) return;
+      else if (child.type === Fragment || typeof child.type === "string") visit(props.children);
+      else readable = false;
+    });
+  };
+
+  visit(children);
+  return readable && found.length > 0 ? found : null;
+}
+
+function estimateOf(children: ReactNode, layout: number[] | undefined): Estimate | null {
+  const found = panelsIn(children);
+  if (!found) return null;
+
+  const constraints = found.map(constraintsFrom);
+  const sizes =
+    layout && layout.length === found.length
+      ? layout
+      : initialLayout(
+          found.map((props) => props.defaultSize),
+          constraints,
+        );
+  const claimed = new Map<string, number>();
+  const ids: string[] = [];
+
+  return {
+    sizes,
+    constraints,
+    ids,
+    claim(key, kind, domId) {
+      const known = claimed.get(key);
+      if (known !== undefined) return known;
+      const at = kind === "panel" ? ids.length : ids.length - 1;
+      if (kind === "panel") ids.push(domId ?? "");
+      claimed.set(key, at);
+      return at;
+    },
+  };
+}
+
+function assignRef<T>(ref: Ref<T> | undefined, node: T | null) {
+  if (typeof ref === "function") ref(node);
+  else if (ref) ref.current = node;
+}
 
 function localStorageOrNothing(): ResizableStorage | undefined {
   try {
@@ -162,9 +240,17 @@ export function ResizablePanelGroup({
   storage,
   className,
   children,
+  ref,
   ...props
 }: ResizablePanelGroupProps) {
   const frame = useRef<HTMLDivElement>(null);
+  const setFrame = useCallback(
+    (node: HTMLDivElement | null) => {
+      frame.current = node;
+      assignRef(ref, node);
+    },
+    [ref],
+  );
   const entries = useRef(new Map<string, Entry>());
   const [version, setVersion] = useState(0);
   const [arrangement, setArrangement] = useState<Arrangement>(EMPTY);
@@ -174,6 +260,7 @@ export function ResizablePanelGroup({
 
   const controlled = layout !== undefined && layout.length === arrangement.panels.length;
   const sizes = controlled ? layout : arrangement.sizes;
+  const estimate = arrangement.panels.length === 0 ? estimateOf(children, layout) : null;
 
   const latest = useRef({ sizes, arrangement, controlled, onLayoutChange, rtl, vertical });
   const store = useRef({ autoSaveId, storage });
@@ -189,14 +276,15 @@ export function ResizablePanelGroup({
     const constraintsOf = (keys: string[]) =>
       keys.map((key) => {
         const entry = entries.current.get(key);
-        return entry?.kind === "panel"
-          ? entry.live.current.constraints
-          : { minSize: 0, maxSize: 100, collapsible: false, collapsedSize: 0 };
+        return entry?.kind === "panel" ? entry.live.current.constraints : FREE;
       });
 
     const commit = (next: number[]) => {
       const { sizes: current, controlled: isControlled } = latest.current;
-      if (next.length !== current.length || next.every((size, index) => near(size, current[index]!)))
+      if (
+        next.length !== current.length ||
+        next.every((size, index) => near(size, current[index]!))
+      )
         return;
 
       if (!isControlled) setArrangement((before) => ({ ...before, sizes: next }));
@@ -255,7 +343,13 @@ export function ResizablePanelGroup({
         for (const entry of entries.current.values()) {
           if (entry.kind !== "handle" || !entry.node.current) continue;
           const rect = entry.node.current.getBoundingClientRect();
-          handles += isVertical ? rect.height : rect.width;
+          const style = getComputedStyle(entry.node.current);
+          const margins = isVertical
+            ? [style.marginTop, style.marginBottom]
+            : [style.marginLeft, style.marginRight];
+          handles +=
+            (isVertical ? rect.height : rect.width) +
+            margins.reduce((sum, margin) => sum + (Number.parseFloat(margin) || 0), 0);
         }
 
         const span = (isVertical ? box.height : box.width) - handles;
@@ -288,7 +382,12 @@ export function ResizablePanelGroup({
         const pivot = pivotOf(key);
         if (pivot < 0) return;
 
-        const { vertical: isVertical, rtl: isRtl, sizes: current, arrangement: now } = latest.current;
+        const {
+          vertical: isVertical,
+          rtl: isRtl,
+          sizes: current,
+          arrangement: now,
+        } = latest.current;
         const constraints = constraintsOf(now.panels);
         const back = isVertical ? "ArrowUp" : isRtl ? "ArrowRight" : "ArrowLeft";
         const forward = isVertical ? "ArrowDown" : isRtl ? "ArrowLeft" : "ArrowRight";
@@ -340,7 +439,9 @@ export function ResizablePanelGroup({
   }, []);
 
   useLayoutEffect(() => {
-    const sorted = [...entries.current.values()].filter((entry) => entry.node.current).sort(byDocument);
+    const sorted = [...entries.current.values()]
+      .filter((entry) => entry.node.current)
+      .sort(byDocument);
     const panels: string[] = [];
     const pivots: Record<string, number> = {};
 
@@ -353,9 +454,7 @@ export function ResizablePanelGroup({
       const entry = entries.current.get(key);
       return entry?.kind === "panel" ? entry.live.current : undefined;
     });
-    const constraints = lives.map(
-      (live) => live?.constraints ?? { minSize: 0, maxSize: 100, collapsible: false, collapsedSize: 0 },
-    );
+    const constraints = lives.map((live) => live?.constraints ?? FREE);
     const defaults = lives.map((live) => live?.defaultSize);
     const before = latest.current.arrangement;
 
@@ -382,6 +481,7 @@ export function ResizablePanelGroup({
         : normalize(
             kept.map((size, index) => size ?? defaults[index] ?? 100 / panels.length),
             constraints,
+            kept.map((size) => size === undefined),
           );
     }
 
@@ -432,20 +532,21 @@ export function ResizablePanelGroup({
   const value = useMemo<GroupContextValue>(
     () => ({
       vertical,
+      estimate,
       actions,
       sizes,
       panels: arrangement.panels,
       pivots: arrangement.pivots,
       entries,
     }),
-    [vertical, actions, sizes, arrangement],
+    [vertical, estimate, actions, sizes, arrangement],
   );
 
   return (
     <GroupContext.Provider value={value}>
       <div
         {...props}
-        ref={frame}
+        ref={setFrame}
         data-orientation={orientation}
         data-resizing={dragging ? "" : undefined}
         className={cn(
@@ -511,8 +612,16 @@ export function ResizablePanel({
   );
 
   const index = group ? group.panels.indexOf(key) : -1;
-  const size = index >= 0 ? group!.sizes[index] : defaultSize;
+  let size: number | undefined;
+  if (index >= 0) size = group!.sizes[index];
+  else if (group?.estimate) size = group.estimate.sizes[group.estimate.claim(key, "panel", domId)];
   const collapsed = size !== undefined && isCollapsed(constraints, size);
+  const flex =
+    size !== undefined
+      ? `${size} 1 0%`
+      : defaultSize !== undefined
+        ? `0 1 ${defaultSize}%`
+        : "1 1 0%";
 
   return (
     <div
@@ -523,7 +632,7 @@ export function ResizablePanel({
       data-collapsed={collapsed ? "" : undefined}
       inert={collapsed && collapsedSize === 0 ? true : undefined}
       className={cn("min-h-0 min-w-0 overflow-auto", className)}
-      style={{ flex: size === undefined ? "1 1 0%" : `${size} 1 0%`, ...style }}
+      style={{ flex, ...style }}
     />
   );
 }
@@ -547,21 +656,28 @@ export function ResizableHandle({
 
   useLayoutEffect(() => actions?.register({ kind: "handle", key, node }), [actions, key]);
 
-  let info: { controls: string; now: number; min: number; max: number } | null = null;
+  let info: {
+    controls: string;
+    now: number;
+    min: number;
+    max: number;
+  } | null = null;
   if (group) {
-    const pivot = group.pivots[key];
-    if (pivot !== undefined && pivot >= 0 && pivot + 1 < group.panels.length) {
-      const constraints = group.panels.map((panel) => {
-        const entry = group.entries.current.get(panel);
-        return entry?.kind === "panel"
-          ? entry.live.current.constraints
-          : { minSize: 0, maxSize: 100, collapsible: false, collapsedSize: 0 };
-      });
-      const entry = group.entries.current.get(group.panels[pivot]!);
-      const bounds = boundsAt(group.sizes, constraints, pivot);
+    const early = group.panels.length === 0 ? group.estimate : null;
+    const pivot = early ? early.claim(key, "handle") : group.pivots[key];
+    const sizes = early ? early.sizes : group.sizes;
+    if (pivot !== undefined && pivot >= 0 && pivot + 1 < sizes.length) {
+      const constraints = early
+        ? early.constraints
+        : group.panels.map((panel) => {
+            const entry = group.entries.current.get(panel);
+            return entry?.kind === "panel" ? entry.live.current.constraints : FREE;
+          });
+      const entry = early ? undefined : group.entries.current.get(group.panels[pivot]!);
+      const bounds = boundsAt(sizes, constraints, pivot);
       info = {
-        controls: entry?.kind === "panel" ? entry.domId : "",
-        now: Math.round(group.sizes[pivot]!),
+        controls: early ? (early.ids[pivot] ?? "") : entry?.kind === "panel" ? entry.domId : "",
+        now: Math.round(sizes[pivot]!),
         min: Math.round(bounds.min),
         max: Math.round(bounds.max),
       };
