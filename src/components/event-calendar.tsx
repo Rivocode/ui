@@ -371,6 +371,7 @@ function OverflowChip({
       onClick={(pointer) => pointer.stopPropagation()}
       className={cn(
         "flex h-5 w-full items-center rounded-sm px-1.5 text-start text-xs font-medium",
+        "relative after:absolute after:inset-x-0 after:-inset-y-0.5",
         "text-accent-text hover:bg-accent-subtle",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
@@ -381,7 +382,7 @@ function OverflowChip({
   );
 
   return (
-    <div style={style} className={cn(style && "absolute")}>
+    <div role="listitem" style={style} className={cn(style && "absolute")}>
       <CalendarPanel
         open={open}
         onOpenChange={onOpenChange}
@@ -1023,7 +1024,7 @@ export function EventCalendar({
                       aria-hidden="true"
                       className={cn(
                         "px-1 text-xs",
-                        outside ? "text-fg-disabled" : "text-fg-muted",
+                        outside ? "text-fg-subtle" : "text-fg-muted",
                         isSameDay(day, today) && "font-medium text-accent-text",
                       )}
                     >

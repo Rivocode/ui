@@ -165,6 +165,34 @@ test("o mes desenha as semanas inteiras, e o que nao cabe na celula vira mais", 
   expect(day.getAttribute("aria-label")).toContain("5 compromissos");
 });
 
+test("o mais e item da lista do dia, tem alvo de 24 pixels, e o dia do mes vizinho passa de 4,5", () => {
+  const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
+    id: String(index),
+    title: `Nota ${index + 1}`,
+    start: at(9 + index),
+    end: at(10 + index),
+  }));
+
+  const { container } = calendar({ defaultView: "month", events: many, maxLanes: 3 });
+
+  const more = screen.getByRole("button", { name: /Mais 2 em/ });
+  const holder = more.closest("[role=listitem]")!;
+  expect(holder).not.toBeNull();
+  expect(holder.parentElement!.getAttribute("role")).toBe("list");
+
+  const tokens = more.className.split(" ");
+  expect(tokens).toContain("h-5");
+  expect(tokens).toContain("relative");
+  expect(tokens).toContain("after:absolute");
+  expect(tokens).toContain("after:-inset-y-0.5");
+
+  const numbers = [...container.querySelectorAll("[data-rc-day] > span[aria-hidden]")];
+  expect(numbers.length).toBeGreaterThanOrEqual(35);
+  const outside = numbers.filter((node) => node.className.split(" ").includes("text-fg-subtle"));
+  expect(outside.length).toBeGreaterThan(0);
+  for (const node of numbers) expect(node.className.split(" ")).not.toContain("text-fg-disabled");
+});
+
 test("o mais abre a lista daquele dia, que e a agenda dele", async () => {
   const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
     id: String(index),
