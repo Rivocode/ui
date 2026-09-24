@@ -14,7 +14,8 @@ import {
   resolveTokens,
 } from "./lib/contrast";
 import { type ThemeReport, checkThemes, reportOf, themeBlocks } from "./lib/theme-check";
-import { type CssSource, exportDtcg, readCssTree } from "./tokens/dtcg";
+import { readCssTree } from "./tokens/css-tree";
+import { type CssSource, exportDtcg } from "./tokens/dtcg";
 import { THEME_ROLES } from "./tokens/theme-roles";
 
 const HERE = dirname(fileURLToPath(import.meta.url));

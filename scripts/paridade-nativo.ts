@@ -495,6 +495,18 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega",
   },
+  PostalCodeField: {
+    state: "traduz",
+    note: "a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação",
+    page:
+      "Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e com a " +
+      "busca cancelada quando o CEP muda: a regra mora num arquivo só, compartilhado pelos " +
+      "dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` " +
+      "recebem os dígitos, sem a pontuação.\n\n" +
+      "O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo " +
+      "anúncio do leitor de tela do sistema. O \"Tentar de novo\" da falha de rede é um " +
+      "botão de verdade, com alvo de toque inteiro.",
+  },
   Menu: {
     state: "traduz",
     note: "folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo",
@@ -1200,6 +1212,22 @@ const PARITY: Record<string, Row> = {
       "ficam embaixo do texto, que é onde cabem na largura do telefone.",
   },
 
+  ActionBar: {
+    state: "traduz",
+    note: "o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset`",
+    page:
+      "Traduz, com o mesmo `count`, o mesmo `onClear` e a mesma frase no plural certo. As " +
+      "ações entram como filhas, e o texto dos botões é o do `Button` nativo.\n\n" +
+      "**Ela gruda acima da área segura de baixo.** O pacote não depende do " +
+      "`react-native-safe-area-context`, então a altura da barra do sistema entra por " +
+      "`bottomInset`: `bottomInset={useSafeAreaInsets().bottom}`. A barra fica por cima da " +
+      "lista, em `absolute`, e quem a monta deixa o respiro no fim da lista para a última " +
+      "linha não ficar embaixo dela.\n\n" +
+      "**A contagem é anunciada.** A frase sai pelo anúncio do leitor de tela do sistema, e " +
+      "a barra entra subindo e sai descendo com os tokens de movimento, sem deslize quando o " +
+      "sistema pede para reduzir movimento.",
+  },
+
   Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
 
   ToggleGroup: {
@@ -1231,6 +1259,18 @@ const PARITY: Record<string, Row> = {
       "com `triggerClassName` para o layout que os filhos exigem. Quem navega por leitor de " +
       "tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o " +
       "TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.",
+  },
+  CookieConsent: {
+    state: "nao",
+    note: "app não tem cookie; o consentimento de rastreio no celular é o aviso da plataforma, o App Tracking Transparency no iOS",
+    page:
+      "Não porta, por decisão. Aplicativo não tem cookie de navegador para pedir licença: o " +
+      "consentimento de rastreio no celular é o aviso da própria plataforma, o App Tracking " +
+      "Transparency no iOS, pedido pelo `expo-tracking-transparency`, e a declaração de dados " +
+      "na loja no Android. Um painel desenhado pela biblioteca por cima disso seria um segundo " +
+      "pedido para a mesma coisa.\n\n" +
+      "Se o app abre páginas web num `WebView`, o aviso é o da página, que roda o " +
+      "`@rivocode/ui` do web.",
   },
   Kbd: {
     state: "nao",

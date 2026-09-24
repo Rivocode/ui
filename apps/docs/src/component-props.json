@@ -107,6 +107,47 @@
       }
     ]
   },
+  "ActionBar": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "note": "Quantos itens estao selecionados."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"bar\" | \"clear\" | \"count\", string>>",
+        "required": false,
+        "note": "Classe por parte: `bar` (o painel), `count`, `actions` e `clear`."
+      },
+      {
+        "name": "finalFocus",
+        "type": "RefObject<HTMLElement | null>",
+        "required": false,
+        "note": "Para onde o foco vai quando a barra sai com ele dentro - depois do \"Limpar seleção\", ou de uma acao que zera a selecao."
+      },
+      {
+        "name": "labels",
+        "type": "{ selected?: ((count: number) => string) | undefined; clear?: string | undefined; region?: string | undefined; cleared?: string | undefined; }",
+        "required": false,
+        "note": "Os textos da barra."
+      },
+      {
+        "name": "onClear",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o \"Limpar seleção\" no fim da barra."
+      },
+      {
+        "name": "position",
+        "type": "\"fixed\" | \"sticky\"",
+        "required": false,
+        "note": "`sticky` gruda no pe da area que a contem e ocupa lugar embaixo dela enquanto esta aberta; `fixed` gruda no pe da janela, acima da area segura do celular, e nao ocupa lugar nenhum."
+      }
+    ]
+  },
   "AILabel": {
     "forwardsRoot": true,
     "props": [
@@ -9347,6 +9388,65 @@
       }
     ]
   },
+  "CookieConsent": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "onDecision",
+        "type": "(choice: CookieChoice) => void",
+        "required": true,
+        "note": "Chamado com a escolha, em qualquer um dos tres botoes."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": true,
+        "note": "Se o aviso esta na tela."
+      },
+      {
+        "name": "policyHref",
+        "type": "string",
+        "required": true,
+        "note": "O endereco da politica de privacidade."
+      },
+      {
+        "name": "categories",
+        "type": "CookieCategory[]",
+        "required": false,
+        "note": "As categorias do \"Personalizar\"."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"categories\" | \"category\" | \"description\" | \"panel\" | \"policy\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `panel`, `title`, `description`, `policy`, `categories`, `category` e `actions`."
+      },
+      {
+        "name": "defaultValue",
+        "type": "Record<string, boolean>",
+        "required": false,
+        "note": "Como cada chave do \"Personalizar\" comeca."
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O texto do aviso, antes do link da politica."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Omit<{ title: string; description: string; policy: string; acceptAll: string; rejectOptional: string; customize: string; save: string; required: string; categories: string; }, \"description\" | \"title\">>",
+        "required": false,
+        "note": "Os textos dos botoes e do link: `policy`, `acceptAll`, `rejectOptional`, `customize`, `save`, `required` (o que acompanha a categoria obrigatoria) e `categories`, o nome da lista do \"Personalizar\"."
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso."
+      }
+    ]
+  },
   "DataTable": {
     "forwardsRoot": true,
     "props": [
@@ -18029,6 +18129,70 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "PostalCodeField": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "lookup",
+        "type": "PostalCodeLookup",
+        "required": true,
+        "note": "A busca do endereco, escrita por quem usa: recebe os 8 digitos e o `signal` da busca, e devolve o endereco ou `null` quando o CEP nao existe."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"message\" | \"retry\" | \"suffix\", string>>",
+        "required": false,
+        "note": "Classe por parte: `input`, `suffix` (o giro e o visto), `message` e `retry`."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "O texto inicial, quando o campo controla o proprio estado."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<{ searching: string; found: string; notFound: string; failed: string; retry: string; }>",
+        "required": false,
+        "note": "Os textos da peca, um a um: `searching`, `found`, `notFound`, `failed` e `retry`."
+      },
+      {
+        "name": "onAddress",
+        "type": "((address: PostalAddress, postalCode: string) => void)",
+        "required": false,
+        "note": "Chamado quando a busca acha o endereco, com ele e os 8 digitos."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "((status: PostalCodeStatus) => void)",
+        "required": false,
+        "note": "Chamado a cada troca de estado da busca: `searching`, `found`, `notFound`, `failed`, `idle`."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((masked: string, digits: string) => void)",
+        "required": false,
+        "note": "Chamado a cada tecla, com o texto mascarado e os digitos."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, FieldControlState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O texto com mascara, quando quem usa controla o estado."
       }
     ]
   },

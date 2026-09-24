@@ -156,12 +156,13 @@ recusa o que conseguiu medir.
 
 ## A paridade, peça por peça
 
-**106 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 84 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**109 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 86 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 18 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
 | `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
 | `Accordion` | ✔ traduz | cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
+| `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
@@ -189,6 +190,7 @@ recusa o que conseguiu medir.
 | `Container` | ✕ não porta | o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
 | `Conversation` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida |
+| `CookieConsent` | ✕ não porta | app não tem cookie; o consentimento de rastreio no celular é o aviso da plataforma, o App Tracking Transparency no iOS |
 | `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
@@ -226,6 +228,7 @@ recusa o que conseguiu medir.
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
 | `Popconfirm` | ✔ vira `AlertDialog` | vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
+| `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |

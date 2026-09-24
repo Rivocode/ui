@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**183 divergências de assinatura em 78 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**191 divergências de assinatura em 80 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -88,6 +88,10 @@ escritos em lugar nenhum.
 | `Accordion` | — | `children` | a raiz só empilha; quem tem prop é o item |
 | `AccordionItem` | — | `title` | o cabeçalho vira `title`, no lugar do `AccordionTrigger` por filho |
 | `AccordionItem` | `value` | — | não há valor de item: quem abre e fecha é o próprio item |
+| `ActionBar` | `position` | — | não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela |
+| `ActionBar` | — | `bottomInset` | a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context` |
+| `ActionBar` | `finalFocus` | — | no toque não há foco de teclado para devolver quando a barra sai |
+| `ActionBar` | `classNames` | — | um `className` só, no painel da barra |
 | `Alert` | — | `title` | o título vira prop; no web ele é `AlertTitle` por filho |
 | `Alert` | `icon` | — | o ícone é o do tom, e não se troca |
 | `Alert` | `onDismiss` | — | não há fechar: aviso que some no toque some sem ninguém ver, e `dismissLabel` sai junto |
@@ -209,6 +213,10 @@ escritos em lugar nenhum.
 | `Popconfirm` → `AlertDialog` | `description` | `description` | vira `string` obrigatória: o modal não abre sem dizer o que se perde |
 | `Popconfirm` → `AlertDialog` | `tone` | — | o botão é sempre destrutivo, e o painel não cancela ao tocar fora |
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
+| `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
+| `PostalCodeField` | `onValueChange` | `onValueChange` | no web chega `(masked, digits)`; no nativo chegam só os dígitos |
+| `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
+| `PostalCodeField` | `classNames` | `inputClassName` | `className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem |
 | `Progress` | `format` | — | sem formatador, e sem `showValue`: a barra mostra a porcentagem |
 | `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
 | `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
@@ -265,7 +273,7 @@ escritos em lugar nenhum.
 | `TreeSelect` | `searchable` | — | sem busca na folha |
 | `TreeSelect` | — | `label` | `label` é obrigatório, e o rodapé traz a contagem do rascunho e o `Aplicar` |
 
-Fora da tabela, uma perda que se repete: **13 peças perdem `size` no nativo** — `Badge`, `Clipboard`, `DatePicker`, `DateRangePicker`, `Input`, `InputGroup`, `MaskedInput`, `NumberField`, `PasswordInput`, `SearchInput`, `TimeField`, `TimePicker` e `TreeSelect`. Alvo de toque não encolhe, e `comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.
+Fora da tabela, uma perda que se repete: **14 peças perdem `size` no nativo** — `Badge`, `Clipboard`, `DatePicker`, `DateRangePicker`, `Input`, `InputGroup`, `MaskedInput`, `NumberField`, `PasswordInput`, `PostalCodeField`, `SearchInput`, `TimeField`, `TimePicker` e `TreeSelect`. Alvo de toque não encolhe, e `comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.
 
 ## O formulário entra por outro caminho
 
@@ -368,12 +376,13 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**106 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 84 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**109 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 86 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 18 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
 | `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
 | `Accordion` | ✔ traduz | cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
+| `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
@@ -401,6 +410,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Container` | ✕ não porta | o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
 | `Conversation` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida |
+| `CookieConsent` | ✕ não porta | app não tem cookie; o consentimento de rastreio no celular é o aviso da plataforma, o App Tracking Transparency no iOS |
 | `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
@@ -438,6 +448,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
 | `Popconfirm` | ✔ vira `AlertDialog` | vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
+| `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |

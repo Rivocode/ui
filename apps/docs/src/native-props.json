@@ -39,6 +39,46 @@
       }
     ]
   },
+  "ActionBar": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "count",
+        "type": "number",
+        "required": true,
+        "note": "Quantos itens estao selecionados."
+      },
+      {
+        "name": "bottomInset",
+        "type": "number",
+        "required": false,
+        "note": "A altura da area segura de baixo, em pontos: `useSafeAreaInsets().bottom`."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "note": "As acoes do lote, depois da contagem."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "{ selected?: ((count: number) => string) | undefined; clear?: string | undefined; region?: string | undefined; cleared?: string | undefined; }",
+        "required": false,
+        "note": "Os mesmos textos do web: `selected` recebe a contagem e devolve a frase."
+      },
+      {
+        "name": "onClear",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o \"Limpar seleção\"."
+      }
+    ]
+  },
   "AILabel": {
     "entry": "native/src/ai/index.ts",
     "props": [
@@ -2463,6 +2503,74 @@
         "type": "{ show: string; hide: string; }",
         "required": false,
         "note": "O que o leitor de tela ouve no botão, antes e depois de revelar."
+      }
+    ]
+  },
+  "PostalCodeField": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "lookup",
+        "type": "PostalCodeLookup",
+        "required": true,
+        "note": "A busca do endereco, escrita por quem usa: recebe os 8 digitos e o `signal`, e devolve o endereco ou `null` quando o CEP nao existe."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(digits: string) => void",
+        "required": true,
+        "note": "Chamado a cada tecla, com os digitos."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "Os digitos, sem a pontuacao: a mascara e do campo, o dado nao a carrega."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a raiz, que embrulha o campo e o aviso."
+      },
+      {
+        "name": "font",
+        "type": "RivoFontRole",
+        "required": false,
+        "note": "A familia do provider que veste o que se digita."
+      },
+      {
+        "name": "inputClassName",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<{ searching: string; found: string; notFound: string; failed: string; retry: string; }>",
+        "required": false,
+        "note": "Os mesmos textos do web: `searching`, `found`, `notFound`, `failed` e `retry`."
+      },
+      {
+        "name": "onAddress",
+        "type": "((address: PostalAddress, postalCode: string) => void)",
+        "required": false,
+        "note": "Chamado quando a busca acha o endereco."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "((status: PostalCodeStatus) => void)",
+        "required": false,
+        "note": "Chamado a cada troca de estado da busca."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<TextInput>",
+        "required": false
       }
     ]
   },

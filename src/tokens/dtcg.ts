@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-
 import { type Srgb, readColor } from "../lib/contrast";
 
 export const DTCG_VERSION = "2025.10";
@@ -42,16 +39,6 @@ type Rule = { at: boolean; selector: string; values: Map<string, string> };
 type Entry = { path: string[]; token: DtcgToken };
 
 type Scope = { name: string; entries: Map<string, Entry> };
-
-export function readCssTree(path: string, seen = new Set<string>()): string {
-  const full = resolve(path);
-  if (seen.has(full)) return "";
-  seen.add(full);
-  return readFileSync(full, "utf8").replace(
-    /@import\s+["'](\.{1,2}\/[^"']+)["'][^;]*;/g,
-    (_, target: string) => readCssTree(resolve(dirname(full), target), seen),
-  );
-}
 
 function rules(css: string): Rule[] {
   const found = new Map<string, Rule>();

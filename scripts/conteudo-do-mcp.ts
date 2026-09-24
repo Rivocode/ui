@@ -30,7 +30,8 @@ import type {
   NativeProp,
   ParityRow,
 } from "../mcp/src/content";
-import { exportDtcg, readCssTree } from "../src/tokens/dtcg";
+import { readCssTree } from "../src/tokens/css-tree";
+import { exportDtcg } from "../src/tokens/dtcg";
 import { countAtLeast } from "./varredura";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");

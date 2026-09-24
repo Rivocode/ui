@@ -165,6 +165,8 @@ export {
 } from "./components/alert-dialog";
 export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
 export { MaskedInput, type MaskedInputProps } from "./components/masked-input";
+export { PostalCodeField, type PostalCodeFieldProps } from "./components/postal-code-field";
+export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
 export {
   applyMask,
   applyCurrencyMask,
@@ -245,6 +247,13 @@ export {
   type AlertProps,
 } from "./components/alert";
 export { Banner, bannerVariants, type BannerProps, type BannerTone } from "./components/banner";
+export {
+  CookieConsent,
+  defaultCookieCategories,
+  type CookieCategory,
+  type CookieChoice,
+  type CookieConsentProps,
+} from "./components/cookie-consent";
 export { Skeleton } from "./components/skeleton";
 export { Kbd, kbdVariants, keyName, type KbdProps } from "./components/kbd";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
@@ -339,6 +348,7 @@ export {
   ToolbarSeparator,
   type ToolbarProps,
 } from "./components/toolbar";
+export { ActionBar, type ActionBarProps } from "./components/action-bar";
 export { PreviewCard, PreviewCardContent, PreviewCardTrigger } from "./components/preview-card";
 export { CheckboxGroup, type CheckboxGroupProps } from "./components/checkbox-group";
 export { FieldsetLegend, FieldsetRoot as Fieldset } from "./components/fieldset";

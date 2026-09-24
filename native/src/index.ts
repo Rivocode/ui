@@ -2,6 +2,7 @@ export { RivoProvider, useRivo, type RivoProviderProps, type RivoNativeColors } 
 export { useRivoFonts, type RivoFontRole, type RivoFonts, type RivoResolvedFonts } from "./font";
 export { Button, type ButtonProps } from "./button";
 export { IconButton, type IconButtonProps } from "./icon-button";
+export { ActionBar, type ActionBarProps } from "./action-bar";
 export { Banner, type BannerProps } from "./banner";
 export { Carousel, type CarouselLabels, type CarouselProps } from "./carousel";
 export {
@@ -57,6 +58,8 @@ export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from 
 export { Link, type LinkProps, type LinkTone } from "./link";
 export { Textarea, type TextareaProps } from "./textarea";
 export { MaskedInput, type MaskedInputProps } from "./masked-input";
+export { PostalCodeField, type PostalCodeFieldProps } from "./postal-code-field";
+export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
 export { isValidCnpj, isValidCpf } from "./shared/tax-id";
 export { NumberField, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";

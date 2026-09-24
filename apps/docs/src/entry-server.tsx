@@ -22,6 +22,8 @@ export function pagePaths(): string[] {
     '/componentes',
     '/fundacao',
     '/demonstracao',
+    '/tema',
+    '/blocos',
     ...GUIDES.map((guide) => `/${guide.slug}`),
     ...ENTRIES.map((entry) => `/componentes/${entry.slug}`),
   ]

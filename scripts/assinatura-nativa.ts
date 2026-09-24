@@ -108,6 +108,26 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  ActionBar: {
+    rows: [
+      {
+        web: "position",
+        native: null,
+        note: "não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela",
+      },
+      {
+        web: null,
+        native: "bottomInset",
+        note: "a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context`",
+      },
+      {
+        web: "finalFocus",
+        native: null,
+        note: "no toque não há foco de teclado para devolver quando a barra sai",
+      },
+      { web: "classNames", native: null, note: "um `className` só, no painel da barra" },
+    ],
+  },
   AlertDialog: {
     rows: [
       {
@@ -686,6 +706,26 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "onValueChange",
         native: "onValueChange",
         note: "no web chega `(masked, raw)`; no nativo chega só o limpo",
+      },
+    ],
+  },
+  PostalCodeField: {
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "vira obrigatório e são só os dígitos; no web aceita o texto com máscara",
+      },
+      {
+        web: "onValueChange",
+        native: "onValueChange",
+        note: "no web chega `(masked, digits)`; no nativo chegam só os dígitos",
+      },
+      { web: "defaultValue", native: null, note: "não há estado interno: o campo é controlado" },
+      {
+        web: "classNames",
+        native: "inputClassName",
+        note: "`className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem",
       },
     ],
   },

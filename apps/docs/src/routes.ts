@@ -13,6 +13,8 @@ export type Route =
   | { kind: 'demo' }
   | { kind: 'foundation' }
   | { kind: 'catalog' }
+  | { kind: 'theme' }
+  | { kind: 'blocks' }
   | { kind: 'guide'; slug: string }
   | { kind: 'component'; slug: string }
 
@@ -39,6 +41,8 @@ export function readRoute(path = currentPath()): Route {
   if (path === '/demonstracao' || path === '/demonstracao/') return { kind: 'demo' }
 
   if (path === '/componentes' || path === '/componentes/') return { kind: 'catalog' }
+  if (path === '/tema' || path === '/tema/') return { kind: 'theme' }
+  if (path === '/blocos' || path === '/blocos/') return { kind: 'blocks' }
 
   const component = /^\/componentes\/([^/]+)\/?$/.exec(path)
   if (component) return { kind: 'component', slug: decodeURIComponent(component[1]) }
@@ -53,6 +57,8 @@ export function hrefOf(route: Route) {
   if (route.kind === 'demo') return '/demonstracao'
   if (route.kind === 'foundation') return '/fundacao'
   if (route.kind === 'catalog') return '/componentes'
+  if (route.kind === 'theme') return '/tema'
+  if (route.kind === 'blocks') return '/blocos'
   if (route.kind === 'guide') return `/${route.slug}`
   if (route.kind === 'component') return `/componentes/${route.slug}`
   return '/'

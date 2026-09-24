@@ -31,7 +31,7 @@ const PAGES = [
   { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 4000 },
   { rota: "/controles.html", name: "controles", height: 1900, alturaCelular: 3800 },
   { rota: "/dados.html", name: "dados", height: 2520, alturaCelular: 3700 },
-  { rota: "/novas.html", name: "novas", height: 9300, alturaCelular: 13000 },
+  { rota: "/novas.html", name: "novas", height: 13400, alturaCelular: 19500 },
   { rota: "/painel.html", name: "painel", height: 3000, alturaCelular: 5000 },
   { rota: "/paleta.html", name: "paleta", height: 1120, alturaCelular: 1120 },
   { rota: "/ia.html", name: "ia", height: 6400, alturaCelular: 12800 },

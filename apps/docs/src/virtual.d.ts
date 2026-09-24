@@ -17,3 +17,9 @@ declare module 'virtual:component-props' {
     () => Promise<{ default: Record<string, import('./prop-types').Piece> }>
   >
 }
+
+/** O CSS da casa inteiro, com os imports resolvidos; gerado em vite.config.ts. */
+declare module 'virtual:house-css' {
+  const css: string
+  export default css
+}

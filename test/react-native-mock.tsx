@@ -170,7 +170,18 @@ export const AccessibilityInfo = {
   get reduceMotionNow() {
     return reduceMotion;
   },
+  announceForAccessibility: (message: string) => {
+    announcements.push(message);
+  },
+  get announced(): readonly string[] {
+    return announcements;
+  },
+  clearAnnouncements: () => {
+    announcements.length = 0;
+  },
 };
+
+const announcements: string[] = [];
 
 const openedUrls: string[] = [];
 

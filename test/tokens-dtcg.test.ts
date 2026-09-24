@@ -3,7 +3,8 @@ import { existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { EXTENSION, RESOLVER, exportDtcg, readCssTree } from "../src/tokens/dtcg";
+import { readCssTree } from "../src/tokens/css-tree";
+import { EXTENSION, RESOLVER, exportDtcg } from "../src/tokens/dtcg";
 
 type Node = Record<string, unknown>;
 type Flat = Map<string, Node>;

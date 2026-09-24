@@ -7,7 +7,8 @@ import { agentFiles, readDocs, readTypes, type Piece } from './src/agent-docs'
 import { firstSentence } from './src/doc-text'
 import { withoutAutoOpen } from './src/example-source'
 import { findParent } from './src/parts'
-import { exportDtcg, readCssTree } from '../../src/tokens/dtcg.ts'
+import { readCssTree } from '../../src/tokens/css-tree.ts'
+import { exportDtcg } from '../../src/tokens/dtcg.ts'
 
 const here = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
@@ -259,6 +260,31 @@ function designTokens(): Plugin {
   }
 }
 
+/**
+ * O CSS da casa inteiro - paleta, escala, forma, contrato e os dois temas -,
+ * como uma string, para o montador de tema.
+ *
+ * O montador exporta o JSON DTCG no navegador, com a mesma `exportDtcg` que o
+ * `rivocode-ui tokens` chama, e ela precisa da casa para resolver a paleta e a
+ * escala. Ler o arquivo e coisa do Node, entao a leitura acontece aqui, no
+ * build, e so o chunk da pagina `/tema` carrega o resultado.
+ */
+function houseCss(): Plugin {
+  const VIRTUAL = 'virtual:house-css'
+  const PRESET = here('../../src/preset.css')
+
+  return {
+    name: 'rivocode-css-da-casa',
+    resolveId(id) {
+      return id === VIRTUAL ? `\0${VIRTUAL}` : undefined
+    },
+    load(id) {
+      if (id !== `\0${VIRTUAL}`) return undefined
+      return `export default ${JSON.stringify(readCssTree(PRESET))}`
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -269,6 +295,7 @@ export default defineConfig({
     propsByPage(),
     iconGallery(),
     designTokens(),
+    houseCss(),
   ],
   resolve: {
     // A biblioteca resolve para a fonte, e nao para `dist`: a doc passa a

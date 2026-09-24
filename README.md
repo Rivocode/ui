@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-106 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+109 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -133,6 +133,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `IconButton`            | botão só com ícone: `label` obrigatório vira o nome, dica opcional   |
 | `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro       |
 | `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
+| `ActionBar`             | ações em lote sobre a seleção: diz quantos, limpa, gruda no pé da área |
 
 ### Campo
 
@@ -141,6 +142,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
 | `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
 | `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, dinheiro, molde à mão |
+| `PostalCodeField`               | CEP que busca o endereço pela `lookup` que você escreve, e preenche o resto |
 | `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
 | `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
 | `Radio`, `RadioGroup`           | escolha única quando as opções cabem na tela                               |
@@ -192,6 +194,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | ------------ | ----------------------------------------------------------- |
 | `Alert`      | aviso que fica, com o papel de leitor de tela certo por tom |
 | `Banner`     | aviso de página, em faixa no topo: manutenção, fatura, teste |
+| `CookieConsent` | aviso de cookies da LGPD: recusar com o mesmo peso de aceitar, e a escolha volta para você gravar |
 | `Skeleton`   | marca de lugar enquanto o dado não chegou                   |
 | `Spinner`    | espera sem fim previsto                                     |
 | `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |

@@ -34,7 +34,7 @@ Tela nova segue o laço de [reference/method.md](reference/method.md): seis
 passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
 todos eles.
 
-1. **Confira se a peça já existe.** São 106, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 109, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em

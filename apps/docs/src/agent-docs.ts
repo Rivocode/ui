@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { indexLine, partNote } from './agent-address'
+import { BLOCK_LIST, blockMarkdown } from './block-list'
 import { dropLeadingHeading, firstSentence, splitFrontmatter } from './doc-text'
 import { sliceSource, storyNamesOf, titleFromSource } from './example-source'
 import { GUIDE_LIST } from './guide-list'
@@ -36,6 +37,7 @@ const CONVENTIONS = here('../../../.design-sync/conventions.md')
  */
 const SKILL_DIR = here('../../../.claude/skills/rivocode-ui')
 const GUIDES_DIR = here('./content')
+const BLOCKS_DIR = here('./blocks')
 
 export const SITE = 'https://ds.rivocode.com.br'
 
@@ -83,6 +85,17 @@ export function readGuides() {
   }
 
   return guides
+}
+
+/**
+ * Os blocos de pagina, com o arquivo de cada um. E o mesmo `.tsx` que roda no
+ * preview de `/blocos`, entao o markdown nunca mostra codigo que nao compila.
+ */
+function readBlocks() {
+  return BLOCK_LIST.map((block) => ({
+    block,
+    markdown: blockMarkdown(block, readFileSync(`${BLOCKS_DIR}/${block.file}.tsx`, 'utf8'), SITE),
+  }))
 }
 
 const guideMarkdown = (guide: { title: string; body: string }) =>
@@ -271,6 +284,13 @@ Depois, o documento da peça que interessa, na lista abaixo.
 
 ${guides}
 
+## Blocos de página
+
+Telas inteiras e copiáveis, montadas só com as peças daqui: comece por uma delas
+em vez de uma folha em branco.
+
+${BLOCK_LIST.map((block) => `- [${block.title}](/blocos/${block.slug}.md): ${block.summary}`).join('\n')}
+
 ${sections}
 `
 }
@@ -287,6 +307,8 @@ function fullForAgents(docs: Doc[], pages: Map<string, string>) {
   const chunks: Array<[string, string]> = [['/convencoes.md', readFileSync(CONVENTIONS, 'utf8')]]
 
   for (const [slug, guide] of readGuides()) chunks.push([`/${slug}.md`, guideMarkdown(guide)])
+
+  for (const { block, markdown } of readBlocks()) chunks.push([`/blocos/${block.slug}.md`, markdown])
 
   for (const [, items] of byFamily(pieces)) {
     for (const doc of items) {
@@ -326,6 +348,8 @@ export function agentFiles(): Map<string, string> {
   }
 
   for (const [slug, guide] of readGuides()) files.set(`${slug}.md`, guideMarkdown(guide))
+
+  for (const { block, markdown } of readBlocks()) files.set(`blocos/${block.slug}.md`, markdown)
 
   const sources = readAll(docs)
   const names = new Set(docs.map((doc) => doc.name))

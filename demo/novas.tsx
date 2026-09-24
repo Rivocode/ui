@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
+  ActionBar,
   Badge,
   Banner,
   Button,
@@ -12,6 +13,9 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  CookieConsent,
+  type Column,
+  DataTable,
   Field,
   FieldDescription,
   FieldLabel,
@@ -29,6 +33,8 @@ import {
   Link,
   parseTime,
   Popconfirm,
+  PostalCodeField,
+  type PostalAddress,
   QueryBoundary,
   RivoProvider,
   Skeleton,
@@ -76,6 +82,21 @@ const NOTES: Note[] = Array.from({ length: 2000 }, (_, index) => ({
   cliente: `Cliente ${index + 1}`,
   reason: REASONS[index % REASONS.length]!,
 }));
+
+type BatchRow = { id: string; number: string; customer: string; amount: string };
+
+const BATCH: BatchRow[] = [
+  { id: "1", number: "1042", customer: "Padaria Aurora", amount: "R$ 1.280,00" },
+  { id: "2", number: "1043", customer: "Transportes Cabo Branco", amount: "R$ 4.950,00" },
+  { id: "3", number: "1044", customer: "Clinica Sao Lucas", amount: "R$ 2.310,00" },
+  { id: "4", number: "1045", customer: "Mercado Tambau", amount: "R$ 860,00" },
+];
+
+const BATCH_COLUMNS: Column<BatchRow>[] = [
+  { key: "number", header: "Nota" },
+  { key: "customer", header: "Cliente" },
+  { key: "amount", header: "Valor", align: "right" },
+];
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -613,6 +634,126 @@ function IconButtons() {
   );
 }
 
+function Batch() {
+  const [selected, setSelected] = useState<string[]>(["2", "3"]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <DataTable
+        data={BATCH}
+        columns={BATCH_COLUMNS}
+        rowKey={(row) => row.id}
+        selectable
+        value={selected}
+        onValueChange={setSelected}
+      />
+      <ActionBar count={selected.length} onClear={() => setSelected([])}>
+        <Button size="sm" variant="secondary">
+          <Download size={14} aria-hidden="true" />
+          Exportar XML
+        </Button>
+        <Button size="sm" variant="destructive">
+          <Trash2 size={14} aria-hidden="true" />
+          Cancelar notas
+        </Button>
+      </ActionBar>
+    </div>
+  );
+}
+
+const TAMBAU: PostalAddress = {
+  street: "Avenida Epitacio Pessoa",
+  district: "Tambau",
+  city: "Joao Pessoa",
+  state: "PB",
+};
+
+const NEVER = () => new Promise<PostalAddress | null>(() => {});
+
+function typeInto(root: HTMLElement | null, text: string) {
+  const input = root?.querySelector("input");
+  if (!input) return;
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  setter?.call(input, text);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function Typed({
+  label,
+  text,
+  lookup,
+}: {
+  label: string;
+  text: string;
+  lookup: (postalCode: string) => Promise<PostalAddress | null>;
+}) {
+  const box = useRef<HTMLDivElement>(null);
+  const [address, setAddress] = useState<PostalAddress | null>(null);
+
+  useEffect(() => typeInto(box.current, text), [text]);
+
+  return (
+    <div ref={box}>
+      <Field>
+        <FieldLabel>{label}</FieldLabel>
+        <PostalCodeField lookup={lookup} onAddress={setAddress} />
+        {address && (
+          <FieldDescription>
+            {address.street}, {address.district}, {address.city} - {address.state}
+          </FieldDescription>
+        )}
+      </Field>
+    </div>
+  );
+}
+
+function PostalCodes() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <Typed label="Buscando" text="58038000" lookup={NEVER} />
+      <Typed label="Achou" text="58038000" lookup={async () => TAMBAU} />
+      <Typed label="Nao achou" text="99999999" lookup={async () => null} />
+      <Typed
+        label="Falha de rede"
+        text="01310100"
+        lookup={async () => {
+          throw new Error("offline");
+        }}
+      />
+    </div>
+  );
+}
+
+function Consent({ customize }: { customize?: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!customize) return;
+    const toggle = [...(box.current?.querySelectorAll("button") ?? [])].find(
+      (button) => button.getAttribute("aria-expanded") === "false",
+    );
+    toggle?.click();
+  }, [customize]);
+
+  return (
+    <div
+      ref={box}
+      className="relative h-[44rem] overflow-hidden rounded-lg border border-dashed border-border sm:h-[34rem]"
+    >
+      <CookieConsent open policyHref="#privacidade" onDecision={() => {}} className="absolute" />
+    </div>
+  );
+}
+
+function Consents() {
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      <Consent />
+      <Consent customize />
+    </div>
+  );
+}
+
 function Banners() {
   return (
     <div className="flex flex-col gap-3">
@@ -737,6 +878,18 @@ function Sample({
 
         <Block title="ImageViewer">
           <ImageViewer images={PHOTOS} className="max-w-xl" />
+        </Block>
+
+        <Block title="ActionBar">
+          <Batch />
+        </Block>
+
+        <Block title="PostalCodeField">
+          <PostalCodes />
+        </Block>
+
+        <Block title="CookieConsent">
+          <Consents />
         </Block>
 
         <Block title="Banner">

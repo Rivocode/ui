@@ -1,5 +1,5 @@
 import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
-import { BookOpen, Bot, LayoutGrid, Menu, Search } from 'lucide-react'
+import { BookOpen, Bot, Blocks, LayoutGrid, Menu, Palette, Search } from 'lucide-react'
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { ENTRIES, FAMILIES, entriesOfFamily, preloadPage } from '@/catalog'
 import { GUIDES } from '@/guides'
@@ -31,6 +31,8 @@ const FoundationPage = lazy(() =>
   import('@/pages/foundation').then((mod) => ({ default: mod.FoundationPage })),
 )
 const GuidePage = lazy(() => import('@/pages/guide').then((mod) => ({ default: mod.GuidePage })))
+const ThemePage = lazy(() => import('@/pages/theme').then((mod) => ({ default: mod.ThemePage })))
+const BlocksPage = lazy(() => import('@/pages/blocks').then((mod) => ({ default: mod.BlocksPage })))
 
 /**
  * O lugar da pagina enquanto os pedacos dela chegam.
@@ -254,7 +256,10 @@ export function App() {
   if (route.kind === 'component') preloadPage(route.slug)
   // As duas usam a janela inteira: 256px de lista de nomes ao lado de uma
   // pagina que ja e uma lista de nomes nao compra nada.
-  const fullWidth = route.kind === 'home' || route.kind === 'demo'
+  // O montador e os blocos tambem: os dois mostram telas inteiras lado a lado,
+  // e a coluna de leitura de 768px as espremeria.
+  const fullWidth =
+    route.kind === 'home' || route.kind === 'demo' || route.kind === 'theme' || route.kind === 'blocks'
 
   return (
     <RivoProvider theme="rivocode-dark" density="comfortable">
@@ -333,6 +338,32 @@ export function App() {
                 <span className="hidden sm:inline">documentação</span>
               </a>
 
+              {/* As duas ferramentas ganham porta propria no cabecalho: quem
+                  chega para vestir um cliente ou montar uma tela nao passa pela
+                  lista de pecas. Mesmo desenho das fichas vizinhas, e o rotulo
+                  repete a palavra visivel pelo mesmo motivo delas. */}
+              <a
+                aria-label="tema"
+                {...linkTo({ kind: 'theme' }, navigate)}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
+                  route.kind === 'theme' ? 'border-accent text-fg' : 'border-border text-fg-subtle'
+                }`}
+              >
+                <Palette size={13} />
+                <span className="hidden md:inline">tema</span>
+              </a>
+
+              <a
+                aria-label="blocos"
+                {...linkTo({ kind: 'blocks' }, navigate)}
+                className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1.5 sm:px-2.5 font-mono text-xs transition-colors hover:border-accent hover:text-fg ${
+                  route.kind === 'blocks' ? 'border-accent text-fg' : 'border-border text-fg-subtle'
+                }`}
+              >
+                <Blocks size={13} />
+                <span className="hidden md:inline">blocos</span>
+              </a>
+
               <a
                 aria-label="demonstração"
                 {...linkTo({ kind: 'demo' }, navigate)}
@@ -366,9 +397,11 @@ export function App() {
             {route.kind === 'home' ? (
               <Home navigate={navigate} />
             ) : (
-              <PageBoundary>
+              <PageBoundary key={route.kind}>
                 <Suspense fallback={<PageFallback />}>
-                  <DemoPage />
+                  {route.kind === 'demo' && <DemoPage />}
+                  {route.kind === 'theme' && <ThemePage />}
+                  {route.kind === 'blocks' && <BlocksPage navigate={navigate} />}
                 </Suspense>
               </PageBoundary>
             )}

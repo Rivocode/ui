@@ -13,7 +13,6 @@ import {
   type NativeSyntheticEvent,
 } from "react-native";
 
-import { cn } from "./cn";
 import { ChevronGlyph, CrossGlyph, PlusGlyph } from "./glyph";
 import { Grid } from "./grid";
 import { IconButton } from "./icon-button";
