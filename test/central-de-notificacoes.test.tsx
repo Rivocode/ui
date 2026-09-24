@@ -1,6 +1,6 @@
 import { expect, mock, test } from "bun:test";
-import { fireEvent, render, screen, within } from "@testing-library/react";
-import { useState } from "react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { useState, type ReactNode } from "react";
 
 import {
   NotificationCenter,
@@ -282,4 +282,100 @@ test("na mesa o painel e o popover ancorado, na largura fixa", () => {
   const tokens = screen.getByRole("dialog").className.split(" ");
   expect(tokens).not.toContain("rounded-t-xl");
   expect(tokens).toContain("sm:w-[24rem]");
+});
+
+function Marking(props: Partial<NotificationCenterProps> & { initial?: NotificationItem[] }) {
+  const { initial = ITEMS, ...rest } = props;
+  const [items, setItems] = useState(initial);
+  return (
+    <RivoProvider scope="local">
+      <NotificationCenter
+        items={items}
+        now={NOW}
+        onMarkRead={(id) =>
+          setItems((all) => all.map((item) => (item.id === id ? { ...item, read: true } : item)))
+        }
+        onMarkAllRead={() => setItems((all) => all.map((item) => ({ ...item, read: true })))}
+        {...rest}
+      />
+    </RivoProvider>
+  );
+}
+
+const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+
+const focused = () => {
+  const active = document.activeElement as HTMLElement | null;
+  if (!active) return "nada";
+  const name = active.getAttribute("aria-label") ?? active.textContent?.trim().slice(0, 40);
+  return `${active.tagName.toLowerCase()}:${name}`;
+};
+
+async function show(node: ReactNode) {
+  render(node);
+  openPanel();
+  await settle();
+}
+
+async function markWithKeyboard(button: HTMLElement) {
+  button.focus();
+  act(() => {
+    fireEvent.click(button);
+  });
+  await settle();
+}
+
+test("marcar como lida uma linha sem link leva o foco ao proximo marcar como lida", async () => {
+  await show(<Marking />);
+  const [first] = screen.getAllByRole("button", { name: "Marcar como lida" });
+  await markWithKeyboard(first!);
+
+  const rest = screen.getAllByRole("button", { name: "Marcar como lida" });
+  expect(rest).toHaveLength(1);
+  expect(focused()).toBe("button:Marcar como lida");
+  expect(document.activeElement === rest[0]).toBe(true);
+});
+
+test("marcar como lida uma linha com link leva o foco ao link da mesma linha", async () => {
+  await show(<Marking />);
+  const [, second] = screen.getAllByRole("button", { name: "Marcar como lida" });
+  await markWithKeyboard(second!);
+
+  expect(focused()).toStartWith("a:Certificado vence em 5 dias");
+});
+
+test("no filtro Nao lidas a linha marcada some, e o foco vai ao proximo marcar como lida", async () => {
+  await show(<Marking defaultFilter="unread" onItemClick={() => {}} />);
+  const [first] = screen.getAllByRole("button", { name: "Marcar como lida" });
+  await markWithKeyboard(first!);
+
+  expect(screen.getAllByRole("listitem")).toHaveLength(1);
+  expect(focused()).toBe("button:Marcar como lida");
+});
+
+test("marcar a ultima nao lida sem link leva o foco ao filtro, e nao a moldura", async () => {
+  await show(<Marking initial={[ITEMS[0]!, ITEMS[2]!]} />);
+  await markWithKeyboard(screen.getByRole("button", { name: "Marcar como lida" }));
+
+  expect(focused()).toBe("button:Todas");
+});
+
+test("marcar todas desabilita o botao focado e leva o foco ao filtro", async () => {
+  await show(<Marking />);
+  const all = screen.getByRole("button", { name: "Marcar todas como lidas" }) as HTMLButtonElement;
+  await markWithKeyboard(all);
+
+  expect(all.disabled).toBe(true);
+  expect(focused()).toBe("button:Todas");
+});
+
+test("o marcar todas quebra a linha em vez de vazar do painel com texto longo", () => {
+  center({ onMarkAllRead: () => {} });
+  openPanel();
+  const tokens = screen
+    .getByRole("button", { name: "Marcar todas como lidas" })
+    .className.split(" ");
+  expect(tokens).toContain("whitespace-normal");
+  expect(tokens).toContain("h-auto");
+  expect(tokens).not.toContain("whitespace-nowrap");
 });

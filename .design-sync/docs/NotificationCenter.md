@@ -57,7 +57,13 @@ que há 140 não lidas e a página só trouxe 20.
   se ela não estava lida, `onMarkRead` junto, e fecha o painel.
 - `onMarkRead` liga o botão de marcar em cada não lida, sem abrir.
 - `onMarkAllRead` liga o "Marcar todas como lidas" no topo, que fica
-  desabilitado quando não há o que marcar.
+  desabilitado quando não há o que marcar. Texto longo nele quebra a linha, e
+  não vaza do painel com a tela ampliada.
+- **Marcar não derruba o foco.** O botão de marcar some quando a notificação
+  vira lida, e o foco vai para o link ou o botão da mesma linha; sem eles, para
+  o próximo "Marcar como lida"; sem nenhum, para o filtro. O "Marcar todas"
+  desabilita com o foco nele, e o foco vai para o filtro. Quem navega pelo
+  teclado continua dentro do painel, e não volta ao começo da página.
 - O filtro "Todas" e "Não lidas" filtra `items` sozinho. `filter` e
   `onFilterChange` controlam, para quem prefere buscar as não lidas no servidor.
 

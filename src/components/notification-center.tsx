@@ -1,7 +1,14 @@
 "use client";
 
 import { Bell, BellOff, Check, CheckCheck } from "lucide-react";
-import { useId, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import {
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
@@ -148,6 +155,47 @@ export function NotificationCenter({
     onFilterChange?.(next);
   }
 
+  const listRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const markAllRef = useRef<HTMLButtonElement>(null);
+
+  function focusFilter() {
+    const group = filtersRef.current;
+    const toggle =
+      group?.querySelector<HTMLElement>("[aria-pressed='true']") ??
+      group?.querySelector<HTMLElement>("button");
+    toggle?.focus();
+  }
+
+  function markRead(item: NotificationItem) {
+    const rows = new Map(
+      [...(listRef.current?.querySelectorAll<HTMLElement>("[data-notification]") ?? [])].map(
+        (row) => [row.dataset.notification, row],
+      ),
+    );
+    const order = visible.map((entry) => entry.id);
+    const index = order.indexOf(item.id);
+    const stays = active === "all";
+    const own = stays
+      ? rows.get(item.id)?.querySelector<HTMLElement>("[data-notification-body]")
+      : null;
+    const neighbors = [...order.slice(index + 1), ...order.slice(0, index).reverse()];
+    const next =
+      own ??
+      neighbors
+        .map((id) => rows.get(id)?.querySelector<HTMLElement>("[data-notification-mark]"))
+        .find(Boolean);
+    if (next) next.focus();
+    else focusFilter();
+    onMarkRead?.(item.id);
+  }
+
+  const markAllOff = unread === 0 || isLoading;
+  useLayoutEffect(() => {
+    const node = markAllRef.current;
+    if (markAllOff && node && node === document.activeElement) focusFilter();
+  }, [markAllOff]);
+
   function choose(item: NotificationItem) {
     onItemClick?.(item);
     if (!item.read) onMarkRead?.(item.id);
@@ -217,6 +265,7 @@ export function NotificationCenter({
         return (
           <li
             key={item.id}
+            data-notification={item.id}
             data-read={item.read ? "" : undefined}
             className={cn(
               "flex items-start gap-3 border-b border-border px-4 py-3 last:border-b-0",
@@ -235,11 +284,21 @@ export function NotificationCenter({
             </span>
 
             {item.href !== undefined ? (
-              <a href={item.href} onClick={() => choose(item)} className={bodyClass}>
+              <a
+                href={item.href}
+                data-notification-body=""
+                onClick={() => choose(item)}
+                className={bodyClass}
+              >
                 {body}
               </a>
             ) : onItemClick ? (
-              <button type="button" onClick={() => choose(item)} className={bodyClass}>
+              <button
+                type="button"
+                data-notification-body=""
+                onClick={() => choose(item)}
+                className={bodyClass}
+              >
                 {body}
               </button>
             ) : (
@@ -253,7 +312,8 @@ export function NotificationCenter({
                 size="sm"
                 tooltip
                 tooltipSide="left"
-                onClick={() => onMarkRead(item.id)}
+                data-notification-mark=""
+                onClick={() => markRead(item)}
                 className="-mt-1 -mr-2"
               >
                 <Check />
@@ -282,17 +342,21 @@ export function NotificationCenter({
               classNames?.header,
             )}
           >
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <p id={titleId} className="font-display text-base text-fg">
                 {text.title}
               </p>
               {onMarkAllRead && (
                 <Button
+                  ref={markAllRef}
                   variant="ghost"
                   size="sm"
-                  disabled={unread === 0 || isLoading}
+                  disabled={markAllOff}
                   onClick={onMarkAllRead}
-                  className="-mr-2"
+                  className={cn(
+                    "-mr-2 h-auto min-h-[var(--rc-control-sm)] min-w-0 shrink py-1",
+                    "text-left whitespace-normal",
+                  )}
                 >
                   <CheckCheck aria-hidden="true" />
                   {text.markAllRead}
@@ -300,6 +364,7 @@ export function NotificationCenter({
               )}
             </div>
             <ToggleGroup
+              ref={filtersRef}
               aria-label={text.filter}
               value={[active]}
               onValueChange={(value: unknown[]) => {
@@ -318,7 +383,12 @@ export function NotificationCenter({
 
           <LoadingAnnouncement loading={isLoading} />
 
-          <div className="max-h-[min(28rem,60dvh)] overflow-y-auto overscroll-contain">{list}</div>
+          <div
+            ref={listRef}
+            className="max-h-[min(28rem,60dvh)] overflow-y-auto overscroll-contain"
+          >
+            {list}
+          </div>
 
           {hasMore && onLoadMore && !isLoading && (
             <div className={cn("border-t border-border p-2", classNames?.footer)}>
