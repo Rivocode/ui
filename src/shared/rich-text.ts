@@ -164,11 +164,25 @@ const IMPLIED_CLOSE: Record<string, string[]> = {
   div: ["p"],
 };
 
+const MAX_DEPTH = 64;
+
+const CLOSING = /<\/([a-z][a-z0-9:-]*)[^<>]*>/iy;
+
+const OPENING = /<([a-z][a-z0-9:-]*)((?:[^<>"']|"[^"]*"|'[^']*')*)>/iy;
+
+const RAW_END = new Map([...RAW].map((tag) => [tag, new RegExp(`</${tag}`, "gi")]));
+
 function treeOf(html: string): Piece[] {
   const root: Tag = { tag: "#root", attrs: {}, children: [] };
   const stack: Tag[] = [root];
   const top = () => stack[stack.length - 1]!;
   let at = 0;
+  let nextGt = html.indexOf(">");
+
+  const gtFrom = (from: number) => {
+    if (nextGt !== -1 && nextGt < from) nextGt = html.indexOf(">", from);
+    return nextGt;
+  };
 
   const close = (tag: string) => {
     for (let index = stack.length - 1; index > 0; index -= 1) {
@@ -193,17 +207,20 @@ function treeOf(html: string): Piece[] {
       continue;
     }
 
-    const closing = /^<\/([a-z][a-z0-9:-]*)[^>]*>/i.exec(html.slice(open));
+    CLOSING.lastIndex = open;
+    const closing = CLOSING.exec(html);
     if (closing) {
       close(closing[1]!.toLowerCase());
       at = open + closing[0].length;
       continue;
     }
 
-    const opening = /^<([a-z][a-z0-9:-]*)((?:[^>"']|"[^"]*"|'[^']*')*)>/i.exec(html.slice(open));
+    OPENING.lastIndex = open;
+    const opening = OPENING.exec(html);
     if (!opening) {
-      if (/^<[!?]/.test(html.slice(open, open + 2))) {
-        const end = html.indexOf(">", open);
+      const mark = html[open + 1];
+      if (mark === "!" || mark === "?") {
+        const end = gtFrom(open);
         at = end === -1 ? html.length : end + 1;
         continue;
       }
@@ -216,10 +233,12 @@ function treeOf(html: string): Piece[] {
     const body = opening[2] ?? "";
     at = open + opening[0].length;
 
-    if (RAW.has(tag)) {
-      const end = html.toLowerCase().indexOf(`</${tag}`, at);
-      if (end === -1) break;
-      const after = html.indexOf(">", end);
+    const rawEnd = RAW_END.get(tag);
+    if (rawEnd) {
+      rawEnd.lastIndex = at;
+      const end = rawEnd.exec(html);
+      if (!end) break;
+      const after = gtFrom(end.index);
       at = after === -1 ? html.length : after + 1;
       continue;
     }
@@ -230,7 +249,9 @@ function treeOf(html: string): Piece[] {
 
     const node: Tag = { tag, attrs: attributesOf(body), children: [] };
     top().children.push(node);
-    if (!VOID.has(tag) && !body.trimEnd().endsWith("/")) stack.push(node);
+    if (!VOID.has(tag) && !body.trimEnd().endsWith("/") && stack.length <= MAX_DEPTH) {
+      stack.push(node);
+    }
   }
 
   return root.children;
@@ -246,6 +267,8 @@ export function safeHref(raw: unknown): string | undefined {
       return code > 0x20 && (code < 0x7f || code > 0x9f);
     })
     .join("");
+  if (/^\/\/[^/\\]/.test(bare)) return `https:${bare}`;
+  if (/^(?:\\|\/\\|\/\/)/.test(bare)) return undefined;
   const scheme = /^([a-z][a-z0-9+.-]*):/i.exec(bare);
   if (!scheme) return /^[/#?.]/.test(bare) || !bare.includes(":") ? href : undefined;
   return ["http", "https", "mailto", "tel"].includes(scheme[1]!.toLowerCase()) ? href : undefined;
@@ -255,7 +278,7 @@ export function normalizeLinkInput(raw: string): string | undefined {
   const text = raw.trim();
   if (!text || /\s/.test(text)) return undefined;
   if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return safeHref(text);
-  if (/^[/#?]/.test(text)) return text;
+  if (/^[/\\#?]/.test(text)) return safeHref(text);
   if (/^[^@/]+@[^@/]+\.[^@/]+$/.test(text)) return `mailto:${text}`;
   if (/^[^./][^/]*\.[a-z]{2,}(?:[/:?#]|$)/i.test(text)) return `https://${text}`;
   return undefined;
@@ -506,7 +529,28 @@ const MARK_STYLE: Record<string, RichTextStyle> = {
   code: "code",
 };
 
-function inlineOfJson(nodes: RichTextJson[] | undefined, into: RichTextInline[]) {
+function flatText(nodes: RichTextJson[] | undefined): string {
+  const pending = Array.isArray(nodes) ? [...nodes].reverse() : [];
+  let text = "";
+  while (pending.length > 0) {
+    const node = pending.pop()!;
+    if (typeof node.text === "string") text += node.text;
+    else if (node.type === "hardBreak") text += "\n";
+    else if (Array.isArray(node.content)) {
+      for (let index = node.content.length - 1; index >= 0; index -= 1) {
+        pending.push(node.content[index]!);
+      }
+    }
+  }
+  return text;
+}
+
+function inlineOfJson(nodes: RichTextJson[] | undefined, into: RichTextInline[], depth = 0) {
+  if (depth > MAX_DEPTH) {
+    const text = flatText(nodes);
+    if (text) into.push({ kind: "text", text, styles: [] });
+    return;
+  }
   for (const node of nodes ?? []) {
     if (node.type === "hardBreak") {
       into.push({ kind: "hardBreak" });
@@ -525,18 +569,22 @@ function inlineOfJson(nodes: RichTextJson[] | undefined, into: RichTextInline[])
       );
       continue;
     }
-    inlineOfJson(node.content, into);
+    inlineOfJson(node.content, into, depth + 1);
   }
 }
 
-function blocksOfJson(nodes: RichTextJson[] | undefined): RichTextBlock[] {
+function blocksOfJson(nodes: RichTextJson[] | undefined, depth = 0): RichTextBlock[] {
+  if (depth > MAX_DEPTH) {
+    const text = flatText(nodes);
+    return text.trim() ? [{ kind: "paragraph", inline: [{ kind: "text", text, styles: [] }] }] : [];
+  }
   const blocks: RichTextBlock[] = [];
   let pending: RichTextJson[] = [];
 
   const flush = () => {
     if (pending.length === 0) return;
     const runs: RichTextInline[] = [];
-    inlineOfJson(pending, runs);
+    inlineOfJson(pending, runs, depth);
     pending = [];
     if (runs.length > 0) blocks.push({ kind: "paragraph", inline: runs });
   };
@@ -550,11 +598,11 @@ function blocksOfJson(nodes: RichTextJson[] | undefined): RichTextBlock[] {
 
     if (node.type === "paragraph") {
       const runs: RichTextInline[] = [];
-      inlineOfJson(node.content, runs);
+      inlineOfJson(node.content, runs, depth + 1);
       blocks.push({ kind: "paragraph", inline: runs });
     } else if (node.type === "heading") {
       const runs: RichTextInline[] = [];
-      inlineOfJson(node.content, runs);
+      inlineOfJson(node.content, runs, depth + 1);
       const level = Number(node.attrs?.level);
       blocks.push(
         level === 2 || level === 3
@@ -563,7 +611,9 @@ function blocksOfJson(nodes: RichTextJson[] | undefined): RichTextBlock[] {
       );
     } else if (node.type === "bulletList" || node.type === "orderedList") {
       const items = (node.content ?? []).map((item) =>
-        item.type === "listItem" ? blocksOfJson(item.content) : blocksOfJson([item]),
+        item.type === "listItem"
+          ? blocksOfJson(item.content, depth + 1)
+          : blocksOfJson([item], depth + 1),
       );
       if (node.type === "bulletList") blocks.push({ kind: "bulletList", items });
       else {
@@ -571,10 +621,10 @@ function blocksOfJson(nodes: RichTextJson[] | undefined): RichTextBlock[] {
         blocks.push({ kind: "orderedList", start: Number.isFinite(start) ? start : 1, items });
       }
     } else if (node.type === "blockquote") {
-      blocks.push({ kind: "blockquote", blocks: blocksOfJson(node.content) });
+      blocks.push({ kind: "blockquote", blocks: blocksOfJson(node.content, depth + 1) });
     } else if (node.type === "codeBlock") {
       const runs: RichTextInline[] = [];
-      inlineOfJson(node.content, runs);
+      inlineOfJson(node.content, runs, depth + 1);
       blocks.push({
         kind: "codeBlock",
         text: runs.map((run) => (run.kind === "text" ? run.text : "\n")).join(""),
@@ -582,7 +632,7 @@ function blocksOfJson(nodes: RichTextJson[] | undefined): RichTextBlock[] {
     } else if (node.type === "horizontalRule") {
       blocks.push({ kind: "horizontalRule" });
     } else {
-      blocks.push(...blocksOfJson(node.content));
+      blocks.push(...blocksOfJson(node.content, depth + 1));
     }
   }
 

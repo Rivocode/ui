@@ -10,6 +10,7 @@ import {
   parseRichHtml,
   richTextBlocks,
   safeHref,
+  type RichTextJson,
 } from "../src/shared/rich-text";
 
 const SAVED =
@@ -230,5 +231,78 @@ describe("o endereco de link", () => {
     expect(normalizeLinkInput("javascript:alert(1)")).toBeUndefined();
     expect(normalizeLinkInput("nota fiscal")).toBeUndefined();
     expect(normalizeLinkInput("")).toBeUndefined();
+  });
+});
+
+describe("o leitor aguenta conteudo hostil", () => {
+  const timed = (html: string) => {
+    const start = performance.now();
+    parseRichHtml(html);
+    return performance.now() - start;
+  };
+
+  test("abertura de tag sem fechar nao vira custo quadratico", () => {
+    expect(timed("<a".repeat(20000))).toBeLessThan(1000);
+    expect(timed("</a".repeat(20000))).toBeLessThan(1000);
+    expect(timed("<!".repeat(20000))).toBeLessThan(1000);
+    expect(timed("<?".repeat(20000))).toBeLessThan(1000);
+    expect(timed('<a title="x'.repeat(8000))).toBeLessThan(1000);
+    expect(timed("<a\"'".repeat(10000))).toBeLessThan(1000);
+    expect(timed("<script>".repeat(10000))).toBeLessThan(1000);
+  });
+
+  test("aninhamento fundo nao estoura a pilha, e o texto de dentro chega", () => {
+    const bold = parseRichHtml(`${"<b>".repeat(18000)}x`);
+    expect(bold).toEqual([
+      { kind: "paragraph", inline: [{ kind: "text", text: "x", styles: ["bold"] }] },
+    ]);
+
+    for (const open of ["<div>", "<ul><li>", "<blockquote>", "<span>", "<a href='/x'>"]) {
+      const blocks = parseRichHtml(`${open.repeat(18000)}fim`);
+      expect(JSON.stringify(blocks)).toContain('"text":"fim"');
+    }
+  });
+
+  test("o JSON fundo tambem nao estoura a pilha, e o texto de dentro chega", () => {
+    let node: RichTextJson = { type: "text", text: "fim" };
+    for (let level = 0; level < 18000; level += 1) {
+      node = { type: "bulletList", content: [{ type: "listItem", content: [node] }] };
+    }
+    expect(JSON.stringify(richTextBlocks({ type: "doc", content: [node] }))).toContain(
+      '"text":"fim"',
+    );
+  });
+
+  test("a maiuscula que muda de tamanho ao baixar a caixa nao desloca o fim do script", () => {
+    expect(parseRichHtml(`<p>${"İ".repeat(20)}</p><script>x</script><p>depois</p>`)).toEqual([
+      { kind: "paragraph", inline: [{ kind: "text", text: "İ".repeat(20), styles: [] }] },
+      { kind: "paragraph", inline: [{ kind: "text", text: "depois", styles: [] }] },
+    ]);
+  });
+});
+
+describe("o endereco que parece relativo e sai do site", () => {
+  test("barra dupla vira https, e barra invertida no comeco e recusada", () => {
+    expect(safeHref("//evil.example/x")).toBe("https://evil.example/x");
+    expect(safeHref("/\t/evil.example")).toBe("https://evil.example");
+    expect(safeHref("/\\evil.example")).toBeUndefined();
+    expect(safeHref("\\\\evil.example")).toBeUndefined();
+    expect(safeHref("\\evil.example")).toBeUndefined();
+    expect(safeHref("/notas/42")).toBe("/notas/42");
+  });
+
+  test("no HTML salvo, o link de barra dupla nao passa por relativo", () => {
+    const hrefs = (html: string) =>
+      JSON.stringify(parseRichHtml(html)).match(/"href":"[^"]*"/g) ?? [];
+    expect(hrefs('<a href="//evil.example/x">x</a>')).toEqual(['"href":"https://evil.example/x"']);
+    expect(hrefs('<a href="/\\evil.example">x</a>')).toEqual([]);
+    expect(hrefs('<a href="\\\\evil.example">x</a>')).toEqual([]);
+  });
+
+  test("o que se digita no painel com barra dupla sai como externo", () => {
+    expect(normalizeLinkInput("//evil.com")).toBe("https://evil.com");
+    expect(normalizeLinkInput("/\\evil.com")).toBeUndefined();
+    expect(normalizeLinkInput("\\\\evil.com")).toBeUndefined();
+    expect(normalizeLinkInput("/notas")).toBe("/notas");
   });
 });
