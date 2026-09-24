@@ -327,7 +327,8 @@ export function Kanban<Item>({
         {...props}
         ref={root}
         className={cn(
-          "flex min-w-0 snap-x snap-mandatory items-start gap-3 overflow-x-auto pb-2 font-sans",
+          "flex min-w-0 snap-x snap-mandatory scroll-px-1 items-start gap-3 overflow-x-auto",
+          "px-1 pt-1 pb-2 font-sans",
           "sm:snap-none",
           className,
         )}
@@ -410,7 +411,7 @@ function KanbanLane<Item>({
       data-over-limit={over || undefined}
       data-target={isTarget || undefined}
       className={cn(
-        "flex w-[85%] max-w-[20rem] shrink-0 snap-start flex-col rounded-lg border border-border",
+        "relative flex w-[85%] max-w-[20rem] shrink-0 snap-start flex-col rounded-lg border border-border",
         "bg-surface sm:w-72",
         "transition-shadow duration-[var(--rc-duration-fast)] ease-rc",
         isTarget && "ring-2 ring-ring",
@@ -423,7 +424,14 @@ function KanbanLane<Item>({
           classNames?.header,
         )}
       >
-        <h3 id={titleId} className={cn("min-w-0 flex-1 truncate text-sm font-semibold text-fg", classNames?.title)}>
+        <h3
+          id={titleId}
+          title={column.title}
+          className={cn(
+            "line-clamp-2 min-w-0 flex-1 text-sm font-semibold break-words text-fg",
+            classNames?.title,
+          )}
+        >
           {column.title}
         </h3>
         <Badge
@@ -503,24 +511,26 @@ function KanbanCard({
 
   return (
     <li
-      {...handle}
-      ref={(node) => {
-        sortable.setNodeRef(node);
-        activator(node);
-      }}
+      ref={sortable.setNodeRef}
       style={style}
       data-dragging={sortable.isDragging || undefined}
-      className={cn(
-        "rounded-md border border-border bg-surface-raised p-3 text-sm text-fg select-none",
-        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        disabled ? "cursor-default" : "cursor-grab",
-        sortable.transition && SLIDING,
-        sortable.isDragging && "border-dashed border-border-strong bg-surface shadow-none",
-        className,
-      )}
+      className={cn("list-none", sortable.transition && SLIDING)}
     >
-      <div className={cn(sortable.isDragging && "invisible")}>
-        {children({ isDragging: sortable.isDragging })}
+      <div
+        {...handle}
+        ref={activator}
+        data-dragging={sortable.isDragging || undefined}
+        className={cn(
+          "rounded-md border border-border bg-surface-raised p-3 text-sm text-fg select-none",
+          "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          disabled ? "cursor-default" : "cursor-grab",
+          sortable.isDragging && "border-dashed border-border-strong bg-surface shadow-none",
+          className,
+        )}
+      >
+        <div className={cn(sortable.isDragging && "invisible")}>
+          {children({ isDragging: sortable.isDragging })}
+        </div>
       </div>
     </li>
   );

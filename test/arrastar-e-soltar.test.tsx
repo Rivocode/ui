@@ -113,6 +113,8 @@ describe("SortableList", () => {
 
     const list = screen.getByRole("list", { name: "Ordem de emissão" });
     expect(list.querySelectorAll("li").length).toBe(4);
+    expect(list.getAttribute("aria-orientation")).toBeNull();
+    expect(list.getAttribute("data-orientation")).toBe("vertical");
 
     const handle = screen.getByRole("button", { name: "Reordenar Nota 1043" });
     expect(handle.getAttribute("aria-roledescription")).toBe("item reordenável");
@@ -361,11 +363,12 @@ describe("SortableList", () => {
 describe("SortableList horizontal", () => {
   beforeEach(() => layOutList("horizontal"));
 
-  test("anda com as setas de lado e anuncia a orientacao", async () => {
+  test("anda com as setas de lado, e a orientacao fica no data-orientation", async () => {
     const onReorder = mock<(items: Note[]) => void>(() => {});
     withTheme(<Notes orientation="horizontal" onReorder={onReorder} />);
     const list = screen.getByRole("list", { name: "Ordem de emissão" });
-    expect(list.getAttribute("aria-orientation")).toBe("horizontal");
+    expect(list.getAttribute("aria-orientation")).toBeNull();
+    expect(list.getAttribute("data-orientation")).toBe("horizontal");
     expect(tokens(list)).toContain("flex-row");
     expect(tokens(list)).toContain("overflow-x-auto");
 
@@ -405,7 +408,8 @@ function Board(props: Partial<Parameters<typeof Kanban<Card>>[0]>) {
   );
 }
 
-const cardOf = (title: string) => screen.getByText(title).closest("li")!;
+const cardOf = (title: string) =>
+  screen.getByText(title).closest<HTMLElement>("[aria-roledescription]")!;
 
 describe("Kanban", () => {
   beforeEach(() => layOutBoard());
@@ -450,6 +454,9 @@ describe("Kanban", () => {
   test("o cartao e a alca: foco, nome de papel e instrucao de teclado", () => {
     withTheme(<Board />);
     const item = cardOf("Nota 1042");
+
+    expect(item.tagName).toBe("DIV");
+    expect(item.parentElement!.tagName).toBe("LI");
 
     expect(item.getAttribute("role")).toBe("button");
     expect(item.getAttribute("tabindex")).toBe("0");
@@ -568,6 +575,50 @@ describe("Kanban", () => {
     });
     expect(onMove).not.toHaveBeenCalled();
     expect(item.getAttribute("aria-pressed")).not.toBe("true");
+  });
+
+  test("o item da lista continua item: sem papel, sem foco e sem ouvinte", () => {
+    withTheme(<Board />);
+    const items = [...screen.getByRole("list", { name: "A fazer" }).children];
+    expect(items.length).toBe(3);
+    for (const li of items) {
+      expect(li.tagName).toBe("LI");
+      expect(li.getAttribute("role")).toBeNull();
+      expect(li.getAttribute("tabindex")).toBeNull();
+      expect(li.getAttribute("aria-roledescription")).toBeNull();
+      expect(tokens(li)).toContain("list-none");
+      expect(li.querySelectorAll('[role="button"]').length).toBe(1);
+    }
+  });
+
+  test("o texto so de leitor de tela fica preso dentro da coluna, e nao alarga a pagina", () => {
+    withTheme(<Board />);
+    const root = screen.getByRole("region", { name: "A fazer" }).parentElement!;
+    const hidden = [...root.querySelectorAll(".sr-only")];
+    expect(hidden.length).toBeGreaterThan(2);
+    const positioned = ["relative", "absolute", "fixed", "sticky"];
+    for (const element of hidden) {
+      let parent = element.parentElement;
+      let anchored = false;
+      while (parent && root.contains(parent)) {
+        if (tokens(parent).some((token) => positioned.includes(token))) anchored = true;
+        parent = parent.parentElement;
+      }
+      expect(anchored).toBe(true);
+    }
+  });
+
+  test("o anel de soltar aqui cabe no corte da fileira, e o titulo longo quebra em vez de sumir", () => {
+    withTheme(<Board />);
+    const todo = screen.getByRole("region", { name: "A fazer" });
+    const root = todo.parentElement!;
+    for (const token of ["px-1", "pt-1", "scroll-px-1"]) expect(tokens(root)).toContain(token);
+
+    const title = todo.querySelector("h3")!;
+    expect(tokens(title)).not.toContain("truncate");
+    expect(tokens(title)).toContain("break-words");
+    expect(tokens(title)).toContain("line-clamp-2");
+    expect(title.getAttribute("title")).toBe("A fazer");
   });
 
   test("a fileira rola de lado no celular e encaixa coluna por coluna", () => {

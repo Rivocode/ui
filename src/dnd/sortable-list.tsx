@@ -192,7 +192,6 @@ export function SortableList<Item>({
       >
         <ul
           {...props}
-          aria-orientation={orientation}
           data-orientation={orientation}
           className={cn(
             "flex min-w-0 gap-2 font-sans",
