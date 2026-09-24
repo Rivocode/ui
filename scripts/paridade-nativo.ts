@@ -438,7 +438,7 @@ const PARITY: Record<string, Row> = {
   },
   MaskedInput: {
     state: "traduz",
-    note: "o valor é só dígitos; a máscara é do campo, o dado não a carrega",
+    note: "o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega",
   },
   Menu: {
     state: "traduz",

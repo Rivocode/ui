@@ -32,7 +32,10 @@ export function MaskedInput({
   const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
   const text = controlled ? value : internal;
 
-  const digitsOnly = mask === "moeda" || /^[9\W]+$/.test(String(mask)) || mask in NUMERIC_PATTERNS;
+  const digitsOnly =
+    mask === "moeda" ||
+    (/^[9\W]+$/.test(String(mask)) && !String(mask).includes("*")) ||
+    mask in NUMERIC_PATTERNS;
 
   return (
     <Input
@@ -53,7 +56,6 @@ export function MaskedInput({
 
 const NUMERIC_PATTERNS = {
   cpf: true,
-  cnpj: true,
   cep: true,
   data: true,
   hora: true,

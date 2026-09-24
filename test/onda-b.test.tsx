@@ -40,6 +40,35 @@ test("quem escuta recebe o texto pontuado e o cru", () => {
   expect(cru).toBe("12345678000199");
 });
 
+test("o cnpj alfanumerico entra pelo campo, e o teclado deixa de ser numerico", () => {
+  let cru = "";
+  withTheme(
+    <MaskedInput
+      mask="cnpj"
+      placeholder="CNPJ"
+      onValueChange={(_, c) => {
+        cru = c;
+      }}
+    />,
+  );
+  const field = screen.getByPlaceholderText("CNPJ") as HTMLInputElement;
+  expect(field.getAttribute("inputmode")).toBeNull();
+
+  fireEvent.change(field, { target: { value: "12abc34501de35" } });
+  expect(field.value).toBe("12.ABC.345/01DE-35");
+  expect(cru).toBe("12ABC34501DE35");
+});
+
+test("molde escrito na mao com * nao abre o teclado numerico", () => {
+  withTheme(<MaskedInput mask="***-99" placeholder="Codigo" />);
+  expect(screen.getByPlaceholderText("Codigo").getAttribute("inputmode")).toBeNull();
+});
+
+test("o cpf continua abrindo o teclado numerico", () => {
+  withTheme(<MaskedInput mask="cpf" placeholder="CPF" />);
+  expect(screen.getByPlaceholderText("CPF").getAttribute("inputmode")).toBe("numeric");
+});
+
 test("o telefone troca de molde entre o fixo e o celular", () => {
   withTheme(<MaskedInput mask="telefone" placeholder="Telefone" />);
   const field = screen.getByPlaceholderText("Telefone") as HTMLInputElement;

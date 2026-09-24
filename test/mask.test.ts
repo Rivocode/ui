@@ -15,6 +15,13 @@ test("o molde poe a pontuacao sozinho", () => {
   expect(applyMask("58000000", "cep")).toBe("58000-000");
 });
 
+test("o cnpj alfanumerico entra, com a letra em caixa alta e o verificador so em digito", () => {
+  expect(applyMask("12abc34501de35", "cnpj")).toBe("12.ABC.345/01DE-35");
+  expect(applyMask("00000000E08G12", "cnpj")).toBe("00.000.000/E08G-12");
+  expect(applyMask("12ABC34501DEX5", "cnpj")).toBe("12.ABC.345/01DE-5");
+  expect(unmask(applyMask("12.abc.345/01de-35", "cnpj"))).toBe("12ABC34501DE35");
+});
+
 test("a mascara para no fim do molde em vez de embolar", () => {
   expect(applyMask("123456789012345", "cpf")).toBe("123.456.789-01");
 });

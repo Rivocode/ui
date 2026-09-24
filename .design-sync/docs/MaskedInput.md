@@ -16,12 +16,17 @@ muda com o tempo e o dado deixa de bater. O dinheiro sai também em centavos, po
 
 O telefone troca de molde entre o fixo e o celular sozinho.
 
+O CNPJ aceita letra: desde julho de 2026 a Receita emite CNPJ alfanumérico,
+com letra ou dígito nas doze primeiras casas e dígito nos dois verificadores. A
+letra sobe a caixa sozinha, e o CNPJ só de números continua saindo igual. Por
+isso o `cnpj` abre o teclado de texto no celular, e não o numérico.
+
 ## Os nove moldes
 
 | Nome | Molde | Sai como |
 |---|---|---|
 | `cpf` | `999.999.999-99` | `123.456.789-01` |
-| `cnpj` | `99.999.999/9999-99` | `12.345.678/0001-90` |
+| `cnpj` | `**.***.***/****-99` | `12.345.678/0001-90`, `12.ABC.345/01DE-35` |
 | `cep` | `99999-999` | `58000-000` |
 | `telefone` | `(99) 99999-9999` | `(83) 99999-1234` |
 | `data` | `99/99/9999` | `05/08/2026` |
@@ -64,4 +69,4 @@ telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `MaskedInput` - o valor é só dígitos; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `MaskedInput` - o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

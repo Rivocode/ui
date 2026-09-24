@@ -1,6 +1,6 @@
 export const MASKS = {
   cpf: "999.999.999-99",
-  cnpj: "99.999.999/9999-99",
+  cnpj: "**.***.***/****-99",
   cep: "99999-999",
   data: "99/99/9999",
   hora: "99:99",
@@ -62,6 +62,8 @@ export function applyMask(text: string, mask: Mask): string {
   if (mask === "moeda") return applyCurrencyMask(text);
 
   if (mask === "telefone") return applyPattern(text, phonePatternFor(text));
+
+  if (mask === "cnpj") return applyPattern(text.toUpperCase(), MASKS.cnpj);
 
   const pattern = MASKS[mask as MaskName];
   if (pattern) return applyPattern(text, pattern);

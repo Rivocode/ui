@@ -84,6 +84,33 @@ describe("MaskedInput", () => {
     act(() => input.props.onChangeText("12.345.678/0001-901"));
     expect(onValueChange).toHaveBeenCalledWith("12345678000190");
   });
+
+  test("com * no molde a letra entra em caixa alta, e o teclado deixa de ser numerico", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(
+      <MaskedInput
+        mask="**.***.***/****-##"
+        value="12ABC34501DE35"
+        onValueChange={onValueChange}
+      />,
+    );
+
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.value).toBe("12.ABC.345/01DE-35");
+    expect(input.props.keyboardType).toBe("default");
+    expect(input.props.autoCapitalize).toBe("characters");
+
+    act(() => input.props.onChangeText("12.abc.345/01de-3x5"));
+    expect(onValueChange).toHaveBeenCalledWith("12ABC34501DE35");
+  });
+
+  test("so com # no molde o teclado continua numerico", () => {
+    const screen = render(
+      <MaskedInput mask="#####-###" value="58000000" onValueChange={() => {}} />,
+    );
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.keyboardType).toBe("number-pad");
+  });
 });
 
 describe("NumberField", () => {

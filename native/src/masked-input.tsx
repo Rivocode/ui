@@ -1,22 +1,38 @@
 import { Input, type InputProps } from "./field";
 
 export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText"> & {
-  /** O molde, com `#` onde entra digito: `##.###.###/####-##`. */
+  /**
+   * O molde: `#` onde entra digito, `*` onde entra letra ou digito, e o resto e
+   * pontuacao. O CNPJ alfanumerico leva `*` nas doze primeiras casas e `#` nos
+   * dois verificadores. Com `*` no molde o teclado deixa de ser so numerico.
+   */
   mask: string;
-  /** O valor LIMPO, so digitos - a mascara e do campo, o dado nao a carrega. */
+  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. */
   value: string;
   onValueChange: (clean: string) => void;
 };
 
-const digitsOf = (text: string) => text.replace(/\D/g, "");
+const fits = (slot: string, character: string) =>
+  slot === "#" ? /\d/.test(character) : /[A-Z0-9]/.test(character);
 
-const applyMask = (mask: string, digits: string) => {
+const cleanFor = (mask: string, text: string) => {
+  const slots = [...mask].filter((slot) => slot === "#" || slot === "*");
+  let out = "";
+  for (const character of text.toUpperCase()) {
+    const slot = slots[out.length];
+    if (slot === undefined) break;
+    if (fits(slot, character)) out += character;
+  }
+  return out;
+};
+
+const applyMask = (mask: string, clean: string) => {
   let out = "";
   let cursor = 0;
   for (const slot of mask) {
-    if (cursor >= digits.length) break;
-    if (slot === "#") {
-      out += digits[cursor];
+    if (cursor >= clean.length) break;
+    if (slot === "#" || slot === "*") {
+      out += clean[cursor];
       cursor++;
     } else {
       out += slot;
@@ -26,14 +42,16 @@ const applyMask = (mask: string, digits: string) => {
 };
 
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
-  const capacity = mask.split("#").length - 1;
+  const alphanumeric = mask.includes("*");
 
   return (
     <Input
       {...props}
-      keyboardType="number-pad"
+      keyboardType={alphanumeric ? "default" : "number-pad"}
+      autoCapitalize={props.autoCapitalize ?? (alphanumeric ? "characters" : undefined)}
+      autoCorrect={props.autoCorrect ?? (alphanumeric ? false : undefined)}
       value={applyMask(mask, value)}
-      onChangeText={(text) => onValueChange(digitsOf(text).slice(0, capacity))}
+      onChangeText={(text) => onValueChange(cleanFor(mask, text))}
     />
   );
 }
