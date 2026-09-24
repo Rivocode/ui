@@ -1,0 +1,263 @@
+name: release-mcp
+
+# Publica o @rivocode/ui-mcp quando uma tag `mcp-v*` sobe.
+#
+# Terceiro pacote, terceiro workflow, no molde do release-native: o servidor
+# MCP anda na velocidade dele. Ele empacota a documentacao do DS da arvore em
+# que foi construido, entao um release do web nao obriga release daqui, e um
+# servidor novo (ferramenta nova, busca melhor) nao obriga release do web.
+#
+# O prefixo da tag e o que separa os gatilhos: `v0.15.0` e do web,
+# `native-v0.10.0` do nativo e `mcp-v0.1.0` daqui. Nenhum dos tres casa com o
+# padrao dos outros dois.
+on:
+  push:
+    tags: ["mcp-v*"]
+  # Repetir uma publicacao que falhou no meio sem criar outra tag, e, com
+  # `ensaio`, atravessar o caminho inteiro sem gastar versao nenhuma. O
+  # `tag.yml` tambem chama por aqui, porque tag empurrada com o GITHUB_TOKEN
+  # nao dispara `on: push: tags`.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag ja existente para publicar, como mcp-v0.1.0. Vazio so em ensaio."
+        required: false
+      ensaio:
+        # A primeira publicacao de um pacote novo e o voo mais cego de todos:
+        # o release-native morreu quatro vezes no ultimo passo antes de alguem
+        # conseguir exercitar o caminho inteiro. O ensaio roda tudo, na mesma
+        # ordem e com os mesmos segredos, e pula so o `npm publish` real.
+        description: "Ensaio: roda o caminho inteiro e NAO publica"
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # `id-token` e `--provenance` andam JUNTOS: um sem o outro nao publica
+      # assinado, e a falta so aparece no ultimo comando de uma publicacao que
+      # nao se desfaz. O repositorio e publico, entao o registro aceita a
+      # procedencia desde a primeira versao deste pacote.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # O Node entra pelo `npm publish` - e o setup-node que escreve o .npmrc
+      # a partir do segredo - e pela fumaca, que roda o bin com `node`, como o
+      # `npx` de quem instala vai rodar.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # O `mcp/` e workspace da raiz: uma instalacao so traz o SDK do MCP para
+      # o pacote e para o teste que sobe o servidor em memoria.
+      - run: bun install --frozen-lockfile
+
+      # O segredo e conferido ANTES de tudo. Sem isto a falta dele so aparece
+      # no `npm publish`, com ENEEDAUTH, depois do check e do build inteiros.
+      - name: Conferir o segredo do npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "O segredo NPM_TOKEN chegou vazio."
+            echo
+            echo "Confira em Settings > Secrets and variables > Actions se ele existe"
+            echo "como segredo do REPOSITORIO, e se o token tem permissao de publicar"
+            echo "no escopo @rivocode - o pacote @rivocode/ui-mcp e novo, e token"
+            echo "granular restrito a pacotes existentes nao o cria."
+            echo
+            echo "Depois de corrigir, republique sem criar tag nova:"
+            echo "  Actions > este workflow > Run workflow, com a tag existente."
+            exit 1
+          fi
+          echo "Segredo presente."
+
+      - name: Conferir o token da procedencia
+        # O `--dry-run` do npm NAO exercita procedencia: ha um `if (!dryRun)`
+        # antes da geracao da assinatura, entao o ensaio fica verde sem provar
+        # nada. Esta variavel so existe quando `id-token: write` foi concedido
+        # ao job, e e a unica parte da procedencia que o ensaio pega.
+        run: |
+          if [ -z "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then
+            echo "::error::Sem token OIDC: o job precisa de `id-token: write` em permissions."
+            exit 1
+          fi
+          echo "Token OIDC presente: a publicacao sai assinada."
+
+      # A tag e a versao do mcp/package.json precisam contar a mesma historia:
+      # `mcp-v0.2.0` sobre um manifesto em 0.1.0 republicaria a versao velha.
+      # Em ensaio a conferencia relata e nao para, porque o ensaio costuma
+      # rodar direto da main, onde nao ha tag nenhuma para bater.
+      - name: Conferir a tag e a versao
+        env:
+          ENSAIO: ${{ inputs.ensaio }}
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          pkg="mcp-v$(node -p "require('./mcp/package.json').version")"
+
+          if [ "$ENSAIO" = "true" ]; then
+            if [ -z "$TAG" ]; then
+              echo "Ensaio a partir de ${{ github.ref_name }}, sobre $pkg."
+            elif [ "$TAG" != "$pkg" ]; then
+              echo "Aviso: a tag $TAG nao bate com o mcp/package.json ($pkg)."
+              echo "Numa publicacao de verdade isto pararia aqui."
+            else
+              echo "Ensaio sobre $pkg."
+            fi
+            exit 0
+          fi
+
+          if [ -z "$TAG" ] && [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Publicacao de verdade exige a tag no formulario."
+            echo "Para so exercitar o caminho, marque a caixa \"Ensaio\"."
+            exit 1
+          fi
+
+          tag="${TAG:-${{ github.ref_name }}}"
+          if [ "$tag" != "$pkg" ]; then
+            echo "A tag $tag nao bate com a versao do mcp/package.json ($pkg)."
+            exit 1
+          fi
+          echo "Publicando $pkg"
+
+      # A versao pode ja estar no registro, e o npm so conta isso no fim, com um
+      # `403` que fala de permissao e nao diz o que fazer.
+      - name: Conferir se a versao ja esta publicada
+        # O .npmrc que o setup-node escreveu espera esta variavel; sem ela o
+        # `npm view` reclama de autenticacao em vez de responder a pergunta.
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ENSAIO: ${{ inputs.ensaio }}
+        run: |
+          versao=$(node -p "require('./mcp/package.json').version")
+
+          # `npm view` responde 404 para versao inexistente E para pacote
+          # inexistente, e os dois querem dizer "pode publicar". Isso importa
+          # mais aqui do que nos outros dois workflows: na primeira publicacao
+          # o pacote @rivocode/ui-mcp ainda nao existe no registro, e esta
+          # guarda tem que ser atravessada.
+          publicada=$(npm view "@rivocode/ui-mcp@$versao" version 2>/dev/null || true)
+
+          # Em ensaio a guarda relata e segue: o ensaio existe justamente para
+          # gastar a corrida inteira sem queimar um numero novo.
+          if [ -n "$publicada" ] && [ "$ENSAIO" = "true" ]; then
+            echo "A versao $versao ja esta no registro."
+            echo "Num lancamento de verdade isto pararia aqui; em ensaio, segue."
+            exit 0
+          fi
+
+          if [ -n "$publicada" ]; then
+            echo "A tag foi criada para a versao $versao, que ja esta publicada no npm."
+            echo
+            echo "O registro nao aceita republicar o mesmo numero. O que fazer:"
+            echo "  1. suba a versao em mcp/package.json e registre a mudanca"
+            echo "     em mcp/CHANGELOG.md;"
+            echo "  2. apague a tag que sobrou, aqui e no remoto:"
+            echo "     git tag -d mcp-v$versao && git push origin :mcp-v$versao"
+            echo "  3. crie a tag da versao nova, que e quem dispara este workflow."
+            echo
+            echo "No registro hoje: latest $(npm view @rivocode/ui-mcp version 2>/dev/null || echo '?')."
+            exit 1
+          fi
+
+          echo "A versao $versao ainda nao existe no registro."
+
+      # O gate inteiro, e nao um pedaco: o conteudo do servidor e a
+      # documentacao do DS, e o `check` e quem segura essa documentacao contra
+      # o codigo - props, paridade, assinatura, exemplos da doc.
+      - run: bun run check
+
+      # So o pacote daqui. O `content.json` e escrito de novo neste passo, da
+      # arvore que a tag congelou, e e ele que o tarball leva.
+      - run: bun run build:mcp
+
+      # O servidor construido, pelo stdio, com `node`: o mesmo comando que o
+      # cliente MCP de quem instala vai rodar.
+      - run: bun run fumaca:mcp
+
+      # `bin` sem o arquivo publicado passa como aviso, e nao como erro, e o
+      # `content.json` fora do tarball deixaria o servidor sem nada a servir.
+      - name: Conferir o que vai no pacote
+        working-directory: mcp
+        run: |
+          npm pack --dry-run --json > /tmp/pack.json
+          node -e "
+            const [meta] = require('/tmp/pack.json');
+            const files = meta.files.map((file) => file.path);
+            const pkg = require('./package.json');
+
+            const wanted = [...Object.values(pkg.bin ?? {}), 'dist/content.json', 'README.md', 'CHANGELOG.md', 'LICENSE'];
+            for (const target of wanted) {
+              const path = target.replace(/^\.\//, '');
+              if (!files.includes(path)) {
+                console.error('Falta no tarball ' + path);
+                process.exit(1);
+              }
+            }
+
+            console.log('bin, conteudo e documentos ok:', files.length, 'arquivos');
+          "
+
+      # O caminho da publicacao inteiro, parando antes do unico passo que nao
+      # se desfaz. O `--dry-run` NAO e offline: ele pergunta ao registro, e em
+      # ensaio sobre versao ja publicada a recusa do NUMERO e a unica tolerada.
+      - name: Ensaiar a publicacao
+        working-directory: mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          ENSAIO: ${{ inputs.ensaio }}
+        run: |
+          set +e
+          saida=$(npm publish --access public --provenance --dry-run 2>&1)
+          codigo=$?
+          echo "$saida"
+
+          if [ $codigo -eq 0 ]; then
+            exit 0
+          fi
+
+          if [ "$ENSAIO" = "true" ] &&
+             echo "$saida" | grep -q "cannot publish over the previously published versions"; then
+            echo
+            echo "O registro so recusou o NUMERO: tudo antes disso passou."
+            exit 0
+          fi
+
+          exit $codigo
+
+      - name: Publicar
+        if: ${{ inputs.ensaio != true }}
+        working-directory: mcp
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Um ensaio verde parece uma publicacao verde. O recado vai para o resumo
+      # da execucao, que e a primeira coisa que a pagina mostra.
+      - name: Dizer que foi ensaio
+        if: ${{ inputs.ensaio == true }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          versao=$(node -p "require('./mcp/package.json').version")
+          {
+            echo "## Ensaio - NADA foi publicado"
+            echo
+            echo "O caminho inteiro rodou sobre a versao \`$versao\`: install,"
+            echo "check, build do pacote, fumaca pelo stdio, empacotamento e"
+            echo "\`npm publish --dry-run\`. O unico passo pulado foi o"
+            echo "\`npm publish\` real."
+            echo
+            echo "No registro continua: latest \`$(npm view @rivocode/ui-mcp version 2>/dev/null || echo 'nenhuma')\`."
+          } | tee -a "$GITHUB_STEP_SUMMARY"

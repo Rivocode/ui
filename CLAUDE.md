@@ -82,6 +82,7 @@ falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
 | `src/chart/`, `src/form/` | subcaminhos com peer OPCIONAL; a Recharts nao pode vazar para `src/index.ts` (`check:chart`) |
 | `src/tokens/` | o UNICO lugar onde pode existir cor literal (`check:colors`) |
 | `native/src/` | o pacote `@rivocode/ui-native`, publicado como FONTE |
+| `mcp/` | o pacote `@rivocode/ui-mcp`, servidor MCP por stdio; workspace da raiz |
 | `.design-sync/docs/` | uma pagina por peca e por parte |
 | `.design-sync/previews/` | o exemplo executavel de cada peca |
 | `apps/docs/` | o site `ds.rivocode.com.br` |
@@ -98,6 +99,15 @@ falha se o comitado divergir da fonte.
 **Nao rode `bun install` dentro de `native/`.** Ela nao e workspace: o comando
 cria um segundo React e derruba dezenas de testes com "Invalid hook call". A CI
 nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
+
+**O `mcp/` e workspace, e o `native/` nao.** O servidor MCP nao tem React, entao
+nao ha segunda copia a temer, e o `bun install` da raiz traz o SDK dele para o
+`test/servidor-mcp.test.ts`. O conteudo que ele serve NAO e fonte: e o
+`mcp/dist/content.json`, escrito no build por `scripts/conteudo-do-mcp.ts` a
+partir do mesmo `agentFiles()` do site, das tabelas de props, de paridade e de
+assinatura, da tabela de escolha da skill e dos tokens em DTCG. Documentacao
+nova sai no proximo release do `@rivocode/ui-mcp`, e nao antes: o pacote leva a
+documentacao da arvore em que foi construido.
 
 ## O gate
 
@@ -227,7 +237,10 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
   milissegundos e sem navegador, porque o retrato em si vive fora do gate.
 
-`bun run build` depois, porque ha quebra que so aparece ao empacotar.
+`bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
+constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com
+`node` pelo stdio e confere as sete ferramentas - a CI roda os dois, nessa
+ordem.
 
 ## Assercao que passa sem medir
 
@@ -312,10 +325,11 @@ O sujeito e o codigo, nao voce - "o applyMask decide o molde do telefone",
 "as guardas passam a pegar o que elas prometiam pegar". Tipos em uso: `feat`,
 `fix`, `refactor`, `docs`, `ci`, `chore`.
 
-Duas tags, dois workflows, e o prefixo e o que separa:
+Tres tags, tres workflows, e o prefixo e o que separa:
 
 - `v*` publica `@rivocode/ui` (versao em `package.json`).
 - `native-v*` publica `@rivocode/ui-native` (versao em `native/package.json`).
+- `mcp-v*` publica `@rivocode/ui-mcp` (versao em `mcp/package.json`).
 
 Os pacotes andam em velocidades diferentes de proposito. A tag tem que bater
 com a versao do `package.json` correspondente, e o workflow confere isso -
@@ -338,6 +352,7 @@ ser uma guarda, e nao o dedo humano no `git tag`.
 | `ci` verde na `main` | `tag.yml` | a tag, e chama o release |
 | tag `v*` | `release.yml` | `@rivocode/ui` no npm |
 | tag `native-v*` | `release-native.yml` | `@rivocode/ui-native` no npm |
+| tag `mcp-v*` | `release-mcp.yml` | `@rivocode/ui-mcp` no npm |
 
 ### A tag nasce sozinha, e o que continua humano
 
@@ -349,7 +364,7 @@ publicacao no npm nao se desfaz. Pelo mesmo motivo o checkout e do
 `workflow_run.head_sha`, e nao do topo da `main` de agora: a tag aponta para o
 commit que foi medido.
 
-Para cada pacote, separadamente - os dois andam em velocidades diferentes, e o
+Para cada pacote, separadamente - os tres andam em velocidades diferentes, e o
 prefixo e o que os separa -, a tag so nasce se as QUATRO passarem:
 
 1. **A tag ainda nao existe**, aqui e no `origin`. Sem isso, todo push na `main`
@@ -363,7 +378,7 @@ prefixo e o que os separa -, a tag so nasce se as QUATRO passarem:
    "feche o CHANGELOG antes da tag"; a diferenca e que agora ela e cobrada por
    maquina.
 4. **O ASSUNTO do commit da cabeca nao tem `[no-release]`.** E a valvula de
-   escape para bumpar sem publicar. Ela vale para os dois pacotes de uma vez,
+   escape para bumpar sem publicar. Ela vale para os tres pacotes de uma vez,
    porque a mensagem e uma so. So a primeira linha e lida, e isso foi aprendido
    caro: o proprio commit que criou esta automacao explicava a valvula no
    corpo, escreveu a marca no meio da prosa, e foi barrado por ela - a
@@ -374,7 +389,7 @@ A decisao mora numa funcao pura - `decideRelease`, em
 `scripts/decisao-de-release.ts` - que recebe a versao, as tags que existem, as
 versoes do registro, o texto do CHANGELOG e a mensagem do commit, e devolve o
 veredito com o motivo. `test/decisao-de-release.test.ts` cobre os quatro motivos
-de barrar e o caminho feliz, nos dois pacotes. Guarda de publicacao escrita em
+de barrar e o caminho feliz, nos tres pacotes. Guarda de publicacao escrita em
 `if` de shell dentro do `.yml` nao teria como ser provada, e esta e a unica do
 repositorio que decide se um numero de versao queima.
 
@@ -399,7 +414,7 @@ de as quatro guardas existirem, e ela nao mudou por a tag ter virado automatica
 
 **Tag empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.** O GitHub
 bloqueia para evitar recursao, e por isso o `tag.yml` nao para na tag: ele chama
-o release por `workflow_dispatch` passando o campo `tag`, que os dois releases ja
+o release por `workflow_dispatch` passando o campo `tag`, que os tres releases
 aceitam - e `workflow_dispatch` e uma das excecoes escritas nessa mesma regra. E
 por isso o job pede `actions: write` alem de `contents: write`. Sem essa chamada
 a tag existiria e a versao nunca subiria, que e o pior dos dois estados.
@@ -408,18 +423,28 @@ Tres ensaios, e nenhum deles gasta versao:
 
 - `gh workflow run tag` roda a decisao inteira, com as quatro guardas medidas de
   verdade, e nao cria tag nenhuma - a caixa vem marcada.
-- `gh workflow run release --field ensaio=true` e
-  `gh workflow run release-native --field ensaio=true` atravessam o caminho da
+- `gh workflow run release --field ensaio=true`,
+  `gh workflow run release-native --field ensaio=true` e
+  `gh workflow run release-mcp --field ensaio=true` atravessam o caminho da
   publicacao ate o passo antes do `npm publish`. O do nativo nasceu porque a
   primeira publicacao de verdade falhou com `ENEEDAUTH`, alguem publicou a mao,
   e as tres tentativas seguintes tomaram `403`.
 
-**O repositorio esta publico**, e os dois workflows publicam com
+**Pacote que ainda nao existe no registro.** Na primeira publicacao do
+`@rivocode/ui-mcp`, `npm view` responde `E404` - para o pacote inteiro, e nao so
+para a versao. As duas guardas tratam isso como "pode publicar": o
+`decideRelease` recebe lista vazia de versoes (o `publishedVersions` le o
+`E404` do JSON e devolve `[]`), e o `release-mcp.yml` transforma o erro em
+string vazia. No `decideRelease`, qualquer outra falha do `npm view` continua
+parando a corrida.
+
+**O repositorio esta publico**, e os tres workflows publicam com
 `--provenance` e `id-token: write`. Os dois andam JUNTOS: um sem o outro nao
 publica, e o `--dry-run` do npm nao exercita nenhum dos dois - ha um
 `if (!dryRun)` antes da geracao da assinatura. Por isso cada workflow tem um
-passo que falha cedo se o token OIDC nao estiver la. Esta escrito nos dois, no
-lugar onde alguem tentaria "consertar".
+passo que falha cedo se o token OIDC nao estiver la. Esta escrito nos tres, no
+lugar onde alguem tentaria "consertar". O `@rivocode/ui-mcp` nasceu com o
+repositorio ja publico, e sai assinado desde a primeira versao.
 
 Ate `v0.8.0` e `native-v0.3.1` o repositorio era privado e o npm recusava a
 assinatura com 422: essas versoes ficaram sem procedencia e assim continuam -

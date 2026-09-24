@@ -11,6 +11,7 @@ import {
 
 const WEB = TARGETS["web"] as ReleaseTarget;
 const NATIVE = TARGETS["native"] as ReleaseTarget;
+const MCP = TARGETS["mcp"] as ReleaseTarget;
 
 function facts(version: string, over: Partial<ReleaseFacts> = {}): ReleaseFacts {
   return {
@@ -157,6 +158,11 @@ test("toda decisao barrada devolve release falso, e toda liberada devolve verdad
     [NATIVE, facts("0.6.0", { published: ["0.6.0"] })],
     [NATIVE, facts("0.6.0", { changelog: "# Mudancas\n" })],
     [NATIVE, facts("0.6.0", { message: VETO })],
+    [MCP, facts("0.1.0")],
+    [MCP, facts("0.1.0", { tags: ["mcp-v0.1.0"] })],
+    [MCP, facts("0.1.0", { published: ["0.1.0"] })],
+    [MCP, facts("0.1.0", { changelog: "# Mudancas\n" })],
+    [MCP, facts("0.1.0", { message: VETO })],
   ];
 
   for (const [target, given] of cases) {
@@ -179,5 +185,91 @@ test("a tabela aponta para os manifestos e os CHANGELOGs que existem", async () 
     expect(await Bun.file(`.github/workflows/${target.workflow}`).exists()).toBe(true);
   }
 
-  expect(WEB.prefix).not.toBe(NATIVE.prefix);
+  expect(new Set(keys.map((key) => TARGETS[key]!.prefix)).size).toBe(keys.length);
+});
+
+test("o caminho feliz do mcp cria a tag `mcp-v` e chama o release-mcp", () => {
+  const decision = decideRelease(MCP, facts("0.1.0"));
+
+  expect(decision.verdict).toBe("release");
+  expect(decision.release).toBe(true);
+  expect(decision.tag).toBe("mcp-v0.1.0");
+  expect(decision.reason).toContain("release-mcp.yml");
+});
+
+test("a primeira publicacao do mcp passa com o registro vazio, que e o que o 404 vira", () => {
+  const decision = decideRelease(
+    MCP,
+    facts("0.1.0", { published: [], tags: ["v0.15.0", "native-v0.10.0"] }),
+  );
+
+  expect(decision.verdict).toBe("release");
+  expect(decision.tag).toBe("mcp-v0.1.0");
+});
+
+test("a tag que ja existe barra o mcp", () => {
+  const decision = decideRelease(MCP, facts("0.1.0", { tags: ["mcp-v0.1.0"] }));
+
+  expect(decision.verdict).toBe("tag-exists");
+  expect(decision.release).toBe(false);
+  expect(decision.reason).toContain("mcp/package.json");
+});
+
+test("o prefixo separa o mcp dos outros dois: `v0.1.0` e `native-v0.1.0` nao o barram", () => {
+  const decision = decideRelease(MCP, facts("0.1.0", { tags: ["v0.1.0", "native-v0.1.0"] }));
+
+  expect(decision.verdict).toBe("release");
+});
+
+test("a versao ja publicada barra o mcp", () => {
+  const decision = decideRelease(MCP, facts("0.1.0", { published: ["0.1.0"] }));
+
+  expect(decision.verdict).toBe("already-published");
+  expect(decision.reason).toContain("@rivocode/ui-mcp@0.1.0");
+});
+
+test("o CHANGELOG do mcp parado na versao anterior barra a tag", () => {
+  const decision = decideRelease(
+    MCP,
+    facts("0.2.0", { changelog: "# Mudancas\n\n## 0.1.0\n\nA primeira.\n" }),
+  );
+
+  expect(decision.verdict).toBe("changelog-open");
+  expect(decision.reason).toContain("mcp/CHANGELOG.md");
+});
+
+test(`${VETO} no assunto barra o mcp junto com os outros dois`, () => {
+  const message = `chore: bump sem publicar ${VETO}`;
+
+  for (const [target, version] of [
+    [WEB, "0.11.0"],
+    [NATIVE, "0.6.0"],
+    [MCP, "0.1.0"],
+  ] as const) {
+    expect(decideRelease(target, facts(version, { message })).verdict).toBe("vetoed");
+  }
+});
+
+test("o tag.yml decide pelos tres pacotes da tabela", async () => {
+  const workflow = await Bun.file(".github/workflows/tag.yml").text();
+  const matrix = /package:\s*\[([^\]]+)\]/.exec(workflow)?.[1] ?? "";
+
+  expect(
+    matrix
+      .split(",")
+      .map((item) => item.trim())
+      .sort(),
+  ).toEqual(Object.keys(TARGETS).sort());
+});
+
+test("cada workflow de release dispara so pelo prefixo do proprio pacote", async () => {
+  const keys = Object.keys(TARGETS);
+  expect(keys.length).toBeGreaterThan(2);
+
+  for (const key of keys) {
+    const target = TARGETS[key] as ReleaseTarget;
+    const workflow = await Bun.file(`.github/workflows/${target.workflow}`).text();
+
+    expect(workflow).toContain(`tags: ["${target.prefix}*"]`);
+  }
 });

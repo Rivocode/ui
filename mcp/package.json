@@ -1,0 +1,46 @@
+{
+  "name": "@rivocode/ui-mcp",
+  "version": "0.1.0",
+  "description": "Servidor MCP do design system da RivoCode: as peças, as props, os tokens e a paridade com o React Native, servidos por stdio a partir da documentação que viaja dentro do pacote.",
+  "keywords": [
+    "design-system",
+    "mcp",
+    "model-context-protocol",
+    "rivocode"
+  ],
+  "homepage": "https://ds.rivocode.com.br/para-agents",
+  "bugs": {
+    "url": "https://github.com/Rivocode/ui/issues"
+  },
+  "license": "MIT",
+  "author": "RivoCode (https://rivocode.com.br)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rivocode/ui.git",
+    "directory": "mcp"
+  },
+  "type": "module",
+  "bin": {
+    "rivocode-ui-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "scripts": {
+    "build": "rm -rf dist && bun run ../scripts/conteudo-do-mcp.ts --out dist/content.json && bun build src/cli.ts --target node --format esm --packages external --outdir dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.1",
+    "zod": "^4.4.3"
+  }
+}

@@ -9,7 +9,7 @@ export type ReleaseTarget = {
   manifest: string;
   /** O CHANGELOG que precisa abrir com a secao da versao. */
   changelog: string;
-  /** O que vem antes do numero na tag, e o que separa os dois pacotes. */
+  /** O que vem antes do numero na tag, e o que separa os pacotes. */
   prefix: string;
   /** O arquivo de workflow que publica este pacote. */
   workflow: string;
@@ -29,6 +29,13 @@ export const TARGETS: Record<string, ReleaseTarget> = {
     changelog: "native/CHANGELOG.md",
     prefix: "native-v",
     workflow: "release-native.yml",
+  },
+  mcp: {
+    npmName: "@rivocode/ui-mcp",
+    manifest: "mcp/package.json",
+    changelog: "mcp/CHANGELOG.md",
+    prefix: "mcp-v",
+    workflow: "release-mcp.yml",
   },
 };
 
@@ -176,9 +183,9 @@ async function knownTags(): Promise<string[]> {
   const local = (await measured("as tags locais", ["git", "tag", "--list"])).split("\n");
 
   const remote = [
-    ...(
-      await measured("as tags do origin", ["git", "ls-remote", "--tags", "origin"])
-    ).matchAll(/refs\/tags\/(\S+?)(?:\^\{\})?$/gm),
+    ...(await measured("as tags do origin", ["git", "ls-remote", "--tags", "origin"])).matchAll(
+      /refs\/tags\/(\S+?)(?:\^\{\})?$/gm,
+    ),
   ].map((hit) => hit[1]!);
 
   return [...new Set([...local, ...remote].map((name) => name.trim()).filter(Boolean))];
@@ -221,7 +228,9 @@ if (import.meta.main) {
   const target = TARGETS[key];
 
   if (!target) {
-    console.error(`Pacote desconhecido: "${key}". Escolha um de ${Object.keys(TARGETS).join(", ")}.`);
+    console.error(
+      `Pacote desconhecido: "${key}". Escolha um de ${Object.keys(TARGETS).join(", ")}.`,
+    );
     process.exit(1);
   }
 
@@ -232,12 +241,7 @@ if (import.meta.main) {
     tags: await knownTags(),
     published: await publishedVersions(target.npmName),
     changelog: await Bun.file(target.changelog).text(),
-    message: await measured("a mensagem do commit da cabeca", [
-      "git",
-      "log",
-      "-1",
-      "--pretty=%B",
-    ]),
+    message: await measured("a mensagem do commit da cabeca", ["git", "log", "-1", "--pretty=%B"]),
   });
 
   console.log(`${target.npmName} ${manifest.version} - ${HEADLINE[decision.verdict]}`);

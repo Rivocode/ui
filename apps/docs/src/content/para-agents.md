@@ -18,6 +18,49 @@ Se você é um agent lendo esta página para montar uma tela, este é o primeiro
 comando a rodar. O guia [Skill](/skill.md) tem as variantes por gerenciador de
 pacote e a instalação por `curl`, para quando não há nenhum.
 
+## O servidor MCP
+
+Para o agent que fala [MCP](https://modelcontextprotocol.io), o
+`@rivocode/ui-mcp` entrega o mesmo material por ferramentas: ele pede a peça
+certa para uma intenção, lê a página dela e confere o token, sem sair da
+conversa. Roda na sua máquina, pelo stdio, e não abre conexão de rede: a
+documentação viaja dentro do pacote.
+
+No Claude Code:
+
+```bash
+claude mcp add rivocode-ui -- npx -y @rivocode/ui-mcp
+```
+
+Em qualquer outro cliente que leia a configuração em JSON (Claude Desktop,
+Cursor, Windsurf, VS Code):
+
+```json
+{
+  "mcpServers": {
+    "rivocode-ui": {
+      "command": "npx",
+      "args": ["-y", "@rivocode/ui-mcp"]
+    }
+  }
+}
+```
+
+| Ferramenta | O que devolve |
+| --- | --- |
+| `list_components` | o catálogo por família, uma linha por peça |
+| `get_component` | a página inteira de uma peça: exemplos, props, quando não usar, React Native |
+| `search_docs` | busca em toda a documentação, sem acento |
+| `recommend_component` | as peças candidatas para uma intenção de tela, com o motivo e as vizinhas |
+| `get_tokens` | papéis de cor, escalas, densidade e movimento, e o JSON DTCG cru |
+| `get_native_parity` | como a peça fica no React Native, prop a prop |
+| `get_guide` | as convenções e cada guia, inclusive as referências da skill |
+
+O pacote sai com a documentação da versão da biblioteca em que foi gerado, e
+toda resposta diz qual é. A skill e o servidor não competem: a skill fica no
+disco do projeto e ensina o método; o servidor responde a pergunta pontual no
+meio do trabalho.
+
 ## Os endereços
 
 | Endereço                       | O que entrega                                              |

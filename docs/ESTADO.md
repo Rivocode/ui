@@ -24,6 +24,7 @@ quem consome mora em `.design-sync/conventions.md` e em
 | --------------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
 | `@rivocode/ui`              | este repo, `src/`                           | **0.15.0** no npm, na tag `v0.15.0`, e igual ao `package.json`       |
 | `@rivocode/ui-native`       | este repo, `native/`                        | **0.10.0** no npm, na tag `native-v0.10.0`, e igual ao manifesto dele  |
+| `@rivocode/ui-mcp`          | este repo, `mcp/`                           | **0.1.0** so no manifesto: nunca publicado, e sem tag `mcp-v*`         |
 | Site de documentacao        | `apps/docs/`, no ar em `ds.rivocode.com.br` | No ar e em dia com a `main`, que esta em `e37084d`                   |
 | Landing                     | repo `rivocode.com`, na `main`              | No ar, no `^0.7.0`, com o `fonts.css` importado e o lock decidido    |
 | Sync com o claude.ai/design | projeto `RivoCode`                          | Parado desde 24/08, e provavelmente nao vale mais retomar            |
@@ -610,6 +611,18 @@ decisao foi tomada, escrita e medida, e a linha dele na tabela de paridade e
 `nao`. A fila do nativo esta vazia.
 
 ## O que esta bloqueado esperando acao humana
+
+**0. O primeiro release do `@rivocode/ui-mcp`.** O pacote nasceu em 24/09/2026
+com o `mcp/CHANGELOG.md` ja aberto em `## 0.1.0`, entao o primeiro merge na
+`main` com o `ci` verde faz o `tag.yml` criar `mcp-v0.1.0` e chamar o
+`release-mcp.yml` - `npm view` responde `E404` para pacote inexistente, e as
+duas guardas leem isso como "pode publicar". Antes, confira que o `NPM_TOKEN`
+pode publicar pacote NOVO no escopo `@rivocode` (token granular restrito aos
+pacotes existentes nao cria o terceiro). O ensaio so roda depois do merge,
+porque `workflow_dispatch` exige o workflow na branch padrao: o caminho sem
+voo cego e mergear com `[no-release]` no ASSUNTO, rodar
+`gh workflow run release-mcp --field ensaio=true`, e deixar o proximo empurrao
+na `main` criar a tag - as quatro guardas continuam passando para a 0.1.0.
 
 Duas coisas, e em nenhuma delas ha codigo a escrever.
 

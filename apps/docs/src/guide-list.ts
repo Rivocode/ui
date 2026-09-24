@@ -46,7 +46,7 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
   {
     slug: 'para-agents',
     title: 'Para agents',
-    summary: 'Markdown cru, llms.txt e como pedir no prompt.',
+    summary: 'Markdown cru, llms.txt, o servidor MCP e como pedir no prompt.',
   },
   {
     slug: 'skill',

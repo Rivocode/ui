@@ -25,6 +25,11 @@ jobs:
       # empacotar: entrada faltando, CSS que nao compila, skill nao copiada.
       - run: bun run build
 
+      # O servidor MCP construido, rodado com `node` pelo stdio como o cliente
+      # de quem instala roda. O teste em memoria do `check` nao ve bin sem
+      # shebang nem `content.json` que nao foi escrito.
+      - run: bun run fumaca:mcp
+
   # O pacote nativo publica FONTE, entao erro de tipo dele cai no build de quem
   # consome - e o skipLibCheck de la nao ajuda, porque so cobre .d.ts. A
   # conferencia mora num job proprio porque react e react-native sao peers: o

@@ -17,7 +17,7 @@ on:
     workflows: [ci]
     types: [completed]
     branches: [main]
-  # O ensaio, pelo mesmo motivo dos outros dois workflows: este caminho so
+  # O ensaio, pelo mesmo motivo dos workflows de release: este caminho so
   # roda de verdade num dia de release, e nao da para exercita-lo sem gastar
   # uma versao. Com a caixa marcada, tudo roda igual - decisao, guardas e
   # resumo - e a tag NAO nasce.
@@ -41,15 +41,15 @@ jobs:
       contents: write
       # Chamar o release por `workflow_dispatch`. Sem isto o `gh workflow run`
       # devolve 403, e a tag ficaria no historico apontando para uma versao que
-      # nunca subiu - exatamente o estado que os outros dois workflows gastam
+      # nunca subiu - exatamente o estado que os workflows de release gastam
       # um passo inteiro para evitar.
       actions: write
 
     strategy:
       # Um pacote nao decide pelo outro: eles andam em velocidades diferentes,
-      # e o web parado nao pode calar o nativo.
+      # e o web parado nao pode calar o nativo nem o mcp.
       fail-fast: false
-      # Em serie, e nao em paralelo: as duas pernas empurram tag para o mesmo
+      # Em serie, e nao em paralelo: as tres pernas empurram tag para o mesmo
       # `origin`, e duas atualizacoes de ref ao mesmo tempo nao rendem nada
       # alem de uma corrida para depurar depois.
       max-parallel: 1
@@ -57,7 +57,7 @@ jobs:
         # A tabela de cada pacote - manifesto, prefixo, CHANGELOG e workflow -
         # mora em `TARGETS`, dentro de `scripts/decisao-de-release.ts`, para
         # nao existir em dois lugares. Aqui fica so a chave.
-        package: [web, native]
+        package: [web, native, mcp]
 
     steps:
       # O commit que o `ci` aprovou, e nao o topo da `main` de agora. Num
@@ -80,7 +80,7 @@ jobs:
       # esta no registro, e essa e a unica das quatro guardas que precisa de
       # rede.
       #
-      # Sem `registry-url` de proposito, ao contrario dos dois releases. Ele e
+      # Sem `registry-url` de proposito, ao contrario dos releases. Ele e
       # que escreve o `.npmrc` que espera `NODE_AUTH_TOKEN`, e consultar o
       # registro nao precisa de credencial: sem o arquivo, nao ha token vazio
       # para o npm ler e reclamar de autenticacao em vez de responder a
@@ -93,7 +93,7 @@ jobs:
       # versao, as tags que existem, as versoes do registro, o texto do
       # CHANGELOG e a mensagem do commit, e devolve o veredito com o motivo.
       # `test/decisao-de-release.test.ts` cobre os quatro motivos de barrar e o
-      # caminho feliz, nos dois pacotes - o que nao daria para provar se a
+      # caminho feliz, nos tres pacotes - o que nao daria para provar se a
       # decisao fosse um `if` de shell escrito neste arquivo.
       #
       # Este passo NAO falha quando uma guarda barra. Guarda que deixa a CI
@@ -130,7 +130,7 @@ jobs:
       #
       # `workflow_dispatch` e uma das excecoes escritas nessa mesma regra - ele
       # dispara mesmo vindo do `GITHUB_TOKEN`. Por isso a chamada e explicita, e
-      # por isso o job pede `actions: write`. Os dois releases ja aceitam o
+      # por isso o job pede `actions: write`. Os tres releases aceitam o
       # campo `tag`, e e ele que amarra a publicacao a tag recem-criada em vez
       # de ao topo da `main`.
       #
