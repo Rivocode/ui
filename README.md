@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-118 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+120 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -372,6 +372,31 @@ booleanos, e funciona igual com `fetch` na mão, com SWR ou com server component
 Erro vence carregando, e vazio só vale depois que a consulta voltou. Sem essa
 ordem, uma nova busca sobre um erro pisca "nenhum resultado" antes de mostrar o
 problema.
+
+## Texto com formatação
+
+O editor vive no subcaminho `@rivocode/ui/editor`, sobre o Tiptap 3, com
+dependências de par opcionais: quem não escreve texto formatado não carrega o
+ProseMirror.
+
+```sh
+npm install @tiptap/react @tiptap/pm @tiptap/core @tiptap/starter-kit @tiptap/extensions
+```
+
+```tsx
+import { Field, FieldLabel } from "@rivocode/ui";
+import { RichTextEditor, RichTextView } from "@rivocode/ui/editor";
+
+<Field>
+  <FieldLabel>Descrição do serviço</FieldLabel>
+  <RichTextEditor value={html} onValueChange={setHtml} maxLength={2000} />
+</Field>
+
+<RichTextView value={nota.descricao} empty="Sem descrição." />
+```
+
+O valor é HTML, e o editor em branco entrega string vazia. O `RichTextView`
+exibe o que foi salvo sem `innerHTML` e sem carregar o Tiptap.
 
 ## Gráficos
 

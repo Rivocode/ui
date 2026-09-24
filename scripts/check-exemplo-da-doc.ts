@@ -103,6 +103,7 @@ export const WEB_ENTRIES = [
   "src/form/index.ts",
   "src/ai/index.ts",
   "src/dnd/index.ts",
+  "src/editor/index.ts",
 ];
 
 /**

@@ -4,6 +4,7 @@
 @source './chart';
 @source './components';
 @source './dnd';
+@source './editor';
 @source './form';
 @source './provider';
 

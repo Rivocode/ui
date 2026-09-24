@@ -3184,6 +3184,28 @@
       }
     ]
   },
+  "RichTextView": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "value",
+        "type": "string | RichTextJson | null | undefined",
+        "required": true,
+        "note": "O conteudo salvo pelo `RichTextEditor` do web: o HTML do `onValueChange` ou o JSON do `onJsonChange`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o `<p></p>` de um editor em branco."
+      }
+    ]
+  },
   "RivoProvider": {
     "entry": "native/src/index.ts",
     "props": [

@@ -32,6 +32,7 @@ Estes são opcionais, e só quem usa carrega o peso:
 | `@rivocode/ui/form`     | `react-hook-form`, `zod`, `@hookform/resolvers`   |
 | `@rivocode/ui/chart`    | `recharts`                                        |
 | `@rivocode/ui/dnd`      | `@dnd-kit/core`, `@dnd-kit/sortable`              |
+| `@rivocode/ui/editor`   | `@tiptap/react`, `@tiptap/pm`, `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extensions` |
 
 ## 2. Ligar o Tailwind no build
 

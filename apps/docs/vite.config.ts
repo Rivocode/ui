@@ -306,6 +306,7 @@ export default defineConfig({
       '@rivocode/ui/chart': here('../../src/chart/index.ts'),
       '@rivocode/ui/ai': here('../../src/ai/index.ts'),
       '@rivocode/ui/dnd': here('../../src/dnd/index.ts'),
+      '@rivocode/ui/editor': here('../../src/editor/index.ts'),
       '@rivocode/ui': here('../../src/index.ts'),
       '@': here('./src'),
     },

@@ -66,3 +66,28 @@ nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
 `forValue` devolve o valor com o tipo que o schema deu a ele, então controle
 tipado encaixa sem `as`. Os nomes antigos (`forSelect`, `forCheckbox`,
 `forDatePicker`) continuam valendo e apontam para os mesmos adaptadores.
+
+## Texto com formatação: `@rivocode/ui/editor`
+
+Descrição de serviço, cláusula, observação com lista: `RichTextEditor`, no
+subcaminho próprio, com os peers opcionais do Tiptap 3 (`@tiptap/react`,
+`@tiptap/pm`, `@tiptap/core`, `@tiptap/starter-kit`, `@tiptap/extensions`).
+O valor é HTML, e o editor em branco entrega `""`, então `min(1)` recusa o
+vazio. Entra pelo `forValue`, com o `onBlur` do campo para ele contar como
+tocado, e o `defaultValues` precisa da string vazia:
+
+```tsx
+import { RichTextEditor } from '@rivocode/ui/editor'
+
+const schema = z.object({ descricao: z.string().min(1, 'Descreva o serviço.') })
+const form = useZodForm(schema, { defaultValues: { descricao: '' } })
+
+<FormField name="descricao" label="Descrição do serviço">
+  {(field) => <RichTextEditor {...forValue(field)} onBlur={field.onBlur} maxLength={2000} />}
+</FormField>
+```
+
+`maxLength` conta texto, e não marca de HTML. Para mostrar o que foi salvo,
+`RichTextView`, do mesmo caminho: não usa `innerHTML` nem carrega o Tiptap, e
+lê o HTML ou o JSON do `onJsonChange`. Observação curta, sem negrito nem lista,
+continua sendo `Textarea`.

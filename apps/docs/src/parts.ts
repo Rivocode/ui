@@ -116,11 +116,19 @@ const AI_SUBPATH = new Set(['AILabel', 'Conversation', 'Message', 'PromptInput',
  */
 const DND_SUBPATH = new Set(['Kanban', 'SortableList'])
 
+/**
+ * O que vem de `@rivocode/ui/editor`: o editor e a peca que exibe o que ele
+ * salvou. As duas moram juntas porque o formato e um so, e quem exibe sem
+ * editar nao importa o Tiptap - o `RichTextView` nao toca nele.
+ */
+const EDITOR_SUBPATH = new Set(['RichTextEditor', 'RichTextView'])
+
 /** De qual entrada a peca vem; os subcaminhos sao opcionais de proposito. */
 export function importPathOf(name: string) {
   if (FORM_SUBPATH.has(name)) return '@rivocode/ui/form'
   if (isChart(name)) return '@rivocode/ui/chart'
   if (AI_SUBPATH.has(name)) return '@rivocode/ui/ai'
   if (DND_SUBPATH.has(name)) return '@rivocode/ui/dnd'
+  if (EDITOR_SUBPATH.has(name)) return '@rivocode/ui/editor'
   return '@rivocode/ui'
 }

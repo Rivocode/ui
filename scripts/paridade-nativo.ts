@@ -1664,6 +1664,44 @@ const PARITY: Record<string, Row> = {
       "outras colunas. É o mesmo `onMove({ itemId, from, to, index })` do web do lado de quem " +
       "guarda o estado, e é o caminho que o leitor de tela já faria de qualquer jeito.",
   },
+  RichTextEditor: {
+    state: "nao",
+    note: "editar texto formatado no toque é outro motor (WebView ou biblioteca nativa, com peer de módulo nativo) e a barra é superfície de mesa; o celular escreve com `Textarea` e lê o que o web salvou com `RichTextView`",
+    page:
+      "Não porta, por decisão, e não é fila: a pergunta que faltaria decidir não é de gesto, " +
+      "é de motor.\n\n" +
+      "**O editor do web não atravessa.** Ele é o Tiptap sobre o ProseMirror, que vive do " +
+      "`contenteditable` do navegador, e o React Native não tem `contenteditable`. As duas " +
+      "saídas são outro produto: um `WebView` com o mesmo editor dentro, que traz o " +
+      "`react-native-webview` como peer de módulo nativo, teclado e seleção que não são os " +
+      "do sistema, e texto que o leitor de tela lê pelo caminho da página e não pelo do " +
+      "app; ou uma biblioteca de texto rico nativa, que não lê nem escreve o mesmo " +
+      "documento. Nenhuma das duas é a mesma peça com outra API.\n\n" +
+      "**E a barra é superfície de mesa.** Ela é uma `Toolbar`, que também não porta: uma " +
+      "parada de tabulação com seta entre os botões, sobre uma seleção feita com o ponteiro. " +
+      "No toque, formatar um trecho é selecionar com o dedo que cobre o trecho, e quinze " +
+      "botões não cabem acima do teclado.\n\n" +
+      "**No celular, a resposta é dividir o trabalho.** O que se escreve no telefone é texto " +
+      "curto, e o campo é o `Textarea`. O que foi escrito formatado no web se lê com o " +
+      "`RichTextView`, que porta sem peer e lê o mesmo HTML e o mesmo JSON.",
+  },
+  RichTextView: {
+    state: "traduz",
+    note: "no índice principal, sem `WebView` e sem peer: o mesmo leitor do web monta cada bloco como `View` e cada marca como `Text`, e o link abre pelo `Linking`",
+    page:
+      "Traduz, no índice principal `@rivocode/ui-native`, com os mesmos `value` e `empty`. " +
+      "Lê o HTML do `onValueChange` e o JSON do `onJsonChange` do `RichTextEditor` pelo " +
+      "**mesmo leitor do web**, que é código puro compartilhado entre os dois pacotes: não " +
+      "há `WebView`, não há peer, e nada do conteúdo executa.\n\n" +
+      "Cada bloco vira `View` e cada marca vira `Text` aninhado: o título é o `Heading` (e " +
+      "se anuncia como cabeçalho), a lista numerada começa do `start` salvo, a citação sai no " +
+      "tom apagado com a borda à esquerda, o bloco de código em fonte mono e selecionável, e " +
+      "o link é o `Link`, que abre pelo `Linking` e só com `http`, `https`, `mailto`, `tel` " +
+      "ou endereço relativo.\n\n" +
+      "**Não mora num subcaminho.** No web ele sai de `@rivocode/ui/editor` porque divide o " +
+      "caminho com o editor; no celular não há editor, então não há peer a separar, e a peça " +
+      "vive junto do `Text`.",
+  },
 };
 
 /* --------------------------------------------------------------------------

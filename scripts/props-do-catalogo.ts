@@ -29,6 +29,7 @@ const ENTRY_POINTS = [
   "src/chart/index.ts",
   "src/ai/index.ts",
   "src/dnd/index.ts",
+  "src/editor/index.ts",
 ];
 
 /**

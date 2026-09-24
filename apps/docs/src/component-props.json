@@ -21606,6 +21606,122 @@
       }
     ]
   },
+  "RichTextEditor": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"count\" | \"footer\" | \"toolbar\", string>>",
+        "required": false,
+        "note": "Classe por parte: `toolbar`, `content`, `footer`, `count`."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "O HTML do primeiro desenho, quando a peca guarda o proprio texto."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o texto e a barra."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Pinta a moldura de perigo e anuncia `aria-invalid`."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RichTextEditorLabels>",
+        "required": false,
+        "note": "Os textos da barra, do painel de link e do contador, em portugues por padrao."
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "note": "O teto de caracteres de texto, sem contar as marcas do HTML."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "O nome do campo no envio do formulario: o HTML sai num `input` escondido."
+      },
+      {
+        "name": "onBlur",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado quando o texto perde foco; e o que marca o campo como tocado no formulario."
+      },
+      {
+        "name": "onFocus",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado quando o texto ganha foco."
+      },
+      {
+        "name": "onJsonChange",
+        "type": "((value: RichTextJson) => void)",
+        "required": false,
+        "note": "Avisado a cada mudanca com o documento em JSON, o formato do Tiptap."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Avisado a cada mudanca, com o documento inteiro em HTML."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "note": "O texto que aparece no editor vazio."
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "note": "So leitura: o texto pode ser selecionado e copiado, e a barra de ferramentas some."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O conteudo, em HTML, quando quem usa guarda o texto."
+      }
+    ]
+  },
+  "RichTextView": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "value",
+        "type": "string | RichTextJson | null | undefined",
+        "required": true,
+        "note": "O conteudo salvo: o HTML que o `onValueChange` do `RichTextEditor` entregou, ou o JSON do `onJsonChange`."
+      },
+      {
+        "name": "empty",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o `<p></p>` de um editor em branco."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false
+      }
+    ]
+  },
   "RivoProvider": {
     "forwardsRoot": true,
     "props": [

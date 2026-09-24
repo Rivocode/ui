@@ -1,7 +1,15 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/form/index.ts", "src/chart/index.ts", "src/ai/index.ts", "src/dnd/index.ts", "src/cli.ts"],
+  entry: [
+    "src/index.ts",
+    "src/form/index.ts",
+    "src/chart/index.ts",
+    "src/ai/index.ts",
+    "src/dnd/index.ts",
+    "src/editor/index.ts",
+    "src/cli.ts",
+  ],
   format: "esm",
   dts: true,
   clean: true,

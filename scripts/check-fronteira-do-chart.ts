@@ -110,6 +110,17 @@ const FRONTIERS: Frontier[] = [
       "    teria de instalar os tres.",
   },
   {
+    pkg: "@rivocode/ui",
+    core: "src",
+    dir: "src/editor/",
+    entry: "@rivocode/ui/editor",
+    peer: /^@tiptap\//,
+    why:
+      "O Tiptap e peer opcional - @tiptap/react, /pm, /core, /starter-kit e\n" +
+      "    /extensions -, e o ProseMirror por baixo dele pesa mais que o resto do\n" +
+      "    formulario inteiro. Quem monta um Input nao instala editor nenhum.",
+  },
+  {
     pkg: "@rivocode/ui-native",
     core: "native/src",
     dir: "native/src/clipboard/",

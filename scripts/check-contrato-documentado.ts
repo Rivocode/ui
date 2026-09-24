@@ -43,6 +43,7 @@ const TARGETS = [
   { file: "src/form/index.ts", name: "@rivocode/ui/form" },
   { file: "src/ai/index.ts", name: "@rivocode/ui/ai" },
   { file: "src/dnd/index.ts", name: "@rivocode/ui/dnd" },
+  { file: "src/editor/index.ts", name: "@rivocode/ui/editor" },
   { file: "native/src/chart/index.ts", name: "@rivocode/ui-native/chart" },
   { file: "native/src/form/index.ts", name: "@rivocode/ui-native/form" },
   { file: "native/src/clipboard/index.ts", name: "@rivocode/ui-native/clipboard" },

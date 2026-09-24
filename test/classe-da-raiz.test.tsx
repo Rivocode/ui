@@ -9,6 +9,7 @@ import * as chart from "../src/chart/index";
 import * as form from "../src/form/index";
 import * as ai from "../src/ai/index";
 import * as dnd from "../src/dnd/index";
+import * as editor from "../src/editor/index";
 
 /*
  * "Toda peca aceita `className` na raiz, e a classe de quem usa vence a da
@@ -49,7 +50,7 @@ const catalog: Record<string, CatalogPiece> = await Bun.file(
 ).json();
 
 /** Os cinco caminhos publicos. O que nao sai por eles nao e peca de ninguem. */
-const surface: Record<string, unknown> = { ...pkg, ...form, ...chart, ...ai, ...dnd };
+const surface: Record<string, unknown> = { ...pkg, ...form, ...chart, ...ai, ...dnd, ...editor };
 
 /**
  * Nem todo export de nome maiusculo e componente.
@@ -244,6 +245,7 @@ const SAMPLE_CHILD: Record<string, ReactNode> = {
 const SAMPLE_PROPS: Record<string, Record<string, unknown>> = {
   RivoProvider: { scope: "local" },
   FieldError: { match: true },
+  RichTextView: { value: "<p>Nota paga em 12/08.</p>" },
 };
 
 /**

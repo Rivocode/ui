@@ -161,6 +161,8 @@ export {
 } from "./color-picker";
 export { Timeline, type TimelineEvent, type TimelineProps, type TimelineTone } from "./timeline";
 export { Code, type CodeProps } from "./code";
+export { RichTextView, type RichTextViewProps } from "./rich-text-view";
+export type { RichTextJson } from "./shared/rich-text";
 export { Tree, leavesOf, type TreeNode, type TreeProps } from "./tree";
 export { TreeSelect, type TreeSelectProps } from "./tree-select";
 export { Editable, type EditableProps } from "./editable";

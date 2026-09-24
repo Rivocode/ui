@@ -1,7 +1,7 @@
 {
   "name": "@rivocode/ui",
   "version": "0.16.0",
-  "description": "Design system da RivoCode: 118 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
+  "description": "Design system da RivoCode: 120 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
   "keywords": [
     "base-ui",
     "components",
@@ -65,6 +65,10 @@
     "./dnd": {
       "types": "./dist/dnd/index.d.ts",
       "default": "./dist/dnd/index.js"
+    },
+    "./editor": {
+      "types": "./dist/editor/index.d.ts",
+      "default": "./dist/editor/index.js"
     }
   },
   "publishConfig": {
@@ -89,7 +93,7 @@
     "gen:native:contrast": "bun run scripts/gen-native-contrast.ts",
     "check:native:contrast": "bun run scripts/gen-native-contrast.ts --check",
     "check:cli": "bun run scripts/check-fronteira-do-cli.ts",
-    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx demo/novas.tsx demo/painel.tsx demo/paleta.tsx demo/ia.tsx demo/arrastar.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
+    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx demo/novas.tsx demo/painel.tsx demo/paleta.tsx demo/ia.tsx demo/arrastar.tsx demo/editor.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
     "visual": "bun run scripts/regressao-visual.ts",
     "shot": "bun run demo && bun run scripts/shot.ts",
     "serve": "bun run scripts/serve.ts",
@@ -154,6 +158,11 @@
     "@tailwindcss/cli": "^4.3.3",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",
+    "@tiptap/core": "^3.31.3",
+    "@tiptap/extensions": "^3.31.3",
+    "@tiptap/pm": "^3.31.3",
+    "@tiptap/react": "^3.31.3",
+    "@tiptap/starter-kit": "^3.31.3",
     "@types/bun": "^1.4.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -172,6 +181,11 @@
     "@dnd-kit/core": "^6.3.0",
     "@dnd-kit/sortable": "^10",
     "@hookform/resolvers": "^5",
+    "@tiptap/core": "^3",
+    "@tiptap/extensions": "^3",
+    "@tiptap/pm": "^3",
+    "@tiptap/react": "^3",
+    "@tiptap/starter-kit": "^3",
     "lucide-react": "^1",
     "react": "^19",
     "react-dom": "^19",
@@ -188,6 +202,21 @@
       "optional": true
     },
     "@hookform/resolvers": {
+      "optional": true
+    },
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extensions": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/react": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
       "optional": true
     },
     "lucide-react": {

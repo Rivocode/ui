@@ -79,7 +79,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 
 Os nomes de familia saem do `category` do proprio documento, e o site os escreve
 com acento. Nenhuma peca esta sem documento, e nenhum documento esta sem codigo
-por tras: `check:doc` confere os dois sentidos sobre as 195 paginas.
+por tras: `check:doc` confere os dois sentidos sobre as 197 paginas.
 
 Fora do `@rivocode/ui` principal ficam dois subcaminhos, `@rivocode/ui/form` e
 `@rivocode/ui/chart`, cada um com dependencia de par opcional. Mais os
@@ -782,7 +782,7 @@ bun run check:pecas                                # 110 pecas
 bun run check:testes                               # 1868 testes em 157 arquivos
 bun test                                           # 1868 passam, 0 falham, 11386 expect()
 bun test native/test                               # 523 deles, em 41 arquivos
-grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 109 linhas: 86 traduz, 5 vira, 18 nao, 0 fila
+grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 111 linhas: 87 traduz, 5 vira, 19 nao, 0 fila
 bun run check:assinatura                           # 163 divergencias de assinatura, em 71 pecas
 bun run check:contrato                             # os SEIS subcaminhos de codigo, web e nativo
 bun run check:temas                                # 85 tokens, 55 papeis obrigatorios
@@ -793,8 +793,8 @@ bun run check:tema:nativo                          # 8 sementes, 37 derivados, 4
 bun run check:classes                              # 220 arquivos, sem excecao
 bun run check:colors                               # 107 arquivos sem cor literal
 bun run check:skill                                # 74 props citadas
-bun run check:demo                                 # 106 de 109 na vitrine, 3 declaradas fora
-bun run check:readme                               # 69 de 109 citadas, 40 declaradas fora
+bun run check:demo                                 # 108 de 111 na vitrine, 3 declaradas fora
+bun run check:readme                               # 71 de 111 citadas, 40 declaradas fora
 bun run check:retratos                             # 12 retratos de secao sobre 6 areas, 23256 quadrados, 53 marcadores
 bun run check:receita                              # 7 arquivos de receita, 5 peers, e nenhum Babel nos dois
 bun run check:scripts                              # os 6 scripts fora do gate, com o motivo
@@ -814,7 +814,7 @@ curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui-native@0.1
 gh run list --workflow=docs --limit 5              # a publicacao do site, a ultima do commit 2812b47
 gh run list --workflow=release-native --limit 5    # a publicacao da 0.10.0, por workflow_dispatch do tag.yml
 gh pr checks 8                                     # o PR do Dependabot, vermelho no check:props
-curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 109 e 195
+curl -sI https://ds.rivocode.com.br/llms.txt       # 200, e o texto abre dizendo 111 e 197
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false, e e a divida da secao "Divida de codigo"
 ```
 

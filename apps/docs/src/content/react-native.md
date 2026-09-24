@@ -156,7 +156,7 @@ recusa o que conseguiu medir.
 
 ## A paridade, peça por peça
 
-**118 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-24:** 92 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 21 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**120 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-24:** 93 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 22 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -243,6 +243,8 @@ recusa o que conseguiu medir.
 | `Rating` | ✔ traduz | um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `ResizablePanelGroup` | ✕ não porta | painel que se arrasta para dividir a largura é idioma de mesa; no celular cada área é uma tela do router, ou uma folha por cima |
+| `RichTextEditor` | ✕ não porta | editar texto formatado no toque é outro motor (WebView ou biblioteca nativa, com peer de módulo nativo) e a barra é superfície de mesa; o celular escreve com `Textarea` e lê o que o web salvou com `RichTextView` |
+| `RichTextView` | ✔ traduz | no índice principal, sem `WebView` e sem peer: o mesmo leitor do web monta cada bloco como `View` e cada marca como `Text`, e o link abre pelo `Linking` |
 | `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✔ traduz | a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo em foco e prende um `footer` que sobe com ele |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |

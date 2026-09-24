@@ -81,6 +81,7 @@ const LIBRARY = [
   "src/chart/index.ts",
   "src/ai/index.ts",
   "src/dnd/index.ts",
+  "src/editor/index.ts",
 ];
 const TOOL = "src/cli.ts";
 

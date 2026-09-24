@@ -116,9 +116,9 @@ tokens no seletor do tema dele, junto com as cores. Sem
 cada `data-rc-theme` carrega a sua família, e a troca acontece por seletor,
 como a de cor.
 
-### Os tres subcaminhos
+### Os quatro subcaminhos
 
-Alem do pacote principal, tres familias vivem em subcaminhos e chegam pelo
+Alem do pacote principal, quatro familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
 - **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
@@ -266,6 +266,31 @@ sempre resolve.
   a posicao 3 de 8"). `getLabel` da o nome que o anuncio fala, e `labels` troca
   qualquer frase. Os vizinhos andam com a mola espacial dos tokens, e com
   "reduzir movimento" trocam de lugar sem deslizar.
+
+- **`@rivocode/ui/editor`**, o texto com formatacao, sobre o Tiptap 3. Os peers
+  sao OPCIONAIS e so este caminho os cobra: `@tiptap/react`, `@tiptap/pm`,
+  `@tiptap/core`, `@tiptap/starter-kit` e `@tiptap/extensions`.
+
+  ```tsx
+  import { RichTextEditor, RichTextView } from '@rivocode/ui/editor'
+
+  <Field>
+    <FieldLabel>Descrição do serviço</FieldLabel>
+    <RichTextEditor value={html} onValueChange={setHtml} maxLength={2000} />
+  </Field>
+
+  <RichTextView value={nota.descricao} empty="Sem descrição." />
+  ```
+
+  | Peca | Para que |
+  |---|---|
+  | `RichTextEditor` | O campo: barra de ferramentas com setas e `aria-pressed`, atalhos, link com painel, `value` em HTML e `onJsonChange` opcional, `maxLength` com contador. O editor em branco entrega `""`, e no formulario o adaptador e o `forValue` mais o `onBlur` |
+  | `RichTextView` | Exibe o HTML ou o JSON salvo com a mesma tipografia, sem `innerHTML` e sem o Tiptap: so os blocos e marcas do editor, e link so `http`, `https`, `mailto`, `tel` ou relativo |
+
+  **O editor nao monta no servidor** (`immediatelyRender: false`): no lugar
+  dele sai o conteudo ja formatado, e ele vira editavel quando o JavaScript
+  chega. O HTML que chega ao servidor e entrada de usuario como qualquer outra;
+  exibido por outro caminho que nao o `RichTextView`, passe por sanitizador.
 
 ### Formatar o numero
 
