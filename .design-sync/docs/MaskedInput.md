@@ -44,6 +44,22 @@ Nome de molde digitado errado não vira molde literal: `mask="dinheiro"` avisa n
 console em desenvolvimento e deixa o texto passar cru, em vez de escrever
 "dinheiro" dentro do campo, que foi o que a versão anterior fazia.
 
+## Conferir o documento
+
+A máscara põe a pontuação, e não diz se o número existe. Quem confere é
+`isValidCpf` e `isValidCnpj`, pelos dígitos verificadores. Os dois aceitam o
+texto com ou sem pontuação, e o `isValidCnpj` já faz a conta do CNPJ
+alfanumérico: cada letra vale o código dela menos 48.
+
+```tsx
+const schema = z.object({
+  cnpj: z.string().refine(isValidCnpj, 'CNPJ inválido'),
+})
+```
+
+Valide ao sair do campo, e não a cada tecla: o documento pela metade é sempre
+inválido, e acusar quem ainda está digitando é ruído.
+
 ## As máscaras fora do campo
 
 A mesma lógica sai como função, para o texto que a tela **mostra** e nunca

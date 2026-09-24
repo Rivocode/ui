@@ -32,6 +32,10 @@ function InvoiceForm({ onIssue }: { onIssue: (data: unknown) => void }) {
 }
 ```
 
+CPF e CNPJ se conferem pelo dígito verificador com `isValidCpf` e
+`isValidCnpj`, do pacote principal: `z.string().refine(isValidCnpj, 'CNPJ
+inválido')`. Os dois já aceitam o CNPJ alfanumérico e o texto com máscara.
+
 O `FormField` não inventa `id`: ele monta rótulo, controle, ajuda e erro dentro
 do `Field`, e a Base UI liga `aria-describedby` e `aria-invalid` sozinha.
 

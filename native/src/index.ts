@@ -43,6 +43,7 @@ export { CheckboxGroup, type CheckboxGroupItem, type CheckboxGroupProps } from "
 export { Text, TextInput, type TextProps, type TextInputProps } from "./text";
 export { Textarea, type TextareaProps } from "./textarea";
 export { MaskedInput, type MaskedInputProps } from "./masked-input";
+export { isValidCnpj, isValidCpf } from "./shared/tax-id";
 export { NumberField, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";
 export { SearchInput, type SearchInputProps } from "./search-input";

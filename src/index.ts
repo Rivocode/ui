@@ -175,6 +175,7 @@ export {
   type Mask,
   type MaskName,
 } from "./lib/mask";
+export { isValidCnpj, isValidCpf } from "./shared/tax-id";
 export {
   InputAction,
   InputGroup,

@@ -238,6 +238,9 @@ Data e mascara tem as suas, pelo mesmo motivo: `formatDate`, `parseDate` e
 `applyDateMask` para `dd/mm/aaaa`, e `applyMask`, `applyPattern`,
 `applyCurrencyMask`, `unmask`, `toCents` e `phonePatternFor` para os moldes de
 `MASKS`. Formatar CPF numa celula de tabela nao precisa de um campo por perto.
+`isValidCpf` e `isValidCnpj` conferem os digitos verificadores, com ou sem
+pontuacao e com o CNPJ alfanumerico. Os dois existem tambem no nativo, pela
+mesma conta.
 
 ### O que o CSS nao alcanca
 
