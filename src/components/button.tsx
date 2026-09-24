@@ -12,7 +12,7 @@ export const buttonVariants = cva(
     "motion-safe:active:scale-[0.985]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
     "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
-    "disabled:pointer-events-none not-data-loading:disabled:border-transparent",
+    "disabled:pointer-events-none not-data-loading:disabled:border-border-disabled",
     "not-data-loading:disabled:bg-surface-raised not-data-loading:disabled:text-fg-disabled",
     "not-data-loading:disabled:shadow-none",
     "data-loading:cursor-progress data-loading:opacity-80",
@@ -20,14 +20,14 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
+        primary: "border border-transparent bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
         secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-raised",
         ghost: "text-fg-muted hover:bg-accent-subtle hover:text-fg",
         outline: cn(
           "border-2 border-border-strong bg-transparent text-fg",
           "hover:border-line-hover hover:bg-accent-subtle",
         ),
-        destructive: "bg-danger text-danger-fg",
+        destructive: "border border-transparent bg-danger text-danger-fg",
       },
       size: {
         sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",

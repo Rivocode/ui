@@ -52,7 +52,7 @@ para quem enxerga e ainda não conhece o ícone. `tooltipSide` escolhe o lado.
 
 `loading` troca o ícone pela espera no mesmo quadrado, trava o clique e anuncia
 `aria-busy`, e o nome continua o mesmo: a pessoa que ouve sabe o que está
-esperando. `disabled` é o do `Button`, com o fundo e a cor de desabilitado.
+esperando. `disabled` é o do `Button`, com o fundo, a cor e o contorno de desabilitado.
 
 ## Como link
 
