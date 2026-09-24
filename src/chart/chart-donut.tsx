@@ -106,6 +106,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               outerRadius={outer}
               paddingAngle={2}
               cornerRadius={4}
+              rootTabIndex={-1}
               {...motion}
               onMouseEnter={() => setReading(true)}
               onMouseLeave={() => setReading(false)}

@@ -39,6 +39,11 @@ movimento de distância.
 Se você precisa dos dois ao mesmo tempo na tela, o lugar do total é fora da
 peça: um `Stat` ao lado, ou o título do cartão.
 
+O anel não é parada de tabulação. Com legenda, quem lê a rosca pelo leitor de
+tela lê a lista da legenda, e o desenho fica escondido; sem legenda, o desenho
+vira uma imagem só, com nome. Nos dois casos o teclado passa direto pelo anel,
+em vez de parar num grupo que o leitor não anuncia.
+
 ## Movimento
 
 Na primeira vez que aparece, a rosca varre do zero: as fatias saem juntas do

@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { ChartDonut } from "../src/chart/chart-donut";
@@ -125,4 +125,26 @@ test("a sparkline em barra existe nos dois mundos, com o mesmo nome", () => {
 
   expect(box?.getAttribute("aria-label")).toBe("Emissões por dia");
   expect(box?.getAttribute("aria-hidden")).toBeNull();
+});
+
+test("a rosca desenhada nao deixa parada de tabulacao escondida do leitor dentro do anel", async () => {
+  const measure = HTMLElement.prototype.getBoundingClientRect;
+  HTMLElement.prototype.getBoundingClientRect = function () {
+    return { x: 0, y: 0, top: 0, left: 0, right: 320, bottom: 192, width: 320, height: 192, toJSON() {} } as DOMRect;
+  };
+  try {
+    const { container } = withTheme(<ChartDonut data={SLICES} valueKey="total" nameKey="natureza" />);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 30));
+    });
+
+    const surface = container.querySelector("svg.recharts-surface");
+    expect(surface).not.toBeNull();
+    expect(surface!.closest("[aria-hidden=true]")).not.toBeNull();
+    const focusable = [...surface!.querySelectorAll("[tabindex]")];
+    expect(focusable.length).toBeGreaterThan(0);
+    for (const node of focusable) expect(node.getAttribute("tabindex")).toBe("-1");
+  } finally {
+    HTMLElement.prototype.getBoundingClientRect = measure;
+  }
 });
