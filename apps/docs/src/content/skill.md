@@ -47,7 +47,7 @@ O site serve a skill crua, sempre na versão mais nova:
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui && mkdir -p "$dir/reference" && \
   curl -fsSL https://ds.rivocode.com.br/skill/SKILL.md -o "$dir/SKILL.md" && \
-  for f in method fluxo texto layout design components a11y forms charts theming native; do \
+  for f in method fluxo texto layout design components a11y forms charts ai theming native; do \
     curl -fsSL "https://ds.rivocode.com.br/skill/reference/$f.md" \
       -o "$dir/reference/$f.md"; \
   done

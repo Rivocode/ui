@@ -77,10 +77,12 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**170 divergências de assinatura em 73 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**183 divergências de assinatura em 78 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
+| `AILabel` | `explanation` | `explanation` | `string`, que vira a descrição da `Sheet` onde a explicação abre |
+| `AILabel` | `side` | — | a explicação abre numa `Sheet`, que não tem lado |
 | `Accordion` | `value` | — | a raiz não guarda valor: cada `AccordionItem` abre sozinho, com `defaultOpen` |
 | `Accordion` | `multiple` | — | sem raiz controlada, vários abertos é o único modo |
 | `Accordion` | — | `children` | a raiz só empilha; quem tem prop é o item |
@@ -131,6 +133,9 @@ escritos em lugar nenhum.
 | `ContextMenu` → `Menu` | — | `actions` | os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo |
 | `ContextMenu` → `Menu` | — | `title` | a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata |
 | `ContextMenu` → `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe |
+| `Conversation` | — | `items` | as mensagens vêm por `items`, `renderItem` e `keyExtractor`, e não por filhos; a ordem é a mesma, a mais nova por último |
+| `Conversation` | `empty` | `empty` | `title` e `description` viram `string`, e o `icon` é a função que recebe a cor |
+| `Conversation` | `classNames` | — | um `className` só, na raiz da lista |
 | `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
 | `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
 | `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
@@ -184,6 +189,9 @@ escritos em lugar nenhum.
 | `Menu` | — | `title` | a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata |
 | `Menu` | — | `children` | não há `MenuTrigger`: `children` é a área que abre no toque longo, e o botão de três pontinhos é seu |
 | `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe |
+| `Message` | `copyValue` | `onCopy` | o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard` |
+| `Message` | `error` | `error` | `string`: texto no nativo mora dentro de um `Text` |
+| `Message` | `classNames` | — | um `className` só, na linha da mensagem |
 | `Meter` | `format` | `valueLabel` | o texto vai pronto: resolver nome de formatador custaria o `Intl` no bundle do celular |
 | `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
@@ -204,6 +212,9 @@ escritos em lugar nenhum.
 | `Progress` | `format` | — | sem formatador, e sem `showValue`: a barra mostra a porcentagem |
 | `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
 | `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
+| `PromptInput` | `value` | `value` | obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado |
+| `PromptInput` | `defaultValue` | — | sem estado próprio: quem limpa o campo depois do envio é quem chamou |
+| `PromptInput` | `classNames` | — | um `className` só, na moldura do campo |
 | `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`, e o `icon` sai |
 | `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
 | `RivoProvider` | `density` | — | a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura |
@@ -246,6 +257,8 @@ escritos em lugar nenhum.
 | `TimelineItem` → `Timeline` | `tone` | — | `tone` e `pending` viram campos de `items[]`, e `by` e `title` também |
 | `Toggle` | `value` | — | não há formulário nativo para carregar valor: o estado é `pressed` |
 | `ToggleGroup` | — | `items` | `items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual |
+| `ToolCall` | `title` | `title` | `string`, como o `error`: texto no nativo mora dentro de um `Text` |
+| `ToolCall` | `classNames` | — | um `className` só, no cartão |
 | `Tree` | `expanded` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
 | `Tree` | `filter` | — | sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado |
 | `Tree` | — | `label` | `label` é obrigatório: é ele que nomeia o nível para o leitor de tela |
@@ -355,10 +368,11 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**101 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts` e `native/src/file-upload/index.ts` em 2026-09-24:** 79 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**106 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 84 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 17 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
+| `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
 | `Accordion` | ✔ traduz | cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
@@ -386,6 +400,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `Container` | ✕ não porta | o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
+| `Conversation` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida |
 | `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
@@ -413,6 +428,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `MaskedInput` | ✔ traduz | o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
+| `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
 | `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
@@ -424,6 +440,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
+| `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
@@ -454,6 +471,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ToastViewport` | ✔ vira `useToast` | não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento |
 | `Toggle` | ✔ traduz | `pressed` e `onPressedChange` |
 | `ToggleGroup` | ✔ traduz | `items` na raiz; `multiple` para vários, o mesmo nome e o mesmo sentido do web |
+| `ToolCall` | ✔ traduz | vive em `@rivocode/ui-native/ai`; os mesmos cinco estados com marca e texto, a entrada e a saída em fonte mono, e aprovar e recusar fora do painel |
 | `Toolbar` | ✕ não porta | superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem |
 | `Tooltip` | ✕ não porta | hover não existe no toque; o rótulo precisa estar na tela |
 | `Tracker` | ✔ traduz | a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string` |

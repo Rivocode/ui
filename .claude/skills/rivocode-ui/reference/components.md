@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 101 peças. O índice de todas fica em
+O catálogo tem 106 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -61,6 +61,10 @@ exemplos que rodam e a tabela de props.
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
 | Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
 | Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |
+| Campo onde a pessoa escreve para um assistente | `PromptInput`, de `@rivocode/ui/ai` | Enter envia e Shift+Enter quebra; o `Textarea` vai junto com o formulário e não envia no Enter |
+| A conversa com um assistente | `Conversation` + `Message` | Gruda no fim enquanto o texto chega e solta quando a pessoa rola; a `Timeline` olha para trás |
+| Chamada de ferramenta, com aprovação | `ToolCall` | Estado com ícone e texto, e aprovar ou recusar fora do painel; o `Accordion` organiza texto, não acontecimento |
+| Marcar conteúdo gerado por IA fora da conversa | `AILabel` | O leitor ouve por extenso e a explicação abre no toque; estado de registro continua `Badge` |
 
 ## Toda consulta tem quatro finais
 

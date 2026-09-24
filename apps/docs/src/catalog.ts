@@ -133,6 +133,7 @@ const FAMILY_ORDER = [
   'Sobreposição',
   'Feedback',
   'Gráfico',
+  'IA',
   'Geral',
 ]
 

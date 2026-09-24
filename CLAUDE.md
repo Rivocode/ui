@@ -80,6 +80,7 @@ falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
 |---|---|
 | `src/` | o pacote web `@rivocode/ui` |
 | `src/chart/`, `src/form/` | subcaminhos com peer OPCIONAL; a Recharts nao pode vazar para `src/index.ts` (`check:chart`) |
+| `src/ai/`, `native/src/ai/` | subcaminho SEM peer, pelo peso: as pecas de conversa com modelo nao entram no indice da raiz (`check:chart` guarda os dois) |
 | `src/tokens/` | o UNICO lugar onde pode existir cor literal (`check:colors`) |
 | `native/src/` | o pacote `@rivocode/ui-native`, publicado como FONTE |
 | `mcp/` | o pacote `@rivocode/ui-mcp`, servidor MCP por stdio; workspace da raiz |
@@ -153,8 +154,9 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   que continuar dizendo que a tabela NAO e o indice. Nasceu porque o digito
   estava certo e a lista embaixo dele nao: o `check:pecas` guardava o "90
   pecas.", e das 90 o arquivo inteiro citava 49. A lista so encolhe.
-- `check:contrato` - o que `src/chart/index.ts` e `src/form/index.ts` exportam
-  tem que estar citado em `conventions.md` E na skill.
+- `check:contrato` - o que `src/chart/index.ts`, `src/form/index.ts`,
+  `src/ai/index.ts` e os subcaminhos do nativo exportam tem que estar citado em
+  `conventions.md` E na skill.
 - `check:skill` - prop citada em exemplo da skill tem que existir na peca.
 - `check:lista-skill` - todo arquivo de `.claude/skills/rivocode-ui/reference/`
   tem que estar no indice do `SKILL.md` E no laco `curl` de

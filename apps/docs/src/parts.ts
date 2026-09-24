@@ -99,9 +99,16 @@ const FORM_SUBPATH = new Set(['Form', 'FormField'])
  */
 const isChart = (name: string) => name.startsWith('Chart') || name === 'Sparkline'
 
+/**
+ * O que vem de `@rivocode/ui/ai`. Lista escrita, e nao prefixo: os cinco nomes
+ * nao tem raiz comum, e `Message` nao se adivinha de nada.
+ */
+const AI_SUBPATH = new Set(['AILabel', 'Conversation', 'Message', 'PromptInput', 'ToolCall'])
+
 /** De qual entrada a peca vem; os subcaminhos sao opcionais de proposito. */
 export function importPathOf(name: string) {
   if (FORM_SUBPATH.has(name)) return '@rivocode/ui/form'
   if (isChart(name)) return '@rivocode/ui/chart'
+  if (AI_SUBPATH.has(name)) return '@rivocode/ui/ai'
   return '@rivocode/ui'
 }

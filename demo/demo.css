@@ -1,5 +1,6 @@
 @import "tailwindcss" source(none);
 
+@source '../src/ai';
 @source '../src/chart';
 @source '../src/components';
 @source '../src/form';

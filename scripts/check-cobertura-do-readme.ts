@@ -163,8 +163,6 @@ const OUT_OF_README: Record<string, string> = {
     "Divida na tabela Flutuante: e a terceira resposta entre `Dialog` e `AlertDialog`, e a tabela cita os dois e para antes da que confirma sem escurecer a tela.",
   PreviewCard:
     "Divida na tabela Flutuante: e `Tooltip` e `Popover` ao pousar sobre um link, os dois citados, e nada ali diz qual usar para o resumo de um link.",
-  Timeline:
-    "Divida na tabela Dado: entrou no catalogo em 26/08/2026, no lote de sete pecas que abriu este buraco.",
   Tracker:
     "Divida na tabela Dado: a faixa de quadradinhos por periodo nao tem irma citada, entao ninguem adivinha o nome dela para procurar no indice.",
   Stat: "Divida: o numero de painel e a peca mais copiada a mao de qualquer design system, e e a que a tabela nao cita.",

@@ -41,7 +41,7 @@ import { scanAtLeast } from "./varredura";
 
 const DOCS = ".design-sync/docs";
 /**
- * Os indices do pacote nativo - os CINCO, e os quatro de baixo nao sao detalhe.
+ * Os indices do pacote nativo - os SEIS, e os cinco de baixo nao sao detalhe.
  *
  * O formulario, o grafico, o copiar e o anexar moram em caminhos proprios
  * (`@rivocode/ui-native/form`, `/chart`, `/clipboard`, `/file-upload`) pela
@@ -55,6 +55,12 @@ const DOCS = ".design-sync/docs";
  * dividiriam bem uma porta chamada `/expo`, e a conta de quem instala diz que
  * nao - quem copia a chave de acesso de uma NF-e nao anexa arquivo.
  *
+ * O sexto, `/ai`, e a excecao escrita: nao tem peer. O que ele custa e peso,
+ * e no celular peso e compilacao - o metro nao sacode arvore, e tudo o que o
+ * indice da raiz alcanca entra no app de quem so queria um Button. A familia
+ * de IA so serve a app que conversa com um modelo, e o caminho e o mesmo do
+ * web, `@rivocode/ui/ai`.
+ *
  * Medindo so o indice da raiz, o `--check` diria que o Form nao portou no dia
  * seguinte ao porte.
  */
@@ -64,6 +70,7 @@ const NATIVE_INDEXES = [
   "native/src/chart/index.ts",
   "native/src/clipboard/index.ts",
   "native/src/file-upload/index.ts",
+  "native/src/ai/index.ts",
 ];
 
 type State =
@@ -1373,6 +1380,68 @@ const PARITY: Record<string, Row> = {
       "parágrafo de fora sem `tone` sai na cor padrão do aparelho, e não na do tema. Passe " +
       "`tone` no `Text` de fora.\n\n" +
       "Não há `render`: o elemento do celular é sempre `Text`, e o bloco é uma `View` em volta.",
+  },
+  PromptInput: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, " +
+      "`onStop`, `attachments`, `actions`, `maxLength`, `showCount` e os mesmos nomes " +
+      'acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").\n\n' +
+      "**É controlado.** `value` e `onValueChange` são obrigatórios, como todo campo do " +
+      "pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.\n\n" +
+      "**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de " +
+      "várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para " +
+      "separar os dois gestos. O campo cresce até `maxRows` linhas (6, sem a prop) e rola por " +
+      "dentro.",
+  },
+  Message: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com o mesmo `role`, o mesmo " +
+      "alinhamento, o mesmo `author`, `avatar`, `streaming`, `onRetry`, `actions` e `error`. " +
+      "Em `streaming` a mensagem anuncia `busy` e esconde as ações, como no web.\n\n" +
+      "**Copiar é seu.** O web copia sozinho pelo `copyValue`; aqui a peça tem `onCopy`, " +
+      "porque a área de transferência do celular é o `expo-clipboard`, peer que mora em " +
+      "`@rivocode/ui-native/clipboard` e que o caminho de IA não pode cobrar de quem não " +
+      "copia nada. Texto solto em `children` vira `Text` no corpo da casa; nó entra como " +
+      "veio, para quem renderiza markdown.",
+  },
+  Conversation: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/ai`, sobre uma `FlatList` invertida: " +
+      "o fim da conversa é o começo da lista, então quem está lá continua lá quando o texto " +
+      "cresce, sem conta nenhuma. Rolar para cima mostra o mesmo botão \"Ir para o fim\", e a " +
+      "lista segura a posição de leitura enquanto a mensagem nova chega embaixo.\n\n" +
+      "**A lista vem por `items`**, como todo o pacote: `renderItem` desenha uma mensagem e " +
+      "`keyExtractor` dá a chave. A ordem é a do web (a mais nova por último), e a inversão " +
+      "é da peça. O `empty` com `suggestions` e o `onSuggestion` atravessam com os mesmos " +
+      "nomes.",
+  },
+  ToolCall: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/ai`; os mesmos cinco estados com marca e texto, a entrada e a saída em fonte mono, e aprovar e recusar fora do painel",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `name`, `status`, " +
+      "`input`, `output`, `error`, `onApprove`, `onReject`, `labels`, `defaultOpen`, `open` e " +
+      "`onOpenChange`. `title` e `error` são `string`, porque texto no nativo mora dentro de " +
+      "um `Text`.\n\n" +
+      "**Cor continua não sendo o único sinal.** O pacote não traz ícone, então cada estado " +
+      "sai com uma marca de texto (○, ✓, ✕, !) antes do nome, e `running` ganha o giro. O " +
+      "gatilho diz o nome da ferramenta e o estado ao leitor de tela.",
+  },
+  AILabel: {
+    state: "traduz",
+    note: "vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string`",
+    page:
+      "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `text`, `label`, " +
+      "`tone`, `size`, `explanation` e `title`.\n\n" +
+      "**A explicação abre numa `Sheet`.** O painel ancorado ao selo ficaria embaixo do dedo " +
+      "que tocou nele, a mesma razão por que o `Popover` não porta. Por isso não há `side`, e " +
+      "`explanation` é `string`: ela vira a descrição da folha.",
   },
 };
 

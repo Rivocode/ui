@@ -7,6 +7,7 @@ import { CalendarPanel, Command } from "../src/index";
 import * as pkg from "../src/index";
 import * as chart from "../src/chart/index";
 import * as form from "../src/form/index";
+import * as ai from "../src/ai/index";
 
 /*
  * "Toda peca aceita `className` na raiz, e a classe de quem usa vence a da
@@ -46,8 +47,8 @@ const catalog: Record<string, CatalogPiece> = await Bun.file(
   "apps/docs/src/component-props.json",
 ).json();
 
-/** Os tres caminhos publicos. O que nao sai por eles nao e peca de ninguem. */
-const surface: Record<string, unknown> = { ...pkg, ...form, ...chart };
+/** Os quatro caminhos publicos. O que nao sai por eles nao e peca de ninguem. */
+const surface: Record<string, unknown> = { ...pkg, ...form, ...chart, ...ai };
 
 /**
  * Nem todo export de nome maiusculo e componente.

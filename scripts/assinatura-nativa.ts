@@ -1096,6 +1096,71 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  PromptInput: {
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado",
+      },
+      {
+        web: "defaultValue",
+        native: null,
+        note: "sem estado próprio: quem limpa o campo depois do envio é quem chamou",
+      },
+      { web: "classNames", native: null, note: "um `className` só, na moldura do campo" },
+    ],
+  },
+  Message: {
+    rows: [
+      {
+        web: "copyValue",
+        native: "onCopy",
+        note: "o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard`",
+      },
+      {
+        web: "error",
+        native: "error",
+        note: "`string`: texto no nativo mora dentro de um `Text`",
+      },
+      { web: "classNames", native: null, note: "um `className` só, na linha da mensagem" },
+    ],
+  },
+  Conversation: {
+    rows: [
+      {
+        web: null,
+        native: "items",
+        note: "as mensagens vêm por `items`, `renderItem` e `keyExtractor`, e não por filhos; a ordem é a mesma, a mais nova por último",
+      },
+      {
+        web: "empty",
+        native: "empty",
+        note: "`title` e `description` viram `string`, e o `icon` é a função que recebe a cor",
+      },
+      { web: "classNames", native: null, note: "um `className` só, na raiz da lista" },
+    ],
+  },
+  ToolCall: {
+    rows: [
+      {
+        web: "title",
+        native: "title",
+        note: "`string`, como o `error`: texto no nativo mora dentro de um `Text`",
+      },
+      { web: "classNames", native: null, note: "um `className` só, no cartão" },
+    ],
+  },
+  AILabel: {
+    rows: [
+      {
+        web: "explanation",
+        native: "explanation",
+        note: "`string`, que vira a descrição da `Sheet` onde a explicação abre",
+      },
+      { web: "side", native: null, note: "a explicação abre numa `Sheet`, que não tem lado" },
+    ],
+  },
 };
 
 /* --------------------------------------------------------------------------

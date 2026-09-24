@@ -107,6 +107,51 @@
       }
     ]
   },
+  "AILabel": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "explanation",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A explicacao: quem gerou, com que dados, o que a pessoa deve conferir."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do selo, que sozinho seria soletrado."
+      },
+      {
+        "name": "side",
+        "type": "\"bottom\" | \"left\" | \"right\" | \"top\"",
+        "required": false,
+        "note": "O lado em que o painel abre."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "required": false
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "note": "O texto do selo."
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do painel da explicacao."
+      },
+      {
+        "name": "tone",
+        "type": "\"accent\" | \"neutral\"",
+        "required": false
+      }
+    ]
+  },
   "Alert": {
     "forwardsRoot": true,
     "props": [
@@ -9268,6 +9313,40 @@
       }
     ]
   },
+  "Conversation": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"empty\" | \"scrollButton\" | \"suggestions\" | \"viewport\", string>>",
+        "required": false
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; icon?: ReactNode; suggestions?: string[] | undefined; }",
+        "required": false,
+        "note": "O que aparece quando ainda nao ha mensagem nenhuma."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da regiao para o leitor de tela."
+      },
+      {
+        "name": "onSuggestion",
+        "type": "((suggestion: string) => void)",
+        "required": false,
+        "note": "Chamado com o texto da sugestao tocada."
+      },
+      {
+        "name": "scrollLabel",
+        "type": "string",
+        "required": false,
+        "note": "O texto do botao que volta ao fim da conversa."
+      }
+    ]
+  },
   "DataTable": {
     "forwardsRoot": true,
     "props": [
@@ -13088,6 +13167,70 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "Message": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "role",
+        "type": "MessageRole",
+        "required": true,
+        "note": "Quem fala."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes proprios, depois do copiar e do tentar de novo: gostei, nao gostei."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "required": false,
+        "note": "O nome de quem fala, para o leitor de tela, que ouve cada mensagem como um artigo com esse nome."
+      },
+      {
+        "name": "avatar",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O `Avatar` ao lado da mensagem."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"avatar\" | \"bubble\" | \"content\" | \"error\" | \"indicator\", string>>",
+        "required": false
+      },
+      {
+        "name": "copyValue",
+        "type": "string",
+        "required": false,
+        "note": "Liga o botao de copiar, com este texto."
+      },
+      {
+        "name": "error",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A resposta falhou: a frase sai embaixo do conteudo, com icone e no tom de perigo, e as acoes aparecem mesmo sem conteudo."
+      },
+      {
+        "name": "labels",
+        "type": "{ copy?: string | undefined; copied?: string | undefined; retry?: string | undefined; }",
+        "required": false,
+        "note": "Os nomes dos botoes de acao."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o botao de tentar de novo, que pede outra resposta."
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "required": false,
+        "note": "O texto ainda esta chegando: a mensagem anuncia `aria-busy`, para o leitor de tela ler quando ela terminar e nao a cada pedaco, mostra o indicador e esconde as acoes."
       }
     ]
   },
@@ -18088,6 +18231,111 @@
         "required": false,
         "note": "Mostra a porcentagem ao lado do rotulo.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "PromptInput": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes do rodape, a esquerda: anexar, escolher modelo, ditar."
+      },
+      {
+        "name": "attachments",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os anexos ja escolhidos, acima do campo: fichas, miniaturas."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"attachments\" | \"count\" | \"footer\" | \"submit\" | \"textarea\", string>>",
+        "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "required": false,
+        "note": "O texto inicial, quando a peca guarda o proprio estado."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o campo e o envio."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do campo para o leitor de tela."
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "note": "O teto de caracteres."
+      },
+      {
+        "name": "maxRows",
+        "type": "number",
+        "required": false,
+        "note": "Quantas linhas o campo cresce antes de rolar por dentro."
+      },
+      {
+        "name": "onStop",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de parar, que so existe em `streaming`."
+      },
+      {
+        "name": "onSubmit",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado com o texto ao apertar Enter ou o botao de enviar."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Chamado a cada tecla, com o texto inteiro."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "showCount",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra a contagem de caracteres no rodape, como `120/4000` quando ha `maxLength`."
+      },
+      {
+        "name": "stopLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao de parar."
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "required": false,
+        "note": "A resposta esta chegando: o botao de enviar vira o de parar, e Enter deixa de enviar."
+      },
+      {
+        "name": "submitLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao de enviar."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O texto do campo, controlado."
       }
     ]
   },
@@ -23830,6 +24078,87 @@
         "required": false,
         "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component.",
         "since": "0.4.0"
+      }
+    ]
+  },
+  "ToolCall": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "note": "O nome da ferramenta, como o modelo a chamou: `buscar_notas`."
+      },
+      {
+        "name": "status",
+        "type": "ToolCallStatus",
+        "required": true,
+        "note": "Em que pe a chamada esta."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"error\" | \"name\" | \"panel\" | \"status\" | \"trigger\", string>>",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Comeca aberto."
+      },
+      {
+        "name": "error",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A frase do erro, quando `status` e `error`."
+      },
+      {
+        "name": "input",
+        "type": "unknown",
+        "required": false,
+        "note": "Os argumentos da chamada."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<\"approve\" | \"input\" | \"output\" | \"reject\" | ToolCallStatus, string>>",
+        "required": false,
+        "note": "Os textos dos estados e dos botoes, para outra lingua ou outro tom."
+      },
+      {
+        "name": "onApprove",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de aprovar, que so aparece em `approval`."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false
+      },
+      {
+        "name": "onReject",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de recusar, que so aparece em `approval`."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, controlado."
+      },
+      {
+        "name": "output",
+        "type": "unknown",
+        "required": false,
+        "note": "O que a ferramenta devolveu, com a mesma regra do `input`."
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A frase para gente, ao lado do nome: \"Consultando as notas em aberto\"."
       }
     ]
   },

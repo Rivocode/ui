@@ -75,7 +75,7 @@ export const TOOL_ONLY: Array<{ file: string; mark: string; why: string }> = [
   },
 ];
 
-const LIBRARY = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
+const LIBRARY = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts", "src/ai/index.ts"];
 const TOOL = "src/cli.ts";
 
 function importsOf(code: string) {

@@ -33,10 +33,12 @@ const SKILL_DIR = ".claude/skills/rivocode-ui";
 const TARGETS = [
   { file: "src/chart/index.ts", name: "@rivocode/ui/chart" },
   { file: "src/form/index.ts", name: "@rivocode/ui/form" },
+  { file: "src/ai/index.ts", name: "@rivocode/ui/ai" },
   { file: "native/src/chart/index.ts", name: "@rivocode/ui-native/chart" },
   { file: "native/src/form/index.ts", name: "@rivocode/ui-native/form" },
   { file: "native/src/clipboard/index.ts", name: "@rivocode/ui-native/clipboard" },
   { file: "native/src/file-upload/index.ts", name: "@rivocode/ui-native/file-upload" },
+  { file: "native/src/ai/index.ts", name: "@rivocode/ui-native/ai" },
 ];
 
 const contract = readFileSync(CONTRACT_FILE, "utf8");

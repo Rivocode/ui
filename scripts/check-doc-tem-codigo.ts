@@ -16,7 +16,7 @@
 import { scanAtLeast } from "./varredura";
 
 const DOCS = ".design-sync/docs";
-const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
+const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts", "src/ai/index.ts"];
 
 /**
  * O que nao e peca e por isso nao tem pagina propria: hook, utilitario, e o

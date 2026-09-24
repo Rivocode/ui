@@ -24,6 +24,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 | Nome acessível, alvo, foco, teclado, ordem de títulos | [reference/a11y.md](reference/a11y.md) |
 | Formulário com validação | [reference/forms.md](reference/forms.md) |
 | Gráfico e número de painel | [reference/charts.md](reference/charts.md) |
+| Conversa com assistente, chamada de ferramenta, selo de IA | [reference/ai.md](reference/ai.md) |
 | Vestir com a cor de outro cliente | [reference/theming.md](reference/theming.md) |
 | Tela React Native com o ui-native | [reference/native.md](reference/native.md) |
 
@@ -33,7 +34,7 @@ Tela nova segue o laço de [reference/method.md](reference/method.md): seis
 passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
 todos eles.
 
-1. **Confira se a peça já existe.** São 101, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 106, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em

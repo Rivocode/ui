@@ -218,9 +218,12 @@ const FOCUS_PAINTS =
  * `input` e o campo de texto: quem mostra o foco ali e o cursor piscando, e
  * nesta biblioteca o anel e desenhado pela moldura em volta
  * (`has-[input:focus-visible]` no TagsInput, `focus-within` no InputGroup).
+ * O `textarea` cru e o mesmo caso, e so existe dentro de moldura: o do
+ * `PromptInput` vive dentro do `form` que acende `has-[textarea:focus-visible]`.
+ * O `Textarea` do catalogo nao passa por aqui, porque ele pinta o proprio anel.
  */
 const OUT_OF_TAB_ORDER =
-  /(Popup|Positioner|Portal|Backdrop|Viewport|floatingPanel)$|^input$|Input$|ContextMenu\.Trigger$/;
+  /(Popup|Positioner|Portal|Backdrop|Viewport|floatingPanel)$|^input$|^textarea$|Input$|ContextMenu\.Trigger$/;
 
 /*
  * A guarda nasceu com uma divida declarada numa lista: o `PopoverTrigger`

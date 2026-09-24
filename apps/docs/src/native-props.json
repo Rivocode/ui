@@ -39,6 +39,50 @@
       }
     ]
   },
+  "AILabel": {
+    "entry": "native/src/ai/index.ts",
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "explanation",
+        "type": "string",
+        "required": false,
+        "note": "A explicacao: quem gerou, com que dados, o que conferir."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve no lugar do selo, que sozinho seria soletrado."
+      },
+      {
+        "name": "size",
+        "type": "\"md\" | \"sm\"",
+        "required": false
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "note": "O texto do selo."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "note": "O titulo da folha da explicacao."
+      },
+      {
+        "name": "tone",
+        "type": "\"accent\" | \"neutral\"",
+        "required": false
+      }
+    ]
+  },
   "Alert": {
     "entry": "native/src/index.ts",
     "props": [
@@ -975,6 +1019,57 @@
         "name": "searchPlaceholder",
         "type": "string",
         "required": false
+      }
+    ]
+  },
+  "Conversation": {
+    "entry": "native/src/ai/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "Item[]",
+        "required": true,
+        "note": "As mensagens, em ordem de chegada: a mais nova por ultimo, como no web."
+      },
+      {
+        "name": "keyExtractor",
+        "type": "(item: Item, index: number) => string",
+        "required": true
+      },
+      {
+        "name": "renderItem",
+        "type": "(item: Item, index: number) => ReactNode",
+        "required": true,
+        "note": "Desenha uma mensagem."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "empty",
+        "type": "{ title: string; description: string; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; suggestions?: string[] | undefined; }",
+        "required": false,
+        "note": "O que aparece quando `items` esta vazio."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da lista para o leitor de tela."
+      },
+      {
+        "name": "onSuggestion",
+        "type": "((suggestion: string) => void)",
+        "required": false,
+        "note": "Chamado com o texto da sugestao tocada."
+      },
+      {
+        "name": "scrollLabel",
+        "type": "string",
+        "required": false,
+        "note": "O texto do botao que volta ao fim da conversa."
       }
     ]
   },
@@ -2107,6 +2202,76 @@
       }
     ]
   },
+  "Message": {
+    "entry": "native/src/ai/index.ts",
+    "props": [
+      {
+        "name": "role",
+        "type": "MessageRole",
+        "required": true,
+        "note": "Quem fala."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes proprios, depois do copiar e do tentar de novo."
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "required": false,
+        "note": "O nome de quem fala, para o leitor de tela."
+      },
+      {
+        "name": "avatar",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O `Avatar` ao lado da mensagem."
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O conteudo."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "note": "A resposta falhou: a frase sai embaixo do conteudo, no tom de perigo."
+      },
+      {
+        "name": "labels",
+        "type": "{ copy?: string | undefined; retry?: string | undefined; }",
+        "required": false,
+        "note": "Os nomes dos botoes de acao."
+      },
+      {
+        "name": "onCopy",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o botao de copiar."
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o botao de tentar de novo, que pede outra resposta."
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "required": false,
+        "note": "O texto ainda esta chegando: anuncia `busy`, mostra o indicador e esconde as acoes."
+      }
+    ]
+  },
   "Meter": {
     "entry": "native/src/index.ts",
     "props": [
@@ -2319,6 +2484,104 @@
         "name": "className",
         "type": "string",
         "required": false
+      }
+    ]
+  },
+  "PromptInput": {
+    "entry": "native/src/ai/index.ts",
+    "props": [
+      {
+        "name": "onSubmit",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Chamado pelo botao de enviar, com o texto."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Chamado a cada tecla, com o texto inteiro."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O texto do campo."
+      },
+      {
+        "name": "actions",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os botoes do rodape, a esquerda: anexar, ditar."
+      },
+      {
+        "name": "attachments",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Os anexos ja escolhidos, acima do campo."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do campo para o leitor de tela."
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "note": "O teto de caracteres."
+      },
+      {
+        "name": "maxRows",
+        "type": "number",
+        "required": false,
+        "note": "Quantas linhas o campo cresce antes de rolar por dentro."
+      },
+      {
+        "name": "onStop",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de parar, que so existe em `streaming`."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "showCount",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra a contagem de caracteres no rodape, no tom de perigo ao bater no teto."
+      },
+      {
+        "name": "stopLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao de parar."
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "required": false,
+        "note": "A resposta esta chegando: o botao de enviar vira o de parar."
+      },
+      {
+        "name": "submitLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao de enviar."
       }
     ]
   },
@@ -3251,6 +3514,87 @@
         "type": "boolean",
         "required": false,
         "note": "`multiple` aceita varios ao mesmo tempo; o padrao desaperta o anterior."
+      }
+    ]
+  },
+  "ToolCall": {
+    "entry": "native/src/ai/index.ts",
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "note": "O nome da ferramenta, como o modelo a chamou: `buscar_notas`."
+      },
+      {
+        "name": "status",
+        "type": "ToolCallStatus",
+        "required": true,
+        "note": "Em que pe a chamada esta."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Comeca aberto."
+      },
+      {
+        "name": "error",
+        "type": "string",
+        "required": false,
+        "note": "A frase do erro, quando `status` e `error`."
+      },
+      {
+        "name": "input",
+        "type": "unknown",
+        "required": false,
+        "note": "Os argumentos da chamada."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<Record<\"approve\" | \"input\" | \"output\" | \"reject\" | ToolCallStatus, string>>",
+        "required": false,
+        "note": "Os textos dos estados e dos botoes, para outra lingua ou outro tom."
+      },
+      {
+        "name": "onApprove",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de aprovar, que so aparece em `approval`, fora do painel."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false
+      },
+      {
+        "name": "onReject",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado pelo botao de recusar, que so aparece em `approval`."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, controlado."
+      },
+      {
+        "name": "output",
+        "type": "unknown",
+        "required": false,
+        "note": "O que a ferramenta devolveu, com a mesma regra do `input`."
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "note": "A frase para gente, embaixo do nome: \"Consultando as notas em aberto\"."
       }
     ]
   },

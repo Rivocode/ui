@@ -116,9 +116,9 @@ tokens no seletor do tema dele, junto com as cores. Sem
 cada `data-rc-theme` carrega a sua família, e a troca acontece por seletor,
 como a de cor.
 
-### Os dois subcaminhos
+### Os tres subcaminhos
 
-Alem do pacote principal, duas familias vivem em subcaminhos e chegam pelo
+Alem do pacote principal, tres familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
 - **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
@@ -200,6 +200,38 @@ vem antes da classe de propriedade: a folha que voce recebe e a compilada, e
 uma classe utilitaria que nenhum componente usa nao existe nela. A variavel
 sempre resolve.
 
+- **`@rivocode/ui/ai`**, as pecas de conversa com um assistente. Nao tem peer
+  nenhum: ele e subcaminho pelo PESO, porque so app que conversa com um modelo
+  precisa delas, e nao cobra de quem monta nota fiscal. **Nenhuma conhece SDK
+  de IA**: a mensagem entra por prop, e o que a pessoa faz sai por evento. Quem
+  fala com o modelo e a sua tela, com o SDK que ela ja usa.
+
+  ```tsx
+  import { Conversation, Message, PromptInput, ToolCall, AILabel } from '@rivocode/ui/ai'
+
+  <div className="flex h-[32rem] flex-col gap-3">
+    <Conversation className="flex-1" empty={vazio} onSuggestion={enviar}>
+      {mensagens.map((m) => (
+        <Message key={m.id} role={m.role} streaming={m.streaming} copyValue={m.texto}>
+          {m.texto}
+        </Message>
+      ))}
+    </Conversation>
+    <PromptInput streaming={respondendo} onSubmit={enviar} onStop={parar} />
+  </div>
+  ```
+
+  | Peca | Para que |
+  |---|---|
+  | `PromptInput` | O campo: cresce com o texto, Enter envia, Shift+Enter quebra a linha, e em `streaming` o enviar vira parar (`onStop`) |
+  | `Message` | Um turno: `role` `user`, `assistant` ou `system` decide o desenho; `streaming` anuncia `aria-busy` e esconde copiar e tentar de novo |
+  | `Conversation` | A lista rolavel: gruda no fim enquanto o texto chega, solta quando a pessoa rola para cima, e e `role="log"` educado |
+  | `ToolCall` | A chamada de ferramenta: cinco estados com icone e texto, entrada e saida no `CodeBlock`, e aprovar e recusar em `approval` |
+  | `AILabel` | O selo "IA" do conteudo gerado, com explicacao opcional num painel. `aiLabelVariants` sai junto, para quem precisa da classe |
+
+  **A altura da `Conversation` e sua, por classe**, como a do grafico: sem ela
+  a conversa cresce e empurra a pagina.
+
 ### Formatar o numero
 
 Um vocabulario so, para o eixo, a dica, o indicador, a celula da tabela e o
@@ -274,7 +306,7 @@ palpite.
 Dentro de um `SidebarProvider`, prefira `useSidebar().isMobile`: e o mesmo
 valor, e evita um segundo assinante da mesma media query.
 
-### O pacote nativo, e os quatro subcaminhos dele
+### O pacote nativo, e os cinco subcaminhos dele
 
 `@rivocode/ui-native` é o mesmo catálogo em React Native, publicado como
 **fonte**: o vocabulário de classes acima é o mesmo, via NativeWind, sobre os
@@ -290,7 +322,9 @@ fica: no celular um módulo do Expo e o `react-native-svg` custam **build**, e
 não só bytes, e o metro resolve import por arquivo. Então quem só quer um
 `Button` não pode encontrar nenhum deles no índice da raiz. Juntar `Clipboard`
 e `FileUpload` numa porta só, um `/expo`, cobraria o seletor de documentos de
-quem apenas copia a chave de acesso de uma NF-e; por isso são duas.
+quem apenas copia a chave de acesso de uma NF-e; por isso são duas. A
+exceção escrita é o `/ai`, que não tem peer e é caminho próprio pelo peso,
+explicado mais abaixo.
 
 | Subcaminho | O peer que ele custa | O que sai por ele |
 |---|---|---|
@@ -362,6 +396,23 @@ com um `FileUploadItem` por arquivo.
 import { Clipboard } from '@rivocode/ui-native/clipboard'
 import { FileUpload, FileUploadItem, FileUploadList } from '@rivocode/ui-native/file-upload'
 ```
+
+**As peças de IA moram em `@rivocode/ui-native/ai`, e esse é o único caminho
+sem peer.** A regra do peer continua valendo para os outros quatro; este existe
+pelo peso. O metro não sacode árvore: importar um `Button` do índice da raiz
+compila tudo o que ele alcança, e a conversa com um modelo não pode entrar no
+aplicativo de quem só emite nota. É o mesmo caminho do web, trocando o nome do
+pacote.
+
+```tsx
+import { AILabel, Conversation, Message, PromptInput, ToolCall } from '@rivocode/ui-native/ai'
+```
+
+A `Conversation` vem por `items`, `renderItem` e `keyExtractor`, sobre uma
+`FlatList` invertida; o `PromptInput` é controlado e envia só pelo botão,
+porque o retorno do teclado do celular quebra a linha; a `Message` tem `onCopy`
+no lugar do `copyValue`, porque copiar é do `expo-clipboard`; e a explicação do
+`AILabel` abre numa `Sheet`.
 
 **Tema de cliente aqui é decisão de BUILD, e não prop de runtime.** Os dois
 temas de casa trocam com a tela aberta, porque foram compilados como

@@ -277,6 +277,7 @@ export default defineConfig({
     alias: {
       '@rivocode/ui/form': here('../../src/form/index.ts'),
       '@rivocode/ui/chart': here('../../src/chart/index.ts'),
+      '@rivocode/ui/ai': here('../../src/ai/index.ts'),
       '@rivocode/ui': here('../../src/index.ts'),
       '@': here('./src'),
     },

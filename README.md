@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-101 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+106 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -184,6 +184,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Item`      | a linha de lista: ícone, texto e ação                            |
 | `Badge`     | selo de estado, seis tons                                        |
 | `Avatar`    | foto de pessoa, com a inicial por trás                           |
+| `Timeline`  | o que já aconteceu, em ordem, com quem e quando                  |
 
 ### Estado
 
@@ -196,6 +197,19 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Progress`   | espera com fim conhecido, que **anda para o fim e termina** |
 | `Meter`      | capacidade em uso, que **sobe e desce**: cota, limite       |
 | `EmptyState` | estado vazio, com descrição e saída obrigatórias            |
+
+### IA
+
+Em `@rivocode/ui/ai`, sem dependência nenhuma a instalar e sem SDK de IA: a
+mensagem entra por prop, e o que a pessoa faz sai por evento.
+
+| Peça           | Para que serve                                                                    |
+| -------------- | --------------------------------------------------------------------------------- |
+| `PromptInput`  | o campo da conversa: Enter envia, Shift+Enter quebra; o `Textarea` vai no formulário |
+| `Message`      | um turno, alinhado por `role`, com copiar, tentar de novo e o "chegando"          |
+| `Conversation` | a lista que gruda no fim enquanto o texto chega; a `Timeline` olha para trás      |
+| `ToolCall`     | a chamada de ferramenta, com estado, entrada, saída e aprovar ou recusar          |
+| `AILabel`      | o selo "IA" do conteúdo gerado, com explicação; estado de registro é `Badge`      |
 
 ### Estrutura
 

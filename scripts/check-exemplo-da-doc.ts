@@ -84,6 +84,7 @@ export const FOREIGN = new Set([
   "FileText",
   "Trash2",
   "Search",
+  "Paperclip",
 ]);
 
 /**
@@ -96,7 +97,12 @@ export const FOREIGN = new Set([
  */
 export const READER_CODE = new Set(["App", "Invoices"]);
 
-export const WEB_ENTRIES = ["src/index.ts", "src/chart/index.ts", "src/form/index.ts"];
+export const WEB_ENTRIES = [
+  "src/index.ts",
+  "src/chart/index.ts",
+  "src/form/index.ts",
+  "src/ai/index.ts",
+];
 
 /**
  * As entradas do nativo saem do proprio manifesto, e nao de uma lista aqui:

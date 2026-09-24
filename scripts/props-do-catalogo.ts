@@ -23,7 +23,7 @@ const RAIZ = process.cwd();
 const TARGET = "apps/docs/src/component-props.json";
 
 /** As entradas publicas do pacote. O que nao sai por elas nao e documentavel. */
-const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts"];
+const ENTRY_POINTS = ["src/index.ts", "src/form/index.ts", "src/chart/index.ts", "src/ai/index.ts"];
 
 /**
  * O que todo componente repassa ao elemento raiz. Fica numa linha so no fim da

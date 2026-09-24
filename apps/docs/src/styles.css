@@ -2,6 +2,7 @@
 
 /* Tailwind only generates the classes it finds while scanning. Beyond this
    folder it has to see the library components, which resolve to source. */
+@source '../../../src/ai';
 @source '../../../src/chart';
 @source '../../../src/components';
 @source '../../../src/form';
