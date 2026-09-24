@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 import { Breadcrumb } from "../src/components/breadcrumb";
 import { Checkbox } from "../src/components/checkbox";
+import { Radio, RadioGroup } from "../src/components/radio";
 import {
   Combobox,
   ComboboxChip,
@@ -129,4 +130,31 @@ test("o link da migalha estica o alvo so na altura, para nao pegar o clique do v
   const link = screen.getByRole("link", { name: "Clientes" });
   hasTouchTarget(link, "after:-inset-y-1.5", "after:inset-x-0");
   expect(link.className).not.toContain("after:-inset-x");
+});
+
+test("a opcao com rotulo tem 24 pixels de altura no label, e o circulo sozinho estica o alvo", () => {
+  withTheme(
+    <RadioGroup defaultValue="pix">
+      <Radio value="pix">Pix</Radio>
+      <Radio value="boleto" aria-label="Boleto" />
+    </RadioGroup>,
+  );
+
+  const named = screen.getByRole("radio", { name: "Pix" });
+  const label = named.closest("label")!;
+  expect(label.className.split(" ")).toContain("min-h-6");
+  expect(named.className.split(" ")).not.toContain("after:absolute");
+
+  const alone = screen.getByRole("radio", { name: "Boleto" });
+  expect(alone.closest("label")).toBeNull();
+  const tokens = alone.className.split(" ");
+  expect(tokens).toContain("relative");
+  expect(tokens).toContain("after:absolute");
+  expect(tokens).toContain("after:-inset-1.5");
+});
+
+test("a caixa de marcar com rotulo tambem tem 24 pixels de altura no label", () => {
+  withTheme(<Checkbox>ISS retido na fonte</Checkbox>);
+  const label = screen.getByRole("checkbox", { name: "ISS retido na fonte" }).closest("label")!;
+  expect(label.className.split(" ")).toContain("min-h-6");
 });

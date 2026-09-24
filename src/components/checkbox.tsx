@@ -114,7 +114,7 @@ export function Checkbox({
   return (
     <label
       className={cn(
-        "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
+        "flex min-h-6 w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
         labelClassName,

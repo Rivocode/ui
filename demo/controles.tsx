@@ -78,10 +78,9 @@ function Sample({ theme }: { theme: RivoTheme }) {
                 { value: "boleto", label: "Boleto" },
                 { value: "cartao", label: "Cartao" },
               ].map((o) => (
-                <label key={o.value} className="flex items-center gap-3 text-base text-fg">
-                  <Radio value={o.value} />
+                <Radio key={o.value} value={o.value}>
                   {o.label}
-                </label>
+                </Radio>
               ))}
             </RadioGroup>
           </Block>

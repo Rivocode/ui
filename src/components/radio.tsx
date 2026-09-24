@@ -48,6 +48,7 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
         "data-[disabled]:cursor-not-allowed data-[disabled]:bg-surface-raised",
         "data-[disabled]:border-border-disabled",
         "data-[invalid]:border-danger",
+        children === undefined && "relative after:absolute after:-inset-1.5",
         classNames?.circle,
         className,
       )}
@@ -70,7 +71,7 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
   return (
     <label
       className={cn(
-        "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
+        "flex min-h-6 w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
         labelClassName,
