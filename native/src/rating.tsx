@@ -104,6 +104,7 @@ export function Rating({
     const drawing = (
       <View
         {...HIDDEN}
+        pointerEvents="none"
         testID="rating-star"
         className="items-center justify-center"
         style={{ width: box, height: box }}

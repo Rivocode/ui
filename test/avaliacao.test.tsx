@@ -198,6 +198,71 @@ test("name leva a nota num input escondido para o formulario", () => {
   expect(input.value).toBe("3");
 });
 
+function Directed({ dir, ...props }: Partial<RatingProps> & { dir: "ltr" | "rtl" }) {
+  const [value, setValue] = useState(props.defaultValue ?? 0);
+  return (
+    <RivoProvider scope="local" dir={dir}>
+      <Rating {...props} value={value} onValueChange={setValue} />
+      <output data-testid="nota">{value}</output>
+    </RivoProvider>
+  );
+}
+
+function boxAt(element: Element, left: number, width: number) {
+  element.getBoundingClientRect = () =>
+    ({ left, width, right: left + width, top: 0, bottom: width, height: width }) as DOMRect;
+}
+
+test("com allowHalf o alvo do ponteiro e a estrela inteira, e a metade sai de onde o ponteiro caiu", () => {
+  const { container } = render(<Directed dir="ltr" allowHalf size="sm" />);
+  const radios = screen.getAllByRole("radio");
+  expect(radios).toHaveLength(10);
+  for (const radio of radios) {
+    expect(radio.className.split(" ")).toContain("pointer-events-none");
+    expect(radio.className.split(" ")).not.toContain("w-1/2");
+  }
+
+  const second = container.querySelectorAll("[role='radiogroup'] > span")[1]!;
+  expect(second.className.split(" ")).toContain("size-6");
+  boxAt(second, 24, 24);
+
+  fireEvent.click(second, { clientX: 30 });
+  expect(screen.getByTestId("nota").textContent).toBe("1.5");
+
+  fireEvent.click(second, { clientX: 44 });
+  expect(screen.getByTestId("nota").textContent).toBe("2");
+
+  fireEvent.pointerMove(second, { clientX: 26 });
+  expect(fills(container)).toEqual(["1", "0.5", "0", "0", "0"]);
+  expect(screen.getByTestId("nota").textContent).toBe("2");
+
+  fireEvent.click(screen.getByRole("radio", { name: "3,5 estrelas" }));
+  expect(screen.getByTestId("nota").textContent).toBe("3.5");
+});
+
+test("em rtl a seta direita tira, a esquerda soma, o cheio nasce da borda de inicio e a metade se espelha", () => {
+  const { container } = render(<Directed dir="rtl" allowHalf defaultValue={3} />);
+
+  fireEvent.keyDown(screen.getByRole("radio", { checked: true }), { key: "ArrowRight" });
+  expect(screen.getByTestId("nota").textContent).toBe("2.5");
+  fireEvent.keyDown(document.activeElement!, { key: "ArrowLeft" });
+  fireEvent.keyDown(document.activeElement!, { key: "ArrowLeft" });
+  expect(screen.getByTestId("nota").textContent).toBe("3.5");
+  fireEvent.keyDown(document.activeElement!, { key: "ArrowUp" });
+  expect(screen.getByTestId("nota").textContent).toBe("4");
+
+  const painted = container.querySelector("[data-fill]")!;
+  expect(painted.className.split(" ")).toContain("start-0");
+  expect(painted.className.split(" ")).not.toContain("left-0");
+
+  const first = container.querySelectorAll("[role='radiogroup'] > span")[0]!;
+  boxAt(first, 0, 28);
+  fireEvent.click(first, { clientX: 4 });
+  expect(screen.getByTestId("nota").textContent).toBe("1");
+  fireEvent.click(first, { clientX: 24 });
+  expect(screen.getByTestId("nota").textContent).toBe("0.5");
+});
+
 test("cada estrela tem caixa de pelo menos 24px de alvo nos tres tamanhos", () => {
   for (const [size, box] of [
     ["sm", "size-6"],

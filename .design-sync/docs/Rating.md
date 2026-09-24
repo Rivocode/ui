@@ -26,7 +26,9 @@ opção com o nome da nota ("1 estrela", "3 estrelas"), e o grupo se chama
 lugar do nome padrão, e é o jeito certo quando a pergunta está escrita acima.
 
 - **Tab** entra pela nota marcada, ou pela primeira quando ainda não há nota.
-- **Setas** andam uma estrela (meia, com `allowHalf`) e param nas pontas.
+- **Setas** andam uma estrela (meia, com `allowHalf`) e param nas pontas. Em
+  `rtl` a seta da esquerda é a que sobe, como a pessoa vê, e o preenchimento
+  nasce da borda da direita.
 - **Home** e **End** vão para a menor e para a maior nota.
 - **Espaço** e **Enter** escolhem a estrela em foco.
 
@@ -40,9 +42,12 @@ e a prévia some quando o ponteiro sai. A prévia não muda o `value`.
 
 ## Meia estrela e limpar
 
-`allowHalf` divide cada estrela em duas metades: a da esquerda é a nota
-`n - 0,5`, e as setas andam de meio em meio. As metades ganham nome próprio
-("Meia estrela", "2,5 estrelas").
+`allowHalf` divide cada estrela em duas notas: a metade do início da leitura
+(a esquerda, ou a direita em `rtl`) é a nota `n - 0,5`, e as setas andam de
+meio em meio. As metades ganham nome próprio ("Meia estrela", "2,5 estrelas"),
+uma opção cada para o leitor de tela. O alvo do ponteiro continua a estrela
+inteira, com os mesmos 24px ou mais: a metade sai de onde o ponteiro caiu
+dentro dela.
 
 `clearable` faz o clique na nota já escolhida voltar a zero, e `onValueChange`
 chega com `0`. Nasce desligado: na maioria das telas a nota, uma vez dada, só se

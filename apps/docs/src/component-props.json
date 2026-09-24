@@ -21292,7 +21292,7 @@
         "name": "allowHalf",
         "type": "boolean",
         "required": false,
-        "note": "Aceita meia estrela: cada estrela vira duas metades, e as setas andam de meio em meio."
+        "note": "Aceita meia estrela: as setas andam de meio em meio, e o leitor de tela ouve uma opcao por meia nota."
       },
       {
         "name": "classNames",

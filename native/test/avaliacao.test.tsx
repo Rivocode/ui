@@ -58,6 +58,15 @@ test("com allowHalf, a metade da esquerda da meia estrela", () => {
   expect(onValueChange).toHaveBeenLastCalledWith(4);
 });
 
+test("o desenho nao recebe toque: o locationX sai sempre da caixa da estrela, e nao do glifo ou do cheio", () => {
+  const { screen } = rating({ allowHalf: true, value: 2.5 });
+  const boxes = screen.root.findAll(
+    (node) => typeof node.type === "string" && node.props.testID === "rating-star",
+  );
+  expect(boxes).toHaveLength(5);
+  for (const box of boxes) expect(box.props.pointerEvents).toBe("none");
+});
+
 test("clearable limpa ao tocar de novo; sem ele, tocar de novo nao chama nada", () => {
   const first = rating({ value: 4 });
   tap(first.screen, 3);

@@ -1,11 +1,13 @@
 "use client";
 
+import { useDirection } from "@base-ui/react/direction-provider";
 import { Star } from "lucide-react";
 import {
   useRef,
   useState,
   type ComponentPropsWithoutRef,
   type KeyboardEvent,
+  type MouseEvent,
   type ReactNode,
 } from "react";
 
@@ -35,8 +37,9 @@ export type RatingProps = Omit<
   /** Quantas estrelas. Padrao 5. */
   max?: number;
   /**
-   * Aceita meia estrela: cada estrela vira duas metades, e as setas andam de
-   * meio em meio. A metade da esquerda de cada estrela e a nota `n - 0,5`.
+   * Aceita meia estrela: as setas andam de meio em meio, e o leitor de tela ouve
+   * uma opcao por meia nota. O alvo do ponteiro continua a estrela inteira; a
+   * metade de inicio da leitura (a esquerda, ou a direita em rtl) e a nota `n - 0,5`.
    */
   allowHalf?: boolean;
   /**
@@ -94,6 +97,7 @@ export function Rating({
   const shown = hover ?? checked;
   const glyph = icon ?? <Star />;
   const interactive = !readOnly && !disabled;
+  const rtl = useDirection() === "rtl";
 
   const options: number[] = [];
   for (let option = step; option <= max + 1e-9; option += step) options.push(option);
@@ -117,8 +121,10 @@ export function Rating({
   function onKeyDown(event: KeyboardEvent<HTMLElement>) {
     if (!interactive) return;
     let next: number | undefined;
-    if (event.key === "ArrowRight" || event.key === "ArrowUp") next = checked + step;
-    if (event.key === "ArrowLeft" || event.key === "ArrowDown") next = checked - step;
+    const forward = rtl ? "ArrowLeft" : "ArrowRight";
+    const backward = rtl ? "ArrowRight" : "ArrowLeft";
+    if (event.key === forward || event.key === "ArrowUp") next = checked + step;
+    if (event.key === backward || event.key === "ArrowDown") next = checked - step;
     if (event.key === "Home") next = step;
     if (event.key === "End") next = max;
     if (next === undefined) return;
@@ -130,6 +136,13 @@ export function Rating({
 
   const focusable = checked > 0 ? checked : step;
 
+  function pointed(event: MouseEvent<HTMLElement>, index: number) {
+    const box = event.currentTarget.getBoundingClientRect();
+    const offset = event.clientX - box.left;
+    const first = rtl ? offset > box.width / 2 : offset < box.width / 2;
+    return first ? index + 0.5 : index + 1;
+  }
+
   const stars = Array.from({ length: max }, (_, index) => {
     const fill = starFill(shown, index);
     const halves = allowHalf ? [index + 0.5, index + 1] : [index + 1];
@@ -137,7 +150,16 @@ export function Rating({
     return (
       <span
         key={index}
-        className={cn("relative inline-flex shrink-0", BOX[size], classNames?.item)}
+        onClick={allowHalf && interactive ? (event) => choose(pointed(event, index)) : undefined}
+        onPointerMove={
+          allowHalf && interactive ? (event) => setHover(pointed(event, index)) : undefined
+        }
+        className={cn(
+          "relative inline-flex shrink-0",
+          allowHalf && (interactive ? "cursor-pointer" : "cursor-not-allowed"),
+          BOX[size],
+          classNames?.item,
+        )}
       >
         <span
           aria-hidden="true"
@@ -152,7 +174,7 @@ export function Rating({
         <span
           aria-hidden="true"
           data-fill={fill}
-          className="pointer-events-none absolute inset-y-0 left-0 overflow-hidden"
+          className="pointer-events-none absolute inset-y-0 start-0 overflow-hidden"
           style={{ width: `${Math.round(fill * 1000) / 10}%` }}
         >
           <span
@@ -168,7 +190,7 @@ export function Rating({
         </span>
 
         {!readOnly &&
-          halves.map((option, half) => (
+          halves.map((option) => (
             <span
               key={option}
               role="radio"
@@ -177,7 +199,10 @@ export function Rating({
               aria-label={text.item(option)}
               aria-disabled={disabled || undefined}
               tabIndex={interactive && option === focusable ? 0 : -1}
-              onClick={() => choose(option)}
+              onClick={(event) => {
+                event.stopPropagation();
+                choose(option);
+              }}
               onKeyDown={(event) => {
                 if (event.key === " " || event.key === "Enter") {
                   event.preventDefault();
@@ -186,12 +211,15 @@ export function Rating({
                 }
                 onKeyDown(event);
               }}
-              onPointerEnter={interactive ? () => setHover(option) : undefined}
+              onPointerEnter={interactive && !allowHalf ? () => setHover(option) : undefined}
               className={cn(
-                "absolute inset-y-0 rounded-sm outline-none",
+                "absolute inset-0 rounded-sm outline-none",
                 "focus-visible:ring-2 focus-visible:ring-ring",
-                halves.length === 1 ? "inset-x-0" : half === 0 ? "left-0 w-1/2" : "right-0 w-1/2",
-                interactive ? "cursor-pointer" : "cursor-not-allowed",
+                allowHalf
+                  ? "pointer-events-none"
+                  : interactive
+                    ? "cursor-pointer"
+                    : "cursor-not-allowed",
               )}
             />
           ))}
