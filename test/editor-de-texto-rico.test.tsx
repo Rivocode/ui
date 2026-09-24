@@ -68,6 +68,46 @@ describe("a barra de ferramentas", () => {
     ]);
   });
 
+  test("a barra quebra por grupo: separador nenhum abre linha, e o historico anda junto", async () => {
+    await open();
+    const toolbar = screen.getByRole("toolbar", { name: "Formatação" });
+
+    const loose = [...toolbar.children]
+      .filter((child) => child.getAttribute("role") === "separator" || child.tagName === "BUTTON")
+      .map((child) => child.getAttribute("aria-label") ?? child.getAttribute("role"));
+    expect(loose).toEqual([]);
+
+    const separators = [...toolbar.querySelectorAll('[role="separator"]')];
+    expect(separators.length).toBe(5);
+    for (const separator of separators) {
+      const tokens = (separator.getAttribute("class") ?? "").split(" ");
+      expect(tokens).toContain("absolute");
+      expect(separator.parentElement!.parentElement === toolbar).toBe(true);
+      expect(separator.parentElement!.querySelector("button") !== null).toBe(true);
+    }
+
+    const undo = screen.getByRole("button", { name: "Desfazer" });
+    const redo = screen.getByRole("button", { name: "Refazer" });
+    const clear = screen.getByRole("button", { name: "Limpar formatação" });
+    expect(undo.parentElement === redo.parentElement).toBe(true);
+    expect(clear.parentElement === undo.parentElement).toBe(true);
+    expect(undo.parentElement === toolbar).toBe(false);
+  });
+
+  test("o botao Link diz ao leitor de tela quando a selecao ja e um link", async () => {
+    const { box } = await open({
+      defaultValue: '<p>ver <a href="https://rivocode.com.br">nota</a> paga</p>',
+    });
+    const link = () => screen.getByRole("button", { name: "Link" });
+
+    await edit(box, (editor) => editor.commands.setTextSelection(2));
+    expect(link().getAttribute("aria-pressed")).toBe("false");
+
+    await edit(box, (editor) => editor.commands.setTextSelection(7));
+    expect(link().getAttribute("aria-pressed")).toBe("true");
+    expect(link().hasAttribute("data-pressed")).toBe(true);
+  });
+
   test("os nomes se trocam por labels, e so os que vieram", async () => {
     await open({ labels: { bold: "Bold", toolbar: "Formatting" } });
 

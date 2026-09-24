@@ -632,14 +632,15 @@ function Surface({
           aria-controls={textId}
           disabled={toolbarDisabled}
           className={cn(
-            "flex-wrap rounded-none rounded-t-md border-0 border-b border-border bg-transparent",
+            "flex-wrap gap-x-4 gap-y-1 overflow-hidden rounded-none rounded-t-md border-0 border-b",
+            "border-border bg-transparent",
             classNames?.toolbar,
           )}
         >
           {GROUPS.map((group, index) => {
             const pressed = group.items.filter((action) => state?.active[action]);
             return (
-              <GroupWithSeparator key={group.name} first={index === 0}>
+              <Segment key={group.name} first={index === 0}>
                 <ToggleGroup
                   aria-label={labels[group.name]}
                   multiple={group.multiple}
@@ -662,47 +663,47 @@ function Surface({
                     </Tool>
                   ))}
                 </ToggleGroup>
-              </GroupWithSeparator>
+              </Segment>
             );
           })}
 
-          <ToolbarSeparator />
+          <Segment>
+            <LinkTool
+              editor={editor}
+              labels={labels}
+              active={Boolean(state?.link)}
+              open={linkOpen}
+              onOpenChange={setLinkOpen}
+              disabled={toolbarDisabled}
+            />
+          </Segment>
 
-          <LinkTool
-            editor={editor}
-            labels={labels}
-            active={Boolean(state?.link)}
-            open={linkOpen}
-            onOpenChange={setLinkOpen}
-            disabled={toolbarDisabled}
-          />
-
-          <ToolbarSeparator />
-
-          <Tool
-            label={labels.undo}
-            keys={KEYS.undo}
-            disabled={toolbarDisabled || !state?.canUndo}
-            onClick={() => editor?.chain().focus().undo().run()}
-          >
-            <Undo2 />
-          </Tool>
-          <Tool
-            label={labels.redo}
-            keys={KEYS.redo}
-            disabled={toolbarDisabled || !state?.canRedo}
-            onClick={() => editor?.chain().focus().redo().run()}
-          >
-            <Redo2 />
-          </Tool>
-          <Tool
-            label={labels.clear}
-            keys={KEYS.clear}
-            disabled={toolbarDisabled}
-            onClick={() => latest.current.clear()}
-          >
-            <RemoveFormatting />
-          </Tool>
+          <Segment>
+            <Tool
+              label={labels.undo}
+              keys={KEYS.undo}
+              disabled={toolbarDisabled || !state?.canUndo}
+              onClick={() => editor?.chain().focus().undo().run()}
+            >
+              <Undo2 />
+            </Tool>
+            <Tool
+              label={labels.redo}
+              keys={KEYS.redo}
+              disabled={toolbarDisabled || !state?.canRedo}
+              onClick={() => editor?.chain().focus().redo().run()}
+            >
+              <Redo2 />
+            </Tool>
+            <Tool
+              label={labels.clear}
+              keys={KEYS.clear}
+              disabled={toolbarDisabled}
+              onClick={() => latest.current.clear()}
+            >
+              <RemoveFormatting />
+            </Tool>
+          </Segment>
         </ToolbarRoot>
       )}
 
@@ -750,12 +751,14 @@ function Surface({
   );
 }
 
-function GroupWithSeparator({ first, children }: { first: boolean; children: ReactNode }) {
+function Segment({ first = false, children }: { first?: boolean; children: ReactNode }) {
   return (
-    <>
-      {!first && <ToolbarSeparator />}
+    <div className="relative flex items-center gap-0.5">
+      {!first && (
+        <ToolbarSeparator className="absolute top-1/2 -left-2 mx-0 -translate-x-1/2 -translate-y-1/2" />
+      )}
       {children}
-    </>
+    </div>
   );
 }
 
@@ -846,6 +849,7 @@ function LinkTool({ editor, labels, active, open, onOpenChange, disabled }: Link
         label={labels.link}
         keys={KEYS.link}
         disabled={disabled}
+        aria-pressed={active}
         data-pressed={active ? "" : undefined}
         render={<PopoverTrigger />}
       >

@@ -61,6 +61,10 @@ botões. Cada botão de estado é um `Toggle` com `aria-pressed`, agrupado num
 cada um diz o próprio atalho em `aria-keyshortcuts` e na dica que abre ao
 pousar ou focar.
 
+Em tela estreita a barra quebra **por grupo**, e nunca no meio de um: desfazer,
+refazer e limpar formatação descem juntos, e o separador entre grupos some
+quando o grupo seguinte abre a linha.
+
 | Ação | Atalho |
 |---|---|
 | Negrito, itálico, sublinhado | `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`U` |
@@ -82,7 +86,8 @@ colado com `h1` ou `h4` vira parágrafo.
 protocolo ganha o que falta: `rivocode.com.br` vira `https://rivocode.com.br`,
 e `nf@rivocode.com.br` vira `mailto:`. **Só passam `http`, `https`, `mailto`,
 `tel` e endereço relativo**; `javascript:` é recusado com a explicação no
-próprio campo. Com o cursor dentro de um link, o painel traz "Remover link".
+próprio campo. Com o cursor dentro de um link, o botão fica pressionado, com
+`aria-pressed="true"`, e o painel traz "Remover link".
 
 O painel é um formulário próprio, e o envio dele não envia o formulário em
 volta do editor.

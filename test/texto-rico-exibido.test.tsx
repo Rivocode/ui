@@ -136,6 +136,70 @@ describe("o que o RichTextView monta", () => {
   });
 });
 
+describe("o bloco de codigo que rola", () => {
+  function widths(scroll: number, client: number) {
+    const proto = HTMLElement.prototype;
+    const saved = {
+      scroll: Object.getOwnPropertyDescriptor(proto, "scrollWidth"),
+      client: Object.getOwnPropertyDescriptor(proto, "clientWidth"),
+    };
+    Object.defineProperty(proto, "scrollWidth", {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.tagName === "PRE" ? scroll : 0;
+      },
+    });
+    Object.defineProperty(proto, "clientWidth", {
+      configurable: true,
+      get(this: HTMLElement) {
+        return this.tagName === "PRE" ? client : 0;
+      },
+    });
+    return () => {
+      for (const [name, descriptor] of [
+        ["scrollWidth", saved.scroll],
+        ["clientWidth", saved.client],
+      ] as const) {
+        if (descriptor) Object.defineProperty(proto, name, descriptor);
+        else delete (proto as unknown as Record<string, unknown>)[name];
+      }
+    };
+  }
+
+  test("com estouro, o pre vira parada de tabulacao com nome, para o teclado rolar", () => {
+    const restore = widths(480, 240);
+    try {
+      const { container } = render(<RichTextView value={SAVED} />);
+      const pre = container.querySelector("pre")!;
+      expect(pre.getAttribute("tabindex")).toBe("0");
+      expect(pre.getAttribute("role")).toBe("region");
+      expect(pre.getAttribute("aria-label")).toBe("Bloco de código");
+    } finally {
+      restore();
+    }
+  });
+
+  test("sem estouro, o pre nao ganha parada de tabulacao a toa", () => {
+    const restore = widths(240, 240);
+    try {
+      const { container } = render(<RichTextView value={SAVED} />);
+      const pre = container.querySelector("pre")!;
+      expect(pre.getAttribute("tabindex")).toBeNull();
+      expect(pre.getAttribute("role")).toBeNull();
+      expect(pre.getAttribute("aria-label")).toBeNull();
+    } finally {
+      restore();
+    }
+  });
+
+  test("o foco no pre desenha o anel da casa", () => {
+    const tokens = RICH_TEXT_CONTENT.split(" ");
+    expect(tokens).toContain("[&_pre:focus-visible]:ring-2");
+    expect(tokens).toContain("[&_pre:focus-visible]:ring-ring");
+    expect(tokens).toContain("[&_pre]:outline-none");
+  });
+});
+
 describe("a tipografia do conteudo e a da casa", () => {
   const tokensOf = (prefix: string) =>
     RICH_TEXT_CONTENT.split(" ")

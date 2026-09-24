@@ -1,4 +1,12 @@
-import { useMemo, type ComponentPropsWithoutRef, type ReactNode, type Ref } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+  type Ref,
+} from "react";
 
 import { cn } from "../lib/cn";
 import {
@@ -88,14 +96,39 @@ function block(item: RichTextBlock, key: number): ReactNode {
     case "blockquote":
       return <blockquote key={key}>{item.blocks.map(block)}</blockquote>;
     case "codeBlock":
-      return (
-        <pre key={key}>
-          <code>{item.text}</code>
-        </pre>
-      );
+      return <CodeBlock key={key} text={item.text} />;
     case "horizontalRule":
       return <hr key={key} />;
   }
+}
+
+const CODE_LABEL = "Bloco de código";
+
+function CodeBlock({ text }: { text: string }) {
+  const ref = useRef<HTMLPreElement>(null);
+  const [overflow, setOverflow] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const measure = () => setOverflow(element.scrollWidth > element.clientWidth);
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [text]);
+
+  return (
+    <pre
+      ref={ref}
+      tabIndex={overflow ? 0 : undefined}
+      role={overflow ? "region" : undefined}
+      aria-label={overflow ? CODE_LABEL : undefined}
+    >
+      <code>{text}</code>
+    </pre>
+  );
 }
 
 export function RichTextView({ value, empty, className, ...props }: RichTextViewProps) {

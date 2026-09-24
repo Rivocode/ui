@@ -23,7 +23,7 @@ const SERVICE =
   "<ol><li><p>Envio ao cliente</p></li><li><p>Aceite por e-mail</p></li></ol>" +
   "<blockquote><p>Pagamento por Pix em até 5 dias úteis.</p></blockquote>" +
   '<p>Detalhes em <a href="https://rivocode.com.br">rivocode.com.br</a>, sem <s>custo extra</s>.</p>' +
-  "<pre><code>chave: 3524 0812 3456 7800 0199</code></pre>";
+  "<pre><code>chave: 3524 0812 3456 7800 0199 5500 1000 0012 3410 0012 3456 78</code></pre>";
 
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -86,7 +86,7 @@ function States() {
       <RichTextEditor
         aria-label="Descrição aprovada"
         readOnly
-        defaultValue="<p>Aprovada pelo cliente em <strong>12/08</strong>.</p>"
+        defaultValue="<p>Aprovada pelo cliente em <strong>12/08</strong>.</p><pre><code>chave: 3524 0812 3456 7800 0199 5500 1000 0012 3410 0012 3456 78</code></pre>"
       />
       <RichTextEditor
         aria-label="Descrição travada"

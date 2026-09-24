@@ -15,6 +15,7 @@ export const RICH_TEXT_CONTENT = [
   "[&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:border [&_pre]:border-border",
   "[&_pre]:bg-surface-raised [&_pre]:p-3 [&_pre]:font-mono [&_pre]:text-xs",
   "[&_pre]:leading-relaxed [&_pre]:text-fg",
+  "[&_pre]:outline-none [&_pre:focus-visible]:ring-2 [&_pre:focus-visible]:ring-ring",
   "[&_a]:rounded-sm [&_a]:text-accent-text [&_a]:underline [&_a]:decoration-1",
   "[&_a]:underline-offset-[0.2em] [&_a:hover]:decoration-2 [&_a]:outline-none",
   "[&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-ring",

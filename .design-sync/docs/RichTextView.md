@@ -63,6 +63,10 @@ Com `empty`, a peça desenha a frase no lugar, e marca a raiz com
 O texto ocupa a largura que recebe. Para leitura corrida, limite pela classe:
 `className="max-w-prose"`.
 
+Bloco de código não quebra linha: o que passa da largura rola de lado dentro
+do próprio bloco. Quando rola, o bloco vira parada de Tab com o nome "Bloco de
+código", para quem usa teclado alcançar o fim da linha com as setas.
+
 ## Quando não usar
 
 - **Texto sem formatação** é `Text`. Uma observação salva de um `Textarea` não
