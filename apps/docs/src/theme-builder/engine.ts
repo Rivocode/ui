@@ -12,6 +12,17 @@ import { checkThemes, themeBlocks } from '../../../../src/lib/theme-check'
 import { exportDtcg } from '../../../../src/tokens/dtcg'
 import { THEME_ROLES } from '../../../../src/tokens/theme-roles'
 import TOKENS from '../../../../native/tokens.json'
+import {
+  FONT_ROLES,
+  HOUSE_FONTS,
+  allHouse,
+  chosenFamily,
+  fontImports,
+  fontInstallCommand,
+  googleFontsUrl,
+  type FontRole,
+  type FontState,
+} from './fonts'
 
 /* ---------------------------------------------------------------------------
  * O motor do montador de tema
@@ -345,11 +356,36 @@ export function webBlocks(name: string, tokens: Record<Scheme, ColorMap>, radius
   }).join('\n\n')
 }
 
+function fontHeader(fonts: FontState) {
+  if (allHouse(fonts)) {
+    return '\n   Fontes:                    as da casa, com  @import "@rivocode/ui/fonts.css";  no CSS de entrada'
+  }
+  const install = fontInstallCommand(fonts)
+  return install ? `\n   Fontes:                    ${install}` : ''
+}
+
+function fontPreamble(fonts: FontState) {
+  const imports = fontImports(fonts)
+  if (imports.length === 0) return ''
+  const lines = imports.map((path) => `@import "${path}";`).join('\n')
+  const url = googleFontsUrl(fonts)
+  const google = url
+    ? `\n\n/* Sem instalar pacote: apague os @import acima e ponha no <head> do HTML\n` +
+      `   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n` +
+      `   <link rel="stylesheet" href="${url}">` +
+      (FONT_ROLES.some((role) => fonts[role] === 'house')
+        ? `\n   O papel que ficou com a fonte da casa continua pelo pacote. */`
+        : ' */')
+    : ''
+  return `${lines}${google}\n\n`
+}
+
 export function emitWebCss(
   name: string,
   tokens: Record<Scheme, ColorMap>,
   radius: Radius,
   failures: string[],
+  fonts: FontState = HOUSE_FONTS,
 ) {
   const warning =
     failures.length === 0
@@ -362,7 +398,9 @@ export function emitWebCss(
     `/* tema-${name}.css, gerado pelo montador de tema de ds.rivocode.com.br.\n` +
     `   Importe depois do preset:  @import "@rivocode/ui/preset";  @import "./tema-${name}.css";\n` +
     `   Vista a árvore:            <RivoProvider theme="${name}-dark">  ou  "${name}-light"\n` +
-    `   Confira:                   npx rivocode-ui check-theme src/tema-${name}.css${warning} */\n\n` +
+    `   Confira:                   npx rivocode-ui check-theme src/tema-${name}.css` +
+    `${fontHeader(fonts)}${warning} */\n\n` +
+    fontPreamble(fonts) +
     `${webBlocks(name, tokens, radius)}\n`
   )
 }
@@ -413,6 +451,8 @@ export function commandsOf(name: string) {
  * So o que difere da casa entra no endereco, em `papel.hex` separado por `_`:
  * sao caracteres que a URL nao escapa, entao o link colado num chat continua
  * legivel. Semente que nao le como cor e descartada, e nao quebra a pagina.
+ * A fonte vai pelo id do fontsource (`corpo=inter`) ou por `sistema`; id fora
+ * da lista, ou de categoria que nao serve ao papel, volta a fonte da casa.
  * ------------------------------------------------------------------------- */
 
 export type BuilderState = {
@@ -420,6 +460,7 @@ export type BuilderState = {
   seeds: Record<Scheme, Palette>
   radius: Radius
   autoFix: boolean
+  fonts: FontState
 }
 
 export const houseSeeds = (scheme: Scheme): Palette =>
@@ -430,9 +471,12 @@ export const DEFAULT_STATE: BuilderState = {
   seeds: { light: houseSeeds('light'), dark: houseSeeds('dark') },
   radius: 'house',
   autoFix: true,
+  fonts: HOUSE_FONTS,
 }
 
 const SCHEME_PARAM: Record<Scheme, string> = { light: 'claro', dark: 'escuro' }
+
+const FONT_PARAM: Record<FontRole, string> = { sans: 'corpo', display: 'titulo', mono: 'codigo' }
 
 const RADIUS_PARAM: Record<Radius, string> = {
   house: 'casa',
@@ -465,8 +509,23 @@ export function writeQuery(state: BuilderState) {
   }
   if (state.radius !== 'house') params.set('raio', RADIUS_PARAM[state.radius])
   if (!state.autoFix) params.set('ajuste', 'nao')
+  for (const role of FONT_ROLES) {
+    const choice = state.fonts[role]
+    if (choice === 'system') params.set(FONT_PARAM[role], 'sistema')
+    else if (chosenFamily(role, choice)) params.set(FONT_PARAM[role], choice)
+  }
   const query = params.toString()
   return query ? `?${query}` : ''
+}
+
+function readFonts(params: URLSearchParams): FontState {
+  const fonts = { ...HOUSE_FONTS }
+  for (const role of FONT_ROLES) {
+    const value = params.get(FONT_PARAM[role])
+    if (value === 'sistema') fonts[role] = 'system'
+    else if (value && chosenFamily(role, value)) fonts[role] = value
+  }
+  return fonts
 }
 
 export function readQuery(search: string): BuilderState {
@@ -490,5 +549,6 @@ export function readQuery(search: string): BuilderState {
     seeds,
     radius: radius ?? 'house',
     autoFix: params.get('ajuste') !== 'nao',
+    fonts: readFonts(params),
   }
 }

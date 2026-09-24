@@ -116,6 +116,7 @@ test("o estado do montador vai e volta pela URL", async () => {
     },
     radius: "square",
     autoFix: false,
+    fonts: engine.DEFAULT_STATE.fonts,
   };
 
   const query = engine.writeQuery(state);
@@ -124,4 +125,160 @@ test("o estado do montador vai e volta pela URL", async () => {
   expect(engine.readQuery(query)).toEqual(state);
   expect(engine.writeQuery(engine.DEFAULT_STATE)).toBe("");
   expect(engine.readQuery("?claro=accent.zzz_bg.12")).toEqual(engine.DEFAULT_STATE);
+});
+
+const FONTS = ["..", "apps", "docs", "src", "theme-builder", "fonts.ts"].join("/");
+
+async function builtWith(fonts: Record<string, string>) {
+  const engine = await import(ENGINE);
+  const house = engine.houseBlocks(readCssTree("src/preset.css"));
+  const state = engine.DEFAULT_STATE;
+  const base = { light: engine.derive(state.seeds.light).colors, dark: engine.derive(state.seeds.dark).colors };
+  const light = engine.build(state.seeds.light, "light", house, base.dark, true);
+  const dark = engine.build(state.seeds.dark, "dark", house, base.light, true);
+  const tools = await import(FONTS);
+  return {
+    raw: { light: light.tokens, dark: dark.tokens },
+    tokens: { light: tools.applyFonts(light.tokens, fonts), dark: tools.applyFonts(dark.tokens, fonts) },
+  };
+}
+
+const importsIn = (css: string) => css.split("\n").filter((line) => line.startsWith("@import"));
+
+test("a fonte escolhida vira os tres tokens no CSS e no DTCG, com os imports no topo", async () => {
+  const engine = await import(ENGINE);
+  const choice = { sans: "inter", display: "fraunces", mono: "space-mono" };
+  const { tokens } = await builtWith(choice);
+
+  expect(tokens.dark["--rc-font-sans"]).toBe('"Inter Variable", "Inter", system-ui, sans-serif');
+  expect(tokens.light["--rc-font-display"]).toBe('"Fraunces Variable", "Fraunces", Georgia, serif');
+  expect(tokens.light["--rc-font-mono"]).toBe('"Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace');
+
+  const css: string = engine.emitWebCss("acme", tokens, "house", [], choice);
+  expect(importsIn(css)).toEqual([
+    '@import "@fontsource-variable/inter";',
+    '@import "@fontsource-variable/fraunces";',
+    '@import "@fontsource/space-mono/latin-400.css";',
+    '@import "@fontsource/space-mono/latin-700.css";',
+  ]);
+  const lines = css.split("\n");
+  const firstRule = lines.findIndex((line) => line.startsWith("[data-rc-theme"));
+  expect(firstRule).toBeGreaterThan(0);
+  expect(lines.findLastIndex((line) => line.startsWith("@import"))).toBeLessThan(firstRule);
+  expect(css).toContain("bun add @fontsource-variable/inter @fontsource-variable/fraunces @fontsource/space-mono");
+  expect(css).toContain(
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap",
+  );
+  expect(css.split('--rc-font-sans: "Inter Variable", "Inter", system-ui, sans-serif;').length).toBe(3);
+
+  const reports = engine.missingRoles("acme", css);
+  expect(reports.length).toBe(2);
+  for (const report of reports) expect(report.missing).toEqual([]);
+
+  const dtcg = engine.emitDtcg(readCssTree("src/preset.css"), "acme", css);
+  const dark = JSON.stringify(dtcg.files["acme-dark.tokens.json"]);
+  expect(dark).toContain('"$value":["Inter Variable","Inter","system-ui","sans-serif"]');
+  expect(dark).toContain('"$value":["Fraunces Variable","Fraunces","Georgia","serif"]');
+  expect(JSON.stringify(dtcg.files["acme-light.tokens.json"])).toContain(
+    '"$value":["Space Mono","ui-monospace","SFMono-Regular","Menlo","monospace"]',
+  );
+});
+
+test("o papel da casa ao lado de uma fonte de cliente sai com o pacote da casa, e nao com o fonts.css", async () => {
+  const engine = await import(ENGINE);
+  const tools = await import(FONTS);
+  const choice = { sans: "lato", display: "house", mono: "system" };
+  const { raw, tokens } = await builtWith(choice);
+  const css: string = engine.emitWebCss("acme", tokens, "house", [], choice);
+
+  expect(importsIn(css)).toEqual([
+    '@import "@fontsource/lato/latin-400.css";',
+    '@import "@fontsource/lato/latin-700.css";',
+    '@import "@fontsource/poppins/latin-600.css";',
+    '@import "@fontsource/poppins/latin-700.css";',
+  ]);
+  expect(css).not.toContain("@rivocode/ui/fonts.css");
+  expect(tokens.dark["--rc-font-mono"]).toBe(tools.SYSTEM_STACK.mono);
+  expect(tokens.dark["--rc-font-display"]).toBe(raw.dark["--rc-font-display"]);
+
+  const houseFaces = readCssTree("src/tokens/themes/rivocode-fonts.css");
+  const declared = [...houseFaces.matchAll(/@import "([^"]+)"/g)].map((match) => match[1]);
+  expect(declared.length).toBeGreaterThan(2);
+  expect(Object.values(tools.HOUSE_IMPORTS).flat().sort()).toEqual(declared.sort());
+
+  const house: string = engine.emitWebCss("acme", raw, "house", [], tools.HOUSE_FONTS);
+  expect(importsIn(house)).toEqual([]);
+  expect(house).toContain('@import "@rivocode/ui/fonts.css"');
+});
+
+test("o peso que falta sai nomeado, com o vizinho que o navegador escolhe", async () => {
+  const tools = await import(FONTS);
+  expect(tools.missingWeights(tools.familyOf("inter"))).toEqual([]);
+  expect(tools.missingWeights(tools.familyOf("lato"))).toEqual([
+    { weight: 500, falls: 400, synthetic: false },
+    { weight: 600, falls: 700, synthetic: false },
+  ]);
+  expect(tools.missingWeights(tools.familyOf("dm-serif-display"))).toEqual([
+    { weight: 500, falls: 400, synthetic: false },
+    { weight: 600, falls: 400, synthetic: true },
+    { weight: 700, falls: 400, synthetic: true },
+  ]);
+  expect(tools.missingWeights(tools.familyOf("dm-mono"))).toEqual([
+    { weight: 600, falls: 500, synthetic: true },
+    { weight: 700, falls: 500, synthetic: true },
+  ]);
+});
+
+test("o trecho do React Native usa os nomes que o expo-google-fonts registra", async () => {
+  const tools = await import(FONTS);
+  const snippet: string = tools.nativeFontsSnippet({ sans: "ibm-plex-sans", display: "dm-serif-display", mono: "house" });
+  expect(snippet).toContain('import { IBMPlexSans_400Regular } from "@expo-google-fonts/ibm-plex-sans";');
+  expect(snippet).toContain('import { DMSerifDisplay_400Regular } from "@expo-google-fonts/dm-serif-display";');
+  expect(snippet).toContain('import { JetBrainsMono_400Regular } from "@expo-google-fonts/jetbrains-mono";');
+  expect(snippet).toContain(
+    'fonts={{ sans: "IBMPlexSans_400Regular", display: "DMSerifDisplay_400Regular", mono: "JetBrainsMono_400Regular" }}',
+  );
+  expect(tools.nativeFontsSnippet({ sans: "inter", display: "inter", mono: "system" })).toContain(
+    'fonts={{ sans: "Inter_400Regular", display: "Inter_600SemiBold" }}',
+  );
+  expect(tools.nativeInstallCommand({ sans: "system", display: "system", mono: "system" })).toBeUndefined();
+  expect(tools.nativeFontsSnippet({ sans: "system", display: "system", mono: "system" })).not.toContain("useFonts");
+});
+
+test("a escolha de fonte vai e volta pela URL, e so o que difere da casa entra", async () => {
+  const engine = await import(ENGINE);
+  const state = { ...engine.DEFAULT_STATE, fonts: { sans: "plus-jakarta-sans", display: "house", mono: "system" } };
+  const query = engine.writeQuery(state);
+
+  expect(query).toBe("?corpo=plus-jakarta-sans&codigo=sistema");
+  expect(engine.readQuery(query)).toEqual(state);
+  expect(engine.readQuery("?corpo=nao-existe&codigo=inter&titulo=fraunces").fonts).toEqual({
+    sans: "house",
+    display: "fraunces",
+    mono: "house",
+  });
+});
+
+test("toda familia da lista tem pacote, categoria e o peso 400", async () => {
+  const tools = await import(FONTS);
+  const families = tools.FAMILIES as Array<{ id: string; family: string; category: string; variable: boolean; weights: number[] }>;
+
+  expect(families.length).toBeGreaterThan(35);
+  expect(new Set(families.map((family) => family.id)).size).toBe(families.length);
+  for (const category of ["sans-serif", "serif", "monospace"]) {
+    expect(families.filter((family) => family.category === category).length).toBeGreaterThan(4);
+  }
+
+  let checked = 0;
+  for (const family of families) {
+    const pkg: string = tools.packageOf(family);
+    expect(pkg).toMatch(family.variable ? /^@fontsource-variable\/[a-z0-9-]+$/ : /^@fontsource\/[a-z0-9-]+$/);
+    expect(family.id).toBe(family.family.toLowerCase().replace(/ /g, "-"));
+    expect(["sans-serif", "serif", "monospace"]).toContain(family.category);
+    expect(family.weights).toContain(400);
+    const role = family.category === "monospace" ? "mono" : "sans";
+    expect(tools.stackOf(role, family.id)).toContain(`"${family.family}"`);
+    checked++;
+  }
+  expect(checked).toBe(families.length);
 });

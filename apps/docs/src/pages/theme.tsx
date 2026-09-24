@@ -14,6 +14,11 @@ import {
   Clipboard,
   CodeBlock,
   ColorPicker,
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
   Field,
   FieldDescription,
   FieldError,
@@ -71,15 +76,30 @@ import {
   type Scheme,
   type Seed,
 } from '@/theme-builder/engine'
+import {
+  FAMILIES,
+  FONT_ROLES,
+  ROLE_CATEGORIES,
+  applyFonts,
+  chosenFamily,
+  fontInstallCommand,
+  googleFontsUrl,
+  missingWeights,
+  nativeFontsSnippet,
+  nativeInstallCommand,
+  type FontChoice,
+  type FontRole,
+  type FontState,
+} from '@/theme-builder/fonts'
 import { Sample } from '@/theme-builder/sample'
 
 /* ---------------------------------------------------------------------------
  * O montador de tema
  *
- * A pessoa escolhe a cor da marca e as outras sete sementes, ve pecas de
- * verdade vestidas nos dois esquemas e nas duas densidades, le a medida de
- * cada par e leva o tema embora em tres formatos. O estado mora na URL, para o
- * link colado num chat abrir exatamente o que foi montado.
+ * A pessoa escolhe a cor da marca, as outras sete sementes e as tres fontes,
+ * ve pecas de verdade vestidas nos dois esquemas e nas duas densidades, le a
+ * medida de cada par e leva o tema embora em tres formatos. O estado mora na
+ * URL, para o link colado num chat abrir exatamente o que foi montado.
  *
  * Tudo o que a pagina calcula sai do `theme-builder/engine.ts`, que reusa a
  * conta, a exportacao DTCG e a derivacao da CLI. Esta pagina so desenha.
@@ -118,6 +138,49 @@ const RADIUS_LABEL: Record<Radius, string> = {
   round: 'Redondo',
 }
 
+const FONT_ROLE_LABEL: Record<FontRole, string> = {
+  sans: 'Corpo',
+  display: 'Título',
+  mono: 'Código',
+}
+
+const HOUSE_FAMILY: Record<FontRole, string> = {
+  sans: 'Manrope',
+  display: 'Poppins',
+  mono: 'JetBrains Mono',
+}
+
+const CATEGORY_LABEL = {
+  'sans-serif': 'sem serifa',
+  serif: 'serifada',
+  monospace: 'largura fixa',
+} as const
+
+type FontItem = { value: FontChoice; label: string }
+
+const FONT_ITEMS: Record<FontRole, FontItem[]> = Object.fromEntries(
+  FONT_ROLES.map((role) => [
+    role,
+    [
+      { value: 'house', label: `Fonte da casa (${HOUSE_FAMILY[role]})` },
+      { value: 'system', label: 'Fonte do sistema' },
+      ...ROLE_CATEGORIES[role].flatMap((category) =>
+        FAMILIES.filter((family) => family.category === category).map((family) => ({
+          value: family.id,
+          label: family.family,
+        })),
+      ),
+    ],
+  ]),
+) as Record<FontRole, FontItem[]>
+
+const WEIGHT_CLASS: Record<number, string> = {
+  400: 'font-normal',
+  500: 'font-medium',
+  600: 'font-semibold',
+  700: 'font-bold',
+}
+
 const DENSITY_LABEL: Record<RivoDensity, string> = {
   comfortable: 'Confortável',
   compact: 'Compacta',
@@ -132,7 +195,10 @@ function compute(state: BuilderState) {
     light: build(state.seeds.light, 'light', HOUSE, base.dark, state.autoFix),
     dark: build(state.seeds.dark, 'dark', HOUSE, base.light, state.autoFix),
   }
-  const tokens = { light: built.light.tokens, dark: built.dark.tokens }
+  const tokens = {
+    light: applyFonts(built.light.tokens, state.fonts),
+    dark: applyFonts(built.dark.tokens, state.fonts),
+  }
   const pairs = {
     light: measureWeb(selectorOf(state.name, 'light'), tokens.light),
     dark: measureWeb(selectorOf(state.name, 'dark'), tokens.dark),
@@ -144,7 +210,7 @@ function compute(state: BuilderState) {
   const failures = SCHEMES.flatMap((scheme) =>
     pairs[scheme].filter((pair) => !pair.ok).map((pair) => `${SCHEME_LABEL[scheme].toLowerCase()}: ${pair.text}`),
   )
-  const css = emitWebCss(state.name, tokens, state.radius, failures)
+  const css = emitWebCss(state.name, tokens, state.radius, failures, state.fonts)
 
   return {
     built,
@@ -159,6 +225,9 @@ function compute(state: BuilderState) {
       `${state.name}.json`,
     ),
     missing: missingRoles(state.name, css),
+    fontInstall: fontInstallCommand(state.fonts),
+    nativeFonts: nativeFontsSnippet(state.fonts),
+    nativeInstall: nativeInstallCommand(state.fonts),
   }
 }
 
@@ -232,6 +301,80 @@ function SeedRow({
   )
 }
 
+const joinWeights = (weights: number[]) =>
+  weights.length === 1
+    ? String(weights[0])
+    : `${weights.slice(0, -1).join(', ')} e ${weights[weights.length - 1]}`
+
+function FontPicker({
+  role,
+  value,
+  onChange,
+}: {
+  role: FontRole
+  value: FontChoice
+  onChange: (choice: FontChoice) => void
+}) {
+  const items = FONT_ITEMS[role]
+  const current = items.find((item) => item.value === value) ?? items[0]!
+  const family = chosenFamily(role, value)
+  const missing = family ? missingWeights(family) : []
+
+  return (
+    <Field className="gap-1">
+      <FieldLabel>{FONT_ROLE_LABEL[role]}</FieldLabel>
+      <Combobox
+        items={items}
+        value={current}
+        onValueChange={(item: FontItem | null) => {
+          if (item) onChange(item.value)
+        }}
+      >
+        <ComboboxInput
+          aria-label={`Fonte do ${FONT_ROLE_LABEL[role].toLowerCase()}`}
+          placeholder="Buscar família"
+          clearable={false}
+        />
+        <ComboboxContent emptyMessage="Nenhuma família com esse nome na lista.">
+          <ComboboxList>
+            {(item: FontItem) => (
+              <ComboboxItem key={item.value} value={item}>
+                {item.label}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+      {family && (
+        <FieldDescription>
+          {CATEGORY_LABEL[family.category]}, {family.variable ? 'variável' : 'estática'}, pesos{' '}
+          {joinWeights(family.weights.filter((weight) => weight >= 300 && weight <= 800))}.
+        </FieldDescription>
+      )}
+      {missing.length > 0 && (
+        <Alert tone="warning" className="mt-1">
+          <AlertTitle>
+            {family!.family} não tem {missing.length === 1 ? 'o peso' : 'os pesos'}{' '}
+            {joinWeights(missing.map((item) => item.weight))}
+          </AlertTitle>
+          <AlertDescription>
+            <span className="block space-y-1">
+              {missing.map((item) => (
+                <span key={item.weight} className="block">
+                  <code className="font-mono">{WEIGHT_CLASS[item.weight]}</code>{' '}
+                  {item.synthetic
+                    ? `vira negrito sintético sobre o ${item.falls}, desenhado pelo navegador.`
+                    : `cai no ${item.falls}.`}
+                </span>
+              ))}
+            </span>
+          </AlertDescription>
+        </Alert>
+      )}
+    </Field>
+  )
+}
+
 function Controls({
   state,
   setState,
@@ -251,6 +394,9 @@ function Controls({
       ...current,
       seeds: { ...current.seeds, [scheme]: { ...current.seeds[scheme], [seed]: hex } },
     }))
+
+  const setFont = (role: FontRole, choice: FontChoice) =>
+    setState((current) => ({ ...current, fonts: { ...current.fonts, [role]: choice } }))
 
   const setBrand = (hex: string) =>
     setState((current) => ({
@@ -317,6 +463,22 @@ function Controls({
           </Tabs>
         </div>
 
+        <div className="space-y-3">
+          <p className="text-sm font-medium text-fg">As três fontes</p>
+          <p className="text-sm text-fg-muted">
+            Famílias do Google Fonts escolhidas para interface. A amostra baixa a escolhida na hora,
+            com os pesos 400, 500, 600 e 700 que as peças usam.
+          </p>
+          {FONT_ROLES.map((role) => (
+            <FontPicker
+              key={role}
+              role={role}
+              value={state.fonts[role]}
+              onChange={(choice) => setFont(role, choice)}
+            />
+          ))}
+        </div>
+
         <Field>
           <FieldLabel>Canto</FieldLabel>
           <ToggleGroup
@@ -363,7 +525,9 @@ function Controls({
 
         <Button
           variant="ghost"
-          onClick={() => setState(() => ({ ...DEFAULT_STATE, name: state.name }))}
+          onClick={() =>
+            setState((current) => ({ ...DEFAULT_STATE, name: current.name, fonts: current.fonts }))
+          }
         >
           <RotateCcw size={14} aria-hidden="true" />
           Voltar às cores da casa
@@ -655,6 +819,11 @@ function Export({ name, result }: { name: string; result: Result }) {
             <code className="font-mono">"{name}-light"</code> ao{' '}
             <code className="font-mono">RivoProvider</code>.
           </p>
+          <p className="max-w-prose text-sm text-fg-muted">
+            {result.fontInstall
+              ? 'As fontes escolhidas entram no topo, como @import do fontsource, com o link do Google Fonts comentado como alternativa. Com elas, não importe o @rivocode/ui/fonts.css.'
+              : 'As fontes são as da casa: elas chegam pelo @rivocode/ui/fonts.css, importado uma vez no CSS de entrada.'}
+          </p>
           <DownloadButton name={`tema-${name}.css`} text={result.css} type="text/css" />
           <CodeBlock title={`src/tema-${name}.css`} copyable className="max-h-96 overflow-y-auto">
             {result.css}
@@ -681,6 +850,21 @@ function Export({ name, result }: { name: string; result: Result }) {
           <CodeBlock title={`${name}.theme.css`} copyable className="max-h-96 overflow-y-auto">
             {result.nativeCss}
           </CodeBlock>
+          <p className="max-w-prose text-sm text-fg-muted">
+            A fonte não vai no <code className="font-mono">@theme</code>: no celular quem carrega o
+            arquivo é o app, com o <code className="font-mono">expo-font</code>, e o{' '}
+            <code className="font-mono">RivoProvider</code> recebe o nome registrado. Cada peso é
+            um arquivo com nome próprio, então cada papel leva um só: 400 no corpo e no código,
+            600 no título quando a família tem.
+          </p>
+          {result.nativeInstall && (
+            <CodeBlock title="instalar as fontes" copyable>
+              {result.nativeInstall}
+            </CodeBlock>
+          )}
+          <CodeBlock title="App.tsx" copyable>
+            {result.nativeFonts}
+          </CodeBlock>
         </TabPanel>
 
         <TabPanel value="comandos" className="space-y-3 pt-4">
@@ -697,6 +881,11 @@ function Export({ name, result }: { name: string; result: Result }) {
           <CodeBlock title="React Native: gerar o @theme a partir da paleta" copyable>
             {npxNative!}
           </CodeBlock>
+          {result.fontInstall && (
+            <CodeBlock title="web: instalar as fontes que o CSS importa" copyable>
+              {result.fontInstall}
+            </CodeBlock>
+          )}
           {result.native.light.length + result.native.dark.length > 0 && (
             <Alert tone="warning">
               <AlertTitle>O último comando recusaria esta paleta</AlertTitle>
@@ -710,6 +899,27 @@ function Export({ name, result }: { name: string; result: Result }) {
       </Tabs>
     </section>
   )
+}
+
+const FONT_LINK_ID = 'rc-montador-fontes'
+
+function useGoogleFonts(fonts: FontState) {
+  const url = googleFontsUrl(fonts)
+  useEffect(() => {
+    let link = document.getElementById(FONT_LINK_ID) as HTMLLinkElement | null
+    if (!url) {
+      link?.remove()
+      return
+    }
+    if (!link) {
+      link = document.createElement('link')
+      link.id = FONT_LINK_ID
+      link.rel = 'stylesheet'
+      document.head.append(link)
+    }
+    if (link.href !== url) link.href = url
+  }, [url])
+  useEffect(() => () => document.getElementById(FONT_LINK_ID)?.remove(), [])
 }
 
 export function ThemePage() {
@@ -736,6 +946,7 @@ export function ThemePage() {
 
   const deferred = useDeferredValue(state)
   const result = useMemo(() => compute(deferred), [deferred])
+  useGoogleFonts(deferred.fonts)
 
   return (
     <div className="mx-auto max-w-[96rem] px-4 py-10 sm:px-6">

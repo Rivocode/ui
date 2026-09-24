@@ -184,6 +184,45 @@ Repare que o `@rivocode/ui/fonts.css` **não** aparece aí: é assim que dois
 clientes convivem na mesma aplicação, cada um com a sua família, e nenhum dos
 dois carregando os 220 KB de `.woff2` da RivoCode.
 
+O [montador de tema](/tema) escolhe as três famílias numa lista curada do Google
+Fonts e escreve o CSS acima sozinho: os `@import` do fontsource no topo, o
+`<link>` do Google comentado como alternativa, a pilha de queda de cada papel e
+o `bun add` dos pacotes.
+
+#### Carregar a fonte no web sem piscar
+
+- **Pré-carregue só a face do corpo.** É ela que pinta o primeiro parágrafo; a
+  de título e a de código podem chegar depois. Com o fontsource no Vite, o
+  arquivo tem nome fixo dentro do pacote e o `?url` devolve o caminho com hash:
+
+  ```tsx
+  import inter from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+
+  <link rel="preload" href={inter} as="font" type="font/woff2" crossOrigin="anonymous" />
+  ```
+
+  O `crossOrigin` não é enfeite: fonte é sempre baixada em modo CORS, e o
+  pré-carregamento sem ele é descartado e baixado de novo. Pré-carregar as três
+  disputa banda com o CSS e o JavaScript, e atrasa justamente o que devia
+  adiantar.
+- **`font-display: swap`.** O texto aparece na hora na fonte de queda e troca
+  quando a família chega, em vez de ficar invisível até três segundos. O
+  fontsource já declara assim, e o link do Google precisa do `&display=swap`,
+  que o montador escreve.
+- **Só o subconjunto `latin`.** Português cabe inteiro nele, acentos e `ç`
+  incluídos. O pacote variável declara todos os subconjuntos com
+  `unicode-range`, e o navegador só baixa o que a página usa; no estático,
+  importe `latin-400.css`, `latin-600.css` e assim por diante, em vez do
+  `400.css`, que declara também cirílico, grego e vietnamita.
+- **Não importe o `@rivocode/ui/fonts.css` junto de uma fonte de cliente.** Ele
+  declara Manrope, Poppins e JetBrains Mono, e o empacotador copia os arquivos
+  para o build mesmo que o tema não use nenhuma delas. Pior: qualquer trecho da
+  árvore ainda vestido com o tema da casa (a tela antes de o provider do cliente
+  montar, um portal fora do escopo) baixa as faces da RivoCode e pinta com elas.
+  São duas famílias por página e uma troca de fonte que ninguém encomendou. Se
+  um papel fica com a fonte da casa, importe só o pacote dele, como o montador
+  faz.
+
 ### Acabamento: gradiente, vidro e brilho
 
 Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
