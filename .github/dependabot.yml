@@ -20,6 +20,16 @@ updates:
     groups:
       web:
         update-types: ["minor", "patch"]
+    # O site tem que usar o MESMO React da raiz: o teste dos blocos monta
+    # `apps/docs/src/blocks` junto com a suite, e duas copias derrubam o hook
+    # com "Invalid hook call". A raiz fica no React que o SDK do Expo fixa em
+    # `examples/native`, para a suite do nativo testar o React que o app roda.
+    # React sobe junto com a troca de SDK, feita por uma pessoa, nas duas pastas.
+    ignore:
+      - dependency-name: "react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
 
   # O SDK do Expo fixa React, React Native e os modulos nativos. Subir um deles
   # fora do SDK quebra o app, entao so correcao entra por aqui; troca de SDK e
