@@ -145,6 +145,45 @@ test("falha de rede nao e culpa do CEP: avisa, oferece tentar de novo e nao marc
   expect(root.querySelector("p")).toBeNull();
 });
 
+test("tentar de novo deixa o foco no campo, e nao no corpo da pagina", async () => {
+  const pending = deferred<PostalAddress | null>();
+  let calls = 0;
+  const lookup = mock(() => {
+    calls += 1;
+    return calls === 1 ? Promise.reject(new TypeError("Failed to fetch")) : pending.promise;
+  });
+  const { input, root } = field({ lookup });
+
+  await act(async () => type(input, "58038000"));
+  const retry = screen.getByRole("button", { name: "Tentar de novo" });
+  retry.focus();
+  expect(document.activeElement === retry).toBe(true);
+
+  await act(async () => fireEvent.click(retry));
+
+  expect(root.getAttribute("data-status")).toBe("searching");
+  expect(retry.isConnected).toBe(false);
+  expect(document.activeElement === input).toBe(true);
+});
+
+test("com movimento reduzido, buscando tem texto visivel, porque o giro para", async () => {
+  const pending = deferred<PostalAddress | null>();
+  const { input, root } = field({ lookup: () => pending.promise });
+
+  await act(async () => type(input, "58038000"));
+
+  const visible = [...root.querySelectorAll("[data-searching]")];
+  expect(visible).toHaveLength(1);
+  expect(visible[0]!.textContent).toBe("Buscando endereço…");
+  expect(visible[0]!.getAttribute("aria-hidden")).toBe("true");
+  expect(visible[0]!.className.split(" ")).toContain("motion-reduce:block");
+  expect(visible[0]!.className.split(" ")).toContain("hidden");
+  expect(visible[0]!.closest(".sr-only")).toBeNull();
+
+  await act(async () => pending.resolve(AURORA));
+  expect(root.querySelector("[data-searching]")).toBeNull();
+});
+
 test("trocar o CEP no meio da busca cancela a anterior, e a resposta velha nao entra", async () => {
   const first = deferred<PostalAddress | null>();
   const second = deferred<PostalAddress | null>();

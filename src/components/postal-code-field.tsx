@@ -190,7 +190,13 @@ export function PostalCodeField({
               <button
                 type="button"
                 disabled={disabled}
-                onClick={() => run(digits)}
+                onClick={(event) => {
+                  event.currentTarget
+                    .closest("[data-status]")
+                    ?.querySelector<HTMLInputElement>("input")
+                    ?.focus();
+                  run(digits);
+                }}
                 className={cn(
                   "rounded-sm font-medium text-accent-text underline underline-offset-2",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -203,6 +209,16 @@ export function PostalCodeField({
             </>
           )}
         </p>
+      )}
+
+      {status === "searching" && (
+        <div
+          aria-hidden="true"
+          data-searching=""
+          className={cn("hidden text-xs text-fg-muted motion-reduce:block", classNames?.message)}
+        >
+          {said.searching}
+        </div>
       )}
 
       <div role="status" aria-live="polite" className="sr-only">

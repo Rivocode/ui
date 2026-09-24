@@ -38,7 +38,8 @@ Três regras de contrato, e a função acima segue as três:
 - **`null` é "não existe".** O ViaCEP responde `200` com `{ "erro": true }`
   para CEP que não existe, e é a função que traduz isso para `null`.
 - **Rejeitar é falha de rede.** Timeout, sem conexão, servidor fora do ar: a
-  peça mostra outro aviso, com o "Tentar de novo".
+  peça mostra outro aviso, com o "Tentar de novo". Ele some quando a busca
+  recomeça, e o foco volta para o campo antes disso.
 - **Repasse o `signal` ao `fetch`.** Quando a pessoa troca o CEP no meio da
   busca, a peça cancela a anterior. A resposta velha é descartada de qualquer
   jeito, mas com o `signal` a requisição para de verdade.
@@ -47,7 +48,7 @@ Três regras de contrato, e a função acima segue as três:
 
 | Estado | Na tela | No leitor de tela |
 |---|---|---|
-| Buscando | giro no fim do campo, e o campo com `aria-busy` | "Buscando endereço…" |
+| Buscando | giro no fim do campo, e o campo com `aria-busy`; com movimento reduzido, o giro para e o "Buscando endereço…" aparece escrito embaixo | "Buscando endereço…" |
 | Achou | um visto no fim do campo, e `onAddress` chamado | "Endereço encontrado." |
 | Não achou | aviso em vermelho embaixo, campo inválido | o próprio aviso |
 | Falha de rede | aviso neutro com "Tentar de novo", campo **não** inválido | o próprio aviso |
