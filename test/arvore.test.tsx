@@ -208,4 +208,7 @@ test("o botao de abrir estica o alvo de 16 para 24 pixels sem crescer o desenho"
   expect(tokens).toContain("relative");
   expect(tokens).toContain("after:absolute");
   expect(tokens).toContain("after:-inset-1");
+
+  const box = toggle.parentElement!.querySelector('[role="checkbox"]')!;
+  expect(box.className.split(" ")).toContain("after:hidden");
 });

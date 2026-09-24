@@ -233,6 +233,7 @@ function Branch({
             disabled={node.disabled}
             tabIndex={-1}
             aria-hidden="true"
+            className="after:hidden"
             onClick={(event) => event.stopPropagation()}
             onCheckedChange={() => onToggleSelect(node)}
           />
