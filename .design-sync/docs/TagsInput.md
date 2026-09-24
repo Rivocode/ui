@@ -46,6 +46,10 @@ vários leitores de tela não o anunciam. Fora de um `Field`, dê `aria-label`.
 O anel de foco é do campo de escrever, e não da moldura. O xis de cada ficha
 tem anel próprio, e os dois nunca acendem juntos.
 
+Tirar uma ficha pelo xis não joga o foco para o começo da página: ele vai para
+o xis da ficha seguinte, ou da anterior quando era a última, e para o campo de
+escrever quando não sobra nenhuma.
+
 ## O nome do xis
 
 Cada ficha diz o que se remove: `labels.remove` recebe o texto dela e devolve o

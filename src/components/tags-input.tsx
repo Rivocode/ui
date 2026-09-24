@@ -2,7 +2,7 @@
 
 import { Field as BaseField } from "@base-ui/react/field";
 import { X } from "lucide-react";
-import { useState, type ComponentProps, type KeyboardEvent } from "react";
+import { useLayoutEffect, useRef, useState, type ComponentProps, type KeyboardEvent } from "react";
 
 import { useArrivals } from "../lib/arrivals";
 import { cn } from "../lib/cn";
@@ -50,6 +50,23 @@ export function TagsInput({
 
   const remove = labels.remove ?? ((tag: string) => `Remover ${tag}`);
 
+  const removers = useRef(new Map<string, HTMLButtonElement>());
+  const field = useRef<HTMLInputElement>(null);
+  const focusAfterRemoval = useRef<string | null | undefined>(undefined);
+
+  useLayoutEffect(() => {
+    const target = focusAfterRemoval.current;
+    if (target === undefined) return;
+    focusAfterRemoval.current = undefined;
+    const neighbor = target === null ? undefined : removers.current.get(target);
+    (neighbor ?? field.current)?.focus();
+  }, [tags]);
+
+  function removeAt(index: number) {
+    focusAfterRemoval.current = tags[index + 1] ?? tags[index - 1] ?? null;
+    change(tags.filter((_, current) => current !== index));
+  }
+
   function change(next: string[]) {
     if (!controlled) setInternal(next);
     onValueChange?.(next);
@@ -96,7 +113,7 @@ export function TagsInput({
         className,
       )}
     >
-      {tags.map((tag) => (
+      {tags.map((tag, index) => (
         <span
           key={tag}
           className={cn(
@@ -111,7 +128,11 @@ export function TagsInput({
             type="button"
             aria-label={remove(tag)}
             disabled={disabled}
-            onClick={() => change(tags.filter((current) => current !== tag))}
+            ref={(node) => {
+              if (node) removers.current.set(tag, node);
+              else removers.current.delete(tag);
+            }}
+            onClick={() => removeAt(index)}
             className={cn(
               "relative text-fg-subtle transition-colors duration-[var(--rc-duration-fast)] ease-rc hover:text-fg",
               "after:absolute after:-inset-1.5",
@@ -126,6 +147,7 @@ export function TagsInput({
 
       <BaseField.Control
         {...props}
+        ref={field}
         render={<input />}
         value={draft}
         disabled={disabled || full}

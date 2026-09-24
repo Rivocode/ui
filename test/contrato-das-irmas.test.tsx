@@ -69,6 +69,23 @@ test("o xis tira a ficha tambem com a lista por conta da peca", () => {
   expect(screen.getByText("nf-e")).toBeDefined();
 });
 
+test("tirar a ficha leva o foco para o xis da vizinha, e sem vizinha para o campo", () => {
+  withTheme(<TagsInput aria-label="Marcadores" defaultValue={["nf-e", "urgente", "prefeitura"]} />);
+
+  const first = screen.getByRole("button", { name: "Remover nf-e" });
+  first.focus();
+  fireEvent.click(first);
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Remover urgente" }));
+
+  const last = screen.getByRole("button", { name: "Remover prefeitura" });
+  last.focus();
+  fireEvent.click(last);
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: "Remover urgente" }));
+
+  fireEvent.click(screen.getByRole("button", { name: "Remover urgente" }));
+  expect(document.activeElement).toBe(screen.getByLabelText("Marcadores"));
+});
+
 test("com `value`, quem manda continua sendo de fora", () => {
   // O par nao pode ter virado "o defaultValue vence": passar `value` e dizer
   // que a lista mora no app, e a peca nao pode desenhar outra.
