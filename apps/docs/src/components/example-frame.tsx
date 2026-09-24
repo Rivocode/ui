@@ -56,13 +56,12 @@ function useClonedStyles(doc: Document | null) {
  * tambem informa se o numero parou de mexer, e a moldura fica escondida ate
  * parar.
  */
-function useMeasuredHeight(doc: Document | null, width: number) {
+function useMeasuredHeight(root: HTMLElement | null, width: number) {
   const [height, setHeight] = useState(220)
   const [settled, setSettled] = useState(false)
 
   useEffect(() => {
-    if (!doc?.body) return
-    const body = doc.body
+    if (!root) return
     // A largura e dependencia de proposito: trocar de tablet para celular
     // reaproveita a moldura, e sem o reset a pessoa via o conteudo se
     // reorganizar ao vivo. O esconde-ate-silenciar so funcionava na primeira
@@ -71,7 +70,7 @@ function useMeasuredHeight(doc: Document | null, width: number) {
 
     let timer: ReturnType<typeof setTimeout>
     const measure = () => {
-      setHeight(Math.max(160, Math.ceil(body.getBoundingClientRect().height)))
+      setHeight(Math.max(160, Math.ceil(root.getBoundingClientRect().height)))
       // Assentado quer dizer que parou de mudar. O observer so relata mudanca,
       // entao o que conta e o silencio dele, e nao duas leituras iguais.
       clearTimeout(timer)
@@ -79,14 +78,20 @@ function useMeasuredHeight(doc: Document | null, width: number) {
     }
     measure()
 
+    // Mede o no raiz do portal, e nao o `body`. O `body` e do tamanho da
+    // janela da moldura sempre que alguma folha o estica (e em modo quirks
+    // ele estica sozinho), e ai a medida vira a da propria moldura: a altura
+    // realimentava a si mesma, descendo um degrau por volta do observer (1599,
+    // 1551, 1503...), o silencio de 180ms nunca chegava, e a moldura ficava
+    // invisivel por uns dez segundos em /blocos.
     const observer = new ResizeObserver(measure)
-    observer.observe(body)
+    observer.observe(root)
 
     return () => {
       clearTimeout(timer)
       observer.disconnect()
     }
-  }, [doc, width])
+  }, [root, width])
 
   return { height, settled }
 }
@@ -122,6 +127,8 @@ function useBoxWidth() {
   return { box, boxWidth }
 }
 
+const FRAME_DOCUMENT = '<!doctype html><html><head></head><body></body></html>'
+
 export function ExampleFrame({
   width,
   fit = false,
@@ -150,6 +157,7 @@ export function ExampleFrame({
 }) {
   const frame = useRef<HTMLIFrameElement>(null)
   const [doc, setDoc] = useState<Document | null>(null)
+  const [root, setRoot] = useState<HTMLDivElement | null>(null)
   const { box, boxWidth } = useBoxWidth()
   const frameWidth = fit ? Math.min(width, boxWidth ?? width) : width
   const scale = fit || !boxWidth ? 1 : Math.min(1, boxWidth / width)
@@ -160,7 +168,11 @@ export function ExampleFrame({
 
     const attach = () => {
       const inner = node.contentDocument
-      if (!inner) return
+      // So o documento do `srcDoc` serve. Antes dele o iframe tem o
+      // about:blank inicial, que e quirks, e o Safari chega a devolve-lo no
+      // primeiro tick; quem vale e o documento em modo padrao, pego aqui se o
+      // load ja passou ou no evento de load se nao.
+      if (!inner || inner.compatMode !== 'CSS1Compat') return
       inner.body.style.margin = '0'
       // A moldura tem o tamanho do proprio conteudo, entao a barra de rolagem
       // vertical dela nunca passaria de uma tarja de cromo por cima do
@@ -173,18 +185,16 @@ export function ExampleFrame({
       // altura ainda nao tinha sido medida de novo.
       inner.documentElement.style.colorScheme = getComputedStyle(node).colorScheme
       inner.documentElement.style.background = 'transparent'
-      setDoc(inner)
+      setDoc((current) => (current === inner ? current : inner))
     }
 
-    // O Safari pode devolver um documento que ainda e about:blank no primeiro
-    // tick, entao quem vale e o evento de load.
     attach()
     node.addEventListener('load', attach)
     return () => node.removeEventListener('load', attach)
   }, [])
 
   useClonedStyles(doc)
-  const { height, settled } = useMeasuredHeight(doc, frameWidth)
+  const { height, settled } = useMeasuredHeight(root, frameWidth)
 
   // Enquanto a largura nova e medida, a caixa segura a altura que ja estava
   // mostrando, e nunca um placeholder fixo: desabar para 160 e voltar era a
@@ -204,6 +214,11 @@ export function ExampleFrame({
     >
       <iframe
         ref={frame}
+        // O doctype e o motivo de o `srcDoc` existir. Sem ele o iframe nasce
+        // about:blank, em modo quirks, onde o `body` estica ate a altura da
+        // janela e `h-full`, `min-h` e tabela se comportam diferente do site
+        // de quem copia o exemplo.
+        srcDoc={FRAME_DOCUMENT}
         title="Exemplo em outra largura"
         className={`shrink-0 rounded-md border border-border bg-bg transition-opacity duration-200 ${
           settled ? 'opacity-100' : 'opacity-0'
@@ -222,6 +237,7 @@ export function ExampleFrame({
           createPortal(
             <RivoProvider scope="local" theme="rivocode-dark">
               <div
+                ref={setRoot}
                 // `safe` pelo mesmo motivo do stage: centro mais overflow torna
                 // o comeco inalcancavel, e aqui o overflow e a regra, nao a
                 // excecao - a moldura existe justamente para apertar a largura.
