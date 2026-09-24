@@ -38,6 +38,15 @@
  * todas de uma vez - veja `inside()`. Subcaminho novo com peer novo e uma
  * linha aqui, e nada mais.
  *
+ * **Subcaminho sem peer tambem mora aqui.** O `@rivocode/ui/ai` e o
+ * `@rivocode/ui-native/ai` nao custam dependencia nenhuma: o que eles custam e
+ * PESO. O `PromptInput`, a `Conversation` e o `ToolCall` so servem a app que
+ * conversa com um modelo, e o metro nao sacode arvore - importar um `Button` do
+ * indice nativo compila tudo o que o indice alcanca, no aparelho de quem nunca
+ * vai abrir um chat. A regra 2 e a mesma, e e ela que segura a porta: nada de
+ * fora do diretorio importa dele. Por isso `peer` e opcional na tabela - a
+ * linha sem ele guarda so a segunda regra, e o `why` diz o que se perde.
+ *
  * Uma nota sobre o nome do arquivo: ele continua `check-fronteira-do-chart`
  * porque o script se chama `check:chart` no package.json da raiz, e renomear
  * um sem o outro deixa o comando morto. Leia "chart" como "o primeiro
@@ -54,8 +63,8 @@ type Frontier = {
   dir: string;
   /** O especificador publico do subcaminho. */
   entry: string;
-  /** O peer opcional - ou os peers - que nao podem vazar. */
-  peer: RegExp;
+  /** O peer opcional - ou os peers - que nao podem vazar. Sem ele, so a regra 2. */
+  peer?: RegExp;
   /** Por que ele nao pode vazar, em uma linha. */
   why: string;
 };
@@ -121,6 +130,26 @@ const FRONTIERS: Frontier[] = [
       "    caminho SEPARADO do clipboard de proposito: quem copia uma chave de\n" +
       "    NF-e nao anexa arquivo, e um indice comum aos dois cobraria os dois.",
   },
+  {
+    pkg: "@rivocode/ui",
+    core: "src",
+    dir: "src/ai/",
+    entry: "@rivocode/ui/ai",
+    why:
+      "O subcaminho de IA nao tem peer: o que ele custa e peso. Quem monta tela\n" +
+      "    de nota fiscal nao carrega o campo de prompt, a conversa e o cartao de\n" +
+      "    ferramenta por ter importado um Button.",
+  },
+  {
+    pkg: "@rivocode/ui-native",
+    core: "native/src",
+    dir: "native/src/ai/",
+    entry: "@rivocode/ui-native/ai",
+    why:
+      "O subcaminho de IA nao tem peer, e no celular o peso e maior que no web:\n" +
+      "    o metro nao sacode arvore, e tudo o que o indice da raiz alcanca e\n" +
+      "    compilado no app de quem so queria um Button.",
+  },
 ];
 
 /** O que este arquivo importa, ja sem comentario e ja resolvido. */
@@ -173,7 +202,7 @@ for (const frontier of FRONTIERS) {
     const code = await Bun.file(path).text();
 
     for (const { specifier, resolved, line } of importsOf(path, code)) {
-      if (frontier.peer.test(specifier)) {
+      if (frontier.peer?.test(specifier)) {
         breaches.push(`  ${path}:${line}  importa "${specifier}"\n    ${frontier.why}`);
         continue;
       }
@@ -181,7 +210,8 @@ for (const frontier of FRONTIERS) {
       if (inside(resolved, frontier.dir) || resolved === frontier.entry) {
         breaches.push(
           `  ${path}:${line}  importa "${specifier}"\n` +
-            `    Tudo em ${frontier.dir} arrasta o peer junto, mesmo que a peca nao pareca.`,
+            `    Tudo em ${frontier.dir} arrasta o subcaminho junto, mesmo que a peca nao pareca.\n` +
+            `    ${frontier.why}`,
         );
       }
     }
@@ -189,7 +219,7 @@ for (const frontier of FRONTIERS) {
 }
 
 if (breaches.length > 0) {
-  console.error(`${breaches.length} import(s) atravessando fronteira de peer opcional:\n`);
+  console.error(`${breaches.length} import(s) atravessando fronteira de subcaminho:\n`);
   for (const item of breaches) console.error(item);
   console.error(
     "\nO nucleo dos dois pacotes tem que continuar montando sem o peer instalado." +
@@ -204,7 +234,11 @@ if (breaches.length > 0) {
 }
 
 console.log(
-  FRONTIERS.map((frontier) => `${frontier.pkg}: o peer nao sai de ${frontier.dir}`).join(
+  FRONTIERS.map((frontier) =>
+    frontier.peer
+      ? `${frontier.pkg}: o peer nao sai de ${frontier.dir}`
+      : `${frontier.pkg}: ${frontier.dir} nao tem peer`,
+  ).join(
     ", e ninguem de fora entra la.\n",
   ) + ", e ninguem de fora entra la.",
 );
