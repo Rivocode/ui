@@ -1,5 +1,28 @@
 # Mudancas
 
+## 0.11.0
+
+### `@rivocode/ui-native/ai`
+
+Subcaminho novo, pelo peso e nao por peer: o metro nao descarta codigo, e
+pecas de conversa entrariam em todo app que importa um `Button`. Traz
+`PromptInput`, `Message`, `Conversation` (sobre `FlatList` invertida),
+`ToolCall` e `AILabel`, com a explicacao numa folha.
+
+### Pecas novas
+
+- `ActionBar`, presa acima da area segura por `bottomInset`, com a contagem
+  anunciada pelo leitor de tela.
+- `PostalCodeField`, controlado e com a mesma regra de busca e cancelamento do
+  web, pelo espelho de `src/shared`.
+- `Carousel`, sobre `FlatList` horizontal, sem rotacao automatica: no toque, a
+  lista que anda sozinha briga com o dedo.
+- `ImageViewer`, sobre `Modal`, com o zoom de pinca feito no `PanResponder`,
+  sem peer novo.
+
+O `CookieConsent` nao porta: app nao tem cookie, e o consentimento de rastreio
+no celular e o da plataforma.
+
 ## 0.10.0
 
 ### Mudanca de comportamento: o `MaskedInput` aceita letra com `*`

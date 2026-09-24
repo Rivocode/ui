@@ -14,6 +14,6 @@ página de peça, cada guia e cada arquivo DTCG também sai como resource.
 
 ### A documentação empacotada
 
-Gerada de `@rivocode/ui` 0.15.0 e `@rivocode/ui-native` 0.10.0: 99 peças, as
-convenções, os nove guias do site, a skill com as onze referências e os tokens
+Gerada de `@rivocode/ui` 0.16.0 e `@rivocode/ui-native` 0.11.0: 109 peças, as
+convenções, os nove guias do site, a skill com as doze referências, os seis blocos de página e os tokens
 em JSON DTCG 2025.10.

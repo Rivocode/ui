@@ -1,5 +1,52 @@
 # Mudancas
 
+## 0.16.0
+
+Dez pecas novas e um subcaminho novo: o catalogo vai de 99 a 109. Esta versao
+fecha a segunda leva da comparacao com os design systems de mercado.
+
+### `@rivocode/ui/ai`
+
+Subcaminho novo, sem dependencia de SDK de IA: a peca recebe as mensagens por
+prop e devolve eventos.
+
+- `PromptInput`: Enter envia e Shift+Enter quebra a linha, e durante a resposta
+  o botao de enviar vira o de parar.
+- `Message`: a mensagem por papel (`user`, `assistant`, `system`), com copiar,
+  tentar de novo e o indicador de quem ainda esta escrevendo.
+- `Conversation`: a lista que gruda no fim enquanto o texto chega, e para de
+  grudar quando a pessoa rola para cima.
+- `ToolCall`: a chamada de ferramenta, com os cinco estados e o aprovar e
+  recusar de quando a ferramenta pede permissao.
+- `AILabel`: o selo que marca conteudo gerado por IA, com a explicacao opcional.
+
+### Pecas novas no pacote principal
+
+- `ActionBar`: as acoes em lote, com "N selecionados" em regiao viva e o foco
+  devolvido ao sair.
+- `PostalCodeField`: o CEP que busca o endereco pela funcao que quem usa passa,
+  e cancela a busca velha quando o CEP muda. A biblioteca nao chama servico
+  externo sozinha.
+- `CookieConsent`: o aviso de cookies no molde da LGPD, com recusar pesando o
+  mesmo que aceitar. Ele nao grava cookie: devolve a escolha.
+- `Carousel`: por scroll-snap do CSS, com botoes, teclado e rotacao desligada
+  por padrao, que para sozinha no foco, no ponteiro e com movimento reduzido.
+- `ImageViewer`: a foto em tela cheia sobre o `Dialog`, com zoom, setas, deslize
+  e `alt` obrigatorio no tipo.
+
+### Correcoes
+
+- As transicoes de cor e opacidade de `Alert`, `Banner`, `DataTable`, `Sidebar`,
+  `Table` e `Toast` passam a usar a curva `ease-rc-effects`, e uma guarda cobra
+  curva da casa em toda transicao.
+- A seta do `Link` externo cola na pontuacao que vem depois.
+- O `Editable` para de disparar o aviso de `key` depois do espalhamento.
+
+### Dependencias
+
+`@base-ui/react` 1.8, `@tanstack/react-table` 9.2 e as demais atualizacoes do
+grupo de menor e correcao. Nada muda para quem consome.
+
 ## 0.15.0
 
 Oito pecas novas, e o catalogo vai de 91 a 99. Esta versao fecha a primeira
