@@ -20,6 +20,7 @@ import {
   formatTime,
   Heading,
   IconButton,
+  ImageViewer,
   Item,
   ItemActions,
   ItemContent,
@@ -41,6 +42,7 @@ import {
   VirtualList,
 } from "../src/index";
 import { stepTime, timeWindow } from "../src/components/time-field";
+import { PHOTOS } from "./fotos";
 
 type Invoice = {
   id: string;
@@ -731,6 +733,10 @@ function Sample({
       <div className="flex flex-col gap-12">
         <Block title="Carousel">
           <Carousels />
+        </Block>
+
+        <Block title="ImageViewer">
+          <ImageViewer images={PHOTOS} className="max-w-xl" />
         </Block>
 
         <Block title="Banner">

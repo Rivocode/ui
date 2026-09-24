@@ -1770,6 +1770,58 @@
       }
     ]
   },
+  "ImageViewer": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "images",
+        "type": "ImageViewerImage[]",
+        "required": true,
+        "note": "As imagens, na ordem da navegacao."
+      },
+      {
+        "name": "index",
+        "type": "number | null",
+        "required": true,
+        "note": "A imagem aberta, contando de zero, ou `null` com o visualizador fechado."
+      },
+      {
+        "name": "onIndexChange",
+        "type": "(index: number | null) => void",
+        "required": true,
+        "note": "Chamado ao abrir pela miniatura, ao navegar e com `null` ao fechar."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a grade de miniaturas."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ImageViewerLabels>",
+        "required": false
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "note": "Da ultima, a proxima volta a primeira, e vice-versa."
+      },
+      {
+        "name": "maxZoom",
+        "type": "number",
+        "required": false,
+        "note": "O zoom maximo, em vezes o tamanho que cabe na tela."
+      },
+      {
+        "name": "thumbnails",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha a grade de miniaturas que abre o visualizador."
+      }
+    ]
+  },
   "Indicator": {
     "entry": "native/src/index.ts",
     "props": [

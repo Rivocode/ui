@@ -19,7 +19,7 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
  */
 const PAGES = [
   { rota: "/index.html", name: "vitrine", height: 2600, alturaCelular: 4200 },
-  { rota: "/dialog.html", name: "dialogo", height: 1680, alturaCelular: 1680 },
+  { rota: "/dialog.html", name: "dialogo", height: 2800, alturaCelular: 2800 },
   { rota: "/listagem.html", name: "listagem", height: 1900, alturaCelular: 2000 },
   { rota: "/flutuantes.html", name: "flutuantes", height: 1120, alturaCelular: 1700 },
   { rota: "/datas.html", name: "datas", height: 1240, alturaCelular: 1800 },
@@ -31,7 +31,7 @@ const PAGES = [
   { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 4000 },
   { rota: "/controles.html", name: "controles", height: 1900, alturaCelular: 3800 },
   { rota: "/dados.html", name: "dados", height: 2520, alturaCelular: 3700 },
-  { rota: "/novas.html", name: "novas", height: 8700, alturaCelular: 12400 },
+  { rota: "/novas.html", name: "novas", height: 9300, alturaCelular: 13000 },
   { rota: "/painel.html", name: "painel", height: 3000, alturaCelular: 5000 },
   { rota: "/paleta.html", name: "paleta", height: 1120, alturaCelular: 1120 },
 ];

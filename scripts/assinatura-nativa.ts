@@ -206,6 +206,16 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
     ],
   },
+  ImageViewer: {
+    rows: [
+      {
+        web: "index",
+        native: "index",
+        note: "vira obrigatório, com `onIndexChange`: não há `defaultIndex`, e `null` é o fechado",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, na grade de miniaturas" },
+    ],
+  },
   IconButton: {
     rows: [
       {

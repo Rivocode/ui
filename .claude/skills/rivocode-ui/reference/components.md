@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 100 peças. O índice de todas fica em
+O catálogo tem 101 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -39,6 +39,7 @@ exemplos que rodam e a tabela de props.
 | Contagem por cima do sino, da aba, do menu | `Indicator` | Posiciona sozinho, e a contagem é dita e não só vista |
 | Fila de pessoas sobrepostas | `AvatarGroup` | Corta para uma letra e conta o excedente em "+n" |
 | Vários cartões ou fotos que a pessoa percorre de lado | `Carousel` | Rola por scroll-snap, com botões e teclado; o que se compara é `Tabs`, e o que cabe na tela é `Grid` |
+| Foto que a pessoa precisa ampliar: imóvel, vistoria, comprovante | `ImageViewer` | Tela cheia sobre o `Dialog`, com zoom, setas e `alt` obrigatório; imagem que só enfeita o card é `AspectRatio` |
 | Senha, com o olho que revela | `PasswordInput` | O botão diz a ação e não o estado; sair do campo esconde de novo |
 | Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
 | Ocorrência por período, em faixa | `Tracker` | Responde "piorou ontem?"; cabe no rodapé de um `Stat` |

@@ -340,6 +340,25 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "`open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado",
   },
+  ImageViewer: {
+    state: "traduz",
+    note: "sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo",
+    page:
+      "Traduz sobre o `Modal` do core, com as imagens numa `FlatList` horizontal com " +
+      "`pagingEnabled`: deslizar troca de imagem, e o voltar do Android fecha. A grade de " +
+      "miniaturas é a mesma, montada no `Grid` nativo, e cada miniatura é um `imagebutton` " +
+      "com o `alt` como nome. O `index` é controlado, como em todo o pacote nativo: " +
+      "`onIndexChange` recebe o índice ao abrir e ao navegar, e `null` ao fechar.\n\n" +
+      "**A pinça sai do `PanResponder` do core, e não do react-native-gesture-handler.** " +
+      "O pacote já exige o reanimated, mas não o gesture-handler, e um visualizador de imagem " +
+      "não justifica um peer obrigatório a mais para todo app. Dois dedos aproximam até " +
+      "`maxZoom`, um dedo arrasta a foto aproximada, e o toque duplo dobra e desfaz o zoom. " +
+      "Com zoom, a fileira para de rolar: o dedo que arrasta a foto não troca de foto. Os " +
+      "botões de mais, menos, anterior e próximo continuam lá, porque o leitor de tela não " +
+      "faz pinça.\n\n" +
+      "`caption` é `string`, a vizinha de cada lado é pedida antes por `Image.prefetch`, e o " +
+      'contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.',
+  },
   EmptyState: {
     state: "traduz",
     note: "`description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados",

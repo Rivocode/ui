@@ -82,6 +82,7 @@ const WEB_MEMBERS: Record<string, string[]> = {
   Clipboard: ["getString", "isAvailable", "setString"],
   Dimensions: ["addEventListener", "get", "set"],
   I18nManager: ["allowRTL", "forceRTL", "getConstants"],
+  Image: ["getSize", "prefetch", "queryCache"],
   InteractionManager: ["createInteractionHandle", "clearInteractionHandle", "runAfterInteractions"],
   Keyboard: ["addListener", "dismiss", "isVisible", "removeAllListeners"],
   LayoutAnimation: ["Presets", "Properties", "Types", "configureNext", "create", "easeInEaseOut"],

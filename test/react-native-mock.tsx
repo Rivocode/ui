@@ -96,9 +96,16 @@ export const I18nManager = {
 };
 
 /** O Slider so precisa que os handlers existam; gesto nao se testa aqui. */
+const responders: unknown[] = [];
+
 export const PanResponder = {
-  create: () => ({ panHandlers: {} }),
+  create: (config: unknown) => {
+    responders.push(config);
+    return { panHandlers: {} };
+  },
 };
+
+export const panResponders = responders;
 
 /* O Appearance de verdade e a ponte com o sistema; aqui e uma variavel, para
    o teste do provider poder afirmar qual esquema foi pedido. */

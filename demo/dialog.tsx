@@ -14,9 +14,12 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTitle,
+  ImageViewer,
   RivoProvider,
+  type RivoDensity,
   type RivoTheme,
 } from "../src/index";
+import { PHOTOS } from "./fotos";
 
 function DialogSample({ theme }: { theme: RivoTheme }) {
   return (
@@ -64,6 +67,17 @@ function AlertSample({ theme }: { theme: RivoTheme }) {
   );
 }
 
+function ViewerSample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
+  return (
+    <RivoProvider scope="local" theme={theme} density={density} className="min-h-screen p-8">
+      <p className="font-mono text-xs tracking-widest text-fg-subtle uppercase">
+        {theme} / {density} / visualizador
+      </p>
+      <ImageViewer images={PHOTOS} defaultIndex={1} />
+    </RivoProvider>
+  );
+}
+
 function Frames() {
   return (
     <div className="flex flex-col">
@@ -87,6 +101,16 @@ function Frames() {
         title="Aviso sem volta no tema claro"
         className="h-[420px] w-full border-0"
       />
+      <iframe
+        src="./dialog.html#visor-escuro"
+        title="Visualizador de imagem no tema escuro"
+        className="h-[560px] w-full border-0"
+      />
+      <iframe
+        src="./dialog.html#visor-claro"
+        title="Visualizador de imagem no tema claro"
+        className="h-[560px] w-full border-0"
+      />
     </div>
   );
 }
@@ -98,4 +122,8 @@ if (view === "dialogo-escuro") root.render(<DialogSample theme="rivocode-dark" /
 else if (view === "dialogo-claro") root.render(<DialogSample theme="rivocode-light" />);
 else if (view === "alerta-escuro") root.render(<AlertSample theme="rivocode-dark" />);
 else if (view === "alerta-claro") root.render(<AlertSample theme="rivocode-light" />);
+else if (view === "visor-escuro")
+  root.render(<ViewerSample theme="rivocode-dark" density="comfortable" />);
+else if (view === "visor-claro")
+  root.render(<ViewerSample theme="rivocode-light" density="compact" />);
 else root.render(<Frames />);

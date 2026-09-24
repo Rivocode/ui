@@ -10605,6 +10605,64 @@
       }
     ]
   },
+  "ImageViewer": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "images",
+        "type": "ImageViewerImage[]",
+        "required": true,
+        "note": "As imagens, na ordem da navegacao."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"caption\" | \"counter\" | \"image\" | \"stage\" | \"thumbnail\" | \"thumbnails\" | \"toolbar\" | \"viewer\", string>>",
+        "required": false
+      },
+      {
+        "name": "defaultIndex",
+        "type": "number | null",
+        "required": false,
+        "note": "A imagem aberta ao montar, quando ninguem controla."
+      },
+      {
+        "name": "index",
+        "type": "number | null",
+        "required": false,
+        "note": "A imagem aberta, controlada: o indice, contando de zero, ou `null` com o visualizador fechado."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ImageViewerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma ou o termo."
+      },
+      {
+        "name": "loop",
+        "type": "boolean",
+        "required": false,
+        "note": "Da ultima, a proxima volta a primeira, e vice-versa."
+      },
+      {
+        "name": "maxZoom",
+        "type": "number",
+        "required": false,
+        "note": "O zoom maximo, em vezes o tamanho que cabe na tela."
+      },
+      {
+        "name": "onIndexChange",
+        "type": "((index: number | null) => void)",
+        "required": false,
+        "note": "Chamado ao abrir, ao navegar e com `null` ao fechar."
+      },
+      {
+        "name": "thumbnails",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha a grade de miniaturas que abre o visualizador."
+      }
+    ]
+  },
   "Indicator": {
     "forwardsRoot": true,
     "props": [

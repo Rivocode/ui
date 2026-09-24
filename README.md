@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-100 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+101 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -163,6 +163,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Tooltip`     | dica, para botão que só tem ícone                                      |
 | `Menu`        | menu de ações, com grupos e item destrutivo                            |
 | `Toast`       | aviso que passa, via `useToast()`                                      |
+| `ImageViewer` | foto em tela cheia a partir das miniaturas, com zoom e setas           |
 
 ### Navegação
 

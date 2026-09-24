@@ -4,6 +4,12 @@ export { Button, type ButtonProps } from "./button";
 export { IconButton, type IconButtonProps } from "./icon-button";
 export { Banner, type BannerProps } from "./banner";
 export { Carousel, type CarouselLabels, type CarouselProps } from "./carousel";
+export {
+  ImageViewer,
+  type ImageViewerImage,
+  type ImageViewerLabels,
+  type ImageViewerProps,
+} from "./image-viewer";
 export { Badge, type BadgeProps } from "./badge";
 export { Indicator, type IndicatorProps } from "./indicator";
 export { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./card";
