@@ -478,10 +478,59 @@ describe("ToolCall", () => {
     expect(screen.getByText("A prefeitura não respondeu.")).toBeDefined();
   });
 
-  test("sem entrada, saida nem erro, o gatilho nao abre nada", () => {
-    withTheme(<ToolCall name="buscar_notas" status="pending" />);
-    const trigger = screen.getByRole("button", { name: /buscar_notas/ }) as HTMLButtonElement;
-    expect(trigger.disabled || trigger.getAttribute("aria-disabled") === "true").toBe(true);
+  test("sem entrada, saida nem erro, o cabecalho nao e botao, e nada aponta para painel inexistente", () => {
+    for (const status of ["pending", "error", "approval"] as const) {
+      const view = withTheme(
+        <ToolCall name="buscar_notas" status={status} onApprove={() => {}} onReject={() => {}} />,
+      );
+      const root = view.container.querySelector("[data-status]")!;
+
+      expect(screen.queryByRole("button", { name: /buscar_notas/ })).toBeNull();
+      expect(root.querySelector("[aria-controls]")).toBeNull();
+      expect(root.querySelector("[aria-expanded]")).toBeNull();
+      expect(screen.getByText("buscar_notas")).toBeDefined();
+      view.unmount();
+    }
+  });
+
+  test("com corpo, o aria-controls do gatilho aponta para o painel que existe", () => {
+    withTheme(<ToolCall name="buscar_notas" status="error" error="Falhou." />);
+    const trigger = screen.getByRole("button", { name: /buscar_notas/ });
+    const id = trigger.getAttribute("aria-controls") ?? "";
+
+    expect(document.getElementById(id)).not.toBeNull();
+  });
+
+  test("nome e titulo longos quebram em ate duas linhas, e o nome inteiro fica no title", () => {
+    const name = "consultar_notas_fiscais_da_filial_de_joao_pessoa_com_protocolo_da_sefaz";
+    withTheme(<ToolCall name={name} title="Consultando as notas" status="pending" />);
+    const shown = screen.getByText(name);
+    const title = screen.getByText("Consultando as notas");
+
+    for (const node of [shown, title]) {
+      expect(tokens(node)).toContain("line-clamp-2");
+      expect(tokens(node)).toContain("wrap-anywhere");
+      expect(tokens(node)).not.toContain("truncate");
+    }
+    expect(shown.getAttribute("title")).toBe(name);
+  });
+
+  test("aprovar e recusar com texto longo quebram a linha em vez de vazar", () => {
+    withTheme(
+      <ToolCall
+        name="emitir_nota"
+        status="approval"
+        onApprove={() => {}}
+        onReject={() => {}}
+        labels={{ approve: "Aprovar a emissao da nota para a filial de Joao Pessoa" }}
+      />,
+    );
+    for (const name of [/Aprovar a emissao/, "Recusar"]) {
+      const button = screen.getByRole("button", { name });
+      expect(tokens(button)).toContain("whitespace-normal");
+      expect(tokens(button)).toContain("h-auto");
+      expect(tokens(button)).not.toContain("whitespace-nowrap");
+    }
   });
 });
 

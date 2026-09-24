@@ -90,6 +90,32 @@ export function ToolCall({
   const statusText = labels[status] ?? state.text;
   const asking = status === "approval" && (onApprove || onReject);
   const hasBody = input !== undefined || output !== undefined || Boolean(error);
+  const header = "group flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2.5 text-left";
+  const wrap = "line-clamp-2 wrap-anywhere";
+  const summary = (
+    <>
+      <span className="flex min-w-[10rem] flex-1 basis-0 flex-col gap-0.5">
+        <span title={name} className={cn(wrap, "font-mono text-sm text-fg", classNames?.name)}>
+          {name}
+        </span>
+        {title && <span className={cn(wrap, "text-sm text-fg-muted")}>{title}</span>}
+      </span>
+    </>
+  );
+  const badge = (
+    <Badge
+      tone={state.tone}
+      size="sm"
+      className={cn("shrink-0 [&_svg]:size-3.5", classNames?.status)}
+    >
+      <span aria-hidden="true" className="contents">
+        {state.icon}
+      </span>
+      {statusText}
+    </Badge>
+  );
+  const end = "ml-auto flex shrink-0 items-center gap-3";
+  const long = "h-auto min-h-[var(--rc-control-sm)] min-w-0 shrink py-1 whitespace-normal";
 
   return (
     <div
@@ -102,41 +128,24 @@ export function ToolCall({
         className,
       )}
     >
-      <BaseCollapsible.Root
-        defaultOpen={defaultOpen ?? (status === "approval" || status === "error")}
-        open={open}
-        onOpenChange={onOpenChange ? (next) => onOpenChange(next) : undefined}
-      >
-        <BaseCollapsible.Trigger
-          disabled={!hasBody}
-          className={cn(
-            "group flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2.5 text-left",
-            "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
-            "outline-none hover:bg-surface-raised focus-visible:ring-2 focus-visible:ring-ring",
-            "focus-visible:ring-inset disabled:cursor-default disabled:hover:bg-transparent",
-            classNames?.trigger,
-          )}
+      {hasBody ? (
+        <BaseCollapsible.Root
+          defaultOpen={defaultOpen ?? (status === "approval" || status === "error")}
+          open={open}
+          onOpenChange={onOpenChange ? (next) => onOpenChange(next) : undefined}
         >
-          <span className="flex min-w-[10rem] flex-1 basis-0 flex-col gap-0.5">
-            <span className={cn("truncate font-mono text-sm text-fg", classNames?.name)}>
-              {name}
-            </span>
-            {title && <span className="truncate text-sm text-fg-muted">{title}</span>}
-          </span>
-
-          <span className="ml-auto flex shrink-0 items-center gap-3">
-            <Badge
-              tone={state.tone}
-              size="sm"
-              className={cn("shrink-0 [&_svg]:size-3.5", classNames?.status)}
-            >
-              <span aria-hidden="true" className="contents">
-                {state.icon}
-              </span>
-              {statusText}
-            </Badge>
-
-            {hasBody && (
+          <BaseCollapsible.Trigger
+            className={cn(
+              header,
+              "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
+              "outline-none hover:bg-surface-raised focus-visible:ring-2 focus-visible:ring-ring",
+              "focus-visible:ring-inset",
+              classNames?.trigger,
+            )}
+          >
+            {summary}
+            <span className={end}>
+              {badge}
               <ChevronDown
                 aria-hidden="true"
                 className={cn(
@@ -145,11 +154,9 @@ export function ToolCall({
                   "group-data-[panel-open]:rotate-180",
                 )}
               />
-            )}
-          </span>
-        </BaseCollapsible.Trigger>
+            </span>
+          </BaseCollapsible.Trigger>
 
-        {hasBody && (
           <BaseCollapsible.Panel
             className={cn(
               "h-[var(--collapsible-panel-height)] overflow-hidden",
@@ -183,8 +190,13 @@ export function ToolCall({
               )}
             </div>
           </BaseCollapsible.Panel>
-        )}
-      </BaseCollapsible.Root>
+        </BaseCollapsible.Root>
+      ) : (
+        <div className={cn(header, classNames?.trigger)}>
+          {summary}
+          <span className={end}>{badge}</span>
+        </div>
+      )}
 
       {asking && (
         <div
@@ -194,12 +206,12 @@ export function ToolCall({
           )}
         >
           {onReject && (
-            <Button type="button" size="sm" variant="secondary" onClick={onReject}>
+            <Button type="button" size="sm" variant="secondary" onClick={onReject} className={long}>
               {labels.reject ?? "Recusar"}
             </Button>
           )}
           {onApprove && (
-            <Button type="button" size="sm" onClick={onApprove}>
+            <Button type="button" size="sm" onClick={onApprove} className={long}>
               {labels.approve ?? "Aprovar"}
             </Button>
           )}

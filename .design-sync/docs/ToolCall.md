@@ -39,8 +39,13 @@ notas de agosto, Rodando". `labels` troca os textos, para outra língua.
 
 `input` e `output` saem no `CodeBlock` da casa. Objeto sai como JSON indentado;
 texto sai como veio. O painel começa fechado, porque quem lê a conversa quer a
-resposta e não o encanamento, e abre no toque do gatilho. Sem entrada, saída
-nem erro, o gatilho não abre nada.
+resposta e não o encanamento, e abre no toque do gatilho. **Sem entrada, saída
+nem erro, não há gatilho**: o cabeçalho sai como texto, e não como um botão
+que não abre nada, anunciado expandido e apontando para um painel que não
+existe.
+
+Nome e título longos quebram em até duas linhas, em vez de cortar numa linha
+só; o nome inteiro da ferramenta fica no `title`, para quem pousa o ponteiro.
 
 `defaultOpen` troca o ponto de partida, e `open` com `onOpenChange` controla.
 
@@ -62,12 +67,16 @@ argumentos antes de decidir.
 />
 ```
 
+Texto longo em `labels.approve` ou `labels.reject` quebra a linha dentro do
+botão, e não vaza do cartão.
+
 A peça não guarda a decisão: quem aprovou muda o `status` para `running`, e
 quem recusou muda para `error` com a frase do motivo.
 
 ## Partes
 
-`classNames` alcança `trigger`, `name`, `status`, `panel`, `error` e `actions`.
+`classNames` alcança `trigger` (o cabeçalho, seja o botão ou o texto sem
+painel), `name`, `status`, `panel`, `error` e `actions`.
 
 ## Quando não usar
 
