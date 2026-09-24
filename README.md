@@ -191,7 +191,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Badge`     | selo de estado, seis tons                                        |
 | `Avatar`    | foto de pessoa, com a inicial por trás                           |
 | `Timeline`  | o que já aconteceu, em ordem, com quem e quando                  |
-| `QRCode`    | o texto que a câmera do outro lê, em SVG com as cores do tema    |
+| `QRCode`    | o texto que a câmera do outro lê, em SVG escuro sobre claro em qualquer tema |
 | `PixCode`   | a cobrança Pix: QR, valor, recebedor e o copia e cola que confere o CRC |
 
 ### Estado

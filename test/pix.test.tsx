@@ -5,7 +5,7 @@ import { PixCode } from "../src/components/pix-code";
 import { buildPixPayload, isValidPixKey, parsePixPayload } from "../src/index";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { formatBrl, pixCrc } from "../src/shared/pix";
-import { readQr, type Shape } from "./leitor-de-qr";
+import { readQr, shapesOf } from "./leitor-de-qr";
 
 const STATIC =
   "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
@@ -149,34 +149,32 @@ test("o valor sai em reais sem Intl, igual nos dois pacotes", () => {
   expect(formatBrl(0)).toBe("R$ 0,00");
 });
 
-function pix(props: Partial<Parameters<typeof PixCode>[0]> = {}) {
+function pix(
+  props: Partial<Parameters<typeof PixCode>[0]> = {},
+  theme: "rivocode-light" | "rivocode-dark" = "rivocode-dark",
+) {
   return render(
-    <RivoProvider scope="local">
+    <RivoProvider scope="local" theme={theme}>
       <PixCode payload={COMPOSITE_WITH_AMOUNT} {...props} />
     </RivoProvider>,
   );
 }
 
-test("o PixCode desenha um QR que decodifica no proprio copia e cola", () => {
-  const payload = buildPixPayload({
-    key: "+5583988112233",
-    name: "Clinica Sao Lucas",
-    city: "Joao Pessoa",
-    amount: 1284.5,
-    txid: "NF4813",
+for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
+  test(`o PixCode desenha um QR que decodifica sem inverter no proprio copia e cola, no ${theme}`, () => {
+    const payload = buildPixPayload({
+      key: "+5583988112233",
+      name: "Clinica Sao Lucas",
+      city: "Joao Pessoa",
+      amount: 1284.5,
+      txid: "NF4813",
+    });
+    const { container } = pix({ payload, size: 240 }, theme);
+    const svg = container.querySelector("svg")!;
+    const viewBox = Number(svg.getAttribute("viewBox")!.split(" ")[2]);
+    expect(readQr(viewBox, 240, shapesOf(svg))).toBe(payload);
   });
-  const { container } = pix({ payload, size: 240 });
-  const svg = container.querySelector("svg")!;
-  const shapes: Shape[] = [...svg.querySelectorAll("rect, path")].map((node) => ({
-    dark: (node.getAttribute("class") ?? "").split(" ").includes("fill-fg"),
-    d:
-      node.tagName.toLowerCase() === "rect"
-        ? `M0 0H${node.getAttribute("width")}V${node.getAttribute("height")}H0Z`
-        : node.getAttribute("d")!,
-  }));
-  const viewBox = Number(svg.getAttribute("viewBox")!.split(" ")[2]);
-  expect(readQr(viewBox, 240, shapes)).toBe(payload);
-});
+}
 
 test("valor e recebedor saem do codigo, e o nome da imagem diz os dois", () => {
   pix();

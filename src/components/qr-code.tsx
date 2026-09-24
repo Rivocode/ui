@@ -15,23 +15,17 @@ export type QRCodeProps = Omit<ComponentProps<"div">, "children"> & {
   size?: number;
   /** A correcao de erro, de `L` (recupera 7% do simbolo) a `H` (30%), com `M` (15%) sem logo e `H` com logo. */
   level?: "L" | "M" | "Q" | "H";
-  /** O fundo, com a margem de silencio de 4 modulos: `surface` dentro de cartao, `bg` solto na pagina. */
-  background?: "bg" | "surface";
   /** A marca no centro, que so aparece com `level="H"`: os modulos embaixo dela sao apagados. */
   logo?: ReactNode;
   /** Classe por parte: `code` (o svg) e `logo`. */
   classNames?: Slots<"code" | "logo">;
 };
 
-const BACKGROUND = { bg: "fill-bg", surface: "fill-surface" } as const;
-const PLATE = { bg: "bg-bg", surface: "bg-surface" } as const;
-
 export function QRCode({
   value,
   label,
   size = 160,
   level,
-  background = "surface",
   logo,
   className,
   classNames,
@@ -61,7 +55,7 @@ export function QRCode({
       aria-label={label}
       data-level={chosen}
       style={{ width: size, height: size, ...style }}
-      className={cn("relative inline-block shrink-0", className)}
+      className={cn("relative inline-block shrink-0 overflow-hidden rounded-md bg-code-paper", className)}
     >
       <svg
         aria-hidden="true"
@@ -71,8 +65,8 @@ export function QRCode({
         shapeRendering="crispEdges"
         className={cn("block", classNames?.code)}
       >
-        <rect width={side} height={side} className={BACKGROUND[background]} />
-        {matrix ? <path d={qrPath(matrix, { hole: withLogo })} className="fill-fg" /> : null}
+        <rect width={side} height={side} className="fill-code-paper" />
+        {matrix ? <path d={qrPath(matrix, { hole: withLogo })} className="fill-code-ink" /> : null}
       </svg>
 
       {hole ? (
@@ -85,8 +79,7 @@ export function QRCode({
             height: `${((hole.end - hole.start - 1) / side) * 100}%`,
           }}
           className={cn(
-            "absolute flex items-center justify-center overflow-hidden rounded-sm",
-            PLATE[background],
+            "absolute flex items-center justify-center overflow-hidden rounded-sm bg-code-paper text-code-ink",
             "[&>img]:size-full [&>img]:object-contain [&>svg]:size-full",
             classNames?.logo,
           )}

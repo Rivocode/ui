@@ -108,7 +108,6 @@ export function PixCode({
           value={payload}
           label={qrLabel}
           size={size}
-          background="surface"
           className={classNames?.code}
         />
       )}

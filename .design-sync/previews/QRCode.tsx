@@ -14,7 +14,7 @@ export function WithLogo() {
       value={LINK_DA_NOTA}
       label="QR Code para consultar a nota 4813"
       size={200}
-      logo={<span className="font-display text-sm font-semibold text-fg">R</span>}
+      logo={<span className="font-display text-sm font-semibold">R</span>}
     />
   )
 }
@@ -23,7 +23,7 @@ export function WithLogo() {
 export function OnPage() {
   return (
     <div className="bg-bg p-4">
-      <QRCode value={LINK_DA_NOTA} label="QR Code para consultar a nota 4813" level="Q" background="bg" size={128} />
+      <QRCode value={LINK_DA_NOTA} label="QR Code para consultar a nota 4813" level="Q" size={128} />
     </div>
   )
 }

@@ -2,28 +2,27 @@ import { expect, spyOn, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
 import { QRCode, type QRCodeProps } from "../src/components/qr-code";
+import { contrastRatio } from "../src/lib/contrast";
+import { RivoProvider } from "../src/provider/rivo-provider";
 import { encodeQr, type QrLevel } from "../src/shared/qr";
-import { darkNearEdge, readQr, type Shape } from "./leitor-de-qr";
+import { darkNearEdge, paintOf, readQr, shapesOf } from "./leitor-de-qr";
 
 const PIX =
   "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
 
-function draw(props: Partial<QRCodeProps> & { value: string }) {
-  const { container } = render(<QRCode label="Código de teste" {...props} />);
+const THEMES = ["rivocode-light", "rivocode-dark"] as const;
+type Theme = (typeof THEMES)[number];
+
+function draw(props: Partial<QRCodeProps> & { value: string }, theme: Theme = "rivocode-dark") {
+  const { container } = render(
+    <RivoProvider scope="local" theme={theme}>
+      <QRCode label="Código de teste" {...props} />
+    </RivoProvider>,
+  );
   const svg = container.querySelector("svg")!;
   const viewBox = Number(svg.getAttribute("viewBox")!.split(" ")[2]);
   const width = Number(svg.getAttribute("width"));
-  const shapes: Shape[] = [];
-  for (const node of svg.querySelectorAll("rect, path")) {
-    const classes = (node.getAttribute("class") ?? "").split(" ");
-    const dark = classes.includes("fill-fg");
-    const d =
-      node.tagName.toLowerCase() === "rect"
-        ? `M0 0H${node.getAttribute("width")}V${node.getAttribute("height")}H0Z`
-        : node.getAttribute("d")!;
-    shapes.push({ d, dark });
-  }
-  return { container, svg, viewBox, width, shapes };
+  return { container, svg, viewBox, width, shapes: shapesOf(svg) };
 }
 
 const text = (length: number) =>
@@ -42,12 +41,14 @@ const CASES: Array<{ value: string; level: QrLevel; size: number }> = [
   { value: text(1000), level: "H", size: 720 },
 ];
 
-for (const { value, level, size } of CASES) {
-  test(`o svg rasterizado decodifica de volta: ${value.length} caracteres, nivel ${level}, ${size}px`, () => {
-    const { viewBox, width, shapes } = draw({ value, level, size });
-    expect(width).toBe(size);
-    expect(readQr(viewBox, width, shapes)).toBe(value);
-  });
+for (const theme of THEMES) {
+  for (const { value, level, size } of CASES) {
+    test(`o svg rasterizado decodifica sem inverter, no ${theme}: ${value.length} caracteres, nivel ${level}, ${size}px`, () => {
+      const { viewBox, width, shapes } = draw({ value, level, size }, theme);
+      expect(width).toBe(size);
+      expect(readQr(viewBox, width, shapes)).toBe(value);
+    });
+  }
 }
 
 test("a versao cresce com o texto e com o nivel, e o raster continua lendo", () => {
@@ -64,14 +65,14 @@ test("com logo e nivel H, o codigo com o centro apagado ainda decodifica", () =>
       logo: <span data-testid="marca">R</span>,
     });
     expect(container.querySelector("[data-testid='marca']")).not.toBeNull();
-    expect(container.firstElementChild!.getAttribute("data-level")).toBe("H");
+    expect(container.querySelector("[role='img']")!.getAttribute("data-level")).toBe("H");
     expect(readQr(viewBox, width, shapes)).toBe(value);
   }
 });
 
 test("o logo apaga os modulos do centro: o desenho com logo tem menos modulos que o sem", () => {
-  const plain = draw({ value: PIX, level: "H" }).shapes.find((shape) => shape.dark)!.d;
-  const holed = draw({ value: PIX, logo: <span>R</span> }).shapes.find((shape) => shape.dark)!.d;
+  const plain = draw({ value: PIX, level: "H" }).shapes.at(-1)!.d;
+  const holed = draw({ value: PIX, logo: <span>R</span> }).shapes.at(-1)!.d;
   expect(holed.length).toBeLessThan(plain.length);
 });
 
@@ -83,25 +84,46 @@ test("logo com nivel abaixo de H nao aparece, e o aviso diz por que", () => {
   warn.mockRestore();
 });
 
-test("a margem de silencio tem 4 modulos, pintada com o fundo e sem modulo escuro", () => {
-  for (const value of ["a", PIX, text(500)]) {
-    const { viewBox, shapes } = draw({ value, level: "M" });
-    const matrix = encodeQr(value, "M");
-    expect(viewBox).toBe(matrix.size + 8);
-    expect(darkNearEdge(viewBox, viewBox * 4, shapes, 4)).toBe(false);
-    expect(darkNearEdge(viewBox, viewBox * 4, shapes, 5)).toBe(true);
+test("a margem de silencio tem 4 modulos, pintada com o papel e sem modulo nenhum", () => {
+  for (const theme of THEMES) {
+    for (const value of ["a", PIX, text(500)]) {
+      const { viewBox, shapes } = draw({ value, level: "M" }, theme);
+      const matrix = encodeQr(value, "M");
+      expect(viewBox).toBe(matrix.size + 8);
+      expect(darkNearEdge(viewBox, viewBox * 4, shapes, 4)).toBe(false);
+      expect(darkNearEdge(viewBox, viewBox * 4, shapes, 5)).toBe(true);
+    }
   }
 });
 
-test("as cores saem dos tokens: modulo em fg, fundo em surface por padrao ou bg", () => {
-  const surface = draw({ value: PIX }).svg;
-  expect(surface.querySelector("rect")!.getAttribute("class")!.split(" ")).toContain("fill-surface");
-  expect(surface.querySelector("path")!.getAttribute("class")!.split(" ")).toContain("fill-fg");
+test("codigo lido por maquina e escuro sobre claro nos dois temas, com a mesma tinta e o mesmo papel", () => {
+  const painted = THEMES.map((theme) => {
+    const { svg } = draw({ value: PIX }, theme);
+    const rect = svg.querySelector("rect")!;
+    const path = svg.querySelector("path")!;
+    expect(rect.getAttribute("class")!.split(" ")).toContain("fill-code-paper");
+    expect(path.getAttribute("class")!.split(" ")).toContain("fill-code-ink");
+    return { paper: paintOf(rect), ink: paintOf(path) };
+  });
 
-  const page = draw({ value: PIX, background: "bg" }).svg;
-  const classes = page.querySelector("rect")!.getAttribute("class")!.split(" ");
-  expect(classes).toContain("fill-bg");
-  expect(classes).not.toContain("fill-surface");
+  expect(painted[0]).toEqual(painted[1]!);
+  for (const { paper, ink } of painted) {
+    expect(contrastRatio(ink, paper)).toBeGreaterThan(15);
+    expect(contrastRatio(ink, "#000000")).toBeLessThan(contrastRatio(paper, "#000000"));
+  }
+});
+
+test("a placa de papel tem canto arredondado, e o logo pousa no papel com a tinta do codigo", () => {
+  const { container } = draw({ value: PIX, logo: <span>R</span> });
+  const plate = container.querySelector("[role='img']")!.getAttribute("class")!.split(" ");
+  expect(plate).toContain("rounded-md");
+  expect(plate).toContain("bg-code-paper");
+  expect(plate).toContain("overflow-hidden");
+
+  const logo = container.querySelector("[role='img'] > div")!.getAttribute("class")!.split(" ");
+  expect(logo).toContain("bg-code-paper");
+  expect(logo).toContain("text-code-ink");
+  expect(logo).not.toContain("bg-surface");
 });
 
 test("e uma imagem com nome, e o desenho fica fora da arvore de acessibilidade", () => {

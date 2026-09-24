@@ -24,15 +24,28 @@ serve.
 
 ## Cores e margem
 
-Os módulos são pintados com `fg` e o fundo com `surface` (o padrão, para dentro
-de um `Card`) ou `bg` (solto na página), sem cor escrita à mão. O fundo inclui
-a **margem de silêncio de 4 módulos** que a norma pede: é ela que separa o
-código do que está em volta, e sem ela a câmera não acha as três quinas.
+**Código lido por máquina é sempre escuro sobre claro, em qualquer tema.** Os
+módulos saem em `code-ink` (quase preto) e o fundo em `code-paper` (branco), e
+os dois têm o mesmo valor no tema claro, no escuro e em qualquer tema de
+cliente. A ISO/IEC 18004 aceita o reflexo invertido, com módulo claro sobre
+fundo escuro, e a câmera do sistema até lê; uma parte dos leitores e dos apps
+de banco não lê. Para um Pix, isso é pagamento que não acontece, e nada na
+tela avisa.
 
-No tema escuro o código sai invertido, com módulos claros sobre fundo escuro.
-A câmera do iOS e a do Android leem assim; leitor antigo pode não ler. Quando
-o código vai ser lido por qualquer aplicativo, envolva a peça num
-`RivoProvider scope="local" theme="rivocode-light"`.
+Por isso o par não é papel de tema: ele mora na escala, fora de
+`[data-rc-theme]`, e um tema não precisa declará-lo nem consegue invertê-lo
+sem querer. A guarda de contraste mede a tinta sobre o papel a 15:1 no
+mínimo (a casa dá 19,47:1) e confere que a tinta é a mais escura dos dois.
+Não envolva a peça num `RivoProvider` claro para o código ler: ela já lê.
+
+No tema escuro o papel vira uma **placa branca de canto arredondado** dentro
+do cartão escuro. A placa inclui a **margem de silêncio de 4 módulos** que a
+norma pede: é ela que separa o código do que está em volta, e sem ela a câmera
+não acha as três quinas. Por isso a placa não tem respiro próprio, e não deve
+ganhar `padding` de fora.
+
+As mesmas cores servem a quem desenha outro código lido por máquina, como um
+código de barras: `fill-code-ink`, `bg-code-paper` e `text-code-ink`.
 
 ## Correção de erro
 
@@ -53,7 +66,8 @@ texto longo com `size` pequeno desenha certo e não lê.
 ## Com logo
 
 `logo` põe uma marca no centro, e **só vale com `level="H"`**. Os módulos
-embaixo da marca são apagados de verdade (o fundo aparece por trás dela), e só
+embaixo da marca são apagados de verdade (o papel aparece por trás dela, e a
+marca herda a tinta como `currentColor`), e só
 o nível H recupera essa perda com folga. Com `logo` e sem `level`, a peça já
 nasce em H; com `logo` e outro nível, a marca não aparece, e o console diz por
 quê.
@@ -62,7 +76,7 @@ quê.
 <QRCode value={linkDaNota} label="QR Code para consultar a nota 4813" logo={<img src="/marca.svg" alt="" />} />
 ```
 
-Sem `value`, o quadrado guarda o lugar com o fundo e nenhum módulo, para a
+Sem `value`, o quadrado guarda o lugar com o papel e nenhum módulo, para a
 tela não pular quando o texto chegar.
 
 ## Partes
@@ -86,7 +100,7 @@ Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o `re
 
 **O codificador é o mesmo dos dois lados, linha por linha**: ele mora em `src/shared/` e atravessa por espelho, então versão, máscara e correção de erro não divergem. O teste do nativo rasteriza o caminho que a peça desenha e o decodifica de volta, como o do web.
 
-As cores saem do tema do `RivoProvider` (`fg` nos módulos, `surface` ou `bg` no fundo), e `level`, `size` e `logo` têm o mesmo contrato: com `logo` o nível nasce H, e com outro nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.
+As cores **não** saem do tema: os módulos são `tokens.code["code-ink"]` e o papel `tokens.code["code-paper"]`, escuro sobre claro nos dois esquemas, numa placa de canto arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então nenhum `@theme` de cliente inverte o código sem querer. `level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.
 
 ```tsx
 import { QRCode } from '@rivocode/ui-native/chart'

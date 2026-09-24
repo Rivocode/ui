@@ -3,7 +3,6 @@ import { createElement } from "react";
 import { Text } from "react-native";
 
 import { buildPixPayload, isValidPixKey, parsePixPayload } from "../src";
-import { tokens } from "../tokens";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
 import { readQr, type Shape } from "../../test/leitor-de-qr";
 
@@ -22,8 +21,6 @@ mock.module("react-native-svg", () => {
 });
 
 const { PixCode } = await import("../src/chart/pix-code");
-
-const light = tokens.themes["rivocode-light"];
 
 const STATIC =
   "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
@@ -46,16 +43,18 @@ test("as funcoes puras atravessam pelo espelho, com o exemplo do manual e as cha
   expect(isValidPixKey("529.982.247-25")).toBe(false);
 });
 
-test("o QR do PixCode decodifica no proprio copia e cola", () => {
-  const screen = render(<PixCode payload={PAYLOAD} size={240} />, { theme: "rivocode-light" });
-  const [svg] = byType(screen, "Svg");
-  const viewBox = Number(String(svg!.props.viewBox).split(" ")[2]);
-  const shapes: Shape[] = [...byType(screen, "Rect"), ...byType(screen, "Path")].map((node) => ({
-    dark: node.props.fill === light.fg,
-    d: node.type === "Rect" ? `M0 0H${node.props.width}V${node.props.height}H0Z` : String(node.props.d),
-  }));
-  expect(readQr(viewBox, 240, shapes)).toBe(PAYLOAD);
-});
+for (const theme of ["rivocode-light", "rivocode-dark"] as const) {
+  test(`o QR do PixCode decodifica sem inverter no proprio copia e cola, no ${theme}`, () => {
+    const screen = render(<PixCode payload={PAYLOAD} size={240} />, { theme });
+    const [svg] = byType(screen, "Svg");
+    const viewBox = Number(String(svg!.props.viewBox).split(" ")[2]);
+    const shapes: Shape[] = [...byType(screen, "Rect"), ...byType(screen, "Path")].map((node) => ({
+      color: String(node.props.fill),
+      d: node.type === "Rect" ? `M0 0H${node.props.width}V${node.props.height}H0Z` : String(node.props.d),
+    }));
+    expect(readQr(viewBox, 240, shapes)).toBe(PAYLOAD);
+  });
+}
 
 test("valor e recebedor saem do codigo, sem Intl, e o nome da imagem diz os dois", () => {
   const screen = render(<PixCode payload={PAYLOAD} />);

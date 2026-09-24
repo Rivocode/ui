@@ -1,6 +1,46 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import jsQR from "jsqr";
 
-export type Shape = { d: string; dark: boolean };
+import { readColor, readTokens } from "../src/lib/contrast";
+
+export type Shape = { d: string; color: string };
+
+const TOKENS = join(import.meta.dir, "../src/tokens");
+const read = (file: string) => readFileSync(join(TOKENS, file), "utf8");
+const ROOT = read("palette.css") + "\n" + read("scales.css");
+const THEMES = new Map<string, Record<string, string>>();
+
+function tokensOf(theme: string | null) {
+  const key = theme ?? "";
+  const known = THEMES.get(key);
+  if (known) return known;
+  const found = readTokens(theme ? `${ROOT}\n${read(`themes/${theme}.css`)}` : ROOT);
+  THEMES.set(key, found);
+  return found;
+}
+
+export function paintOf(node: Element) {
+  const fill = (node.getAttribute("class") ?? "").split(" ").find((name) => name.startsWith("fill-"));
+  if (!fill) throw new Error(`<${node.tagName}> sem classe fill-*: a cor nao sai de token`);
+  const theme = node.closest("[data-rc-theme]")?.getAttribute("data-rc-theme") ?? null;
+  const color = tokensOf(theme)[`--rc-${fill.slice("fill-".length)}`];
+  if (!color || !readColor(color)) {
+    throw new Error(`${fill} nao resolve para cor ${theme ? `no tema ${theme}` : "sem tema montado"}`);
+  }
+  return color;
+}
+
+export function shapesOf(svg: Element): Shape[] {
+  return [...svg.querySelectorAll("rect, path")].map((node) => ({
+    color: paintOf(node),
+    d:
+      node.tagName.toLowerCase() === "rect"
+        ? `M0 0H${node.getAttribute("width")}V${node.getAttribute("height")}H0Z`
+        : node.getAttribute("d")!,
+  }));
+}
 
 type Edge = { x0: number; y0: number; x1: number; y1: number };
 
@@ -63,7 +103,9 @@ export function rasterize(viewBox: number, width: number, shapes: Shape[]) {
   const scale = viewBox / width;
   for (const shape of shapes) {
     const edges = edgesOf(shape.d);
-    const tone = shape.dark ? 0 : 255;
+    const paint = readColor(shape.color);
+    if (!paint) throw new Error(`cor que o leitor nao entende: ${shape.color}`);
+    const tone = [paint.red, paint.green, paint.blue].map(Math.round);
 
     for (let row = 0; row < width; row++) {
       const at = (row + 0.5) * scale;
@@ -85,7 +127,9 @@ export function rasterize(viewBox: number, width: number, shapes: Shape[]) {
         const to = Math.min(width - 1, Math.ceil(crossings[index + 1]!.x / scale - 0.5) - 1);
         for (let column = from; column <= to; column++) {
           const pixel = (row * width + column) * 4;
-          pixels[pixel] = pixels[pixel + 1] = pixels[pixel + 2] = tone;
+          pixels[pixel] = tone[0]!;
+          pixels[pixel + 1] = tone[1]!;
+          pixels[pixel + 2] = tone[2]!;
         }
       }
     }
@@ -100,11 +144,15 @@ export function readQr(viewBox: number, width: number, shapes: Shape[]) {
 
 export function darkNearEdge(viewBox: number, width: number, shapes: Shape[], margin: number) {
   const pixels = rasterize(viewBox, width, shapes);
+  const paper = readColor(shapes[0]!.color)!;
+  const tone = [paper.red, paper.green, paper.blue].map(Math.round);
   const band = Math.floor((margin / viewBox) * width);
   for (let row = 0; row < width; row++) {
     for (let column = 0; column < width; column++) {
       const inside = row >= band && row < width - band && column >= band && column < width - band;
-      if (!inside && pixels[(row * width + column) * 4] !== 255) return true;
+      const at = (row * width + column) * 4;
+      if (inside) continue;
+      if (tone.some((part, channel) => pixels[at + channel] !== part)) return true;
     }
   }
   return false;

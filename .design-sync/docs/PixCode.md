@@ -22,6 +22,13 @@ dinâmico o valor gravado no código **não aparece**, porque o manual do Banco
 Central manda o pagador ignorá-lo e ler o da cobrança; ali o valor entra só por
 `amount`.
 
+O QR sai **escuro sobre claro em qualquer tema**, numa placa branca de canto
+arredondado dentro do cartão. No tema escuro o cartão fica escuro e a placa
+não: módulo claro sobre fundo escuro é um código que parte dos apps de banco
+não lê, e um Pix que o banco não lê é um pagamento que não acontece. Não
+envolva a peça num `RivoProvider` claro para isso; a regra é da peça, e vale
+também para tema de cliente. O porquê está em `QRCode`.
+
 O copiar é o `Clipboard` da casa, com a confirmação que troca o nome do botão.
 No celular do pagador o copia e cola é o caminho principal, e não o reserva:
 ninguém aponta a câmera para a própria tela.

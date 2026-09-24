@@ -779,7 +779,7 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note:
       "vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o " +
-      "mesmo, as cores saem do tema e não há `classNames`",
+      "mesmo, a tinta e o papel são fixos e não há `classNames`",
     page:
       "Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o " +
       "`react-native-svg`, e a regra da casa é **um subcaminho por peer**, e não um por assunto. " +
@@ -788,8 +788,11 @@ const PARITY: Record<string, Row> = {
       "**O codificador é o mesmo dos dois lados, linha por linha**: ele mora em `src/shared/` e " +
       "atravessa por espelho, então versão, máscara e correção de erro não divergem. O teste " +
       "do nativo rasteriza o caminho que a peça desenha e o decodifica de volta, como o do web.\n\n" +
-      "As cores saem do tema do `RivoProvider` (`fg` nos módulos, `surface` ou `bg` no fundo), " +
-      "e `level`, `size` e `logo` têm o mesmo contrato: com `logo` o nível nasce H, e com outro " +
+      "As cores **não** saem do tema: os módulos são `tokens.code[\"code-ink\"]` e o papel " +
+      "`tokens.code[\"code-paper\"]`, escuro sobre claro nos dois esquemas, numa placa de canto " +
+      "arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então " +
+      "nenhum `@theme` de cliente inverte o código sem querer. " +
+      "`level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro " +
       "nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.\n\n" +
       "```tsx\n" +
       "import { QRCode } from '@rivocode/ui-native/chart'\n\n" +

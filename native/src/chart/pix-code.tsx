@@ -91,7 +91,7 @@ export function PixCode({
           ) : null}
         </View>
       ) : (
-        <QRCode value={payload} label={qrLabel} size={size} background="surface" />
+        <QRCode value={payload} label={qrLabel} size={size} />
       )}
 
       {money || shownName || loading ? (

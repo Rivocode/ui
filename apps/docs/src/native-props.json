@@ -2945,12 +2945,6 @@
         "note": "O texto que o codigo carrega: link, copia e cola do Pix, chave de acesso."
       },
       {
-        "name": "background",
-        "type": "\"bg\" | \"surface\"",
-        "required": false,
-        "note": "O fundo, com a margem de silencio de 4 modulos: `surface` dentro de cartao, `bg` solto na tela."
-      },
-      {
         "name": "className",
         "type": "string",
         "required": false

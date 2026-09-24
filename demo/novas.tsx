@@ -1096,18 +1096,18 @@ function QrCodes() {
         <Card className="p-4">
           <QRCode value={QR_LINK} label="QR Code para consultar a nota 4813" />
         </Card>
-        <p className="text-xs text-fg-subtle">surface, nivel M</p>
+        <p className="text-xs text-fg-subtle">dentro do cartao, nivel M</p>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <QRCode value={QR_LINK} label="QR Code para consultar a nota 4813" background="bg" level="Q" />
-        <p className="text-xs text-fg-subtle">bg, nivel Q</p>
+        <QRCode value={QR_LINK} label="QR Code para consultar a nota 4813" level="Q" />
+        <p className="text-xs text-fg-subtle">solto na pagina, nivel Q</p>
       </div>
       <div className="flex flex-col items-center gap-2">
         <QRCode
           value={QR_LINK}
           label="QR Code para consultar a nota 4813"
           size={200}
-          logo={<span className="font-display text-sm font-semibold text-fg">R</span>}
+          logo={<span className="font-display text-sm font-semibold">R</span>}
         />
         <p className="text-xs text-fg-subtle">logo, nivel H</p>
       </div>

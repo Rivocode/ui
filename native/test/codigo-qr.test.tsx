@@ -26,7 +26,7 @@ const { QRCode } = await import("../src/chart/qr-code");
 const PIX =
   "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
 
-const light = tokens.themes["rivocode-light"];
+const THEMES = ["rivocode-light", "rivocode-dark"] as const;
 
 function shapesOf(screen: ReactTestRenderer) {
   const [svg] = byType(screen, "Svg");
@@ -38,38 +38,40 @@ function shapesOf(screen: ReactTestRenderer) {
       node.type === "Rect"
         ? `M0 0H${node.props.width}V${node.props.height}H0Z`
         : String(node.props.d);
-    shapes.push({ d, dark: node.props.fill === light.fg });
+    shapes.push({ d, color: String(node.props.fill) });
   }
   return { viewBox, width, shapes };
 }
 
-test("o desenho nativo decodifica de volta, em varios tamanhos e niveis", () => {
-  const cases = [
-    { value: PIX, level: "M", size: 200 },
-    { value: PIX, level: "H", size: 260 },
-    { value: "https://rivocode.com.br", level: "L", size: 120 },
-    { value: "35250812345678000190550010000012341000012345", level: "Q", size: 160 },
-  ] as const;
+for (const theme of THEMES) {
+  test(`o desenho nativo decodifica sem inverter no ${theme}, em varios tamanhos e niveis`, () => {
+    const cases = [
+      { value: PIX, level: "M", size: 200 },
+      { value: PIX, level: "H", size: 260 },
+      { value: "https://rivocode.com.br", level: "L", size: 120 },
+      { value: "35250812345678000190550010000012341000012345", level: "Q", size: 160 },
+    ] as const;
 
-  for (const { value, level, size } of cases) {
-    const screen = render(<QRCode value={value} label="Código" level={level} size={size} />, {
-      theme: "rivocode-light",
-    });
-    const { viewBox, width, shapes } = shapesOf(screen);
-    expect(width).toBe(size);
-    expect(readQr(viewBox, width, shapes)).toBe(value);
-  }
-});
-
-test("as cores saem do tema: modulo em fg e fundo em surface, ou bg", () => {
-  const screen = render(<QRCode value={PIX} label="Código" />, { theme: "rivocode-light" });
-  expect(byType(screen, "Path")[0]!.props.fill).toBe(light.fg);
-  expect(byType(screen, "Rect")[0]!.props.fill).toBe(light.surface);
-
-  const page = render(<QRCode value={PIX} label="Código" background="bg" />, {
-    theme: "rivocode-light",
+    for (const { value, level, size } of cases) {
+      const screen = render(<QRCode value={value} label="Código" level={level} size={size} />, {
+        theme,
+      });
+      const { viewBox, width, shapes } = shapesOf(screen);
+      expect(width).toBe(size);
+      expect(readQr(viewBox, width, shapes)).toBe(value);
+    }
   });
-  expect(byType(page, "Rect")[0]!.props.fill).toBe(light.bg);
+}
+
+test("codigo lido por maquina e tinta sobre papel fixos, iguais nos dois temas, e nunca fg sobre surface", () => {
+  for (const theme of THEMES) {
+    const screen = render(<QRCode value={PIX} label="Código" logo={<Text>R</Text>} />, { theme });
+    expect(byType(screen, "Path")[0]!.props.fill).toBe(tokens.code["code-ink"]);
+    expect(byType(screen, "Rect")[0]!.props.fill).toBe(tokens.code["code-paper"]);
+    expect(byType(screen, "Path")[0]!.props.fill).not.toBe(tokens.themes[theme].fg);
+    const plates = byLabel(screen, "Código");
+    expect(String(plates[0]!.props.className).split(" ")).toContain("rounded-md");
+  }
 });
 
 test("e uma imagem com o nome do label", () => {

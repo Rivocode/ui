@@ -38,7 +38,7 @@ exemplos que rodam e a tabela de props.
 | Retorno de API, log ou configuração em bloco | `CodeBlock` | Rola sozinho, e `copyable` põe o copiar no canto |
 | Levar um dado para outro sistema | `Clipboard` | A confirmação é parte da peça: o nome acessível do botão muda |
 | Cobrar por Pix: QR, valor e copia e cola | `PixCode` | Recebe o copia e cola pronto e confere o CRC; monte o estático com `buildPixPayload` |
-| Um link ou código que a câmera de outro aparelho lê | `QRCode` | SVG com as cores do tema e a margem de 4 módulos; `label` obrigatório, e `logo` só com `level="H"` |
+| Um link ou código que a câmera de outro aparelho lê | `QRCode` | SVG sempre escuro sobre claro, em qualquer tema, numa placa com a margem de 4 módulos; `label` obrigatório, e `logo` só com `level="H"` |
 | "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
 | O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
 | O sino do cabeçalho com a lista de notificações | `NotificationCenter` | Conta as não lidas no nome do botão, abre popover na mesa e folha no celular, e não busca nada: marcar, filtrar e carregar mais saem por callback |
