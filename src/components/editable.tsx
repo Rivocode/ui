@@ -67,7 +67,7 @@ export function Editable({
 
   if (!editing) {
     return (
-      <div {...props} key="reading" className={cn("flex min-w-0", swap, className)}>
+      <div key="reading" {...props} className={cn("flex min-w-0", swap, className)}>
         <button
           type="button"
           disabled={disabled}
@@ -90,7 +90,7 @@ export function Editable({
   }
 
   return (
-    <div {...props} key="editing" className={cn("flex min-w-0", swap, className)}>
+    <div key="editing" {...props} className={cn("flex min-w-0", swap, className)}>
       <input
         ref={field}
         aria-label={label}
