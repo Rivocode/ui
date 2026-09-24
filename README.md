@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-110 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+111 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -146,6 +146,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
 | `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
 | `Radio`, `RadioGroup`           | escolha única quando as opções cabem na tela                               |
+| `Questionnaire`                 | uma pergunta por vez, com progresso, pular, atalho de letra e envio: onboarding, pesquisa, o agente pedindo esclarecimento |
 | `Switch`                        | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
 | `Select`                        | escolha única em lista curta e fixa                                        |
 | `Combobox`                      | escolha em lista longa ou vinda do servidor, com busca e fichas            |

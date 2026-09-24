@@ -510,6 +510,20 @@ const PARITY: Record<string, Row> = {
       "anúncio do leitor de tela do sistema. O \"Tentar de novo\" da falha de rede é um " +
       "botão de verdade, com alvo de toque inteiro.",
   },
+  Questionnaire: {
+    state: "traduz",
+    note: "controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado",
+    page:
+      "Traduz, uma pergunta por vez e com os mesmos estados: obrigatória não avança sem " +
+      "resposta, opcional vale por resposta ou por pular, e o envio volta para a primeira " +
+      "pergunta que falhou. A regra de validação e os textos moram num arquivo só, " +
+      "compartilhado pelos dois pacotes, e `labels` troca os mesmos nomes.\n\n" +
+      "A API é a do toque: tudo é controlado (`item` e `onItemChange`, `value` e " +
+      "`onValueChange`), e as perguntas vêm por `items`, cada uma com `type` `single`, " +
+      "`multiple` ou `text`, e `other` para o campo de resposta outra. Não há atalho de " +
+      "letra, porque não há teclado físico; a troca de pergunta e o erro saem pelo anúncio " +
+      "do leitor de tela do sistema, e a pergunta nova entra com os tokens de movimento.",
+  },
   Menu: {
     state: "traduz",
     note: "folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo",

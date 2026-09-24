@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 110 peças. O índice de todas fica em
+O catálogo tem 111 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -22,6 +22,7 @@ exemplos que rodam e a tabela de props.
 | Escolha entre poucas opções fixas | `Select` | O `Combobox` pede digitação sem precisar |
 | Lista longa, ou vinda do servidor | `Combobox` | Não cabe na cabeça de quem escolhe |
 | Liga agora, sem confirmar | `Switch` | O `Checkbox` só vale quando o formulário for enviado |
+| Perguntas uma por vez: onboarding, pesquisa, triagem, o agente pedindo esclarecimento | `Questionnaire` | Valida antes de avançar e só a opcional se pula; se as perguntas cabem numa tela é `Form`, e etapa com vários campos é `Steps` com `useWizard` |
 | Quais colunas a listagem mostra | `MenuCheckboxItem` | Dentro do `Menu`: traz `aria-checked` e a navegação de menu, que `Popover` com `Checkbox` dentro não tem |
 | Ordenar por, dentro do menu | `MenuRadioGroup` + `MenuRadioItem` | Uma ordem de cada vez; passe `closeOnClick` para o menu fechar ao escolher |
 | Lista de opções com famílias de verdade | `SelectGroup` + `SelectGroupLabel` | Se agrupar é para domar lista grande demais, o remédio é o `Combobox`, que busca |

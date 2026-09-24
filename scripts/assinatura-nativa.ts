@@ -709,6 +709,41 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  Questionnaire: {
+    rows: [
+      {
+        web: null,
+        native: "items",
+        note: "as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho",
+      },
+      {
+        web: "item",
+        native: "item",
+        note: "vira obrigatório: a pergunta aberta é sempre controlada, junto com `onItemChange`",
+      },
+      { web: "defaultItem", native: null, note: "não há estado interno de pergunta aberta" },
+      {
+        web: null,
+        native: "value",
+        note: "as respostas são controladas; no web elas moram nos `<input>` do formulário",
+      },
+      {
+        web: "onSubmit",
+        native: "onSubmit",
+        note: "vira obrigatório e recebe só as respostas: não há `FormData` fora do navegador",
+      },
+      {
+        web: "shortcuts",
+        native: null,
+        note: "sem teclado físico, não há atalho de letra nem de número",
+      },
+      {
+        web: null,
+        native: "onStatusChange",
+        note: "um só na raiz, com o `name` da pergunta; no web ele é de cada `QuestionnaireItem`",
+      },
+    ],
+  },
   PostalCodeField: {
     rows: [
       {

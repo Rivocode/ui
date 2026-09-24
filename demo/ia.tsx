@@ -1,5 +1,5 @@
 import { MessageSquare, Paperclip } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
@@ -9,6 +9,21 @@ import {
   CardHeader,
   CardTitle,
   IconButton,
+  Questionnaire,
+  QuestionnaireChoice,
+  QuestionnaireChoices,
+  QuestionnaireDescription,
+  QuestionnaireError,
+  QuestionnaireFooter,
+  QuestionnaireInput,
+  QuestionnaireItem,
+  QuestionnaireNext,
+  QuestionnairePrevious,
+  QuestionnaireProgress,
+  QuestionnaireSkip,
+  QuestionnaireSubmit,
+  QuestionnaireTitle,
+  type QuestionnaireAnswers,
   RivoProvider,
   type RivoDensity,
   type RivoTheme,
@@ -172,6 +187,113 @@ function Labels() {
   );
 }
 
+function Clarify() {
+  const [answers, setAnswers] = useState<QuestionnaireAnswers | null>(null);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <Message role="user">Emita a nota de setembro da Clínica São Lucas.</Message>
+      <ToolCall
+        name="pedir_esclarecimento"
+        title="Preciso de três respostas antes de emitir"
+        status={answers ? "done" : "approval"}
+        output={answers ?? undefined}
+      />
+      {answers ? (
+        <button
+          type="button"
+          className="self-start text-sm text-fg-muted underline"
+          onClick={() => setAnswers(null)}
+        >
+          Recomeçar
+        </button>
+      ) : (
+        <div className="rounded-lg border border-border bg-surface p-4">
+          <Questionnaire aria-label="Esclarecimento" onSubmit={(sent) => setAnswers(sent)}>
+            <QuestionnaireProgress />
+            <QuestionnaireItem name="servico" required>
+              <QuestionnaireTitle>Qual serviço entra nesta nota?</QuestionnaireTitle>
+              <QuestionnaireDescription>
+                O código sai da lista da prefeitura.
+              </QuestionnaireDescription>
+              <QuestionnaireChoices>
+                <QuestionnaireChoice value="01.07" description="Código 01.07">
+                  Suporte técnico
+                </QuestionnaireChoice>
+                <QuestionnaireChoice value="17.01" description="Código 17.01" defaultChecked>
+                  Consultoria
+                </QuestionnaireChoice>
+                <QuestionnaireChoice value="01.03" description="Código 01.03" disabled>
+                  Hospedagem (fora do contrato)
+                </QuestionnaireChoice>
+              </QuestionnaireChoices>
+              <QuestionnaireError />
+            </QuestionnaireItem>
+            <QuestionnaireItem name="envio" multiple>
+              <QuestionnaireTitle>Por onde a nota chega à clínica?</QuestionnaireTitle>
+              <QuestionnaireChoices>
+                <QuestionnaireChoice value="email">E-mail</QuestionnaireChoice>
+                <QuestionnaireChoice value="whatsapp">WhatsApp</QuestionnaireChoice>
+              </QuestionnaireChoices>
+              <QuestionnaireInput placeholder="Outro canal" />
+              <QuestionnaireError />
+            </QuestionnaireItem>
+            <QuestionnaireItem name="observacao">
+              <QuestionnaireTitle>Algo que a nota deve dizer?</QuestionnaireTitle>
+              <QuestionnaireInput placeholder="Ex.: número do contrato" />
+              <QuestionnaireError />
+            </QuestionnaireItem>
+            <QuestionnaireFooter>
+              <QuestionnairePrevious />
+              <QuestionnaireSkip />
+              <QuestionnaireNext />
+              <QuestionnaireSubmit>Responder ao agente</QuestionnaireSubmit>
+            </QuestionnaireFooter>
+          </Questionnaire>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function QuestionnaireStates() {
+  const failing = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => failing.current?.requestSubmit(), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <Questionnaire aria-label="Com erro" ref={failing} shortcuts="numbers">
+        <QuestionnaireItem name="assina" required>
+          <QuestionnaireTitle>Quem assina o pedido de emissão?</QuestionnaireTitle>
+          <QuestionnaireChoices>
+            <QuestionnaireChoice value="socio">O sócio administrador</QuestionnaireChoice>
+            <QuestionnaireChoice value="contador">O contador</QuestionnaireChoice>
+          </QuestionnaireChoices>
+          <QuestionnaireError />
+        </QuestionnaireItem>
+        <QuestionnaireFooter>
+          <QuestionnaireSubmit>Enviar</QuestionnaireSubmit>
+        </QuestionnaireFooter>
+      </Questionnaire>
+
+      <Questionnaire aria-label="Desabilitada">
+        <QuestionnaireItem name="certificado" disabled>
+          <QuestionnaireTitle>Qual certificado assina as notas?</QuestionnaireTitle>
+          <QuestionnaireDescription>Libera depois que o A1 for enviado.</QuestionnaireDescription>
+          <QuestionnaireChoices>
+            <QuestionnaireChoice value="a1">Certificado A1</QuestionnaireChoice>
+            <QuestionnaireChoice value="a3">Certificado A3</QuestionnaireChoice>
+          </QuestionnaireChoices>
+        </QuestionnaireItem>
+      </Questionnaire>
+    </div>
+  );
+}
+
 function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
   return (
     <RivoProvider scope="local" theme={theme} density={density} className="p-8">
@@ -204,6 +326,14 @@ function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) 
 
         <Block title="Conversa vazia">
           <Empty />
+        </Block>
+
+        <Block title="Questionnaire">
+          <Clarify />
+        </Block>
+
+        <Block title="Questionnaire: erro e desabilitada">
+          <QuestionnaireStates />
         </Block>
       </div>
     </RivoProvider>

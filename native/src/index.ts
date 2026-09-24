@@ -81,6 +81,15 @@ export { Link, type LinkProps, type LinkTone } from "./link";
 export { Textarea, type TextareaProps } from "./textarea";
 export { MaskedInput, type MaskedInputProps } from "./masked-input";
 export { PostalCodeField, type PostalCodeFieldProps } from "./postal-code-field";
+export {
+  Questionnaire,
+  type QuestionnaireAnswers,
+  type QuestionnaireChoice,
+  type QuestionnaireItemStatus,
+  type QuestionnaireLabels,
+  type QuestionnaireProps,
+  type QuestionnaireQuestion,
+} from "./questionnaire";
 export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
 export { isValidCnpj, isValidCpf } from "./shared/tax-id";
 export { NumberField, type NumberFieldProps } from "./number-field";

@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**191 divergências de assinatura em 80 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**198 divergências de assinatura em 81 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -225,6 +225,13 @@ escritos em lugar nenhum.
 | `PromptInput` | `classNames` | — | um `className` só, na moldura do campo |
 | `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`, e o `icon` sai |
 | `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
+| `Questionnaire` | — | `items` | as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho |
+| `Questionnaire` | `item` | `item` | vira obrigatório: a pergunta aberta é sempre controlada, junto com `onItemChange` |
+| `Questionnaire` | `defaultItem` | — | não há estado interno de pergunta aberta |
+| `Questionnaire` | — | `value` | as respostas são controladas; no web elas moram nos `<input>` do formulário |
+| `Questionnaire` | `onSubmit` | `onSubmit` | vira obrigatório e recebe só as respostas: não há `FormData` fora do navegador |
+| `Questionnaire` | `shortcuts` | — | sem teclado físico, não há atalho de letra nem de número |
+| `Questionnaire` | — | `onStatusChange` | um só na raiz, com o `name` da pergunta; no web ele é de cada `QuestionnaireItem` |
 | `RivoProvider` | `density` | — | a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura |
 | `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
 | `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
@@ -376,7 +383,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**110 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 86 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**111 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts` e `native/src/ai/index.ts` em 2026-09-24:** 87 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 19 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -453,6 +460,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
+| `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `RelativeTime` | ✔ traduz | o relógio porta, com passo por unidade e refeitura ao voltar do fundo; sem `Intl`, o texto é sempre numérico |
 | `ResizablePanelGroup` | ✕ não porta | painel que se arrasta para dividir a largura é idioma de mesa; no celular cada área é uma tela do router, ou uma folha por cima |

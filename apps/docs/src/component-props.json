@@ -18582,6 +18582,287 @@
       }
     ]
   },
+  "Questionnaire": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "defaultItem",
+        "type": "string",
+        "required": false,
+        "note": "A pergunta aberta no comeco, sem controlar."
+      },
+      {
+        "name": "item",
+        "type": "string",
+        "required": false,
+        "note": "A pergunta aberta, pelo `name` do item."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<QuestionnaireLabels>",
+        "required": false,
+        "note": "Os textos da peca: botoes, progresso e erros, para outra lingua ou outro tom."
+      },
+      {
+        "name": "onItemChange",
+        "type": "((item: string) => void)",
+        "required": false,
+        "note": "Chamado a cada troca de pergunta, com o `name` da nova."
+      },
+      {
+        "name": "onSubmit",
+        "type": "((answers: QuestionnaireAnswers, data: FormData) => void)",
+        "required": false,
+        "note": "Chamado quando a ultima pergunta valida e todas as anteriores tambem."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLFormElement>",
+        "required": false
+      },
+      {
+        "name": "shortcuts",
+        "type": "false | QuestionnaireShortcuts",
+        "required": false,
+        "note": "O atalho de cada opcao: `letters` marca a primeira com A, `numbers` com 1."
+      }
+    ]
+  },
+  "QuestionnaireChoice": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O valor que vai para `answers` e para o `FormData` quando a opcao esta marcada."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"control\" | \"description\" | \"indicator\" | \"key\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `control` (a linha inteira), `key`, `label`, `description`, `indicator`."
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A linha de apoio embaixo do texto."
+      }
+    ]
+  },
+  "QuestionnaireChoices": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "QuestionnaireDescription": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "QuestionnaireError": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "QuestionnaireFooter": {
+    "forwardsRoot": true,
+    "props": []
+  },
+  "QuestionnaireInput": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "ref",
+        "type": "Ref<HTMLInputElement>",
+        "required": false
+      }
+    ]
+  },
+  "QuestionnaireItem": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "note": "A chave da resposta: vira o `name` dos controles, a chave de `answers` e o valor de `item`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "A pergunta aparece, mas nao responde: fica fora da validacao e das respostas."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "note": "Varias respostas: as opcoes viram caixas de marcar, e a resposta vira lista."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "((status: QuestionnaireItemStatus) => void)",
+        "required": false,
+        "note": "Chamado quando a pergunta muda entre `unanswered`, `answered` e `skipped`."
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "note": "Sem resposta nao avanca, e o \"Pular\" some."
+      }
+    ]
+  },
+  "QuestionnaireNext": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
+      }
+    ]
+  },
+  "QuestionnairePrevious": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
+      }
+    ]
+  },
+  "QuestionnaireProgress": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value`, `track`, `indicator`."
+      },
+      {
+        "name": "locale",
+        "type": "LocalesArgument",
+        "required": false,
+        "note": "The locale used by `Intl.NumberFormat` when formatting the value."
+      },
+      {
+        "name": "render",
+        "type": "ComponentRenderFn<HTMLProps, ProgressRootState> | ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Allows you to replace the component's HTML element with a different tag, or compose it with another component."
+      }
+    ]
+  },
+  "QuestionnaireSkip": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
+      }
+    ]
+  },
+  "QuestionnaireSubmit": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Desabilita e anuncia ocupado enquanto uma acao esta em andamento."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLButtonElement>",
+        "required": false
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"pill\" | null",
+        "required": false
+      },
+      {
+        "name": "size",
+        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "required": false
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false
+      }
+    ]
+  },
+  "QuestionnaireTitle": {
+    "forwardsRoot": true,
+    "props": []
+  },
   "Radar": {
     "forwardsRoot": true,
     "props": [

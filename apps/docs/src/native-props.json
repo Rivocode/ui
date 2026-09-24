@@ -2774,6 +2774,62 @@
       }
     ]
   },
+  "Questionnaire": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "item",
+        "type": "string",
+        "required": true,
+        "note": "A pergunta aberta, pelo `name`."
+      },
+      {
+        "name": "items",
+        "type": "QuestionnaireQuestion[]",
+        "required": true,
+        "note": "As perguntas, na ordem em que aparecem."
+      },
+      {
+        "name": "onItemChange",
+        "type": "(item: string) => void",
+        "required": true
+      },
+      {
+        "name": "onSubmit",
+        "type": "(answers: QuestionnaireAnswers) => void",
+        "required": true,
+        "note": "Chamado quando a ultima pergunta valida e todas as anteriores tambem, com as respostas limpas: pergunta pulada, desabilitada ou vazia fica ausente."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: QuestionnaireAnswers) => void",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "QuestionnaireAnswers",
+        "required": true,
+        "note": "As respostas: texto em `single` e `text`, lista em `multiple`."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<QuestionnaireLabels>",
+        "required": false,
+        "note": "Os mesmos textos do web, e os mesmos nomes."
+      },
+      {
+        "name": "onStatusChange",
+        "type": "((item: string, status: QuestionnaireItemStatus) => void)",
+        "required": false,
+        "note": "Chamado quando uma pergunta muda entre `unanswered`, `answered` e `skipped`."
+      }
+    ]
+  },
   "RadioGroup": {
     "entry": "native/src/index.ts",
     "props": [

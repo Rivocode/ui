@@ -214,6 +214,37 @@ export {
 export { Toggle, ToggleGroup, type ToggleGroupProps, type ToggleProps } from "./components/toggle";
 export { MaskedInput, type MaskedInputProps } from "./components/masked-input";
 export { PostalCodeField, type PostalCodeFieldProps } from "./components/postal-code-field";
+export {
+  Questionnaire,
+  QuestionnaireChoice,
+  QuestionnaireChoices,
+  QuestionnaireDescription,
+  QuestionnaireError,
+  QuestionnaireFooter,
+  QuestionnaireInput,
+  QuestionnaireItem,
+  QuestionnaireNext,
+  QuestionnairePrevious,
+  QuestionnaireProgress,
+  QuestionnaireSkip,
+  QuestionnaireSubmit,
+  QuestionnaireTitle,
+  type QuestionnaireAnswers,
+  type QuestionnaireChoiceProps,
+  type QuestionnaireChoicesProps,
+  type QuestionnaireDescriptionProps,
+  type QuestionnaireErrorProps,
+  type QuestionnaireFooterProps,
+  type QuestionnaireInputProps,
+  type QuestionnaireItemProps,
+  type QuestionnaireItemStatus,
+  type QuestionnaireLabels,
+  type QuestionnaireNavProps,
+  type QuestionnaireProgressProps,
+  type QuestionnaireProps,
+  type QuestionnaireShortcuts,
+  type QuestionnaireTitleProps,
+} from "./components/questionnaire";
 export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
 export {
   applyMask,
