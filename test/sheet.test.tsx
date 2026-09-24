@@ -77,3 +77,12 @@ test("o miolo da folha herda a altura do painel", () => {
   expect(body.parentElement).toBe(panel as HTMLElement);
   expect(body.className.split(" ")).toContain("h-full");
 });
+
+test("a camada da folha para na area visivel, e nao embaixo da barra do navegador", () => {
+  render(<Example />);
+  const panel = screen.getByText("Navegacao").closest("[data-open]")!;
+  const layer = panel.parentElement!.className.split(" ");
+  expect(layer).toContain("h-dvh");
+  expect(layer).toContain("top-0");
+  expect(layer).not.toContain("inset-0");
+});

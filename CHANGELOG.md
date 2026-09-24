@@ -2,6 +2,14 @@
 
 ## Nao publicado
 
+### O `Sheet` de baixo nao some mais atras da barra do navegador
+
+No celular, a camada do `Sheet` ocupava `inset-0`, que inclui a faixa que a
+barra do navegador cobre. O painel de baixo ficava preso a essa borda
+escondida, e o rodape dele sumia: o `Aplicar` e o `Limpar` do
+`DateRangePicker` ficavam fora da tela. A camada agora vai do topo ate `100dvh`,
+que e a altura que se ve.
+
 ### `IconButton` e `Banner` entram no catalogo
 
 **`IconButton`** e o botao so com icone. O `label` e obrigatorio e vira o nome

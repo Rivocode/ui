@@ -88,7 +88,7 @@ export function SheetContent({ className, children, classNames, ...props }: Shee
 
       <BaseDrawer.Viewport
         className={cn(
-          "fixed inset-0 z-[var(--rc-z-dialog)] flex",
+          "fixed inset-x-0 top-0 z-[var(--rc-z-dialog)] flex h-dvh",
           VIEWPORT_SIDE[side],
           classNames?.viewport,
         )}
