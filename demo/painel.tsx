@@ -23,6 +23,9 @@ import {
   MenuTrigger,
   PageHeader,
   RelativeTime,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
   RivoProvider,
   Splitter,
   Stack,
@@ -223,6 +226,50 @@ function ListAndDetail() {
   );
 }
 
+function Workspace() {
+  return (
+    <div className="h-80 w-full max-w-3xl overflow-hidden rounded-xl border border-border bg-surface">
+      <ResizablePanelGroup>
+        <ResizablePanel defaultSize={24} minSize={16} collapsible>
+          <ul className="flex flex-col py-2">
+            {INVOICES.map((invoice, index) => (
+              <li
+                key={invoice.id}
+                className={
+                  "truncate px-3 py-2 text-sm text-fg-muted " +
+                  (index === 0 ? "bg-accent-subtle text-fg" : "")
+                }
+              >
+                {invoice.cliente}
+              </li>
+            ))}
+          </ul>
+        </ResizablePanel>
+        <ResizableHandle withHandle aria-label="Entre clientes e nota" />
+        <ResizablePanel defaultSize={50} minSize={30}>
+          <ResizablePanelGroup orientation="vertical">
+            <ResizablePanel defaultSize={62} minSize={30} className="flex flex-col gap-1 p-4">
+              <p className="font-display text-lg text-fg">Nota 4813</p>
+              <p className="text-sm text-fg-muted">Clinica Sao Lucas · {currencyShort(2480)}</p>
+            </ResizablePanel>
+            <ResizableHandle withHandle aria-label="Entre nota e eventos" />
+            <ResizablePanel minSize={20} className="p-4 text-sm text-fg-muted">
+              Autorizada pela prefeitura as 12:05.
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+        <ResizableHandle aria-label="Entre nota e inspetor" />
+        <ResizablePanel minSize={15} className="flex flex-col items-start gap-2 p-4">
+          <p className="text-sm text-fg">Inspetor</p>
+          <Badge tone="success" size="sm">
+            Paga
+          </Badge>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}
+
 function Trail() {
   return (
     <Timeline>
@@ -338,6 +385,10 @@ function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) 
 
         <Block title="Splitter e DescriptionList">
           <ListAndDetail />
+        </Block>
+
+        <Block title="ResizablePanelGroup">
+          <Workspace />
         </Block>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

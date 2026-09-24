@@ -38,6 +38,7 @@ const STANDALONE = new Set([
   'Menubar',
   'NavigationMenu',
   'RadioGroup',
+  'ResizablePanelGroup',
   'ToggleGroup',
   'TreeSelect',
 ])
@@ -62,6 +63,10 @@ const PARENT: Record<string, string> = {
   InputAction: 'InputGroup',
   // O grupo e o controle; o radio e uma das opcoes dele.
   Radio: 'RadioGroup',
+  // A familia nao tem raiz `Resizable`: o grupo e a peca, e o painel e a
+  // divisoria sao partes dele.
+  ResizablePanel: 'ResizablePanelGroup',
+  ResizableHandle: 'ResizablePanelGroup',
 }
 
 export function findParent(name: string, names: Iterable<string>) {

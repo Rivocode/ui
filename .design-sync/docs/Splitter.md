@@ -72,6 +72,13 @@ para a direita a moveria 118px para a esquerda.
 
 ## Quando não usar
 
+O `Splitter` é montado por cima do `ResizablePanelGroup`, e é a forma curta
+dele para o caso mais comum: **duas** áreas, a proporção como um número só, o
+empilhar do celular já decidido. Quando a tela pede mais que isso, use a
+família direto: três ou mais áreas, grupo dentro de grupo, painel que recolhe
+(`collapsible`, com `Enter` na divisória), limite de máximo diferente para cada
+lado ou layout guardado entre sessões (`autoSaveId`).
+
 Para esconder e mostrar uma área inteira, use `Collapsible` ou a `Sidebar`: o
 splitter existe para quando as duas áreas ficam visíveis ao mesmo tempo e a
 proporção entre elas é a decisão.

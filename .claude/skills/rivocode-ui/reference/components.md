@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 109 peças. O índice de todas fica em
+O catálogo tem 110 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -46,6 +46,7 @@ exemplos que rodam e a tabela de props.
 | Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
 | Ocorrência por período, em faixa | `Tracker` | Responde "piorou ontem?"; cabe no rodapé de um `Stat` |
 | Lista e detalhe lado a lado, com proporção ajustável | `Splitter` | Divisória é `separator` de verdade e anda pelas setas; empilha no celular |
+| Três ou mais áreas ajustáveis, aninhadas, que recolhem ou guardam o layout | `ResizablePanelGroup` | Com `ResizablePanel` e `ResizableHandle`; o `Splitter` é a forma curta dele para duas áreas |
 | Corrigir um valor sem sair da tela | `Editable` | Escape desfaz, sair do campo salva; fechado é um `button` |
 | Escolher a cor de marca de um cliente | `ColorPicker` | Grade de amostras que anda por seta e diz qual está escolhida, mais o hexadecimal colado do manual |
 | Segurar a altura antes da imagem | `AspectRatio` | Sem ela a linha pula quando a imagem carrega |

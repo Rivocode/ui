@@ -307,6 +307,16 @@ export { PasswordInput, type PasswordInputProps } from "./components/password-in
 export { Tracker, type TrackerProps, type TrackerPoint } from "./components/tracker";
 export { TagsInput, type TagsInputProps } from "./components/tags-input";
 export { Splitter, type SplitterProps } from "./components/splitter";
+export {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+  type ResizableHandleProps,
+  type ResizablePanelGroupProps,
+  type ResizablePanelHandle,
+  type ResizablePanelProps,
+  type ResizableStorage,
+} from "./components/resizable";
 export { Editable, type EditableProps } from "./components/editable";
 export {
   ColorPicker,

@@ -20767,6 +20767,115 @@
       }
     ]
   },
+  "ResizableHandle": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"grip\", string>>",
+        "required": false,
+        "note": "Classe por parte: `grip`, a pegadinha do `withHandle`."
+      },
+      {
+        "name": "withHandle",
+        "type": "boolean",
+        "required": false,
+        "note": "Desenha a pegadinha no meio da linha."
+      }
+    ]
+  },
+  "ResizablePanel": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "collapsedSize",
+        "type": "number",
+        "required": false,
+        "note": "A medida do painel recolhido, em porcentagem, padrao 0."
+      },
+      {
+        "name": "collapsible",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa o painel recolher ate o `collapsedSize`: arrastando abaixo da metade do `minSize`, pela seta, por `Home` ou por `Enter` na divisoria."
+      },
+      {
+        "name": "defaultSize",
+        "type": "number",
+        "required": false,
+        "note": "Medida inicial, em porcentagem do grupo."
+      },
+      {
+        "name": "maxSize",
+        "type": "number",
+        "required": false,
+        "note": "Maior medida, em porcentagem."
+      },
+      {
+        "name": "minSize",
+        "type": "number",
+        "required": false,
+        "note": "Menor medida, em porcentagem."
+      },
+      {
+        "name": "onCollapse",
+        "type": "(() => void)",
+        "required": false
+      },
+      {
+        "name": "onExpand",
+        "type": "(() => void)",
+        "required": false
+      },
+      {
+        "name": "onResize",
+        "type": "((size: number) => void)",
+        "required": false,
+        "note": "A medida nova deste painel, em porcentagem, a cada mudanca."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<ResizablePanelHandle>",
+        "required": false,
+        "note": "A API imperativa: `collapse()`, `expand()`, `resize(size)`, `getSize()` e `isCollapsed()`."
+      }
+    ]
+  },
+  "ResizablePanelGroup": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "autoSaveId",
+        "type": "string",
+        "required": false,
+        "note": "Guarda o layout entre sessoes sob esta chave."
+      },
+      {
+        "name": "layout",
+        "type": "number[]",
+        "required": false,
+        "note": "Controlado: a medida de cada painel, em porcentagem e na ordem do documento, somando 100."
+      },
+      {
+        "name": "onLayoutChange",
+        "type": "((sizes: number[]) => void)",
+        "required": false,
+        "note": "O layout inteiro, em porcentagem, a cada mudanca: arraste, teclado, colapso ou chamada por ref."
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "note": "`horizontal` poe os paineis lado a lado; `vertical` empilha, e a divisoria deita."
+      },
+      {
+        "name": "storage",
+        "type": "ResizableStorage",
+        "required": false,
+        "note": "Onde o `autoSaveId` guarda."
+      }
+    ]
+  },
   "RivoProvider": {
     "forwardsRoot": true,
     "props": [

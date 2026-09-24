@@ -57,7 +57,7 @@ erro, com a mesma configuracao.
 
 ### O catalogo, por familia
 
-Sao **109 pecas** e **195 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **110 pecas** e **198 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
@@ -68,7 +68,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 | Familia      | Quais                                                                                                                                                                                                                                                                                                                              |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Formulario   | Autocomplete, Calendar, Checkbox, CheckboxGroup, ColorPicker, Combobox, DatePicker, DateRangePicker, Editable, Field, Fieldset, FileUpload, Form, Input, InputGroup, MaskedInput, NumberField, OTPField, PasswordInput, RadioGroup, SearchInput, Select, Slider, Switch, TagsInput, Textarea, TimeField, TimePicker, Tree, TreeSelect |
-| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, Container, DataTable, DescriptionList, FilterBar, FilterChip, Grid, Item, PageHeader, ScrollArea, Separator, Splitter, Stack, Stat, Table, VirtualList                                                                                                                                                   |
+| Estrutura    | Accordion, AspectRatio, Avatar, Card, Collapsible, Container, DataTable, DescriptionList, FilterBar, FilterChip, Grid, Item, PageHeader, ResizablePanelGroup, ScrollArea, Separator, Splitter, Stack, Stat, Table, VirtualList                                                                                                                                                   |
 | Feedback     | Alert, Badge, EmptyState, Indicator, Kbd, Meter, Progress, QueryBoundary, Skeleton, Spinner, ToastViewport                                                                                                                                                                                                                          |
 | Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                |
 | Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                  |
@@ -94,8 +94,8 @@ arquivos, e duas guardas de contraste - uma por pacote.
 
 ## O React Native
 
-**A fila esta vazia, e o que falta nao e nosso.** Das 109 pecas do web, **91 tem
-par no celular**, e as 18 que faltam faltam por decisao escrita. Ate 28/08 eram
+**A fila esta vazia, e o que falta nao e nosso.** Das 110 pecas do web, **91 tem
+par no celular**, e as 19 que faltam faltam por decisao escrita. Ate 28/08 eram
 18: a decima oitava era o `ContextMenu`, e ela era a UNICA da lista cuja nota
 apontava trabalho nosso - "nao precisa de peca nova, precisa de `longPress` no
 `Menu`". O `Menu` passou a aceitar, e ela saiu. Em 22/09 saiu mais uma, o `ScrollArea`:
@@ -477,10 +477,10 @@ O que cada guarda mede hoje, em numero:
 
 | Guarda                   | O que ela diz hoje                                                            |
 | ------------------------ | ----------------------------------------------------------------------------- |
-| `check:pecas`            | 109 pecas, e e o que o README e o `package.json` anunciam                       |
-| `check:doc`              | 195 paginas, todas com codigo por tras                                        |
-| `check:props`            | 268 pecas, 4066 props                                                         |
-| `check:paridade`         | 109 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
+| `check:pecas`            | 110 pecas, e e o que o README e o `package.json` anunciam                       |
+| `check:doc`              | 198 paginas, todas com codigo por tras                                        |
+| `check:props`            | 271 pecas, 4083 props                                                         |
+| `check:paridade`         | 110 pecas conferidas: a tabela e as paginas dizem a mesma coisa                 |
 | `check:assinatura`       | 163 divergencias de assinatura em 71 pecas, conferidas contra os dois catalogos |
 | `check:temas`            | 85 tokens de tema e forma, e 55 papeis obrigatorios                            |
 | `check:contrast`         | 208 pares em dois temas, 104 por tema                                         |
@@ -494,8 +494,8 @@ O que cada guarda mede hoje, em numero:
 | `check:skill`            | 74 props citadas nos exemplos da skill, todas existentes                      |
 | `check:lista-skill`      | 11 arquivos de referencia, todos no indice E no laco `curl` do site           |
 | `check:retratos`         | 12 retratos de secao sobre 6 areas, 23256 quadrados, 53 marcadores            |
-| `check:demo`             | 106 de 109 pecas na vitrine, em 17 paginas                                      |
-| `check:readme`           | 69 de 109 pecas citadas no `README.md`                                         |
+| `check:demo`             | 107 de 110 pecas na vitrine, em 17 paginas                                      |
+| `check:readme`           | 70 de 110 pecas citadas no `README.md`                                         |
 | `check:receita`          | 7 arquivos de receita, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois   |
 | `check:compartilhado`    | 4 arquivos de `src/shared/` espelhados, sem import de plataforma              |
 | `check:testes`           | 1868 testes em 157 arquivos, e e o numero que a home exibe                     |
@@ -529,7 +529,7 @@ declarada; junto veio o `FILA_DECLARADA`, que zerou. A outra e que
 `check:scripts` cresceu de 5 para 6, e o crescimento tem motivo escrito - o
 `props-do-catalogo-nativo` precisa de um app que nao e workspace -, mas cresceu.
 
-O aviso e o `OUT_OF_README`, com 40 de 109. E a maior divida declarada do
+O aviso e o `OUT_OF_README`, com 40 de 110. E a maior divida declarada do
 repositorio, e a que menos incomoda quem trabalha aqui, o que e exatamente o
 motivo de ela ser a maior. Ela nasceu porque o digito estava certo e a lista
 embaixo dele nao: o `check:pecas` guardava o "90 pecas." e o arquivo inteiro
@@ -777,8 +777,8 @@ com o claude.ai/design estao em `.design-sync/NOTES.md`.
 ## Como conferir cada numero
 
 ```sh
-ls .design-sync/docs/*.md | wc -l                  # 195 documentos
-bun run check:pecas                                # 109 pecas
+ls .design-sync/docs/*.md | wc -l                  # 198 documentos
+bun run check:pecas                                # 110 pecas
 bun run check:testes                               # 1868 testes em 157 arquivos
 bun test                                           # 1868 passam, 0 falham, 11386 expect()
 bun test native/test                               # 523 deles, em 41 arquivos

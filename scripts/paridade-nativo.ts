@@ -113,6 +113,7 @@ const AUTONOMAS = new Set([
   "Menubar",
   "NavigationMenu",
   "RadioGroup",
+  "ResizablePanelGroup",
   "ToggleGroup",
   "TreeSelect",
 ]);
@@ -128,6 +129,8 @@ const PAI: Record<string, string> = {
   InputSuffix: "InputGroup",
   InputAction: "InputGroup",
   Radio: "RadioGroup",
+  ResizablePanel: "ResizablePanelGroup",
+  ResizableHandle: "ResizablePanelGroup",
 };
 
 const PARITY: Record<string, Row> = {
@@ -1346,6 +1349,16 @@ const PARITY: Record<string, Row> = {
       "quem faz esse papel é a tab bar e o drawer do router (Expo Router, React " +
       "Navigation), que trazem gesto de borda, histórico e estado de aba de graça. Uma " +
       "gaveta desenhada à mão por cima disso perde os três.",
+  },
+  ResizablePanelGroup: {
+    state: "nao",
+    note: "painel que se arrasta para dividir a largura é idioma de mesa; no celular cada área é uma tela do router, ou uma folha por cima",
+    page:
+      "Não porta, pela mesma razão do `Splitter`, que no web é montado por cima desta família. " +
+      "Três colunas que se redimensionam pedem uma tela larga e um ponteiro fino: no celular " +
+      "em pé não há largura para dividir, e arrastar uma linha de 1px com o dedo não é gesto " +
+      "que exista. As áreas viram telas do router (Expo Router, React Navigation), e o painel " +
+      "que recolhe vira `Sheet`. O layout guardado por `autoSaveId` não tem o que guardar lá.",
   },
   Splitter: {
     state: "nao",

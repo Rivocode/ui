@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-109 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+110 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -227,6 +227,7 @@ mensagem entra por prop, e o que a pessoa faz sai por evento.
 | `Grid`        | colunas fixas ou quantas couberem por `minItemWidth`, sem media query  |
 | `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
 | `Carousel`    | slides de lado por scroll-snap; `Tabs` se compara, `Grid` se cabe tudo |
+| `ResizablePanelGroup` | áreas com divisória que se arrasta: N painéis, aninhados, que recolhem e lembram o layout |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 
