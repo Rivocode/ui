@@ -101,6 +101,28 @@ test("o codigo de verificacao abre uma casa por digito", () => {
   expect(guarda.getAttribute("inputmode")).toBe("numeric");
 });
 
+test("dentro do Field, cada casa do codigo tem nome, e todas encolhem ate 32 pixels na tela estreita", () => {
+  const { container } = withTheme(
+    <Field>
+      <FieldLabel>Código de verificação</FieldLabel>
+      <OTPField length={6} />
+    </Field>,
+  );
+  const slots = [...container.querySelectorAll("input:not([aria-hidden])")];
+  expect(slots.length).toBe(6);
+
+  const firstName = slots[0]!.getAttribute("aria-labelledby")!;
+  expect(container.querySelector(`[id="${firstName}"]`)?.textContent).toBe("Código de verificação");
+  expect(slots[1]!.getAttribute("aria-label")).toBe("Dígito 2 de 6");
+
+  for (const slot of slots) {
+    const tokens = slot.className.split(" ");
+    expect(tokens).toContain("size-11");
+    expect(tokens).toContain("min-w-8");
+    expect(tokens).toContain("shrink");
+  }
+});
+
 test("a barra de menus agrupa os menus numa peca so", () => {
   withTheme(<Menubar aria-label="Principal" />);
   expect(screen.getByLabelText("Principal")).toBeDefined();

@@ -72,7 +72,10 @@ function Sample({ theme }: { theme: RivoTheme }) {
           </Block>
 
           <Block title="Codigo de verificacao">
-            <OTPField length={6} defaultValue="4813" />
+            <Field className="w-fit max-w-full">
+              <FieldLabel>Código de verificação</FieldLabel>
+              <OTPField length={6} defaultValue="4813" />
+            </Field>
           </Block>
         </div>
 

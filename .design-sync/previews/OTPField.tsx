@@ -10,7 +10,7 @@ import { Field, FieldDescription, FieldLabel, OTPField } from '@rivocode/ui'
 /** Preenchido */
 export function Filled() {
   return (
-    <Field className="w-fit">
+    <Field className="w-fit max-w-full">
       <FieldLabel>Código de verificação</FieldLabel>
       <OTPField length={6} defaultValue="481337" />
     </Field>
@@ -20,7 +20,7 @@ export function Filled() {
 /** Vazio */
 export function Empty() {
   return (
-    <Field className="w-fit">
+    <Field className="w-fit max-w-full">
       <FieldLabel>Código de verificação</FieldLabel>
       <OTPField length={6} />
       <FieldDescription>Enviamos por SMS. Colar o código inteiro funciona.</FieldDescription>

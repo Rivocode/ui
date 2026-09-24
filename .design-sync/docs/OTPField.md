@@ -14,8 +14,16 @@ O teclado de números e o preenchimento pelo SMS já vem prontos, num input
 escondido que guarda o código inteiro. As casas visíveis só mostram.
 
 ```tsx
-<OTPField length={6} onValueChange={(codigo) => conferir(codigo)} />
+<Field className="w-fit max-w-full">
+  <FieldLabel>Código de verificação</FieldLabel>
+  <OTPField length={6} onValueChange={(codigo) => conferir(codigo)} />
+</Field>
 ```
+
+O `FieldLabel` em volta dá nome ao primeiro dígito, que é o que recebe o código
+colado: a Base UI reserva o rótulo dele para o rótulo do campo, e as outras
+casas se anunciam pela posição ("Dígito 2 de 6"). Na tela estreita as casas
+encolhem até 32 pixels cada, em vez de empurrar a página para o lado.
 
 ## No React Native
 
