@@ -1,5 +1,36 @@
 # Mudancas
 
+## 0.12.0
+
+### Pecas novas
+
+- `Questionnaire`, controlado, com as perguntas por `items`.
+- `Rating`, um so controle ajustavel para o leitor de tela.
+- `NotificationCenter`, com a lista numa folha.
+- `CurrencyInput`, em centavos, que le a colagem do iOS pela selecao do texto
+  que estava na tela.
+- `QRCode` e `PixCode`, em `@rivocode/ui-native/chart`, que e o subcaminho do
+  `react-native-svg`. O codigo sai sempre escuro sobre claro.
+- `SortableList`, em `@rivocode/ui-native/dnd`, sem peer novo: o gesto e o
+  `PanResponder`, e o leitor de tela move por acoes.
+- `RichTextView`, que le o mesmo HTML e JSON do editor do web, sem WebView.
+- As funcoes de Pix, boleto e dos documentos (CNH, titulo, PIS, RENAVAM,
+  placa), pela mesma conta do web.
+- Doze hooks: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
+  `useSetState`, `usePrevious`, `useIsFirstRender`, `useDebouncedValue`,
+  `useDebouncedCallback`, `useThrottledCallback`, `useInterval` e
+  `useTimeout`.
+
+### Mudanca visivel
+
+O `ImageViewer` abre num palco escuro nos dois temas, com os papeis `media`
+de `native/tokens.ts`.
+
+### Nao portam, por decisao escrita
+
+`Resizable`, `AppShell`, `Kanban`, `RichTextEditor` e `CookieConsent`. O motivo
+de cada um esta na tabela de paridade.
+
 ## 0.11.0
 
 ### `@rivocode/ui-native/ai`

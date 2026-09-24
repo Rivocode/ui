@@ -1,5 +1,12 @@
 # Mudanças
 
+## 0.2.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 0.17.0 e
+`@rivocode/ui-native` 0.12.0: 121 peças, os subcaminhos `dnd` e `editor`, o
+guia de hooks, o de documentos brasileiros, os blocos de página e as
+referências novas da skill. As sete ferramentas continuam as mesmas.
+
 ## 0.1.0
 
 ### O servidor MCP do design system, pelo stdio

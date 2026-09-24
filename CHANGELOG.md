@@ -1,5 +1,63 @@
 # Mudancas
 
+## 0.17.0
+
+Doze pecas novas, dois subcaminhos e uma biblioteca de hooks: o catalogo vai
+de 109 a 121. E a primeira versao que passou por revisao de codigo, de
+acessibilidade e visual antes de sair, e a vitrine inteira passa no
+`bun run a11y` sem nenhum achado.
+
+### Pecas novas
+
+- `ResizablePanelGroup`, `ResizablePanel` e `ResizableHandle`: N paineis,
+  recolher, minimo e maximo, grupos aninhados, RTL e `autoSaveId`. O
+  `Splitter` passa a ser a forma curta deles, com a mesma API.
+- `Questionnaire`: uma pergunta por vez, com progresso, pular, atalho de letra
+  e as respostas tambem no `FormData`.
+- `Rating`, `AppShell` e `NotificationCenter`.
+- `QRCode`, com codificador proprio da ISO/IEC 18004, e `PixCode`, com
+  `buildPixPayload`, `parsePixPayload` e `isValidPixKey` no padrao do Banco
+  Central. O codigo sai sempre escuro sobre claro, em qualquer tema.
+- `CurrencyInput`: dinheiro em centavos inteiros, digitado da direita, que
+  recusa colagem com texto misturado ou digitos demais.
+- `isValidBoletoLine`, `boletoLineToBarcode`, `parseBoleto` e o molde
+  `boleto`; `isValidCnh`, `isValidVoterId`, `isValidPis`, `isValidRenavam` e
+  `isValidPlate`.
+
+### Subcaminhos novos, com peer opcional
+
+- `@rivocode/ui/dnd`: `SortableList` e `Kanban`, sobre o `@dnd-kit`.
+- `@rivocode/ui/editor`: `RichTextEditor`, sobre o Tiptap 3, e `RichTextView`,
+  que exibe o que ele salvou sem `innerHTML`.
+
+### Hooks
+
+Vinte e cinco: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
+`useSetState`, `usePrevious`, `useIsFirstRender`, `useMounted`,
+`useDebouncedValue`, `useDebouncedCallback`, `useThrottledCallback`,
+`useInterval`, `useTimeout`, `useIdle`, `useLocalStorage`,
+`useSessionStorage`, `useClickOutside`, `useHotkeys`, `useInfiniteScroll`,
+`useIntersection`, `useElementSize`, `useClipboard`, `useReducedMotion`,
+`useDocumentTitle` e `useNetworkStatus`. O guia Hooks do site diz cada um.
+
+### Mudancas visiveis
+
+- O `ImageViewer` abre a tela cheia num palco escuro nos dois temas.
+- O `Button` desabilitado desenha um contorno fraco, em vez de virar rotulo
+  solto sobre a superficie.
+- A divisoria do `Splitter` passa a `border-strong`, que mede 3:1.
+- A linha selecionada do `DataTable` ganha fundo.
+- O valor em reais nao quebra mais entre "R$" e o numero.
+
+### Correcoes de acessibilidade em pecas que ja existiam
+
+`Tree`, `OTPField`, `RadioGroup`, `Checkbox`, `TagsInput`, `Toast`,
+`Breadcrumb`, `Sidebar`, `Calendar`, `EventCalendar`, `FilterBar`, `Table`,
+`DataTable` e `ChartDonut`: estrutura ARIA, alvo de 24px, foco que nao cai no
+corpo da pagina depois da acao, contraste e pagina que nao rola de lado a
+320px. A `Sidebar` deixa de desenhar marcador de lista no item fora de
+`SidebarMenu`, e o gatilho diz "Recolher barra lateral" na mesa.
+
 ## 0.16.0
 
 Dez pecas novas e um subcaminho novo: o catalogo vai de 99 a 109. Esta versao
