@@ -26,7 +26,7 @@ export function MixedState() {
       <Tree
         items={SETORES}
         defaultValue={['contas-pagar']}
-        expanded={['financeiro', 'operacao']}
+        defaultOpen={['financeiro', 'operacao']}
         multiple
       />
     </div>

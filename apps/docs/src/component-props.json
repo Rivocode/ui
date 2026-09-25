@@ -25078,16 +25078,10 @@
         "note": "Classe por parte: `content` (a caixa que corta) e `trigger` (o botao)."
       },
       {
-        "name": "defaultExpanded",
+        "name": "defaultOpen",
         "type": "boolean",
         "required": false,
         "note": "Aberto na primeira pintura, sem controlar."
-      },
-      {
-        "name": "expanded",
-        "type": "boolean",
-        "required": false,
-        "note": "Aberto, para quem controla."
       },
       {
         "name": "labels",
@@ -25102,10 +25096,16 @@
         "note": "A altura do recolhido, em pixels."
       },
       {
-        "name": "onExpandedChange",
-        "type": "((expanded: boolean) => void)",
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
         "required": false,
         "note": "Recebe o estado novo a cada \"Ler mais\" e \"Ler menos\"."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, para quem controla."
       }
     ]
   },
@@ -25242,11 +25242,10 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "current",
+        "name": "step",
         "type": "number",
         "required": true,
-        "note": "Indice do passo atual, contando de zero.",
-        "since": "0.4.0"
+        "note": "Indice do passo atual, contando de zero."
       },
       {
         "name": "steps",
@@ -25255,11 +25254,10 @@
         "since": "0.4.0"
       },
       {
-        "name": "onStepClick",
-        "type": "((index: number) => void)",
+        "name": "onStepChange",
+        "type": "((step: number) => void)",
         "required": false,
-        "note": "Deixa voltar clicando num passo ja concluido.",
-        "since": "0.4.0"
+        "note": "Recebe o indice do passo ja concluido que foi clicado."
       }
     ]
   },
@@ -26573,17 +26571,16 @@
         "since": "0.4.0"
       },
       {
+        "name": "defaultOpen",
+        "type": "string[]",
+        "required": false,
+        "note": "Os galhos abertos na primeira pintura, sem controlar."
+      },
+      {
         "name": "defaultValue",
         "type": "string[]",
         "required": false,
         "note": "Os ids iniciais, quando a arvore controla o proprio estado."
-      },
-      {
-        "name": "expanded",
-        "type": "string[]",
-        "required": false,
-        "note": "Ids abertos.",
-        "since": "0.4.0"
       },
       {
         "name": "filter",
@@ -26600,15 +26597,20 @@
         "since": "0.4.0"
       },
       {
-        "name": "onExpandedChange",
+        "name": "onOpenChange",
         "type": "((ids: string[]) => void)",
-        "required": false,
-        "since": "0.4.0"
+        "required": false
       },
       {
         "name": "onValueChange",
         "type": "((ids: string[]) => void)",
         "required": false
+      },
+      {
+        "name": "open",
+        "type": "string[]",
+        "required": false,
+        "note": "Ids dos galhos abertos, para quem controla."
       },
       {
         "name": "value",

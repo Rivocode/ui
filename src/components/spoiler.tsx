@@ -40,12 +40,12 @@ export type SpoilerProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
    * o conteudo corta aqui, com as duas ultimas linhas sumindo em degrade.
    */
   maxHeight?: number;
-  /** Aberto, para quem controla. Anda junto com `onExpandedChange`. */
-  expanded?: boolean;
+  /** Aberto, para quem controla. Anda junto com `onOpenChange`. */
+  open?: boolean;
   /** Aberto na primeira pintura, sem controlar. */
-  defaultExpanded?: boolean;
+  defaultOpen?: boolean;
   /** Recebe o estado novo a cada "Ler mais" e "Ler menos". */
-  onExpandedChange?: (expanded: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   /** Os textos do botao. Padrao: "Ler mais" e "Ler menos". */
   labels?: { more?: string; less?: string };
   /** Classe por parte: `content` (a caixa que corta) e `trigger` (o botao). */
@@ -55,17 +55,17 @@ export type SpoilerProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
 export function Spoiler({
   children,
   maxHeight = SPOILER_HEIGHT,
-  expanded,
-  defaultExpanded = false,
-  onExpandedChange,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   labels = {},
   className,
   classNames,
   ...props
 }: SpoilerProps) {
   const contentId = useId();
-  const [own, setOwn] = useState(defaultExpanded);
-  const open = expanded ?? own;
+  const [own, setOwn] = useState(defaultOpen);
+  const open = openProp ?? own;
   const [full, setFull] = useState(0);
   const viewport = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
@@ -97,8 +97,8 @@ export function Spoiler({
   const clipped = overflowing && !open;
 
   function change(next: boolean) {
-    if (expanded === undefined) setOwn(next);
-    onExpandedChange?.(next);
+    if (openProp === undefined) setOwn(next);
+    onOpenChange?.(next);
   }
 
   function handleFocus(event: FocusEvent<HTMLDivElement>) {

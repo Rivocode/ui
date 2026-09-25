@@ -32,7 +32,7 @@ function ControlledTree({ multiple = true, filter = "" }) {
         onValueChange={setIds}
         multiple={multiple}
         filter={filter}
-        expanded={["financeiro", "operacao"]}
+        open={["financeiro", "operacao"]}
       />
       <p>Escolhidos: {ids.join(",") || "nenhum"}</p>
     </RivoProvider>
@@ -103,7 +103,7 @@ function RtlTree() {
   const [open, setOpen] = useState<string[]>(["financeiro"]);
   return (
     <RivoProvider scope="local" dir="rtl">
-      <Tree items={TREE} expanded={open} onExpandedChange={setOpen} />
+      <Tree items={TREE} open={open} onOpenChange={setOpen} />
     </RivoProvider>
   );
 }
@@ -211,4 +211,20 @@ test("o botao de abrir estica o alvo de 16 para 24 pixels sem crescer o desenho"
 
   const box = toggle.parentElement!.querySelector('[role="checkbox"]')!;
   expect(box.className.split(" ")).toContain("after:hidden");
+});
+
+test("defaultOpen abre os galhos na montagem, e depois a arvore abre e fecha sozinha", () => {
+  const opened: string[][] = [];
+  render(
+    <RivoProvider scope="local">
+      <Tree items={TREE} defaultOpen={["financeiro"]} onOpenChange={(ids) => opened.push(ids)} />
+    </RivoProvider>,
+  );
+  const financeiro = screen.getByText("Financeiro").closest("[role=treeitem]") as HTMLElement;
+  expect(financeiro.getAttribute("aria-expanded")).toBe("true");
+
+  financeiro.focus();
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowLeft" });
+  expect(financeiro.getAttribute("aria-expanded")).toBe("false");
+  expect(opened).toEqual([[]]);
 });

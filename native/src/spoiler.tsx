@@ -20,11 +20,11 @@ export type SpoilerProps = {
    */
   maxHeight?: number;
   /** Aberto, para quem controla. Sem ele, a peca guarda o proprio estado. */
-  expanded?: boolean;
+  open?: boolean;
   /** Aberto na primeira pintura, sem controlar. O mesmo nome do web. */
-  defaultExpanded?: boolean;
+  defaultOpen?: boolean;
   /** Recebe o estado novo a cada toque no "Ler mais" e no "Ler menos". */
-  onExpandedChange?: (expanded: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   /** Os textos do botao, os mesmos do web. */
   labels?: { more?: string; less?: string };
   /**
@@ -40,9 +40,9 @@ export type SpoilerProps = {
 export function Spoiler({
   children,
   maxHeight = SPOILER_HEIGHT,
-  expanded,
-  defaultExpanded = false,
-  onExpandedChange,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   labels = {},
   fadeOver = "bg",
   className,
@@ -50,15 +50,15 @@ export function Spoiler({
 }: SpoilerProps) {
   const motion = useMotion();
   const { colors } = useRivo();
-  const [own, setOwn] = useState(defaultExpanded);
+  const [own, setOwn] = useState(defaultOpen);
   const [full, setFull] = useState(0);
-  const open = expanded ?? own;
+  const open = openProp ?? own;
   const overflowing = full > maxHeight + 1;
   const clipped = overflowing && !open;
 
   function change(next: boolean) {
-    if (expanded === undefined) setOwn(next);
-    onExpandedChange?.(next);
+    if (openProp === undefined) setOwn(next);
+    onOpenChange?.(next);
   }
 
   return (

@@ -10,7 +10,7 @@ const PASSOS: Step[] = [
 export function InTheMiddle() {
   return (
     <div className="w-[32rem]">
-      <Steps steps={PASSOS} current={1} onStepClick={() => {}} />
+      <Steps steps={PASSOS} step={1} onStepChange={() => {}} />
     </div>
   )
 }

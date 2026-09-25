@@ -47,8 +47,9 @@ quem ouve. `aria-controls` aponta para a caixa. `labels` troca os dois textos:
 </Spoiler>
 ```
 
-Controlado, `expanded` e `onExpandedChange` andam juntos; sem controlar,
-`defaultExpanded` decide como nasce.
+Controlado, `open` e `onOpenChange` andam juntos; sem controlar,
+`defaultOpen` decide como nasce. São os mesmos nomes do `Collapsible` e do
+`AccordionItem`: abrir e fechar se chama `open` em toda a biblioteca.
 
 ## O que fica escondido não some
 
@@ -79,7 +80,7 @@ texto entram.
 
 ## No React Native
 
-Traduz, com os mesmos `maxHeight`, `expanded`, `defaultExpanded`, `onExpandedChange` e `labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado por `accessibilityState.expanded`.
+Traduz, com os mesmos `maxHeight`, `open`, `defaultOpen`, `onOpenChange` e `labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado por `accessibilityState.expanded`.
 
 **Recolhido, o leitor de tela ouve que o texto está cortado.** O `overflow` esconde só da vista, e o TalkBack e o VoiceOver leem o bloco inteiro. Então o conteúdo recolhido vira um elemento só para o leitor, com a dica "Texto cortado. Toque em Ler mais para ver o resto."; aberto, a dica sai. Link dentro do bloco recolhido não recebe foco próprio até abrir.
 

@@ -570,7 +570,7 @@ function Painel({
             </CardDescription>
           </CardHeader>
           <CardContent className="gap-4">
-            <Steps steps={WIZARD_STEPS} current={wizard.step} />
+            <Steps steps={WIZARD_STEPS} step={wizard.step} />
             {wizard.step === 0 && (
               <Field label="Tomador" description="O nome que sai na nota." error={takerError}>
                 <Input

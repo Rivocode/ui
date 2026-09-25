@@ -1093,7 +1093,7 @@ export const SIGNATURES: Record<string, Signature> = {
   Steps: {
     rows: [
       {
-        web: "onStepClick",
+        web: "onStepChange",
         native: null,
         note: "só o modo estreito do web (texto e barra), e ele nunca foi clicável",
       },
@@ -1215,7 +1215,7 @@ export const SIGNATURES: Record<string, Signature> = {
   Tree: {
     rows: [
       {
-        web: "expanded",
+        web: "open",
         native: null,
         note: "não há aberto: um nível por vez, e tocar num galho empurra o de dentro",
       },

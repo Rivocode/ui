@@ -71,7 +71,7 @@ function Wizard() {
 
   return (
     <div className="rounded-xl border border-border bg-surface p-5">
-      <Steps steps={PASSOS} current={wizard.step} onStepClick={wizard.goTo} />
+      <Steps steps={PASSOS} step={wizard.step} onStepChange={wizard.goTo} />
 
       <div className="mt-6 flex flex-col gap-4">
         {wizard.step === 0 && (

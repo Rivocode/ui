@@ -53,7 +53,7 @@ export function NewInvoice() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <Steps steps={STEPS} current={wizard.step} onStepClick={wizard.goTo} />
+      <Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
 
       <Card>
         <CardContent className="py-6">

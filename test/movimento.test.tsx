@@ -412,7 +412,7 @@ test("o trilho entre etapas pinta o que ja foi feito, e a marca da etapa troca d
     { id: "b", title: "Pagamento" },
     { id: "c", title: "Revisao" },
   ];
-  const { container } = render(<Steps steps={steps} current={1} />);
+  const { container } = render(<Steps steps={steps} step={1} />);
 
   const rails = [...container.querySelectorAll("ol li > span[aria-hidden='true']")];
   expect(rails).toHaveLength(2);

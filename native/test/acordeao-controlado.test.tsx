@@ -34,7 +34,7 @@ describe("Accordion controlado", () => {
     expect(textOf(screen)).not.toContain("Pelo botão");
 
     press(screen, 0);
-    expect(onValueChange).toHaveBeenLastCalledWith(["cancelar", "emitir"]);
+    expect(onValueChange).toHaveBeenLastCalledWith(["emitir"]);
     expect(expanded(screen)).toEqual([false, true]);
   });
 
@@ -58,18 +58,16 @@ describe("Accordion controlado", () => {
     expect(textOf(screen)).toContain("Pelo botão Emitir nota.");
   });
 
-  test("o padrão continua sendo vários abertos ao mesmo tempo", () => {
-    const screen = render(<Faq />);
+  test("multiple deixa vários abertos ao mesmo tempo", () => {
+    const screen = render(<Faq multiple />);
     press(screen, 0);
     press(screen, 1);
     expect(expanded(screen)).toEqual([true, true]);
   });
 
-  test("multiple={false} abre um e fecha o outro, como no web", () => {
+  test("o padrão abre um e fecha o outro, como no web", () => {
     const onValueChange = mock((_value: string[]) => {});
-    const screen = render(
-      <Faq multiple={false} defaultValue={["emitir"]} onValueChange={onValueChange} />,
-    );
+    const screen = render(<Faq defaultValue={["emitir"]} onValueChange={onValueChange} />);
     expect(expanded(screen)).toEqual([true, false]);
 
     press(screen, 1);

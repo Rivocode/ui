@@ -81,22 +81,22 @@ describe("Spoiler", () => {
   });
 
   test("controlado, o toque so avisa", () => {
-    const onExpandedChange = mock((_: boolean) => {});
+    const onOpenChange = mock((_: boolean) => {});
     const screen = render(
-      <Spoiler maxHeight={120} expanded={false} onExpandedChange={onExpandedChange}>
+      <Spoiler maxHeight={120} open={false} onOpenChange={onOpenChange}>
         <Text>{LONG}</Text>
       </Spoiler>,
     );
     measure(screen, 400);
 
     act(() => byRole(screen, "button")[0]!.props.onPress());
-    expect(onExpandedChange).toHaveBeenLastCalledWith(true);
+    expect(onOpenChange).toHaveBeenLastCalledWith(true);
     expect(byRole(screen, "button")[0]!.props.accessibilityState).toEqual({ expanded: false });
   });
 
-  test("defaultExpanded nasce aberto, e labels troca os textos", () => {
+  test("defaultOpen nasce aberto, e labels troca os textos", () => {
     const screen = render(
-      <Spoiler defaultExpanded labels={{ more: "Ver tudo", less: "Ver menos" }}>
+      <Spoiler defaultOpen labels={{ more: "Ver tudo", less: "Ver menos" }}>
         <Text>{LONG}</Text>
       </Spoiler>,
     );

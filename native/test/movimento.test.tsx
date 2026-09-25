@@ -387,13 +387,13 @@ describe("barras que andam: Progress, Meter e Steps", () => {
       { id: "revisao", title: "Revisão" },
     ];
     sharedStarts.length = 0;
-    const screen = render(<Steps steps={steps} current={0} />);
+    const screen = render(<Steps steps={steps} step={0} />);
     expect(entered(screen)).toEqual([]);
     expect(widthOf(screen)).toBe("50%");
     expect(sharedStarts).toEqual([50]);
     expect(timings()).toEqual([]);
 
-    swap(screen, <Steps steps={steps} current={1} />);
+    swap(screen, <Steps steps={steps} step={1} />);
     expect(entered(screen).map((built) => built.preset)).toEqual(["FadeIn"]);
     expect(widthOf(screen)).toBe("100%");
     expect(timings().at(-1)!.config.duration).toBe(tokens.scales["duration-slow"]);
@@ -405,8 +405,8 @@ describe("barras que andam: Progress, Meter e Steps", () => {
       { id: "dados", title: "Dados" },
       { id: "revisao", title: "Revisão" },
     ];
-    const screen = render(<Steps steps={steps} current={0} />);
-    swap(screen, <Steps steps={steps} current={1} />);
+    const screen = render(<Steps steps={steps} step={0} />);
+    swap(screen, <Steps steps={steps} step={1} />);
     expect(entered(screen)).toEqual([]);
     expect(timings().at(-1)!.config).toEqual({
       duration: 0,

@@ -71,7 +71,7 @@ busca para fora da tela em vez de descer uma linha.
 
 ```tsx
 <div className="mx-auto max-w-3xl space-y-6">
-  <Steps steps={STEPS} current={wizard.step} onStepClick={wizard.goTo} />
+  <Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
   <Card>
     <CardContent className="py-6">
       <div className="grid gap-4 sm:grid-cols-2">{/* campos */}</div>

@@ -35,9 +35,11 @@ export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "c
   onValueChange?: (ids: string[]) => void;
   /** Sem isto, so uma folha por vez. */
   multiple?: boolean;
-  /** Ids abertos. Sem controle, a arvore abre e fecha sozinha. */
-  expanded?: string[];
-  onExpandedChange?: (ids: string[]) => void;
+  /** Ids dos galhos abertos, para quem controla. Anda junto com `onOpenChange`. */
+  open?: string[];
+  /** Os galhos abertos na primeira pintura, sem controlar. */
+  defaultOpen?: string[];
+  onOpenChange?: (ids: string[]) => void;
   /** Filtra pela busca, mantendo o caminho ate quem casou. */
   filter?: string;
   className?: string;
@@ -49,15 +51,16 @@ export function Tree({
   defaultValue,
   onValueChange,
   multiple,
-  expanded,
-  onExpandedChange,
+  open,
+  defaultOpen,
+  onOpenChange,
   filter = "",
   className,
   onKeyDown: onKeyDownProp,
   ...rest
 }: TreeProps) {
-  const [internalOpenIds, setInternalOpenIds] = useState<string[]>([]);
-  const openIds = expanded ?? internalOpenIds;
+  const [internalOpenIds, setInternalOpenIds] = useState<string[]>(defaultOpen ?? []);
+  const openIds = open ?? internalOpenIds;
   const root = useRef<HTMLUListElement>(null);
   const rtl = useDirection() === "rtl";
 
@@ -76,8 +79,8 @@ export function Tree({
 
   function toggleOpen(id: string) {
     const next = openIds.includes(id) ? openIds.filter((x) => x !== id) : [...openIds, id];
-    if (!expanded) setInternalOpenIds(next);
-    onExpandedChange?.(next);
+    if (!open) setInternalOpenIds(next);
+    onOpenChange?.(next);
   }
 
   function toggleSelect(node: TreeNode) {

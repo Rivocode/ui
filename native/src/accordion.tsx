@@ -126,8 +126,8 @@ export type AccordionProps = {
   /** Recebe a lista inteira de abertos a cada toque num item com `value`. */
   onValueChange?: (value: string[]) => void;
   /**
-   * Padrao `true`: varios abertos ao mesmo tempo. Com `false`, abrir um fecha
-   * o outro - o padrao do web. Vale so entre itens com `value`.
+   * Deixa varios abertos ao mesmo tempo. Sem ela, abrir um fecha o outro, como
+   * no web. Vale so entre itens com `value`.
    */
   multiple?: boolean;
 };
@@ -138,7 +138,7 @@ export function Accordion({
   value,
   defaultValue,
   onValueChange,
-  multiple = true,
+  multiple = false,
 }: AccordionProps) {
   const [selfValue, setSelfValue] = useState<string[]>(defaultValue ?? []);
   const current = value ?? selfValue;

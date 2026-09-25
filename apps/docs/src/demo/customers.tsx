@@ -256,7 +256,7 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   const [view, setView] = useState<'list' | 'grid'>('list')
   // Controlada e já aberta: uma árvore que abre fechada esconde justamente o
   // que a coluna existe para mostrar.
-  const [expanded, setExpanded] = useState<string[]>(['todos', 'servicos'])
+  const [open, setOpen] = useState<string[]>(['todos', 'servicos'])
 
   const found = useMemo(
     () =>
@@ -292,8 +292,8 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
               items={SEGMENTS}
               value={segment}
               onValueChange={setSegment}
-              expanded={expanded}
-              onExpandedChange={setExpanded}
+              open={open}
+              onOpenChange={setOpen}
               multiple
             />
           </ScrollArea>

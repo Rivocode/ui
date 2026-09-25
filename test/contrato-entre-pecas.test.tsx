@@ -45,7 +45,7 @@ test("a arvore fala o vocabulario do catalogo: value e onValueChange", () => {
           value={ids}
           onValueChange={setIds}
           multiple
-          expanded={["financeiro"]}
+          open={["financeiro"]}
         />
         <p>Escolhidos: {ids.join(",") || "nenhum"}</p>
       </>
@@ -62,7 +62,7 @@ test("sem ninguem controlando, a arvore guarda a propria escolha", () => {
   // exigia um useState de quem a montava, e o TreeSelect - que a embrulha - ja
   // aceitava a mesma coisa opcional.
   withTheme(
-    <Tree items={DEPARTMENTS} defaultValue={["contas-pagar"]} multiple expanded={["financeiro"]} />,
+    <Tree items={DEPARTMENTS} defaultValue={["contas-pagar"]} multiple open={["financeiro"]} />,
   );
 
   const leaf = screen.getByText("Contas a pagar").closest("[role=treeitem]")!;

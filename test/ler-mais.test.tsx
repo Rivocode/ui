@@ -85,30 +85,30 @@ test("Ler mais abre na altura inteira e anuncia expandido; Ler menos volta", () 
   expect(box.style.maxHeight).toBe("120px");
 });
 
-test("controlado, quem manda e o expanded, e o clique so avisa", () => {
-  const onExpandedChange = mock((_: boolean) => {});
+test("controlado, quem manda e o open, e o clique so avisa", () => {
+  const onOpenChange = mock((_: boolean) => {});
   const { rerender } = render(
-    <Spoiler maxHeight={120} expanded={false} onExpandedChange={onExpandedChange}>
+    <Spoiler maxHeight={120} open={false} onOpenChange={onOpenChange}>
       <Long />
     </Spoiler>,
   );
   const button = screen.getByRole("button");
 
   fireEvent.click(button);
-  expect(onExpandedChange).toHaveBeenLastCalledWith(true);
+  expect(onOpenChange).toHaveBeenLastCalledWith(true);
   expect(button.getAttribute("aria-expanded")).toBe("false");
 
   rerender(
-    <Spoiler maxHeight={120} expanded onExpandedChange={onExpandedChange}>
+    <Spoiler maxHeight={120} open onOpenChange={onOpenChange}>
       <Long />
     </Spoiler>,
   );
   expect(button.getAttribute("aria-expanded")).toBe("true");
 });
 
-test("defaultExpanded nasce aberto, e labels troca os dois textos", () => {
+test("defaultOpen nasce aberto, e labels troca os dois textos", () => {
   render(
-    <Spoiler defaultExpanded labels={{ more: "Ver tudo", less: "Ver menos" }}>
+    <Spoiler defaultOpen labels={{ more: "Ver tudo", less: "Ver menos" }}>
       <Long />
     </Spoiler>,
   );

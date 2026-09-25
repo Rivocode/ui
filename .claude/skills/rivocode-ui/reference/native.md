@@ -284,7 +284,7 @@ escritos em lugar nenhum.
 | `Stat` | `value` | `value` | `value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta |
 | `Stat` | `deltaVariant` | — | a variação é sempre texto com seta, sem a pastilha preenchida |
 | `Stat` | `icon` | — | sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação |
-| `Steps` | `onStepClick` | — | só o modo estreito do web (texto e barra), e ele nunca foi clicável |
+| `Steps` | `onStepChange` | — | só o modo estreito do web (texto e barra), e ele nunca foi clicável |
 | `Switch` | `value` | — | não há formulário nativo para carregar valor: o estado é `checked` |
 | `Switch` | `classNames` | `classNames` | só `label`: sem `thumb`, porque o polegar é do `Switch` da plataforma, que não recebe classe |
 | `Switch` | — | `label` | o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório |
@@ -308,7 +308,7 @@ escritos em lugar nenhum.
 | `Tour` | `interactive` | — | o `Modal` é outra janela, e o toque não atravessa o recorte até o alvo |
 | `Tour` | `classNames` | `classNames` | sem `spotlight`: o recorte é o vão entre as quatro faixas de `mask`, e não um nó |
 | `Tracker` | `classNames` | `classNames` | sem `label`: o nome da faixa é só o `accessibilityLabel` dela, sem texto escondido que se vista |
-| `Tree` | `expanded` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
+| `Tree` | `open` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
 | `Tree` | `filter` | — | sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado |
 | `Tree` | — | `label` | `label` é obrigatório: é ele que nomeia o nível para o leitor de tela |
 | `TreeSelect` | `searchable` | — | sem busca na folha |
@@ -430,7 +430,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
 | `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
-| `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; o padrão é vários abertos (`multiple={false}` dá o um só do web), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
+| `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; um aberto por vez, como no web (`multiple` deixa vários), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom |
@@ -537,10 +537,10 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
 | `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
-| `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
+| `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `open` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
-| `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
+| `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepChange`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `TableOfContents` | ✕ não porta | tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs` |

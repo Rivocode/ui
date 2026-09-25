@@ -22,7 +22,7 @@
         "name": "multiple",
         "type": "boolean",
         "required": false,
-        "note": "Padrao `true`: varios abertos ao mesmo tempo."
+        "note": "Deixa varios abertos ao mesmo tempo."
       },
       {
         "name": "onValueChange",
@@ -4483,16 +4483,10 @@
         "note": "Classe por parte: `content` (a caixa que corta) e `trigger` (o botao)."
       },
       {
-        "name": "defaultExpanded",
+        "name": "defaultOpen",
         "type": "boolean",
         "required": false,
         "note": "Aberto na primeira pintura, sem controlar."
-      },
-      {
-        "name": "expanded",
-        "type": "boolean",
-        "required": false,
-        "note": "Aberto, para quem controla."
       },
       {
         "name": "fadeOver",
@@ -4513,10 +4507,16 @@
         "note": "A altura do recolhido, em pontos."
       },
       {
-        "name": "onExpandedChange",
-        "type": "((expanded: boolean) => void)",
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
         "required": false,
         "note": "Recebe o estado novo a cada toque no \"Ler mais\" e no \"Ler menos\"."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, para quem controla."
       }
     ]
   },
@@ -4618,7 +4618,7 @@
     "entry": "native/src/index.ts",
     "props": [
       {
-        "name": "current",
+        "name": "step",
         "type": "number",
         "required": true,
         "note": "Índice do passo atual, contando de zero."

@@ -86,7 +86,7 @@ function Wizard() {
   const wizard = useWizard(PASSOS);
   return (
     <RivoProvider scope="local">
-      <Steps steps={PASSOS} current={wizard.step} onStepClick={wizard.goTo} />
+      <Steps steps={PASSOS} step={wizard.step} onStepChange={wizard.goTo} />
       <p>Agora: {wizard.current?.title}</p>
       <button onClick={() => wizard.next()}>Avancar</button>
       <button onClick={() => wizard.next(() => false)}>Avancar travado</button>

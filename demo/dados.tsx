@@ -242,7 +242,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
               items={SECTORS}
               value={sectors}
               onValueChange={setSectors}
-              expanded={["financeiro", "operacao"]}
+              defaultOpen={["financeiro", "operacao"]}
               multiple
             />
           </Block>

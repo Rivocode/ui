@@ -14,12 +14,15 @@ export type Step = {
 export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
   steps: Step[];
   /** Indice do passo atual, contando de zero. */
-  current: number;
-  /** Deixa voltar clicando num passo ja concluido. */
-  onStepClick?: (index: number) => void;
+  step: number;
+  /**
+   * Recebe o indice do passo ja concluido que foi clicado. Sem ele, a regua
+   * nao e clicavel; com ele, so os passos anteriores ao atual viram botao.
+   */
+  onStepChange?: (step: number) => void;
 };
 
-export function Steps({ className, steps, current, onStepClick, ...props }: StepsProps) {
+export function Steps({ className, steps, step: current, onStepChange, ...props }: StepsProps) {
   const step = steps[current];
 
   return (
@@ -40,16 +43,16 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
       <ol {...props} className={cn("hidden items-start gap-2 sm:flex", className)}>
         {steps.map((step, index) => {
           const isDone = index < current;
-          const agora = index === current;
-          const canGoBack = Boolean(onStepClick) && isDone;
+          const isCurrent = index === current;
+          const canGoBack = Boolean(onStepChange) && isDone;
 
           return (
             <li key={step.id} className="flex min-w-0 flex-1 items-start gap-3">
               <button
                 type="button"
                 disabled={!canGoBack}
-                onClick={canGoBack ? () => onStepClick!(index) : undefined}
-                aria-current={agora ? "step" : undefined}
+                onClick={canGoBack ? () => onStepChange!(index) : undefined}
+                aria-current={isCurrent ? "step" : undefined}
                 className={cn(
                   "flex min-w-0 flex-1 items-start gap-3 rounded-md p-1 text-left",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -63,8 +66,8 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                     "transition-[color,background-color,border-color,box-shadow]",
                     "duration-[var(--rc-duration-base)] ease-rc",
                     isDone && "bg-accent text-accent-fg",
-                    agora && "bg-accent-subtle text-accent-text ring-2 ring-accent",
-                    !isDone && !agora && "border border-border text-fg-subtle",
+                    isCurrent && "bg-accent-subtle text-accent-text ring-2 ring-accent",
+                    !isDone && !isCurrent && "border border-border text-fg-subtle",
                   )}
                 >
                   {isDone ? <Check size={13} aria-hidden="true" /> : index + 1}
@@ -75,7 +78,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                     title={step.title}
                     className={cn(
                       "truncate font-sans text-sm",
-                      agora ? "font-rc-medium text-fg" : "text-fg-muted",
+                      isCurrent ? "font-rc-medium text-fg" : "text-fg-muted",
                     )}
                   >
                     {step.title}

@@ -14,13 +14,13 @@ export type Step = {
 export type StepsProps = {
   steps: Step[];
   /** Índice do passo atual, contando de zero. */
-  current: number;
+  step: number;
   className?: string;
 };
 
 const percent = (index: number, total: number) => ((index + 1) / total) * 100;
 
-export function Steps({ steps, current, className }: StepsProps) {
+export function Steps({ steps, step: current, className }: StepsProps) {
   if (steps.length === 0) return null;
 
   const index = Math.min(Math.max(current, 0), steps.length - 1);

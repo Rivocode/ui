@@ -216,7 +216,7 @@ const STEPS = [
 
 describe("Steps", () => {
   test("porta o modo estreito do web: onde esta, o titulo, e a barra andando", () => {
-    const screen = render(<Steps steps={STEPS} current={1} />);
+    const screen = render(<Steps steps={STEPS} step={1} />);
 
     const texto = textOf(screen);
     expect(texto).toContain("Passo 2 de 3");
@@ -232,7 +232,7 @@ describe("Steps", () => {
   });
 
   test("uma parada so do leitor de tela, com a frase inteira", () => {
-    const screen = render(<Steps steps={STEPS} current={0} />);
+    const screen = render(<Steps steps={STEPS} step={0} />);
 
     const [regua] = byRole(screen, "progressbar");
     expect(regua.props.accessible).toBe(true);
@@ -241,10 +241,10 @@ describe("Steps", () => {
   });
 
   test("indice fora da lista nao quebra a tela, e lista vazia nao desenha nada", () => {
-    expect(textOf(render(<Steps steps={STEPS} current={9} />))).toContain("Passo 3 de 3");
-    expect(textOf(render(<Steps steps={STEPS} current={-2} />))).toContain("Passo 1 de 3");
+    expect(textOf(render(<Steps steps={STEPS} step={9} />))).toContain("Passo 3 de 3");
+    expect(textOf(render(<Steps steps={STEPS} step={-2} />))).toContain("Passo 1 de 3");
     // Lista vazia nao desenha regua nenhuma - so o fundo do provider sobra.
-    expect(textOf(render(<Steps steps={[]} current={0} />)).trim()).toBe("");
+    expect(textOf(render(<Steps steps={[]} step={0} />)).trim()).toBe("");
   });
 });
 

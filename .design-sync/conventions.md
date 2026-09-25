@@ -668,6 +668,31 @@ decisão) está em <https://ds.rivocode.com.br/react-native.md>.
 
 **Nunca invente prop.** Se o `.md` da peca nao a lista, ela nao existe.
 
+### Os nomes do estado
+
+Cada ideia de estado tem um nome só, nos dois pacotes: o controlado, o inicial
+(onde a peça sabe se guardar sozinha) e o aviso.
+
+| A ideia | O trio | Onde |
+|---|---|---|
+| aberto ou fechado | `open`, `defaultOpen`, `onOpenChange` | `Collapsible`, `AccordionItem`, `Spoiler`, `Tour`, `ToolCall`, os `Dialog`; na `Tree`, a lista de galhos abertos |
+| o passo de uma sequência | `step`, `defaultStep`, `onStepChange` | `Tour`; o `Steps` só controlado, pelo `useWizard` |
+| a posição numa coleção | `index`, `defaultIndex`, `onIndexChange` | `Carousel`, `ImageViewer` |
+| a página de uma lista paginada | `page`, `onPageChange` | `Pagination` |
+| o que foi escolhido ou digitado | `value`, `defaultValue`, `onValueChange` | campos, `Accordion`, `Tabs` |
+
+`step` e `index` contam de zero, porque são posição de programa. `page` conta
+de um, porque é o número que a pessoa lê na tela e que o servidor recebe na
+query: `page={3}` é a página 3, e converter nos dois sentidos em toda chamada
+é onde nasce o erro de um a mais. `step` é passo de uma sequência que anda
+para a frente; `index` é lugar numa coleção que se percorre em qualquer ordem,
+como o slide do `Carousel`.
+
+Não existe `expanded`, `visible` nem `current` para essas ideias. O
+`Accordion` fica em `value` porque o que ele guarda é quais itens estão
+abertos, e não se um está; com `multiple` ele deixa vários ao mesmo tempo, e
+sem ela abre um por vez, nos dois pacotes.
+
 ### Rotulo de controle vem como filho
 
 `Checkbox`, `Radio` e `Switch` aceitam o texto como filho e se embrulham num

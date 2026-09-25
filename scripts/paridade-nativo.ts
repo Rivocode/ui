@@ -144,7 +144,7 @@ const PAI: Record<string, string> = {
 const PARITY: Record<string, Row> = {
   Accordion: {
     state: "traduz",
-    note: "`value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; o padrão é vários abertos (`multiple={false}` dá o um só do web), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir",
+    note: "`value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; um aberto por vez, como no web (`multiple` deixa vários), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir",
   },
   Alert: {
     state: "traduz",
@@ -1333,7 +1333,7 @@ const PARITY: Record<string, Row> = {
   },
   Steps: {
     state: "traduz",
-    note: "só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade",
+    note: "só o modo estreito do web (texto e barra), e por isso sem `onStepChange`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade",
     page:
       'Traduz, e o que porta é **o modo estreito que o web já desenhava**: a linha "Passo 2 ' +
       'de 4", o título do passo e a barra de progresso. A régua de bolinhas não atravessa ' +
@@ -1341,7 +1341,7 @@ const PARITY: Record<string, Row> = {
       'de 390px dão 60px de rótulo por passo, e "Conferir os itens" vira "Confe…" cinco ' +
       "vezes seguidas. A descrição, que o modo estreito do web esconde por falta de largura, " +
       "aparece: aqui o passo atual é o único na tela.\n\n" +
-      "Por isso não há `onStepClick`: ele só existia na régua larga, e sem bolinha não há o " +
+      "Por isso não há `onStepChange`: ele só existia na régua larga, e sem bolinha não há o " +
       "que tocar. Voltar é o botão do `WizardFooter`, e pular passo continua sendo o `goTo`.\n\n" +
       "O `useWizard()` atravessa **inteiro e idêntico**: é `useState` e três contas de " +
       "índice, sem DOM e sem media query. Deixar o passo para o router nativo seria trocar um " +
@@ -1503,7 +1503,7 @@ const PARITY: Record<string, Row> = {
       "marca o galho inteiro. A conta exata não aparece na tela, como no web; ela vai no nome " +
       'falado do galho ("Financeiro, 7 itens, 2 escolhidos"), porque é por ele que se entra.\n\n' +
       "Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada " +
-      "com busca já é o `Combobox`), `expanded`/`onExpandedChange` (não há aberto e fechado, há " +
+      "com busca já é o `Combobox`), `open`/`onOpenChange` (não há aberto e fechado, há " +
       "o nível onde o dedo está) e o `label` do nó, que aqui é `string`. Ele é montado dentro do " +
       "rótulo falado e do caminho, e de um `ReactNode` não há como ler o texto de volta.",
   },
@@ -1870,9 +1870,9 @@ const PARITY: Record<string, Row> = {
   },
   Spoiler: {
     state: "traduz",
-    note: "os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara",
+    note: "os mesmos `maxHeight`, `open` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara",
     page:
-      "Traduz, com os mesmos `maxHeight`, `expanded`, `defaultExpanded`, `onExpandedChange` e " +
+      "Traduz, com os mesmos `maxHeight`, `open`, `defaultOpen`, `onOpenChange` e " +
       "`labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado " +
       "por `accessibilityState.expanded`.\n\n" +
       "**Recolhido, o leitor de tela ouve que o texto está cortado.** O `overflow` esconde só " +
