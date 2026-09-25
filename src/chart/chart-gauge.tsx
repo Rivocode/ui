@@ -12,7 +12,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 import { GAUGE_GAP, GAUGE_REACH, GAUGE_RING, bandAt } from "../shared/chart-layout";
 

@@ -265,13 +265,12 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note:
       "a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva " +
-      "nome e valor ao meio; `format` só aceita função, e as pontas saem retas",
+      "nome e valor ao meio; `format` aceita nome de formatador ou função, como no web, e as pontas saem retas",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, " +
-      "`config`, `thickness`, `legend`, `centerValue`, `centerLabel`. Duas mudanças de tipo: o " +
-      "miolo é `string` e não `ReactNode`, e o `format` só aceita função, que é a decisão que o " +
-      "`Meter` nativo já tinha tomado. Resolver nome de formatador arrasta o `Intl` inteiro para o " +
-      "bundle do celular.\n\n" +
+      "`config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o " +
+      "nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. " +
+      "Uma mudança de tipo: o miolo é `string` e não `ReactNode`.\n\n" +
       "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica " +
       "diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não " +
       "existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende " +
@@ -319,15 +318,16 @@ const PARITY: Record<string, Row> = {
   ChartFunnel: {
     state: "traduz",
     note:
-      "mesmas props, com `color` como papel de token e `format` só como função; cada etapa é uma " +
+      "mesmas props, com `color` como papel de token; cada etapa é uma " +
       "parada com nome, número e taxa na mesma frase",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do " +
       "`react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, " +
       "gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, " +
-      "`rateLabel` e `overallLabel` atravessam iguais.\n\n" +
-      "Duas mudanças de tipo, as mesmas da rosca: `color` é papel de token (`chart-2`) e não cor " +
-      "de CSS, e `format` só aceita função. E uma de leitura: no web a peça é uma lista ordenada " +
+      "`rateLabel`, `overallLabel` e `format`, com nome de formatador ou função, atravessam " +
+      "iguais.\n\n" +
+      "Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e não cor " +
+      "de CSS. E uma de leitura: no web a peça é uma lista ordenada " +
       "e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada " +
       "só**, com os três na mesma frase (\"Cadastros: 400, 40% da etapa anterior\"), porque o " +
       "leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam " +
@@ -343,11 +343,11 @@ const PARITY: Record<string, Row> = {
       "porque não há descrição separada no toque",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `value`, `max`, `bands`, " +
-      "`sweep`, `centerValue`, `centerLabel`, `label`. As faixas são as mesmas, com `tone` " +
+      "`sweep`, `centerValue`, `centerLabel`, `label`, `format`. As faixas são as mesmas, com `tone` " +
       "`success`, `warning` ou `danger`, e pintam os mesmos papéis `-text` do web: a medida do " +
       "arco sobre o trilho é a mesma nos dois lados, e está no mapa de contraste do nativo.\n\n" +
-      "Duas mudanças de tipo, as da rosca e do arco: `centerValue` e `centerLabel` são `string`, " +
-      "e `format` só aceita função. E uma de leitura: no web a régua das faixas vai numa " +
+      "Uma mudança de tipo, a da rosca e do arco: `centerValue` e `centerLabel` são `string`. " +
+      "E uma de leitura: no web a régua das faixas vai numa " +
       "descrição separada, ligada por `aria-describedby`; o celular não tem esse canal, então " +
       "ela entra no fim do nome acessível (\"72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a " +
       '85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.\n\n' +
@@ -361,11 +361,11 @@ const PARITY: Record<string, Row> = {
       "dica, a leitura mora numa linha embaixo",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, " +
-      "`valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`. A escala é a mesma, " +
+      "`valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`, `format`. A escala é a mesma, " +
       "cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em " +
       "`native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda " +
       "tracejada, igual.\n\n" +
-      "Duas mudanças de tipo: `color` é papel de token (`chart-3`) e `format` só aceita função.\n\n" +
+      "Uma mudança de tipo: `color` é papel de token (`chart-3`).\n\n" +
       "**O que muda é como se lê uma célula.** No web o ponteiro pousa e a dica abre, e o leitor " +
       "de tela navega uma tabela escondida. No celular não há dica nem tabela: o dedo toca ou " +
       "arrasta sobre a grade e escolhe a célula debaixo dele, que ganha contorno, e a linha, a " +
@@ -388,8 +388,7 @@ const PARITY: Record<string, Row> = {
       "o nome quando cabe uma linha, nada quando nem o nome cabe, e nada antes do `onLayout` " +
       "medir a caixa. A tinta a 30% com `fg` por cima é a mesma, e os dezesseis pares estão no " +
       "mapa de contraste do nativo.\n\n" +
-      "Duas mudanças de tipo: o `config.color` é papel de token, como em toda a família, e " +
-      "`format` só aceita função.\n\n" +
+      "Uma mudança de tipo: o `config.color` é papel de token, como em toda a família.\n\n" +
       "**O que muda é como se lê uma categoria.** Aqui são poucas (acima de uma dúzia o treemap " +
       "para de informar), e poucas categorias viram poucas paradas: cada retângulo é um botão com " +
       "nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o " +
@@ -695,7 +694,7 @@ const PARITY: Record<string, Row> = {
   PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
   Progress: {
     state: "traduz",
-    note: "`value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo",
+    note: "`value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo",
   },
   QueryBoundary: {
     state: "traduz",
@@ -852,7 +851,7 @@ const PARITY: Record<string, Row> = {
   },
   Slider: {
     state: "traduz",
-    note: "anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório",
+    note: "anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web",
   },
   Sparkline: {
     state: "traduz",
@@ -876,7 +875,7 @@ const PARITY: Record<string, Row> = {
   },
   Stat: {
     state: "traduz",
-    note: "`value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche",
+    note: "`value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche",
   },
   Switch: {
     state: "traduz",
@@ -1141,8 +1140,7 @@ const PARITY: Record<string, Row> = {
       "`FileUploadList` e `FileUploadItem` atravessam com o mesmo contrato (`progress` de 0 a " +
       '100 vira barra anunciada, `error` vence o progresso e oferece "Tentar de novo"), com duas ' +
       "diferenças de plataforma: o corte do nome é `numberOfLines`, que lá é prop e não classe, e " +
-      'o tamanho sai formatado **sem `Intl`** ("47,1 KB", com a vírgula escrita à mão), pela ' +
-      "mesma razão que o `Meter` nativo não tem `format`.",
+      'o tamanho sai formatado **sem `Intl`** ("47,1 KB", com a vírgula escrita à mão).',
   },
   Form: {
     state: "traduz",
@@ -1241,11 +1239,12 @@ const PARITY: Record<string, Row> = {
   },
   Meter: {
     state: "traduz",
-    note: "sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo",
+    note: "`format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo",
     page:
-      "Portado. A diferença é o texto do valor: no web ele sai de `format`, e no nativo vai " +
-      "pronto em `valueLabel`: trazer a tabela de formatadores custaria o `Intl` num bundle " +
-      "de celular. O papel de acessibilidade também muda, e por uma razão: o React Native " +
+      "Portado. O texto do valor sai de `format`, com os mesmos nomes de formatador do web " +
+      "(`percent`, `currencyShort`, `integer`...) ou uma função, e vale na tela e no anúncio. " +
+      "Só daqui há o `valueLabel`, para a medida que já chega escrita, e ele ganha do `format` " +
+      "quando os dois vêm. O papel de acessibilidade muda, e por uma razão: o React Native " +
       "não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca " +
       "como `progressbar`, que é justamente o erro que ela existe para evitar.",
   },

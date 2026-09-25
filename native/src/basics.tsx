@@ -4,6 +4,7 @@ import { ActivityIndicator, Image, View } from "react-native";
 import { cn } from "./cn";
 import { Entrance, Fill } from "./motion";
 import { useRivo } from "./provider";
+import { percent, resolveFormat, type Format } from "./shared/format";
 import { Text } from "./text";
 
 export function Separator({ className }: { className?: string }) {
@@ -21,19 +22,61 @@ export type ProgressProps = {
   /** 0 a 100. O Progress anda para o fim e termina; quanto-de-capacidade e Meter. */
   value: number;
   label: string;
+  /**
+   * Escreve o rotulo acima da barra e a porcentagem ao lado dele. O mesmo nome
+   * do web; sem ele, o rotulo so existe para o leitor de tela.
+   */
+  showValue?: boolean;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`percent`,
+   * `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do
+   * web. Recebe o `value` ja preso entre 0 e 100, e o texto vale na tela e no
+   * anuncio.
+   */
+  format?: Format;
   className?: string;
 };
 
-export function Progress({ value, label, className }: ProgressProps) {
+export function Progress({ value, label, showValue, format, className }: ProgressProps) {
   const clamped = Math.min(100, Math.max(0, value));
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
+  const written = write?.(clamped);
+  const bar = (
+    <Fill percent={clamped} enter className="h-full rounded-pill bg-accent-text" />
+  );
+  const range = {
+    min: 0,
+    max: 100,
+    now: Math.round(clamped),
+    ...(written === undefined ? {} : { text: written }),
+  };
+
+  if (!showValue) {
+    return (
+      <View
+        accessibilityRole="progressbar"
+        accessibilityLabel={label}
+        accessibilityValue={range}
+        className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
+      >
+        {bar}
+      </View>
+    );
+  }
+
   return (
     <View
+      accessible
       accessibilityRole="progressbar"
       accessibilityLabel={label}
-      accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped) }}
-      className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
+      accessibilityValue={range}
+      className={cn("gap-2", className)}
     >
-      <Fill percent={clamped} enter className="h-full rounded-pill bg-accent-text" />
+      <View className="flex-row items-baseline justify-between gap-4">
+        <Text className="text-sm text-fg">{label}</Text>
+        <Text className="text-xs text-fg-subtle">{written ?? percent(clamped)}</Text>
+      </View>
+      <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">{bar}</View>
     </View>
   );
 }

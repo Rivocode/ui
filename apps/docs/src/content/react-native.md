@@ -180,8 +180,8 @@ recusa o que conseguiu medir.
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` (sem `CardFooter`) |
 | `Carousel` | ✔ traduz | sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay` |
 | `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função: não há Recharts, nem contentor que meça, nem `var(--color-série)` |
-| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
-| `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token e `format` só como função; cada etapa é uma parada com nome, número e taxa na mesma frase |
+| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` aceita nome de formatador ou função, como no web, e as pontas saem retas |
+| `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token; cada etapa é uma parada com nome, número e taxa na mesma frase |
 | `ChartGauge` | ✔ traduz | atravessa quase inteiro, como o `ChartRadial`; a régua das faixas entra no nome acessível, porque não há descrição separada no toque |
 | `ChartHeatmap` | ✔ traduz | a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem dica, a leitura mora numa linha embaixo |
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
@@ -230,7 +230,7 @@ recusa o que conseguiu medir.
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
-| `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo |
+| `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
@@ -243,7 +243,7 @@ recusa o que conseguiu medir.
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
-| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
+| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha |
 | `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos e não há `classNames` |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
@@ -264,14 +264,14 @@ recusa o que conseguiu medir.
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `SignaturePad` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o traço é o mesmo arquivo do web, o gesto é o `PanResponder`, e o PNG fica de fora por não haver canvas |
 | `Skeleton` | ✔ traduz | mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento |
-| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório |
+| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
 | `Spinner` | ✔ traduz | `small` e `large`, os dois tamanhos do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
 | `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
-| `Stat` | ✔ traduz | `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche |
+| `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |

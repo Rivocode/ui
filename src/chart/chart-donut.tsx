@@ -7,7 +7,7 @@ import { ChartTooltipContent } from "./chart-tooltip";
 
 import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {

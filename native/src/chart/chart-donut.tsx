@@ -6,6 +6,7 @@ import Svg, { Circle, Path } from "react-native-svg";
 import { cn } from "../cn";
 import { useTween } from "../motion";
 import { useRivo } from "../provider";
+import { resolveFormat, type Format } from "../shared/format";
 import { Text } from "../text";
 import { arcPath } from "./arc";
 import { PALETTE, type ChartConfig } from "./chart";
@@ -41,14 +42,11 @@ export type ChartDonutProps<Slice> = {
    */
   legend?: boolean;
   /**
-   * Como o número é escrito.
-   *
-   * Só função, ao contrário do web, que também aceita o nome de um formatador
-   * da casa (`currencyShort`, `percent`). É a mesma decisão que o `Meter`
-   * nativo já tomou e escreveu: resolver nome de formatador arrasta o `Intl`
-   * inteiro para o bundle do celular, e quem chama já tem o número escrito.
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria. O mesmo vocabulario do web, do
+   * `Meter` e do `Stat`.
    */
-  format?: (value: number) => string;
+  format?: Format;
   className?: string;
   /**
    * O que o leitor de tela ouve no lugar do desenho.
@@ -86,7 +84,8 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const colorOf = (slice: Slice, index: number) =>
     theme[config?.[nameOf(slice)]?.color ?? PALETTE[index % PALETTE.length]!];
 
-  const write = (value: number) => (format ? format(value) : String(value));
+  const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
+  const write = (value: number) => (resolved ? resolved(value) : String(value));
 
   const values = data.map((slice) => Math.max(0, Number(slice[valueKey]) || 0));
   const total = values.reduce((sum, value) => sum + value, 0);

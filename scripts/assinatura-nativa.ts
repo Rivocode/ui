@@ -3,7 +3,7 @@
  *
  * O `check:paridade` responde "existe no nativo?" e para ai. Quem porta uma
  * tela ja passou dessa pergunta: ele sabe que o `Meter` existe, e o que custa
- * a tarde e descobrir, uma peca de cada vez, que `format` la se chama
+ * a tarde e descobrir, uma peca de cada vez, que `format` la se chamava
  * `valueLabel`, que o `at` da `Timeline` deixou de aceitar `RelativeTime`, e
  * que o molde do `MaskedInput` troca de `9` para `#`.
  *
@@ -354,7 +354,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "empty",
         native: "empty",
-        note: "`title` e `description` do vazio são `string`, e não `ReactNode`; `icon` sai",
+        note: "`title` e `description` do vazio são `string`, e não `ReactNode`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo",
       },
       {
         web: "errorTitle",
@@ -365,11 +365,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   ChartDonut: {
     rows: [
-      {
-        web: "format",
-        native: "format",
-        note: "só função `(value: number) => string`: nome de formatador da casa pediria o `Intl` no bundle",
-      },
       {
         web: "centerValue",
         native: "centerValue",
@@ -871,11 +866,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Meter: {
     rows: [
-      {
-        web: "format",
-        native: "valueLabel",
-        note: "o texto vai pronto: resolver nome de formatador custaria o `Intl` no bundle do celular",
-      },
       { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
     ],
   },
@@ -956,11 +946,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Progress: {
     rows: [
-      {
-        web: "format",
-        native: null,
-        note: "sem formatador, e sem `showValue`: a barra mostra a porcentagem",
-      },
       { web: "min", native: null, note: "a escala é 0 a 100, e `max` sai junto" },
       { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
     ],
@@ -970,7 +955,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "empty",
         native: "empty",
-        note: "`title` e `description` do vazio são `string`, e o `icon` sai",
+        note: "`title` e `description` do vazio são `string`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo",
       },
       {
         web: "errorTitle",
@@ -1089,11 +1074,6 @@ export const SIGNATURES: Record<string, Signature> = {
   Slider: {
     rows: [
       { web: "value", native: "value", note: "um valor só: `number`, e não `number[]`" },
-      {
-        web: "format",
-        native: null,
-        note: "sem formatador e sem `showValue`: o número sai como está",
-      },
       { web: "label", native: "label", note: "`label` vira obrigatório e é `string`" },
     ],
   },
@@ -1131,12 +1111,12 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` é `string` já formatada: não há `Intl` para escrever o número",
+        note: "`value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta",
       },
       {
-        web: "deltaFormat",
+        web: "deltaVariant",
         native: null,
-        note: "`delta` é número e sai como veio; `deltaVariant` sai junto",
+        note: "a variação é sempre texto com seta, sem a pastilha preenchida",
       },
       {
         web: "icon",

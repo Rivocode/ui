@@ -7,6 +7,7 @@ import { useTween } from "../motion";
 import { useRivo } from "../provider";
 import { funnelRates } from "../shared/chart-layout";
 import { Text } from "../text";
+import { resolveFormat, type Format } from "../shared/format";
 
 export type ChartFunnelProps<Stage> = {
   /** As etapas, na ordem em que a pessoa atravessa: a primeira é a boca do funil. */
@@ -20,8 +21,11 @@ export type ChartFunnelProps<Stage> = {
    * cor de CSS como no web, pela mesma razão do `config` da moldura.
    */
   color?: RivoNativeColorRole;
-  /** Como o número de cada etapa é escrito. Só função, como na rosca. */
-  format?: (value: number) => string;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   */
+  format?: Format;
   /** Como a taxa é escrita, recebendo de 0 a 100. Sem ele, `38,5%`. */
   formatRate?: (rate: number) => string;
   /** `center` desenha o funil centrado; `start` alinha as barras à esquerda. */
@@ -55,7 +59,8 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   className,
 }: ChartFunnelProps<Stage>) {
   const { colors: theme } = useRivo();
-  const say = (value: number) => (format ? format(value) : String(value));
+  const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
+  const say = (value: number) => (resolved ? resolved(value) : String(value));
 
   const values = data.map((stage) => valueOf(stage[valueKey]));
   const widest = Math.max(0, ...values);

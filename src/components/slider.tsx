@@ -4,7 +4,7 @@ import { Slider as BaseSlider } from "@base-ui/react/slider";
 import { useId, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 
 export type SliderProps = Omit<ComponentProps<typeof BaseSlider.Root>, "format"> & {

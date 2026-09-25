@@ -13,7 +13,7 @@ import {
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip";
 import { cn } from "../lib/cn";
-import { percent, resolveFormat, type Format } from "../lib/format";
+import { percent, resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 import { labelFit, squarify, type TreemapBox } from "../shared/chart-layout";
 import { PALETTE, type ChartConfig } from "./chart";

@@ -9,6 +9,7 @@ import { useRivo } from "../provider";
 import { GAUGE_GAP, GAUGE_REACH, GAUGE_RING, bandAt } from "../shared/chart-layout";
 import { Text } from "../text";
 import { radialLine, ringPath } from "./arc";
+import { resolveFormat, type Format } from "../shared/format";
 
 const HOLE = 0.52;
 
@@ -42,10 +43,10 @@ export type ChartGaugeProps = {
   /** A linha pequena embaixo do número. Sem ela, o nome da faixa em que o valor caiu. */
   centerLabel?: string;
   /**
-   * Como o número é escrito. Só função, como no `Meter` e na rosca daqui: o
-   * nome de formatador do web arrastaria o `Intl` inteiro para o celular.
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
    */
-  format?: (value: number) => string;
+  format?: Format;
   /** Quantos graus o arco cobre, com a abertura embaixo. De 0 a 360; 360 fecha o anel. */
   sweep?: number;
   /**
@@ -76,7 +77,8 @@ export function ChartGauge({
   className,
 }: ChartGaugeProps) {
   const { colors: theme } = useRivo();
-  const say = (number: number) => (format ? format(number) : String(number));
+  const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
+  const say = (number: number) => (resolved ? resolved(number) : String(number));
 
   const known = Number.isFinite(value);
   const sweep = Math.min(Math.max(askedSweep, 0), 360);

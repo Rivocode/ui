@@ -68,7 +68,7 @@ deitada lê melhor, e ainda cabe o rótulo por extenso.
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `thickness`, `legend`, `centerValue`, `centerLabel`. Duas mudanças de tipo: o miolo é `string` e não `ReactNode`, e o `format` só aceita função, que é a decisão que o `Meter` nativo já tinha tomado. Resolver nome de formatador arrasta o `Intl` inteiro para o bundle do celular.
+Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. Uma mudança de tipo: o miolo é `string` e não `ReactNode`.
 
 **O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende a fatia dela e manda nome e valor para o meio, no lugar exato onde o web põe a dica; tocar de novo devolve o total.
 

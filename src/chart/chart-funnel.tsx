@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
-import { percent, resolveFormat, type Format } from "../lib/format";
+import { percent, resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 import { funnelRates } from "../shared/chart-layout";
 

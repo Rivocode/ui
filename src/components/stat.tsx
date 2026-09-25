@@ -4,7 +4,7 @@ import { ArrowDownRight, ArrowUpRight, Info } from "lucide-react";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import { Card, CardContent } from "./card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 

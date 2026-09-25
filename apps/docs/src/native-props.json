@@ -664,9 +664,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como o número é escrito."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria."
       },
       {
         "name": "label",
@@ -728,9 +728,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como o número de cada etapa é escrito."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "formatRate",
@@ -786,9 +786,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como o número é escrito."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "label",
@@ -873,9 +873,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como o número é escrito."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "legend",
@@ -1017,9 +1017,9 @@
       },
       {
         "name": "format",
-        "type": "((value: number) => string)",
+        "type": "Format",
         "required": false,
-        "note": "Como o número é escrito."
+        "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       }
     ]
   },
@@ -2757,6 +2757,12 @@
         "required": false
       },
       {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
+      },
+      {
         "name": "max",
         "type": "number",
         "required": false,
@@ -3190,6 +3196,18 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "note": "Escreve o rotulo acima da barra e a porcentagem ao lado dele."
       }
     ]
   },
@@ -3934,6 +3952,12 @@
         "required": false
       },
       {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito: nome de formatador da casa ou funcao propria, o mesmo vocabulario do web."
+      },
+      {
         "name": "max",
         "type": "number",
         "required": false
@@ -3942,6 +3966,12 @@
         "name": "min",
         "type": "number",
         "required": false
+      },
+      {
+        "name": "showValue",
+        "type": "boolean",
+        "required": false,
+        "note": "Escreve o rotulo acima do controle e o valor ao lado dele."
       },
       {
         "name": "step",
@@ -4201,6 +4231,12 @@
         "name": "delta",
         "type": "number",
         "required": false
+      },
+      {
+        "name": "deltaFormat",
+        "type": "Format",
+        "required": false,
+        "note": "Como a variacao e escrita: nome de formatador da casa (`percent`, `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
       },
       {
         "name": "deltaLabel",

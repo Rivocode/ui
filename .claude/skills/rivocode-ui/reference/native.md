@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**214 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**210 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -115,9 +115,8 @@ escritos em lugar nenhum.
 | `Carousel` | `autoplay` | — | no toque a fileira que anda sozinha briga com o dedo; não há rotação nem pausa |
 | `Carousel` | `classNames` | `className` | um `className` só, na raiz |
 | `ChartContainer` | — | `children` | `children` é função e recebe `{ width, height, colors }`: não há `ResponsiveContainer` para medir por você, e a medida chega zerada no primeiro quadro |
-| `ChartContainer` | `empty` | `empty` | `title` e `description` do vazio são `string`, e não `ReactNode`; `icon` sai |
+| `ChartContainer` | `empty` | `empty` | `title` e `description` do vazio são `string`, e não `ReactNode`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
 | `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
-| `ChartDonut` | `format` | `format` | só função `(value: number) => string`: nome de formatador da casa pediria o `Intl` no bundle |
 | `ChartDonut` | `centerValue` | `centerValue` | `centerValue` e `centerLabel` viram `string` |
 | `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
 | `Checkbox` | `indeterminate` | — | não há terceiro estado, e `parent` sai junto: o pai de um grupo se desenha à mão |
@@ -194,7 +193,6 @@ escritos em lugar nenhum.
 | `Message` | `copyValue` | `onCopy` | o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard` |
 | `Message` | `error` | `error` | `string`: texto no nativo mora dentro de um `Text` |
 | `Message` | `classNames` | — | um `className` só, na linha da mensagem |
-| `Meter` | `format` | `valueLabel` | o texto vai pronto: resolver nome de formatador custaria o `Intl` no bundle do celular |
 | `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `NotificationCenter` | `open` | `open` | vira obrigatório, com `onOpenChange`: não há `defaultOpen` |
 | `NotificationCenter` | — | `icon` | o sino entra por `icon`, obrigatório, porque o pacote não traz ícone; a função recebe a cor do botão |
@@ -221,14 +219,13 @@ escritos em lugar nenhum.
 | `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
 | `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
 | `PostalCodeField` | `classNames` | `inputClassName` | `className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem |
-| `Progress` | `format` | — | sem formatador, e sem `showValue`: a barra mostra a porcentagem |
 | `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
 | `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `PromptInput` | `value` | `value` | obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado |
 | `PromptInput` | `defaultValue` | — | sem estado próprio: quem limpa o campo depois do envio é quem chamou |
 | `PromptInput` | `classNames` | — | um `className` só, na moldura do campo |
 | `QRCode` | `classNames` | `className` | um `className` só, na raiz; o `svg` e o logo não se vestem por parte |
-| `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`, e o `icon` sai |
+| `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
 | `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
 | `Questionnaire` | — | `items` | as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho |
 | `Questionnaire` | `item` | `item` | vira obrigatório: a pergunta aberta é sempre controlada, junto com `onItemChange` |
@@ -257,7 +254,6 @@ escritos em lugar nenhum.
 | `SignaturePad` | — | `onDrawingChange` | avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar |
 | `SignaturePad` | `classNames` | `className` | um `className` só, na raiz |
 | `Slider` | `value` | `value` | um valor só: `number`, e não `number[]` |
-| `Slider` | `format` | — | sem formatador e sem `showValue`: o número sai como está |
 | `Slider` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `Sparkline` | `variant` | `variant` | `area` não porta: pede polígono preenchido, e o desenho nativo é `View` |
 | `Sparkline` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token |
@@ -266,8 +262,8 @@ escritos em lugar nenhum.
 | `Spinner` | `label` | — | sem rótulo próprio: quem nomeia a espera é o texto ao lado |
 | `Spoiler` | — | `fadeOver` | o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara |
 | `Spoiler` | `classNames` | — | um `className` só, na raiz |
-| `Stat` | `value` | `value` | `value` é `string` já formatada: não há `Intl` para escrever o número |
-| `Stat` | `deltaFormat` | — | `delta` é número e sai como veio; `deltaVariant` sai junto |
+| `Stat` | `value` | `value` | `value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta |
+| `Stat` | `deltaVariant` | — | a variação é sempre texto com seta, sem a pastilha preenchida |
 | `Stat` | `icon` | — | sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação |
 | `Steps` | `onStepClick` | — | só o modo estreito do web (texto e barra), e ele nunca foi clicável |
 | `Switch` | `value` | — | não há formulário nativo para carregar valor: o estado é `checked` |
@@ -428,8 +424,8 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` (sem `CardFooter`) |
 | `Carousel` | ✔ traduz | sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay` |
 | `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função: não há Recharts, nem contentor que meça, nem `var(--color-série)` |
-| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
-| `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token e `format` só como função; cada etapa é uma parada com nome, número e taxa na mesma frase |
+| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` aceita nome de formatador ou função, como no web, e as pontas saem retas |
+| `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token; cada etapa é uma parada com nome, número e taxa na mesma frase |
 | `ChartGauge` | ✔ traduz | atravessa quase inteiro, como o `ChartRadial`; a régua das faixas entra no nome acessível, porque não há descrição separada no toque |
 | `ChartHeatmap` | ✔ traduz | a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem dica, a leitura mora numa linha embaixo |
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
@@ -478,7 +474,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
-| `Meter` | ✔ traduz | sem `format`: resolver nome de formatador custaria o `Intl` no bundle do celular, e o texto vai pronto em `valueLabel`; a barra anda até o valor novo |
+| `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
@@ -491,7 +487,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
-| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; sem `format`; a barra anda até o valor novo |
+| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha |
 | `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos e não há `classNames` |
 | `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
@@ -512,14 +508,14 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `SignaturePad` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o traço é o mesmo arquivo do web, o gesto é o `PanResponder`, e o PNG fica de fora por não haver canvas |
 | `Skeleton` | ✔ traduz | mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento |
-| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório |
+| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
 | `Spinner` | ✔ traduz | `small` e `large`, os dois tamanhos do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
 | `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
-| `Stat` | ✔ traduz | `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche |
+| `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |

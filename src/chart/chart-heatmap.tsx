@@ -13,7 +13,7 @@ import {
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip";
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 import { axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
 

@@ -102,6 +102,20 @@ export {
 export type { PostalAddress, PostalCodeLookup, PostalCodeStatus } from "./shared/postal-code";
 export { isValidCnpj, isValidCpf, isValidPixKey } from "./shared/pix";
 export {
+  compact,
+  compactWords,
+  currency,
+  currencyShort,
+  currencyShortWords,
+  dayMonth,
+  formatters,
+  integer,
+  monthShort,
+  percent,
+  type Format,
+  type FormatName,
+} from "./shared/format";
+export {
   buildPixPayload,
   parsePixPayload,
   type PixPayload,

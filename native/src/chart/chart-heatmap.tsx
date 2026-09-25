@@ -7,6 +7,7 @@ import { Entrance } from "../motion";
 import { useRivo } from "../provider";
 import { HEAT_ALPHAS, axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
 import { Text } from "../text";
+import { resolveFormat, type Format } from "../shared/format";
 
 const LABEL_COLUMN = { maxWidth: "40%" } as const;
 
@@ -30,8 +31,11 @@ export type ChartHeatmapProps<Cell> = {
   color?: RivoNativeColorRole;
   /** O intervalo da escala, `[menor, maior]`. Sem ele, de zero até o maior valor. */
   domain?: readonly [number, number];
-  /** Como o número é escrito. Só função, como na rosca daqui. */
-  format?: (value: number) => string;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   */
+  format?: Format;
   /** O que a grade mede, por extenso: é o nome que o leitor de tela anuncia. */
   label: string;
   /** O que a leitura diz na célula sem dado. Sem ele, "Sem dado". */
@@ -58,7 +62,8 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
 }: ChartHeatmapProps<Cell>) {
   const { colors: theme } = useRivo();
   const paint = theme[color];
-  const say = (value: number) => (format ? format(value) : String(value));
+  const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
+  const say = (value: number) => (resolved ? resolved(value) : String(value));
 
   const seenRows: string[] = [];
   const seenColumns: string[] = [];

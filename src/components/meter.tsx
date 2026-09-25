@@ -4,7 +4,7 @@ import { Meter as BaseMeter } from "@base-ui/react/meter";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 
 export type MeterProps = Omit<ComponentProps<typeof BaseMeter.Root>, "format"> & {

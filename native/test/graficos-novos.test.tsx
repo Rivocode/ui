@@ -323,3 +323,46 @@ describe("ChartTreemap", () => {
     expect(tint!.props.style.backgroundColor).toBe(light["chart-1"]);
   });
 });
+
+describe("format aceita o nome do formatador da casa, como no web", () => {
+  test("medidor, funil, mapa de calor e treemap escrevem o numero pelo nome", () => {
+    const gauge = render(<ChartGauge value={72} bands={BANDS} format="percent" />);
+    expect(byRole(gauge, "image")[0]!.props.accessibilityLabel).toStartWith("72% de 100%");
+
+    const funnel = render(
+      <ChartFunnel
+        data={[
+          { etapa: "Visitas", total: 2480 },
+          { etapa: "Cadastros", total: 1500 },
+        ]}
+        valueKey="total"
+        nameKey="etapa"
+        format="compact"
+      />,
+    );
+    expect(byLabel(funnel, "Visitas: 2,5K")).toHaveLength(1);
+
+    const heatmap = render(
+      <ChartHeatmap
+        data={[{ dia: "Seg", hora: "8h", total: 2480 }]}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        format="compact"
+        label="Emissões"
+      />,
+    );
+    expect(byRole(heatmap, "adjustable")[0]!.props.accessibilityValue.text).toBe("Seg, 8h: 2,5K");
+
+    const treemap = render(
+      <ChartTreemap
+        data={[{ natureza: "Serviços", total: 2480 }]}
+        valueKey="total"
+        nameKey="natureza"
+        format="compact"
+      />,
+    );
+    layout(treemap, 400, 200);
+    expect(byRole(treemap, "button")[0]!.props.accessibilityLabel).toStartWith("Serviços: 2,5K");
+  });
+});

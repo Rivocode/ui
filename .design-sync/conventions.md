@@ -375,7 +375,10 @@ comprovante depois.
 **A prop `format` aceita o nome de um deles, ou uma funcao sua.** Ela existe no
 `Meter`, no `Progress`, no `Slider`, no `ChartXAxis`, no `ChartYAxis` e no
 `ChartDonut` - o tipo e `Format`, e `FormatName` e so o nome. O objeto
-`formatters` reune os nove, para quem monta a escolha em runtime:
+`formatters` reune os nove, para quem monta a escolha em runtime. O
+`@rivocode/ui-native` exporta os mesmos nove pela raiz, do mesmo arquivo, e o
+`format` vale igual no `Meter`, no `Progress`, no `Slider`, no `ChartDonut` e no
+`deltaFormat` do `Stat` de la:
 
 ```tsx
 <Meter value={72} format="percent" />

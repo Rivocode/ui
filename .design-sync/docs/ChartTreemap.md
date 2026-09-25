@@ -68,6 +68,6 @@ que tem dentro, é o `Tree`: o treemap mostra um nível só, e não é clicável
 
 Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `format`. A geometria é a mesma função do web (o *squarified*, gerado em `native/src/shared/`), e a regra do rótulo também: nome e valor quando cabem os dois, só o nome quando cabe uma linha, nada quando nem o nome cabe, e nada antes do `onLayout` medir a caixa. A tinta a 30% com `fg` por cima é a mesma, e os dezesseis pares estão no mapa de contraste do nativo.
 
-Duas mudanças de tipo: o `config.color` é papel de token, como em toda a família, e `format` só aceita função.
+Uma mudança de tipo: o `config.color` é papel de token, como em toda a família.
 
 **O que muda é como se lê uma categoria.** Aqui são poucas (acima de uma dúzia o treemap para de informar), e poucas categorias viram poucas paradas: cada retângulo é um botão com nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem um nem outro existe. O título do cartão faz esse papel.

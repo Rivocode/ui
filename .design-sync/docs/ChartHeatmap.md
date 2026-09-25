@@ -100,9 +100,9 @@ A peça não tem os quatro finais de uma consulta: carregando, erro e vazio vêm
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`. A escala é a mesma, cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em `native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda tracejada, igual.
+Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`, `format`. A escala é a mesma, cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em `native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda tracejada, igual.
 
-Duas mudanças de tipo: `color` é papel de token (`chart-3`) e `format` só aceita função.
+Uma mudança de tipo: `color` é papel de token (`chart-3`).
 
 **O que muda é como se lê uma célula.** No web o ponteiro pousa e a dica abre, e o leitor de tela navega uma tabela escondida. No celular não há dica nem tabela: o dedo toca ou arrasta sobre a grade e escolhe a célula debaixo dele, que ganha contorno, e a linha, a coluna e o número aparecem escritos embaixo da grade. Para o leitor de tela a grade é **uma parada `adjustable` só**, que anda célula a célula com o gesto de subir e descer, a mesma decisão do `Tracker`: cento e sessenta e oito paradas dentro de um cartão seriam um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.
 

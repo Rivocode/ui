@@ -29,4 +29,4 @@ não carrega, e quem ouve fica esperando o fim de uma operação que não existe
 
 ## No React Native
 
-Portado. A diferença é o texto do valor: no web ele sai de `format`, e no nativo vai pronto em `valueLabel`: trazer a tabela de formatadores custaria o `Intl` num bundle de celular. O papel de acessibilidade também muda, e por uma razão: o React Native não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca como `progressbar`, que é justamente o erro que ela existe para evitar.
+Portado. O texto do valor sai de `format`, com os mesmos nomes de formatador do web (`percent`, `currencyShort`, `integer`...) ou uma função, e vale na tela e no anúncio. Só daqui há o `valueLabel`, para a medida que já chega escrita, e ele ganha do `format` quando os dois vêm. O papel de acessibilidade muda, e por uma razão: o React Native não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca como `progressbar`, que é justamente o erro que ela existe para evitar.

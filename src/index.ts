@@ -181,7 +181,7 @@ export {
   percent,
   type Format,
   type FormatName,
-} from "./lib/format";
+} from "./shared/format";
 export {
   Sheet,
   SheetClose,

@@ -64,8 +64,8 @@ todo, e etapa de funil não é.
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do `react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `rateLabel` e `overallLabel` atravessam iguais.
+Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do `react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `rateLabel`, `overallLabel` e `format`, com nome de formatador ou função, atravessam iguais.
 
-Duas mudanças de tipo, as mesmas da rosca: `color` é papel de token (`chart-2`) e não cor de CSS, e `format` só aceita função. E uma de leitura: no web a peça é uma lista ordenada e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada só**, com os três na mesma frase ("Cadastros: 400, 40% da etapa anterior"), porque o leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse papel.
+Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e não cor de CSS. E uma de leitura: no web a peça é uma lista ordenada e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada só**, com os três na mesma frase ("Cadastros: 400, 40% da etapa anterior"), porque o leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse papel.
 
 As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.

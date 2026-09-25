@@ -12,4 +12,4 @@ export {
   resolveFormat,
   type Format,
   type FormatName,
-} from "../lib/format";
+} from "../shared/format";

@@ -57,4 +57,4 @@ O conteúdo do cartão esmaece na montagem (`animate-appear`, `--rc-duration-bas
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Stat` - `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Stat` - `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

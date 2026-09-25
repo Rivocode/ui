@@ -144,14 +144,13 @@ describe("a tabela publicada", () => {
     expect(validate(SIGNATURES, real, realNative)).toEqual([]);
   });
 
-  test("cobre os seis casos que custaram a tarde de quem portou a tela", () => {
+  test("cobre os casos que custaram a tarde de quem portou a tela e que ainda divergem", () => {
     const cases: [string, string | null, string | null][] = [
       ["SearchInput", "onClear", null],
       ["MaskedInput", "value", "value"],
       ["Timeline", null, "items"],
       ["Sparkline", "variant", "variant"],
       ["Popconfirm", "onConfirm", "onAction"],
-      ["Meter", "format", "valueLabel"],
     ];
 
     for (const [piece, from, to] of cases) {

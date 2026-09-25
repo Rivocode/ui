@@ -383,6 +383,24 @@ describe("ChartDonut", () => {
     expect(byRole(screen, "button")[0]!.props.accessibilityState.selected).toBe(true);
   });
 
+  test("format aceita o nome do formatador da casa, como no web", () => {
+    const screen = render(
+      <ChartDonut
+        data={[
+          { natureza: "servico", total: 2480 },
+          { natureza: "produto", total: 1500 },
+        ]}
+        valueKey="total"
+        nameKey="natureza"
+        format="currencyShort"
+      />,
+    );
+
+    expect(
+      byRole(screen, "button").map((row: ReactTestInstance) => row.props.accessibilityLabel),
+    ).toEqual(["servico: R$\u00a02,5K", "produto: R$\u00a01,5K"]);
+  });
+
   test("sem legenda o dado tem que caber no nome, porque nao ha dica para abrir", () => {
     const screen = render(
       <ChartDonut

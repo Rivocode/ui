@@ -4,7 +4,7 @@ import { Progress as BaseProgress } from "@base-ui/react/progress";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { resolveFormat, type Format } from "../lib/format";
+import { resolveFormat, type Format } from "../shared/format";
 import type { Slots } from "../lib/slots";
 
 export type ProgressProps = Omit<

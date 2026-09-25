@@ -7,6 +7,7 @@ import { useRivo } from "../provider";
 import { TREEMAP_TINT, labelFit, squarify } from "../shared/chart-layout";
 import { Text } from "../text";
 import { PALETTE, type ChartConfig } from "./chart";
+import { resolveFormat, type Format } from "../shared/format";
 
 export type ChartTreemapProps<Item> = {
   /** As categorias. Valor zero ou negativo não ganha área. */
@@ -17,8 +18,11 @@ export type ChartTreemapProps<Item> = {
   nameKey: keyof Item & string;
   /** Nome legível e papel de cor por categoria, o mesmo formato da rosca daqui. */
   config?: ChartConfig;
-  /** Como o número é escrito. Só função, como na rosca. */
-  format?: (value: number) => string;
+  /**
+   * Como o numero e escrito: nome de formatador da casa (`currencyShort`,
+   * `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web.
+   */
+  format?: Format;
   className?: string;
 };
 
@@ -45,7 +49,8 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [reading, setReading] = useState<number | null>(null);
 
-  const say = (value: number) => (format ? format(value) : String(value));
+  const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
+  const say = (value: number) => (resolved ? resolved(value) : String(value));
   const values = data.map((item) => valueOf(item[valueKey]));
   const total = values.reduce((sum, value) => sum + Math.max(0, value), 0);
   const boxes = squarify(values, size.width, size.height);

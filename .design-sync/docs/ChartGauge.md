@@ -83,8 +83,8 @@ E para mostrar como o número andou no mês, nenhum dos três: é `Sparkline` ou
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `value`, `max`, `bands`, `sweep`, `centerValue`, `centerLabel`, `label`. As faixas são as mesmas, com `tone` `success`, `warning` ou `danger`, e pintam os mesmos papéis `-text` do web: a medida do arco sobre o trilho é a mesma nos dois lados, e está no mapa de contraste do nativo.
+Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `value`, `max`, `bands`, `sweep`, `centerValue`, `centerLabel`, `label`, `format`. As faixas são as mesmas, com `tone` `success`, `warning` ou `danger`, e pintam os mesmos papéis `-text` do web: a medida do arco sobre o trilho é a mesma nos dois lados, e está no mapa de contraste do nativo.
 
-Duas mudanças de tipo, as da rosca e do arco: `centerValue` e `centerLabel` são `string`, e `format` só aceita função. E uma de leitura: no web a régua das faixas vai numa descrição separada, ligada por `aria-describedby`; o celular não tem esse canal, então ela entra no fim do nome acessível ("72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a 85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.
+Uma mudança de tipo, a da rosca e do arco: `centerValue` e `centerLabel` são `string`. E uma de leitura: no web a régua das faixas vai numa descrição separada, ligada por `aria-describedby`; o celular não tem esse canal, então ela entra no fim do nome acessível ("72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a 85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.
 
 O arco e o ponteiro andam juntos até o valor novo, pelo Reanimated, e nascem no lugar com "reduzir movimento".

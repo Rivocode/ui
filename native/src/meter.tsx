@@ -2,6 +2,7 @@ import { View } from "react-native";
 
 import { cn } from "./cn";
 import { Fill } from "./motion";
+import { resolveFormat, type Format } from "./shared/format";
 import { Text } from "./text";
 
 export type MeterProps = {
@@ -19,13 +20,14 @@ export type MeterProps = {
   /** Escreve a porcentagem ao lado do rotulo. O mesmo nome do web. */
   showValue?: boolean;
   /**
+   * Como o numero e escrito: nome de formatador da casa (`percent`,
+   * `currencyShort`, `integer`...) ou funcao propria, o mesmo vocabulario do
+   * web. Recebe o `value` cru, e o texto vale na tela e no anuncio.
+   */
+  format?: Format;
+  /**
    * A medida ja escrita - "8 GB de 15 GB", "R$ 4.200 de R$ 5.000". Substitui a
-   * porcentagem na tela e no anuncio.
-   *
-   * O web resolve isso com `format`, que aceita o nome de um formatador da
-   * casa; aqui quem escreve e quem chama, como no `Stat`. Trazer a tabela de
-   * formatadores do web para o pacote nativo custaria o `Intl` inteiro num
-   * bundle de celular para escrever uma linha de texto.
+   * porcentagem na tela e no anuncio, e ganha do `format` quando vem junto.
    */
   valueLabel?: string;
   className?: string;
@@ -37,13 +39,15 @@ export function Meter({
   max = 100,
   label,
   showValue,
+  format,
   valueLabel,
   className,
 }: MeterProps) {
+  const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const span = max - min;
   const filled = span > 0 ? Math.min(1, Math.max(0, (value - min) / span)) : 0;
   const percent = Math.round(filled * 100);
-  const spoken = valueLabel ?? `${percent}%`;
+  const spoken = valueLabel ?? (write ? write(value) : `${percent}%`);
   const announced = Math.min(max, Math.max(min, value));
 
   return (
