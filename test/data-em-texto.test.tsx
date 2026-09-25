@@ -290,3 +290,46 @@ test("o componente de quem embrulha com o tipo de props exportado continua repas
   expect(received).toBe("2026-10-01");
   expect(screen.getByText("Periodo")).toBeTruthy();
 });
+
+type Same<A, B> =
+  (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
+
+test("o value null literal escolhe o intervalo em texto, e o onValueChange nao vira any", () => {
+  const received: Array<IsoDateRange | null> = [];
+  render(
+    <RivoProvider scope="local">
+      <DateRangePicker
+        value={null}
+        placeholder="Direto"
+        onValueChange={(next) => {
+          const exact: Same<typeof next, IsoDateRange | null> = true;
+          expect(exact).toBe(true);
+          received.push(next);
+        }}
+      />
+      <DateRangePicker
+        defaultValue={null}
+        placeholder="Inicial"
+        onValueChange={(next) => {
+          const exact: Same<typeof next, IsoDateRange | null> = true;
+          expect(exact).toBe(true);
+        }}
+      />
+      <OwnRangePicker
+        value={null}
+        placeholder="Embrulhado"
+        onValueChange={(next) => {
+          const exact: Same<typeof next, IsoDateRange | null> = true;
+          expect(exact).toBe(true);
+        }}
+      />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByText("Direto"));
+  fireEvent.click(day("14"));
+  fireEvent.click(day("18"));
+  fireEvent.click(screen.getByText("Aplicar"));
+  expect(received).toHaveLength(1);
+  expect(received[0]!.from).toMatch(/^\d{4}-\d{2}-14$/);
+  expect(received[0]!.to).toMatch(/^\d{4}-\d{2}-18$/);
+});
