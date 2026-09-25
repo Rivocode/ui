@@ -21,7 +21,7 @@ import { Text } from "./text";
 
 export type PostalCodeFieldProps = Omit<
   InputProps,
-  "value" | "onChangeText" | "keyboardType" | "maxLength" | "className"
+  "value" | "onChangeText" | "onValueChange" | "keyboardType" | "maxLength" | "className"
 > & {
   /** Os digitos, sem a pontuacao: a mascara e do campo, o dado nao a carrega. */
   value: string;

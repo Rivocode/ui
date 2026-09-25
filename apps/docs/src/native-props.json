@@ -1473,9 +1473,9 @@
     "props": [
       {
         "name": "onValueChange",
-        "type": "((value: string) => void) & ((cents: number | null) => void)",
+        "type": "(cents: number | null) => void",
         "required": true,
-        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
+        "note": "Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia."
       },
       {
         "name": "value",
@@ -3216,9 +3216,9 @@
       },
       {
         "name": "onValueChange",
-        "type": "((value: string) => void) & ((digits: string, masked: string) => void)",
+        "type": "(digits: string, masked: string) => void",
         "required": true,
-        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
+        "note": "Chamado a cada tecla com os digitos e, no segundo argumento, o CEP pontuado que o web entrega primeiro."
       },
       {
         "name": "value",

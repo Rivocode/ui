@@ -13,7 +13,7 @@ import { Text } from "./text";
 
 export type CurrencyInputProps = Omit<
   InputProps,
-  "value" | "onChangeText" | "keyboardType" | "className"
+  "value" | "onChangeText" | "onValueChange" | "keyboardType" | "className"
 > & {
   /** O valor em centavos inteiros: `123456` e R$ 1.234,56. Campo vazio e `null`. */
   value: number | null;

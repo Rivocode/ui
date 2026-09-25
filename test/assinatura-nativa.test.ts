@@ -159,3 +159,16 @@ describe("a tabela publicada", () => {
     }
   });
 });
+
+test("nenhum callback do nativo nasce da soma de duas assinaturas que brigam", async () => {
+  const realNative = (await Bun.file("apps/docs/src/native-props.json").json()) as Catalog;
+  const props = Object.entries(realNative).flatMap(([piece, entry]) =>
+    entry.props.map((prop) => ({ piece, ...prop })),
+  );
+  expect(props.length).toBeGreaterThan(500);
+
+  const clashing = props
+    .filter((prop) => /=> [^&]+\) & \(\(/.test(prop.type))
+    .map((prop) => `${prop.piece}.${prop.name}: ${prop.type}`);
+  expect(clashing).toEqual([]);
+});
