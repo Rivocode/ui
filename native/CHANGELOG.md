@@ -1,5 +1,25 @@
 # Mudancas
 
+## 0.13.0
+
+### Pecas novas
+
+- `Tour`, com o recorte descontando a barra de status e a folha que sobe
+  quando o alvo esta embaixo; `topInset` ajusta o respiro de cima.
+- `TransferList`, `Highlight` e `Spoiler`. O `Spoiler` fechado avisa o leitor
+  de tela que o texto esta cortado.
+- Em `@rivocode/ui-native/chart`: `SignaturePad`, `ChartHeatmap`,
+  `ChartGauge`, `ChartFunnel` e `ChartTreemap`.
+
+O peso da letra passa a sair das classes `font-rc-*`, com os mesmos numeros de
+antes.
+
+### Nao portam, por decisao escrita
+
+`Gantt` (no telefone e lista por dia, como o `EventCalendar`),
+`TableOfContents`, `ScrollToTop` e `Affix`. O motivo de cada um esta na tabela
+de paridade.
+
 ## 0.12.0
 
 ### Pecas novas

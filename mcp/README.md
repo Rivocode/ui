@@ -36,8 +36,8 @@ Precisa de Node 20 ou mais novo.
 ## Que documentação ele serve
 
 **A da versão do design system em que o pacote foi gerado.** O `@rivocode/ui-mcp`
-0.2.0 foi gerado da documentação do **`@rivocode/ui` 0.17.0** e do
-**`@rivocode/ui-native` 0.12.0**. Toda resposta termina dizendo isso, e o
+0.3.0 foi gerado da documentação do **`@rivocode/ui` 0.18.0** e do
+**`@rivocode/ui-native` 0.13.0**. Toda resposta termina dizendo isso, e o
 servidor repete no stderr ao subir.
 
 O conteúdo sai no build da mesma fonte que o site

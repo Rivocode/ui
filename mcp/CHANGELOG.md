@@ -1,8 +1,10 @@
 # Mudanças
 
-## Próxima versão
+## 0.3.0
 
-Esta seção ainda não tem número: o número e o fechamento são do release.
+A documentação empacotada passa a ser a de `@rivocode/ui` 0.18.0 e
+`@rivocode/ui-native` 0.13.0: 134 peças, os gráficos novos, o peso como
+token e os blocos de erro.
 
 ### A oitava ferramenta: `audit_screen`
 

@@ -1,5 +1,49 @@
 # Mudancas
 
+## 0.18.0
+
+Treze pecas novas, quatro graficos sem Recharts e o peso da letra como token:
+o catalogo vai de 121 a 134. Passou pela mesma revisao da 0.17.0 - codigo,
+acessibilidade e visual - e a vitrine inteira passa no `bun run a11y`, que
+agora tambem anda cada pagina no Tab.
+
+### Pecas novas
+
+- `Tour`: guia a tela um alvo por vez, com mascara recortada, balao ancorado
+  e foco preso; pula o passo cujo alvo some.
+- `SignaturePad`: assinatura por dedo, caneta ou mouse, ou pelo nome
+  digitado, com tinta sempre escura sobre papel claro; exporta SVG e PNG.
+- `Gantt`: tabela e linha do tempo numa rolagem so, escala de dia, semana e
+  mes, dependencias, grupos, e edicao pelo ponteiro e pelo teclado. O `end` e
+  exclusivo, e a pagina da peca explica.
+- `TransferList`, `Highlight`, `Spoiler`, `TableOfContents`, `ScrollToTop` e
+  `Affix`.
+- No subcaminho `/chart`: `ChartHeatmap`, `ChartGauge`, `ChartFunnel` e
+  `ChartTreemap`, desenhados sem Recharts.
+
+### O peso da letra vira token
+
+`--rc-weight-regular`, `-medium`, `-strong`, `-bold` e `-display`, com as
+classes `font-rc-*`. Tema de cliente pode sobrescrever, e o montador de tema
+escreve o peso mais proximo que a fonte escolhida tem. Com o tema da casa nada
+muda na tela.
+
+**Mudanca que pode aparecer:** dezesseis titulos (de `Card`, `Dialog`,
+`Sheet`, `AlertDialog`, `PageHeader`, `Popover`, `Fieldset`, o valor do
+`Stat` e outros) passam a declarar o peso 600, que antes nao declaravam. O
+tema da casa ja carregava so a Poppins 600 e 700, entao nada muda; quem
+carrega a Poppins 400 por conta propria vera esses titulos mais pesados.
+
+### Outras mudancas
+
+- `/blocos` ganha as paginas de erro: 404, 500, 403 e manutencao.
+- O `Highlight` pinta o trecho achado no fundo cheio de atencao, com 5:1
+  contra o fundo em volta.
+- O `ChartGauge` mostra o valor real no centro e no nome acessivel, mesmo fora
+  da escala ("140 de 100"); so o arco e o ponteiro param na ponta.
+- Os orcamentos de tamanho sobem com as pecas novas, com o custo de cada uma
+  medido e escrito; importar uma peca continua pagando so por ela.
+
 ## 0.17.0
 
 Doze pecas novas, dois subcaminhos e uma biblioteca de hooks: o catalogo vai
