@@ -15,7 +15,7 @@ CHANGELOGs, e nao e repetida aqui.
 | Pacote                | Onde      | Manifesto | No npm em 25/09                    | Tag              |
 | --------------------- | --------- | --------- | ---------------------------------- | ---------------- |
 | `@rivocode/ui`        | `src/`    | 0.18.1    | **0.18.1**, com procedencia        | `v0.18.1`        |
-| `@rivocode/ui-native` | `native/` | 0.14.0    | **0.13.0** - a 0.14.0 NAO publicou | `native-v0.14.0` |
+| `@rivocode/ui-native` | `native/` | 0.14.0    | **0.14.0**, com procedencia        | `native-v0.14.0` |
 | `@rivocode/ui-mcp`    | `mcp/`    | 0.3.0     | 0.3.0                              | `mcp-v0.3.0`     |
 
 O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
@@ -23,16 +23,12 @@ O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
 list` continua vazio, porque tag nao vira release no GitHub e isso nunca foi
 automatizado.
 
-**A 0.14.0 do nativo esta presa, e e o primeiro item da fila humana.** O
-`tag.yml` criou `native-v0.14.0` e chamou o `release-native`, que passou pelo
-check, pelo build, pelo npm 11.19 e pelo token OIDC presente, e morreu no
-`npm publish` com `ENEEDAUTH`. O `release` do web, com o mesmo desenho de
-workflow, publicou a 0.18.1 assinada um minuto depois. A diferenca entao nao
-esta no repositorio: o mais provavel e a publicacao confiavel do
-`@rivocode/ui-native` nao estar configurada no npmjs.com (ou apontar outro
-arquivo de workflow que nao `release-native.yml`). O ensaio verde nao pegaria
-isso: o `--dry-run` nao autentica. Depois de configurar, a tag ja existe e a
-versao nao queimou: `gh workflow run release-native --field tag=native-v0.14.0`.
+**A 0.14.0 do nativo saiu na segunda tentativa.** A primeira morreu no
+`npm publish` com `ENEEDAUTH`: a publicacao confiavel do `@rivocode/ui-native`
+estava configurada errada no npmjs.com, e o ensaio verde nao pegaria isso,
+porque o `--dry-run` nao autentica. Corrigida a configuracao, a mesma tag
+publicou por `gh workflow run release-native --field tag=native-v0.14.0`: a
+versao nao tinha queimado.
 
 ### Publicacao confiavel, desde 25/09
 
@@ -42,11 +38,11 @@ um instala o npm mais novo (a publicacao confiavel exige 11.5.1 ou mais) e
 falha cedo se o token OIDC nao estiver la. `--provenance` e `id-token: write`
 andam juntos, e o `--dry-run` nao exercita nenhum dos dois.
 
-A 0.18.1 do web e a primeira versao que saiu por esse caminho, e o endpoint de
-attestations responde para ela. O segredo `NPM_TOKEN` **continua cadastrado** no
+A 0.18.1 do web e a 0.14.0 do nativo sairam por esse caminho, assinadas. O
+`@rivocode/ui-mcp` ainda nao publicou por ele: so a proxima versao dele prova a
+configuracao do publicador confiavel dele. O segredo `NPM_TOKEN` **continua cadastrado** no
 repositorio (`gh secret list`, criado em 04/09) e nenhum workflow o le mais:
-ele deve ser apagado no GitHub e revogado no npm pelo dono, depois de a 0.14.0
-do nativo sair pelo caminho novo.
+ele deve ser apagado no GitHub e revogado no npm pelo dono.
 
 Versoes sem procedencia, e assim ficam porque publicacao nao se desfaz: ate
 `v0.8.0` e `native-v0.3.1`, quando o repositorio era privado.
@@ -259,11 +255,10 @@ excecao e continua sem.
 
 Nenhum destes tem codigo a escrever aqui.
 
-1. **Publicar a 0.14.0 do nativo** - configurar a publicacao confiavel do
-   `@rivocode/ui-native` no npmjs.com e rodar de novo o `release-native` na tag
-   que ja existe. Ver "Os pacotes".
-2. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm, depois
-   do item 1.
+1. **Conferir o publicador confiavel do `@rivocode/ui-mcp`** no npmjs.com
+   (`Rivocode`, `ui`, `release-mcp.yml`, ambiente vazio): foi o erro do nativo,
+   e so aparece no release de verdade.
+2. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm.
 3. **Testar no iPhone** o que teste e `react-native-web` nao alcancam: colar
    valor no `CurrencyInput`; meia estrela do `Rating`, inclusive em RTL; o
    `Tour` nativo; e o anuncio de limite do `PromptInput` com o VoiceOver, que
@@ -355,10 +350,10 @@ ensaio=true` (idem `release-native` e `release-mcp`).
 
 ```sh
 npm view @rivocode/ui version                       # 0.18.1
-npm view @rivocode/ui-native version                # 0.13.0 enquanto a 0.14.0 nao sair
+npm view @rivocode/ui-native version                # 0.14.0
 npm view @rivocode/ui-mcp version                   # 0.3.0
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.18.1 | head -c 80   # assinada
-gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure, ENEEDAUTH
+gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure (ENEEDAUTH), depois success
 gh secret list                                      # NPM_TOKEN ainda cadastrado
 grep -rn NPM_TOKEN .github/workflows                # nada: nenhum workflow o le
 git ls-remote --tags origin | grep -vc '\^{}'       # 36 tags
