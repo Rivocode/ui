@@ -1,5 +1,74 @@
 # Mudancas
 
+## 0.19.0
+
+As datas passam a aceitar texto `aaaa-mm-dd`, com os mesmos nomes do nativo, e
+a tabela de props do site volta a mostrar props que sumiam dela. Nada que
+compilava na 0.18.1 deixa de compilar.
+
+### Data em texto no Calendar, no DatePicker e no DateRangePicker
+
+- `value`, `defaultValue` e `onValueChange` aceitam `Date` ou texto
+  `aaaa-mm-dd`, lido como dia do calendario: `"2026-09-25"` e 25 de setembro em
+  qualquer fuso, e nao a meia-noite UTC do `new Date(texto)`, que em Brasilia
+  ainda e dia 24. A peca responde no formato que recebeu: quem passa `Date`
+  continua recebendo `Date`. Com texto, o `DatePicker` e o `Calendar` respondem
+  `string` (`""` quando o campo esvazia), e o `DateRangePicker` responde
+  `IsoDateRange` fechado ou `null` no Limpar. `IsoDateRange` sai do indice.
+- `min` e `max` inclusivos, em `Date` ou texto, nas tres pecas: os dias de fora
+  ficam desabilitados, a navegacao para no mes de cada ponta, e o `DatePicker`
+  nao aceita data digitada fora da janela.
+- O `Calendar` ganha `value` e `onValueChange` para data unica. `mode="single"`
+  com `selected` e `onSelect`, e `startMonth`/`endMonth` nas tres pecas, seguem
+  funcionando, marcados `@deprecated`. `range` e `multiple` continuam pelo
+  `mode`, e em `range` e `multiple` um numero em `min`/`max` continua sendo a
+  contagem de dias.
+
+**Mudanca que pode aparecer:** no `DatePicker`, tocar de novo no dia escolhido
+nao limpa mais a data. Limpar e apagar o campo. As setas de mes do `Calendar`
+passam a parecer desabilitadas na ponta da navegacao: o estilo mirava
+`disabled`, e o `react-day-picker` marca `aria-disabled`.
+
+### Leitor de tela e nomes
+
+- `SearchInput` ganha `onValueChange`, chamado a cada tecla e com `""` no Esc
+  quando nao ha `onClear`. Convive com o `onChange`.
+- `Meter`, `Progress` e `Slider` anunciam o mesmo texto que o `format` escreve
+  na tela ("R$ 4,2 mil"), e nao mais o numero cru. Um `getAriaValueText`
+  proprio continua valendo por cima.
+- O `RichTextEditor` com `max` 1 diz "Limite de 1 caractere atingido.", no
+  singular, e o `tokens` do cli conta "1 arquivo".
+
+### A tabela de props volta a mostrar o que sumia
+
+Prop propria com o mesmo nome de um atributo HTML sumia da tabela e, pior,
+tinha o tipo cruzado com o do atributo. Doze pecas tiram a chave herdada, e o
+tipo so alarga:
+
+- o `format` do `ChartXAxis` e do `ChartYAxis` aceita funcao;
+- o `title` do `AccordionItem`, do `CodeBlock`, do `TimelineItem` e da
+  `Sidebar` aceita `ReactNode`;
+- o `length` do `OTPField` deixa de ser obrigatorio (o padrao e 6);
+- `value` do `Clipboard`, `defaultValue` do `MaskedInput` e do `TreeSelect`,
+  `name` do `CurrencyInput` e do `TimeField`, `max` do `TagsInput`.
+
+O `check:props` passa a reprovar essa colisao.
+
+### A styles.css pronta encolhe
+
+O gzip vai de 19,4 KB para 18,2 KB sem mudar um pixel da vitrine: sai o espaco
+em branco e saem treze classes que nenhuma peca usa, que o scanner do Tailwind
+lia em nome de metodo, de evento e em comentario.
+
+**Mudanca que pode aparecer:** quem usa a `styles.css` pronta, sem Tailwind
+proprio, e escrevia uma destas classes na sua tela perde a regra: `blur`,
+`collapse`, `container`, `filter`, `grow`, `inline`, `invert`, `italic`,
+`outline`, `resize`, `ring`, `table` e `transform` (so a classe nua: `ring-2`,
+`blur-sm` e as outras formas com sufixo nao mudam). Quem compila o proprio
+Tailwind nao ve diferenca. A `Sidebar` deixa de levar a classe `group/sidebar`,
+que nenhuma parte dela lia: seletor `group-*/sidebar:` escrito do lado de fora
+para de casar.
+
 ## 0.18.1
 
 - `PromptInput`: o contador diz "1 caractere" e "Limite de 1 caractere

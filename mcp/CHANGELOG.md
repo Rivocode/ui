@@ -1,5 +1,21 @@
 # Mudanças
 
+## 0.4.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 0.19.0 e
+`@rivocode/ui-native` 0.15.0: as datas em texto `aaaa-mm-dd`, o nativo falando
+os nomes do web e os formatadores nos dois pacotes. As oito ferramentas
+continuam as mesmas.
+
+- `get_native_parity` e a tabela de assinatura encolhem de 225 para 195
+  diferenças, em 88 peças em vez de 91: as linhas que saíram viraram o mesmo
+  nome dos dois lados.
+- As tabelas de props ganham o que sumia delas: 4391 props no web (eram 4368)
+  e 800 no nativo (eram 762), com as sobrecargas de data juntadas numa linha só.
+- 38 páginas de peça reescritas, e a referência de React Native da skill ensina
+  `label`, `onValueChange`, `sm`/`md`/`lg` e os moldes do web como nome
+  principal.
+
 ## 0.3.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 0.18.0 e

@@ -14,9 +14,9 @@ CHANGELOGs, e nao e repetida aqui.
 
 | Pacote                | Onde      | Manifesto | No npm em 25/09                    | Tag              |
 | --------------------- | --------- | --------- | ---------------------------------- | ---------------- |
-| `@rivocode/ui`        | `src/`    | 0.18.1    | **0.18.1**, com procedencia        | `v0.18.1`        |
-| `@rivocode/ui-native` | `native/` | 0.14.0    | **0.14.0**, com procedencia        | `native-v0.14.0` |
-| `@rivocode/ui-mcp`    | `mcp/`    | 0.3.0     | 0.3.0                              | `mcp-v0.3.0`     |
+| `@rivocode/ui`        | `src/`    | 0.19.0    | **0.19.0**, com procedencia        | `v0.19.0`        |
+| `@rivocode/ui-native` | `native/` | 0.15.0    | **0.15.0**, com procedencia        | `native-v0.15.0` |
+| `@rivocode/ui-mcp`    | `mcp/`    | 0.4.0     | **0.4.0**, com procedencia         | `mcp-v0.4.0`     |
 
 O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
 (`docs.yml`), e esta em dia com `c3fa570`. O `origin` tem 36 tags; `gh release
@@ -330,9 +330,9 @@ ensaio=true` (idem `release-native` e `release-mcp`).
 ## Como conferir cada numero
 
 ```sh
-npm view @rivocode/ui version                       # 0.18.1
-npm view @rivocode/ui-native version                # 0.14.0
-npm view @rivocode/ui-mcp version                   # 0.3.0
+npm view @rivocode/ui version                       # 0.19.0
+npm view @rivocode/ui-native version                # 0.15.0
+npm view @rivocode/ui-mcp version                   # 0.4.0
 curl -s https://registry.npmjs.org/-/npm/v1/attestations/@rivocode/ui@0.18.1 | head -c 80   # assinada
 gh run list --workflow=release-native --limit 3     # native-v0.14.0: failure (ENEEDAUTH), depois success
 gh secret list                                      # NPM_TOKEN ainda cadastrado

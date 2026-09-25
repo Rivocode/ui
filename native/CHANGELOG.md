@@ -1,5 +1,89 @@
 # Mudancas
 
+## 0.15.0
+
+A leva que faz o nativo falar os nomes do web: o que se escrevia diferente nos
+dois pacotes passa a se escrever igual, e o nome antigo continua aceito, marcado
+`@deprecated`. A tabela de assinatura cai de 225 para 195 diferencas.
+
+### Os nomes do web
+
+- `Input` e `Textarea` ganham `onValueChange`, ao lado do `onChangeText`.
+- `IconButton` se nomeia por `label`; `accessibilityLabel` segue aceito e
+  obsoleto, e o tipo continua recusando o botao sem nome.
+- `Spinner` fala `sm`, `md` e `lg` (`sm` e `md` sao o giro pequeno do
+  `ActivityIndicator`) e ganha `label`, que vazio esconde o giro do leitor;
+  `small` e `large` seguem aceitos, obsoletos. `SpinnerProps` sai do indice.
+- `DataList` aceita `value`/`onValueChange`; `selected` e `onSelectedChange`
+  ficam obsoletos. `TagsInput` aceita `labels.remove`; `removeLabel` fica
+  obsoleto.
+- `MaskedInput` aceita os moldes do web: `cpf`, `cnpj`, `cep`, `data`, `hora`,
+  `placa`, `cartao`, `telefone`, `boleto`, `moeda`, e o molde escrito com `9`,
+  `A` e `*`. O molde com `#` continua valendo e fica obsoleto. Em `moeda`, o
+  valor e o mesmo cru do web: `0,05` entrega `005`. O `MaskedInput` e o
+  `PostalCodeField` entregam o texto com mascara no segundo argumento do
+  `onValueChange`, e o primeiro continua limpo.
+
+### Pecas que ganham o que o web tinha
+
+- `Button` e `IconButton` ganham `variant="outline"`: borda de 2 em
+  `border-strong`, sem fundo.
+- `Checkbox` ganha `indeterminate`: traco na caixa cheia, anuncia `mixed`, e o
+  toque marca tudo. A caixa do galho meio marcado do `Tree` passa a usa-lo; a
+  conta exata sai da tela e fica no nome falado do galho.
+- `Alert` ganha `icon` (no, ou funcao que recebe a cor do tom), `onDismiss` e
+  `dismissLabel`. Sem `onDismiss`, nao ha xis.
+- `Select` e `Combobox` aceitam grupos `{ label, items }` no `items`: a folha
+  vira secoes com o nome do grupo anunciado como cabecalho, e a busca do
+  `Combobox` filtra dentro de cada grupo.
+- `Accordion` aceita `value`, `defaultValue`, `onValueChange` e `multiple`,
+  pelo `value` de cada `AccordionItem`, e `Collapsible` aceita `open` e
+  `onOpenChange`. O padrao continua nao controlado e com varios abertos.
+- `AlertDialog` ganha `tone` (`danger` ou `neutral`), `loading` e `busyLabel`,
+  e aceita `onAction` que devolve promessa: o botao entra em espera e anuncia a
+  espera, o segundo toque nao chama de novo, cancelar e o voltar do sistema
+  ficam travados, e o modal fecha quando a promessa resolve. Quando ela
+  rejeita, o modal fica aberto e o erro nao e relancado: mostrar a falha e de
+  quem chamou.
+- Os nove formatadores do web (`currency`, `currencyShort`, `percent`,
+  `integer`...) saem da raiz. `Meter`, `Progress`, `Slider`, `ChartDonut`,
+  `ChartFunnel`, `ChartGauge`, `ChartHeatmap` e `ChartTreemap` aceitam `format`
+  por nome ou funcao, e o texto vale na tela e no anuncio. `Progress` e
+  `Slider` ganham `showValue`, e `Stat` ganha `deltaFormat`.
+- `Conversation` ganha `announcement`, para quem desenha a mensagem por
+  componente proprio.
+
+### VoiceOver
+
+`Banner`, `DateRangePicker`, `ImageViewer`, `FilterBar`, o toast, `Carousel` e
+`Conversation` so falavam pela regiao viva, que o iOS nao le: la ficavam mudos.
+Agora falam tambem no VoiceOver, sem dobrar a fala no Android. O
+`PostalCodeField` e o `PromptInput` passam pelo mesmo caminho. O `OTPField` de
+uma casa diz "Codigo de 1 digito".
+
+### Tipos
+
+- O `variant` do `Button` e o `tone` do `Badge` e do `Alert` viram uniao
+  fechada, com os literais do web. Antes o tipo publicado era `string`.
+- Oito pecas (`Button`, `Card`, `Code`, `Heading`, `IconButton`, `Link`,
+  `ScrollArea` e `SearchInput`) tiram da base a prop que tambem declaram, e a
+  tabela de props publica o `selectable` do `Code`, o `children` do `Link` e o
+  `className` de cada uma, que sumiam dela.
+
+**Mudanca que pode aparecer:**
+
+- A variacao do `Stat` passa pelo `percent`, como no web, e arredonda para
+  inteiro: `delta={12.5}` mostra `13%`, e nao mais `12.5%`. `deltaFormat` volta
+  as casas.
+- No `AlertDialog`, a acao sincrona roda antes do `onOpenChange(false)`, na
+  ordem do web; antes o modal fechava primeiro. Um `onAction` que ja devolvia
+  promessa passa a segurar o modal aberto ate ela terminar.
+- `variant`, `tone` ou uma variavel `string` que nao seja um dos literais
+  deixa de compilar no `Button`, no `Badge` e no `Alert`. Na tela, o valor
+  desconhecido ja caia no padrao.
+- No `MaskedInput`, molde sem `#` segue a sintaxe do web: `9` e digito e `A` e
+  letra, onde antes eram caracteres fixos. Molde com `#` nao muda.
+
 ## 0.14.0
 
 ### PromptInput
