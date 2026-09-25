@@ -11,6 +11,11 @@ import { byLabel, render } from "./helpers";
 
 const REFUSAL_REGISTRY = "native/src/font.ts";
 
+const OWN_FAMILY: Record<string, string> = {
+  "native/src/chart/signature-pad.tsx":
+    "a cursiva do nome digitado e escolha de quem usa a peca, pela prop `font`, e nao um dos tres papeis do provider; a padrao e fonte instalada de verdade, Snell Roundhand no iOS e `cursive` no Android",
+};
+
 /*
  * O que esta suite mede nao e a plataforma, e sim que a letra de largura fixa
  * chega ao aparelho.
@@ -140,6 +145,7 @@ describe("a fonte mono", () => {
 
     for (const file of files) {
       if (file === "native/src/text.tsx") continue;
+      if (file in OWN_FAMILY) continue;
 
       const code = (await Bun.file(file).text())
         .replace(/\/\*[\s\S]*?\*\//g, "")

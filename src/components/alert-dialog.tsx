@@ -72,7 +72,7 @@ export function AlertDialogTitle({
     <BaseAlertDialog.Title
       {...props}
       className={cn(
-        "font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+        "font-display font-rc-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
         className,
       )}
     />

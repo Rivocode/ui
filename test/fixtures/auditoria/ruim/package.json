@@ -1,0 +1,9 @@
+{
+  "name": "app-fora-do-contrato",
+  "private": true,
+  "dependencies": {
+    "@rivocode/ui": "^0.16.0",
+    "@rivocode/ui-native": "^0.11.0",
+    "react-qr-code": "^2.0.0"
+  }
+}

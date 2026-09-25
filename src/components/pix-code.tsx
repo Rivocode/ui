@@ -138,7 +138,7 @@ export function PixCode({
           ) : money ? (
             <p
               className={cn(
-                "font-display text-2xl tracking-tight text-fg tabular-nums",
+                "font-display font-rc-display text-2xl tracking-tight text-fg tabular-nums",
                 classNames?.amount,
               )}
             >

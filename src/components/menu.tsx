@@ -90,7 +90,7 @@ export function MenuSeparator({ className, ...props }: ComponentProps<typeof Bas
 }
 
 export const floatingGroupLabel =
-  "px-2.5 py-1.5 text-xs font-medium tracking-[0.04em] text-fg-subtle uppercase";
+  "px-2.5 py-1.5 text-xs font-rc-medium tracking-[0.04em] text-fg-subtle uppercase";
 
 export type MenuGroupProps = ComponentProps<typeof BaseMenu.Group> & {
   /** Titulo do grupo. Sem ele o grupo apenas agrupa. */

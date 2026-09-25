@@ -123,7 +123,7 @@ function List({
       )}
     >
       <BaseToast.Content className="flex min-w-0 flex-col gap-1">
-        <BaseToast.Title className="text-base font-medium" />
+        <BaseToast.Title className="text-base font-rc-medium" />
         <BaseToast.Description className="text-sm text-fg-muted" />
       </BaseToast.Content>
       <BaseToast.Close

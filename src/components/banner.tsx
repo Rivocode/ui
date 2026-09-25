@@ -106,7 +106,7 @@ export function Banner({
           {title && (
             <p
               id={titleId}
-              className={cn("text-sm font-medium", TONE_TEXT[tone], classNames?.title)}
+              className={cn("text-sm font-rc-medium", TONE_TEXT[tone], classNames?.title)}
             >
               {title}
             </p>

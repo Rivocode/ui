@@ -36,7 +36,7 @@ export function TableFooter({ className, ...props }: ComponentPropsWithoutRef<"t
   return (
     <tfoot
       {...props}
-      className={cn("border-t border-border font-medium text-fg", className)}
+      className={cn("border-t border-border font-rc-medium text-fg", className)}
     />
   );
 }
@@ -94,7 +94,7 @@ export function TableHead({ className, ...props }: ComponentPropsWithoutRef<"th"
       {...props}
       className={cn(
         "px-[var(--rc-control-pad-md)] py-[var(--rc-control-pad-sm)] text-left",
-        "font-sans text-xs font-medium tracking-[0.04em] text-fg-subtle uppercase",
+        "font-sans text-xs font-rc-medium tracking-[0.04em] text-fg-subtle uppercase",
         "whitespace-nowrap",
         className,
       )}

@@ -19,7 +19,7 @@ export function FieldsetLegend({
     <BaseFieldset.Legend
       {...props}
       className={cn(
-        "font-display text-md leading-[var(--rc-leading-tight)] tracking-tight text-fg",
+        "font-display font-rc-display text-md leading-[var(--rc-leading-tight)] tracking-tight text-fg",
         className,
       )}
     />

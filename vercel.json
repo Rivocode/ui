@@ -11,6 +11,10 @@
       "headers": [{ "key": "content-type", "value": "text/markdown; charset=utf-8" }]
     },
     {
+      "source": "/skill-auditoria/scripts/(.*).ts",
+      "headers": [{ "key": "content-type", "value": "text/plain; charset=utf-8" }]
+    },
+    {
       "source": "/llms(-full)?.txt",
       "headers": [{ "key": "content-type", "value": "text/plain; charset=utf-8" }]
     },

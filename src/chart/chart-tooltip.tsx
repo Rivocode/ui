@@ -38,7 +38,7 @@ export function ChartTooltipContent({
         className,
       )}
     >
-      {label !== undefined && <p className="mb-1.5 font-medium text-fg">{label}</p>}
+      {label !== undefined && <p className="mb-1.5 font-rc-medium text-fg">{label}</p>}
 
       <ul className="flex flex-col gap-1">
         {payload.map((entry) => {

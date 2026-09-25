@@ -162,7 +162,7 @@ export function FileUpload({
         )}
       >
         <UploadIcon />
-        <Text className="text-base font-medium text-fg">{label}</Text>
+        <Text className="text-base font-rc-medium text-fg">{label}</Text>
       </Pressable>
 
       {hint && (
@@ -249,7 +249,7 @@ export function FileUploadItem({
                 onPress={onRetry}
                 hitSlop={8}
               >
-                <Text className="text-xs font-medium text-fg-muted">Tentar de novo</Text>
+                <Text className="text-xs font-rc-medium text-fg-muted">Tentar de novo</Text>
               </Pressable>
             )}
           </View>

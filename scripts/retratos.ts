@@ -2,7 +2,29 @@ import { Glob } from "bun";
 
 export const SHOTS = "demo/dist";
 
-export const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+/**
+ * O Chrome que fotografa e audita. O padrao e o do macOS, onde as assinaturas
+ * comitadas nasceram; a CI ubuntu aponta `RC_CHROME` para o binario dela.
+ */
+export const CHROME =
+  process.env.RC_CHROME || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+
+/**
+ * Bandeiras a mais para o Chrome, separadas por espaco. Existe pela CI: o
+ * ubuntu 24.04 restringe o namespace de usuario sem privilegio, e o Chrome de
+ * la so abre com `--no-sandbox`. Na maquina fica vazio.
+ */
+export const CHROME_FLAGS = (process.env.RC_CHROME_FLAGS ?? "").split(/\s+/).filter(Boolean);
+
+/** Morre com a instrucao, em vez de o `spawn` falhar com ENOENT sem contexto. */
+export async function requireChrome() {
+  if (await Bun.file(CHROME).exists()) return;
+  console.error(
+    `O Chrome nao esta em ${CHROME}.\n` +
+      "Aponte a variavel RC_CHROME para o binario - no linux, `which google-chrome`.",
+  );
+  process.exit(1);
+}
 
 export const SIGNATURES = "demo/assinaturas.json";
 
@@ -35,6 +57,41 @@ export const SECTIONS: Section[] = [
   ...bothThemes("completos", "Numero com passo"),
   ...bothThemes("dados", "Marcadores"),
 ];
+
+/**
+ * Diferenca de cinza que um quadrado pode ter sem contar como mudanca. O
+ * motivo de ser 4, e nao 6, esta no cabecalho do `check-retratos.ts`.
+ */
+export const NOISE = 4;
+
+export type SignatureDiff = { frame?: string; cells: number; total: number; worst: number };
+
+/**
+ * Quantos quadrados de duas assinaturas do mesmo retrato mudaram. Retrato de
+ * secao guarda as dimensoes da moldura nas duas primeiras posicoes, e moldura
+ * de tamanho diferente nao se compara quadrado a quadrado: volta em `frame`.
+ */
+export function compareSignatures(name: string, before: number[], after: number[]): SignatureDiff {
+  if (isSection(name) && (before[0] !== after[0] || before[1] !== after[1])) {
+    return {
+      frame: `a moldura foi de ${before[0]}x${before[1]} para ${after[0]}x${after[1]} celulas`,
+      cells: 0,
+      total: 0,
+      worst: 0,
+    };
+  }
+
+  const from = isSection(name) ? 2 : 0;
+  let cells = 0;
+  let worst = 0;
+  for (let index = from; index < after.length; index++) {
+    const diff = Math.abs(after[index]! - (before[index] ?? 0));
+    if (diff > NOISE) cells++;
+    worst = Math.max(worst, diff);
+  }
+
+  return { cells, total: after.length - from, worst };
+}
 
 export function slug(text: string) {
   return text

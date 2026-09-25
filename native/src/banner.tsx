@@ -83,7 +83,7 @@ export function Banner({
       ) : null}
 
       <View className="flex-1 gap-1">
-        {title ? <Text className={cn("text-sm font-medium", styles.text)}>{title}</Text> : null}
+        {title ? <Text className={cn("text-sm font-rc-medium", styles.text)}>{title}</Text> : null}
         <Text className="text-sm text-fg">{description}</Text>
         {actions ? <View className="mt-2 flex-row flex-wrap gap-2">{actions}</View> : null}
       </View>

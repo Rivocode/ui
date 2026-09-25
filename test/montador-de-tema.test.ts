@@ -211,22 +211,80 @@ test("o papel da casa ao lado de uma fonte de cliente sai com o pacote da casa, 
   expect(house).toContain('@import "@rivocode/ui/fonts.css"');
 });
 
-test("o peso que falta sai nomeado, com o vizinho que o navegador escolhe", async () => {
+test("o peso que falta sai nomeado pelo token, com o vizinho que o navegador escolheria", async () => {
   const tools = await import(FONTS);
-  expect(tools.missingWeights(tools.familyOf("inter"))).toEqual([]);
-  expect(tools.missingWeights(tools.familyOf("lato"))).toEqual([
-    { weight: 500, falls: 400, synthetic: false },
-    { weight: 600, falls: 700, synthetic: false },
+  expect(tools.weightFits("sans", tools.familyOf("inter"))).toEqual([]);
+  expect(tools.weightFits("display", tools.familyOf("inter"))).toEqual([]);
+  expect(tools.weightFits("sans", tools.familyOf("lato"))).toEqual([
+    { intent: "medium", wanted: 500, falls: 400, synthetic: false },
+    { intent: "strong", wanted: 600, falls: 700, synthetic: false },
   ]);
-  expect(tools.missingWeights(tools.familyOf("dm-serif-display"))).toEqual([
-    { weight: 500, falls: 400, synthetic: false },
-    { weight: 600, falls: 400, synthetic: true },
-    { weight: 700, falls: 400, synthetic: true },
+  expect(tools.weightFits("display", tools.familyOf("lato"))).toEqual([
+    { intent: "display", wanted: 600, falls: 700, synthetic: false },
   ]);
-  expect(tools.missingWeights(tools.familyOf("dm-mono"))).toEqual([
-    { weight: 600, falls: 500, synthetic: true },
-    { weight: 700, falls: 500, synthetic: true },
+  expect(tools.weightFits("display", tools.familyOf("dm-serif-display"))).toEqual([
+    { intent: "display", wanted: 600, falls: 400, synthetic: true },
   ]);
+  expect(tools.weightFits("sans", tools.familyOf("dm-serif-display"))).toEqual([
+    { intent: "medium", wanted: 500, falls: 400, synthetic: false },
+    { intent: "strong", wanted: 600, falls: 400, synthetic: true },
+    { intent: "bold", wanted: 700, falls: 400, synthetic: true },
+  ]);
+  expect(tools.weightFits("mono", tools.familyOf("dm-mono"))).toEqual([]);
+});
+
+test("o peso de casa do montador e o do forma.css, lido pelo tokens.json", async () => {
+  const tools = await import(FONTS);
+  const shape = await Bun.file("src/tokens/forma.css").text();
+  for (const intent of tools.WEIGHT_INTENTS as string[]) {
+    expect(shape).toContain(`--rc-weight-${intent}: ${tools.HOUSE_WEIGHTS[intent]};`);
+  }
+  expect(tools.USED_WEIGHTS).toEqual([400, 500, 600, 700]);
+});
+
+test("titulo sem 600 cai no peso disponivel mais proximo no proprio tema, e a casa nao declara peso", async () => {
+  const tools = await import(FONTS);
+  const engine = await import(ENGINE);
+
+  expect(tools.weightTokens(tools.HOUSE_FONTS)).toEqual({});
+  expect(tools.weightTokens({ sans: "house", display: "lato", mono: "house" })).toEqual({
+    "--rc-weight-display": "700",
+  });
+  expect(tools.weightTokens({ sans: "house", display: "dm-serif-display", mono: "house" })).toEqual({
+    "--rc-weight-display": "400",
+  });
+  expect(tools.weightTokens({ sans: "system", display: "system", mono: "system" })).toEqual({});
+
+  const fonts = { sans: "house", display: "lato", mono: "house" };
+  const tokens = {
+    light: tools.applyFonts({ "--rc-bg": "#ffffff" }, fonts),
+    dark: tools.applyFonts({ "--rc-bg": "#000000" }, fonts),
+  };
+  const css: string = engine.emitWebCss("acme", tokens, "house", [], fonts);
+  expect(css.match(/--rc-weight-display: 700;/g)?.length).toBe(2);
+  expect(css).not.toContain("--rc-weight-medium");
+
+  const house: string = engine.emitWebCss(
+    "acme",
+    {
+      light: tools.applyFonts({ "--rc-bg": "#ffffff" }, tools.HOUSE_FONTS),
+      dark: tools.applyFonts({ "--rc-bg": "#000000" }, tools.HOUSE_FONTS),
+    },
+    "house",
+    [],
+    tools.HOUSE_FONTS,
+  );
+  expect(house).not.toContain("--rc-weight-");
+});
+
+test("a familia baixa a face do peso que o token escreveu, e nao a que ela nao tem", async () => {
+  const tools = await import(FONTS);
+  expect(tools.facesOf(tools.familyOf("lato"))).toEqual([400, 700]);
+  expect(tools.facesOf(tools.familyOf("dm-serif-display"))).toEqual([400]);
+  expect(tools.facesOf(tools.familyOf("inter"))).toEqual([400, 500, 600, 700]);
+  expect(tools.googleFontsUrl({ sans: "house", display: "lato", mono: "house" })).toContain(
+    "family=Lato:wght@400;700&",
+  );
 });
 
 test("o trecho do React Native usa os nomes que o expo-google-fonts registra", async () => {

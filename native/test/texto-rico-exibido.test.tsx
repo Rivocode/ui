@@ -34,7 +34,7 @@ describe("RichTextView nativo", () => {
     const texts = hostTexts(screen);
 
     const bold = texts.find((node) => node.props.children === "12/08")!;
-    expect(tokens(bold)).toContain("font-bold");
+    expect(tokens(bold)).toContain("font-rc-bold");
     const italic = texts.find((node) => node.props.children === "ISS")!;
     expect(tokens(italic)).toContain("italic");
 

@@ -201,11 +201,14 @@ import {
   MAP_PAIRS,
   MAP_BOUNDARIES,
   MAP_LAYER_PAIRS,
+  MAP_TINTED_PAIRS,
   MAP_CHECKED_OVER,
   MAP_CODE,
   MAP_MEDIA,
+  MAP_SIGNATURE,
   checkCodePair,
   checkMediaStage,
+  checkSignaturePaper,
 } from "../src/lib/contrast";
 import { tokens } from "../native/tokens";
 
@@ -311,6 +314,19 @@ for (const finding of checkMediaStage(
   console.log(finding.line);
 }
 
+for (const finding of checkSignaturePaper(
+  "native/tokens.ts: signature",
+  Object.fromEntries(
+    Object.entries(MAP_SIGNATURE).map(([role, name]) => [
+      role,
+      (tokens.signature as Record<string, string>)[name],
+    ]),
+  ),
+)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
+}
+
 // A divida: mede, mostra o numero e nao arma. Ela e SEMPRE medida no tema da
 // casa, e nunca no mapa que veio por argumento: a divida e da RivoCode, e um
 // cliente cujo acento passe nao paga divida nossa nem apaga linha nossa.
@@ -341,7 +357,7 @@ if (failed > 0) {
 }
 console.log(
   `\nContraste ok em ${maps.length} mapa(s), claro e escuro: ${MAP_PAIRS.length} pares de texto,` +
-    ` ${MAP_BOUNDARIES.length} de 1.4.11, ${MAP_LAYER_PAIRS.length} de camada e` +
+    ` ${MAP_BOUNDARIES.length} de 1.4.11, ${MAP_LAYER_PAIRS.length} de camada, ${MAP_TINTED_PAIRS.length} sobre tinta de serie e` +
     ` ${MAP_CHECKED_OVER.length} do controle marcado, por esquema.` +
     ` Sem par, por declaracao: ${Object.keys(WITHOUT_PAIR).join(", ")}.`,
 );

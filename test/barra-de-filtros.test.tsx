@@ -36,7 +36,7 @@ test("a ficha mostra o campo e o valor, e o valor tem o peso", () => {
   render(<FilterChip label="Cliente" value="Clinica Sao Lucas" />);
 
   expect(screen.getByText("Cliente")).toBeDefined();
-  expect(screen.getByText("Clinica Sao Lucas").className).toContain("font-medium");
+  expect(screen.getByText("Clinica Sao Lucas").className.split(" ")).toContain("font-rc-medium");
 });
 
 test("a ficha inativa marca a raiz com data-disabled, e a barra inativa se anuncia inativa", () => {

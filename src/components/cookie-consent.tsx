@@ -211,7 +211,7 @@ export function CookieConsent({
         )}
       >
         <div className="flex flex-col gap-1">
-          <h2 id={titleId} className={cn("text-base font-medium", classNames?.title)}>
+          <h2 id={titleId} className={cn("text-base font-rc-medium", classNames?.title)}>
             {title}
           </h2>
           <p id={descriptionId} className={cn("text-sm text-fg-muted", classNames?.description)}>
@@ -245,11 +245,11 @@ export function CookieConsent({
                     onCheckedChange={(checked) =>
                       setChosen((current) => ({ ...current, [category.id]: checked }))
                     }
-                    classNames={{ label: "font-medium text-sm" }}
+                    classNames={{ label: "font-rc-medium text-sm" }}
                   >
                     {category.label}
                     {category.required && (
-                      <span className="font-normal"> ({said.required})</span>
+                      <span className="font-rc-regular"> ({said.required})</span>
                     )}
                   </Switch>
                   {category.description && (

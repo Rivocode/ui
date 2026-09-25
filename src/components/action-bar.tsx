@@ -149,7 +149,7 @@ export function ActionBar({
         >
           <span
             className={cn(
-              "shrink-0 px-1 text-sm font-medium whitespace-nowrap tabular-nums",
+              "shrink-0 px-1 text-sm font-rc-medium whitespace-nowrap tabular-nums",
               classNames?.count,
             )}
           >

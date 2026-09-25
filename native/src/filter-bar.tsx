@@ -100,7 +100,7 @@ export function FilterChip({
       </Text>
 
       {hasValue && (
-        <Text numberOfLines={1} className={cn("max-w-40 font-medium text-fg", FONT[size])}>
+        <Text numberOfLines={1} className={cn("max-w-40 font-rc-medium text-fg", FONT[size])}>
           {value}
         </Text>
       )}

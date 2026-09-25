@@ -71,7 +71,7 @@ export function Tabs({ items, value, onValueChange, className }: TabsProps) {
               active && !target ? "bg-surface-raised" : ""
             }`}
           >
-            <Text className={`text-sm ${active ? "font-medium text-fg" : "text-fg-subtle"}`}>
+            <Text className={`text-sm ${active ? "font-rc-medium text-fg" : "text-fg-subtle"}`}>
               {item.label}
             </Text>
           </Pressable>

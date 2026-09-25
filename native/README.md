@@ -393,7 +393,7 @@ O formulário, o gráfico, o copiar e o anexar não saem do índice da raiz:
 
 ```tsx
 import { Form, FormField, forText, useZodForm } from "@rivocode/ui-native/form";
-import { ChartContainer, ChartDonut, ChartRadial, PixCode, QRCode } from "@rivocode/ui-native/chart";
+import { ChartContainer, ChartDonut, ChartGauge, ChartRadial, PixCode, QRCode } from "@rivocode/ui-native/chart";
 import { Clipboard } from "@rivocode/ui-native/clipboard";
 import { FileUpload, FileUploadItem, FileUploadList } from "@rivocode/ui-native/file-upload";
 ```

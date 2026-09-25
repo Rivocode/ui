@@ -41,8 +41,10 @@ cor literal nem `z-index` numerico.**
 | Selecao e carga | `bg-selected`, `bg-skeleton` |
 | Codigo lido por maquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e nao sao papel de tema |
 | Palco de midia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e nao sao papel de tema. Sao do `ImageViewer` em tela cheia |
+| Papel da assinatura | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: tinta escura sobre papel claro nos dois temas, e nao sao papel de tema. Sao do `SignaturePad`, para a assinatura exportada nao sair invertida |
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Texto | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
+| Peso | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display` |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
 | Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 | Entrada | `animate-enter`, `animate-appear`, `animate-pop`, `animate-fill`, `animate-reveal` |
@@ -118,6 +120,37 @@ tokens no seletor do tema dele, junto com as cores. Sem
 cada `data-rc-theme` carrega a sua família, e a troca acontece por seletor,
 como a de cor.
 
+### O peso também é token, e tem nome de intenção
+
+As peças não escrevem `font-medium` nem `font-semibold`: escrevem a intenção, e
+o número mora em `--rc-weight-*`, com o valor da casa em `:root` e opcional no
+tema.
+
+| Classe | Token | Casa | Quando |
+|---|---|---|---|
+| `font-rc-regular` | `--rc-weight-regular` | 400 | corpo |
+| `font-rc-medium` | `--rc-weight-medium` | 500 | rótulo, botão, aba, cabeçalho de tabela |
+| `font-rc-strong` | `--rc-weight-strong` | 600 | ênfase forte no corpo |
+| `font-rc-bold` | `--rc-weight-bold` | 700 | negrito de texto rico, chamada de marketing |
+| `font-rc-display` | `--rc-weight-display` | 600 | todo texto em `font-display` |
+
+Na sua tela, use as mesmas quando o texto tem que seguir a fonte do cliente:
+`font-display font-rc-display` num título montado à mão pega o peso que o tema
+decidiu, e `font-semibold` fica cravado em 600 mesmo que a família não o tenha.
+O tema que troca a fonte redefine o peso no mesmo seletor:
+
+```css
+[data-rc-theme="cliente-acme"] {
+  --rc-font-display: "Lato", system-ui, sans-serif;
+  --rc-weight-display: 700;
+}
+```
+
+O `cn` da biblioteca conhece as cinco classes: `cn("font-rc-medium", className)`
+com `font-rc-strong` no `className` fica com a segunda, e `font-display` ao lado
+de `font-rc-display` não se anulam. No React Native as cinco existem com os
+mesmos valores, no `theme.css` do pacote.
+
 ### Os quatro subcaminhos
 
 Alem do pacote principal, quatro familias vivem em subcaminhos e chegam pelo
@@ -164,6 +197,10 @@ mesmo global:
   | `ChartAreaGradient`, `areaGradient(id, serie)` | Gradiente de area. O `id` e seu, e precisa ser unico na pagina |
   | `ChartDonut` | Rosca com o total no buraco, e lista de fatias embaixo |
   | `ChartRadial` | O arco de uma medida so: meta, cota, conversao |
+  | `ChartGauge` | Medidor de 0 a `max` com faixas (bom, atencao, critico) e o valor escrito no meio |
+  | `ChartHeatmap` | Grade de linha por coluna, a cor dizendo o tamanho: emissoes por dia e hora |
+  | `ChartFunnel` | As etapas de um caminho, com a taxa de conversao de uma para a seguinte |
+  | `ChartTreemap` | Area proporcional por categoria, com o rotulo que some quando nao cabe |
   | `Sparkline` | A linha miuda que cabe dentro de um indicador |
 
   O `ChartContainer` cuida do movimento sozinho: toda marca que anima (`Line`,
@@ -184,6 +221,15 @@ mesmo global:
   A `ChartDonut` e a `ChartRadial` entram varrendo do zero e andam ate o valor
   novo do mesmo jeito; a `Sparkline` so esmaece ao entrar, e nao anda na troca
   de dados, porque aparece as dezenas numa tabela.
+
+  As quatro de baixo nao usam a Recharts e nao entram no `ChartContainer`: os
+  quatro finais de uma consulta vem do `QueryBoundary` em volta delas. A escala
+  do `ChartHeatmap` e uma cor de serie so, em cinco degraus de tinta; o
+  `ChartTreemap` escreve o rotulo em `fg` sobre a cor da categoria a 30%, par
+  que a guarda de contraste mede nas oito series; e o `ChartGauge` pinta as
+  faixas com os papeis `success-text`, `warning-text` e `danger-text`. Nenhuma
+  das quatro depende de cor sozinha: o numero esta na dica, numa tabela ou lista
+  escondida da vista, ou escrito na tela.
 
   Os formatadores do eixo e da dica sao os mesmos do resto da biblioteca, e
   estao logo abaixo.
@@ -362,6 +408,15 @@ marcam invalido, `allowNegative` e `name` que poe os centavos num campo
 escondido. No `FormField`, `{...forValue(field)}`. O nativo tem o mesmo nome,
 controlado.
 
+Assinatura na tela e o `SignaturePad`: `value` e `onValueChange` com
+`SignatureValue | null` (os tracos em `kind: "drawn"`, ou o nome digitado em
+`kind: "typed"`), vazio e `null`, e `onValueChange` chega ao fim de cada traco.
+O modo de digitar o nome e a alternativa de quem nao desenha, e nao se desliga.
+`signatureToSvg` e `signatureToPng` exportam com a tinta fixa, e
+`isSignatureEmpty` responde se ha assinatura. No `FormField`,
+`{...forValue(field)}`. No nativo mora em `@rivocode/ui-native/chart`, pelo
+`react-native-svg`, e exporta so o SVG.
+
 O boleto tem tres: `isValidBoletoLine` confere a linha digitavel inteira - a de
 banco, de 47 digitos, com os tres campos no modulo 10 e o verificador geral no
 11, e a de convenio, de 48 e comecando com 8, no modulo que a terceira casa
@@ -458,7 +513,8 @@ explicado mais abaixo.
 | Subcaminho | O peer que ele custa | O que sai por ele |
 |---|---|---|
 | `@rivocode/ui-native/form` | `react-hook-form`, mais `zod` e `@hookform/resolvers` no `useZodForm` | `Form`, `FormField`, `useZodForm` e os adaptadores `forText`, `forValue`, `forChecked`, `forDate` |
-| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, e o `QRCode` e o `PixCode`, que desenham com o mesmo peer |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, `ChartGauge`, `ChartHeatmap`, `ChartFunnel`, `ChartTreemap`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, e o `QRCode` e o `PixCode`, que desenham com o mesmo peer |
+| `@rivocode/ui-native/chart` | `react-native-svg` | `ChartContainer`, `ChartDonut`, `ChartRadial`, as marcas `ChartBar` e `ChartLine`, a `PALETTE`, o `QRCode`, o `PixCode` e o `SignaturePad` (com `signatureToSvg` e `isSignatureEmpty`), que desenham com o mesmo peer |
 | `@rivocode/ui-native/clipboard` | `expo-clipboard` | `Clipboard` |
 | `@rivocode/ui-native/file-upload` | `expo-document-picker` | `FileUpload`, `FileUploadList`, `FileUploadItem` |
 

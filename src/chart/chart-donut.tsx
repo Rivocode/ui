@@ -135,7 +135,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
             )}
           >
             {centerValue && (
-              <span className="max-w-[52%] text-center font-display text-xl leading-tight text-balance text-fg">
+              <span className="max-w-[52%] text-center font-display font-rc-display text-xl leading-tight text-balance text-fg">
                 {centerValue}
               </span>
             )}

@@ -35,7 +35,7 @@ Tela nova segue o laço de [reference/method.md](reference/method.md): seis
 passos, na ordem, e a conferência do fim. Os quatro pontos abaixo valem em
 todos eles.
 
-1. **Confira se a peça já existe.** São 121, e o catálogo cobre quase tudo que
+1. **Confira se a peça já existe.** São 134, e o catálogo cobre quase tudo que
    uma tela de produto pede. Escrever um `<div>` com borda no lugar de um
    `Card`, ou um `<select>` nativo no lugar do `Select`, quebra o tema e a
    acessibilidade de uma vez. Índice em
@@ -133,8 +133,10 @@ responder ao tema do cliente.
 | Seleção e carga | `bg-selected`, `bg-skeleton` |
 | Código lido por máquina | `fill-code-ink`, `bg-code-paper`, `text-code-ink`: escuro sobre claro com o mesmo valor em todo tema, e não são papel de tema |
 | Palco de mídia | `bg-media-stage`, `bg-media-control`, `text-media-fg`, `text-media-fg-muted`, `border-media-border`, `text-media-disabled`: escuro nos dois temas com o mesmo valor, e não são papel de tema. São do `ImageViewer` em tela cheia |
+| Papel da assinatura | `bg-signature-paper`, `fill-signature-ink`, `text-signature-guide`, `stroke-signature-guide`, `text-signature-disabled`: tinta escura sobre papel claro nos dois temas, e não são papel de tema. São do `SignaturePad` |
 | Forma | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-xl`, `rounded-pill` |
 | Tipografia | `text-xs` a `text-3xl`, `font-sans`, `font-display`, `font-mono` |
+| Peso | `font-rc-regular`, `font-rc-medium`, `font-rc-strong`, `font-rc-bold`, `font-rc-display`: a intenção, e o número vem do tema |
 | Sombra | `shadow-1`, `shadow-2`, `shadow-3` |
 | Empilhamento | `z-[var(--rc-z-sticky)]`, e os pares `base`, `dropdown`, `overlay`, `dialog`, `popover`, `toast`, `tooltip` |
 

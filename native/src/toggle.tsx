@@ -29,7 +29,7 @@ export function Toggle({ pressed, onPressedChange, children, disabled, className
         className,
       )}
     >
-      <Text className={`text-sm font-medium ${pressed ? "text-accent-text" : "text-fg-muted"}`}>
+      <Text className={`text-sm font-rc-medium ${pressed ? "text-accent-text" : "text-fg-muted"}`}>
         {children}
       </Text>
     </AnimatedPressable>

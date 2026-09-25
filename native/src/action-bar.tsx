@@ -78,7 +78,7 @@ export function ActionBar({
           className,
         )}
       >
-        <Text className="px-1 text-sm font-medium text-fg">{sentence}</Text>
+        <Text className="px-1 text-sm font-rc-medium text-fg">{sentence}</Text>
         {children}
         {onClear ? (
           <Button size="sm" variant="ghost" onPress={onClear} className="ml-auto">

@@ -5,7 +5,7 @@
 - Escolhas que costumam sair erradas
 - Toda consulta tem quatro finais
 
-O catálogo tem 121 peças. O índice de todas fica em
+O catálogo tem 134 peças. O índice de todas fica em
 <https://ds.rivocode.com.br/llms.txt>, e cada uma tem o próprio documento em
 `https://ds.rivocode.com.br/componentes/<nome-em-kebab>.md`, com a importação,
 exemplos que rodam e a tabela de props.
@@ -16,6 +16,7 @@ exemplos que rodam e a tabela de props.
 |---|---|---|
 | Aviso que fica na tela | `Alert` | O `Toast` passa, e quem estava olhando para outro canto perde |
 | Aviso da página inteira: manutenção, fatura em atraso, modo de teste | `Banner` | Faixa de largura total no topo da área; o `Alert` mora junto do trecho de que fala |
+| Passeio guiado pela tela no primeiro acesso, um elemento de cada vez | `Tour` | Escurece o resto, recorta o alvo e prende o foco no balão; vira folha de baixo no celular. Dica de um elemento só é `Tooltip` ou `Popover`, e novidade que não para a pessoa é `Banner` |
 | Botão só com ícone | `IconButton` | O `label` é obrigatório e vira o nome; `tooltip` mostra a dica sem repetir o nome |
 | Aviso de cookies da LGPD | `CookieConsent` | Recusar tem o mesmo peso de aceitar, não prende a página e Esc não dispensa; a escolha volta por `onDecision` e quem grava é o app. Nunca `AlertDialog`: parede de cookies não é consentimento livre |
 | Confirmação destrutiva | `AlertDialog` | Ele exige resposta; o `Dialog` deixa fechar clicando fora |
@@ -29,6 +30,9 @@ exemplos que rodam e a tabela de props.
 | Marcar uma opção entre várias | `ToggleGroup` | Guarda estado e diz isso no aria |
 | Ações irmãs encostadas | `ButtonGroup` | Não guarda estado; são ações, não escolha |
 | Fazer a mesma coisa com várias linhas marcadas | `ActionBar` | Entra com a seleção do `DataTable`, diz quantos e limpa; a ação de uma linha só fica no `Menu` da linha |
+| Montar um conjunto a partir de uma lista longa, vendo o que ficou de fora | `TransferList` | Duas listas com busca e mover nos dois sentidos; lista curta é `CheckboxGroup`, e escolher sem ver o resto é `Combobox` com `multiple` |
+| Mostrar por que o resultado da busca apareceu | `Highlight` | Pinta o termo sem acento importar; filtre com `matchesSearch`, que é a mesma regra |
+| Texto longo que a pessoa pode querer ler ali mesmo | `Spoiler` | Corta por altura e só mostra o "Ler mais" quando estoura; bloco fechado com título próprio é `Collapsible` |
 | Ir a qualquer lugar pelo teclado | `Command` | Paleta em Ctrl+K, busca sem acento e por `keywords` |
 | Mostrar um atalho no texto | `Kbd` | `mod` sai `⌘` no Mac e `Ctrl` no resto |
 | Título de seção menor sem pular nível | `Heading` com `size` | `level` decide a tag de `h1` a `h6`; `size` muda só o desenho, e a ordem dos títulos fica inteira |
@@ -41,12 +45,14 @@ exemplos que rodam e a tabela de props.
 | Um link ou código que a câmera de outro aparelho lê | `QRCode` | SVG sempre escuro sobre claro, em qualquer tema, numa placa com a margem de 4 módulos; `label` obrigatório, e `logo` só com `level="H"` |
 | "há 2 minutos" em log, fila ou notificação | `RelativeTime` | Sai num `<time>`, com a data exata no `title` e corte configurável |
 | O que já aconteceu com uma coisa, em ordem | `Timeline` | Olha para trás, com carimbo e autor; o `Steps` olha para a frente |
+| Cronograma de projeto: o que vem antes de quê, e por quantos dias | `Gantt` | Tabela à esquerda, escala à direita e seta de dependência; edição controlada por `onTaskChange`. Hora do dia e choque de horário é `EventCalendar` |
 | O sino do cabeçalho com a lista de notificações | `NotificationCenter` | Conta as não lidas no nome do botão, abre popover na mesa e folha no celular, e não busca nada: marcar, filtrar e carregar mais saem por callback |
 | Contagem por cima do sino, da aba, do menu | `Indicator` | Posiciona sozinho, e a contagem é dita e não só vista |
 | Fila de pessoas sobrepostas | `AvatarGroup` | Corta para uma letra e conta o excedente em "+n" |
 | Vários cartões ou fotos que a pessoa percorre de lado | `Carousel` | Rola por scroll-snap, com botões e teclado; o que se compara é `Tabs`, e o que cabe na tela é `Grid` |
 | Foto que a pessoa precisa ampliar: imóvel, vistoria, comprovante | `ImageViewer` | Tela cheia sobre o `Dialog`, com zoom, setas e `alt` obrigatório; imagem que só enfeita o card é `AspectRatio` |
 | Nota em estrelas, ou a média que os outros deram | `Rating` | `radiogroup` com uma opção por estrela e setas; `readOnly` vira uma imagem só, "4,3 de 5". Número exato é `NumberField`, faixa contínua é `Slider` |
+| Assinatura na tela: aceite, recebimento, vistoria | `SignaturePad` | Dedo, caneta ou mouse, com o nome digitado em cursiva para quem não desenha; exporta SVG e PNG com tinta escura nos dois temas. "Li e aceito" sem rubrica é `Checkbox` |
 | Valor em dinheiro | `CurrencyInput` | Entra e sai em centavos inteiros, digita da direita e lê o colado; quantidade com passo é `NumberField` |
 | Senha, com o olho que revela | `PasswordInput` | O botão diz a ação e não o estado; sair do campo esconde de novo |
 | Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
@@ -62,12 +68,19 @@ exemplos que rodam e a tabela de props.
 | Dividir a página em seções | `TabList` padrão | O risco embaixo diz "esta parte da página" |
 | Ver a mesma coisa de outro jeito | `TabList variant="segmented"` | A caixinha não promete seção |
 | Quanto de uma capacidade está em uso | `Meter` | O `Progress` anda para o fim e termina |
+| Um número julgado por faixas (em dia, atenção, crítico) | `ChartGauge`, de `@rivocode/ui/chart` | O `ChartRadial` mede contra meta e não julga; o `Meter` cabe numa linha e só diz quanto |
+| O padrão numa grade de linha por coluna | `ChartHeatmap` | Célula vazia não é zero; um estado por período, numa linha só, é o `Tracker` |
+| Quantos passaram de cada etapa para a seguinte | `ChartFunnel` | A taxa sai escrita; onde a pessoa está num processo é o `Steps` |
+| Proporção de muitas categorias | `ChartTreemap` | Até seis, o `ChartDonut` lê melhor; o rótulo que não cabe some |
 | Número de painel com variação e tendência | `Stat` | O valor chega formatado; a `Sparkline` entra pelo slot `chart` |
 | Folha de detalhes com rótulo e valor | `DescriptionList` + `DescriptionItem` | Sai como `<dl>` de verdade; o valor aceita `Badge` e `font-mono` |
 | Campo de busca com lupa e atalho | `SearchInput` | `type="search"`, Esc limpa; `shortcut="mod+k"` só desenha o atalho |
 | Anexar arquivo, com arrastar e soltar | `FileUpload` + `FileUploadList` | Valida `accept` e `maxSize` na entrada; subir é do app, o item mostra `progress` e `error` |
 | O esqueleto de uma aplicação nova: cabeçalho, barra lateral, conteúdo | `AppShell` | Monta o `Sidebar` da casa, o cabeçalho fixo com o botão da barra, os landmarks e o link "Pular para o conteúdo"; o topo de cada rota continua sendo `PageHeader` |
 | Topo de rota com trilha, título e ações | `PageHeader` | O título é `<h1>`; trilha e ações entram por slot |
+| Índice "Nesta página" de um texto longo | `TableOfContents` | Lê os `h2`/`h3` (ou `items`), marca a seção lida com `aria-current` e leva o foco ao título no clique; `offset` desconta o cabeçalho fixo. Navegar entre rotas é `Sidebar` |
+| "Voltar ao topo" numa página ou lista longa | `ScrollToTop` | Só existe depois de `threshold` pixels, sobe suave (salto com reduzir movimento) e leva o foco ao `<main>`; `target` para caixa que rola |
+| Ação ou aviso que fica parado na janela enquanto a página rola | `Affix` | `position` por lado, empilhamento de `--rc-z-*`, e reserva o `scroll-padding` para o foco não parar atrás; o topo que gruda dentro da seção é `sticky` |
 | Listagem com estados de consulta | `DataTable` | Recebe carregando, erro e vazio prontos |
 | Listagem que ordena, busca, pagina ou seleciona | `DataTable` com `sortable`, `filter`, `pageSize`, `selectable` | Tudo opt-in e client-side; no servidor, entregue os dados prontos e não peça o recurso |
 | Tabela montada à mão | `Table` e suas partes | Sai como `<table>` de verdade |

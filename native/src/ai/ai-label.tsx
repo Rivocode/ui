@@ -58,7 +58,7 @@ export function AILabel({
         className,
       )}
     >
-      <Text className={cn("font-semibold tracking-wide", look.text, scale.text)}>{text}</Text>
+      <Text className={cn("font-rc-strong tracking-wide", look.text, scale.text)}>{text}</Text>
     </View>
   );
 

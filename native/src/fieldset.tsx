@@ -16,7 +16,7 @@ export function Fieldset({ legend, description, children, className }: FieldsetP
   return (
     <View className={cn("gap-4", className)}>
       <View className="gap-0.5">
-        <Text font="display" className="text-base font-medium text-fg">
+        <Text font="display" className="text-base font-rc-medium text-fg">
           {legend}
         </Text>
         {description && <Text className="text-sm text-fg-muted">{description}</Text>}

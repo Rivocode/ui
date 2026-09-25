@@ -148,6 +148,41 @@
       }
     ]
   },
+  "Affix": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "layer",
+        "type": "AffixLayer",
+        "required": false,
+        "note": "A camada de empilhamento, lida de `--rc-z-*`."
+      },
+      {
+        "name": "position",
+        "type": "AffixPosition",
+        "required": false,
+        "note": "Onde a peca gruda, em cada lado: numero e pixel, texto e qualquer medida do CSS (`\"var(--rc-pad-panel)\"`, `\"2rem\"`)."
+      },
+      {
+        "name": "reserveSpace",
+        "type": "boolean",
+        "required": false,
+        "note": "Reserva a altura da peca no `scroll-padding` da pagina, do lado em que ela gruda, para o foco do teclado nunca parar escondido atras dela."
+      },
+      {
+        "name": "strategy",
+        "type": "\"absolute\" | \"fixed\"",
+        "required": false,
+        "note": "Em relacao a que a peca gruda."
+      },
+      {
+        "name": "withinPortal",
+        "type": "boolean",
+        "required": false,
+        "note": "Renderiza no container de portal do `RivoProvider`, fora da arvore."
+      }
+    ]
+  },
   "AILabel": {
     "forwardsRoot": true,
     "props": [
@@ -4629,6 +4664,218 @@
       }
     ]
   },
+  "ChartFunnel": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "data",
+        "type": "Stage[]",
+        "required": true,
+        "note": "As etapas, na ordem em que a pessoa atravessa: a primeira e a boca do funil."
+      },
+      {
+        "name": "nameKey",
+        "type": "keyof Stage & string",
+        "required": true,
+        "note": "De onde sai o nome de cada etapa."
+      },
+      {
+        "name": "valueKey",
+        "type": "keyof Stage & string",
+        "required": true,
+        "note": "De onde sai o numero de cada etapa."
+      },
+      {
+        "name": "align",
+        "type": "\"center\" | \"start\"",
+        "required": false,
+        "note": "`center` desenha o funil de verdade, cada barra centrada sob a anterior; `start` alinha as barras a esquerda, que le melhor quando os nomes sao longos e o olho compara comprimento."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"bar\" | \"rate\" | \"stage\", string>>",
+        "required": false,
+        "note": "Classe por parte: `stage`, `bar`, `rate`."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "note": "A cor das barras."
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero de cada etapa e escrito."
+      },
+      {
+        "name": "formatRate",
+        "type": "((rate: number) => string)",
+        "required": false,
+        "note": "Como a taxa e escrita, recebendo de 0 a 100."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da lista para o leitor de tela: \"Funil de emissao do mes\"."
+      },
+      {
+        "name": "overallLabel",
+        "type": "string | false",
+        "required": false,
+        "note": "A frase da conversao de ponta a ponta, embaixo."
+      },
+      {
+        "name": "rateLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que vem depois da taxa entre duas etapas."
+      }
+    ]
+  },
+  "ChartGauge": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "required": true,
+        "note": "De 0 a `max`."
+      },
+      {
+        "name": "bands",
+        "type": "readonly ChartGaugeBand[]",
+        "required": false,
+        "note": "As faixas, em ordem, cada uma ate o seu `until`."
+      },
+      {
+        "name": "centerLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "A linha pequena embaixo do numero."
+      },
+      {
+        "name": "centerValue",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O numero grande no meio."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"arc\" | \"label\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `arc`, `value`, `label`."
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito, no meio e no nome acessivel."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "sweep",
+        "type": "number",
+        "required": false,
+        "note": "Quantos graus o arco cobre, com a abertura embaixo."
+      }
+    ]
+  },
+  "ChartHeatmap": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "columnKey",
+        "type": "keyof Cell & string",
+        "required": true,
+        "note": "De onde sai a coluna da grade (o eixo horizontal)."
+      },
+      {
+        "name": "data",
+        "type": "Cell[]",
+        "required": true,
+        "note": "Uma linha por celula preenchida, no formato longo que a consulta devolve: `{ dia: \"Seg\", hora: \"14h\", total: 12 }`."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que a grade mede, por extenso: vira o nome do grupo e a legenda da tabela que o leitor de tela le no lugar do desenho."
+      },
+      {
+        "name": "rowKey",
+        "type": "keyof Cell & string",
+        "required": true,
+        "note": "De onde sai a linha da grade (o eixo vertical)."
+      },
+      {
+        "name": "valueKey",
+        "type": "keyof Cell & string",
+        "required": true,
+        "note": "De onde sai o numero."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"grid\" | \"legend\", string>>",
+        "required": false,
+        "note": "Classe por parte: `grid`, `cell`, `legend`."
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "required": false,
+        "note": "A cor do degrau mais forte."
+      },
+      {
+        "name": "columns",
+        "type": "readonly string[]",
+        "required": false,
+        "note": "A ordem das colunas, pela mesma regra de `rows`."
+      },
+      {
+        "name": "domain",
+        "type": "readonly [number, number]",
+        "required": false,
+        "note": "O intervalo da escala, `[menor, maior]`."
+      },
+      {
+        "name": "emptyLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que a dica e a tabela dizem na celula sem dado."
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito, na dica, na legenda e na tabela do leitor de tela."
+      },
+      {
+        "name": "legend",
+        "type": "boolean",
+        "required": false,
+        "note": "A regua de cor embaixo da grade, do menor ao maior."
+      },
+      {
+        "name": "rows",
+        "type": "readonly string[]",
+        "required": false,
+        "note": "A ordem das linhas, e as que existem mesmo sem dado nenhum."
+      }
+    ]
+  },
   "ChartLegend": {
     "forwardsRoot": false,
     "props": [
@@ -6066,6 +6313,53 @@
         "type": "TooltipPayload",
         "required": false,
         "since": "0.4.0"
+      }
+    ]
+  },
+  "ChartTreemap": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "data",
+        "type": "Item[]",
+        "required": true,
+        "note": "As categorias."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O que o mapa mede, por extenso: vira o nome do grupo e da lista escondida."
+      },
+      {
+        "name": "nameKey",
+        "type": "keyof Item & string",
+        "required": true,
+        "note": "De onde sai o nome de cada categoria."
+      },
+      {
+        "name": "valueKey",
+        "type": "keyof Item & string",
+        "required": true,
+        "note": "De onde sai o numero, que vira area."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `cell`, `label`."
+      },
+      {
+        "name": "config",
+        "type": "ChartConfig",
+        "required": false,
+        "note": "Nome legivel e cor por categoria, o mesmo formato da rosca."
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "Como o numero e escrito, no rotulo, na dica e na lista do leitor de tela."
       }
     ]
   },
@@ -10808,6 +11102,155 @@
       }
     ]
   },
+  "Gantt": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "tasks",
+        "type": "Task[] | undefined",
+        "required": true,
+        "note": "As tarefas, na ordem das linhas."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"bar\" | \"cell\" | \"frame\" | \"handle\" | \"header\" | \"milestone\" | \"row\" | \"timeline\" | \"toolbar\", string>>",
+        "required": false,
+        "note": "Classe por parte: `toolbar`, `frame`, `header`, `row`, `cell`, `timeline`, `bar`, `milestone` e `handle`."
+      },
+      {
+        "name": "collapsedGroups",
+        "type": "string[]",
+        "required": false,
+        "note": "Os grupos recolhidos, quando quem usa controla o estado."
+      },
+      {
+        "name": "columns",
+        "type": "GanttColumn<Task>[]",
+        "required": false,
+        "note": "As colunas da tabela, na ordem."
+      },
+      {
+        "name": "defaultCollapsedGroups",
+        "type": "string[]",
+        "required": false
+      },
+      {
+        "name": "defaultScale",
+        "type": "GanttScale",
+        "required": false,
+        "note": "A escala inicial."
+      },
+      {
+        "name": "defaultTableWidth",
+        "type": "number",
+        "required": false,
+        "note": "Largura inicial da tabela da esquerda, em pixel."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece quando a consulta volta sem tarefa."
+      },
+      {
+        "name": "errorMessage",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
+        "name": "errorTitle",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O titulo do aviso de erro."
+      },
+      {
+        "name": "isError",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da grade para o leitor de tela."
+      },
+      {
+        "name": "maxHeight",
+        "type": "string | number",
+        "required": false,
+        "note": "Altura maxima da moldura que rola."
+      },
+      {
+        "name": "onCollapsedGroupsChange",
+        "type": "((groups: string[]) => void)",
+        "required": false
+      },
+      {
+        "name": "onRetry",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Sem isto, o erro nao oferece nova tentativa."
+      },
+      {
+        "name": "onScaleChange",
+        "type": "((scale: GanttScale) => void)",
+        "required": false
+      },
+      {
+        "name": "onTaskChange",
+        "type": "((task: Task, change: GanttTaskChange) => void)",
+        "required": false,
+        "note": "Liga a edicao."
+      },
+      {
+        "name": "onTaskSelect",
+        "type": "((task: Task) => void)",
+        "required": false,
+        "note": "Clique no titulo e `Enter` na linha."
+      },
+      {
+        "name": "range",
+        "type": "GanttRange",
+        "required": false,
+        "note": "O periodo desenhado."
+      },
+      {
+        "name": "retryLabel",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O nome do botao que executa o `onRetry`."
+      },
+      {
+        "name": "rowHeight",
+        "type": "number",
+        "required": false,
+        "note": "Altura de cada linha, em pixel."
+      },
+      {
+        "name": "scale",
+        "type": "GanttScale",
+        "required": false,
+        "note": "A escala mostrada, quando quem usa controla o estado."
+      },
+      {
+        "name": "scales",
+        "type": "GanttScale[]",
+        "required": false,
+        "note": "Quais escalas o seletor oferece."
+      },
+      {
+        "name": "today",
+        "type": "Date",
+        "required": false,
+        "note": "O dia que a linha de hoje marca."
+      }
+    ]
+  },
   "Grid": {
     "forwardsRoot": true,
     "props": [
@@ -10862,6 +11305,23 @@
         "type": "boolean",
         "required": false,
         "note": "Corta em uma linha com reticencias, para titulo dentro de coluna estreita."
+      }
+    ]
+  },
+  "Highlight": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "query",
+        "type": "string | readonly string[]",
+        "required": true,
+        "note": "O termo buscado, ou uma lista deles."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"mark\", string>>",
+        "required": false,
+        "note": "Classe por parte: `mark`, cada trecho achado."
       }
     ]
   },
@@ -23234,6 +23694,100 @@
       }
     ]
   },
+  "ScrollToTop": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"button\", string>>",
+        "required": false
+      },
+      {
+        "name": "focusTarget",
+        "type": "HTMLElement | null",
+        "required": false,
+        "note": "Para onde o foco vai depois de subir."
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "note": "O icone."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome do botao, que o leitor de tela anuncia e a dica mostra."
+      },
+      {
+        "name": "layer",
+        "type": "AffixLayer",
+        "required": false,
+        "note": "A camada de empilhamento, lida de `--rc-z-*`."
+      },
+      {
+        "name": "onScrollToTop",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado depois que a subida comecou e o foco ja foi movido."
+      },
+      {
+        "name": "position",
+        "type": "AffixPosition",
+        "required": false,
+        "note": "Onde a peca gruda, em cada lado: numero e pixel, texto e qualquer medida do CSS (`\"var(--rc-pad-panel)\"`, `\"2rem\"`)."
+      },
+      {
+        "name": "reserveSpace",
+        "type": "boolean",
+        "required": false,
+        "note": "Reserva a altura da peca no `scroll-padding` da pagina, do lado em que ela gruda, para o foco do teclado nunca parar escondido atras dela."
+      },
+      {
+        "name": "size",
+        "type": "\"lg\" | \"md\" | \"sm\"",
+        "required": false,
+        "note": "O lado do quadrado do botao, lido de `--rc-control-*`."
+      },
+      {
+        "name": "strategy",
+        "type": "\"absolute\" | \"fixed\"",
+        "required": false,
+        "note": "Em relacao a que a peca gruda."
+      },
+      {
+        "name": "target",
+        "type": "HTMLElement | null",
+        "required": false,
+        "note": "A caixa que rola, quando nao e a janela."
+      },
+      {
+        "name": "threshold",
+        "type": "number",
+        "required": false,
+        "note": "Quantos pixels a pessoa precisa descer para o botao aparecer."
+      },
+      {
+        "name": "tooltip",
+        "type": "boolean",
+        "required": false,
+        "note": "Mostra o `label` numa dica ao pousar o ponteiro ou focar pelo teclado."
+      },
+      {
+        "name": "variant",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "required": false,
+        "note": "A variante do `Button` por baixo."
+      },
+      {
+        "name": "withinPortal",
+        "type": "boolean",
+        "required": false,
+        "note": "Renderiza no container de portal do `RivoProvider`, fora da arvore."
+      }
+    ]
+  },
   "SearchInput": {
     "forwardsRoot": true,
     "props": [
@@ -24015,6 +24569,88 @@
     "forwardsRoot": true,
     "props": []
   },
+  "SignaturePad": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"baseline\" | \"input\" | \"pad\" | \"placeholder\", string>>",
+        "required": false,
+        "note": "Classe por parte: `pad` (o papel), `placeholder`, `baseline`, `actions` e `input` (o campo do nome)."
+      },
+      {
+        "name": "defaultMode",
+        "type": "\"draw\" | \"type\"",
+        "required": false,
+        "note": "Em que modo a area abre quando esta vazia."
+      },
+      {
+        "name": "defaultValue",
+        "type": "SignatureValue | null",
+        "required": false,
+        "note": "A assinatura ao montar, quando ninguem controla."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Trava o desenho, a digitacao e os botoes."
+      },
+      {
+        "name": "font",
+        "type": "string",
+        "required": false,
+        "note": "A familia cursiva do modo de digitar, em CSS (`'\"Great Vibes\", cursive'`)."
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Pinta a moldura de perigo e anuncia `aria-invalid`."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SignaturePadLabels>",
+        "required": false,
+        "note": "Os textos da peca: rotulos dos botoes, instrucao, \"Assine aqui\" e o que o leitor de tela ouve."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Nome do campo num `<form>`: vai num `input` escondido com o SVG da assinatura, e vazio quando nao ha assinatura."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: SignatureValue | null) => void)",
+        "required": false,
+        "note": "Chamado ao fim de cada traco, a cada letra digitada, ao desfazer e ao limpar."
+      },
+      {
+        "name": "ratio",
+        "type": "number",
+        "required": false,
+        "note": "Largura sobre altura da area."
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "note": "So exibe a assinatura: sem desenho, sem botoes e sem o modo de digitar."
+      },
+      {
+        "name": "ref",
+        "type": "Ref<HTMLDivElement>",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "SignatureValue | null",
+        "required": false,
+        "note": "A assinatura, controlada: os tracos desenhados (`kind: \"drawn\"`) ou o nome digitado (`kind: \"typed\"`)."
+      }
+    ]
+  },
   "Skeleton": {
     "forwardsRoot": true,
     "props": []
@@ -24371,6 +25007,47 @@
       }
     ]
   },
+  "Spoiler": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `content` (a caixa que corta) e `trigger` (o botao)."
+      },
+      {
+        "name": "defaultExpanded",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto na primeira pintura, sem controlar."
+      },
+      {
+        "name": "expanded",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, para quem controla."
+      },
+      {
+        "name": "labels",
+        "type": "{ more?: string | undefined; less?: string | undefined; }",
+        "required": false,
+        "note": "Os textos do botao."
+      },
+      {
+        "name": "maxHeight",
+        "type": "number",
+        "required": false,
+        "note": "A altura do recolhido, em pixels."
+      },
+      {
+        "name": "onExpandedChange",
+        "type": "((expanded: boolean) => void)",
+        "required": false,
+        "note": "Recebe o estado novo a cada \"Ler mais\" e \"Ler menos\"."
+      }
+    ]
+  },
   "Stack": {
     "forwardsRoot": true,
     "props": [
@@ -24696,6 +25373,76 @@
     "forwardsRoot": true,
     "props": []
   },
+  "TableOfContents": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"item\" | \"label\" | \"link\" | \"list\", string>>",
+        "required": false
+      },
+      {
+        "name": "container",
+        "type": "HTMLElement | null",
+        "required": false,
+        "note": "Onde procurar os titulos."
+      },
+      {
+        "name": "hideLabel",
+        "type": "boolean",
+        "required": false,
+        "note": "Esconde o titulo visivel."
+      },
+      {
+        "name": "items",
+        "type": "TableOfContentsItem[]",
+        "required": false,
+        "note": "A lista pronta."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome da regiao de navegacao, que tambem aparece como titulo do indice."
+      },
+      {
+        "name": "offset",
+        "type": "number",
+        "required": false,
+        "note": "A altura do que gruda no topo (cabecalho fixo), em pixels."
+      },
+      {
+        "name": "onActiveChange",
+        "type": "((id: string | null) => void)",
+        "required": false,
+        "note": "Chamado quando a secao marcada muda: ao rolar ou ao clicar."
+      },
+      {
+        "name": "onItemClick",
+        "type": "((item: TableOfContentsItem, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void)",
+        "required": false,
+        "note": "Chamado no clique de uma linha, antes da rolagem."
+      },
+      {
+        "name": "root",
+        "type": "HTMLElement | null",
+        "required": false,
+        "note": "A caixa que rola, quando nao e a janela."
+      },
+      {
+        "name": "selector",
+        "type": "string",
+        "required": false,
+        "note": "Quais titulos entram, quando a lista nao vem pronta."
+      },
+      {
+        "name": "updateHash",
+        "type": "boolean",
+        "required": false,
+        "note": "Escreve o `#id` na barra de endereco ao clicar, com `history.replaceState`, sem empilhar historico."
+      }
+    ]
+  },
   "TableRow": {
     "forwardsRoot": true,
     "props": [
@@ -24900,7 +25647,7 @@
         "name": "weight",
         "type": "TextWeight",
         "required": false,
-        "note": "O peso da letra."
+        "note": "O peso da letra, lido dos tokens de peso do tema: `regular` e `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e `--rc-weight-strong` e `bold` e `--rc-weight-bold`."
       }
     ]
   },
@@ -25587,6 +26334,83 @@
       }
     ]
   },
+  "Tour": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "steps",
+        "type": "TourStep[]",
+        "required": true,
+        "note": "Os passos, na ordem."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"counter\" | \"description\" | \"footer\" | \"mask\" | \"spotlight\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `mask`, `spotlight`, `counter`, `title`, `description`, `footer`."
+      },
+      {
+        "name": "defaultOpen",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto ao montar, quando ninguem controla."
+      },
+      {
+        "name": "defaultStep",
+        "type": "number",
+        "required": false,
+        "note": "O passo de partida, quando ninguem controla."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa o alvo clicavel atraves do recorte da mascara."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TourLabels>",
+        "required": false,
+        "note": "Os textos dos botoes e do contador, para trocar o idioma ou o termo."
+      },
+      {
+        "name": "onFinish",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado no Concluir do ultimo passo."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Avisa toda abertura e todo fechamento: concluir, pular e `Esc`."
+      },
+      {
+        "name": "onSkip",
+        "type": "((step: number) => void)",
+        "required": false,
+        "note": "Chamado no \"Pular tour\" e no `Esc`, com o passo em que a pessoa desistiu."
+      },
+      {
+        "name": "onStepChange",
+        "type": "((step: number) => void)",
+        "required": false,
+        "note": "Chamado a cada troca de passo: Voltar, Proximo, setas e passo pulado por falta de alvo."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Aberto, controlado."
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "note": "O passo atual, controlado."
+      }
+    ]
+  },
   "Tracker": {
     "forwardsRoot": true,
     "props": [
@@ -25609,6 +26433,53 @@
         "required": false,
         "note": "Classe por parte: `label`, `track`, `cell`.",
         "since": "0.5.0"
+      }
+    ]
+  },
+  "TransferList": {
+    "forwardsRoot": true,
+    "props": [
+      {
+        "name": "items",
+        "type": "TransferListItem[]",
+        "required": true,
+        "note": "Todos os itens, dos dois lados."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string[]) => void",
+        "required": true,
+        "note": "Recebe o `value` novo a cada movimento."
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": true,
+        "note": "Os `value` dos escolhidos, na ordem em que aparecem na lista da direita."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"empty\" | \"header\" | \"list\" | \"option\" | \"panel\" | \"search\", string>>",
+        "required": false,
+        "note": "Classe por parte: `panel` (cada lista com a moldura), `header`, `search`, `list` (a caixa que rola), `option`, `actions` (a coluna dos botoes) e `empty`."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "note": "Desliga as duas listas, as buscas e os botoes de mover."
+      },
+      {
+        "name": "labels",
+        "type": "TransferListLabels",
+        "required": false,
+        "note": "Os textos da peca, para trocar o nome das listas ou o anuncio."
+      },
+      {
+        "name": "searchable",
+        "type": "boolean",
+        "required": false,
+        "note": "Liga a busca no topo de cada lista, sem acento importar."
       }
     ]
   },

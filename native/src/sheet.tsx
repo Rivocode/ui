@@ -41,7 +41,7 @@ export function Sheet({ open, onOpenChange, title, description, children, classN
           )}
         >
           <View className="mb-4 h-1 w-10 self-center rounded-pill bg-border-strong" />
-          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
+          <Text accessibilityRole="header" font="display" className="text-xl font-rc-display text-fg">
             {title}
           </Text>
           {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}

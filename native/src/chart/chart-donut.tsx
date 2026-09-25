@@ -158,7 +158,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               minimumFontScale={0.6}
               font="display"
               style={CENTER_WIDTH}
-              className="text-center text-lg font-semibold text-fg"
+              className="text-center text-lg font-rc-display text-fg"
             >
               {read ? write(readValue) : centerValue}
             </Text>

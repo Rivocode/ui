@@ -108,7 +108,7 @@ export function ChartRadial({
           minimumFontScale={0.6}
           font="display"
           style={CENTER_WIDTH}
-          className="text-center text-xl font-semibold text-fg"
+          className="text-center text-xl font-rc-display text-fg"
         >
           {middle}
         </Text>

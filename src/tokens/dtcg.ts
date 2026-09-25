@@ -12,6 +12,7 @@ export type DtcgType =
   | "cubicBezier"
   | "number"
   | "fontFamily"
+  | "fontWeight"
   | "shadow";
 
 export type DtcgToken = {
@@ -197,6 +198,10 @@ function typed(name: string, literal: string): Typed {
   if (bare.startsWith("font-")) {
     const families = splitTop(literal, /,/).map((family) => family.replace(/^["']|["']$/g, ""));
     return { token: { $type: "fontFamily", $value: families.length === 1 ? families[0] : families } };
+  }
+
+  if (bare.startsWith("weight-") && /^\d+$/.test(literal)) {
+    return { token: { $type: "fontWeight", $value: Number(literal) } };
   }
 
   if (/^(shadow|glow)-|^accent-shadow$/.test(bare)) {
@@ -405,7 +410,7 @@ export function exportDtcg(house: string, clientThemes: CssSource[] = []): DtcgE
     ),
     [file(scales)]: nest(
       scales.entries.values(),
-      "Escala e forma do @rivocode/ui: tipografia, altura de linha, empilhamento, foco, raio, espaçamento de letra e movimento. Não mudam com o tema de cor.",
+      "Escala e forma do @rivocode/ui: tipografia, altura de linha, empilhamento, foco, raio, espaçamento de letra, peso e movimento. Não mudam com o tema de cor.",
     ),
   };
   for (const scope of densities) {

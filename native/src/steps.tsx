@@ -37,7 +37,7 @@ export function Steps({ steps, current, className }: StepsProps) {
     >
       <Text className="text-sm text-fg-muted">{position}</Text>
       <Presence swapKey={step.id} exit="none" className="gap-2">
-        <Text font="display" className="text-lg font-semibold text-fg">
+        <Text font="display" className="text-lg font-rc-display text-fg">
           {step.title}
         </Text>
         {step.description !== undefined && (

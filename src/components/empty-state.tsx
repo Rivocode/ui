@@ -65,7 +65,7 @@ export function EmptyState({
           </div>
         )
       )}
-      <p className="text-lg font-medium text-fg">{title}</p>
+      <p className="text-lg font-rc-medium text-fg">{title}</p>
       <p className="max-w-sm text-base text-fg-muted">{description}</p>
       {action && <div className="mt-2">{action}</div>}
     </div>

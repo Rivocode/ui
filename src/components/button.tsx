@@ -7,7 +7,7 @@ import { cn } from "../lib/cn";
 export const buttonVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap",
-    "font-sans font-medium",
+    "font-sans font-rc-medium",
     "transition duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
     "motion-safe:active:scale-[0.985]",
     "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -34,7 +34,7 @@ export const buttonVariants = cva(
         md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
         lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
         icon: "size-[var(--rc-control-md)] p-0",
-        cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-bold",
+        cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-rc-bold",
         iconSm: "size-[var(--rc-control-sm)] p-0",
       },
       shape: {

@@ -8,7 +8,7 @@ import { cn } from "../lib/cn";
 
 export const aiLabelVariants = cva(
   cn(
-    "inline-flex shrink-0 items-center justify-center rounded-sm border font-sans font-semibold",
+    "inline-flex shrink-0 items-center justify-center rounded-sm border font-sans font-rc-strong",
     "tracking-wide whitespace-nowrap select-none",
   ),
   {
@@ -84,7 +84,7 @@ export function AILabel({
         <span aria-hidden="true">{text}</span>
       </PopoverTrigger>
       <PopoverContent side={side} className="max-w-xs">
-        <PopoverTitle className="text-sm font-medium">{title}</PopoverTitle>
+        <PopoverTitle className="text-sm font-rc-medium">{title}</PopoverTitle>
         <div className="mt-1.5 text-sm text-fg-muted">{explanation}</div>
       </PopoverContent>
     </Popover>

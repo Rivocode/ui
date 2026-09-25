@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { CHROME } from "./retratos";
+import { CHROME, CHROME_FLAGS, requireChrome } from "./retratos";
 import { servir } from "./serve";
 import { scanAtLeast } from "./varredura";
 
@@ -59,6 +59,13 @@ const FOCUS_TARGETS: FocusTarget[] = [
   { page: "novas", name: "Marcar como lida" },
   { page: "novas", name: "Marcar todas como lidas" },
   { page: "novas", name: "Excluir a nota 4813" },
+  { page: "novas", name: "Voltar ao topo" },
+  { page: "novas", name: "Cancelamento" },
+  { page: "novas", name: "Mover todos para Concedidas" },
+  { page: "novas", name: "Ler mais" },
+  { page: "tour", name: "Voltar" },
+  { page: "tour-claro", name: "Voltar" },
+  { page: "novas", name: "Limpar assinatura" },
 ];
 
 const MIN_TARGET = 24;
@@ -66,6 +73,24 @@ const MIN_TARGET = 24;
 const REFLOW_WIDTH = 320;
 
 const DESK = { width: 1240, height: 900 };
+
+// A bancada da CI mede a arvore de base e a da cabeca na mesma maquina e
+// compara uma com a outra. Com `--json`, o que foi achado sai contado por
+// pagina, tipo e alvo num arquivo, e o codigo de saida deixa de julgar: quem
+// julga e o `scripts/comparacao-da-bancada.ts`. O tamanho medido do alvo fica
+// FORA da chave, porque ele muda com a fonte do sistema, e o que se compara e
+// a existencia do problema.
+const jsonFlag = process.argv.indexOf("--json");
+const jsonTo = jsonFlag === -1 ? "" : (process.argv[jsonFlag + 1] ?? "");
+if (jsonFlag !== -1 && !jsonTo) {
+  console.error("--json pede o caminho do arquivo.");
+  process.exit(1);
+}
+
+const tally: Record<string, number> = {};
+function count(key: string, amount = 1) {
+  tally[key] = (tally[key] ?? 0) + amount;
+}
 
 const pickedFlag = process.argv.indexOf("--pagina");
 const picked = pickedFlag === -1 ? "" : (process.argv[pickedFlag + 1] ?? "");
@@ -89,7 +114,7 @@ if (!(await Bun.file("demo/dist/demo.css").exists())) {
 }
 
 for (const target of FOCUS_TARGETS) {
-  if (!pages.includes(target.page) && picked === "") {
+  if (!pages.includes(target.page) && picked === "" && !jsonTo) {
     console.error(`FOCUS_TARGETS cita a pagina "${target.page}", que nao existe em demo/.`);
     process.exit(1);
   }
@@ -104,6 +129,7 @@ async function launchChrome() {
   const proc = Bun.spawn(
     [
       CHROME,
+      ...CHROME_FLAGS,
       "--headless=new",
       "--remote-debugging-port=0",
       `--user-data-dir=${profile}`,
@@ -202,6 +228,8 @@ async function launchChrome() {
 
   return { send, evaluate, press, close };
 }
+
+await requireChrome();
 
 const server = servir();
 const chrome = await launchChrome();
@@ -552,6 +580,7 @@ try {
     const violations = await runAxe();
     for (const violation of violations) {
       axeTotal += violation.nodes.length;
+      count(`${page} | axe ${violation.id}`, violation.nodes.length);
       lines.push(`  axe ${violation.id} [${violation.impact}] x${violation.nodes.length} - ${violation.help}`);
       for (const node of violation.nodes.slice(0, 4)) {
         lines.push(`      ${node.target}${node.summary ? `  -> ${node.summary.slice(0, 180)}` : ""}`);
@@ -561,6 +590,7 @@ try {
 
     const small = await chrome.evaluate<SmallTarget[]>(TARGET_PROBE);
     smallTotal += small.length;
+    for (const target of small) count(`${page} | alvo ${target.label}`);
     const smallLines = grouped(small.map((target) => `${target.label} ${target.size}`));
     if (smallLines.length > 0) {
       lines.push(`  alvo menor que ${MIN_TARGET}x${MIN_TARGET}: ${small.length}`);
@@ -581,6 +611,7 @@ try {
       })()`);
       if (!found) {
         focusTotal++;
+        count(`${page} | foco ${target.name}`);
         lines.push(`  foco: "${target.name}" - o alvo declarado nao existe mais na pagina, ou nao recebe foco`);
         continue;
       }
@@ -598,9 +629,11 @@ try {
       })()`);
       if ((await chrome.evaluate<string>(fingerprint)) === before) {
         focusTotal++;
+        count(`${page} | foco ${target.name}`);
         lines.push(`  foco: "${target.name}" - o Enter nao mudou nada na pagina, entao a acao declarada nao foi medida`);
       } else if (!landed) {
         focusTotal++;
+        count(`${page} | foco ${target.name}`);
         lines.push(
           `  foco: "${target.name}"${target.presses ? ` apertado ${target.presses} vezes` : ""} - depois da acao o foco caiu no body`,
         );
@@ -611,6 +644,7 @@ try {
     const reflow = await chrome.evaluate<Reflow>(REFLOW_PROBE);
     if (reflow) {
       reflowTotal++;
+      count(`${page} | reflow a ${REFLOW_WIDTH}px`);
       lines.push(
         `  reflow a ${REFLOW_WIDTH}px: a pagina rola ${reflow.scroll - reflow.width}px de lado (${reflow.scroll} > ${reflow.width})`,
       );
@@ -633,6 +667,12 @@ console.log(
     ` Alvo pequeno: ${smallTotal}. Reflow a ${REFLOW_WIDTH}px: ${reflowTotal} pagina(s).` +
     ` Foco: ${focusTotal} de ${focusDeclared} acao(oes) declarada(s).`,
 );
+
+if (jsonTo) {
+  await Bun.write(jsonTo, `${JSON.stringify({ pages, problems: tally }, null, 1)}\n`);
+  console.log(`\nContagem por pagina, tipo e alvo gravada em ${jsonTo}.`);
+  process.exit(0);
+}
 
 if (problems > 0) {
   console.log(

@@ -47,8 +47,9 @@
  * duas larguras, e contra o retrato antigo o unico que mudou foi o cursor, nos
  * mesmos 76 pixels.
  *
- * Esta guarda nao tira retrato: ela nao pode, porque o `shot.ts` chama o Chrome
- * num caminho fixo do macOS e a CI e ubuntu. Ela cobra a DECLARACAO, como o
+ * Esta guarda nao tira retrato: ela nao pode, porque o gate roda sem navegador
+ * - o retrato roda na bancada da CI, que compara a base com a cabeca no mesmo
+ * runner porque a assinatura comitada e do macOS. Ela cobra a DECLARACAO, como o
  * `check:scripts` e o `check:demo` fazem - secao declarada em
  * `scripts/retratos.ts` tem que ter marcador `data-rc-shot` na pagina do demo e
  * assinatura comitada em `demo/assinaturas.json`. E o que impede o retrato de

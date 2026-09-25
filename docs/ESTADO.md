@@ -57,7 +57,7 @@ erro, com a mesma configuracao.
 
 ### O catalogo, por familia
 
-Sao **110 pecas** e **198 documentos** em `.design-sync/docs/`. Os dois numeros
+Sao **125 pecas** e **213 documentos** em `.design-sync/docs/`. Os dois numeros
 sao diferentes de proposito, e a diferenca e a coisa mais facil de errar aqui:
 **parte nao e peca**. `CardHeader`, `DialogFooter` e `SelectItem` so existem
 dentro de outra coisa, e as **86 partes** moram na pagina de quem as monta, com
@@ -73,7 +73,7 @@ abrindo `CardTitle.md` como se fosse componente independente. A regra esta em
 | Navegacao    | Breadcrumb, Command, Menu, Menubar, NavigationMenu, Pagination, Sidebar, Steps, Tabs                                                                                                                                                                                                                                                |
 | Sobreposicao | AlertDialog, ContextMenu, Dialog, Popconfirm, Popover, PreviewCard, Sheet, Tooltip                                                                                                                                                                                                                                                  |
 | Acoes        | Button, ButtonGroup, Clipboard, Toggle, ToggleGroup, Toolbar                                                                                                                                                                                                                                                                        |
-| Grafico      | ChartContainer, ChartDonut, ChartRadial, Sparkline                                                                                                                                                                                                                                                                                 |
+| Grafico      | ChartContainer, ChartDonut, ChartRadial, ChartGauge, ChartHeatmap, ChartFunnel, ChartTreemap, Sparkline                                                                                                                                                                                                                             |
 | Dados        | Code, EventCalendar, RelativeTime, Timeline, Tracker                                                                                                                                                                                                                                                                               |
 | Fundacao     | RivoProvider                                                                                                                                                                                                                                                                                                                       |
 

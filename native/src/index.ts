@@ -191,3 +191,13 @@ export {
   type FilterBarProps,
   type FilterChipProps,
 } from "./filter-bar";
+export {
+  TransferList,
+  type TransferListItem,
+  type TransferListLabels,
+  type TransferListProps,
+} from "./transfer-list";
+export { Highlight, type HighlightProps } from "./highlight";
+export { matchesSearch } from "./shared/highlight";
+export { Spoiler, type SpoilerProps } from "./spoiler";
+export { Tour, type TourLabels, type TourProps, type TourStep } from "./tour";

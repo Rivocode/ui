@@ -14,7 +14,7 @@ test("todo duble do react-native-svg exporta o que o native/src importa", async 
   for (const file of sources) {
     for (const [, names] of readFileSync(file, "utf8").matchAll(IMPORT)) {
       for (const name of names!.split(",")) {
-        const clean = name.replace(/^type\s+/, "").trim();
+        const clean = name.replace(/^type\s+/, "").replace(/\s+as\s+\w+\s*$/, "").trim();
         if (clean && !name.trim().startsWith("type ")) used.add(clean);
       }
     }

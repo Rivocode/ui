@@ -56,6 +56,13 @@ aponta os três tokens para ela.
 Dois clientes com fontes diferentes convivem na mesma aplicação por esse
 mecanismo: a família troca por `data-rc-theme`, como a cor.
 
+O peso anda junto com a família. `--rc-weight-regular`, `--rc-weight-medium`,
+`--rc-weight-strong`, `--rc-weight-bold` e `--rc-weight-display` têm o valor da
+casa em `:root` (400, 500, 600, 700 e 600) e são **opcionais** no tema: declare
+só o que a família do cliente não tem. Fonte de título sem 600 pede
+`--rc-weight-display: 700` (ou o peso mais próximo que ela tiver), senão o
+navegador desenha um negrito sintético.
+
 ## Os pares que precisam passar no contraste
 
 O repositório da biblioteca tem uma guarda que falha se um par que carrega texto

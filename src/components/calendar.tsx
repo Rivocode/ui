@@ -71,13 +71,13 @@ export function Calendar({
 
         month_caption: "flex h-8 items-center justify-center px-10",
         caption_label: cn(
-          "inline-flex items-center gap-1 text-sm font-medium whitespace-nowrap",
+          "inline-flex items-center gap-1 text-sm font-rc-medium whitespace-nowrap",
           "text-fg capitalize",
         ),
         dropdowns: "flex items-center gap-1",
         dropdown_root: cn(
           "relative inline-flex flex-nowrap items-center gap-1 rounded-md px-2 py-1",
-          "text-sm font-medium whitespace-nowrap text-fg",
+          "text-sm font-rc-medium whitespace-nowrap text-fg",
           "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
           "hover:bg-accent-subtle",
           "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
@@ -86,7 +86,7 @@ export function Calendar({
 
         month_grid: "w-full border-collapse",
         weekdays: "flex",
-        weekday: "w-[min(2.75rem,calc((100vw_-_3.5rem)/7))] text-xs font-normal text-fg-subtle sm:w-[var(--rc-day)]",
+        weekday: "w-[min(2.75rem,calc((100vw_-_3.5rem)/7))] text-xs font-rc-regular text-fg-subtle sm:w-[var(--rc-day)]",
         weeks: "",
         week: "mt-1 flex w-full",
 
@@ -99,7 +99,7 @@ export function Calendar({
           "disabled:pointer-events-none",
         ),
 
-        today: cn("[&>button]:font-medium", "[&:not(.rc-day-selected)>button]:text-accent-text"),
+        today: cn("[&>button]:font-rc-medium", "[&:not(.rc-day-selected)>button]:text-accent-text"),
         outside: "[&>button]:text-fg-subtle",
         disabled: "[&>button]:text-fg-disabled",
         hidden: "invisible",

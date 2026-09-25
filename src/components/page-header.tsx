@@ -54,7 +54,7 @@ export function PageHeader({
         <div className={cn("min-w-0", classNames?.heading)}>
           <Title
             className={cn(
-              "font-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+              "font-display font-rc-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
               classNames?.title,
             )}
           >

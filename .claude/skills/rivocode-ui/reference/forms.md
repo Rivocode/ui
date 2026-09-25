@@ -51,6 +51,12 @@ pelo `onValueChange` e entra no `FormField` por `{...forValue(field)}`, com o
 schema em `z.number().int()`. `min` e `max` são em centavos e só marcam o campo
 inválido: a mensagem é do schema.
 
+Assinatura é `SignaturePad`, que entrega `SignatureValue | null` pelo
+`onValueChange` e entra no `FormField` por `{...forValue(field)}`. Vazio é
+`null`, então o schema é
+`z.custom<SignatureValue | null>().refine((v) => v !== null, 'Assine para continuar')`.
+O arquivo sai de `signatureToSvg` ou de `await signatureToPng(valor)`.
+
 Boleto é `MaskedInput` com `mask="boleto"`, que pontua a linha de banco e troca
 sozinho para a de convênio quando o primeiro dígito é 8. `isValidBoletoLine`
 confere todos os verificadores, e `parseBoleto(linha)` devolve `bank`,

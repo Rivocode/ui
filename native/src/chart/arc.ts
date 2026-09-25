@@ -14,3 +14,8 @@ export function arcPath(radius: number, from: number, to: number) {
 
   return `M ${pointAt(radius, from)} A ${r} ${r} 0 ${long} 1 ${pointAt(radius, to)}`;
 }
+
+export function radialLine(inner: number, outer: number, degrees: number) {
+  "worklet";
+  return `M ${pointAt(inner, degrees)} L ${pointAt(outer, degrees)}`;
+}

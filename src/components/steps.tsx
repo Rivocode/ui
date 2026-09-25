@@ -28,7 +28,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
         <p className="font-sans text-sm text-fg-muted">
           Passo {current + 1} de {steps.length}
         </p>
-        <p className="font-display text-lg tracking-tight text-fg">{step?.title}</p>
+        <p className="font-display font-rc-display text-lg tracking-tight text-fg">{step?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
           <div
             className="h-full rounded-pill bg-accent-text transition-[width] duration-[var(--rc-duration-base)] ease-rc"
@@ -75,7 +75,7 @@ export function Steps({ className, steps, current, onStepClick, ...props }: Step
                     title={step.title}
                     className={cn(
                       "truncate font-sans text-sm",
-                      agora ? "font-medium text-fg" : "text-fg-muted",
+                      agora ? "font-rc-medium text-fg" : "text-fg-muted",
                     )}
                   >
                     {step.title}

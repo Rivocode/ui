@@ -226,6 +226,58 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
     ],
   },
+  Highlight: {
+    rows: [
+      {
+        web: "classNames",
+        native: "markClassName",
+        note: "a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text`",
+      },
+    ],
+  },
+  Spoiler: {
+    rows: [
+      {
+        web: null,
+        native: "fadeOver",
+        note: "o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara",
+      },
+      { web: "classNames", native: null, note: "um `className` só, na raiz" },
+    ],
+  },
+  TransferList: {
+    rows: [
+      {
+        web: "classNames",
+        native: null,
+        note: "um `className` só, na raiz; as listas empilham e cada uma tem os próprios botões",
+      },
+    ],
+  },
+  Tour: {
+    rows: [
+      {
+        web: "open",
+        native: "open",
+        note: "vira obrigatório, com `onOpenChange`: não há `defaultOpen`",
+      },
+      {
+        web: "step",
+        native: "step",
+        note: "vira obrigatório, com `onStepChange`: não há `defaultStep`, e é no `onStepChange` que a tela rola o alvo",
+      },
+      {
+        web: "interactive",
+        native: null,
+        note: "o `Modal` é outra janela, e o toque não atravessa o recorte até o alvo",
+      },
+      {
+        web: "classNames",
+        native: "className",
+        note: "um `className` só, na folha de baixo; a máscara não se veste",
+      },
+    ],
+  },
   ImageViewer: {
     rows: [
       {
@@ -1046,6 +1098,26 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "name",
         native: null,
         note: "não há `<form>` para levar a nota num campo escondido",
+      },
+      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+    ],
+  },
+  SignaturePad: {
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe",
+      },
+      {
+        web: "name",
+        native: null,
+        note: "não há `<form>` para levar o SVG num campo escondido",
+      },
+      {
+        web: null,
+        native: "onDrawingChange",
+        note: "avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar",
       },
       { web: "classNames", native: "className", note: "um `className` só, na raiz" },
     ],

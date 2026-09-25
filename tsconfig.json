@@ -11,5 +11,6 @@
     "noEmit": true,
     "types": ["bun"]
   },
-  "include": ["src", "test", "scripts", "demo", "mcp/src"]
+  "include": ["src", "test", "scripts", "demo", "mcp/src"],
+  "exclude": ["test/fixtures"]
 }

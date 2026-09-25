@@ -267,11 +267,25 @@ e sai com codigo 1 quando acha. O alvo mede a area que recebe o clique - o
 entao pseudo recortado por `overflow` nao conta - e so escapa pela excecao de
 frase o link ou botao de texto que divide a linha com o texto em volta. Antes da
 vitrine, a sonda roda em `TARGET_CALIBRATION`, casos dos dois lados, e para
-tudo se um deles mudar de lado.
+tudo se um deles mudar de lado. O Chrome vem de `RC_CHROME`, com o do macOS de
+padrao, e `RC_CHROME_FLAGS` acrescenta bandeiras.
+
+Os tres rodam na CI pela **bancada** (`.github/workflows/bancada.yml`), em PR e
+em push na `main`, e ela e DIFERENCIAL: mede a base e a cabeca no mesmo runner,
+com os scripts da cabeca, e `scripts/comparacao-da-bancada.ts` julga. A
+referencia absoluta nao serve la - no ubuntu, a arvore da main sem mudanca
+nenhuma sai com 23 dos 50 retratos diferentes do comitado do macOS, as doze
+molduras de secao entre eles, e o `a11y` acusa hoje o que as pecas ja tem.
+Reprova problema de acessibilidade que a base nao tinha, e retrato que mudou sem
+a entrada dele em `demo/assinaturas.json` mudar junto - aceitar continua sendo
+`bun run shot && bun run visual --aceitar` na maquina, e a etiqueta
+`retrato-aceito` no PR e a valvula para diferenca que so existe no linux. Mede
+com piso: menos de 15 paginas auditadas ou 30 retratos comparados reprova. E
+workflow proprio, e nao job do `ci.yml`, porque o `tag.yml` escuta o `ci`.
 
 `bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
 constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com
-`node` pelo stdio e confere as sete ferramentas - a CI roda os dois, nessa
+`node` pelo stdio e confere as oito ferramentas - a CI roda os dois, nessa
 ordem.
 
 ## Assercao que passa sem medir

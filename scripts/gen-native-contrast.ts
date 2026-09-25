@@ -32,7 +32,14 @@
  * de pegar o que nao e nosso. Quem quiser o byte exato roda
  * `bun run gen:native:contrast`, que reescreve.
  */
-import { MAP_MEDIA, checkCodePair, checkMediaStage, checkThemeMap } from "../src/lib/contrast";
+import {
+  MAP_MEDIA,
+  MAP_SIGNATURE,
+  checkCodePair,
+  checkMediaStage,
+  checkSignaturePaper,
+  checkThemeMap,
+} from "../src/lib/contrast";
 
 const SOURCE = "src/lib/contrast.ts";
 const MIRROR = "native/scripts/contrast.mjs";
@@ -93,10 +100,12 @@ if (process.argv.includes("--check")) {
     checkThemeMap: mirrored,
     checkCodePair: mirroredCode,
     checkMediaStage: mirroredMedia,
+    checkSignaturePaper: mirroredSignature,
   } = (await import(`../${MIRROR}`)) as {
     checkThemeMap: typeof checkThemeMap;
     checkCodePair: typeof checkCodePair;
     checkMediaStage: typeof checkMediaStage;
+    checkSignaturePaper: typeof checkSignaturePaper;
   };
   const { tokens } = await import("../native/tokens");
   const map = { light: tokens.themes["rivocode-light"], dark: tokens.themes["rivocode-dark"] };
@@ -109,15 +118,23 @@ if (process.argv.includes("--check")) {
       (tokens.media as Record<string, string>)[name],
     ]),
   );
+  const signature = Object.fromEntries(
+    Object.entries(MAP_SIGNATURE).map(([role, name]) => [
+      role,
+      (tokens.signature as Record<string, string>)[name],
+    ]),
+  );
   const here = [
     ...checkThemeMap("prova", map),
     ...checkCodePair("prova", ink, paper),
     ...checkMediaStage("prova", media),
+    ...checkSignaturePaper("prova", signature),
   ].map((finding) => finding.line);
   const there = [
     ...mirrored("prova", map),
     ...mirroredCode("prova", ink, paper),
     ...mirroredMedia("prova", media),
+    ...mirroredSignature("prova", signature),
   ].map((finding) => finding.line);
 
   if (here.join("\n") !== there.join("\n")) {

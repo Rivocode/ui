@@ -114,10 +114,6 @@ const OUT_OF_README: Record<string, string> = {
   Kbd: "A irma cobre: nasce colada ao `Command`, no rodape da paleta e no atalho do menu. Entra junto com ele ou nao entra.",
   CheckboxGroup:
     "A irma cobre errado, e essa e a divida escondida aqui: a linha do `Checkbox` promete o estado misto do selecionar todos, que so o grupo faz. Ou o grupo ganha linha, ou a linha do `Checkbox` para de prometer o que ele nao entrega.",
-  ChartDonut:
-    "Grafico: a secao Graficos ensina o contrato - `ChartContainer`, cor por nome de serie, dica substituida inteira - e nao lista peca. Rosca, arco e linha miuda entram todas ou nenhuma, e o indice delas e a pagina do subcaminho.",
-  ChartRadial:
-    "Grafico: mesma secao e mesma razao da rosca. Ali se ensina a ponte com a Recharts, e nao o repertorio.",
   Sparkline:
     "Grafico, e depende de outra: sai de `@rivocode/ui/chart` e mora dentro de um `Stat`, que tambem esta fora. Ela so faz sentido na linha que descrever o numero de painel.",
   AspectRatio:
@@ -172,8 +168,6 @@ const OUT_OF_README: Record<string, string> = {
     "Divida: e o topo que toda rota reescreve um pouco diferente, e a secao Tela de aplicacao monta uma tela inteira sem ele.",
   FilterBar:
     "Divida: a secao Listagem com estados de consulta monta o `DataTable` e nao diz o que fica em volta - a fileira de filtros, o limpar e a contagem que toda listagem remonta a mao.",
-  QueryBoundary:
-    "Divida, e no mesmo lugar: o `DataTable` resolve os quatro finais para tabela, e ela resolve para qualquer conteudo. Quem le a secao sai achando que so tabela tem estado de consulta.",
   ButtonGroup:
     "Divida na tabela Acao: `Toggle`, `ToggleGroup` e `Toolbar` estao citados, e o grupo de botoes irmaos nao - o mesmo que ja passou um release inteiro sendo confundido com parte do `Button`.",
 };

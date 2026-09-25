@@ -15,6 +15,7 @@ import { createRoot } from "react-dom/client";
 
 import {
   ActionBar,
+  Affix,
   AppShell,
   Badge,
   Banner,
@@ -36,6 +37,7 @@ import {
   FilterChip,
   formatTime,
   Heading,
+  Highlight,
   IconButton,
   ImageViewer,
   Item,
@@ -55,22 +57,30 @@ import {
   RivoProvider,
   SearchInput,
   SidebarBrand,
+  SignaturePad,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
+  ScrollToTop,
   Skeleton,
+  TableOfContents,
+  Spoiler,
   Text,
   TimeField,
   TimePicker,
+  TransferList,
+  matchesSearch,
   type AppliedFilter,
   type Column,
   type NotificationItem,
   type PostalAddress,
   type RivoDensity,
   type RivoTheme,
+  type SignatureValue,
+  type TransferListItem,
   useMobile,
   VirtualList,
 } from "../src/index";
@@ -770,6 +780,74 @@ function Currencies() {
   );
 }
 
+const SIGNED: SignatureValue = {
+  kind: "drawn",
+  width: 600,
+  height: 200,
+  strokes: [
+    [
+      { x: 70, y: 130, time: 0 },
+      { x: 95, y: 90, time: 30 },
+      { x: 120, y: 70, time: 60 },
+      { x: 135, y: 95, time: 90 },
+      { x: 150, y: 135, time: 120 },
+      { x: 175, y: 105, time: 150 },
+      { x: 205, y: 120, time: 180 },
+      { x: 240, y: 110, time: 210 },
+      { x: 280, y: 128, time: 240 },
+      { x: 330, y: 112, time: 270 },
+    ],
+    [
+      { x: 360, y: 140, time: 400 },
+      { x: 420, y: 118, time: 430 },
+      { x: 500, y: 126, time: 460 },
+    ],
+  ],
+};
+
+function Signatures() {
+  const [signed, setSigned] = useState<SignatureValue | null>(SIGNED);
+
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <Field>
+        <FieldLabel>Assinatura do locatario</FieldLabel>
+        <SignaturePad value={signed} onValueChange={setSigned} name="assinatura" />
+        <FieldDescription>Vale como aceite do contrato.</FieldDescription>
+      </Field>
+      <Field>
+        <FieldLabel>Vazia</FieldLabel>
+        <SignaturePad />
+      </Field>
+      <Field>
+        <FieldLabel>Digitada</FieldLabel>
+        <SignaturePad
+          defaultValue={{
+            kind: "typed",
+            text: "Maria Souza",
+            font: '"Snell Roundhand", "Segoe Script", cursive',
+            width: 600,
+            height: 200,
+          }}
+        />
+      </Field>
+      <Field invalid>
+        <FieldLabel>Obrigatoria</FieldLabel>
+        <SignaturePad />
+        <FieldDescription>Assine para continuar.</FieldDescription>
+      </Field>
+      <Field disabled>
+        <FieldLabel>Desabilitada</FieldLabel>
+        <SignaturePad defaultValue={SIGNED} />
+      </Field>
+      <Field>
+        <FieldLabel>So leitura</FieldLabel>
+        <SignaturePad readOnly defaultValue={SIGNED} />
+      </Field>
+    </div>
+  );
+}
+
 function PostalCodes() {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
@@ -1147,6 +1225,256 @@ function PixCodes() {
   );
 }
 
+const GUIDE = [
+  { id: "demo-emissao", title: "Emissao", children: ["Dados do tomador", "Impostos e retencoes"] },
+  { id: "demo-envio", title: "Envio ao cliente", children: ["Por e-mail"] },
+  { id: "demo-cancelamento", title: "Cancelamento", children: [] as string[] },
+];
+
+const GUIDE_TEXT =
+  "A nota sai com o codigo de servico da prefeitura, o valor e as retencoes que o contrato preve. Confira o tomador antes de emitir.";
+
+function Guide({ prefix, onBox }: { prefix: string; onBox: (node: HTMLDivElement | null) => void }) {
+  return (
+    <div
+      ref={onBox}
+      tabIndex={0}
+      aria-label={`Guia de emissao (${prefix})`}
+      className="h-64 overflow-y-auto rounded-md border border-border bg-surface p-4"
+    >
+      {GUIDE.map((section) => (
+        <section key={section.id} className="mb-6">
+          <h4 id={`${prefix}-${section.id}`} className="mb-2 font-display text-lg text-fg">
+            {section.title}
+          </h4>
+          <p className="text-sm text-fg-muted">{GUIDE_TEXT}</p>
+          {section.children.map((child) => (
+            <div key={child} className="mt-4">
+              <h5 className="mb-1 text-sm font-medium text-fg">{child}</h5>
+              <p className="text-sm text-fg-muted">{GUIDE_TEXT}</p>
+              <p className="mt-2 text-sm text-fg-muted">{GUIDE_TEXT}</p>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function Contents({ prefix }: { prefix: string }) {
+  const [box, setBox] = useState<HTMLDivElement | null>(null);
+  const [ready, setReady] = useState<HTMLDivElement | null>(null);
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
+        <Guide prefix={`${prefix}-lido`} onBox={setBox} />
+        <TableOfContents container={box} root={box} selector="h4, h5" />
+      </div>
+      <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
+        <Guide prefix={`${prefix}-pronto`} onBox={setReady} />
+        <TableOfContents
+          root={ready}
+          hideLabel
+          label={`Secoes do guia (${prefix})`}
+          items={GUIDE.map((section) => ({
+            id: `${prefix}-pronto-${section.id}`,
+            label: section.title,
+            level: 1,
+          }))}
+        />
+      </div>
+    </div>
+  );
+}
+
+const LONG_LIST = Array.from({ length: 30 }, (_, index) => `NF ${4800 + index}`);
+
+function Climbs({ prefix }: { prefix: string }) {
+  const [box, setBox] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (box) box.scrollTop = 400;
+  }, [box]);
+
+  return (
+    <div className="relative max-w-md">
+      <div
+        ref={setBox}
+        tabIndex={0}
+        aria-label={`Notas emitidas (${prefix})`}
+        className="h-64 overflow-y-auto rounded-md border border-border bg-surface"
+      >
+        <ul className="divide-y divide-border">
+          {LONG_LIST.map((item) => (
+            <li key={item} className="px-4 py-3 font-mono text-sm text-fg">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <ScrollToTop
+        target={box}
+        threshold={120}
+        strategy="absolute"
+        position={{ bottom: 16, right: 16 }}
+      />
+    </div>
+  );
+}
+
+function Affixes({ prefix }: { prefix: string }) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <div className="relative">
+        <div
+          tabIndex={0}
+          aria-label={`Contrato (${prefix})`}
+          className="h-56 overflow-y-auto rounded-md border border-border bg-surface p-4 pb-20"
+        >
+          {Array.from({ length: 8 }, (_, index) => (
+            <p key={index} className="mb-3 text-sm text-fg-muted">
+              Clausula {index + 1}. O prestador emite a nota ate o quinto dia util do mes seguinte.
+            </p>
+          ))}
+        </div>
+        <Affix strategy="absolute" position={{ bottom: 16, right: 16 }}>
+          <Button className="shadow-2">Assinar contrato</Button>
+        </Affix>
+      </div>
+      <div className="relative">
+        <div
+          tabIndex={0}
+          aria-label={`Rascunho (${prefix})`}
+          className="h-56 overflow-y-auto rounded-md border border-border bg-surface p-4 pt-16"
+        >
+          {Array.from({ length: 6 }, (_, index) => (
+            <p key={index} className="mb-3 text-sm text-fg-muted">
+              Linha {index + 1} do rascunho da nota, com o servico e o valor.
+            </p>
+          ))}
+        </div>
+        <Affix
+          strategy="absolute"
+          position={{ top: 1, left: 1, right: 1 }}
+          className="flex items-center justify-between gap-3 rounded-t-md border-b border-border bg-surface-raised px-4 py-2"
+        >
+          <span className="text-sm text-fg">Rascunho salvo as 14:32</span>
+          <Button size="sm" variant="secondary">
+            Emitir
+          </Button>
+        </Affix>
+      </div>
+    </div>
+  );
+}
+
+const ROLES: TransferListItem[] = [
+  { value: "notas.emitir", label: "Emitir nota fiscal" },
+  { value: "notas.cancelar", label: "Cancelar nota fiscal" },
+  { value: "boletos.emitir", label: "Emitir boleto" },
+  { value: "boletos.baixar", label: "Dar baixa em boleto de cobrança registrada no banco" },
+  { value: "relatorios.ver", label: "Ver relatórios" },
+  { value: "relatorios.exportar", label: "Exportar relatórios" },
+  { value: "usuarios.convidar", label: "Convidar usuário" },
+  { value: "conta.excluir", label: "Excluir a conta", disabled: true },
+];
+
+function Transfers() {
+  const [granted, setGranted] = useState<string[]>(["relatorios.ver", "notas.emitir"]);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <TransferList
+        items={ROLES}
+        value={granted}
+        onValueChange={setGranted}
+        labels={{ available: "Permissões", chosen: "Concedidas" }}
+      />
+      <TransferList
+        items={ROLES.slice(0, 4)}
+        value={["notas.cancelar"]}
+        onValueChange={() => {}}
+        disabled
+        searchable={false}
+      />
+    </div>
+  );
+}
+
+const PLACES = [
+  "Clínica São Lucas",
+  "Mercado São João",
+  "Padaria Aurora",
+  "Açaí da Praça",
+  "Escola Pequeno Príncipe",
+];
+
+function Highlights() {
+  const [query, setQuery] = useState("sao");
+
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <div className="flex flex-col gap-3">
+        <SearchInput
+          aria-label="Buscar lugar"
+          value={query}
+          onChange={(event) => setQuery(event.currentTarget.value)}
+          onClear={() => setQuery("")}
+        />
+        <ul className="flex flex-col gap-1 text-base text-fg">
+          {PLACES.filter((place) => matchesSearch(place, query)).map((place) => (
+            <li key={place}>
+              <Highlight query={query}>{place}</Highlight>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Card>
+        <CardContent>
+          <p className="text-sm text-fg-muted">
+            <Highlight query={["nota", "cancelada"]}>
+              A nota fiscal 1042 foi cancelada dentro do prazo, e a nota 1043 segue valida.
+            </Highlight>
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function Spoilers() {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2">
+      <Spoiler maxHeight={96} className="text-base text-fg-muted">
+        <p>
+          O plano Empresa emite nota fiscal de servico em mais de 1.200 prefeituras, com o
+          certificado A1 guardado por nos e renovacao avisada com trinta dias de antecedencia.
+        </p>
+        <p className="mt-3">
+          Boletos e cobrancas por Pix saem da mesma tela, e a baixa acontece sozinha quando o
+          banco confirma o pagamento. O relatorio do mes fecha no primeiro dia util, pronto
+          para o contador, com o <a href="#xml" className="text-accent-text underline">XML de cada nota</a>.
+        </p>
+      </Spoiler>
+      <Card>
+        <CardContent className="flex flex-col gap-3">
+          <Spoiler maxHeight={44} className="text-sm text-fg-muted">
+            <p>
+              Ao aceitar, voce autoriza a emissao de documentos fiscais em nome da empresa
+              cadastrada e concorda que os arquivos fiquem guardados pelo prazo que a
+              legislacao exige.
+            </p>
+          </Spoiler>
+          <Spoiler className="text-sm text-fg-muted">
+            <p>Texto curto: sem botao.</p>
+          </Spoiler>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -1165,6 +1493,30 @@ function Sample({
       </p>
 
       <div className="flex flex-col gap-12">
+        <Block title="TransferList">
+          <Transfers />
+        </Block>
+
+        <Block title="Highlight">
+          <Highlights />
+        </Block>
+
+        <Block title="Spoiler">
+          <Spoilers />
+        </Block>
+
+        <Block title="TableOfContents">
+          <Contents prefix={theme} />
+        </Block>
+
+        <Block title="ScrollToTop">
+          <Climbs prefix={theme} />
+        </Block>
+
+        <Block title="Affix">
+          <Affixes prefix={theme} />
+        </Block>
+
         <Block title="PixCode">
           <PixCodes />
         </Block>
@@ -1203,6 +1555,10 @@ function Sample({
 
         <Block title="CurrencyInput">
           <Currencies />
+        </Block>
+
+        <Block title="SignaturePad">
+          <Signatures />
         </Block>
 
         <Block title="CookieConsent">

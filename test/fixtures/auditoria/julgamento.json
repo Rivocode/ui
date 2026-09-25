@@ -1,0 +1,17 @@
+{
+  "findings": [
+    {
+      "rule": "texto-generico",
+      "file": "test/fixtures/auditoria/boa/cobranca.tsx",
+      "line": 57,
+      "message": "O botão diz Emitir cobrança, mas a tela não diz para quem"
+    },
+    {
+      "rule": "provider-ausente",
+      "file": "src/main.tsx",
+      "line": 1,
+      "message": "A raiz monta a tela sem RivoProvider"
+    }
+  ],
+  "dismissals": []
+}

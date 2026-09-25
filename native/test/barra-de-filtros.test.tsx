@@ -73,7 +73,7 @@ describe("FilterChip", () => {
     const value = byType(screen, "Text").find(
       (node) => node.props.children === "Clínica São Lucas",
     );
-    expect(value!.props.className).toContain("font-medium");
+    expect(value!.props.className.split(" ")).toContain("font-rc-medium");
   });
 
   test("o xis diz qual filtro sai, e não só 'Remover'", () => {

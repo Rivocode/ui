@@ -49,7 +49,7 @@ export function Dialog({
             <Text
               accessibilityRole="header"
               font="display"
-              className="text-xl font-semibold text-fg"
+              className="text-xl font-rc-display text-fg"
             >
               {title}
             </Text>
@@ -92,7 +92,7 @@ export function AlertDialog({
     >
       <View accessibilityViewIsModal className="flex-1 items-center justify-center bg-overlay p-6">
         <View className="w-full rounded-xl border border-border bg-surface p-6">
-          <Text accessibilityRole="header" font="display" className="text-xl font-semibold text-fg">
+          <Text accessibilityRole="header" font="display" className="text-xl font-rc-display text-fg">
             {title}
           </Text>
           <Text className="mt-1 text-sm text-fg-muted">{description}</Text>

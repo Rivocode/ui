@@ -43,7 +43,7 @@ export function Heading({ level, size, truncate, className, ...props }: HeadingP
       font="display"
       truncate={truncate}
       className={cn(
-        "font-semibold text-fg",
+        "font-rc-display text-fg",
         SIZE[size ?? HEADING_SIZE_OF_LEVEL[level] ?? "xl"],
         className,
       )}

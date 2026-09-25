@@ -14,7 +14,15 @@ const ENTRY =
   `@import "tailwindcss/utilities.css";\n`;
 
 const FAMILY = ["font-sans", "font-serif", "font-mono", "font-display"];
-const WEIGHT = ["font-medium", "font-semibold"];
+const WEIGHT = [
+  "font-medium",
+  "font-semibold",
+  "font-rc-regular",
+  "font-rc-medium",
+  "font-rc-strong",
+  "font-rc-bold",
+  "font-rc-display",
+];
 
 async function loadStylesheet(id: string, base: string) {
   let path = isAbsolute(id) ? id : resolve(base, id);

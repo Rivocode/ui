@@ -56,16 +56,68 @@ Cursor, Windsurf, VS Code):
 | `get_native_parity` | como a peça fica no React Native, prop a prop |
 | `get_guide` | as convenções e cada guia, inclusive as referências da skill |
 
+| `audit_screen` | a auditoria de uma tela pronta, com nota de 0 a 100 (a mesma da skill de auditoria, abaixo) |
+
 O pacote sai com a documentação da versão da biblioteca em que foi gerado, e
 toda resposta diz qual é. A skill e o servidor não competem: a skill fica no
 disco do projeto e ensina o método; o servidor responde a pergunta pontual no
 meio do trabalho.
+
+## Auditar uma tela pronta
+
+A skill `rivocode-ui` ensina a montar. A `rivocode-ui-audit` confere o que já
+foi montado: dada uma pasta ou os arquivos de tela de um app que usa o
+`@rivocode/ui` ou o `@rivocode/ui-native`, ela devolve um relatório com os
+achados, arquivo e linha, e uma nota de 0 a 100.
+
+```bash
+dir=$HOME/.claude/skills/rivocode-ui-audit && mkdir -p "$dir/scripts" && \
+  curl -fsSL https://ds.rivocode.com.br/skill-auditoria/SKILL.md -o "$dir/SKILL.md" && \
+  curl -fsSL https://ds.rivocode.com.br/skill-auditoria/scripts/audit.ts -o "$dir/scripts/audit.ts"
+```
+
+Trocando `$HOME/.claude` por `.claude` ela entra só no projeto. Depois, peça ao
+agent "audite as telas de `src/pages`", ou rode o script você mesmo:
+
+```bash
+bun ~/.claude/skills/rivocode-ui-audit/scripts/audit.ts src/pages
+```
+
+O script não tem dependência, e roda também no Node 23.6 ou mais novo, ou com
+`npx tsx` em qualquer Node. `--json` troca o relatório por JSON e `--minimo 85`
+sai com código 1 abaixo da nota, para barrar na CI.
+
+**A auditoria tem duas metades, e a nota sai das duas pela mesma conta.** O
+script acha o que se acha sem opinião: cor literal, `z-index` numérico, peça
+reescrita à mão (`<button>` no lugar de `Button`, `<input type="checkbox">` no
+lugar de `Checkbox`, o modal caseiro no lugar de `Dialog`), `IconButton` sem
+`label`, `Field` sem `FieldLabel`, texto de tela sem acento ou em inglês,
+formulário sem `useZodForm`, dinheiro em `parseFloat`, CPF e CNPJ sem
+`isValidCpf` e `isValidCnpj`, QR e Pix feitos à mão, importação pelo caminho
+errado e o peer do subcaminho que falta no `package.json`. O agent lê as telas
+e escreve o que só se decide entendendo o que elas fazem — a peça errada para a
+situação, o texto que não diz o que acontece, a validação feita com `useState`
+—, num JSON que o script lê de volta.
+
+**A nota é determinística: mesma entrada, mesma nota.** Cada regra pesa pela
+severidade (crítico 10, sério 5, moderado 3, menor 1), e a mesma regra conta no
+máximo três vezes por arquivo. A nota do arquivo é 100 menos a soma; a nota
+final é a média dos arquivos menos o que vale para o app inteiro, como o peer
+faltando. O agent não dá nota: ele acrescenta ou descarta achados, e o
+descarte aparece no relatório com o motivo.
+
+Quem usa o servidor MCP audita pela ferramenta `audit_screen`, sem instalar
+nada: ela recebe os arquivos, o `package.json` opcional e o mesmo JSON de
+julgamento, e devolve o mesmo relatório. A skill crua mora em
+[/skill-auditoria/SKILL.md](/skill-auditoria/SKILL.md), e o script em
+[/skill-auditoria/scripts/audit.ts](/skill-auditoria/scripts/audit.ts).
 
 ## Os endereços
 
 | Endereço                       | O que entrega                                              |
 | ------------------------------ | ---------------------------------------------------------- |
 | `/skill/SKILL.md`              | a skill crua, para ler sem instalar                        |
+| `/skill-auditoria/SKILL.md`    | a skill de auditoria, com o script em `/skill-auditoria/scripts/audit.ts` |
 | `/llms.txt`                    | o índice no formato de [llmstxt.org](https://llmstxt.org), por família, com uma linha sobre cada documento |
 | `/llms-full.txt`               | tudo num arquivo só: convenções, guias e cada peça         |
 | `/componentes/<nome>.md`       | o documento de uma peça: prosa, importação, exemplos, props e React Native |

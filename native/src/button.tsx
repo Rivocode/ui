@@ -86,7 +86,7 @@ export function Button({
       )}
     >
       {loading && <ButtonSpinner variant={variant} />}
-      <Text className={cn("font-medium", text, LABEL[variant])}>{children}</Text>
+      <Text className={cn("font-rc-medium", text, LABEL[variant])}>{children}</Text>
     </AnimatedPressable>
   );
 }

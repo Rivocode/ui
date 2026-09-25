@@ -31,7 +31,7 @@ export type RichTextViewProps = {
 };
 
 const STYLE = {
-  bold: "font-bold",
+  bold: "font-rc-bold",
   italic: "italic",
   underline: "underline",
   strike: "line-through",

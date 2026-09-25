@@ -654,7 +654,7 @@ export function QuestionnaireTitle({ className, children, ...props }: Questionna
       id={titleId}
       {...props}
       className={cn(
-        "float-left w-full font-display text-lg leading-[var(--rc-leading-tight)] tracking-tight",
+        "float-left w-full font-display font-rc-display text-lg leading-[var(--rc-leading-tight)] tracking-tight",
         "text-fg in-data-[disabled]:text-fg-disabled",
         className,
       )}
@@ -662,7 +662,7 @@ export function QuestionnaireTitle({ className, children, ...props }: Questionna
       {children}
       {!required && <span className="sr-only">, </span>}
       {!required && (
-        <span className="ml-2 align-middle font-sans text-xs tracking-normal text-fg-subtle">
+        <span className="ml-2 align-middle font-sans font-rc-regular text-xs tracking-normal text-fg-subtle">
           {labels.optional}
         </span>
       )}

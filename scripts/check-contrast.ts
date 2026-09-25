@@ -68,6 +68,14 @@
  * dia, sem texto nenhum em cima. E objeto grafico que precisa ser percebido, e
  * o acento nao serve para isso, porque o lima sobre branco mede 1,15.
  *
+ * O `border-strong` sobre `accent-subtle` entrou com o `Gantt`, que e a
+ * primeira peca a desenhar uma barra `accent-subtle` sem texto dentro: o que
+ * delimita a tarefa na linha do tempo e so a borda. Os quatro tons de estado ja
+ * tinham a linha pelo Alert; o acento nao, e mediu 3,19:1 e 3,30:1 sobre o
+ * cartao, 3,38:1 e 3,27:1 sobre a pagina, que e o fundo do fim de semana
+ * pintado na escala de dia. O preenchimento do progresso e `{tom}-text` sobre
+ * `{tom}-subtle`, e esse par ja e medido a 4,5:1 como texto.
+ *
  * Uma das linhas mede AO CONTRARIO, e e a unica que faz isso:
  * `--rc-surface-raised` sobre `--rc-accent-text` e a marca por DENTRO do
  * preenchimento - o tique do `Checkbox`, o traco do estado indeterminado, o
@@ -425,12 +433,56 @@
  * `checkMediaStage` cobra que o palco seja escuro (no maximo 1,2:1 sobre o
  * preto), os pares de texto a 4,5 e os de icone e contorno a 3, todos claro
  * sobre escuro, e o controle inativo visivel e mais fraco que o vivo.
+ *
+ * ## Os quatro graficos novos, e o par que o medidor derrubou no primeiro dia
+ *
+ * **`CSS_TINTED_PAIRS` - texto sobre a TINTA de uma serie.** O `ChartTreemap`
+ * escreve o nome e o valor da categoria em `fg` por cima da propria cor dela a
+ * 30% (`CHART_TINT`), composta sobre a pagina ou o cartao. Nenhuma tabela
+ * sabia medir isso: `CSS_COMPOSED_PAIRS` pede um token que JA carrega alfa, e
+ * `--rc-chart-N` e opaco - o alfa e da peca. A linha leva o alfa junto, e o
+ * numero tem que ser o mesmo que a peca pinta: `test/graficos-novos.test.tsx`
+ * confere `CHART_TINT` contra o `TREEMAP_TINT` de `src/shared/chart-layout.ts`,
+ * porque o arquivo daqui viaja no `dist/cli.js` e no espelho nativo e nao pode
+ * importar a peca. Medido no dia: o pior e 6,77:1, `chart-1` no escuro, sobre o
+ * cartao. Por que `fg` sobre tinta, e nao texto claro sobre a cor cheia: a cor
+ * cheia pede `surface` por cima no claro e no escuro, e ali `chart-1` do claro
+ * da 4,10:1 - abaixo de 4,5 - sem tema nenhum para consertar.
+ *
+ * O `ChartHeatmap` NAO escreve dentro da celula, e e por isso que a escala dele
+ * nao tem par de texto: numa grade de 7 por 24 a celula tem vinte e poucos
+ * pixels, e o numero mora na dica e na tabela escondida. O degrau mais forte e
+ * a cor da serie cheia, ja coberta por `CSS_SERIES` a 3:1; a celula VAZIA se
+ * distingue do zero pela borda tracejada em `border-strong`, que tambem ja era
+ * medida.
+ *
+ * **O arco do `ChartGauge` sobre o trilho.** O arco do valor e desenhado POR
+ * CIMA do trilho `--rc-skeleton`, na mesma espessura, e a primeira versao
+ * pintava `success`, `warning` e `danger`. A linha nova pegou no primeiro dia:
+ * `--rc-danger` do escuro sobre o trilho no cartao dava 2,99:1, contra os 3 da
+ * 1.4.11 - a faixa critica, justo a que precisa ser vista, era a unica que
+ * sumia. O conserto e o troco que o `Meter` ja tinha levado: o medidor pinta os
+ * papeis `-text`, que o par de texto ja garantia a 4,5:1 sobre os tres fundos.
+ * Medido depois, o pior e 4,47:1, `success-text` do claro sobre o trilho na
+ * pagina.
+ *
+ * ## O papel da assinatura, o terceiro
+ *
+ * O `SignaturePad` exporta o que a pessoa desenhou para um contrato, um
+ * comprovante, um PDF. Se a tinta fosse `fg` e o papel `surface`, a assinatura
+ * feita no tema escuro sairia CLARA - e sobre a folha branca do documento ela
+ * some. Pela mesma conta simetrica do codigo, nenhum par de tema veria isso.
+ * Os `--rc-signature-*` moram em `scales.css`: tinta e guia escuras sobre papel
+ * claro nos dois temas, medidas com a polaridade (`checkSignaturePaper`), e a
+ * guia inativa visivel e mais fraca que a viva.
  */
 import {
   CSS_CODE,
   CSS_MEDIA,
+  CSS_SIGNATURE,
   checkCodePair,
   checkMediaStage,
+  checkSignaturePaper,
   checkThemeCss,
   readTokens,
 } from "../src/lib/contrast";
@@ -472,6 +524,14 @@ for (const finding of checkMediaStage("src/tokens/scales.css: palco de midia", m
   console.log(finding.line);
 }
 
+const signature = Object.fromEntries(
+  Object.entries(CSS_SIGNATURE).map(([role, token]) => [role, fixed[token]]),
+);
+for (const finding of checkSignaturePaper("src/tokens/scales.css: papel da assinatura", signature)) {
+  if (!finding.ok) failed++;
+  console.log(finding.line);
+}
+
 for (const file of files) {
   const css = await Bun.file(file).text();
   const declared = Object.values(CSS_CODE).filter((role) => css.includes(`${role}:`));
@@ -492,6 +552,16 @@ for (const file of files) {
         "    O palco de midia tem valor unico, em src/tokens/scales.css, e nao e papel\n" +
         "    de tema: e assim que a foto em tela cheia continua num palco escuro no\n" +
         "    tema claro e em todo tema de cliente. Apague a declaracao do tema.",
+    );
+  }
+  const paper = Object.values(CSS_SIGNATURE).filter((role) => css.includes(`${role}:`));
+  if (paper.length > 0) {
+    failed++;
+    console.error(
+      `\n${file} declara ${paper.join(", ")}.\n` +
+        "    O papel da assinatura tem valor unico, em src/tokens/scales.css, e nao e\n" +
+        "    papel de tema: e assim que a assinatura exportada continua escura sobre\n" +
+        "    claro no tema escuro. Apague a declaracao do tema.",
     );
   }
 }

@@ -6,7 +6,7 @@
  * no pacote: o `dist/content.json` que nao foi escrito, o `bin` sem shebang, o
  * import que o bundle resolveu para um caminho que so existe no monorepo, o
  * `bun` que o `npx` de quem instala nao tem. Esta fumaca roda o mesmo comando
- * que o cliente MCP roda - `node dist/cli.js` - e cobra as sete ferramentas e
+ * que o cliente MCP roda - `node dist/cli.js` - e cobra as oito ferramentas e
  * uma resposta de cada familia.
  *
  * Fica fora do `bun run check` porque precisa do `mcp/dist`, que so existe
@@ -25,6 +25,7 @@ const CLI = resolve("mcp/dist/cli.js");
 const CONTENT = resolve("mcp/dist/content.json");
 
 const TOOLS = [
+  "audit_screen",
   "get_component",
   "get_guide",
   "get_native_parity",
@@ -68,6 +69,11 @@ const probes: [string, Record<string, unknown>, string][] = [
   ["get_tokens", { category: "color" }, "`--rc-accent`"],
   ["get_native_parity", { name: "Select" }, "# Select no React Native"],
   ["get_guide", { name: "convencoes" }, "RivoProvider"],
+  [
+    "audit_screen",
+    { files: [{ path: "tela.tsx", source: 'export const A = () => <div className="z-50" />' }] },
+    "**Nota: 95/100.**",
+  ],
 ];
 
 for (const [name, args, expected] of probes) {

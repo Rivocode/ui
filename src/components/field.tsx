@@ -76,7 +76,7 @@ export function Field({ className, ...props }: FieldProps) {
 
 export function FieldLabel({ className, ...props }: ComponentProps<typeof BaseField.Label>) {
   const inside = use(FieldRootPresence);
-  const classes = cn("font-sans text-sm font-medium text-fg", className);
+  const classes = cn("font-sans text-sm font-rc-medium text-fg", className);
 
   useMissingFieldRootWarning("FieldLabel", !inside);
 

@@ -55,6 +55,11 @@
   --radius-lg: 12px;
   --radius-xl: 16px;
   --radius-pill: 999px;
+  --font-weight-rc-regular: 400;
+  --font-weight-rc-medium: 500;
+  --font-weight-rc-strong: 600;
+  --font-weight-rc-bold: 700;
+  --font-weight-rc-display: 600;
   --text-xs: 12px;
   --text-xs--line-height: 18px;
   --text-sm: 13px;

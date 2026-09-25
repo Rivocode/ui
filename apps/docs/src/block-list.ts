@@ -15,6 +15,8 @@ export type BlockEntry = {
   title: string
   summary: string
   pieces: string[]
+  /** Pagina de erro: nao tem listagem, entao o markdown nao cobra os quatro finais. */
+  errorPage?: boolean
 }
 
 export const BLOCK_LIST: BlockEntry[] = [
@@ -66,6 +68,42 @@ export const BLOCK_LIST: BlockEntry[] = [
       'Os quatro finais de uma listagem na mesma tela: primeira vez, filtro sem resultado, erro com nova tentativa e carregando.',
     pieces: ['EmptyState', 'DataTable', 'ToggleGroup', 'PageHeader'],
   },
+  {
+    slug: 'pagina-nao-encontrada',
+    file: 'not-found',
+    title: 'Página não encontrada (404)',
+    summary:
+      'O endereço que não existe mais: a busca no sistema inteiro, o caminho de volta e os lugares mais procurados.',
+    pieces: ['Heading', 'Text', 'SearchInput', 'Button', 'Link'],
+    errorPage: true,
+  },
+  {
+    slug: 'erro-inesperado',
+    file: 'server-error',
+    title: 'Erro inesperado (500)',
+    summary:
+      'A falha que foi do servidor: tentar de novo com o botão em carga, e o código do atendimento para copiar e mandar ao suporte.',
+    pieces: ['Heading', 'Text', 'Button', 'Card', 'DescriptionList', 'Clipboard', 'Link'],
+    errorPage: true,
+  },
+  {
+    slug: 'manutencao-programada',
+    file: 'maintenance',
+    title: 'Manutenção programada',
+    summary:
+      'O sistema fora do ar por hora marcada: quando volta, no horário de Brasília, o que para, o que continua e o link da página de status.',
+    pieces: ['Badge', 'Heading', 'Text', 'Card', 'DescriptionList', 'Button', 'Link'],
+    errorPage: true,
+  },
+  {
+    slug: 'sem-permissao',
+    file: 'forbidden',
+    title: 'Sem permissão (403)',
+    summary:
+      'A área que a conta não alcança: quem libera, o pedido de acesso com a confirmação na tela, e a saída para entrar com outra conta.',
+    pieces: ['Heading', 'Text', 'Card', 'DescriptionList', 'Badge', 'Alert', 'Button', 'Link'],
+    errorPage: true,
+  },
 ]
 
 /** De onde o bloco pode importar. Qualquer outra origem quebra quem copia. */
@@ -93,9 +131,11 @@ export function blockMarkdown(block: BlockEntry, source: string, site: string) {
 
 ${block.summary}
 
-Uma tela inteira, montada só com peças do @rivocode/ui e as regras da skill. Copie
-o arquivo, troque os dados de exemplo pelos da sua consulta e mantenha os quatro
-finais: dados, carregando, erro e vazio. Ele importa só de \`@rivocode/ui\`,
+Uma tela inteira, montada só com peças do @rivocode/ui e as regras da skill. ${
+    block.errorPage
+      ? `Copie o arquivo e troque os endereços e os dados de exemplo pelos da sua aplicação. A página diz o que aconteceu, de quem foi a falha e o que fazer agora, e nunca mostra stack nem nome de endpoint: o código que ela oferece para copiar é o do atendimento, que o suporte procura no log.`
+      : `Copie o arquivo, troque os dados de exemplo pelos da sua consulta e mantenha os quatro finais: dados, carregando, erro e vazio.`
+  } Ele importa só de \`@rivocode/ui\`,
 \`@rivocode/ui/form\`, \`@rivocode/ui/chart\`, \`zod\`, \`lucide-react\` e \`react\`.
 
 Peças: ${pieces}.

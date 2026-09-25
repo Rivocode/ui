@@ -25,7 +25,7 @@ export function Badge({ children, tone = "neutral", className }: BadgeProps) {
   const styles = TONE[tone] ?? NEUTRAL_TONE;
   return (
     <View className={cn("self-start rounded-pill px-2.5 py-0.5", styles.box, className)}>
-      <Text className={`text-xs font-medium ${styles.label}`}>{children}</Text>
+      <Text className={`text-xs font-rc-medium ${styles.label}`}>{children}</Text>
     </View>
   );
 }

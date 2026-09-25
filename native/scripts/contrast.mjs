@@ -486,6 +486,7 @@ export const CSS_COMPOSED_PAIRS = [
   ["--rc-fg", "--rc-success-subtle", "--rc-surface", MIN_BODY],
   ["--rc-fg", "--rc-warning-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-warning-subtle", "--rc-surface", MIN_BODY],
+  ["--rc-fg", "--rc-warning-subtle", "--rc-surface-raised", MIN_BODY],
   ["--rc-fg", "--rc-danger-subtle", "--rc-bg", MIN_BODY],
   ["--rc-fg", "--rc-danger-subtle", "--rc-surface", MIN_BODY]
 ];
@@ -511,6 +512,8 @@ export const CSS_BOUNDARIES = [
   ["--rc-border-strong", ["--rc-warning-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-border-strong", ["--rc-danger-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-border-strong", ["--rc-danger-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-accent-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-accent-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-ring", ["--rc-info-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-ring", ["--rc-info-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-ring", ["--rc-success-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
@@ -518,7 +521,16 @@ export const CSS_BOUNDARIES = [
   ["--rc-ring", ["--rc-warning-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-ring", ["--rc-warning-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-ring", ["--rc-danger-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
-  ["--rc-ring", ["--rc-danger-subtle", "--rc-surface"], MIN_NON_TEXTUAL]
+  ["--rc-ring", ["--rc-danger-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-border-strong", ["--rc-accent-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-accent-text", ["--rc-selected", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-ring", ["--rc-accent-subtle", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-success-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-success-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-warning-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-warning-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-danger-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-danger-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL]
 ];
 export const CSS_DISABLED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
 export const CSS_CHECKED = "--rc-accent-text";
@@ -597,6 +609,49 @@ ${name}` }];
     const weaker = live / ratio >= LIVE_OVER_DISABLED;
     say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} controle inativo sobre ${where[back]}  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, e o vivo pesa ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
   }
+  return findings;
+}
+export const CHART_TINT = 0.3;
+export const CSS_TINTED_PAIRS = CSS_SERIES.flatMap((serie) => ["--rc-bg", "--rc-surface"].map((under) => ["--rc-fg", serie, CHART_TINT, under, MIN_TEXT]));
+export const CSS_SIGNATURE = {
+  ink: "--rc-signature-ink",
+  paper: "--rc-signature-paper",
+  guide: "--rc-signature-guide",
+  disabled: "--rc-signature-disabled"
+};
+export const MAP_SIGNATURE = {
+  ink: "signature-ink",
+  paper: "signature-paper",
+  guide: "signature-guide",
+  disabled: "signature-disabled"
+};
+const SIGNATURE_PAIRS = [
+  ["ink", MIN_TEXT, "tinta da assinatura sobre o papel"],
+  ["guide", MIN_TEXT, '"Assine aqui" sobre o papel'],
+  ["guide", MIN_NON_TEXTUAL, "linha de base sobre o papel"]
+];
+export function checkSignaturePaper(name, colors) {
+  const findings = [{ ok: true, line: `
+${name}` }];
+  const say = (ok, line) => findings.push({ ok, line: `  ${line}` });
+  const missing = Object.keys(CSS_SIGNATURE).filter((role) => !colors[role] || !toHex(colors[role]));
+  if (missing.length > 0) {
+    say(false, `FALTA  papel da assinatura sem cor opaca: ${missing.join(", ")}`);
+    return findings;
+  }
+  const color = (role) => colors[role];
+  const paper = color("paper");
+  for (const [front, min, what] of SIGNATURE_PAIRS) {
+    const ratio = contrastRatio(color(front), paper);
+    const dark = luminance(color(front)) < luminance(paper);
+    const ok = ratio >= min && dark;
+    say(ok, `${ok ? "ok   " : "FALHA"} ${what}  ${ratio.toFixed(2)}:1 (min ${min}, escuro sobre claro` + `${dark ? "" : ": a assinatura sai invertida, e o documento impresso a perde"})`);
+  }
+  const ratio = contrastRatio(color("disabled"), paper);
+  const live = contrastRatio(color("guide"), paper);
+  const visible = ratio >= MIN_DISABLED;
+  const weaker = live / ratio >= LIVE_OVER_DISABLED;
+  say(visible && weaker, `${visible && weaker ? "ok   " : "FALHA"} guia inativa sobre o papel  ${ratio.toFixed(2)}:1` + ` (min ${MIN_DISABLED}, e a viva pesa ${(live / ratio).toFixed(2)}x, min ${LIVE_OVER_DISABLED}x)`);
   return findings;
 }
 function clippedHex(value) {
@@ -679,6 +734,19 @@ ${name}` }];
     const notWeaker = onRatio >= offRatio;
     say(visible && notWeaker, `${visible && notWeaker ? "ok   " : "FALHA"} ${CSS_CHECKED} sobre ${over}` + `  ${onRatio.toFixed(2)}:1 (min ${MIN_NON_TEXTUAL}, 1.4.11, e o controle marcado não` + ` pesa menos que o desmarcado, a ${offRatio.toFixed(2)}:1)`);
   }
+  for (const [front, tintName, alpha, underName, min] of CSS_TINTED_PAIRS) {
+    const text = tokens[front];
+    const tinted = tokens[tintName];
+    const under = tokens[underName];
+    const background = tinted && under ? faded(tinted, alpha, under) : undefined;
+    if (!text || !background) {
+      say(false, `FALTA  ${front} sobre ${tintName} a ${alpha * 100}% em ${underName}`);
+      continue;
+    }
+    const ratio = contrastRatio(text, background);
+    const ok = ratio >= min;
+    say(ok, `${ok ? "ok   " : "FALHA"} ${front} sobre ${tintName} a ${alpha * 100}% em ${underName}` + `  ${ratio.toFixed(2)}:1 (min ${min})`);
+  }
   for (const [front, subtle, underName, min] of CSS_COMPOSED_PAIRS) {
     const text = tokens[front];
     const alphaBackground = tokens[subtle];
@@ -720,6 +788,7 @@ for (const state of STATES)
   pair(`${state}-fg`, [state], MIN_TEXT);
 pair("accent-fg", ["accent-active"], MIN_TEXT, "botão primário sob o dedo");
 pair("fg", ["selected", "selected", "surface"], MIN_BODY, "dia do intervalo sob o dedo");
+pair("fg", ["warning-subtle", "surface-raised"], MIN_BODY, "trecho achado do Highlight");
 export const MAP_BOUNDARIES = [];
 for (const background of BACKGROUNDS) {
   MAP_BOUNDARIES.push({ front: "border-strong", layers: [background], min: MIN_NON_TEXTUAL });
@@ -749,6 +818,12 @@ MAP_BOUNDARIES.push({
   note: "hoje dentro do intervalo"
 });
 MAP_BOUNDARIES.push({
+  front: "accent-text",
+  layers: ["selected", "surface"],
+  min: MIN_NON_TEXTUAL,
+  note: "caixa marcada na linha escolhida da TransferList"
+});
+MAP_BOUNDARIES.push({
   front: "surface-raised",
   layers: ["accent-text"],
   min: MIN_NON_TEXTUAL,
@@ -773,6 +848,27 @@ for (const background of ["bg", "surface"]) {
     min: MIN_NON_TEXTUAL,
     note: "barra cheia do Meter e do Progress dentro do trilho"
   });
+  for (const state of ["success", "warning", "danger"]) {
+    MAP_BOUNDARIES.push({
+      front: `${state}-text`,
+      layers: ["skeleton", background],
+      min: MIN_NON_TEXTUAL,
+      note: "arco do ChartGauge dentro do trilho"
+    });
+  }
+}
+export const MAP_TINTED_PAIRS = [];
+for (let index = 1;index <= 8; index++) {
+  for (const over of ["bg", "surface"]) {
+    MAP_TINTED_PAIRS.push({
+      front: "fg",
+      tint: `chart-${index}`,
+      alpha: CHART_TINT,
+      over,
+      min: MIN_TEXT,
+      note: "rótulo do ChartTreemap sobre a tinta da categoria"
+    });
+  }
 }
 export const MAP_LAYER_PAIRS = [
   {
@@ -805,6 +901,11 @@ export const MEASURED_ROLES = (() => {
   for (const item of MAP_LAYER_PAIRS) {
     roles.add(item.front);
     roles.add(item.fill);
+  }
+  for (const item of MAP_TINTED_PAIRS) {
+    roles.add(item.front);
+    roles.add(item.tint);
+    roles.add(item.over);
   }
   for (const role of [MAP_CHECKED, MAP_UNCHECKED, ...MAP_CHECKED_OVER])
     roles.add(role);
@@ -886,6 +987,14 @@ ${name} / ${scheme}` });
       const worst = layerRatio(colors, item);
       const ok = worst >= item.min;
       say(ok, `${ok ? "ok   " : "FALHA"} ${item.front} sobre ${item.fill} a ${item.alpha * 100}%` + ` da camada  ${Number.isNaN(worst) ? "sem medida" : `${worst.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
+    }
+    for (const item of MAP_TINTED_PAIRS) {
+      const under = stack(colors, [item.over]);
+      const background = under ? faded(colors[item.tint] ?? "", item.alpha, under) : undefined;
+      const front = background ? solid(colors[item.front], background) : undefined;
+      const ratio = front && background ? contrastRatio(front, background) : Number.NaN;
+      const ok = ratio >= item.min;
+      say(ok, `${ok ? "ok   " : "FALHA"} ${item.front} sobre ${item.tint} a ${item.alpha * 100}% em ${item.over}` + `  ${Number.isNaN(ratio) ? "sem medida" : `${ratio.toFixed(2)}:1`}` + ` (min ${item.min})  ${item.note}`);
     }
     for (const over of MAP_CHECKED_OVER) {
       const on = ratioOf(colors, { front: MAP_CHECKED, layers: [over], min: MIN_NON_TEXTUAL });

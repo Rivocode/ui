@@ -20,7 +20,7 @@ export type FieldProps = {
 export function Field({ label, children, description, error, className }: FieldProps) {
   return (
     <View className={cn("gap-1.5", className)}>
-      <Text className="text-sm font-medium text-fg">{label}</Text>
+      <Text className="text-sm font-rc-medium text-fg">{label}</Text>
       {children}
       <Presence
         show={Boolean(error || description)}

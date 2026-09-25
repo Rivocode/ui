@@ -428,7 +428,7 @@ function KanbanLane<Item>({
           id={titleId}
           title={column.title}
           className={cn(
-            "line-clamp-2 min-w-0 flex-1 text-sm font-semibold break-words text-fg",
+            "line-clamp-2 min-w-0 flex-1 text-sm font-rc-strong break-words text-fg",
             classNames?.title,
           )}
         >

@@ -9,7 +9,7 @@ import { cn } from "../lib/cn";
 export const avatarVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center overflow-hidden rounded-pill",
-    "bg-skeleton align-middle font-sans font-medium text-fg-muted select-none",
+    "bg-skeleton align-middle font-sans font-rc-medium text-fg-muted select-none",
   ),
   {
     variants: {

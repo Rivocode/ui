@@ -246,6 +246,8 @@ const SAMPLE_PROPS: Record<string, Record<string, unknown>> = {
   RivoProvider: { scope: "local" },
   FieldError: { match: true },
   RichTextView: { value: "<p>Nota paga em 12/08.</p>" },
+  ScrollToTop: { threshold: -1 },
+  TableOfContents: { items: [{ id: "emissao", label: "Emissão" }] },
 };
 
 /**

@@ -129,7 +129,7 @@ export function Stat({
           )}
         </div>
 
-        <p className="mt-1 font-display text-2xl tracking-tight text-fg">{value}</p>
+        <p className="mt-1 font-display font-rc-display text-2xl tracking-tight text-fg">{value}</p>
 
         {delta !== undefined && (
           <p
@@ -137,7 +137,7 @@ export function Stat({
               "mt-1 flex w-fit items-center gap-1 text-xs",
               deltaVariant === "pill"
                 ? cn(
-                    "rounded-pill px-1.5 py-0.5 font-medium",
+                    "rounded-pill px-1.5 py-0.5 font-rc-medium",
                     good
                       ? "bg-success-subtle text-success-text"
                       : "bg-danger-subtle text-danger-text",

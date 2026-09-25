@@ -17,7 +17,7 @@ export function CardHeader({ children }: { children: ReactNode }) {
 
 export function CardTitle({ children }: { children: ReactNode }) {
   return (
-    <Text font="display" className="text-xl font-semibold text-fg">
+    <Text font="display" className="text-xl font-rc-display text-fg">
       {children}
     </Text>
   );

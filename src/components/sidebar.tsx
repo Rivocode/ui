@@ -200,7 +200,7 @@ export function SidebarBrand({ className, mark, children, ...props }: SidebarBra
     >
       {mark && <span className="flex shrink-0 items-center">{mark}</span>}
       {!collapsed && children && (
-        <span className="truncate font-display text-lg tracking-tight text-fg">{children}</span>
+        <span className="truncate font-display font-rc-display text-lg tracking-tight text-fg">{children}</span>
       )}
     </div>
   );
@@ -300,7 +300,7 @@ export function SidebarGroup({ className, label, children, ...props }: SidebarGr
   return (
     <div {...props} className={cn("flex flex-col gap-0.5", className)}>
       {label && !collapsed && (
-        <p className="px-2 py-1 text-xs font-medium tracking-[0.04em] text-fg-subtle uppercase">
+        <p className="px-2 py-1 text-xs font-rc-medium tracking-[0.04em] text-fg-subtle uppercase">
           {label}
         </p>
       )}

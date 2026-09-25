@@ -82,7 +82,7 @@ export function Indicator({
             badgeClassName,
           )}
         >
-          {dot !== true && <Text className="text-xs font-medium text-danger-fg">{written}</Text>}
+          {dot !== true && <Text className="text-xs font-rc-medium text-danger-fg">{written}</Text>}
         </Entrance>
       )}
     </View>

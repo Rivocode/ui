@@ -64,7 +64,7 @@ export function DialogTitle({ className, ...props }: ComponentProps<typeof BaseD
     <BaseDialog.Title
       {...props}
       className={cn(
-        "font-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+        "font-display font-rc-display text-xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
         className,
       )}
     />

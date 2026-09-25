@@ -78,6 +78,9 @@ function valueProblem(type: string, value: unknown): string | undefined {
       ? undefined
       : "familia";
   }
+  if (type === "fontWeight") {
+    return typeof value === "number" && value >= 1 && value <= 1000 ? undefined : "peso";
+  }
   if (type === "shadow") {
     const layers = Array.isArray(value) ? value : [value];
     for (const layer of layers as Node[]) {
@@ -151,6 +154,19 @@ test("todo token tem um tipo do DTCG 2025.10 e um valor na forma desse tipo", ()
   }
   expect(seen).toBeGreaterThan(180);
   expect(problems).toEqual([]);
+});
+
+test("o peso sai como fontWeight, com o valor da casa em cada intencao", () => {
+  const scales = flatten(files["scales.tokens.json"]!);
+  const weights = [...scales].filter(([path]) => path.startsWith("weight."));
+
+  expect(weights.map(([path, token]) => [path, token.$type, token.$value])).toEqual([
+    ["weight.regular", "fontWeight", 400],
+    ["weight.medium", "fontWeight", 500],
+    ["weight.strong", "fontWeight", 600],
+    ["weight.bold", "fontWeight", 700],
+    ["weight.display", "fontWeight", 600],
+  ]);
 });
 
 test("todo alias resolve, sem ciclo, para um token do mesmo tipo", () => {

@@ -84,12 +84,14 @@ import {
   chosenFamily,
   fontInstallCommand,
   googleFontsUrl,
-  missingWeights,
   nativeFontsSnippet,
   nativeInstallCommand,
   type FontChoice,
   type FontRole,
   type FontState,
+  weightClass,
+  weightFits,
+  weightToken,
 } from '@/theme-builder/fonts'
 import { Sample } from '@/theme-builder/sample'
 
@@ -173,13 +175,6 @@ const FONT_ITEMS: Record<FontRole, FontItem[]> = Object.fromEntries(
     ],
   ]),
 ) as Record<FontRole, FontItem[]>
-
-const WEIGHT_CLASS: Record<number, string> = {
-  400: 'font-normal',
-  500: 'font-medium',
-  600: 'font-semibold',
-  700: 'font-bold',
-}
 
 const DENSITY_LABEL: Record<RivoDensity, string> = {
   comfortable: 'Confortável',
@@ -318,7 +313,7 @@ function FontPicker({
   const items = FONT_ITEMS[role]
   const current = items.find((item) => item.value === value) ?? items[0]!
   const family = chosenFamily(role, value)
-  const missing = family ? missingWeights(family) : []
+  const fits = family ? weightFits(role, family) : []
 
   return (
     <Field className="gap-1">
@@ -351,20 +346,22 @@ function FontPicker({
           {joinWeights(family.weights.filter((weight) => weight >= 300 && weight <= 800))}.
         </FieldDescription>
       )}
-      {missing.length > 0 && (
-        <Alert tone="warning" className="mt-1">
+      {fits.length > 0 && (
+        <Alert tone="info" className="mt-1">
           <AlertTitle>
-            {family!.family} não tem {missing.length === 1 ? 'o peso' : 'os pesos'}{' '}
-            {joinWeights(missing.map((item) => item.weight))}
+            {family!.family} não tem {fits.length === 1 ? 'o peso' : 'os pesos'}{' '}
+            {joinWeights([...new Set(fits.map((item) => item.wanted))])}, e o tema já se ajusta
           </AlertTitle>
           <AlertDescription>
             <span className="block space-y-1">
-              {missing.map((item) => (
-                <span key={item.weight} className="block">
-                  <code className="font-mono">{WEIGHT_CLASS[item.weight]}</code>{' '}
-                  {item.synthetic
-                    ? `vira negrito sintético sobre o ${item.falls}, desenhado pelo navegador.`
-                    : `cai no ${item.falls}.`}
+              {fits.map((item) => (
+                <span key={item.intent} className="block">
+                  <code className="font-mono">{weightClass(item.intent)}</code> pede {item.wanted} e sai
+                  com {item.falls}, o peso mais próximo que a família tem:{' '}
+                  <code className="font-mono">
+                    {weightToken(item.intent)}: {item.falls}
+                  </code>
+                  {item.synthetic ? ', em vez do negrito sintético que o navegador desenharia.' : '.'}
                 </span>
               ))}
             </span>

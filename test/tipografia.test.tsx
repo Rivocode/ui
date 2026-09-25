@@ -114,7 +114,7 @@ describe("Text", () => {
     const classes = tokens(screen.getByText("Total"));
 
     expect(classes).toContain("text-sm");
-    expect(classes).toContain("font-semibold");
+    expect(classes).toContain("font-rc-strong");
   });
 
   test("truncate corta em uma linha, e lineClamp vence quando os dois vem", () => {

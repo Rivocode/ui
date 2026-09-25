@@ -122,6 +122,7 @@ const AUTONOMAS = new Set([
   "RadioGroup",
   "ResizablePanelGroup",
   "ToggleGroup",
+  "TableOfContents",
   "TreeSelect",
 ]);
 
@@ -315,6 +316,87 @@ const PARITY: Record<string, Row> = {
       "O arco liso anda até o valor novo como no web, e nasce no lugar; o `segmented` acende os " +
       "tracinhos de uma vez, também como no web.",
   },
+  ChartFunnel: {
+    state: "traduz",
+    note:
+      "mesmas props, com `color` como papel de token e `format` só como função; cada etapa é uma " +
+      "parada com nome, número e taxa na mesma frase",
+    page:
+      "Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do " +
+      "`react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, " +
+      "gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, " +
+      "`rateLabel` e `overallLabel` atravessam iguais.\n\n" +
+      "Duas mudanças de tipo, as mesmas da rosca: `color` é papel de token (`chart-2`) e não cor " +
+      "de CSS, e `format` só aceita função. E uma de leitura: no web a peça é uma lista ordenada " +
+      "e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada " +
+      "só**, com os três na mesma frase (\"Cadastros: 400, 40% da etapa anterior\"), porque o " +
+      "leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam " +
+      "o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse " +
+      "papel.\n\n" +
+      "As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, " +
+      'pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.',
+  },
+  ChartGauge: {
+    state: "traduz",
+    note:
+      "atravessa quase inteiro, como o `ChartRadial`; a régua das faixas entra no nome acessível, " +
+      "porque não há descrição separada no toque",
+    page:
+      "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `value`, `max`, `bands`, " +
+      "`sweep`, `centerValue`, `centerLabel`, `label`. As faixas são as mesmas, com `tone` " +
+      "`success`, `warning` ou `danger`, e pintam os mesmos papéis `-text` do web: a medida do " +
+      "arco sobre o trilho é a mesma nos dois lados, e está no mapa de contraste do nativo.\n\n" +
+      "Duas mudanças de tipo, as da rosca e do arco: `centerValue` e `centerLabel` são `string`, " +
+      "e `format` só aceita função. E uma de leitura: no web a régua das faixas vai numa " +
+      "descrição separada, ligada por `aria-describedby`; o celular não tem esse canal, então " +
+      "ela entra no fim do nome acessível (\"72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a " +
+      '85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.\n\n' +
+      "O arco e o ponteiro andam juntos até o valor novo, pelo Reanimated, e nascem no lugar com " +
+      '"reduzir movimento".',
+  },
+  ChartHeatmap: {
+    state: "traduz",
+    note:
+      "a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem " +
+      "dica, a leitura mora numa linha embaixo",
+    page:
+      "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, " +
+      "`valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`. A escala é a mesma, " +
+      "cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em " +
+      "`native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda " +
+      "tracejada, igual.\n\n" +
+      "Duas mudanças de tipo: `color` é papel de token (`chart-3`) e `format` só aceita função.\n\n" +
+      "**O que muda é como se lê uma célula.** No web o ponteiro pousa e a dica abre, e o leitor " +
+      "de tela navega uma tabela escondida. No celular não há dica nem tabela: o dedo toca ou " +
+      "arrasta sobre a grade e escolhe a célula debaixo dele, que ganha contorno, e a linha, a " +
+      "coluna e o número aparecem escritos embaixo da grade. Para o leitor de tela a grade é " +
+      "**uma parada `adjustable` só**, que anda célula a célula com o gesto de subir e descer, " +
+      "a mesma decisão do `Tracker`: cento e sessenta e oito paradas dentro de um cartão seriam " +
+      "um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.\n\n" +
+      "Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a " +
+      "tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura.",
+  },
+  ChartTreemap: {
+    state: "traduz",
+    note:
+      "cada categoria é um botão com nome, valor e fatia; tocar acende o contorno e escreve a " +
+      "leitura embaixo, e a regra do rótulo que some é a mesma",
+    page:
+      "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, " +
+      "`config`, `format`. A geometria é a mesma função do web (o *squarified*, gerado em " +
+      "`native/src/shared/`), e a regra do rótulo também: nome e valor quando cabem os dois, só " +
+      "o nome quando cabe uma linha, nada quando nem o nome cabe, e nada antes do `onLayout` " +
+      "medir a caixa. A tinta a 30% com `fg` por cima é a mesma, e os dezesseis pares estão no " +
+      "mapa de contraste do nativo.\n\n" +
+      "Duas mudanças de tipo: o `config.color` é papel de token, como em toda a família, e " +
+      "`format` só aceita função.\n\n" +
+      "**O que muda é como se lê uma categoria.** Aqui são poucas (acima de uma dúzia o treemap " +
+      "para de informar), e poucas categorias viram poucas paradas: cada retângulo é um botão com " +
+      "nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o " +
+      "contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por " +
+      "isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem " +
+      "um nem outro existe. O título do cartão faz esse papel.",
+  },
   Checkbox: {
     state: "traduz",
     note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`; o tique aparece crescendo ao marcar",
@@ -496,6 +578,25 @@ const PARITY: Record<string, Row> = {
       "no nativo ja pinta por dia pelo `DayPaint`. Quem precisa de grade de tempo no celular " +
       "esta pedindo a tela de mesa num aparelho que nao a comporta.",
   },
+  Gantt: {
+    state: "nao",
+    note: "cronograma é idioma de mesa; no telefone a tarefa por dia é lista, e o prazo é o `Calendar`",
+    page:
+      "Não porta, e é decisão, pela mesma conta que tirou o `EventCalendar` do celular. O " +
+      "`Gantt` existe para mostrar duração e encadeamento lado a lado: a tabela à esquerda, a " +
+      "escala à direita e a seta entre as duas. A 358px a tabela fica com o título e mais nada, " +
+      "e a escala de semana mostra onze dias por tela; a seta de dependência liga barras que " +
+      "quase nunca estão na mesma tela ao mesmo tempo. O que sobra é uma lista com retângulos " +
+      "coloridos, e a lista sozinha diz isso melhor.\n\n" +
+      "**A edição é o que fecha a conta.** O web já não arrasta com o dedo, porque a barra de " +
+      "18px disputa o gesto com a rolagem de lado da própria moldura, e é o mesmo conflito que " +
+      "a `week` do `EventCalendar` não resolveu. Um `Gantt` nativo sem arrastar seria uma " +
+      "tabela cara; com arrastar, seria um gesto que a casa já mediu e recusou.\n\n" +
+      "**No telefone, a resposta é outra peça.** A tarefa do dia é lista, montada com `Item` ou " +
+      "`DataList`, com início, fim e responsável escritos; prazo com valor é o `Calendar`, que " +
+      "pinta por dia pelo `DayPaint`; e o andamento de uma tarefa é o `Progress`. Remarcar é o " +
+      "formulário com `DatePicker`, que é o que o dedo faz bem.",
+  },
   Fieldset: { state: "traduz", note: "`legend` como prop" },
   Grid: {
     state: "traduz",
@@ -547,6 +648,23 @@ const PARITY: Record<string, Row> = {
       "`multiple` ou `text`, e `other` para o campo de resposta outra. Não há atalho de " +
       "letra, porque não há teclado físico; a troca de pergunta e o erro saem pelo anúncio " +
       "do leitor de tela do sistema, e a pergunta nova entra com os tokens de movimento.",
+  },
+  Tour: {
+    state: "traduz",
+    note: "sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha de baixo, o passo é controlado e não há `interactive`",
+    page:
+      "Traduz sobre o `Modal` do core, sem peer novo: o alvo vem por ref e é medido por " +
+      "`measureInWindow` quando o passo abre, e quatro faixas com o `overlay` do tema cercam o " +
+      "recorte. O balão é sempre a folha de baixo, que é o que o web já faz abaixo de 640px, com " +
+      "o mesmo contador, os mesmos botões e os mesmos textos, que moram num arquivo só, " +
+      "compartilhado pelos dois pacotes. Ref vazio pula o passo, com o mesmo aviso em " +
+      "desenvolvimento.\n\n" +
+      "Três diferenças, e as três são do toque. O passo é controlado (`step` e `onStepChange` " +
+      "obrigatórios), como todo o pacote nativo. Não há `interactive`: o `Modal` é outra janela, " +
+      "e o toque não atravessa para a tela de trás. E não há rolagem sozinha, porque o React " +
+      "Native não tem `scrollIntoView`: quem rola é a tela, no `onStepChange`, com " +
+      "`scrollTo({ animated: false })` na `ScrollView`, e a peça mede de novo no quadro " +
+      "seguinte. O voltar do Android pula o tour, como o `Esc` no web.",
   },
   Menu: {
     state: "traduz",
@@ -682,6 +800,38 @@ const PARITY: Record<string, Row> = {
       "`icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.\n\n" +
       "```tsx\n" +
       "<Rating value={nota} onValueChange={setNota} allowHalf />\n" +
+      "```",
+  },
+  SignaturePad: {
+    state: "traduz",
+    note:
+      "vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o traço é o mesmo " +
+      "arquivo do web, o gesto é o `PanResponder`, e o PNG fica de fora por não haver canvas",
+    page:
+      "Traduz, no caminho `@rivocode/ui-native/chart`: o papel é desenhado com o " +
+      "`react-native-svg`, que já é o peer desse caminho, e a regra da casa é **um subcaminho por " +
+      "peer**, e não um por assunto. Quem só usa um `Button` não passa a precisar do SVG por causa " +
+      "da assinatura.\n\n" +
+      "**O traço é o mesmo dos dois lados, linha por linha.** A suavização por curvas, a espessura " +
+      "que varia com a velocidade e com a pressão, o nome digitado em cursiva e o SVG exportado " +
+      "moram em `src/shared/` e atravessam por espelho: a assinatura feita no celular abre igual no " +
+      "web, com o mesmo `value`. O gesto é o `PanResponder` do core, que não cede o toque para a " +
+      "rolagem no meio do traço; `onDrawingChange` avisa quando o dedo começa e termina, para a " +
+      "`ScrollView` em volta desligar o `scrollEnabled`. A força do toque, quando o aparelho a " +
+      "mede, entra como pressão.\n\n" +
+      "**Exporta só o SVG.** `signatureToSvg` sai daqui com a tinta do token, escura nos dois " +
+      "temas; o PNG não porta, porque o React Native não tem canvas. Quem precisa de imagem " +
+      "rasteriza o SVG no servidor, ou captura a área com uma biblioteca de captura de tela. O " +
+      "`value` é controlado, não há `name` (formulário escondido não existe no celular), e o modo " +
+      "de digitar o nome continua lá: a cursiva padrão é a Snell Roundhand no iOS e a `cursive` no " +
+      "Android.\n\n" +
+      "```tsx\n" +
+      "import { SignaturePad } from '@rivocode/ui-native/chart'\n\n" +
+      "<SignaturePad\n" +
+      "  value={assinatura}\n" +
+      "  onValueChange={setAssinatura}\n" +
+      "  onDrawingChange={(desenhando) => setRolagem(!desenhando)}\n" +
+      "/>\n" +
       "```",
   },
   Slider: {
@@ -1477,6 +1627,43 @@ const PARITY: Record<string, Row> = {
       "para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o " +
       "`KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.",
   },
+  TableOfContents: {
+    state: "nao",
+    note: "tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs`",
+    page:
+      "Não porta, por decisão. O índice da página é idioma de mesa: ele mora numa coluna ao " +
+      "lado do texto, e no celular não há coluna ao lado. Texto longo numa tela de app se " +
+      "divide antes de chegar ao índice: cada seção vira uma tela do router aberta a partir " +
+      "de uma lista, ou uma aba do `Tabs`, e o título da tela diz onde a pessoa está.\n\n" +
+      "O leitor de tela também já tem o próprio índice: o rotor do VoiceOver e os controles " +
+      "de leitura do TalkBack pulam de título em título em qualquer `Text` com " +
+      "`accessibilityRole=\"header\"`, que é o que o `Heading` do pacote nativo escreve.",
+  },
+  ScrollToTop: {
+    state: "nao",
+    note: "a plataforma já dá: o toque na barra de status no iOS e o toque de novo na aba do router sobem a lista",
+    page:
+      "Não porta, por decisão: o celular já sobe a lista de fábrica. No iOS, tocar na barra " +
+      "de status leva ao topo a `ScrollView` e a `FlatList` da tela (é o `scrollsToTop`, " +
+      "ligado por padrão), e no Expo Router e no React Navigation tocar de novo na aba em " +
+      "que a pessoa já está faz o mesmo, com o `useScrollToTop(ref)` na lista. Um botão " +
+      "flutuante por cima disso seria um terceiro caminho para o mesmo gesto, cobrindo o " +
+      "canto onde mora a ação principal da tela.\n\n" +
+      "Não há foco a devolver: a navegação por toque não tem um Tab que continue do fim da " +
+      "página.",
+  },
+  Affix: {
+    state: "nao",
+    note: "a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista",
+    page:
+      "Não porta, por decisão: no React Native, grudar é o comportamento de fábrica. Não " +
+      "existe janela que rola; quem rola é a `ScrollView` ou a `FlatList`, e uma `View` com " +
+      "`position: absolute` escrita ao lado dela, e não dentro, fica parada na tela enquanto a " +
+      "lista corre por baixo. Não há portal a abrir nem `transform` de ancestral a escapar.\n\n" +
+      "Para o título que gruda enquanto a lista rola, a lista já tem `stickyHeaderIndices` e " +
+      "`stickySectionHeadersEnabled`. E a ação que acompanha a tela inteira embaixo é o " +
+      "`ActionBar`, que traduz e já desconta a área segura por `bottomInset`.",
+  },
   AppShell: {
     state: "nao",
     note: "o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha",
@@ -1583,6 +1770,43 @@ const PARITY: Record<string, Row> = {
       "parágrafo de fora sem `tone` sai na cor padrão do aparelho, e não na do tema. Passe " +
       "`tone` no `Text` de fora.\n\n" +
       "Não há `render`: o elemento do celular é sempre `Text`, e o bloco é uma `View` em volta.",
+  },
+  Highlight: {
+    state: "traduz",
+    note: "sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark`",
+    page:
+      "Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada " +
+      "trecho achado é um `Text` aninhado com o mesmo fundo `warning-subtle`, a tinta `fg` e o " +
+      "peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, " +
+      "`lineClamp`).\n\n" +
+      "No lugar do `classNames.mark` do web, a classe de cada trecho vai em `markClassName`. O " +
+      "`matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma " +
+      "regra.",
+  },
+  Spoiler: {
+    state: "traduz",
+    note: "os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara",
+    page:
+      "Traduz, com os mesmos `maxHeight`, `expanded`, `defaultExpanded`, `onExpandedChange` e " +
+      "`labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado " +
+      "por `accessibilityState.expanded`.\n\n" +
+      "**O degradê é pintado, e não máscara.** O React Native não tem máscara sem dependência " +
+      "nova, então os últimos 40 pontos recebem faixas na cor do fundo, com opacidade " +
+      "crescente. A cor sai de `fadeOver` (`bg`, `surface` ou `surface-raised`, `bg` sem a " +
+      "prop): ponha o fundo em que o bloco pousa, senão o degradê aparece como uma faixa. Não " +
+      "há `classNames`: o `className` vai na raiz.",
+  },
+  TransferList: {
+    state: "traduz",
+    note: "as duas listas empilham, cada uma com os próprios botões de mover; os mesmos `items`, `value` e `labels`",
+    page:
+      "Traduz, com os mesmos `items`, `value`, `onValueChange`, `searchable`, `disabled` e " +
+      "`labels`, e as mesmas frases de contagem e de anúncio.\n\n" +
+      "**As listas empilham, e cada uma tem os próprios botões.** No telefone não há largura " +
+      "para duas colunas com botões no meio: a lista de cima é a de disponíveis, a de baixo a " +
+      "de escolhidos, e cada uma fecha com “Mover selecionados para …” e “Mover todos para …”. " +
+      "Cada linha é uma caixa de marcar com alvo de 44 pontos, e a lista rola por dentro a " +
+      "partir de 288 pontos. O anúncio sai pelo leitor de tela do sistema.",
   },
   PromptInput: {
     state: "traduz",

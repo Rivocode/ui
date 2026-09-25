@@ -260,7 +260,7 @@ function EventItem({
     </>
   ) : (
     <>
-      <span className="block truncate font-medium">{segment.event.title}</span>
+      <span className="block truncate font-rc-medium">{segment.event.title}</span>
       {showTime && <span className="block truncate">{time}</span>}
     </>
   );
@@ -370,7 +370,7 @@ function OverflowChip({
       }}
       onClick={(pointer) => pointer.stopPropagation()}
       className={cn(
-        "flex h-5 w-full items-center rounded-sm px-1.5 text-start text-xs font-medium",
+        "flex h-5 w-full items-center rounded-sm px-1.5 text-start text-xs font-rc-medium",
         "relative after:absolute after:inset-x-0 after:-inset-y-0.5",
         "text-accent-text hover:bg-accent-subtle",
         "outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -875,7 +875,7 @@ export function EventCalendar({
           aria-hidden="true"
           className={cn(
             "sticky top-0 z-[var(--rc-z-sticky)] bg-surface px-3 py-2",
-            "text-sm font-medium text-fg-muted",
+            "text-sm font-rc-medium text-fg-muted",
             isSameDay(day, today) && "text-accent-text",
           )}
         >
@@ -900,7 +900,7 @@ export function EventCalendar({
       <span
         className={cn(
           "flex size-7 items-center justify-center rounded-pill text-base",
-          isSameDay(day, today) ? "bg-accent text-accent-fg font-medium" : "text-fg",
+          isSameDay(day, today) ? "bg-accent text-accent-fg font-rc-medium" : "text-fg",
         )}
       >
         {day.getDate()}
@@ -1025,7 +1025,7 @@ export function EventCalendar({
                       className={cn(
                         "px-1 text-xs",
                         outside ? "text-fg-subtle" : "text-fg-muted",
-                        isSameDay(day, today) && "font-medium text-accent-text",
+                        isSameDay(day, today) && "font-rc-medium text-accent-text",
                       )}
                     >
                       {day.getDate()}
@@ -1342,7 +1342,7 @@ export function EventCalendar({
               type="button"
               className={cn(
                 "inline-flex h-[var(--rc-control-sm)] items-center gap-2 rounded-md px-2",
-                "text-base font-medium text-fg",
+                "text-base font-rc-medium text-fg",
                 "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
                 "hover:bg-accent-subtle",
                 "outline-none focus-visible:ring-2 focus-visible:ring-ring",

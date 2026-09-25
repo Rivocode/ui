@@ -33,6 +33,11 @@
   --rc-media-fg-muted: var(--rc-p-gray-300);
   --rc-media-border: var(--rc-p-gray-500);
   --rc-media-disabled: var(--rc-p-gray-700);
+
+  --rc-signature-ink: var(--rc-p-graphite-950);
+  --rc-signature-paper: var(--rc-p-white);
+  --rc-signature-guide: var(--rc-p-gray-600);
+  --rc-signature-disabled: var(--rc-p-gray-300);
 }
 
 :root,

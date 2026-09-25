@@ -67,7 +67,7 @@ describe("Text nativo", () => {
     expect(classes).toContain("text-sm");
     expect(classes).toContain("text-danger-text");
     expect(classes).not.toContain("text-danger");
-    expect(classes).toContain("font-medium");
+    expect(classes).toContain("font-rc-medium");
   });
 
   test("lineClamp vence truncate, e truncate e uma linha", () => {

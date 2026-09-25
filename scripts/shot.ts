@@ -2,11 +2,13 @@
 import {
   BUILD_KEYWORD,
   CHROME,
+  CHROME_FLAGS,
   SECTIONS,
   SHOTS as SHOTS_DIR,
   address,
   buildStamp,
   shotName,
+  requireChrome,
   slug,
 } from "./retratos";
 import { servir } from "./serve";
@@ -30,16 +32,21 @@ const PAGES = [
   { rota: "/graficos.html", name: "graficos", height: 1700, alturaCelular: 4000 },
   { rota: "/controles.html", name: "controles", height: 1900, alturaCelular: 3800 },
   { rota: "/dados.html", name: "dados", height: 2520, alturaCelular: 3700 },
-  { rota: "/novas.html", name: "novas", height: 21000, alturaCelular: 31000 },
+  { rota: "/novas.html", name: "novas", height: 29600, alturaCelular: 43200 },
   { rota: "/painel.html", name: "painel", height: 3000, alturaCelular: 5000 },
   { rota: "/paleta.html", name: "paleta", height: 1120, alturaCelular: 1120 },
   { rota: "/ia.html", name: "ia", height: 10800, alturaCelular: 16800 },
   { rota: "/arrastar.html", name: "arrastar", height: 4200, alturaCelular: 7600 },
   { rota: "/editor.html", name: "editor", height: 5200, alturaCelular: 10400 },
+  { rota: "/tour.html", name: "tour", height: 900, alturaCelular: 900 },
+  { rota: "/tour-claro.html", name: "tour-claro", height: 900, alturaCelular: 900 },
+  { rota: "/cronograma.html", name: "cronograma", height: 5600, alturaCelular: 6400 },
 ];
 
 /** O piso de largura de janela do Chrome no macOS. */
 const LARGURA_JANELA_MINIMA = 500;
+
+await requireChrome();
 
 const servidor = servir();
 
@@ -148,28 +155,72 @@ async function stampBuild(output: string, stamp: string) {
   await Bun.write(output, marked);
 }
 
+/**
+ * Um retrato, com prazo e uma segunda chance.
+ *
+ * O `--screenshot` do Chrome sem janela as vezes nao volta: medido num ubuntu
+ * 24.04 com o google-chrome 154, o processo ficou dez minutos parado no
+ * `formulario-celular`, sem CPU e sem arquivo, na segunda rodada de tres.
+ * Na maquina alguem aperta Ctrl+C; na CI o job morreria no `timeout-minutes`
+ * sem dizer qual retrato travou. Entao cada tentativa tem prazo, o arquivo
+ * velho sai antes dela - arquivo que existe depois e arquivo que ESTA
+ * tentativa escreveu -, e a segunda falha derruba a corrida com o nome.
+ */
+const SHOT_DEADLINE = 90_000;
+const SHOT_ATTEMPTS = 2;
+
+async function shoot(rota: string, output: string, janela: string) {
+  for (let attempt = 1; attempt <= SHOT_ATTEMPTS; attempt++) {
+    await Bun.file(output)
+      .delete()
+      .catch(() => {});
+
+    const proc = Bun.spawn(
+      [
+        CHROME,
+        ...CHROME_FLAGS,
+        "--headless",
+        "--disable-gpu",
+        "--hide-scrollbars",
+        "--force-device-scale-factor=2",
+        `--screenshot=${output}`,
+        `--window-size=${janela}`,
+        "--virtual-time-budget=4000",
+        // Sem isto, grafico com animacao sai sem as marcas: a Recharts interpola
+        // em JS e o retrato acontece antes de o primeiro quadro chegar.
+        "--force-prefers-reduced-motion",
+        `http://127.0.0.1:${servidor.port}${rota}`,
+      ],
+      { stderr: "ignore", stdout: "ignore" },
+    );
+
+    const timer = setTimeout(() => proc.kill("SIGKILL"), SHOT_DEADLINE);
+    await proc.exited;
+    clearTimeout(timer);
+
+    if (await Bun.file(output).exists()) return;
+    console.log(`${output}  a tentativa ${attempt} nao escreveu o retrato em ${SHOT_DEADLINE / 1000}s`);
+  }
+
+  console.error(`${output}: o Chrome falhou ${SHOT_ATTEMPTS} vezes seguidas em ${rota}.`);
+  process.exit(1);
+}
+
 for (const { rota, output, janela } of asked === -1
   ? [...SHOTS, ...SECTION_SHOTS]
   : SECTION_SHOTS) {
-  const proc = Bun.spawn(
-    [
-      CHROME,
-      "--headless",
-      "--disable-gpu",
-      "--hide-scrollbars",
-      "--force-device-scale-factor=2",
-      `--screenshot=${output}`,
-      `--window-size=${janela}`,
-      "--virtual-time-budget=4000",
-      // Sem isto, grafico com animacao sai sem as marcas: a Recharts interpola
-      // em JS e o retrato acontece antes de o primeiro quadro chegar.
-      "--force-prefers-reduced-motion",
-      `http://127.0.0.1:${servidor.port}${rota}`,
-    ],
-    { stderr: "ignore", stdout: "ignore" },
-  );
-  await proc.exited;
-  await stampBuild(output, await buildStamp([...(await servedBy(rota))]));
+  // A bancada da CI roda este arquivo tambem sobre a arvore de BASE, que pode
+  // nao ter a pagina que a cabeca acabou de criar. Pagina que nao existe sai
+  // sem retrato, e quem compara ve o nome faltando - retrato de um 404 seria
+  // pior, porque teria assinatura.
+  const served = await servedBy(rota).catch(() => undefined);
+  if (!served) {
+    console.log(`${output}  pulou: a rota ${rota} cita pagina que nao existe nesta arvore`);
+    continue;
+  }
+
+  await shoot(rota, output, janela);
+  await stampBuild(output, await buildStamp([...served]));
   const bytes = await Bun.file(output).size;
   console.log(`${output}  ${(bytes / 1024).toFixed(0)} KB`);
 }

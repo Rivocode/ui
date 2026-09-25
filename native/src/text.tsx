@@ -43,10 +43,10 @@ const TONE: Record<TextTone, string> = {
 };
 
 const WEIGHT: Record<TextWeight, string> = {
-  regular: "font-normal",
-  medium: "font-medium",
-  semibold: "font-semibold",
-  bold: "font-bold",
+  regular: "font-rc-regular",
+  medium: "font-rc-medium",
+  semibold: "font-rc-strong",
+  bold: "font-rc-bold",
 };
 
 export type TextProps = NativeTextProps & {
@@ -68,7 +68,12 @@ export type TextProps = NativeTextProps & {
    * de `View`.
    */
   tone?: TextTone;
-  /** O peso da letra. Sem ele herda, como o corpo e a cor. */
+  /**
+   * O peso da letra, lido dos tokens de peso do tema: `regular` e
+   * `--rc-weight-regular`, `medium` e `--rc-weight-medium`, `semibold` e
+   * `--rc-weight-strong` e `bold` e `--rc-weight-bold`. Sem ele herda, como o
+   * corpo e a cor.
+   */
   weight?: TextWeight;
   /** Corta em uma linha com reticencias no fim. */
   truncate?: boolean;

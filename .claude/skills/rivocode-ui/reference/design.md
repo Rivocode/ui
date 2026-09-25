@@ -65,7 +65,7 @@ Três, e só três. A quarta variação vira ruído.
 `text-fg-disabled` não é um quarto tom, é um estado.
 
 Rótulo de campo é a exceção, e ela é deliberada: `FieldLabel`, `Slider`,
-`Progress` e `Meter` escrevem em `text-fg` com `font-medium`. O rótulo é o que
+`Progress` e `Meter` escrevem em `text-fg` com `font-rc-medium`. O rótulo é o que
 nomeia o controle, e nomear não é apoiar.
 
 Hierarquia se faz primeiro por **tamanho e peso**, depois por tom. Um painel
@@ -109,6 +109,13 @@ a linha do dado inverte a leitura.
 Tamanho vai de `text-xs` a `text-3xl`. Salte degraus para criar hierarquia:
 `text-sm` ao lado de `text-base` quase não se distingue, e a distinção era o
 objetivo.
+
+Peso por intenção, e não por número: `font-rc-regular` (corpo),
+`font-rc-medium` (rótulo, botão, aba), `font-rc-strong` (ênfase forte),
+`font-rc-bold` (negrito) e `font-rc-display`, que acompanha **todo**
+`font-display`. O número mora em `--rc-weight-*`, e o tema de um cliente cuja
+fonte não tem 600 o troca sem tocar em tela nenhuma. `font-semibold` cravado
+não segue o tema.
 
 Altura de linha por token: `--rc-leading-tight` para número e título,
 `--rc-leading-normal` para interface, `--rc-leading-relaxed` para parágrafo.

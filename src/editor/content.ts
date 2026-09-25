@@ -1,9 +1,9 @@
 export const RICH_TEXT_CONTENT = [
   "font-sans text-base leading-[var(--rc-leading-normal)] text-fg break-words",
   "[&>*+*]:mt-3",
-  "[&_h2]:font-display [&_h2]:font-semibold [&_h2]:text-fg",
+  "[&_h2]:font-display [&_h2]:font-rc-display [&_h2]:text-fg",
   "[&_h2]:text-xl [&_h2]:tracking-display",
-  "[&_h3]:font-display [&_h3]:font-semibold [&_h3]:text-fg",
+  "[&_h3]:font-display [&_h3]:font-rc-display [&_h3]:text-fg",
   "[&_h3]:text-lg [&_h3]:tracking-tight",
   "[&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6",
   "[&_li]:pl-1 [&_li+li]:mt-1 [&_li>*+*]:mt-1 [&_li]:marker:text-fg-subtle",
@@ -19,5 +19,5 @@ export const RICH_TEXT_CONTENT = [
   "[&_a]:rounded-sm [&_a]:text-accent-text [&_a]:underline [&_a]:decoration-1",
   "[&_a]:underline-offset-[0.2em] [&_a:hover]:decoration-2 [&_a]:outline-none",
   "[&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-ring",
-  "[&_strong]:font-bold [&_hr]:my-4 [&_hr]:border-border",
+  "[&_strong]:font-rc-bold [&_hr]:my-4 [&_hr]:border-border",
 ].join(" ");

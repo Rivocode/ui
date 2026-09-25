@@ -192,7 +192,7 @@ export function Popconfirm({
         <Title
           id={labelId}
           className={cn(
-            "font-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg",
+            "font-display font-rc-display text-base leading-[var(--rc-leading-tight)] tracking-tight text-fg",
             classNames?.title,
           )}
         >

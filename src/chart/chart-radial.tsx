@@ -86,7 +86,7 @@ export function ChartRadial({
       )}
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <span className="max-w-[62%] text-center font-display text-2xl leading-tight text-balance text-fg">
+        <span className="max-w-[62%] text-center font-display font-rc-display text-2xl leading-tight text-balance text-fg">
           {centerValue ?? `${percentage}%`}
         </span>
         {centerLabel && (

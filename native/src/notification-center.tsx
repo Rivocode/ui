@@ -151,7 +151,7 @@ export function NotificationCenter({
     const body = (
       <View className="flex-1 gap-0.5">
         <View className="flex-row items-start gap-2">
-          <Text className={cn("flex-1 text-sm text-fg", !item.read && "font-medium")}>
+          <Text className={cn("flex-1 text-sm text-fg", !item.read && "font-rc-medium")}>
             {item.title}
           </Text>
           {!item.read && (

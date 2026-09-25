@@ -158,10 +158,17 @@ async function themeColors(path: string) {
 
 const code: Record<string, string> = {};
 const media: Record<string, string> = {};
+const signature: Record<string, string> = {};
 for (const block of topLevelBlocks(scalesCss)) {
   if (block.header !== ":root") continue;
   for (const [name, value] of declarations(block.body)) {
-    const group = name.startsWith("code-") ? code : name.startsWith("media-") ? media : null;
+    const group = name.startsWith("code-")
+      ? code
+      : name.startsWith("media-")
+        ? media
+        : name.startsWith("signature-")
+          ? signature
+          : null;
     if (!group) continue;
     const color = toNativeColor(value, palette);
     if (color) group[name] = color;
@@ -176,6 +183,7 @@ const tokens = {
   easings,
   code,
   media,
+  signature,
   themes: {
     "rivocode-dark": await themeColors("src/tokens/themes/rivocode-dark.css"),
     "rivocode-light": await themeColors("src/tokens/themes/rivocode-light.css"),
@@ -210,6 +218,9 @@ const themeLines = [
   ...Object.entries(scales)
     .filter(([name]) => name.startsWith("radius-"))
     .map(([name, value]) => `  --${name}: ${value}px;`),
+  ...Object.entries(scales)
+    .filter(([name]) => name.startsWith("weight-"))
+    .map(([name, value]) => `  --font-weight-rc-${name.slice("weight-".length)}: ${value};`),
   ...Object.entries(scales)
     .filter(([name]) => name.startsWith("text-"))
     .flatMap(([name, value]) => {

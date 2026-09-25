@@ -28,6 +28,11 @@
   --color-media-border: var(--rc-media-border);
   --color-media-disabled: var(--rc-media-disabled);
 
+  --color-signature-ink: var(--rc-signature-ink);
+  --color-signature-paper: var(--rc-signature-paper);
+  --color-signature-guide: var(--rc-signature-guide);
+  --color-signature-disabled: var(--rc-signature-disabled);
+
   --color-chart-1: var(--rc-chart-1);
   --color-chart-2: var(--rc-chart-2);
   --color-chart-3: var(--rc-chart-3);
@@ -94,6 +99,12 @@
   --font-sans: var(--rc-font-sans);
   --font-display: var(--rc-font-display);
   --font-mono: var(--rc-font-mono);
+
+  --font-weight-rc-regular: var(--rc-weight-regular);
+  --font-weight-rc-medium: var(--rc-weight-medium);
+  --font-weight-rc-strong: var(--rc-weight-strong);
+  --font-weight-rc-bold: var(--rc-weight-bold);
+  --font-weight-rc-display: var(--rc-weight-display);
 
   --shadow-1: var(--rc-shadow-1);
   --shadow-2: var(--rc-shadow-2);

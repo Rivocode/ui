@@ -48,7 +48,7 @@ export function OTPField({
             }`}
           >
             <Presence show={filled} swapKey={value[index]} enter="popIn" exit="none">
-              <Text className="text-xl font-medium text-fg">{value[index]}</Text>
+              <Text className="text-xl font-rc-medium text-fg">{value[index]}</Text>
             </Presence>
           </View>
         );

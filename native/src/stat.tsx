@@ -28,7 +28,7 @@ export function Stat({ label, value, delta, deltaLabel, invert, chart, className
       <CardContent>
         <Entrance effect="fadeIn" className="gap-1">
         <Text className="text-sm text-fg-muted">{label}</Text>
-        <Text font="display" className="text-2xl font-semibold text-fg">
+        <Text font="display" className="text-2xl font-rc-display text-fg">
           {value}
         </Text>
 

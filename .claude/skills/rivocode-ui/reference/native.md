@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**213 divergências de assinatura em 86 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**225 divergências de assinatura em 91 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -171,6 +171,7 @@ escritos em lugar nenhum.
 | `Form` | — | `children` | `children` é função e recebe `{ submit, isSubmitting }`: nada envia sozinho, porque não há `<form>` nem `type="submit"` |
 | `FormField` | `label` | `label` | `label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle |
 | `FormField` | `description` | `description` | `description` é `string` |
+| `Highlight` | `classNames` | `markClassName` | a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text` |
 | `IconButton` | `label` | `accessibilityLabel` | o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele |
 | `IconButton` | `variant` | `variant` | `outline` não porta, como no `Button` nativo |
 | `IconButton` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
@@ -259,6 +260,10 @@ escritos em lugar nenhum.
 | `Select` | `value` | `value` | o valor é `string` ou `string[]`, e não o item genérico do web |
 | `Sheet` | `side` | — | só de baixo, que já era o modo estreito do web; `snapPoints` sai junto |
 | `Sheet` | — | `title` | `title` é prop obrigatória e `description` é prop |
+| `SignaturePad` | `value` | `value` | vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe |
+| `SignaturePad` | `name` | — | não há `<form>` para levar o SVG num campo escondido |
+| `SignaturePad` | — | `onDrawingChange` | avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar |
+| `SignaturePad` | `classNames` | `className` | um `className` só, na raiz |
 | `Slider` | `value` | `value` | um valor só: `number`, e não `number[]` |
 | `Slider` | `format` | — | sem formatador e sem `showValue`: o número sai como está |
 | `Slider` | `label` | `label` | `label` vira obrigatório e é `string` |
@@ -267,6 +272,8 @@ escritos em lugar nenhum.
 | `Sparkline` | — | `height` | a altura é prop, porque não há CSS que a dê de fora |
 | `Spinner` | `size` | `size` | os dois tamanhos do `ActivityIndicator`: `small` e `large`, e não `sm`/`md`/`lg` |
 | `Spinner` | `label` | — | sem rótulo próprio: quem nomeia a espera é o texto ao lado |
+| `Spoiler` | — | `fadeOver` | o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara |
+| `Spoiler` | `classNames` | — | um `className` só, na raiz |
 | `Stat` | `value` | `value` | `value` é `string` já formatada: não há `Intl` para escrever o número |
 | `Stat` | `deltaFormat` | — | `delta` é número e sai como veio; `deltaVariant` sai junto |
 | `Stat` | `icon` | — | sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação |
@@ -289,6 +296,11 @@ escritos em lugar nenhum.
 | `ToggleGroup` | — | `items` | `items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual |
 | `ToolCall` | `title` | `title` | `string`, como o `error`: texto no nativo mora dentro de um `Text` |
 | `ToolCall` | `classNames` | — | um `className` só, no cartão |
+| `Tour` | `open` | `open` | vira obrigatório, com `onOpenChange`: não há `defaultOpen` |
+| `Tour` | `step` | `step` | vira obrigatório, com `onStepChange`: não há `defaultStep`, e é no `onStepChange` que a tela rola o alvo |
+| `Tour` | `interactive` | — | o `Modal` é outra janela, e o toque não atravessa o recorte até o alvo |
+| `Tour` | `classNames` | `className` | um `className` só, na folha de baixo; a máscara não se veste |
+| `TransferList` | `classNames` | — | um `className` só, na raiz; as listas empilham e cada uma tem os próprios botões |
 | `Tree` | `expanded` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
 | `Tree` | `filter` | — | sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado |
 | `Tree` | — | `label` | `label` é obrigatório: é ele que nomeia o nível para o leitor de tela |
@@ -314,16 +326,19 @@ função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põ
 
 ## O gráfico também, e ele traz um peer nativo
 
-`ChartContainer`, `ChartDonut` e `ChartRadial` vivem em
-`@rivocode/ui-native/chart` e pedem `react-native-svg`, peer **opcional** e
+`ChartContainer`, `ChartDonut`, `ChartRadial`, `ChartGauge`, `ChartHeatmap`,
+`ChartFunnel` e `ChartTreemap` vivem em `@rivocode/ui-native/chart` e pedem `react-native-svg`, peer **opcional** e
 módulo nativo, que o app instala e liga ao projeto só se desenhar gráfico
 (`npx expo install react-native-svg`). O `QRCode` mora no mesmo caminho pelo
 mesmo peer, e o `PixCode` com ele: a regra é um subcaminho por peer, e não um
 por assunto. O copiar do `PixCode` entra por `renderCopy`, com o `Clipboard` de
-`@rivocode/ui-native/clipboard`.
+`@rivocode/ui-native/clipboard`. O `SignaturePad` também mora aqui, pelo mesmo
+peer, com `signatureToSvg` e `isSignatureEmpty`: o PNG não porta, porque não há
+canvas.
 
 ```tsx
 import { ChartBar, ChartContainer, ChartDonut, ChartLine, ChartRadial, PALETTE, PixCode, QRCode } from '@rivocode/ui-native/chart'
+import { SignaturePad, isSignatureEmpty, signatureToSvg } from '@rivocode/ui-native/chart'
 ```
 
 Três coisas mordem. **A moldura mede e entrega**: `children` como função recebe
@@ -401,13 +416,14 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**121 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-24:** 94 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 22 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**134 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-24:** 103 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 26 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
 | `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
 | `Accordion` | ✔ traduz | cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
+| `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
@@ -424,7 +440,11 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Carousel` | ✔ traduz | sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay` |
 | `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função: não há Recharts, nem contentor que meça, nem `var(--color-série)` |
 | `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` só aceita função, e as pontas saem retas |
+| `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token e `format` só como função; cada etapa é uma parada com nome, número e taxa na mesma frase |
+| `ChartGauge` | ✔ traduz | atravessa quase inteiro, como o `ChartRadial`; a régua das faixas entra no nome acessível, porque não há descrição separada no toque |
+| `ChartHeatmap` | ✔ traduz | a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem dica, a leitura mora numa linha embaixo |
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
+| `ChartTreemap` | ✔ traduz | cada categoria é um botão com nome, valor e fatia; tocar acende o contorno e escreve a leitura embaixo, e a regra do rótulo que some é a mesma |
 | `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`; o tique aparece crescendo ao marcar |
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web |
 | `Clipboard` | ✔ traduz | vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla: o botão troca de nome e um aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado |
@@ -452,8 +472,10 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `FilterBar` | ✔ traduz | rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de alvo de toque; a borda com mais escondido vira regua de 1pt, e nao esmaecido |
 | `FilterChip` | ✔ traduz | a faixa de toque tem 44pt e a pilula pintada continua com 28; `size` muda o desenho, nunca o alvo |
 | `Form` | ✔ traduz | vive em `@rivocode/ui-native/form`; o `Form` entrega o `submit` em vez de esperar um `type="submit"`, e há um adaptador a mais, o `forText` |
+| `Gantt` | ✕ não porta | cronograma é idioma de mesa; no telefone a tarefa por dia é lista, e o prazo é o `Calendar` |
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
 | `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
+| `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark` |
 | `IconButton` | ✔ traduz | `accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
@@ -493,22 +515,26 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `RichTextView` | ✔ traduz | no índice principal, sem `WebView` e sem peer: o mesmo leitor do web monta cada bloco como `View` e cada marca como `Text`, e o link abre pelo `Linking` |
 | `RivoProvider` | ✔ traduz | `theme` troca em runtime só entre os dois temas de casa, e tema de cliente é decisão de BUILD; `density` não existe: alvo de toque não encolhe, e `comfortable` é a única altura; e ganha `fonts`, que o web não tem |
 | `ScrollArea` | ✔ traduz | a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo em foco e prende um `footer` que sobe com ele |
+| `ScrollToTop` | ✕ não porta | a plataforma já dá: o toque na barra de status no iOS e o toque de novo na aba do router sobem a lista |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
 | `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
 | `Separator` | ✔ traduz | só a linha horizontal |
 | `Sheet` | ✔ traduz | só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado |
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
+| `SignaturePad` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o traço é o mesmo arquivo do web, o gesto é o `PanResponder`, e o PNG fica de fora por não haver canvas |
 | `Skeleton` | ✔ traduz | mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento |
 | `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, e `label` obrigatório |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
 | `Spinner` | ✔ traduz | `small` e `large`, os dois tamanhos do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
+| `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
 | `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
+| `TableOfContents` | ✕ não porta | tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta; a ficha nova entra crescendo e a que sai some por fade |
 | `Text` | ✔ traduz | o mesmo `Text` que as outras peças vestem, com `size`, `tone`, `weight`, `truncate` e `lineClamp`; sem eles, herda do `Text` de fora |
@@ -522,7 +548,9 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ToolCall` | ✔ traduz | vive em `@rivocode/ui-native/ai`; os mesmos cinco estados com marca e texto, a entrada e a saída em fonte mono, e aprovar e recusar fora do painel |
 | `Toolbar` | ✕ não porta | superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem |
 | `Tooltip` | ✕ não porta | hover não existe no toque; o rótulo precisa estar na tela |
+| `Tour` | ✔ traduz | sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha de baixo, o passo é controlado e não há `interactive` |
 | `Tracker` | ✔ traduz | a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string` |
+| `TransferList` | ✔ traduz | as duas listas empilham, cada uma com os próprios botões de mover; os mesmos `items`, `value` e `labels` |
 | `Tree` | ✔ traduz | um nível por vez, empilhado: tocar num galho empurra o nível de dentro e o cabeçalho mostra o caminho e volta; sem recuo, sem busca |
 | `TreeSelect` | ✔ traduz | o `Tree` dentro de uma folha, com a contagem do rascunho e o `Aplicar` no rodapé; sair pela lateral desiste |
 | `VirtualList` | ✕ não porta | a plataforma ja virtualiza: `FlatList` e `FlashList` fazem isto de fabrica |

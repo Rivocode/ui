@@ -1,0 +1,110 @@
+name: bancada
+
+# A bancada de acessibilidade e os retratos da vitrine, na CI.
+#
+# Os dois medem contra uma referencia absoluta que nao vale no ubuntu: as
+# assinaturas comitadas nasceram no macOS, e o `bun run a11y` acusa hoje o que
+# as pecas ja tem. Medido em 24/09/2026 num container ubuntu 24.04 com o
+# google-chrome 154: a arvore da main, sem mudanca nenhuma, saiu com 23 dos 50
+# retratos diferentes do comitado so por fonte e antialias - as doze molduras
+# de secao entre eles, com pior quadrado de 13 a 31 niveis de cinza.
+#
+# Entao a bancada compara a BASE com a CABECA, as duas medidas neste mesmo
+# runner, com o mesmo Chrome e as mesmas fontes. Plataforma cancela; o que
+# sobra e o commit. O porque inteiro, e as alternativas que perderam, esta no
+# cabecalho de `scripts/comparacao-da-bancada.ts`.
+#
+# Workflow proprio, e nao job do `ci.yml`, de proposito: o `tag.yml` escuta o
+# `ci`, e uma bancada de navegador que demora ou tropeca nao pode segurar uma
+# publicacao que o gate ja aprovou.
+on:
+  pull_request:
+    # `labeled` e `unlabeled` porque a etiqueta `retrato-aceito` muda o
+    # veredito, e sem estes tipos ela so valeria no proximo empurrao.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [main]
+
+concurrency:
+  group: bancada-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  bancada:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      # O runner ubuntu ja traz o google-chrome. O ubuntu 24.04 restringe o
+      # namespace de usuario sem privilegio, e sem `--no-sandbox` o Chrome nao
+      # abre - a pagina aberta e a nossa propria vitrine, servida em 127.0.0.1.
+      RC_CHROME: /usr/bin/google-chrome
+      RC_CHROME_FLAGS: --no-sandbox
+      # No PR, a base e a ponta da main de quando o PR foi atualizado. No push,
+      # e o que a main era antes dele.
+      BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+      ACCEPTED: ${{ contains(github.event.pull_request.labels.*.name, 'retrato-aceito') }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # A base e montada como worktree, e precisa estar no historico.
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+
+      - name: Chrome do runner
+        run: |
+          "$RC_CHROME" --version
+          mkdir -p "$RUNNER_TEMP/medida/base" "$RUNNER_TEMP/medida/cabeca"
+
+      # A base fica FORA da pasta do repositorio: o Tailwind da vitrine varre a
+      # arvore a partir dela, e uma segunda copia do `src/` ali dentro geraria
+      # classe que a cabeca nao tem.
+      - name: Montar a base
+        run: git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
+
+      # Os scripts que medem sao SEMPRE os da cabeca, rodados sobre cada arvore:
+      # a base pode ser anterior ao `--json` e ao `--gravar-em`, e medir os dois
+      # lados com regua diferente seria comparar as reguas.
+      - name: Medir a base
+        working-directory: ${{ runner.temp }}/base
+        run: |
+          bun install --frozen-lockfile
+          bun run demo
+          bun run "$GITHUB_WORKSPACE/scripts/shot.ts"
+          bun run "$GITHUB_WORKSPACE/scripts/regressao-visual.ts" --gravar-em "$RUNNER_TEMP/medida/base/retratos.json"
+          bun run "$GITHUB_WORKSPACE/scripts/acessibilidade.ts" --json "$RUNNER_TEMP/medida/base/acessibilidade.json"
+          cp demo/assinaturas.json "$RUNNER_TEMP/medida/base/assinaturas.json"
+
+      - name: Medir a cabeca
+        run: |
+          bun run demo
+          bun run scripts/shot.ts
+          bun run scripts/regressao-visual.ts --gravar-em "$RUNNER_TEMP/medida/cabeca/retratos.json"
+          bun run scripts/acessibilidade.ts --json "$RUNNER_TEMP/medida/cabeca/acessibilidade.json"
+          cp demo/assinaturas.json "$RUNNER_TEMP/medida/cabeca/assinaturas.json"
+
+      - name: Comparar
+        run: |
+          flags=()
+          if [ "$ACCEPTED" = "true" ]; then flags+=(--retrato-aceito); fi
+          bun run scripts/comparacao-da-bancada.ts \
+            --base "$RUNNER_TEMP/medida/base" \
+            --cabeca "$RUNNER_TEMP/medida/cabeca" \
+            "${flags[@]}"
+
+      # Retrato que mudou se olha, e nao se le em numero: os PNG dos dois lados
+      # sobem quando a bancada fica vermelha.
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retratos
+          path: |
+            demo/dist/*.png
+            ${{ runner.temp }}/base/demo/dist/*.png
+            ${{ runner.temp }}/medida
+          retention-days: 7

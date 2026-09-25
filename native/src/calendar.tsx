@@ -110,7 +110,7 @@ export function MonthView({
         >
           <Chevron left />
         </Pressable>
-        <Text className="text-base font-medium text-fg">
+        <Text className="text-base font-rc-medium text-fg">
           {monthLabel(month)} de {year}
         </Text>
         <Pressable
@@ -170,7 +170,7 @@ export function MonthView({
               >
                 <Text
                   className={`text-sm ${
-                    active ? "font-medium text-accent-fg" : blocked ? "text-fg-disabled" : "text-fg"
+                    active ? "font-rc-medium text-accent-fg" : blocked ? "text-fg-disabled" : "text-fg"
                   }`}
                 >
                   {day}

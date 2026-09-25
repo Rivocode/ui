@@ -62,7 +62,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 accessibilityLiveRegion="polite"
                 className="rounded-md border border-border bg-surface-raised px-4 py-3"
               >
-                <Text className="text-sm font-medium text-fg">{toast.title}</Text>
+                <Text className="text-sm font-rc-medium text-fg">{toast.title}</Text>
                 {toast.description && (
                   <Text className="mt-0.5 text-xs text-fg-muted">{toast.description}</Text>
                 )}

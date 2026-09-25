@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
+import { audit, renderMarkdown, RULES } from "../../.claude/skills/rivocode-ui-audit/scripts/audit";
 import type { ComponentEntry, Content } from "./content";
 import { clip, compact, fold, overlap, stems, terms, words } from "./text";
 
@@ -50,6 +51,9 @@ const GUIDE_ALIASES: Record<string, string> = {
   "react native": "react-native",
   reactnative: "react-native",
   quickstart: "inicio-rapido",
+  audit: "auditoria",
+  auditar: "auditoria",
+  "rivocode-ui-audit": "auditoria",
 };
 
 const CATEGORIES = ["color", "scale", "density", "motion", "all"] as const;
@@ -159,7 +163,8 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         "Antes de montar uma tela, leia `get_guide` com `convencoes`. Para escolher uma peça, " +
         "descreva a intenção em `recommend_component`; para usá-la, leia a página inteira em " +
         "`get_component` - props, exemplos e quando não usar. Cor, escala e densidade saem de " +
-        "`get_tokens`: nunca escreva cor literal. Tudo é servido do pacote, sem rede. " +
+        "`get_tokens`: nunca escreva cor literal. Para dar nota a uma tela pronta, `audit_screen`. " +
+        "Tudo é servido do pacote, sem rede. " +
         provenance,
     },
   );
@@ -601,6 +606,69 @@ export function createServer(content: Content, options: ServerOptions): McpServe
       if (!guide) return fail(`Não há o guia "${name}". Os guias são:\n\n${catalog}`);
 
       return reply(`${content.files[guide.path] ?? ""}\n\n---\n\n${provenance}`);
+    },
+  );
+
+  const located = z.object({
+    rule: z.string().min(1).describe("O id da regra, como escolha-de-peca."),
+    file: z.string().min(1).describe("O caminho do arquivo, igual ao de `files`."),
+    line: z.number().int().min(1).describe("A linha, contada a partir de 1."),
+  });
+
+  server.registerTool(
+    "audit_screen",
+    {
+      title: "Auditar uma tela",
+      description:
+        "Audita arquivos de tela de um app que usa o @rivocode/ui ou o @rivocode/ui-native contra " +
+        "as regras da casa e devolve o relatório com nota de 0 a 100, determinística: cor literal, " +
+        "z-index numérico, peça reescrita à mão, campo sem rótulo, dinheiro em float, CPF sem " +
+        "validador, Pix caseiro, import pelo caminho errado e peer faltando. Os achados de julgamento " +
+        "e os descartes entram por `findings` e `dismissals`, e pesam na mesma conta. É a mesma " +
+        "auditoria da skill rivocode-ui-audit.",
+      inputSchema: {
+        files: z
+          .array(
+            z.object({
+              path: z.string().min(1).describe("O caminho do arquivo, que aparece no relatório."),
+              source: z.string().describe("O texto inteiro do arquivo."),
+            }),
+          )
+          .min(1)
+          .max(60)
+          .describe("Os arquivos de tela, cada um com caminho e texto."),
+        package_json: z
+          .string()
+          .optional()
+          .describe("O texto do package.json do app, para conferir os peers dos subcaminhos."),
+        findings: z
+          .array(located.extend({ message: z.string().min(1).describe("O que está errado.") }))
+          .optional()
+          .describe("Os achados de julgamento: escolha-de-peca, texto-generico, provider-ausente…"),
+        dismissals: z
+          .array(
+            located.extend({ reason: z.string().min(1).describe("Por que o achado não vale.") }),
+          )
+          .optional()
+          .describe("Os achados mecânicos descartados, cada um com o motivo."),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: false },
+    },
+    async ({ files, package_json, findings, dismissals }) => {
+      const report = audit({
+        files,
+        manifests:
+          package_json === undefined ? [] : [{ path: "package.json", source: package_json }],
+        findings,
+        dismissals,
+      });
+      const rules = RULES.filter((rule) => rule.kind === "julgamento")
+        .map((rule) => `\`${rule.id}\``)
+        .join(", ");
+      return reply(
+        `${renderMarkdown(report)}\n---\n\nRegras de julgamento que entram por \`findings\`: ${rules}. ` +
+          "A skill inteira, com o laço de auditoria, sai de `get_guide` com `auditoria`.",
+      );
     },
   );
 

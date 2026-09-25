@@ -113,9 +113,9 @@ test("a nao lida ganha o ponto, o negrito e o aviso para o leitor de tela", () =
   expect(read.textContent).not.toContain("Não lida");
 
   const unreadTitle = within(unread).getByText("Nota 1042 autorizada");
-  expect(unreadTitle.className.split(" ")).toContain("font-medium");
+  expect(unreadTitle.className.split(" ")).toContain("font-rc-medium");
   const readTitle = within(read).getByText("Relatório de agosto pronto");
-  expect(readTitle.className.split(" ")).not.toContain("font-medium");
+  expect(readTitle.className.split(" ")).not.toContain("font-rc-medium");
 });
 
 test("o tom pinta o simbolo com o texto de estado", () => {

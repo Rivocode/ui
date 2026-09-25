@@ -64,7 +64,7 @@ export function AccordionItem({
           onPress={() => setOpen(!open)}
           className="min-h-12 flex-row items-center justify-between gap-3 py-3"
         >
-          <Text className="flex-1 text-base font-medium text-fg">{title}</Text>
+          <Text className="flex-1 text-base font-rc-medium text-fg">{title}</Text>
           <Chevron open={open} />
         </Pressable>
         <Body open={open}>
@@ -101,7 +101,7 @@ export function Collapsible({ label, children, defaultOpen = false, className }:
           className="min-h-11 flex-row items-center gap-2 py-2"
         >
           <Chevron open={open} />
-          <Text className="text-sm font-medium text-fg-muted">{label}</Text>
+          <Text className="text-sm font-rc-medium text-fg-muted">{label}</Text>
         </Pressable>
         <Body open={open}>
           <View className="pt-1">{children}</View>

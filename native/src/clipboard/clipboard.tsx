@@ -110,7 +110,7 @@ export function Clipboard({
       )}
     >
       {copied ? <CheckIcon /> : <CopyIcon />}
-      {children ? <Text className="text-base font-medium text-fg">{spoken}</Text> : null}
+      {children ? <Text className="text-base font-rc-medium text-fg">{spoken}</Text> : null}
     </Pressable>
   );
 }

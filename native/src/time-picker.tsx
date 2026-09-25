@@ -46,7 +46,7 @@ function TimeColumn({ label, options, selected, onSelect }: ColumnProps) {
                 active ? "bg-accent" : "active:bg-selected"
               }`}
             >
-              <Text className={`text-base ${active ? "font-medium text-accent-fg" : "text-fg"}`}>
+              <Text className={`text-base ${active ? "font-rc-medium text-accent-fg" : "text-fg"}`}>
                 {written}
               </Text>
             </Pressable>

@@ -7,7 +7,7 @@ export const kbdVariants = cva(
   cn(
     "inline-flex shrink-0 items-center justify-center gap-0.5",
     "rounded-sm border border-border bg-surface-raised",
-    "font-mono font-medium text-fg-muted",
+    "font-mono font-rc-medium text-fg-muted",
     // A sombra de baixo e o que faz parecer tecla e nao codigo em linha. Sem
     // ela, `Ctrl` num paragrafo vira o mesmo cinza de um nome de variavel.
     "shadow-[inset_0_-1px_0_var(--rc-border)]",

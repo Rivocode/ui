@@ -1,7 +1,7 @@
 {
   "name": "@rivocode/ui",
   "version": "0.17.0",
-  "description": "Design system da RivoCode: 121 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
+  "description": "Design system da RivoCode: 134 componentes React sobre a Base UI, com tokens em tres camadas, dois temas e duas densidades.",
   "keywords": [
     "base-ui",
     "components",
@@ -94,7 +94,7 @@
     "check:native:contrast": "bun run scripts/gen-native-contrast.ts --check",
     "check:cli": "bun run scripts/check-fronteira-do-cli.ts",
     "check:tamanho": "bun run scripts/check-tamanho-do-pacote.ts",
-    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx demo/novas.tsx demo/painel.tsx demo/paleta.tsx demo/ia.tsx demo/arrastar.tsx demo/editor.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
+    "demo": "bun build demo/demo.tsx demo/dialog.tsx demo/listagem.tsx demo/flutuantes.tsx demo/datas.tsx demo/formulario.tsx demo/navegacao.tsx demo/controles.tsx demo/dados.tsx demo/folhas.tsx demo/consulta.tsx demo/completos.tsx demo/graficos.tsx demo/novas.tsx demo/painel.tsx demo/paleta.tsx demo/ia.tsx demo/arrastar.tsx demo/editor.tsx demo/tour.tsx demo/cronograma.tsx --root demo --outdir demo/dist && tailwindcss -i demo/demo.css -o demo/dist/demo.css && bun run scripts/copy-fonts.ts demo/dist/demo.css",
     "visual": "bun run scripts/regressao-visual.ts",
     "a11y": "bun run demo && bun run scripts/acessibilidade.ts",
     "shot": "bun run demo && bun run scripts/shot.ts",

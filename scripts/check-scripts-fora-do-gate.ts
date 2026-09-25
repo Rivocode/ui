@@ -15,7 +15,10 @@
  * `regressao-visual.ts` depende dos PNG do `bun run shot`, que gasta 77s de
  * Chrome num caminho fixo do macOS, e a CI e ubuntu; alem disso a renderizacao
  * de fonte muda entre maquina e sistema, entao assinatura tirada aqui nao bate
- * la. Guarda que exige binario que a CI nao tem nao entra no gate.
+ * la. Guarda que exige binario que a CI nao tem nao entra no gate. (Desde
+ * 24/09/2026 o Chrome e configuravel por `RC_CHROME` e os tres rodam na
+ * bancada da CI, base contra cabeca - mas continuam fora do gate, que tem que
+ * rodar em clone limpo e sem navegador.)
  *
  * O que esta guarda cobra e a DECLARACAO. Todo `scripts/**\/*.ts` tem que ser
  * alcancavel pelo `bun run check` - por comando ou por import, inclusive o
@@ -42,11 +45,11 @@ const GATE = "check";
  */
 const OUT: Record<string, string> = {
   "scripts/regressao-visual.ts":
-    "Compara retrato com assinatura tirada NESTA maquina: precisa dos PNG do `bun run shot` (Chrome em caminho fixo do macOS) e a renderizacao de fonte muda entre sistemas. E ferramenta de quem vai publicar - rode `bun run shot && bun run visual` antes de criar a tag. O que o gate alcanca dela e o `check:retratos`, que cobra a declaracao de cada retrato de secao sem precisar de navegador.",
+    "Compara retrato com assinatura: precisa dos PNG do `bun run shot`, que precisa de Chrome, e a renderizacao de fonte muda entre sistemas - a assinatura comitada nasceu no macOS e nao bate no linux. Na maquina: `bun run shot && bun run visual` antes de criar a tag. Na CI roda na bancada (`.github/workflows/bancada.yml`) com `--gravar-em`, base contra cabeca no mesmo runner, e quem julga e o `scripts/comparacao-da-bancada.ts`. O que o gate alcanca dela e o `check:retratos`, que cobra a declaracao de cada retrato de secao sem navegador.",
   "scripts/shot.ts":
-    "Fotografa a vitrine e as secoes chamando o Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem.",
+    "Fotografa a vitrine e as secoes com o Chrome de `RC_CHROME` (o padrao e o do macOS), e gasta minutos de navegador. Roda na bancada da CI, sobre a base e sobre a cabeca, e nao no gate, que tem que rodar em clone limpo sem navegador.",
   "scripts/acessibilidade.ts":
-    "Bancada de acessibilidade da vitrine (`bun run a11y`): roda o axe-core, o foco depois da acao, o alvo de 24px e o reflow a 320px dentro do Chrome em `/Applications/Google Chrome.app`, que a CI ubuntu nao tem, e le o `demo/dist` que so existe depois do `bun run demo`. Ela acusa o que as pecas tem HOJE, e entrar no gate antes de a lista zerar deixaria o `check` vermelho em toda arvore.",
+    "Bancada de acessibilidade da vitrine (`bun run a11y`): roda o axe-core, o foco depois da acao, o alvo de 24px e o reflow a 320px dentro do Chrome de `RC_CHROME`, e le o `demo/dist` que so existe depois do `bun run demo`. Ela acusa o que as pecas tem HOJE, e entrar no gate antes de a lista zerar deixaria o `check` vermelho em toda arvore. Na CI roda na bancada com `--json`, e o que reprova e problema que a cabeca tem a mais que a base.",
   "scripts/serve.ts":
     "Servidor estatico da vitrine: nao confere nada, so serve `demo/` para o Chrome do `shot`.",
   "scripts/props-do-catalogo-nativo.ts":

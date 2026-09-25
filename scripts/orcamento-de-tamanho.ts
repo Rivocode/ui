@@ -27,8 +27,8 @@ export const BUTTON_ALONE = {
 
 export const BUDGET: Record<string, Budget> = {
   ".": {
-    limit: 128_400,
-    why: "113,9 KB em 153 arquivos: as pecas do indice da raiz, sem dependencia nenhuma - Base UI, TanStack, react-day-picker e tailwind-merge sao de quem instala e ficam de fora da conta. Quase ninguem baixa isto inteiro; e o teto de quem importa tudo, e o que cresce a cada peca nova. Peca nova que custa mais que uns 2 KB em gzip merece a pergunta de se nao e subcaminho.",
+    limit: 159_900,
+    why: "Subiu em 24/09/2026 de 113,9 para 141,9 KB, com as treze pecas da 0.18.0; medido por peca, com as dependencias de fora: Gantt 18,2 KB (datas, rolagem virtual e setas de dependencia, sem peer - fica na raiz porque, com o tree-shaking, so paga quem importa), SignaturePad 6,0, TransferList 5,8, Tour 4,6, ScrollToTop 3,4, TableOfContents 2,5, Affix 1,4, Spoiler 1,1 e Highlight 0,9. Antes: 113,9 KB em 153 arquivos: as pecas do indice da raiz, sem dependencia nenhuma - Base UI, TanStack, react-day-picker e tailwind-merge sao de quem instala e ficam de fora da conta. Quase ninguem baixa isto inteiro; e o teto de quem importa tudo, e o que cresce a cada peca nova. Peca nova que custa mais que uns 2 KB em gzip merece a pergunta de se nao e subcaminho.",
   },
   "./styles.css": {
     limit: 20_200,
@@ -39,8 +39,8 @@ export const BUDGET: Record<string, Budget> = {
     why: "2,3 KB: a ponte com o react-hook-form e o zod, que sao peers opcionais e nao entram na conta. O subcaminho e pequeno de proposito - quem nao usa formulario nao paga nem isto.",
   },
   "./chart": {
-    limit: 12_100,
-    why: "10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
+    limit: 21_700,
+    why: "Subiu em 24/09/2026 de 10,7 para 19,7 KB com os quatro graficos sem Recharts da 0.18.0: ChartTreemap 4,1 KB (o layout squarified), ChartHeatmap 4,0, ChartGauge 2,3 e ChartFunnel 1,9. Antes, 10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
   },
   "./ai": {
     limit: 12_300,

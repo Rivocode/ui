@@ -48,6 +48,10 @@ que a pessoa confirma antes de emitir, e o comprovante depois.
 | `ChartAreaGradient` + `areaGradient(id, série)` | Gradiente de área. **O `id` é seu, e precisa ser único na página** |
 | `ChartDonut` | Rosca com o total no buraco e a lista de fatias embaixo |
 | `ChartRadial` | O arco de uma medida só: meta, cota, conversão |
+| `ChartGauge` | Medidor de 0 a `max` com faixas (`bands`) que julgam o número: em dia, atenção, crítico |
+| `ChartHeatmap` | Grade de linha por coluna em que a cor diz o tamanho: emissões por dia e hora |
+| `ChartFunnel` | As etapas de um caminho, com a taxa de conversão escrita entre elas |
+| `ChartTreemap` | Área proporcional por categoria, com o rótulo que some quando não cabe |
 | `Sparkline` | A linha miúda que cabe dentro de um indicador |
 | `ChartLegend` + `ChartLegendContent` | A legenda, com o nome que está no `config` |
 | `useSeriesToggle` | A legenda vira filtro: clicar esconde a série |
@@ -87,3 +91,29 @@ desenhando ao mesmo tempo são uma onda atravessando a tela.
 `areaGradient` é função pura de propósito. A primeira versão tirava o `id` de um
 contexto, e o `fill` de `<Area>` é avaliado no render de fora, onde esse contexto
 ainda não existe, quem escrevia o óbvio levava erro em tempo de execução.
+
+## Heatmap, medidor, funil e treemap
+
+Os quatro são desenho próprio, sem Recharts, e **não entram no
+`ChartContainer`**: carregando, erro e vazio vêm do `QueryBoundary` em volta.
+
+```tsx
+import { ChartFunnel, ChartGauge, ChartHeatmap, ChartTreemap } from '@rivocode/ui/chart'
+
+<ChartHeatmap data={emissoes} rowKey="dia" columnKey="hora" valueKey="total" label="Notas por dia e hora" />
+<ChartGauge value={8.4} max={20} bands={[{ until: 5, tone: 'success', label: 'Em dia' }, { until: 20, tone: 'danger', label: 'Crítico' }]} />
+<ChartFunnel data={adesao} valueKey="total" nameKey="etapa" label="Funil de adesão" />
+<ChartTreemap data={porServico} valueKey="total" nameKey="codigo" label="Faturamento por serviço" className="h-72" />
+```
+
+- **`ChartHeatmap`**: o `data` é longo, uma linha por célula. Combinação que
+  não vem é **célula vazia** (borda tracejada), e `0` é valor (primeiro degrau):
+  não troque um pelo outro. `rows` e `columns` dão a ordem e trazem a linha sem
+  registro. `domain` fixa a régua quando duas grades se comparam. `label` é
+  obrigatório: vira a legenda da tabela escondida que o leitor de tela lê.
+- **`ChartGauge`** julga, o `ChartRadial` mede contra meta, o `Meter` só diz
+  quanto. Use o medidor quando a faixa tem nome e subir pode ser pior.
+- **`ChartFunnel`**: etapas que são subconjunto uma da outra. Sem isso não há
+  conversão, e é barra deitada.
+- **`ChartTreemap`**: acima de seis categorias, onde a rosca para de informar. A
+  altura é sua, por classe (padrão `h-64`).

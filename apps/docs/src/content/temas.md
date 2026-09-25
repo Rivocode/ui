@@ -223,6 +223,47 @@ o `bun add` dos pacotes.
   um papel fica com a fonte da casa, importe só o pacote dele, como o montador
   faz.
 
+#### O peso da letra é token, e tem nome de intenção
+
+Trocar a família sem trocar o peso é meia troca. A Poppins da casa tem título
+em 600; a fonte do cliente pode ter o título em 700, ou não ter 600 nenhum. Por
+isso as peças não escrevem `font-medium` nem `font-semibold`: escrevem a
+intenção, e o número mora num token que o tema pode redefinir.
+
+| Token | Classe | Padrão | O que veste |
+|---|---|---|---|
+| `--rc-weight-regular` | `font-rc-regular` | 400 | O corpo, e o trecho que volta ao normal dentro de um rótulo |
+| `--rc-weight-medium` | `font-rc-medium` | 500 | Rótulo de campo, botão, aba, selo, cabeçalho de tabela, título de aviso |
+| `--rc-weight-strong` | `font-rc-strong` | 600 | Ênfase forte no corpo: o título do cartão do `Kanban`, o `AiLabel`, o `Text weight="semibold"` |
+| `--rc-weight-bold` | `font-rc-bold` | 700 | O negrito do texto rico, o `Button size="cta"`, o `Text weight="bold"` |
+| `--rc-weight-display` | `font-rc-display` | 600 | Todo texto em `font-display`: `Heading`, títulos de `Card`, `Dialog`, `Sheet`, `PageHeader`, o valor do `Stat` |
+
+Os cinco vivem em `src/tokens/forma.css`, com valor de `:root` por baixo, e são
+**opcionais** no tema: quem não declara fica com o peso da casa. Declare no
+mesmo seletor das cores e das famílias:
+
+```css
+[data-rc-theme="cliente-acme"] {
+  --rc-font-display: "Lato", system-ui, sans-serif;
+  --rc-weight-display: 700;   /* a Lato não tem 600 */
+}
+```
+
+`font-rc-display` anda sempre ao lado de `font-display`: a primeira classe
+escolhe a família, a segunda o peso. As classes do Tailwind (`font-medium`,
+`font-semibold`) continuam compilando para a sua tela, mas não seguem o tema;
+use as de intenção quando o texto precisa acompanhar a marca.
+
+O [montador de tema](/tema) faz a conta sozinho: ao escolher uma família sem o
+peso que um token pede, ele escreve o token com o peso **disponível mais
+próximo**, pela mesma regra de casamento que o navegador usa. A Lato no título
+sai com `--rc-weight-display: 700`, e a DM Serif Display, que só tem 400, sai
+com 400, em vez de o navegador desenhar um negrito sintético por cima dela.
+
+No React Native os cinco saem no `theme.css` do pacote como
+`--font-weight-rc-*`, com os mesmos valores, e um `@theme` do app os
+sobrescreve antes de compilar, como faz com as cores.
+
 ### Acabamento: gradiente, vidro e brilho
 
 Três papéis que não pintam cor, e sim o que vem por cima dela. São os **únicos
@@ -320,6 +361,7 @@ Cor não é a única coisa que um tema decide. Canto reto e movimento seco dizem
 | `--rc-ease-enter`, `--rc-ease-exit` | A curva do que chega e a do que sai |
 | `--rc-ease-spatial`, `--rc-ease-expressive`, `--rc-ease-effects` | As três molas, com a duração de cada uma. Veja Movimento, logo abaixo |
 | `--rc-tracking-display`, `--rc-tracking-tight` | O espaçamento de letra do título |
+| `--rc-weight-regular` a `--rc-weight-display` | O peso de cada intenção de texto. Veja "O peso da letra é token", acima |
 
 Redefina no mesmo seletor do tema, junto com os papéis de cor:
 
@@ -433,6 +475,12 @@ nos dois esquemas, como a galeria do celular. Se fossem papel de tema, um tema
 claro de cliente clarearia a tela da foto sem querer. O `check:contrast` da
 casa mede os pares do palco (texto a 4,5:1, ícone, contorno e anel a 3:1) e
 reprova o tema da casa que os declare.
+
+Os `--rc-signature-*` seguem a mesma conta: são o papel do `SignaturePad`,
+tinta escura sobre papel claro nos dois esquemas, porque a assinatura exportada
+vai para um documento branco e não pode sair clara. O `check:contrast` mede a
+tinta e o "Assine aqui" a 4,5:1, a linha de base a 3:1, reprova a tinta mais
+clara que o papel e o tema da casa que os declare.
 
 ## Um tema de cliente, do começo ao fim
 

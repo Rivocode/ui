@@ -76,7 +76,7 @@ export function FilterChip({
       {hasValue && (
         <span
           title={typeof value === "string" ? value : undefined}
-          className={cn("min-w-0 max-w-40 truncate font-medium text-fg", classNames?.value)}
+          className={cn("min-w-0 max-w-40 truncate font-rc-medium text-fg", classNames?.value)}
         >
           {value}
         </span>

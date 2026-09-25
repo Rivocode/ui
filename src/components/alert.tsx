@@ -98,7 +98,7 @@ export function Alert({
 }
 
 export function AlertTitle({ className, ...props }: ComponentPropsWithoutRef<"p">) {
-  return <p {...props} className={cn("text-base font-medium", className)} />;
+  return <p {...props} className={cn("text-base font-rc-medium", className)} />;
 }
 
 export function AlertDescription({ className, ...props }: ComponentPropsWithoutRef<"p">) {

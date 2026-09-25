@@ -52,13 +52,12 @@ import {
   FRAME,
   SHOTS,
   SIGNATURES,
+  compareSignatures,
   driftOf,
   isSection,
 } from "./retratos";
 
 const GRID = 24;
-
-const NOISE = 4;
 
 type Image = {
   width: number;
@@ -250,6 +249,17 @@ function sectionSignature(image: Image) {
 }
 
 const accept = process.argv.includes("--aceitar");
+
+// A bancada da CI fotografa duas arvores na MESMA maquina e compara uma com a
+// outra, e nao com o comitado - que nasceu no macOS e nunca bate no linux. Com
+// `--gravar-em`, esta guarda so escreve o que mediu e quem ela recusou, e quem
+// julga e o `scripts/comparacao-da-bancada.ts`.
+const recordAt = process.argv.indexOf("--gravar-em");
+const recordTo = recordAt === -1 ? "" : (process.argv[recordAt + 1] ?? "");
+if (recordAt !== -1 && !recordTo) {
+  console.error("--gravar-em pede o caminho do arquivo.");
+  process.exit(1);
+}
 const stored: Record<string, number[]> = await Bun.file(SIGNATURES)
   .json()
   .catch(() => ({}));
@@ -313,26 +323,23 @@ for await (const file of new Glob("*.png").scan(SHOTS)) {
     continue;
   }
 
-  if (isSection(name) && (before[0] !== signature[0] || before[1] !== signature[1])) {
-    changed.push({
-      name: `${name}  a moldura foi de ${before[0]}x${before[1]} para ${signature[0]}x${signature[1]} celulas`,
-      cells: 0,
-      total: 0,
-      worst: 0,
-    });
-    continue;
+  const diff = compareSignatures(name, before, signature);
+  if (diff.frame) {
+    changed.push({ name: `${name}  ${diff.frame}`, cells: 0, total: 0, worst: 0 });
+  } else if (diff.cells > 0) {
+    changed.push({ name, cells: diff.cells, total: diff.total, worst: diff.worst });
   }
+}
 
-  const from = isSection(name) ? 2 : 0;
-  let cells = 0;
-  let worst = 0;
-  for (let index = from; index < signature.length; index++) {
-    const diff = Math.abs(signature[index]! - (before[index] ?? 0));
-    if (diff > NOISE) cells++;
-    worst = Math.max(worst, diff);
-  }
-
-  if (cells > 0) changed.push({ name, cells, total: signature.length - from, worst });
+if (recordTo) {
+  await Bun.write(
+    recordTo,
+    `${JSON.stringify({ signatures: current, refused: [...outdated, ...broken] }, null, 0)}\n`,
+  );
+  console.log(
+    `${Object.keys(current).length} assinatura(s) medida(s) e ${refused.size} recusada(s), gravadas em ${recordTo}.`,
+  );
+  process.exit(0);
 }
 
 const gone = Object.keys(stored).filter((name) => !(name in current) && !refused.has(name));

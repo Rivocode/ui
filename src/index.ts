@@ -365,6 +365,19 @@ export { Grid, type GridProps } from "./components/grid";
 export { Container, type ContainerProps } from "./components/container";
 export { AppShell, type AppShellLabels, type AppShellProps } from "./components/app-shell";
 export {
+  Affix,
+  type AffixLayer,
+  type AffixOffset,
+  type AffixPosition,
+  type AffixProps,
+} from "./components/affix";
+export { ScrollToTop, type ScrollToTopProps } from "./components/scroll-to-top";
+export {
+  TableOfContents,
+  type TableOfContentsItem,
+  type TableOfContentsProps,
+} from "./components/table-of-contents";
+export {
   Command,
   type CommandGroup,
   type CommandItem,
@@ -393,6 +406,19 @@ export { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "./components/
 export { ScrollArea, type ScrollAreaProps } from "./components/scroll-area";
 export { Slider, type SliderProps } from "./components/slider";
 export { Rating, type RatingLabels, type RatingProps } from "./components/rating";
+export {
+  SignaturePad,
+  isSignatureEmpty,
+  signatureToPng,
+  signatureToSvg,
+  type SignatureExportOptions,
+  type SignaturePadLabels,
+  type SignaturePadProps,
+  type SignaturePngOptions,
+  type SignaturePoint,
+  type SignatureStroke,
+  type SignatureValue,
+} from "./components/signature-pad";
 export { Meter, type MeterProps } from "./components/meter";
 export { NumberField, type NumberFieldProps } from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
@@ -523,6 +549,13 @@ export {
   type FilterChipProps,
 } from "./components/filter-bar";
 export { Popconfirm, type PopconfirmProps } from "./components/popconfirm";
+export {
+  Tour,
+  type TourLabels,
+  type TourPlacement,
+  type TourProps,
+  type TourStep,
+} from "./components/tour";
 export { QueryBoundary, type QueryBoundaryProps } from "./components/query-boundary";
 export {
   TimeField,
@@ -547,3 +580,22 @@ export {
   type EventCalendarView,
   type WeekStart,
 } from "./components/event-calendar";
+export {
+  TransferList,
+  type TransferListItem,
+  type TransferListLabels,
+  type TransferListProps,
+} from "./components/transfer-list";
+export { Highlight, type HighlightProps } from "./components/highlight";
+export { matchesSearch } from "./shared/highlight";
+export { Spoiler, type SpoilerProps } from "./components/spoiler";
+export {
+  Gantt,
+  type GanttColumn,
+  type GanttProps,
+  type GanttRange,
+  type GanttScale,
+  type GanttTask,
+  type GanttTaskChange,
+  type GanttTone,
+} from "./components/gantt";

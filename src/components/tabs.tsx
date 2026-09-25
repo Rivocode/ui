@@ -52,7 +52,7 @@ export function Tab({ className, ...props }: ComponentProps<typeof BaseTabs.Tab>
     <BaseTabs.Tab
       {...props}
       className={cn(
-        "relative flex shrink-0 items-center gap-1.5 px-3 font-sans font-medium",
+        "relative flex shrink-0 items-center gap-1.5 px-3 font-sans font-rc-medium",
         "h-[var(--rc-control-lg)] text-base text-fg-muted",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none hover:text-fg",

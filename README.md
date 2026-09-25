@@ -113,7 +113,7 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-121 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
+134 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
 diferença entre as que se parecem, que é a parte que costuma faltar. O índice
 completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 
@@ -124,6 +124,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Heading` | título de `h1` a `h6`, com o tamanho separado do nível                            |
 | `Text`    | parágrafo ou trecho nos tons de texto do tema; sem `size` e `tone`, herda da frase |
 | `Link`    | âncora sublinhada, `external` com aviso a quem ouve, e o router pelo `render`     |
+| `Highlight` | pinta o termo buscado dentro do texto, sem acento importar: "sao" acha "São"    |
 
 ### Ação
 
@@ -134,6 +135,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Toggle`, `ToggleGroup` | botão que fica apertado: alinhamento, modo de exibição, filtro       |
 | `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
 | `ActionBar`             | ações em lote sobre a seleção: diz quantos, limpa, gruda no pé da área |
+| `ScrollToTop`           | "Voltar ao topo" que aparece depois de descer e devolve o foco ao `main` |
 
 ### Campo
 
@@ -143,6 +145,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
 | `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, boleto, molde à mão   |
 | `CurrencyInput`                 | dinheiro em centavos inteiros, digitado da direita, com sinal e limite     |
+| `SignaturePad`                  | assinatura com dedo, caneta ou mouse, ou o nome digitado; exporta SVG e PNG |
 | `PostalCodeField`               | CEP que busca o endereço pela `lookup` que você escreve, e preenche o resto |
 | `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
 | `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
@@ -152,10 +155,12 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Select`                        | escolha única em lista curta e fixa                                        |
 | `Combobox`                      | escolha em lista longa ou vinda do servidor, com busca e fichas            |
 | `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
+| `TransferList`                  | duas listas, disponíveis e escolhidos, com busca, marcar vários e mover nos dois sentidos |
 | `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
 | `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
 | `Rating`                        | nota em estrelas, com meia estrela e a média só leitura dita "4,5 de 5"   |
 | `EventCalendar`                 | a agenda: o que acontece, quando e por quanto tempo. O `Calendar` escolhe uma data; este mostra compromisso no tempo |
+| `Gantt`                         | o cronograma de projeto: tarefas em escala, dependência em seta, grupos que recolhem e edição por arrasto e teclado |
 
 ### Flutuante
 
@@ -169,6 +174,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Menu`        | menu de ações, com grupos e item destrutivo                            |
 | `Toast`       | aviso que passa, via `useToast()`                                      |
 | `ImageViewer` | foto em tela cheia a partir das miniaturas, com zoom e setas           |
+| `Tour`        | passeio guiado: escurece o resto, recorta o alvo e explica num balão   |
 
 ### Navegação
 
@@ -180,6 +186,7 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo              |
 | `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas          |
 | `Steps`      | a régua de um formulário em etapas, com `useWizard()`                    |
+| `TableOfContents` | o índice "Nesta página": lê os títulos e marca a seção lida ao rolar |
 
 ### Dado
 
@@ -244,12 +251,14 @@ npm install @dnd-kit/core @dnd-kit/sortable
 | ------------- | ---------------------------------------------------------------------- |
 | `Accordion`   | seções que se fecham entre si                                          |
 | `Collapsible` | um bloco só, sem moldura e sem coordenação entre irmãos                |
+| `Spoiler`     | o começo do texto longo com "Ler mais", só quando estoura a altura     |
 | `ScrollArea`  | barra de rolagem própria, para quando a do sistema atrapalha o desenho |
 | `Stack`       | empilha numa direção, com o vão da escala que acompanha a densidade    |
 | `Grid`        | colunas fixas ou quantas couberem por `minItemWidth`, sem media query  |
 | `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
 | `Carousel`    | slides de lado por scroll-snap; `Tabs` se compara, `Grid` se cabe tudo |
 | `ResizablePanelGroup` | áreas com divisória que se arrasta: N painéis, aninhados, que recolhem e lembram o layout |
+| `Affix`       | gruda na janela com o empilhamento da casa, e reserva o `scroll-padding` para o foco não parar atrás |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
 
@@ -478,6 +487,19 @@ movimento" ligado é justamente o maior deles.
 
 A altura fica com você, por classe: gráfico sem altura definida some, porque o
 contêiner mede o pai.
+
+Além da moldura, o subcaminho traz seis gráficos prontos. Os quatro últimos são
+desenho próprio, sem Recharts, e não entram no `ChartContainer`: carregando,
+erro e vazio vêm do `QueryBoundary` em volta.
+
+| Peça           | Para que serve                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------- |
+| `ChartDonut`   | partes de um todo, até seis, com o total no buraco e a lista de fatias embaixo              |
+| `ChartRadial`  | uma medida contra a meta: quanto falta para chegar, e subir é sempre melhor                 |
+| `ChartGauge`   | uma medida que é julgada por faixas com nome (em dia, atenção, crítico), e subir pode ser pior |
+| `ChartHeatmap` | o padrão numa grade de linha por coluna, como emissões por dia e hora; célula vazia não é zero |
+| `ChartFunnel`  | etapas em que cada uma é parte da anterior, com a taxa de conversão escrita entre elas        |
+| `ChartTreemap` | área proporcional acima de seis categorias, onde a rosca para de informar                    |
 
 ## Tela de aplicação
 

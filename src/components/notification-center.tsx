@@ -240,7 +240,7 @@ export function NotificationCenter({
         const body = (
           <>
             <span className="flex items-start gap-2">
-              <span className={cn("min-w-0 flex-1 text-sm text-fg", !item.read && "font-medium")}>
+              <span className={cn("min-w-0 flex-1 text-sm text-fg", !item.read && "font-rc-medium")}>
                 {!item.read && <span className="sr-only">{text.unreadItem}: </span>}
                 {item.title}
               </span>
@@ -343,7 +343,7 @@ export function NotificationCenter({
             )}
           >
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <p id={titleId} className="font-display text-base text-fg">
+              <p id={titleId} className="font-display font-rc-display text-base text-fg">
                 {text.title}
               </p>
               {onMarkAllRead && (

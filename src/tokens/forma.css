@@ -8,6 +8,12 @@
   --rc-tracking-display: -0.02em;
   --rc-tracking-tight: -0.01em;
 
+  --rc-weight-regular: 400;
+  --rc-weight-medium: 500;
+  --rc-weight-strong: 600;
+  --rc-weight-bold: 700;
+  --rc-weight-display: 600;
+
   --rc-duration-fast: 120ms;
   --rc-duration-base: 200ms;
   --rc-duration-slow: 320ms;

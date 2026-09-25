@@ -71,7 +71,7 @@ export function Avatar({ fallback, src, alt, size = "md", className }: AvatarPro
         className,
       )}
     >
-      <Text className={`font-medium text-fg-muted ${text}`}>{fallback}</Text>
+      <Text className={`font-rc-medium text-fg-muted ${text}`}>{fallback}</Text>
       {photo && (
         <Image
           source={{ uri: src }}
@@ -110,7 +110,7 @@ export function Alert({ tone = "info", title, children, className }: AlertProps)
       accessibilityRole="alert"
       className={cn("gap-1 rounded-md border p-4", styles.box, className)}
     >
-      <Text className={`text-sm font-medium ${styles.text}`}>{title}</Text>
+      <Text className={`text-sm font-rc-medium ${styles.text}`}>{title}</Text>
       {children && <Text className="text-sm text-fg-muted">{children}</Text>}
     </Entrance>
   );

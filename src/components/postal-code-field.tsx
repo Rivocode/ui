@@ -198,7 +198,7 @@ export function PostalCodeField({
                   run(digits);
                 }}
                 className={cn(
-                  "rounded-sm font-medium text-accent-text underline underline-offset-2",
+                  "rounded-sm font-rc-medium text-accent-text underline underline-offset-2",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   "disabled:text-fg-disabled disabled:no-underline",
                   classNames?.retry,

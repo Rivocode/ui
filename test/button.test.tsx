@@ -119,7 +119,7 @@ test("o botao sabe virar link, porque metade dos botoes de um site e link", () =
 test("o tamanho de chamada tem o peso de marketing, nao o de formulario", () => {
   render(<Button size="cta">Quero um diagnostico</Button>);
   const classes = screen.getByRole("button").className;
-  expect(classes).toContain("font-bold");
+  expect(classes.split(" ")).toContain("font-rc-bold");
   expect(classes).not.toContain("--rc-control-md");
 });
 

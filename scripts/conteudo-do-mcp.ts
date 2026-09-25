@@ -193,6 +193,16 @@ function readGuides(files: Map<string, string>): Guide[] {
   }
 
   const skill = files.get("skill/SKILL.md") ?? "";
+  const auditSkill = "skill-auditoria/SKILL.md";
+  if (files.has(auditSkill)) {
+    guides.push({
+      slug: "auditoria",
+      title: titleOf(files.get(auditSkill)!, "Auditoria"),
+      summary:
+        "A skill de auditoria: o laço, as regras mecânicas e de julgamento, e a conta da nota que `audit_screen` devolve.",
+      path: auditSkill,
+    });
+  }
   guides.push({
     slug: "skill-completa",
     title: titleOf(skill, "Skill"),
@@ -227,6 +237,7 @@ export function buildContent(): Content {
 
   const all = agentFiles();
   all.delete("llms-full.txt");
+  for (const path of [...all.keys()]) if (!/\.(?:md|txt)$/.test(path)) all.delete(path);
 
   const parts: Record<string, string> = {};
   const avoid: Record<string, string> = {};

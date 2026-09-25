@@ -16,6 +16,8 @@
  * pede a intersecao com os pesos que as pecas usam.
  * ------------------------------------------------------------------------- */
 
+import TOKENS from '../../../../native/tokens.json'
+
 export type FontRole = 'sans' | 'display' | 'mono'
 export const FONT_ROLES: FontRole[] = ['sans', 'display', 'mono']
 
@@ -99,8 +101,42 @@ export const FAMILIES: FontFamily[] = [
   mono('geist-mono', 'Geist Mono', true, from(100, 900)),
 ]
 
-/** Os pesos que as pecas pedem: `font-normal`, `font-medium`, `font-semibold`, `font-bold`. */
-export const USED_WEIGHTS = [400, 500, 600, 700]
+/* ---------------------------------------------------------------------------
+ * Os pesos que as pecas pedem
+ *
+ * As pecas nao escrevem `font-semibold`: escrevem a intencao (`font-rc-medium`,
+ * `font-rc-display`), e o numero mora em `--rc-weight-*`, no `forma.css`. O
+ * valor da casa vem do `tokens.json` do nativo, que e gerado daquele CSS, para
+ * o montador nao ter uma segunda tabela que envelhece calada.
+ *
+ * Quatro das cinco intencoes vestem o corpo, e a de titulo veste a familia de
+ * titulo: e por essa familia que cada token e conferido. O `Kbd` tambem pede
+ * `font-rc-medium` na familia de codigo, mas o token e um so para as tres, e o
+ * corpo e quem mais o usa.
+ * ------------------------------------------------------------------------- */
+
+export type WeightIntent = 'regular' | 'medium' | 'strong' | 'bold' | 'display'
+export const WEIGHT_INTENTS: WeightIntent[] = ['regular', 'medium', 'strong', 'bold', 'display']
+
+const SCALES = TOKENS.scales as Record<string, number>
+
+export const HOUSE_WEIGHTS = Object.fromEntries(
+  WEIGHT_INTENTS.map((intent) => [intent, SCALES[`weight-${intent}`]!]),
+) as Record<WeightIntent, number>
+
+export const WEIGHT_ROLE: Record<WeightIntent, FontRole> = {
+  regular: 'sans',
+  medium: 'sans',
+  strong: 'sans',
+  bold: 'sans',
+  display: 'display',
+}
+
+export const weightToken = (intent: WeightIntent) => `--rc-weight-${intent}`
+export const weightClass = (intent: WeightIntent) => `font-rc-${intent}`
+
+/** Os numeros que as pecas pedem com o tema da casa, sem repeticao e em ordem. */
+export const USED_WEIGHTS = [...new Set(Object.values(HOUSE_WEIGHTS))].sort((a, b) => a - b)
 
 export const ROLE_CATEGORIES: Record<FontRole, FontCategory[]> = {
   sans: ['sans-serif', 'serif'],
@@ -167,6 +203,7 @@ export function applyFonts<T extends Record<string, string>>(tokens: T, fonts: F
     const stack = stackOf(role, fonts[role])
     if (stack !== undefined) next[TOKEN_OF[role]] = stack
   }
+  Object.assign(next, weightTokens(fonts))
   return next as T
 }
 
@@ -174,9 +211,12 @@ export function applyFonts<T extends Record<string, string>>(tokens: T, fonts: F
  * O peso que falta
  *
  * O navegador nao recusa um peso que a familia nao tem: ele procura o vizinho
- * pela regra de casamento da CSS Fonts 4, e so sintetiza negrito quando o
- * pedido e 600 ou mais e o vizinho achado e mais leve que isso. A conta abaixo
- * e essa regra, para o aviso dizer o que vai acontecer, e nao so que falta.
+ * pela regra de casamento da CSS Fonts 4, e sintetiza negrito quando o pedido
+ * e 600 ou mais e o vizinho achado e mais leve que isso. O montador faz a mesma
+ * conta ANTES, e escreve o vizinho no token de peso: a Lato no titulo sai com
+ * `--rc-weight-display: 700`, e a DM Serif Display, que so tem 400, sai com
+ * 400. O pedido passa a ser um peso que a familia tem, e o negrito sintetico
+ * deixa de existir, em vez de virar aviso.
  * ------------------------------------------------------------------------- */
 
 export function nearestWeight(available: number[], desired: number): number {
@@ -192,14 +232,32 @@ export function nearestWeight(available: number[], desired: number): number {
   return above[0] ?? below[0]!
 }
 
-export type MissingWeight = { weight: number; falls: number; synthetic: boolean }
+export type WeightFit = { intent: WeightIntent; wanted: number; falls: number; synthetic: boolean }
 
-export function missingWeights(family: FontFamily): MissingWeight[] {
-  return USED_WEIGHTS.filter((weight) => !family.weights.includes(weight)).map((weight) => {
-    const falls = nearestWeight(family.weights, weight)
-    return { weight, falls, synthetic: weight >= 600 && falls < 600 }
+/** Os tokens de peso do papel que a familia nao tem, com o vizinho que o montador escreve. */
+export function weightFits(role: FontRole, family: FontFamily): WeightFit[] {
+  return WEIGHT_INTENTS.filter((intent) => WEIGHT_ROLE[intent] === role).flatMap((intent) => {
+    const wanted = HOUSE_WEIGHTS[intent]
+    if (family.weights.includes(wanted)) return []
+    const falls = nearestWeight(family.weights, wanted)
+    return [{ intent, wanted, falls, synthetic: wanted >= 600 && falls < 600 }]
   })
 }
+
+/** O que o tema declara de peso: so o token cuja familia nao tem o numero da casa. */
+export function weightTokens(fonts: FontState): Record<string, string> {
+  const tokens: Record<string, string> = {}
+  for (const role of FONT_ROLES) {
+    const family = chosenFamily(role, fonts[role])
+    if (!family) continue
+    for (const fit of weightFits(role, family)) tokens[weightToken(fit.intent)] = String(fit.falls)
+  }
+  return tokens
+}
+
+/** As faces que a familia precisa baixar: o vizinho de cada peso que as pecas pedem. */
+export const facesOf = (family: FontFamily) =>
+  [...new Set(USED_WEIGHTS.map((weight) => nearestWeight(family.weights, weight)))].sort((a, b) => a - b)
 
 /* ---------------------------------------------------------------------------
  * O que sai para o projeto
@@ -230,9 +288,7 @@ export const allHouse = (fonts: FontState) => FONT_ROLES.every((role) => fonts[r
 const importsOf = (family: FontFamily) =>
   family.variable
     ? [packageOf(family)]
-    : USED_WEIGHTS.filter((weight) => family.weights.includes(weight)).map(
-        (weight) => `${packageOf(family)}/latin-${weight}.css`,
-      )
+    : facesOf(family).map((weight) => `${packageOf(family)}/latin-${weight}.css`)
 
 /** Os caminhos de `@import`, em ordem de papel e sem repeticao. */
 export function fontImports(fonts: FontState): string[] {
@@ -276,7 +332,7 @@ export function googleFontsUrl(fonts: FontState): string | undefined {
   const families = chosenFamilies(fonts)
   if (families.length === 0) return undefined
   const params = families.map((family) => {
-    const weights = USED_WEIGHTS.filter((weight) => family.weights.includes(weight))
+    const weights = facesOf(family)
     return `family=${family.family.replace(/ /g, '+')}:wght@${weights.join(';')}`
   })
   return `https://fonts.googleapis.com/css2?${params.join('&')}&display=swap`

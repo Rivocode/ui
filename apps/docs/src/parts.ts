@@ -40,6 +40,7 @@ const STANDALONE = new Set([
   'RadioGroup',
   'ResizablePanelGroup',
   'ToggleGroup',
+  'TableOfContents',
   'TreeSelect',
 ])
 

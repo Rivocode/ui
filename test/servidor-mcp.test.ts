@@ -7,6 +7,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import type { Content } from "../mcp/src/content";
 import { createServer } from "../mcp/src/server";
 import { buildContent, cells, leadSentence } from "../scripts/conteudo-do-mcp";
+import { audit, renderMarkdown } from "../.claude/skills/rivocode-ui-audit/scripts/audit";
 
 const content: Content = buildContent();
 const client = new Client({ name: "teste", version: "0.0.0" });
@@ -39,9 +40,10 @@ const TOOLS = [
   "get_tokens",
   "get_native_parity",
   "get_guide",
+  "audit_screen",
 ];
 
-test("o servidor anuncia as sete ferramentas, cada uma com descricao em portugues", async () => {
+test("o servidor anuncia as oito ferramentas, cada uma com descricao em portugues", async () => {
   const { tools } = await client.listTools();
 
   expect(tools.map((tool) => tool.name).sort()).toEqual([...TOOLS].sort());
@@ -286,7 +288,12 @@ test("toda pagina e todo arquivo DTCG saem como resource, e o resource devolve o
 });
 
 test("o servidor nao fala com a rede em tempo de execucao", () => {
-  for (const file of ["mcp/src/server.ts", "mcp/src/cli.ts", "mcp/src/text.ts"]) {
+  for (const file of [
+    "mcp/src/server.ts",
+    "mcp/src/cli.ts",
+    "mcp/src/text.ts",
+    ".claude/skills/rivocode-ui-audit/scripts/audit.ts",
+  ]) {
     const source = readFileSync(file, "utf8");
     expect(source).not.toMatch(/\bfetch\(|node:https?|node:net|XMLHttpRequest|WebSocket/);
   }
@@ -300,4 +307,54 @@ test("a primeira frase atravessa a quebra de linha do markdown", () => {
     "Acao. Sai como botao nativo, e vira link.",
   );
   expect(cells("| `a \\| b` | c|d |")).toEqual(["`a | b`", "c", "d"]);
+});
+
+test("audit_screen devolve o mesmo relatorio da skill, pela mesma conta", async () => {
+  const files = ["emissao.tsx", "emissao-nativa.tsx"].map((name) => ({
+    path: `ruim/${name}`,
+    source: readFileSync(`test/fixtures/auditoria/ruim/${name}`, "utf8"),
+  }));
+  const manifest = readFileSync("test/fixtures/auditoria/ruim/package.json", "utf8");
+
+  const answer = await call("audit_screen", { files, package_json: manifest });
+  const expected = renderMarkdown(
+    audit({ files, manifests: [{ path: "package.json", source: manifest }] }),
+  );
+
+  expect(answer.isError).toBe(false);
+  expect(answer.text).toStartWith(expected);
+  expect(answer.text).toContain("**Nota: 0/100.** Fora do contrato.");
+  expect(answer.text).toContain("`react-hook-form` não está no package.json");
+});
+
+test("audit_screen leva o julgamento e o descarte para a nota", async () => {
+  const source = readFileSync("test/fixtures/auditoria/boa/cobranca.tsx", "utf8");
+  const files = [{ path: "cobranca.tsx", source }];
+
+  const clean = await call("audit_screen", { files });
+  expect(clean.text).toContain("**Nota: 100/100.**");
+
+  const judged = await call("audit_screen", {
+    files,
+    findings: [
+      { rule: "escolha-de-peca", file: "cobranca.tsx", line: 60, message: "Toast para a falha" },
+      { rule: "regra-inventada", file: "cobranca.tsx", line: 1, message: "nada" },
+    ],
+  });
+  expect(judged.text).toContain("**Nota: 95/100.**");
+  expect(judged.text).toContain("L60 **escolha-de-peca** (sério, julgamento)");
+  expect(judged.text).toContain("a regra `regra-inventada` não existe");
+
+  const colored = [
+    { path: "cor.tsx", source: 'export const A = () => <div className="bg-red-500" />' },
+  ];
+  expect((await call("audit_screen", { files: colored })).text).toContain("**Nota: 90/100.**");
+  const dismissed = await call("audit_screen", {
+    files: colored,
+    dismissals: [
+      { rule: "cor-literal", file: "cor.tsx", line: 1, reason: "Amostra de marca do cliente" },
+    ],
+  });
+  expect(dismissed.text).toContain("**Nota: 100/100.**");
+  expect(dismissed.text).toContain("Motivo: Amostra de marca do cliente");
 });

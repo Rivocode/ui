@@ -124,7 +124,7 @@ export function DataList<Row>({
     return (
       <Entrance className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
         <View className="gap-1">
-          {errorTitle && <Text className="text-sm font-medium text-danger-text">{errorTitle}</Text>}
+          {errorTitle && <Text className="text-sm font-rc-medium text-danger-text">{errorTitle}</Text>}
           <Text className="text-sm text-danger-text">{errorMessage}</Text>
         </View>
         {onRetry && (

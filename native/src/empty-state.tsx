@@ -63,7 +63,7 @@ export function EmptyState({
           {art}
         </View>
       )}
-      <Text className="text-lg font-semibold text-fg">{title}</Text>
+      <Text className="text-lg font-rc-strong text-fg">{title}</Text>
       <Text className="text-center text-sm text-fg-muted">{description}</Text>
       {action && <View className="mt-2">{action}</View>}
     </Entrance>

@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
   RivoProvider,
+  type RivoDensity,
   type RivoTheme,
 } from "../src/index";
 import {
@@ -17,7 +18,12 @@ import {
   CartesianGrid,
   ChartContainer,
   ChartDonut,
+  ChartFunnel,
+  ChartGauge,
+  ChartHeatmap,
   ChartRadial,
+  ChartTreemap,
+  type ChartGaugeBand,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
@@ -255,9 +261,123 @@ function Sample({ theme }: { theme: RivoTheme }) {
   );
 }
 
+
+const DAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sab", "Dom"];
+const HOURS = Array.from({ length: 12 }, (_, index) => `${index + 8}h`);
+const WEIGHT: Record<string, number> = { Seg: 1.2, Ter: 1, Qua: 1.1, Qui: 0.9, Sex: 1.4, Sab: 0.3 };
+
+const EMISSIONS = DAYS.flatMap((day) =>
+  HOURS.map((hour, index) => ({
+    day,
+    hour,
+    total:
+      day === "Dom"
+        ? null
+        : Math.round((WEIGHT[day] ?? 0) * (6 + 10 * Math.sin((index / 11) * Math.PI))),
+  })),
+).filter((cell) => !(cell.day === "Sab" && Number.parseInt(cell.hour) > 13));
+
+const OVERDUE: ChartGaugeBand[] = [
+  { until: 5, tone: "success", label: "Em dia" },
+  { until: 12, tone: "warning", label: "Atencao" },
+  { until: 20, tone: "danger", label: "Critico" },
+];
+
+const ONBOARDING = [
+  { stage: "Visitaram a pagina de precos", total: 12480 },
+  { stage: "Criaram conta", total: 3120 },
+  { stage: "Configuraram o certificado", total: 1406 },
+  { stage: "Emitiram a primeira nota", total: 988 },
+];
+
+const SERVICES = [
+  { service: "Suporte tecnico", total: 182400 },
+  { service: "Consultoria", total: 96300 },
+  { service: "Hospedagem", total: 71900 },
+  { service: "Obras", total: 38200 },
+  { service: "Manutencao", total: 22700 },
+  { service: "Intermediacao", total: 9800 },
+  { service: "Funerarios", total: 3100 },
+];
+
+function Repertoire({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
+  return (
+    <RivoProvider scope="local" theme={theme} density={density} className="p-8">
+      <p className="mb-8 font-mono text-xs tracking-widest text-fg-subtle uppercase">
+        {theme} / {density}
+      </p>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Quando as notas saem</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartHeatmap
+              data={EMISSIONS}
+              rowKey="day"
+              columnKey="hour"
+              valueKey="total"
+              rows={DAYS}
+              columns={HOURS}
+              label="Notas emitidas por dia da semana e hora"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Inadimplencia</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <ChartGauge value={3.1} max={20} bands={OVERDUE} centerValue="3,1%" />
+            <ChartGauge value={8.4} max={20} bands={OVERDUE} centerValue="8,4%" />
+            <ChartGauge value={17.9} max={20} bands={OVERDUE} centerValue="17,9%" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Adesao em agosto</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartFunnel
+              data={ONBOARDING}
+              valueKey="total"
+              nameKey="stage"
+              format="integer"
+              label="Funil de adesao em agosto"
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Faturamento por servico</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartTreemap
+              data={SERVICES}
+              valueKey="total"
+              nameKey="service"
+              format="currencyShort"
+              label="Faturamento do mes por servico"
+              className="h-72"
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </RivoProvider>
+  );
+}
+
 createRoot(document.getElementById("root")!).render(
   <div>
     <Sample theme="rivocode-dark" />
     <Sample theme="rivocode-light" />
+    <Repertoire theme="rivocode-dark" density="comfortable" />
+    <Repertoire theme="rivocode-light" density="comfortable" />
+    <Repertoire theme="rivocode-dark" density="compact" />
+    <Repertoire theme="rivocode-light" density="compact" />
   </div>,
 );

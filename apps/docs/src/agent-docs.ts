@@ -36,6 +36,8 @@ const CONVENTIONS = here('../../../.design-sync/conventions.md')
  * e justamente a que precisa estar certa.
  */
 const SKILL_DIR = here('../../../.claude/skills/rivocode-ui')
+const AUDIT_DIR = here('../../../.claude/skills/rivocode-ui-audit')
+export const AUDIT_FILES = ['SKILL.md', 'scripts/audit.ts']
 const GUIDES_DIR = here('./content')
 const BLOCKS_DIR = here('./blocks')
 
@@ -271,6 +273,7 @@ adivinhada pelo nome.
 
 - [Skill](/skill.md): instruções completas, inclusive sem gerenciador de pacote
 - [SKILL.md](/skill/SKILL.md): a skill crua, para ler sem instalar
+- [Skill de auditoria](/skill-auditoria/SKILL.md): confere uma tela pronta contra as regras da casa e dá uma nota de 0 a 100, com o script em [/skill-auditoria/scripts/audit.ts](/skill-auditoria/scripts/audit.ts)
 
 ## Se não der para instalar
 
@@ -345,6 +348,10 @@ export function agentFiles(): Map<string, string> {
 
   for (const file of skillFiles()) {
     files.set(`skill/${file}`, readFileSync(`${SKILL_DIR}/${file}`, 'utf8'))
+  }
+
+  for (const file of AUDIT_FILES) {
+    files.set(`skill-auditoria/${file}`, readFileSync(`${AUDIT_DIR}/${file}`, 'utf8'))
   }
 
   for (const [slug, guide] of readGuides()) files.set(`${slug}.md`, guideMarkdown(guide))

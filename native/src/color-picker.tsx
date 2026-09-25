@@ -124,7 +124,7 @@ export function ColorPicker({
 
   return (
     <View className={cn("gap-2", className)}>
-      {label && <Text className="text-sm font-medium text-fg">{label}</Text>}
+      {label && <Text className="text-sm font-rc-medium text-fg">{label}</Text>}
 
       <View
         accessibilityRole="radiogroup"

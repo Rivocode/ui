@@ -261,11 +261,11 @@ export function Questionnaire({
           <Text
             accessibilityRole="header"
             font="display"
-            className={cn("text-lg font-semibold", disabled ? "text-fg-disabled" : "text-fg")}
+            className={cn("text-lg font-rc-display", disabled ? "text-fg-disabled" : "text-fg")}
           >
             {current.title}
             {current.required ? null : (
-              <Text className="text-xs font-normal text-fg-subtle">
+              <Text className="text-xs font-rc-regular text-fg-subtle">
                 {"  "}
                 {labels.optional}
               </Text>
