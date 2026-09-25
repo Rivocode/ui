@@ -25,7 +25,7 @@ export {
 export { Button, type ButtonProps } from "./button";
 export { IconButton, type IconButtonProps } from "./icon-button";
 export { ActionBar, type ActionBarProps } from "./action-bar";
-export { Banner, type BannerProps } from "./banner";
+export { Banner, type BannerLabels, type BannerProps } from "./banner";
 export { Carousel, type CarouselLabels, type CarouselProps } from "./carousel";
 export {
   ImageViewer,
@@ -52,11 +52,11 @@ export { EmptyState, type EmptyStateProps } from "./empty-state";
 export { Field, Input, type FieldProps, type InputProps } from "./field";
 export { Checkbox, type CheckboxProps } from "./checkbox";
 export { Switch, type SwitchProps } from "./switch";
-export { Sheet, type SheetProps } from "./sheet";
+export { Sheet, type SheetLabels, type SheetProps } from "./sheet";
 export { ScrollArea, type ScrollAreaProps } from "./scroll-area";
 export { useToast } from "./toast";
-export { DataList, type DataListProps } from "./data-list";
-export { QueryBoundary, type QueryBoundaryProps } from "./query-boundary";
+export { DataList, type DataListLabels, type DataListProps } from "./data-list";
+export { QueryBoundary, type QueryBoundaryLabels, type QueryBoundaryProps } from "./query-boundary";
 export { Tracker, type TrackerPoint, type TrackerProps } from "./tracker";
 export { Item, type ItemProps } from "./item";
 export { RelativeTime, type RelativeTimeProps, type RelativeUnit } from "./relative-time";
@@ -66,12 +66,20 @@ export {
   Progress,
   Separator,
   Spinner,
+  type AlertLabels,
   type AlertProps,
   type AvatarProps,
   type ProgressProps,
   type SpinnerProps,
 } from "./basics";
-export { AlertDialog, Dialog, type AlertDialogProps, type DialogProps } from "./dialog";
+export {
+  AlertDialog,
+  Dialog,
+  type AlertDialogLabels,
+  type AlertDialogProps,
+  type DialogLabels,
+  type DialogProps,
+} from "./dialog";
 export { Select, type SelectItem, type SelectItemGroup, type SelectProps } from "./select";
 export { Tabs, type TabItem, type TabsProps } from "./tabs";
 export { RadioGroup, type RadioGroupProps, type RadioItem } from "./radio-group";
@@ -86,7 +94,7 @@ export {
   type TextWeight,
 } from "./text";
 export { Heading, type HeadingLevel, type HeadingProps, type HeadingSize } from "./heading";
-export { Link, type LinkProps, type LinkTone } from "./link";
+export { Link, type LinkLabels, type LinkProps, type LinkTone } from "./link";
 export { Textarea, type TextareaProps } from "./textarea";
 export { MaskedInput, type MaskedInputProps } from "./masked-input";
 export { CurrencyInput, type CurrencyInputProps } from "./currency-input";
@@ -137,18 +145,14 @@ export {
   type BoletoKind,
   type ParseBoletoOptions,
 } from "./shared/boleto";
-export { NumberField, type NumberFieldProps } from "./number-field";
+export { NumberField, type NumberFieldLabels, type NumberFieldProps } from "./number-field";
 export { OTPField, type OTPFieldProps } from "./otp-field";
-export { SearchInput, type SearchInputProps } from "./search-input";
+export { SearchInput, type SearchInputLabels, type SearchInputProps } from "./search-input";
 export { InputGroup, type InputGroupAction, type InputGroupProps } from "./input-group";
 export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { TagsInput, type TagsInputProps } from "./tags-input";
 export { Fieldset, type FieldsetProps } from "./fieldset";
-export {
-  Autocomplete,
-  type AutocompleteItemGroup,
-  type AutocompleteProps,
-} from "./autocomplete";
+export { Autocomplete, type AutocompleteItemGroup, type AutocompleteProps } from "./autocomplete";
 export {
   Combobox,
   type ComboboxItem,
@@ -198,6 +202,7 @@ export {
 export {
   ColorPicker,
   normalizeColor,
+  type ColorPickerLabels,
   type ColorPickerProps,
   type ColorSwatch,
 } from "./color-picker";
@@ -207,7 +212,7 @@ export { RichTextView, type RichTextViewProps } from "./rich-text-view";
 export type { RichTextJson } from "./shared/rich-text";
 export { Tree, leavesOf, type TreeNode, type TreeProps } from "./tree";
 export { TreeSelect, type TreeSelectProps } from "./tree-select";
-export { Editable, type EditableProps } from "./editable";
+export { Editable, type EditableLabels, type EditableProps } from "./editable";
 export { TimeField, applyTimeMask, formatTime, parseTime, type TimeFieldProps } from "./time-field";
 export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./time-picker";
 export {

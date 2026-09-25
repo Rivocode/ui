@@ -30,17 +30,6 @@ export type DataListProps<Row> = {
    */
   errorTitle?: string;
   errorMessage?: string;
-  /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O mesmo nome e o mesmo padrao do `DataTable`, e existe pelo motivo do
-   * `errorTitle`: uma tela em outra lingua saia com o aviso traduzido e o
-   * botao logo abaixo em portugues.
-   *
-   * `string`, e nao `ReactNode` como no web: o rotulo do `Button` nativo mora
-   * dentro de um `Text`.
-   */
-  retryLabel?: string;
   empty?: {
     title: string;
     description: string;
@@ -82,6 +71,12 @@ export type DataListProps<Row> = {
   /** As chaves marcadas, quando quem usa controla a selecao, como no `DataTable` web. Sem ela, a lista guarda a propria selecao. */
   value?: string[];
   onValueChange?: (keys: string[]) => void;
+  /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry` - a mesma chave do `DataTable` do web -, e `selectRow` o nome da
+   * caixa de marcar de cada linha. Passe so os que mudam.
+   */
+  labels?: Partial<DataListLabels>;
 };
 
 const flatten = (text: unknown) =>
@@ -89,6 +84,11 @@ const flatten = (text: unknown) =>
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
     .toLowerCase();
+
+export type DataListLabels = {
+  retry: string;
+  selectRow: string;
+};
 
 export function DataList<Row>({
   data,
@@ -99,11 +99,11 @@ export function DataList<Row>({
   onRetry,
   errorTitle,
   errorMessage = "Não foi possível carregar a lista.",
-  retryLabel = "Tentar de novo",
   empty,
   noResultsMessage = "Nenhum resultado para a busca.",
   onRowPress,
   skeletonRows = 4,
+  labels,
   className,
   filter,
   filterValue,
@@ -111,6 +111,7 @@ export function DataList<Row>({
   value,
   onValueChange,
 }: DataListProps<Row>) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const [internalSelection, setInternalSelection] = useState<string[]>([]);
   const controlled = value;
   const selection = controlled ?? internalSelection;
@@ -125,7 +126,9 @@ export function DataList<Row>({
     return (
       <Entrance className="items-start gap-3 rounded-md border border-danger bg-danger-subtle p-4">
         <View className="gap-1">
-          {errorTitle && <Text className="text-sm font-rc-medium text-danger-text">{errorTitle}</Text>}
+          {errorTitle && (
+            <Text className="text-sm font-rc-medium text-danger-text">{errorTitle}</Text>
+          )}
           <Text className="text-sm text-danger-text">{errorMessage}</Text>
         </View>
         {onRetry && (
@@ -200,7 +203,7 @@ export function DataList<Row>({
         return (
           <View key={key} className="flex-row items-center gap-3">
             <Checkbox
-              label="Selecionar linha"
+                label={labels?.selectRow ?? "Selecionar linha"}
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               checked={selection.includes(key)}
               onCheckedChange={(checked) => toggle(key, checked)}

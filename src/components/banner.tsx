@@ -61,12 +61,19 @@ export type BannerProps = Omit<ComponentPropsWithoutRef<"div">, "title" | "child
    * chamou: a peca nao guarda estado.
    */
   onDismiss?: () => void;
-  /** O nome acessivel do xis. Sem ele, "Fechar aviso". */
-  dismissLabel?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
+   * aviso" sem ele.
+   */
+  labels?: Partial<BannerLabels>;
   classNames?: Slots<"icon" | "content" | "title" | "description" | "actions" | "dismiss">;
 };
 
 export type BannerTone = NonNullable<BannerProps["tone"]>;
+
+export type BannerLabels = {
+  dismiss: string;
+};
 
 export function Banner({
   tone = "info",
@@ -75,11 +82,12 @@ export function Banner({
   icon,
   actions,
   onDismiss,
-  dismissLabel = "Fechar aviso",
+  labels,
   className,
   classNames,
   ...props
 }: BannerProps) {
+  const dismissLabel = labels?.dismiss ?? "Fechar aviso";
   const titleId = useId();
   const isUrgent = tone === "danger" || tone === "warning";
   const symbol = icon === undefined ? TONE_ICON[tone] : icon;

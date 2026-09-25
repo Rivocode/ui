@@ -43,7 +43,19 @@ export type TreeProps = Omit<ComponentPropsWithoutRef<"ul">, "defaultValue" | "c
   /** Filtra pela busca, mantendo o caminho ate quem casou. */
   filter?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `expand` e `collapse` sao os
+   * nomes do botao que abre e fecha um ramo. Passe so os que mudam.
+   */
+  labels?: Partial<TreeLabels>;
 };
+
+export type TreeLabels = {
+  expand: string;
+  collapse: string;
+};
+
+const LABELS: TreeLabels = { expand: "Abrir", collapse: "Fechar" };
 
 export function Tree({
   items,
@@ -56,9 +68,11 @@ export function Tree({
   onOpenChange,
   filter = "",
   className,
+  labels: labelsProp,
   onKeyDown: onKeyDownProp,
   ...rest
 }: TreeProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const [internalOpenIds, setInternalOpenIds] = useState<string[]>(defaultOpen ?? []);
   const openIds = open ?? internalOpenIds;
   const root = useRef<HTMLUListElement>(null);
@@ -153,6 +167,7 @@ export function Tree({
           multiple={multiple}
           onToggleOpen={toggleOpen}
           onToggleSelect={toggleSelect}
+          labels={labels}
         />
       ))}
     </ul>
@@ -168,6 +183,7 @@ function Branch({
   multiple,
   onToggleOpen,
   onToggleSelect,
+  labels,
 }: {
   node: TreeNode;
   level: number;
@@ -178,6 +194,7 @@ function Branch({
   multiple?: boolean;
   onToggleOpen: (id: string) => void;
   onToggleSelect: (node: TreeNode) => void;
+  labels: TreeLabels;
 }) {
   const rtl = useDirection() === "rtl";
   const hasChildren = Boolean(node.children?.length);
@@ -209,7 +226,7 @@ function Branch({
           <button
             type="button"
             tabIndex={-1}
-            aria-label={isOpen ? "Fechar" : "Abrir"}
+            aria-label={isOpen ? labels.collapse : labels.expand}
             onClick={(event) => {
               event.stopPropagation();
               onToggleOpen(node.id);
@@ -263,6 +280,7 @@ function Branch({
               multiple={multiple}
               onToggleOpen={onToggleOpen}
               onToggleSelect={onToggleSelect}
+              labels={labels}
             />
           ))}
         </ul>

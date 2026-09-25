@@ -28,7 +28,7 @@ import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
 import { EmptyState } from "./empty-state";
-import { Pagination } from "./pagination";
+import { Pagination, type PaginationLabels } from "./pagination";
 import { Skeleton } from "./skeleton";
 import {
   Table,
@@ -90,15 +90,6 @@ export type DataTableProps<Row> = {
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
-  /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
-   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
-   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
-   * O mesmo nome em todas as pecas que resolvem os quatro finais.
-   */
-  retryLabel?: ReactNode;
   /**
    * A linha discreta de quando a busca nao acha nada. Sem ela, "Nenhum
    * resultado para a busca."
@@ -175,6 +166,16 @@ export type DataTableProps<Row> = {
   onValueChange?: (keys: string[]) => void;
 
   /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry` - a mesma chave em todas as pecas que resolvem os quatro finais -,
+   * `selectAll` e `selectRow` os nomes das caixas de marcar, `range` a
+   * contagem do rodape da paginacao e `pagination` os textos do `Pagination`
+   * de dentro, com as chaves dele.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta. Passe so os que mudam.
+   */
+  labels?: Partial<DataTableLabels>;
+  /**
    * Classe por parte: `table`, `head`, `row`, `cell`, `footer`. Evita o
    * `[&_tbody_tr]`, que acopla a tela de quem usa a arvore interna da peca.
    *
@@ -214,6 +215,16 @@ const NO_PAGINATION = Number.MAX_SAFE_INTEGER;
 const keysOf = (selection: RowSelectionState) =>
   Object.keys(selection).filter((key) => selection[key]);
 
+export type DataTableLabels = {
+  retry: string;
+  selectAll: string;
+  selectRow: string;
+  range: (first: number, last: number, total: number) => string;
+  pagination: Partial<PaginationLabels>;
+  loading: string;
+  loaded: string;
+};
+
 export function DataTable<Row>({
   data,
   columns,
@@ -223,11 +234,11 @@ export function DataTable<Row>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar a lista.",
-  retryLabel = "Tentar de novo",
   noResultsMessage = "Nenhum resultado para a busca.",
   empty,
   onRowClick,
   skeletonRows = 5,
+  labels,
   className,
   caption,
   pageSize,
@@ -241,6 +252,7 @@ export function DataTable<Row>({
   onValueChange,
   classNames,
 }: DataTableProps<Row>) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const [pageIndex, setPageIndex] = useState(0);
 
   const [seenFilter, setSeenFilter] = useState(filter);
@@ -379,7 +391,7 @@ export function DataTable<Row>({
         {selectable && (
           <TableHead className={cn("w-10", classNames?.head)}>
             <Checkbox
-              aria-label="Selecionar todas as linhas da página"
+              aria-label={labels?.selectAll ?? "Selecionar todas as linhas da página"}
               checked={table.getIsAllPageRowsSelected()}
               indeterminate={table.getIsSomePageRowsSelected()}
               onCheckedChange={() =>
@@ -535,7 +547,7 @@ export function DataTable<Row>({
               {selectable && (
                 <TableCell className={cn("w-10", classNames?.cell)}>
                   <Checkbox
-                    aria-label="Selecionar linha"
+                    aria-label={labels?.selectRow ?? "Selecionar linha"}
                     checked={linha.getIsSelected()}
                     onCheckedChange={(checked) => linha.toggleSelected(checked === true)}
                   />
@@ -565,7 +577,7 @@ export function DataTable<Row>({
 
   return (
     <div className={className}>
-      <LoadingAnnouncement loading={loading} />
+      <LoadingAnnouncement loading={loading} labels={labels} />
 
       {maxHeight === undefined ? (
         <Table className={classNames?.table}>
@@ -601,12 +613,15 @@ export function DataTable<Row>({
           )}
         >
           <p className="text-sm text-fg-muted">
-            {first}–{last} de {filteredTotal}
+            {labels?.range
+              ? labels.range(first, last, filteredTotal)
+              : `${first}–${last} de ${filteredTotal}`}
           </p>
           <Pagination
             page={pageIndex + 1}
             pageCount={Math.max(1, table.getPageCount())}
             onPageChange={(page) => setPageIndex(page - 1)}
+            labels={labels?.pagination}
           />
         </div>
       )}

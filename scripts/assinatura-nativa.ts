@@ -144,8 +144,8 @@ export const SIGNATURES: Record<string, Signature> = {
       },
       {
         web: null,
-        native: "actionLabel",
-        note: "o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé",
+        native: "onConfirm",
+        note: "o botão que confirma é `onConfirm` mais `labels.confirm`, e não um `AlertDialogClose` no rodapé",
       },
       {
         web: "open",
@@ -331,7 +331,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "errorTitle",
         native: "errorTitle",
-        note: "`errorTitle`, `errorMessage` e `retryLabel` viram `string`",
+        note: "`errorTitle` e `errorMessage` viram `string`",
       },
     ],
   },
@@ -481,6 +481,11 @@ export const SIGNATURES: Record<string, Signature> = {
       },
       { web: "rowKey", native: "keyExtractor", note: "mesmo papel, nome do React Native" },
       { web: "onRowClick", native: "onRowPress", note: "mesmo papel, nome do toque" },
+      {
+        web: "labels",
+        native: "labels",
+        note: "só `retry` e `selectRow`: sem página e sem cabeçalho, não há `selectAll`, `range`, `pagination`, `loading` nem `loaded`",
+      },
       {
         web: "pageSize",
         native: null,
@@ -892,12 +897,6 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "não há ancoragem: você desenha o próprio botão e controla `open`",
       },
       {
-        web: "onConfirm",
-        native: "onAction",
-        note: "só o nome muda: devolvendo promessa, o modal segura o botão em espera e fecha quando ela resolve",
-      },
-      { web: "confirmLabel", native: "actionLabel", note: "mesmo papel, e obrigatório" },
-      {
         web: "description",
         native: "description",
         note: "vira `string` obrigatória: o modal não abre sem dizer o que se perde",
@@ -930,7 +929,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "errorTitle",
         native: "errorTitle",
-        note: "`errorTitle`, `errorMessage` e `retryLabel` viram `string`",
+        note: "`errorTitle` e `errorMessage` viram `string`",
       },
     ],
   },

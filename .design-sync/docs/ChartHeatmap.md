@@ -58,7 +58,7 @@ nenhuma e leva uma borda tracejada. Os dois se leem diferentes de propósito:
 "ninguém emitiu às 22h" e "não apuramos as 22h" são respostas diferentes à mesma
 pergunta, e uma grade que pinta os dois do mesmo jeito mente numa delas. A dica,
 a tabela escondida e a régua dizem "Sem dado", ou o que você escrever em
-`emptyLabel`.
+`labels.empty`.
 
 ## Dica, teclado e leitor de tela
 
@@ -100,7 +100,7 @@ A peça não tem os quatro finais de uma consulta: carregando, erro e vazio vêm
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`, `format`. A escala é a mesma, cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em `native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda tracejada, igual.
+Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, `valueKey`, `rows`, `columns`, `domain`, `labels`, `legend`, `format`. A escala é a mesma, cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em `native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda tracejada, igual.
 
 Uma mudança de tipo: `color` é papel de token (`chart-3`).
 

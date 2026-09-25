@@ -1,4 +1,9 @@
-export { ChartContainer, type ChartConfig, type ChartContainerProps } from "./chart";
+export {
+  ChartContainer,
+  type ChartConfig,
+  type ChartContainerLabels,
+  type ChartContainerProps,
+} from "./chart";
 export { ChartAreaGradient, areaGradient, type ChartAreaGradientProps } from "./chart-gradient";
 export { ChartXAxis, ChartYAxis, type ChartXAxisProps, type ChartYAxisProps } from "./chart-axis";
 export {
@@ -25,8 +30,8 @@ export {
 export { ChartDonut, type ChartDonutProps } from "./chart-donut";
 export { ChartRadial, type ChartRadialProps } from "./chart-radial";
 export { ChartGauge, type ChartGaugeBand, type ChartGaugeProps } from "./chart-gauge";
-export { ChartHeatmap, type ChartHeatmapProps } from "./chart-heatmap";
-export { ChartFunnel, type ChartFunnelProps } from "./chart-funnel";
+export { ChartHeatmap, type ChartHeatmapLabels, type ChartHeatmapProps } from "./chart-heatmap";
+export { ChartFunnel, type ChartFunnelLabels, type ChartFunnelProps } from "./chart-funnel";
 export { ChartTreemap, type ChartTreemapProps } from "./chart-treemap";
 export { Sparkline, type SparklineProps } from "./sparkline";
 export { useChartMotion, type ChartMotion } from "./use-chart-motion";

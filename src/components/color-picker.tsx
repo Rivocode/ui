@@ -31,14 +31,18 @@ export type ColorPickerProps = Omit<ComponentProps<"div">, "defaultValue" | "chi
   swatches?: ColorSwatch[];
   /** Quantas amostras por linha. E tambem o passo das setas para cima e para baixo. */
   columns?: number;
-  /** Texto acima da grade. Sem ele, passe `aria-label` no `swatchesLabel`. */
+  /** Texto acima da grade. Sem ele, a grade leva o nome de `labels.swatches`. */
   label?: ReactNode;
-  /** O que o leitor de tela chama a grade quando nao ha `label`. */
-  swatchesLabel?: string;
   /** Esconde o campo de texto e deixa so a grade. */
   hideInput?: boolean;
   disabled?: boolean;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
+   * das amostras quando nao ha `label`, e `hex` o do campo de texto. Passe so
+   * os que mudam.
+   */
+  labels?: Partial<ColorPickerLabels>;
   /** Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`. */
   classNames?: Slots<"label" | "swatches" | "swatch" | "field" | "preview" | "input">;
 };
@@ -88,6 +92,11 @@ const valueOf = (swatch: ColorSwatch) => (typeof swatch === "string" ? swatch : 
 const nameOf = (swatch: ColorSwatch) =>
   typeof swatch === "string" ? `Cor ${swatch}` : `${swatch.label}, ${swatch.value}`;
 
+export type ColorPickerLabels = {
+  swatches: string;
+  hex: string;
+};
+
 export function ColorPicker({
   value: valueProp,
   defaultValue,
@@ -95,13 +104,15 @@ export function ColorPicker({
   swatches = DEFAULT_SWATCHES,
   columns = DEFAULT_COLUMNS,
   label,
-  swatchesLabel = "Amostras de cor",
   hideInput,
   disabled,
+  labels,
   className,
   classNames,
   ...rest
 }: ColorPickerProps) {
+  const swatchesLabel = labels?.swatches ?? "Amostras de cor";
+  const hexLabel = labels?.hex ?? "Código hexadecimal da cor";
   const labelId = useId();
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const rtl = useDirection() === "rtl";
@@ -228,7 +239,7 @@ export function ColorPicker({
             style={{ backgroundColor: current ?? "transparent" }}
           />
           <Input
-            aria-label="Código hexadecimal da cor"
+            aria-label={hexLabel}
             spellCheck={false}
             autoComplete="off"
             disabled={disabled}

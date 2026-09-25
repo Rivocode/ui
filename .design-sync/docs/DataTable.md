@@ -91,9 +91,9 @@ Eram cravados, e nenhum tinha prop:
 - **`errorTitle`** (padrão "Não foi possível carregar") e **`errorMessage`** são
   o par do estado de erro. Uma tela que carrega três listagens precisa dizer
   qual delas falhou. O `ChartContainer` usa os mesmos dois nomes.
-- **`retryLabel`** (padrão "Tentar de novo") é o nome do botão que executa o
-  `onRetry`. Ele existe pelo mesmo motivo do `errorTitle`, e com o mesmo nome
-  nas quatro peças de consulta: sem ele, a tela em outra língua saía com o
+- **`labels.retry`** (padrão "Tentar de novo") é o nome do botão que executa o
+  `onRetry`. Ele existe pelo mesmo motivo do `errorTitle`, e com a mesma chave
+  nas peças de consulta: sem ele, a tela em outra língua saía com o
   título traduzido e o botão em português.
 - **`noResultsMessage`** (padrão "Nenhum resultado para a busca.") é a linha
   discreta de quando o filtro zerou. Ela não se confunde com o `empty`: filtro
@@ -180,4 +180,4 @@ o desenho de cada linha passa a caber no que uma coluna sabe fazer.
 
 ## No React Native
 
-Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se configuram com os nomes do web: `errorTitle`, `errorMessage`, `retryLabel` e `noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha só, e essa linha é a `errorMessage`. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`, com a seleção em `value` e `onValueChange`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.
+Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se configuram com os nomes do web: `errorTitle`, `errorMessage`, `labels.retry` e `noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha só, e essa linha é a `errorMessage`. Dos quatro opt-in daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`, com a seleção em `value` e `onValueChange`) e **dois não portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um `filterValue`, já que ninguém consegue ler texto de dentro do JSX que você devolve.

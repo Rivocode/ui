@@ -126,9 +126,9 @@ vence carregando, e vazio só vale depois que a consulta voltou. `isLoading` e
 `items === undefined` são a mesma coisa; `skeletonItems` diz quantos itens
 falsos aparecem, e cada um ocupa a altura de `itemHeight`, para a moldura não
 pular quando os dados chegam. `errorTitle`, `errorMessage`, `onRetry` e
-`retryLabel` são o conjunto do erro, e `empty` é o estado vazio com descrição
-obrigatória. `retryLabel` (padrão "Tentar de novo") nomeia o botão da nova
-tentativa, e tem o mesmo nome e o mesmo padrão nas quatro peças de consulta:
+`labels.retry` são o conjunto do erro, e `empty` é o estado vazio com descrição
+obrigatória. `labels.retry` (padrão "Tentar de novo") nomeia o botão da nova
+tentativa, e tem a mesma chave e o mesmo padrão nas peças de consulta:
 traduzir o título sem poder traduzir o botão é pior do que não traduzir nada.
 
 **A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por

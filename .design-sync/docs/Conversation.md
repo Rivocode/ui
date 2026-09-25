@@ -36,7 +36,7 @@ a conversa solta: o texto continua chegando embaixo e a leitura dela não pula.
 Aparece então o botão "Ir para o fim", que volta, gruda de novo e some.
 
 A volta é suave, e vira salto quando o sistema pede menos movimento.
-`scrollLabel` troca o texto do botão.
+`labels.scroll` troca o texto do botão.
 
 ## Para o leitor de tela
 

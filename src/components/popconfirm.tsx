@@ -50,14 +50,6 @@ export type PopconfirmProps = Omit<
     /** O que a pessoa perde ao confirmar, ou o que acontece depois. */
     description?: ReactNode;
     /**
-     * O verbo do botao que executa. Escreva a acao - "Excluir", "Cancelar
-     * nota" -, porque so o verbo distingue os dois botoes num painel deste
-     * tamanho.
-     */
-    confirmLabel?: string;
-    /** O verbo do botao que sai sem fazer nada. */
-    cancelLabel?: string;
-    /**
      * `danger` pinta o botao de vermelho e traz o icone de aviso; `neutral`
      * serve para o que se desfaz, como arquivar.
      */
@@ -83,11 +75,14 @@ export type PopconfirmProps = Omit<
      */
     loading?: boolean;
     /**
-     * O que o leitor de tela ouve quando a espera comeca, dentro do painel.
-     * Sem isto a espera e muda: o painel nao troca de nome e o unico sinal
-     * mora no botao. O padrao repete o verbo do `confirmLabel`.
+     * Os textos do painel. `confirm` e o verbo do botao que executa - escreva a
+     * acao, "Excluir", "Cancelar nota", porque so o verbo distingue os dois
+     * botoes num painel deste tamanho. `cancel` e o do botao que sai sem fazer
+     * nada. `busy` e o que o leitor de tela ouve quando a espera comeca, e o
+     * padrao repete o `confirm`. `blocked` e o aviso de quem tenta sair
+     * durante a espera. Passe so os que mudam.
      */
-    busyLabel?: string;
+    labels?: Partial<PopconfirmLabels>;
     /**
      * Para onde o foco volta ao fechar. Vale quando o proprio gatilho some na
      * confirmacao - a linha excluida leva o botao junto, e sem isto o foco cai
@@ -101,13 +96,18 @@ export type PopconfirmProps = Omit<
     classNames?: Slots<"title" | "description" | "footer" | "confirm" | "cancel">;
   };
 
+export type PopconfirmLabels = {
+  confirm: string;
+  cancel: string;
+  busy: string;
+  blocked: string;
+};
+
 export function Popconfirm({
   trigger,
   title,
   titleAs: Title = "h2",
   description,
-  confirmLabel = "Confirmar",
-  cancelLabel = "Cancelar",
   tone = "danger",
   onConfirm,
   onCancel,
@@ -115,7 +115,7 @@ export function Popconfirm({
   defaultOpen = false,
   onOpenChange,
   loading = false,
-  busyLabel,
+  labels: labelsProp,
   finalFocus,
   classNames,
   className,
@@ -135,8 +135,11 @@ export function Popconfirm({
   const open = openProp ?? selfOpen;
   const busy = loading || pending;
 
-  const busyMessage = busyLabel ?? `${confirmLabel}: ação em andamento. Aguarde.`;
-  const blockedMessage = "Não dá para cancelar enquanto a ação está em andamento.";
+  const confirmLabel = labelsProp?.confirm ?? "Confirmar";
+  const cancelLabel = labelsProp?.cancel ?? "Cancelar";
+  const busyMessage = labelsProp?.busy ?? `${confirmLabel}: ação em andamento. Aguarde.`;
+  const blockedMessage =
+    labelsProp?.blocked ?? "Não dá para cancelar enquanto a ação está em andamento.";
 
   useEffect(() => {
     setNotice(busy ? busyMessage : "");

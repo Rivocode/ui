@@ -20,6 +20,16 @@ export type NumberFieldProps = Omit<ComponentProps<typeof BaseNumberField.Root>,
    * O `Intl` sabe fazer as duas coisas.
    */
   numberFormat?: Intl.NumberFormatOptions;
+  /**
+   * Os textos da peca, para trocar o idioma: `decrement` e `increment` sao os
+   * nomes dos dois botoes de passo. Passe so os que mudam.
+   */
+  labels?: Partial<NumberFieldLabels>;
+};
+
+export type NumberFieldLabels = {
+  decrement: string;
+  increment: string;
 };
 
 const HEIGHT = {
@@ -42,6 +52,7 @@ export function NumberField({
   placeholder,
   size = "md",
   numberFormat,
+  labels,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   ...props
@@ -59,7 +70,7 @@ export function NumberField({
         )}
       >
         <BaseNumberField.Decrement
-          aria-label="Diminuir"
+          aria-label={labels?.decrement ?? "Diminuir"}
           className={cn(STEP, "border-r border-border")}
         >
           <Minus size={14} aria-hidden="true" />
@@ -77,7 +88,7 @@ export function NumberField({
         />
 
         <BaseNumberField.Increment
-          aria-label="Aumentar"
+          aria-label={labels?.increment ?? "Aumentar"}
           className={cn(STEP, "border-l border-border")}
         >
           <Plus size={14} aria-hidden="true" />

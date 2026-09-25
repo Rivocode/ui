@@ -770,8 +770,8 @@ function Painel({
         onOpenChange={setConfirming}
         title="Cancelar a nota 4813?"
         description="Isto avisa a prefeitura e não dá para desfazer."
-        actionLabel="Cancelar nota"
-        onAction={() => toast.add({ title: "Nota 4813 cancelada" })}
+        labels={{ confirm: "Cancelar nota" }}
+        onConfirm={() => toast.add({ title: "Nota 4813 cancelada" })}
       />
     </SafeAreaView>
   );

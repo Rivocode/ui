@@ -44,18 +44,6 @@ export type QueryBoundaryProps<Data> = {
    * tambem e um `Text`.
    */
   errorMessage?: string;
-  /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
-   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
-   * como: a tela em ingles saia com o titulo traduzido e o botao em
-   * portugues. O mesmo nome do web, e o mesmo nas pecas de consulta daqui.
-   *
-   * `string` pelo mesmo motivo do `errorTitle`: o rotulo do `Button` nativo e
-   * um `Text`.
-   */
-  retryLabel?: string;
 
   /**
    * O que aparece quando a consulta volta vazia. O mesmo formato do web, com o
@@ -112,11 +100,23 @@ export type QueryBoundaryProps<Data> = {
    */
   className?: string;
   /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
+   * consulta daqui -, e `loading` o que o leitor de tela ouve na espera
+   * generica, "Carregando" sem ele.
+   */
+  labels?: Partial<QueryBoundaryLabels>;
+  /**
    * Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso
    * com o botao) e `empty` (o estado vazio). Cada uma veste so o seu final, no
    * mesmo no que o `className`.
    */
   classNames?: Slots<"loading" | "error" | "empty">;
+};
+
+export type QueryBoundaryLabels = {
+  retry: string;
+  loading: string;
 };
 
 export function QueryBoundary<Data>({
@@ -126,15 +126,16 @@ export function QueryBoundary<Data>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
-  retryLabel = "Tentar de novo",
   empty,
   isEmpty,
   skeleton,
   skeletonRows = 3,
   children,
+  labels,
   className,
   classNames,
 }: QueryBoundaryProps<Data>) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const needsData = typeof children === "function";
   const loading = needsData ? isLoading || data === undefined : (isLoading ?? data === undefined);
   const blank = isEmpty ?? blankOf(data);
@@ -165,7 +166,7 @@ export function QueryBoundary<Data>({
     return (
       <View
         accessible={generic}
-        accessibilityLabel={generic ? "Carregando" : undefined}
+        accessibilityLabel={generic ? (labels?.loading ?? "Carregando") : undefined}
         accessibilityState={{ busy: true }}
         className={cn("gap-3", className, classNames?.loading)}
       >

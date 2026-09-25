@@ -13,7 +13,7 @@ function Example(props: Partial<React.ComponentProps<typeof Popconfirm>> = {}) {
         trigger={<Button variant="ghost">Excluir linha</Button>}
         title="Excluir a nota 4813?"
         description="A linha sai da lista e o cliente deixa de ver o documento."
-        confirmLabel="Excluir"
+        labels={{ confirm: "Excluir" }}
         onConfirm={() => {}}
         {...props}
       />
@@ -230,7 +230,7 @@ test("o tom de perigo veste o vermelho de preencher, e o neutro nao", () => {
   );
   unmount();
 
-  render(<Example tone="neutral" confirmLabel="Arquivar" />);
+  render(<Example tone="neutral" labels={{ confirm: "Arquivar" }} />);
   const archive = screen.getByRole("button", { name: "Arquivar" });
   expect(archive.className.split(" ")).toContain("bg-accent");
   expect(archive.className).not.toContain("bg-danger");

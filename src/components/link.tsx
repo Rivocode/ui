@@ -32,11 +32,9 @@ export type LinkProps = ComponentPropsWithoutRef<"a"> & {
   underline?: "always" | "hover";
   /**
    * Abre em outra aba, com `rel="noopener noreferrer"`, desenha a seta de
-   * saida e avisa o leitor de tela com o `externalLabel`.
+   * saida e avisa o leitor de tela com o `labels.external`.
    */
   external?: boolean;
-  /** O aviso que o leitor de tela ouve depois do texto de um link `external`. */
-  externalLabel?: string;
   /**
    * Troca o elemento mantendo a aparencia, para o link do router:
    * `<Link render={<RouterLink to="/notas" />}>`. O `href`, o foco e a
@@ -44,20 +42,31 @@ export type LinkProps = ComponentPropsWithoutRef<"a"> & {
    */
   render?: ReactElement;
   ref?: Ref<HTMLAnchorElement>;
+  /**
+   * Os textos da peca, para trocar o idioma: `external` e o aviso que o leitor
+   * de tela ouve depois do texto de um link `external`, "(abre em nova aba)"
+   * sem ele.
+   */
+  labels?: Partial<LinkLabels>;
+};
+
+export type LinkLabels = {
+  external: string;
 };
 
 export function Link({
   tone = "accent",
   underline = "always",
   external = false,
-  externalLabel = "(abre em nova aba)",
   render,
+  labels,
   className,
   children,
   target,
   rel,
   ...props
 }: LinkProps) {
+  const externalLabel = labels?.external ?? "(abre em nova aba)";
   const safeRel = external
     ? [...new Set([...(rel?.split(/\s+/).filter(Boolean) ?? []), ...SAFE_REL])].join(" ")
     : rel;

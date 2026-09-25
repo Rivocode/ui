@@ -14,6 +14,7 @@ mensagem que não ajuda ninguém.
 - O vazio é uma porta, não um aviso
 - Rótulo, dica e marca de lugar
 - Forma: pessoa, tempo e tamanho
+- O texto que a peça escreve sozinha mora em `labels`
 
 ## As três frases que toda tela escreve
 
@@ -67,6 +68,10 @@ A regra sai daí: **o escape nomeia o estado que fica**, não a desistência.
 "Manter nota", "Continuar editando", "Ficar aqui". Nunca "Cancelar" ao lado de
 uma ação que também se chama cancelar.
 
+No `Popconfirm`, e no `AlertDialog` do pacote nativo, o par se escreve em
+`labels`, com as mesmas chaves nos dois:
+`labels={{ confirm: "Cancelar nota", cancel: "Manter nota" }}`.
+
 O título é uma **pergunta que nomeia o objeto**: "Cancelar a nota 4813?", e não
 "Tem certeza?". Um número no título é o que permite descobrir que se clicou na
 linha errada.
@@ -82,7 +87,7 @@ usa, e ele não se negocia por pressa:
   errorTitle="Não foi possível carregar as notas"
   errorMessage="A prefeitura não respondeu. Tente de novo em alguns minutos."
   onRetry={query.refetch}
-  retryLabel="Tentar de novo"
+  labels={{ retry: "Tentar de novo" }}
 />
 ```
 
@@ -157,3 +162,19 @@ literal, está em [design.md](design.md#ícone-ou-ilustração-no-estado-vazio).
   "agents", não "agentes".
 - **Sem travessão na prosa da tela.** Duas frases curtas cabem melhor num alerta
   do que uma longa com aposto.
+
+## O texto que a peça escreve sozinha mora em `labels`
+
+O nome de um botão que a peça desenha, o que o leitor de tela ouve, uma frase
+fixa como "da etapa anterior": tudo isso se troca por um objeto só, `labels`,
+nos dois pacotes e com as mesmas chaves. Passe só as chaves que mudam.
+
+```tsx
+<QueryBoundary data={data} isError={isError} onRetry={refetch} labels={{ retry: "Carregar de novo" }}>
+  {(invoices) => <InvoiceList invoices={invoices} />}
+</QueryBoundary>
+```
+
+Não há prop solta terminada em `Label` para texto de interface. O que continua
+prop é conteúdo: o `label` que dá nome ao campo, o `title` e o `errorTitle` do
+aviso, o `placeholder`.

@@ -148,11 +148,11 @@ const PARITY: Record<string, Row> = {
   },
   Alert: {
     state: "traduz",
-    note: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom",
+    note: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `labels` como no web, e o ícone também entra por função, na cor do tom",
   },
   AlertDialog: {
     state: "traduz",
-    note: "`actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web",
+    note: "`onConfirm`, `onCancel` e `labels` em vez de composição, com os nomes do `Popconfirm`; `tone` `danger` ou `neutral`, e `onConfirm` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web",
   },
   AspectRatio: { state: "traduz", note: "`ratio` numérico, igual" },
   Carousel: {
@@ -217,7 +217,7 @@ const PARITY: Record<string, Row> = {
       "formulário e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só " +
       "bytes, é módulo nativo que o app precisa ligar e reconstruir.\n\n" +
       "**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, " +
-      "`errorTitle`, `errorMessage`, `retryLabel`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
+      "`errorTitle`, `errorMessage`, `labels.retry`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha " +
       "as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora " +
       "dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`. O " +
       "`empty.icon` atravessa, e aceita também a função do `EmptyState` nativo. O botão de " +
@@ -325,7 +325,7 @@ const PARITY: Record<string, Row> = {
       "Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do " +
       "`react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, " +
       "gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, " +
-      "`rateLabel`, `overallLabel` e `format`, com nome de formatador ou função, atravessam " +
+      "`showOverall`, `labels` e `format`, com nome de formatador ou função, atravessam " +
       "iguais.\n\n" +
       "Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e não cor " +
       "de CSS. E uma de leitura: no web a peça é uma lista ordenada " +
@@ -364,7 +364,7 @@ const PARITY: Record<string, Row> = {
       "dica, a leitura mora numa linha embaixo",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `rowKey`, `columnKey`, " +
-      "`valueKey`, `rows`, `columns`, `domain`, `emptyLabel`, `legend`, `format`. A escala é a mesma, " +
+      "`valueKey`, `rows`, `columns`, `domain`, `labels`, `legend`, `format`. A escala é a mesma, " +
       "cinco degraus de uma cor só, e os alfas vêm da mesma constante do web, gerada em " +
       "`native/src/shared/`. Zero pinta o primeiro degrau e a célula sem dado tem borda " +
       "tracejada, igual.\n\n" +
@@ -735,8 +735,8 @@ const PARITY: Record<string, Row> = {
       "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
       "que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a " +
       "tela escrevia.\n\n" +
-      "Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
-      "`errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`. " +
+      "Quatro diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: " +
+      "`errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`. " +
       "O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor " +
       "e o tamanho. É a mesma nota que o `ChartContainer` já carrega.\n\n" +
       "**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` " +
@@ -972,7 +972,7 @@ const PARITY: Record<string, Row> = {
       "Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de " +
       "estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o " +
       "carregando e o vazio valendo só depois que a resposta chegou. Os textos desses finais se " +
-      "configuram com os nomes do web: `errorTitle`, `errorMessage`, `retryLabel` e " +
+      "configuram com os nomes do web: `errorTitle`, `errorMessage`, `labels.retry` e " +
       "`noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o " +
       "padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha " +
       "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
@@ -1485,11 +1485,13 @@ const PARITY: Record<string, Row> = {
       "clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao " +
       "resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também " +
       "não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não " +
-      "há saída invisível, e é a mesma regra que o `Editable` segue.\n\n" +
-      "A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera " +
-      "e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` " +
-      "também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. " +
-      "`confirmLabel` vira `actionLabel`, e `loading` e `busyLabel` têm o mesmo nome.",
+      "há saída invisível, e é a mesma regra que o `Editable` segue. O `onCancel` tem o mesmo " +
+      "nome, e aqui quem o chama é o botão de cancelar e o voltar do Android.\n\n" +
+      "A ação em curso porta com os mesmos nomes: quem devolve promessa em `onConfirm` ganha o " +
+      "mesmo botão em espera e a mesma trava contra o segundo toque, e o modal só fecha quando " +
+      "ela resolve. O `tone` também: `danger` é o padrão, e `neutral` pinta o botão primário " +
+      "para o que se desfaz. Os textos moram no mesmo `labels`, com as mesmas chaves: " +
+      "`confirm`, `cancel`, `busy` e `blocked`.",
   },
   Tree: {
     state: "traduz",
@@ -1847,7 +1849,7 @@ const PARITY: Record<string, Row> = {
       '`onPress={() => router.push("/notas")}`. Sem `onPress`, o toque abre o `href` pelo ' +
       "`Linking`, que é o caminho para `https:`, `mailto:` e `tel:`.\n\n" +
       "**`external` desenha a seta e avisa pela dica**, a `accessibilityHint`, que o leitor " +
-      "de tela lê depois do nome; o texto é o `externalLabel`, e o padrão é “Abre fora do app.”. " +
+      "de tela lê depois do nome; o texto é o `labels.external`, e o padrão é “Abre fora do app.”. " +
       "Quando o filho é texto puro, o nome acessível é ele, sem a seta. Não há `underline`: " +
       "no toque não existe passar por cima, e o sublinhado é sempre o do texto corrido.",
   },
@@ -1925,7 +1927,7 @@ const PARITY: Record<string, Row> = {
       "pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.\n\n" +
       "**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de " +
       "várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para " +
-      "separar os dois gestos. O campo cresce até `maxRows` linhas (6, sem a prop) e rola por " +
+      "separar os dois gestos. O campo cresce até `maxRows` linhas (8, sem a prop, como no web) e rola por " +
       "dentro.\n\n" +
       "As partes vestem pelo mesmo `classNames` do web: `attachments`, `textarea`, `footer`, `count` e `submit`, que veste também o botão de parar no lugar dele.",
   },

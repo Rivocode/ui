@@ -76,18 +76,6 @@ export type ChartContainerProps = {
    */
   errorMessage?: string;
   /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
-   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
-   * como: o painel em ingles saia com o titulo traduzido e o botao em
-   * portugues. O mesmo nome do web, e o mesmo nas pecas de consulta daqui.
-   *
-   * `string` pelo mesmo motivo do `errorTitle`: o rotulo do `Button` nativo e
-   * um `Text`.
-   */
-  retryLabel?: string;
-  /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
    * web, e o `icon` aceita tambem a funcao que recebe cor e tamanho, como no
    * `EmptyState` nativo.
@@ -122,6 +110,12 @@ export type ChartContainerProps = {
    */
   label?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
+   * consulta daqui.
+   */
+  labels?: Partial<ChartContainerLabels>;
 };
 
 export const PALETTE = Array.from(
@@ -131,6 +125,10 @@ export const PALETTE = Array.from(
 
 const WAITING = [0.45, 0.7, 0.35, 0.85, 0.6, 0.75];
 
+export type ChartContainerLabels = {
+  retry: string;
+};
+
 export function ChartContainer({
   config,
   children,
@@ -139,12 +137,13 @@ export function ChartContainer({
   onRetry,
   errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
-  retryLabel = "Tentar de novo",
   empty,
   data,
   label,
+  labels,
   className,
 }: ChartContainerProps) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const { colors: theme } = useRivo();
   const [box, setBox] = useState({ width: 0, height: 0 });
   const warned = useRef<Set<string>>(new Set());

@@ -249,7 +249,7 @@ describe("a tabela publicada", () => {
       ["MaskedInput", "value", "value"],
       ["Timeline", null, "items"],
       ["Sparkline", "variant", "variant"],
-      ["Popconfirm", "onConfirm", "onAction"],
+      ["Popconfirm", "trigger", null],
     ];
 
     for (const [piece, from, to] of cases) {

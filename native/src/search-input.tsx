@@ -10,6 +10,15 @@ export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText" | "
   onValueChange: (value: string) => void;
   /** Veste a moldura (a caixa com lupa e limpar), nao o campo interno. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `clear` e o nome do xis que
+   * limpa a busca, "Limpar a busca" sem ele.
+   */
+  labels?: Partial<SearchInputLabels>;
+};
+
+export type SearchInputLabels = {
+  clear: string;
 };
 
 export function SearchInput({
@@ -18,6 +27,7 @@ export function SearchInput({
   onFocus,
   onBlur,
   className,
+  labels,
   ...props
 }: SearchInputProps) {
   const [focused, setFocused] = useState(false);
@@ -56,7 +66,7 @@ export function SearchInput({
       {value.length > 0 && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Limpar a busca"
+          accessibilityLabel={labels?.clear ?? "Limpar a busca"}
           onPress={() => onValueChange("")}
           hitSlop={8}
           className="size-4 items-center justify-center"

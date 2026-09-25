@@ -15,9 +15,26 @@ export type SheetProps = {
   children?: ReactNode;
   /** Veste o painel da folha, nao o fundo escurecido. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `close` e o nome do fundo
+   * escurecido, que fecha a folha ao toque, "Fechar" sem ele.
+   */
+  labels?: Partial<SheetLabels>;
 };
 
-export function Sheet({ open, onOpenChange, title, description, children, className }: SheetProps) {
+export type SheetLabels = {
+  close: string;
+};
+
+export function Sheet({
+  open,
+  onOpenChange,
+  title,
+  description,
+  children,
+  className,
+  labels,
+}: SheetProps) {
   const reduced = useReducedMotion();
   const keyboard = useKeyboardPadding();
   return (
@@ -30,7 +47,7 @@ export function Sheet({ open, onOpenChange, title, description, children, classN
       <Animated.View accessibilityViewIsModal className="flex-1 justify-end pt-16" style={keyboard}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Fechar"
+          accessibilityLabel={labels?.close ?? "Fechar"}
           className="absolute inset-0 bg-overlay"
           onPress={() => onOpenChange(false)}
         />
@@ -41,7 +58,11 @@ export function Sheet({ open, onOpenChange, title, description, children, classN
           )}
         >
           <View className="mb-4 h-1 w-10 self-center rounded-pill bg-border-strong" />
-          <Text accessibilityRole="header" font="display" className="text-xl font-rc-display text-fg">
+          <Text
+            accessibilityRole="header"
+            font="display"
+            className="text-xl font-rc-display text-fg"
+          >
             {title}
           </Text>
           {description && <Text className="mt-1 text-sm text-fg-muted">{description}</Text>}

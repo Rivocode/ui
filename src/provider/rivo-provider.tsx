@@ -2,7 +2,12 @@
 
 import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
-import { ToastProvider, ToastViewport, type ToastPosition } from "../components/toast";
+import {
+  ToastProvider,
+  ToastViewport,
+  type ToastLabels,
+  type ToastPosition,
+} from "../components/toast";
 import {
   createContext,
   useContext,
@@ -72,6 +77,11 @@ export type RivoProviderProps = {
    * disputa espaco com cabecalho, titulo e acao principal.
    */
   toastPosition?: ToastPosition;
+  /**
+   * Os textos dos avisos, para trocar o idioma: `dismiss` e o nome do xis de
+   * cada aviso, "Fechar aviso" sem ele.
+   */
+  toastLabels?: Partial<ToastLabels>;
   className?: string;
 };
 
@@ -89,6 +99,7 @@ export function RivoProvider({
   scope = "global",
   dir = "ltr",
   toastPosition = "bottom-right",
+  toastLabels,
   className,
 }: RivoProviderProps) {
   const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme);
@@ -156,7 +167,11 @@ export function RivoProvider({
               children
             )}
             <span ref={probe} hidden />
-            <ToastViewport container={portalContainer} position={toastPosition} />
+            <ToastViewport
+              container={portalContainer}
+              position={toastPosition}
+              labels={toastLabels}
+            />
           </ToastProvider>
         </BaseTooltip.Provider>
       </DirectionProvider>

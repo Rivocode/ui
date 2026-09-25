@@ -68,7 +68,7 @@ export function ZeroIsNotEmpty() {
         valueKey="open"
         color="var(--rc-chart-3)"
         label="Chamados abertos por equipe e semana"
-        emptyLabel="Sem apuração"
+        labels={{ empty: "Sem apuração" }}
       />
     </div>
   )

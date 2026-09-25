@@ -293,8 +293,13 @@ export {
   itemVariants,
   type ItemProps,
 } from "./components/item";
-export { Breadcrumb, type BreadcrumbProps, type Crumb } from "./components/breadcrumb";
-export { Pagination, type PaginationProps } from "./components/pagination";
+export {
+  Breadcrumb,
+  type BreadcrumbLabels,
+  type BreadcrumbProps,
+  type Crumb,
+} from "./components/breadcrumb";
+export { Pagination, type PaginationLabels, type PaginationProps } from "./components/pagination";
 export {
   Tooltip,
   TooltipContent,
@@ -329,11 +334,14 @@ export {
   type SidebarProps,
   type SidebarProviderProps,
   type SidebarState,
+  type SidebarTriggerLabels,
+  type SidebarTriggerProps,
 } from "./components/sidebar";
 export {
   ToastViewport,
   useToast,
   type ToastPosition,
+  type ToastLabels,
   type ToastViewportProps,
 } from "./components/toast";
 export {
@@ -341,9 +349,16 @@ export {
   AlertDescription,
   AlertTitle,
   alertVariants,
+  type AlertLabels,
   type AlertProps,
 } from "./components/alert";
-export { Banner, bannerVariants, type BannerProps, type BannerTone } from "./components/banner";
+export {
+  Banner,
+  bannerVariants,
+  type BannerLabels,
+  type BannerProps,
+  type BannerTone,
+} from "./components/banner";
 export {
   CookieConsent,
   defaultCookieCategories,
@@ -398,8 +413,10 @@ export {
   FileUpload,
   FileUploadItem,
   FileUploadList,
+  type FileUploadItemLabels,
   type FileUploadItemProps,
   type FileUploadListProps,
+  type FileUploadLabels,
   type FileUploadProps,
   type Rejection,
 } from "./components/file-upload";
@@ -422,7 +439,11 @@ export {
   type SignatureValue,
 } from "./components/signature-pad";
 export { Meter, type MeterProps } from "./components/meter";
-export { NumberField, type NumberFieldProps } from "./components/number-field";
+export {
+  NumberField,
+  type NumberFieldLabels,
+  type NumberFieldProps,
+} from "./components/number-field";
 export { OTPField, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
@@ -462,6 +483,7 @@ export { Editable, type EditableProps } from "./components/editable";
 export {
   ColorPicker,
   normalizeColor,
+  type ColorPickerLabels,
   type ColorPickerProps,
   type ColorSwatch,
 } from "./components/color-picker";
@@ -486,7 +508,7 @@ export {
   type TextTone,
   type TextWeight,
 } from "./components/text";
-export { Link, type LinkProps, type LinkTone } from "./components/link";
+export { Link, type LinkLabels, type LinkProps, type LinkTone } from "./components/link";
 export {
   RelativeTime,
   type RelativeTimeProps,
@@ -533,9 +555,14 @@ export {
   type ComboboxInputProps,
   type ComboboxProps,
 } from "./components/combobox";
-export { Tree, leavesOf, type TreeNode, type TreeProps } from "./components/tree";
-export { TreeSelect, type TreeSelectProps } from "./components/tree-select";
-export { DataTable, type Column, type DataTableProps } from "./components/data-table";
+export { Tree, leavesOf, type TreeNode, type TreeLabels, type TreeProps } from "./components/tree";
+export { TreeSelect, type TreeSelectLabels, type TreeSelectProps } from "./components/tree-select";
+export {
+  DataTable,
+  type Column,
+  type DataTableLabels,
+  type DataTableProps,
+} from "./components/data-table";
 export {
   Steps,
   useWizard,
@@ -551,7 +578,7 @@ export {
   type FilterBarProps,
   type FilterChipProps,
 } from "./components/filter-bar";
-export { Popconfirm, type PopconfirmProps } from "./components/popconfirm";
+export { Popconfirm, type PopconfirmLabels, type PopconfirmProps } from "./components/popconfirm";
 export {
   Tour,
   type TourLabels,
@@ -559,7 +586,11 @@ export {
   type TourProps,
   type TourStep,
 } from "./components/tour";
-export { QueryBoundary, type QueryBoundaryProps } from "./components/query-boundary";
+export {
+  QueryBoundary,
+  type QueryBoundaryLabels,
+  type QueryBoundaryProps,
+} from "./components/query-boundary";
 export {
   TimeField,
   applyTimeMask,
@@ -571,6 +602,7 @@ export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./compo
 export {
   VirtualList,
   type VirtualListHandle,
+  type VirtualListLabels,
   type VirtualListProps,
 } from "./components/virtual-list";
 export {
@@ -578,6 +610,7 @@ export {
   type CalendarEvent,
   type CalendarEventInfo,
   type CalendarEventTone,
+  type EventCalendarLabels,
   type EventCalendarProps,
   type EventCalendarRange,
   type EventCalendarView,
@@ -595,6 +628,7 @@ export { Spoiler, type SpoilerProps } from "./components/spoiler";
 export {
   Gantt,
   type GanttColumn,
+  type GanttLabels,
   type GanttProps,
   type GanttRange,
   type GanttScale,

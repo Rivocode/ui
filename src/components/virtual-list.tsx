@@ -65,14 +65,6 @@ export type VirtualListProps<Item> = {
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * Existe pelo mesmo motivo do `errorTitle`, e com o mesmo nome nas quatro
-   * pecas de consulta: sem ele, a tela em outra lingua fica com o titulo
-   * traduzido e o botao em portugues, que e pior do que tudo em portugues.
-   */
-  retryLabel?: ReactNode;
-  /**
    * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
    * porque "nenhum resultado" transfere para a pessoa o trabalho de descobrir
    * por que.
@@ -92,15 +84,15 @@ export type VirtualListProps<Item> = {
    */
   label?: string;
   /**
-   * Os textos que a peca escreve sozinha: `count` e a contagem que entra no
-   * nome da lista, colada ao `label`.
-   *
-   * Existe pelo mesmo motivo do `retryLabel`: sem ela a contagem sai em
-   * portugues grudada num `label` ja traduzido, e "Shipping log, 4000 itens"
-   * e pior do que a frase inteira em uma lingua so. O padrao concorda com o
-   * singular - um item e "1 item", e nao "1 itens".
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry` - a mesma chave em todas as pecas que resolvem os quatro finais
+   * -, e `count` a contagem que entra no nome da lista, colada ao `label`. Sem
+   * o `count`, a contagem sai em portugues grudada num `label` ja traduzido.
+   * O padrao concorda com o singular: "1 item", e nao "1 itens".
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta. Passe so os que mudam.
    */
-  labels?: { count?: (total: number) => string };
+  labels?: Partial<VirtualListLabels>;
   className?: string;
   /**
    * Classe por parte: `list` e a faixa de altura total que rola por dentro da
@@ -117,6 +109,13 @@ export type VirtualListProps<Item> = {
   ref?: Ref<VirtualListHandle>;
 };
 
+export type VirtualListLabels = {
+  retry: string;
+  count: (total: number) => string;
+  loading: string;
+  loaded: string;
+};
+
 export function VirtualList<Item>({
   items,
   renderItem,
@@ -131,7 +130,6 @@ export function VirtualList<Item>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar a lista.",
-  retryLabel = "Tentar de novo",
   empty,
   skeletonItems = 5,
   label,
@@ -178,7 +176,7 @@ export function VirtualList<Item>({
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
           <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
-            {retryLabel}
+            {labels?.retry ?? "Tentar de novo"}
           </Button>
         )}
       </Alert>
@@ -211,7 +209,7 @@ export function VirtualList<Item>({
         className,
       )}
     >
-      <LoadingAnnouncement loading={loading} />
+      <LoadingAnnouncement loading={loading} labels={labels} />
 
       {loading ? (
         <div aria-hidden="true">

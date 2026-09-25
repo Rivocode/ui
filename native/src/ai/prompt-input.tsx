@@ -17,6 +17,8 @@ const HIDDEN = {
 
 const LABELS: PromptInputLabels = {
   hint: "A tecla de retorno quebra a linha. Para enviar, use o botão de enviar.",
+  submit: "Enviar mensagem",
+  stop: "Parar resposta",
   ...PROMPT_INPUT_COUNT,
 };
 
@@ -55,11 +57,7 @@ export type PromptInputProps = {
   placeholder?: string;
   /** O nome do campo para o leitor de tela. Sem ele, "Mensagem". */
   label?: string;
-  /** O nome do botao de enviar. Sem ele, "Enviar mensagem". */
-  submitLabel?: string;
-  /** O nome do botao de parar. Sem ele, "Parar resposta". */
-  stopLabel?: string;
-  /** Quantas linhas o campo cresce antes de rolar por dentro. Sem ele, 6. */
+  /** Quantas linhas o campo cresce antes de rolar por dentro. Sem ele, 8. */
   maxRows?: number;
   /** O teto de caracteres. O campo recusa o que passa dele. */
   maxLength?: number;
@@ -70,9 +68,10 @@ export type PromptInputProps = {
   /** Os botoes do rodape, a esquerda: anexar, ditar. */
   actions?: ReactNode;
   /**
-   * Os textos que o leitor de tela ouve, para trocar o idioma: `hint` e a dica
-   * ligada ao campo, `count` o que se ouve do contador (tambem na dica do campo)
-   * e `limit` o anuncio ao bater no teto. Passe so os que mudam.
+   * Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do
+   * botao de enviar e do de parar, `hint` a dica ligada ao campo, `count` o que
+   * se ouve do contador (tambem na dica do campo) e `limit` o anuncio ao bater
+   * no teto. Passe so os que mudam.
    */
   labels?: Partial<PromptInputLabels>;
   className?: string;
@@ -94,9 +93,7 @@ export function PromptInput({
   disabled = false,
   placeholder = "Escreva uma mensagem",
   label = "Mensagem",
-  submitLabel = "Enviar mensagem",
-  stopLabel = "Parar resposta",
-  maxRows = 6,
+  maxRows = 8,
   maxLength,
   showCount = false,
   attachments,
@@ -155,7 +152,11 @@ export function PromptInput({
           <Text
             {...HIDDEN}
             font="mono"
-            className={cn("text-xs", full ? "text-danger-text" : "text-fg-subtle", classNames?.count)}
+            className={cn(
+              "text-xs",
+              full ? "text-danger-text" : "text-fg-subtle",
+              classNames?.count,
+            )}
           >
             {maxLength === undefined ? String(value.length) : `${value.length}/${maxLength}`}
           </Text>
@@ -163,7 +164,7 @@ export function PromptInput({
 
         {streaming ? (
           <IconButton
-            label={stopLabel}
+            label={labels.stop}
             variant="secondary"
             size="sm"
             onPress={onStop}
@@ -173,7 +174,7 @@ export function PromptInput({
           </IconButton>
         ) : (
           <IconButton
-            label={submitLabel}
+            label={labels.submit}
             size="sm"
             disabled={blocked}
             onPress={() => {

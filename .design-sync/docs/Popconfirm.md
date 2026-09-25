@@ -18,6 +18,11 @@ Monta-se com uma peça só: `trigger` é o elemento que abre e a âncora do pain
 casa. Numa coluna de ações encostada na borda direita, `align="end"` evita que
 o painel empurre a largura.
 
+Os textos moram em `labels`: `confirm` é o verbo do botão que executa (escreva
+a ação, "Excluir", e não "Confirmar"), `cancel` o do botão que sai, `busy` o
+que o leitor de tela ouve quando a espera começa e `blocked` o aviso de quem
+tenta sair durante ela. Passe só os que mudam.
+
 ## Sair sem fazer nada é fácil de propósito
 
 `Esc`, o botão de cancelar e o clique fora fecham o painel, e os três chamam
@@ -90,6 +95,6 @@ cada vez que a pessoa acerta.
 
 Vira `AlertDialog`. Painel ancorado não é idioma de toque: uma pergunta de 20rem presa a um botão de lixeira encostado na borda direita a 390px sai da tela ou tapa a linha que se vai apagar. O próprio web já reconhece isso: abaixo de 640px o `Popconfirm` deixa de ser painel e vira folha de baixo, que é exatamente o que o nativo tem.
 
-**Uma diferença de contrato, e ela é deliberada:** no web dispensar CANCELA (`Esc`, clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não há saída invisível, e é a mesma regra que o `Editable` segue.
+**Uma diferença de contrato, e ela é deliberada:** no web dispensar CANCELA (`Esc`, clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não há saída invisível, e é a mesma regra que o `Editable` segue. O `onCancel` tem o mesmo nome, e aqui quem o chama é o botão de cancelar e o voltar do Android.
 
-A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. `confirmLabel` vira `actionLabel`, e `loading` e `busyLabel` têm o mesmo nome.
+A ação em curso porta com os mesmos nomes: quem devolve promessa em `onConfirm` ganha o mesmo botão em espera e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. Os textos moram no mesmo `labels`, com as mesmas chaves: `confirm`, `cancel`, `busy` e `blocked`.

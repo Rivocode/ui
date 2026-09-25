@@ -30,11 +30,16 @@ export type ChartFunnelProps<Stage> = {
   formatRate?: (rate: number) => string;
   /** `center` desenha o funil centrado; `start` alinha as barras à esquerda. */
   align?: "center" | "start";
-  /** O que vem depois da taxa entre duas etapas. Sem ele, "da etapa anterior". */
-  rateLabel?: string;
-  /** A frase da conversão de ponta a ponta. `false` esconde a linha. */
-  overallLabel?: string | false;
   className?: string;
+  /** Mostra a linha da conversao de ponta a ponta, embaixo. Sem ele, mostra. */
+  showOverall?: boolean;
+  /**
+   * Os textos da peca, para trocar o idioma: `rate` e o que vem depois da
+   * taxa entre duas etapas, "da etapa anterior" sem ele, e `overall` a frase
+   * da conversao de ponta a ponta, "do inicio ao fim" sem ela. Passe so os
+   * que mudam.
+   */
+  labels?: Partial<ChartFunnelLabels>;
   /**
    * Classe por parte: `stage` (o bloco de cada etapa), `bar` (a barra) e
    * `rate` (a linha da taxa entre duas etapas).
@@ -51,6 +56,11 @@ function writeRate(rate: number) {
   return `${(Math.round(rate * 10) / 10).toString().replace(".", ",")}%`;
 }
 
+export type ChartFunnelLabels = {
+  rate: string;
+  overall: string;
+};
+
 export function ChartFunnel<Stage extends Record<string, unknown>>({
   data,
   valueKey,
@@ -59,11 +69,13 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   format,
   formatRate = writeRate,
   align = "center",
-  rateLabel = "da etapa anterior",
-  overallLabel = "do início ao fim",
+  showOverall = true,
+  labels,
   className,
   classNames,
 }: ChartFunnelProps<Stage>) {
+  const rateLabel = labels?.rate ?? "da etapa anterior";
+  const overallLabel = labels?.overall ?? "do início ao fim";
   const { colors: theme } = useRivo();
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (value: number) => (resolved ? resolved(value) : String(value));
@@ -134,7 +146,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
         })}
       </View>
 
-      {overallLabel !== false && rates.overall !== null && (
+      {showOverall && rates.overall !== null && (
         <View accessible className="flex-row items-baseline gap-1 border-t border-border pt-2">
           <Text font="mono" className="text-sm text-fg">
             {formatRate(rates.overall)}
@@ -146,7 +158,15 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   );
 }
 
-function Bar({ percent, color, className }: { percent: number; color: string; className?: string }) {
+function Bar({
+  percent,
+  color,
+  className,
+}: {
+  percent: number;
+  color: string;
+  className?: string;
+}) {
   const width = useTween(percent, "slow", 0);
 
   const style = useAnimatedStyle(() => {

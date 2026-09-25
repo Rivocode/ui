@@ -108,7 +108,7 @@ test("onDismiss liga o xis com nome em portugues, e quem some e quem chamou", ()
 });
 
 test("o nome do xis se troca", () => {
-  banner({ onDismiss: () => {}, dismissLabel: "Dispensar aviso de manutenção" });
+  banner({ onDismiss: () => {}, labels: { dismiss: "Dispensar aviso de manutenção" } });
   expect(screen.getByRole("button", { name: "Dispensar aviso de manutenção" })).toBeDefined();
 });
 

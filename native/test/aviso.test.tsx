@@ -22,9 +22,9 @@ describe("Alert", () => {
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
-  test("dismissLabel troca o nome do xis", () => {
+  test("labels.dismiss troca o nome do xis", () => {
     const screen = render(
-      <Alert title="Nota emitida" onDismiss={() => {}} dismissLabel="Dispensar o aviso" />,
+      <Alert title="Nota emitida" onDismiss={() => {}} labels={{ dismiss: "Dispensar o aviso" }} />,
     );
     expect(byLabel(screen, "Dispensar o aviso")).toHaveLength(1);
     expect(byLabel(screen, "Fechar aviso")).toHaveLength(0);

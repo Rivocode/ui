@@ -363,7 +363,7 @@ type Query = {
   isLoading?: boolean;
   isError?: boolean;
   onRetry?: () => void;
-  retryLabel?: ReactNode;
+  labels?: { retry?: string; loading?: string; loaded?: string };
 };
 
 const SISTERS: Record<string, (query: Query) => ReactNode> = {
@@ -407,9 +407,9 @@ const SISTERS: Record<string, (query: Query) => ReactNode> = {
 
 const sisters = Object.entries(SISTERS);
 
-test("as irmas trocam o nome do botao de nova tentativa por `retryLabel`", () => {
+test("as irmas trocam o nome do botao de nova tentativa por `labels.retry`", () => {
   for (const [name, sister] of sisters) {
-    const view = withTheme(sister({ isError: true, onRetry: () => {}, retryLabel: "Try again" }));
+    const view = withTheme(sister({ isError: true, onRetry: () => {}, labels: { retry: "Try again" } }));
     const named = within(view.container).queryByRole("button", { name: "Try again" });
 
     expect(`${name}: ${named !== null}`).toBe(`${name}: true`);
@@ -417,7 +417,7 @@ test("as irmas trocam o nome do botao de nova tentativa por `retryLabel`", () =>
   }
 });
 
-test("as quatro dizem o MESMO padrao quando ninguem passa `retryLabel`", () => {
+test("as quatro dizem o MESMO padrao quando ninguem passa `labels.retry`", () => {
   for (const [name, sister] of sisters) {
     const view = withTheme(sister({ isError: true, onRetry: () => {} }));
     const named = within(view.container).queryByRole("button", { name: "Tentar de novo" });
@@ -447,6 +447,21 @@ test("a espera das quatro sai numa regiao viva com texto, e nao so em `aria-busy
     expect(`${name}: ${region?.getAttribute("role")}`).toBe(`${name}: status`);
     expect(`${name}: ${region?.getAttribute("aria-live")}`).toBe(`${name}: polite`);
     expect(`${name}: ${region?.textContent}`).toBe(`${name}: ${LOADING_ANNOUNCEMENT}`);
+    view.unmount();
+  }
+});
+
+test("a espera e a chegada falam o que `labels.loading` e `labels.loaded` mandam", () => {
+  const labels = { loading: "Loading…", loaded: "Content loaded" };
+  for (const [name, sister] of sisters) {
+    const view = withTheme(sister({ isLoading: true, labels }));
+    const region = () => view.container.querySelector("[data-rc-status]");
+    expect(`${name}: ${region()?.textContent}`).toBe(`${name}: Loading…`);
+
+    view.rerender(
+      <RivoProvider scope="local">{sister({ isLoading: false, labels })}</RivoProvider>,
+    );
+    expect(`${name}: ${region()?.textContent}`).toBe(`${name}: Content loaded`);
     view.unmount();
   }
 });

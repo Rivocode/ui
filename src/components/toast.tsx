@@ -87,10 +87,12 @@ function List({
   position,
   viewport,
   cameFrom,
+  dismiss,
 }: {
   position: ToastPosition;
   viewport: RefObject<HTMLDivElement | null>;
   cameFrom: RefObject<Element | null>;
+  dismiss: string;
 }) {
   const { toasts } = BaseToast.useToastManager();
   const closing = useRef<string | null>(null);
@@ -127,7 +129,7 @@ function List({
         <BaseToast.Description className="text-sm text-fg-muted" />
       </BaseToast.Content>
       <BaseToast.Close
-        aria-label="Fechar aviso"
+        aria-label={dismiss}
         data-rc-toast-close=""
         onClick={(event) => {
           if (event.currentTarget === document.activeElement) closing.current = toast.id;
@@ -156,12 +158,22 @@ export type ToastViewportProps = ComponentProps<typeof BaseToast.Viewport> & {
    * quando o proprio canto ja esta ocupado por outra coisa fixa.
    */
   position?: ToastPosition;
+  /**
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis de cada
+   * aviso, "Fechar aviso" sem ele. Pelo `RivoProvider`, e o `toastLabels`.
+   */
+  labels?: Partial<ToastLabels>;
+};
+
+export type ToastLabels = {
+  dismiss: string;
 };
 
 export function ToastViewport({
   className,
   container,
   position = "bottom-right",
+  labels,
   onFocus,
   ...props
 }: ToastViewportProps) {
@@ -176,7 +188,8 @@ export function ToastViewport({
         onFocus={(event) => {
           onFocus?.(event);
           const from = event.relatedTarget;
-          if (from instanceof Element && !event.currentTarget.contains(from)) cameFrom.current = from;
+          if (from instanceof Element && !event.currentTarget.contains(from))
+            cameFrom.current = from;
         }}
         className={cn(
           "fixed z-[var(--rc-z-toast)]",
@@ -185,7 +198,12 @@ export function ToastViewport({
           className,
         )}
       >
-        <List position={position} viewport={viewport} cameFrom={cameFrom} />
+        <List
+          position={position}
+          viewport={viewport}
+          cameFrom={cameFrom}
+          dismiss={labels?.dismiss ?? "Fechar aviso"}
+        />
       </BaseToast.Viewport>
     </BaseToast.Portal>
   );

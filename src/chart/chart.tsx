@@ -54,15 +54,6 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
   /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
-   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
-   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
-   * O mesmo nome nas quatro pecas de consulta.
-   */
-  retryLabel?: ReactNode;
-  /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
    * `DataTable`, `action` inclusive - ela e a saida que o `EmptyState`
    * considera fortemente recomendada, e faltava so aqui.
@@ -87,6 +78,14 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
    * a serie diz o que foi medido, e nao o que a tela pergunta.
    */
   label?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta.
+   */
+  labels?: Partial<ChartContainerLabels>;
 };
 
 export const PALETTE = Array.from({ length: 8 }, (_, index) => `var(--rc-chart-${index + 1})`);
@@ -187,8 +186,15 @@ function useUnknownSeriesWarning(keys: string, known: string) {
   }, [keys, known]);
 }
 
+export type ChartContainerLabels = {
+  retry: string;
+  loading: string;
+  loaded: string;
+};
+
 export function ChartContainer({
   config,
+  labels,
   className,
   children,
   isLoading,
@@ -196,12 +202,12 @@ export function ChartContainer({
   onRetry,
   errorTitle = "Não foi possível carregar o gráfico",
   errorMessage,
-  retryLabel = "Tentar de novo",
   empty,
   data,
   label,
   ...props
 }: ChartContainerProps) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const id = useId().replace(/:/g, "");
 
   const colors = Object.entries(config)
@@ -252,7 +258,7 @@ export function ChartContainer({
         {announcement}
       </div>
 
-      {!isError && <LoadingAnnouncement loading={isLoading === true} />}
+      {!isError && <LoadingAnnouncement loading={isLoading === true} labels={labels} />}
 
       {isError ? (
         <StateFrame>

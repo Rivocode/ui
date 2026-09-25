@@ -29,6 +29,10 @@ escolhe o tom no mesmo vocabulário do `Alert`, `info`, `success`, `warning` e
 `danger`; sem ele o aviso sai neutro, que é o padrão e o que serve para a maior
 parte das confirmações. `timeout: 0` deixa o aviso na tela até alguém fechar.
 
+O xis de cada aviso se chama "Fechar aviso". Para trocar o idioma, passe
+`toastLabels={{ dismiss: "Dismiss" }}` ao `RivoProvider`, que entrega o
+`labels` à área.
+
 ```tsx
 toast.promise(emitirNota(), {
   loading: { title: 'Emitindo a nota…' },

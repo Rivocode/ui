@@ -6,9 +6,12 @@ import { useMemo, useState, type ComponentProps } from "react";
 import { cn } from "../lib/cn";
 import { inputVariants } from "./field";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { leavesOf, Tree, type TreeNode } from "./tree";
+import { leavesOf, Tree, type TreeLabels, type TreeNode } from "./tree";
 
-export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "defaultValue" | "onChange"> & {
+export type TreeSelectProps = Omit<
+  ComponentProps<"button">,
+  "value" | "defaultValue" | "onChange"
+> & {
   items: TreeNode[];
   /** Ids das folhas escolhidas. */
   value?: string[];
@@ -19,6 +22,19 @@ export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "defaultV
   /** Mostra o campo de busca dentro do painel. */
   searchable?: boolean;
   size?: "sm" | "md" | "lg";
+  /**
+   * Os textos da peca, para trocar o idioma: `search` e o nome do campo de
+   * busca, `searchPlaceholder` o texto de espera dele e `selected` o resumo do
+   * gatilho com mais de tres escolhas. `expand` e `collapse` vao para o `Tree` de
+   * dentro. Passe so os que mudam.
+   */
+  labels?: Partial<TreeSelectLabels>;
+};
+
+export type TreeSelectLabels = TreeLabels & {
+  search: string;
+  searchPlaceholder: string;
+  selected: (count: number) => string;
 };
 
 export function TreeSelect({
@@ -30,6 +46,7 @@ export function TreeSelect({
   placeholder = "Escolha",
   searchable = true,
   size,
+  labels,
   className,
   disabled,
   ...props
@@ -46,7 +63,9 @@ export function TreeSelect({
       ? placeholder
       : names.length <= 3
         ? names.join(", ")
-        : `${names.length} escolhidos`;
+        : labels?.selected
+          ? labels.selected(names.length)
+          : `${names.length} escolhidos`;
 
   return (
     <Popover onOpenChange={(isOpen) => !isOpen && setQuery("")}>
@@ -85,8 +104,8 @@ export function TreeSelect({
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Buscar"
-              aria-label="Buscar na árvore"
+              placeholder={labels?.searchPlaceholder ?? "Buscar"}
+              aria-label={labels?.search ?? "Buscar na árvore"}
               className={cn(inputVariants({ size: "sm" }), "pl-8")}
             />
           </div>
@@ -98,6 +117,7 @@ export function TreeSelect({
             value={selected}
             multiple={multiple}
             filter={query}
+            labels={labels}
             onValueChange={(ids) => {
               if (!controlled) setInternal(ids);
               onValueChange?.(ids);

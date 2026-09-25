@@ -200,7 +200,9 @@ export function SidebarBrand({ className, mark, children, ...props }: SidebarBra
     >
       {mark && <span className="flex shrink-0 items-center">{mark}</span>}
       {!collapsed && children && (
-        <span className="truncate font-display font-rc-display text-lg tracking-tight text-fg">{children}</span>
+        <span className="truncate font-display font-rc-display text-lg tracking-tight text-fg">
+          {children}
+        </span>
       )}
     </div>
   );
@@ -527,15 +529,39 @@ export function SidebarMenuSkeleton({ className, count = 5, ...props }: SidebarM
   );
 }
 
-export function SidebarTrigger({ className, ...props }: ComponentProps<"button">) {
+export type SidebarTriggerProps = ComponentProps<"button"> & {
+  /**
+   * Os textos da peca, para trocar o idioma. No celular o botao abre e fecha a
+   * folha, com `open` e `close`; na mesa ele recolhe e expande a barra, com
+   * `collapse` e `expand`. Passe so os que mudam.
+   */
+  labels?: Partial<SidebarTriggerLabels>;
+};
+
+export type SidebarTriggerLabels = {
+  open: string;
+  close: string;
+  expand: string;
+  collapse: string;
+};
+
+const TRIGGER_LABELS: SidebarTriggerLabels = {
+  open: "Abrir menu",
+  close: "Fechar menu",
+  expand: "Expandir barra lateral",
+  collapse: "Recolher barra lateral",
+};
+
+export function SidebarTrigger({ className, labels: labelsProp, ...props }: SidebarTriggerProps) {
   const { toggle, open, isMobile } = useSidebar();
+  const labels = { ...TRIGGER_LABELS, ...labelsProp };
   const label = isMobile
     ? open
-      ? "Fechar menu"
-      : "Abrir menu"
+      ? labels.close
+      : labels.open
     : open
-      ? "Recolher barra lateral"
-      : "Expandir barra lateral";
+      ? labels.collapse
+      : labels.expand;
 
   return (
     <button

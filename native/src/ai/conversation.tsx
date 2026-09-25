@@ -28,8 +28,6 @@ export type ConversationProps<Item> = {
   };
   /** Chamado com o texto da sugestao tocada. Sem ele, as sugestoes nao aparecem. */
   onSuggestion?: (suggestion: string) => void;
-  /** O texto do botao que volta ao fim da conversa. Sem ele, "Ir para o fim". */
-  scrollLabel?: string;
   /**
    * O que o VoiceOver diz quando uma mensagem chega ao fim da lista. Sem ele, o
    * texto solto do que `renderItem` devolve, e nada enquanto houver `streaming`.
@@ -37,6 +35,11 @@ export type ConversationProps<Item> = {
    */
   announcement?: (item: Item, index: number) => string | null | undefined;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao
+   * fim da conversa, "Ir para o fim" sem ele.
+   */
+  labels?: Partial<ConversationLabels>;
   /**
    * Classe por parte: `viewport` (a lista que rola), `content` (o conteudo
    * dela, pelo `contentContainerClassName`), `empty`, `suggestions` (a fileira
@@ -47,6 +50,10 @@ export type ConversationProps<Item> = {
 
 type Listed<Item> = { item: Item; index: number };
 
+export type ConversationLabels = {
+  scroll: string;
+};
+
 export function Conversation<Item>({
   items,
   renderItem,
@@ -54,11 +61,12 @@ export function Conversation<Item>({
   label = "Conversa",
   empty,
   onSuggestion,
-  scrollLabel = "Ir para o fim",
   announcement,
+  labels,
   className,
   classNames,
 }: ConversationProps<Item>) {
+  const scrollLabel = labels?.scroll ?? "Ir para o fim";
   const list = useRef<FlatList<Listed<Item>>>(null);
   const reduced = useReducedMotion();
   const [away, setAway] = useState(false);
@@ -93,7 +101,9 @@ export function Conversation<Item>({
           className={classNames?.empty}
           action={
             empty.suggestions?.length && onSuggestion ? (
-              <View className={cn("flex-row flex-wrap justify-center gap-2", classNames?.suggestions)}>
+              <View
+                className={cn("flex-row flex-wrap justify-center gap-2", classNames?.suggestions)}
+              >
                 {empty.suggestions.map((suggestion) => (
                   <Button
                     key={suggestion}

@@ -154,11 +154,17 @@ export type GanttProps<Task extends GanttTask = GanttTask> = Omit<
   /** O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar". */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
-  /** O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo". */
-  retryLabel?: ReactNode;
   /** O que aparece quando a consulta volta sem tarefa. */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 
+  /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta.
+   */
+  labels?: Partial<GanttLabels>;
   /**
    * Classe por parte: `toolbar`, `frame`, `header`, `row`, `cell`, `timeline`,
    * `bar`, `milestone` e `handle`.
@@ -328,6 +334,12 @@ function taskSpeech<Task extends GanttTask>(task: Task, byId: Map<string, Task>)
   return parts.join(", ");
 }
 
+export type GanttLabels = {
+  retry: string;
+  loading: string;
+  loaded: string;
+};
+
 export function Gantt<Task extends GanttTask = GanttTask>({
   tasks,
   label = "Cronograma",
@@ -351,12 +363,13 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar o cronograma.",
-  retryLabel = "Tentar de novo",
   empty,
+  labels,
   className,
   classNames,
   ...props
 }: GanttProps<Task>) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const rtl = useDirection() === "rtl";
   const isMobile = useMobile();
   const { density } = useRivoContext();
@@ -482,7 +495,8 @@ export function Gantt<Task extends GanttTask = GanttTask>({
 
   const shownDates = useCallback(
     (task: Task) => {
-      if (drag && drag.id === task.id && drag.days !== 0) return dragTask(task, drag.edge, drag.days);
+      if (drag && drag.id === task.id && drag.days !== 0)
+        return dragTask(task, drag.edge, drag.days);
       return { start: task.start, end: task.end };
     },
     [drag],
@@ -561,7 +575,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   }
 
   function commit(task: Task, next: { start: Date; end: Date }, kind: GanttTaskChange["kind"]) {
-    if (next.start.getTime() === task.start.getTime() && next.end.getTime() === task.end.getTime()) {
+    if (
+      next.start.getTime() === task.start.getTime() &&
+      next.end.getTime() === task.end.getTime()
+    ) {
       return;
     }
     setWatch({ id: task.id, start: task.start.getTime(), end: task.end.getTime() });
@@ -685,7 +702,9 @@ export function Gantt<Task extends GanttTask = GanttTask>({
 
   function resizeTable(next: number) {
     const width = frame.current?.offsetWidth ?? next + TIMELINE_MIN;
-    setTableWidthState(Math.round(Math.min(Math.max(next, tableMin), Math.max(width - TIMELINE_MIN, tableMin))));
+    setTableWidthState(
+      Math.round(Math.min(Math.max(next, tableMin), Math.max(width - TIMELINE_MIN, tableMin))),
+    );
   }
 
   function startTableDrag(event: ReactPointerEvent<HTMLDivElement>) {
@@ -776,7 +795,8 @@ export function Gantt<Task extends GanttTask = GanttTask>({
     const held = drag?.id === task.id;
     const barHeight = Math.round(rowHeight * 0.55);
     const top = Math.round((rowHeight - barHeight) / 2);
-    const caption = progress !== undefined && !milestone ? `${task.title} · ${progress}%` : task.title;
+    const caption =
+      progress !== undefined && !milestone ? `${task.title} · ${progress}%` : task.title;
     const clearance = leading.has(task.id) ? ARROW_CLEARANCE : 0;
     const label = (
       <span data-rc-caption="" className="rounded-sm bg-surface px-1">
@@ -945,7 +965,11 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                 className={cn(
                   cellClass,
                   col === 0
-                    ? cn("text-fg", row.level === 2 && "ps-8 max-sm:ps-6", onTaskSelect && "cursor-pointer hover:underline")
+                    ? cn(
+                        "text-fg",
+                        row.level === 2 && "ps-8 max-sm:ps-6",
+                        onTaskSelect && "cursor-pointer hover:underline",
+                      )
                     : "text-fg-muted tabular-nums",
                 )}
               >
@@ -1034,8 +1058,17 @@ export function Gantt<Task extends GanttTask = GanttTask>({
               className="absolute bottom-0 h-1/2 w-0.5 bg-danger"
             />
           )}
-          <TopTier cells={topTier} ppd={ppd} tableWidth={tableWidth} rtl={rtl} viewport={viewport} />
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 border-t border-border">
+          <TopTier
+            cells={topTier}
+            ppd={ppd}
+            tableWidth={tableWidth}
+            rtl={rtl}
+            viewport={viewport}
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 bottom-0 h-1/2 border-t border-border"
+          >
             {bottomTier.map((cell) => (
               <span
                 key={cell.key}
@@ -1119,7 +1152,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
           <Skeleton className="h-4 w-32 shrink-0" />
           <Skeleton
             className="h-4"
-            style={{ marginInlineStart: `${(index * 7) % 30}%`, width: `${20 + ((index * 11) % 25)}%` }}
+            style={{
+              marginInlineStart: `${(index * 7) % 30}%`,
+              width: `${20 + ((index * 11) % 25)}%`,
+            }}
           />
         </div>
       ))}
@@ -1130,7 +1166,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   const showToolbar = offered.length > 1 || (!loading && todayVisible);
 
   return (
-    <div {...props} className={cn("flex w-full min-w-0 flex-col gap-3 font-sans text-fg", className)}>
+    <div
+      {...props}
+      className={cn("flex w-full min-w-0 flex-col gap-3 font-sans text-fg", className)}
+    >
       {showToolbar && !isError && (
         <div
           data-rc-toolbar=""
@@ -1170,7 +1209,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
         </div>
       )}
 
-      <LoadingAnnouncement loading={loading} />
+      <LoadingAnnouncement loading={loading} labels={labels} />
       <div role="status" aria-live="polite" data-rc-change="" className="sr-only">
         {spoken}
       </div>
@@ -1225,12 +1264,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                   className="relative"
                 >
                   {backdrop}
-                  {virtualizer
-                    .getVirtualItems()
-                    .map((item) => {
-                      const row = rows[item.index];
-                      return row ? renderRow(row, item.index, item.start) : null;
-                    })}
+                  {virtualizer.getVirtualItems().map((item) => {
+                    const row = rows[item.index];
+                    return row ? renderRow(row, item.index, item.start) : null;
+                  })}
                 </div>
               </>
             )}
@@ -1244,7 +1281,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
               aria-orientation="vertical"
               aria-valuenow={tableWidth}
               aria-valuemin={tableMin}
-              aria-valuemax={Math.max((frame.current?.offsetWidth ?? tableWidth + TIMELINE_MIN) - TIMELINE_MIN, tableMin)}
+              aria-valuemax={Math.max(
+                (frame.current?.offsetWidth ?? tableWidth + TIMELINE_MIN) - TIMELINE_MIN,
+                tableMin,
+              )}
               aria-valuetext={`${tableWidth} pixels`}
               onPointerDown={startTableDrag}
               onKeyDown={(event) => {

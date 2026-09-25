@@ -29,6 +29,8 @@ export function toolDataText(data: unknown): string {
 
 export type PromptInputLabels = {
   hint: string;
+  submit: string;
+  stop: string;
   count: (count: number, max?: number) => string;
   limit: (max: number) => string;
 };

@@ -23,9 +23,28 @@ export type EditableProps = {
    * editar) e `input` (o campo aberto).
    */
   classNames?: Slots<"preview" | "input">;
+  /**
+   * Os textos da peca, para trocar o idioma: `edit` e o nome da acao que abre
+   * o campo, `hint` a dica de como abrir, `empty` o que o leitor de tela ouve
+   * no lugar do valor vazio e `cancel` o botao que fecha sem salvar. Passe so
+   * os que mudam.
+   */
+  labels?: Partial<EditableLabels>;
 };
 
-const EDIT_ACTIONS = [{ name: "longpress", label: "Editar" }];
+export type EditableLabels = {
+  edit: string;
+  hint: string;
+  empty: string;
+  cancel: string;
+};
+
+const LABELS: EditableLabels = {
+  edit: "Editar",
+  hint: "Toque e segure para editar",
+  empty: "vazio",
+  cancel: "Cancelar",
+};
 
 export function Editable({
   value,
@@ -35,7 +54,9 @@ export function Editable({
   disabled,
   className,
   classNames,
+  labels: labelsProp,
 }: EditableProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
 
@@ -54,9 +75,9 @@ export function Editable({
       <Presence swapKey="reading" exit="none" className={cn("flex-row", className)}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`${label}: ${value || "vazio"}`}
-          accessibilityHint="Toque e segure para editar"
-          accessibilityActions={EDIT_ACTIONS}
+          accessibilityLabel={`${label}: ${value || labels.empty}`}
+          accessibilityHint={labels.hint}
+          accessibilityActions={[{ name: "longpress", label: labels.edit }]}
           onAccessibilityAction={(event: AccessibilityActionEvent) => {
             if (event.nativeEvent.actionName === "longpress") open();
           }}
@@ -94,7 +115,7 @@ export function Editable({
         className={cn("min-w-0 flex-1", classNames?.input)}
       />
       <Button variant="ghost" onPress={() => setEditing(false)}>
-        Cancelar
+        {labels.cancel}
       </Button>
     </Presence>
   );

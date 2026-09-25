@@ -707,6 +707,32 @@ sem ela abre um por vez, nos dois pacotes.
 Sem filho sai so o controle, para quando o rotulo tiver estrutura propria. Ai o
 `<label>` em volta e seu.
 
+### Texto de interface mora em `labels`
+
+O texto que a peca escreve sozinha - o nome de um botao, o que o leitor de tela
+ouve, uma frase fixa - se troca por um objeto so, `labels`, nos dois pacotes e
+com as mesmas chaves. Passe so as chaves que mudam; o resto fica no padrao em
+portugues:
+
+```tsx
+<Popconfirm
+  trigger={<Button variant="ghost">Excluir</Button>}
+  title="Excluir a nota 4813?"
+  onConfirm={remove}
+  labels={{ confirm: "Excluir" }}
+/>
+<QueryBoundary data={data} isError={isError} onRetry={refetch} labels={{ retry: "Try again" }}>
+  {(invoices) => <InvoiceList invoices={invoices} />}
+</QueryBoundary>
+```
+
+Nao existe prop solta terminada em `Label` para texto de interface: a chave e o
+nome da prop antiga sem o `Label` (`retry`, `dismiss`, `confirm`, `cancel`,
+`busy`, `submit`, `stop`, `scroll`, `swatches`, `external`, `empty`). O que fica
+fora de `labels` e CONTEUDO, e continua prop: o `label` que da nome ao campo ou a
+regiao, o `title` e o `errorTitle` de um aviso, o `centerLabel` de um grafico, o
+`deltaLabel` de um `Stat`, o `thumbLabel` de um `Slider`, o `placeholder`.
+
 ### As duas formas de aba
 
 `TabList` tem `variant`. O risco embaixo, que e o padrao, diz "esta parte da

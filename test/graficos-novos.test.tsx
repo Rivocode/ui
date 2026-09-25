@@ -84,6 +84,13 @@ describe("ChartHeatmap", () => {
     expect(within(rows[1]!).getByRole("rowheader").textContent).toBe("Seg");
   });
 
+  test("labels.empty troca o 'Sem dado' da tabela e da leitura", () => {
+    heatmap({ labels: { empty: "No data" } });
+    const table = screen.getByRole("table", { name: "Emissões por dia e hora" });
+    expect(table.textContent).toContain("No data");
+    expect(table.textContent).not.toContain("Sem dado");
+  });
+
   test("a seta anda pela grade e o leitor de tela ouve a celula em que parou", () => {
     heatmap();
     const grid = screen.getByRole("group", { name: "Emissões por dia e hora" });
@@ -303,7 +310,7 @@ describe("ChartFunnel", () => {
     expect(widths).toEqual(["100%", "40%", "10%"]);
   });
 
-  test("etapa anterior zerada nao inventa taxa, e a linha do total some com false", () => {
+  test("etapa anterior zerada nao inventa taxa, e a linha do total some com showOverall desligado", () => {
     withTheme(
       <ChartFunnel
         data={[
@@ -312,11 +319,28 @@ describe("ChartFunnel", () => {
         ]}
         valueKey="total"
         nameKey="etapa"
-        overallLabel={false}
+        showOverall={false}
       />,
     );
     expect(screen.getByText("—")).toBeDefined();
     expect(screen.queryByText("do início ao fim")).toBeNull();
+  });
+
+  test("as frases do funil saem de labels, para trocar o idioma", () => {
+    withTheme(
+      <ChartFunnel
+        data={[
+          { etapa: "A", total: 10 },
+          { etapa: "B", total: 5 },
+        ]}
+        valueKey="total"
+        nameKey="etapa"
+        labels={{ rate: "of the previous step", overall: "end to end" }}
+      />,
+    );
+    expect(screen.getByText("of the previous step")).toBeDefined();
+    expect(screen.getByText("end to end")).toBeDefined();
+    expect(screen.queryByText("da etapa anterior")).toBeNull();
   });
 
   test("nome repetido nao repete chave, e nenhuma etapa some", () => {

@@ -167,8 +167,8 @@ recusa o que conseguiu medir.
 | `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; um aberto por vez, como no web (`multiple` deixa vários), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
-| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom |
-| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
+| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `labels` como no web, e o ícone também entra por função, na cor do tom |
+| `AlertDialog` | ✔ traduz | `onConfirm`, `onCancel` e `labels` em vez de composição, com os nomes do `Popconfirm`; `tone` `danger` ou `neutral`, e `onConfirm` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ traduz | `value` é o texto e aceita o que não está na lista; `items` em texto na raiz, rasa ou em grupos `{ label, items }`, e o campo abre numa folha que sobe com o teclado |

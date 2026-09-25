@@ -60,10 +60,13 @@ export type ChartHeatmapProps<Cell> = Omit<ComponentProps<"div">, "children" | "
    * tabela que o leitor de tela le no lugar do desenho.
    */
   label: string;
-  /** O que a dica e a tabela dizem na celula sem dado. Sem ele, "Sem dado". */
-  emptyLabel?: string;
   /** A regua de cor embaixo da grade, do menor ao maior. Ligada por padrao. */
   legend?: boolean;
+  /**
+   * Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na
+   * celula sem dado, "Sem dado" sem ele.
+   */
+  labels?: Partial<ChartHeatmapLabels>;
   /** Classe por parte: `grid`, `cell`, `legend`. */
   classNames?: Slots<"grid" | "cell" | "legend">;
 };
@@ -80,6 +83,10 @@ const STEP = [
   "bg-(--rc-heat)",
 ] as const;
 
+export type ChartHeatmapLabels = {
+  empty: string;
+};
+
 export function ChartHeatmap<Cell extends Record<string, unknown>>({
   data,
   rowKey,
@@ -91,12 +98,13 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   domain,
   format,
   label,
-  emptyLabel = "Sem dado",
   legend = true,
+  labels,
   classNames,
   className,
   ...props
 }: ChartHeatmapProps<Cell>) {
+  const emptyLabel = labels?.empty ?? "Sem dado";
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (value: number) => (write ? write(value) : value.toLocaleString("pt-BR"));
 

@@ -66,7 +66,7 @@ em 320px, que é a tela de quem usa zoom de 400%.
 ## Que a pessoa dispensa
 
 `onDismiss` liga o xis no fim da faixa, com o nome "Fechar aviso" (ou o que
-`dismissLabel` disser). **Quem some com a faixa é quem chamou**: a peça não
+`labels.dismiss` disser). **Quem some com a faixa é quem chamou**: a peça não
 guarda estado nenhum, e lembrar que a pessoa já dispensou (nesta sessão, ou para
 sempre) é decisão do produto, não da faixa.
 

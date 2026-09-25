@@ -17,7 +17,10 @@ const TONE: Record<LinkTone, string> = {
   inherit: "",
 };
 
-export type LinkProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "onPress" | "children" | "className"> & {
+export type LinkProps = Omit<
+  NativeTextProps,
+  "accessibilityRole" | "role" | "onPress" | "children" | "className"
+> & {
   children: ReactNode;
   /**
    * O endereco que o toque abre pelo `Linking` do React Native: `https:`,
@@ -37,12 +40,20 @@ export type LinkProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "on
   tone?: LinkTone;
   /**
    * Sai do app: desenha a seta de saida e avisa o leitor de tela com o
-   * `externalLabel`, como dica depois do nome.
+   * `labels.external`, como dica depois do nome.
    */
   external?: boolean;
-  /** A dica que o leitor de tela le depois do nome de um link `external`. */
-  externalLabel?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `external` e a dica que o leitor
+   * de tela le depois do nome de um link `external`, "Abre fora do app." sem
+   * ele.
+   */
+  labels?: Partial<LinkLabels>;
+};
+
+export type LinkLabels = {
+  external: string;
 };
 
 export function Link({
@@ -51,12 +62,13 @@ export function Link({
   onPress,
   tone = "accent",
   external = false,
-  externalLabel = "Abre fora do app.",
   accessibilityLabel,
   accessibilityHint,
+  labels,
   className,
   ...props
 }: LinkProps) {
+  const externalLabel = labels?.external ?? "Abre fora do app.";
   const press = (event: GestureResponderEvent) => {
     if (onPress) {
       onPress(event);

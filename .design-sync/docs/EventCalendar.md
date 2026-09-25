@@ -239,7 +239,7 @@ Mais três coisas:
 Os mesmos do `DataTable` e da `VirtualList`, na mesma ordem e com os mesmos
 nomes de prop: **erro vence carregando, e vazio só vale depois que a consulta
 voltou**. `isLoading` e `events === undefined` são a mesma coisa. `errorTitle`,
-`errorMessage`, `onRetry` e `retryLabel` são o conjunto do erro. A espera se
+`errorMessage`, `onRetry` e `labels.retry` são o conjunto do erro. A espera se
 anuncia em voz alta na mesma região viva das irmãs.
 
 O vazio tem uma diferença que é decisão desta peça: **na `agenda` ele ocupa o

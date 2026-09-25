@@ -75,7 +75,7 @@ test("sem onDismiss nao ha botao, que continua sendo o padrao", () => {
 });
 
 test("o nome do botao de fechar se traduz", () => {
-  alert({ tone: "info", onDismiss: () => {}, dismissLabel: "Dispensar" });
+  alert({ tone: "info", onDismiss: () => {}, labels: { dismiss: "Dispensar" } });
 
   expect(screen.getByRole("button", { name: "Dispensar" })).toBeDefined();
   expect(screen.queryByRole("button", { name: "Fechar aviso" })).toBeNull();

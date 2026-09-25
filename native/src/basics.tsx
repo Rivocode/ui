@@ -93,7 +93,11 @@ export function Progress({
         accessibilityRole="progressbar"
         accessibilityLabel={label}
         accessibilityValue={range}
-        className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className, classNames?.track)}
+        className={cn(
+          "h-1.5 overflow-hidden rounded-pill bg-skeleton",
+          className,
+          classNames?.track,
+        )}
       >
         {bar}
       </View>
@@ -170,7 +174,11 @@ export function Avatar({ fallback, src, alt, size = "md", className }: AvatarPro
   );
 }
 
-const INFO_TONE = { box: "border-info bg-info-subtle", text: "text-info-text", cross: "bg-info-text" };
+const INFO_TONE = {
+  box: "border-info bg-info-subtle",
+  text: "text-info-text",
+  cross: "bg-info-text",
+};
 
 const ALERT_TONE = {
   info: INFO_TONE,
@@ -184,7 +192,11 @@ const ALERT_TONE = {
     text: "text-warning-text",
     cross: "bg-warning-text",
   },
-  danger: { box: "border-danger bg-danger-subtle", text: "text-danger-text", cross: "bg-danger-text" },
+  danger: {
+    box: "border-danger bg-danger-subtle",
+    text: "text-danger-text",
+    cross: "bg-danger-text",
+  },
 } satisfies Record<string, { box: string; text: string; cross: string }>;
 
 const HIDDEN = {
@@ -204,9 +216,16 @@ export type AlertProps = {
   icon?: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
   /** Liga o xis que fecha o aviso, no canto direito. Quem some com o aviso e quem chamou. */
   onDismiss?: () => void;
-  /** O nome acessivel do xis. Sem ele, "Fechar aviso". */
-  dismissLabel?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
+   * aviso" sem ele.
+   */
+  labels?: Partial<AlertLabels>;
+};
+
+export type AlertLabels = {
+  dismiss: string;
 };
 
 export function Alert({
@@ -215,9 +234,10 @@ export function Alert({
   children,
   icon,
   onDismiss,
-  dismissLabel = "Fechar aviso",
+  labels,
   className,
 }: AlertProps) {
+  const dismissLabel = labels?.dismiss ?? "Fechar aviso";
   const { colors } = useRivo();
   const known = Object.prototype.hasOwnProperty.call(ALERT_TONE, tone) ? tone : "info";
   const styles = ALERT_TONE[known];

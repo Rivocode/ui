@@ -96,8 +96,8 @@ cor fica sabendo por que a tecla parou de escrever.
 ## Nomes
 
 O campo se chama "Mensagem", o botão "Enviar mensagem" e o de parar "Parar
-resposta". `label`, `submitLabel` e `stopLabel` trocam os três, para outra
-língua ou para um assistente com nome próprio.
+resposta". `label`, `labels.submit` e `labels.stop` trocam os três, para
+outra língua ou para um assistente com nome próprio.
 
 `labels` troca o que o leitor de tela ouve além dos nomes: `hint` (a dica do
 teclado), `count` (função da contagem e do teto) e `limit` (o aviso do teto).
@@ -137,6 +137,6 @@ Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`,
 
 **É controlado.** `value` e `onValueChange` são obrigatórios, como todo campo do pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.
 
-**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para separar os dois gestos. O campo cresce até `maxRows` linhas (6, sem a prop) e rola por dentro.
+**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para separar os dois gestos. O campo cresce até `maxRows` linhas (8, sem a prop, como no web) e rola por dentro.
 
 As partes vestem pelo mesmo `classNames` do web: `attachments`, `textarea`, `footer`, `count` e `submit`, que veste também o botão de parar no lugar dele.

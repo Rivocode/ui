@@ -233,9 +233,11 @@ test("get_native_parity traz a assinatura e as props da peca que ganha outro nom
   const answer = await call("get_native_parity", { name: "Popconfirm" });
 
   expect(answer.text).toContain("vira `AlertDialog`");
-  expect(answer.text).toContain("| `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` |");
+  expect(answer.text).toContain("| `Popconfirm` → `AlertDialog` | `trigger` | — |");
+  expect(answer.text).not.toContain("`onAction`");
   expect(answer.text).toContain("## Props de `AlertDialog` no @rivocode/ui-native");
-  expect(answer.text).toContain("| `actionLabel` | `string` | sim |");
+  expect(answer.text).toContain("| `onConfirm` |");
+  expect(answer.text).not.toContain("`actionLabel`");
 });
 
 test("todo guia listado e servido, pelo nome e pelos apelidos", async () => {

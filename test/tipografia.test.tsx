@@ -212,7 +212,7 @@ describe("Link", () => {
 
   test("external guarda o rel de quem chama e troca o aviso", () => {
     render(
-      <Link href="https://exemplo.com" external rel="nofollow" externalLabel="(nova janela)">
+      <Link href="https://exemplo.com" external rel="nofollow" labels={{ external: "(nova janela)" }}>
         Parceiro
       </Link>,
     );

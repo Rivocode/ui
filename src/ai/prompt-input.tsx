@@ -21,6 +21,8 @@ import { PROMPT_INPUT_COUNT, type PromptInputLabels } from "../shared/ai";
 
 const LABELS: PromptInputLabels = {
   hint: "Enter envia, Shift+Enter quebra a linha.",
+  submit: "Enviar mensagem",
+  stop: "Parar resposta",
   ...PROMPT_INPUT_COUNT,
 };
 
@@ -52,10 +54,6 @@ export type PromptInputProps = Omit<
   placeholder?: string;
   /** O nome do campo para o leitor de tela. Sem ele, "Mensagem". */
   label?: string;
-  /** O nome do botao de enviar. Sem ele, "Enviar mensagem". */
-  submitLabel?: string;
-  /** O nome do botao de parar. Sem ele, "Parar resposta". */
-  stopLabel?: string;
   /** Quantas linhas o campo cresce antes de rolar por dentro. Sem ele, 8. */
   maxRows?: number;
   /** O teto de caracteres. O campo recusa o que passa dele. */
@@ -73,9 +71,10 @@ export type PromptInputProps = Omit<
   /** Os botoes do rodape, a esquerda: anexar, escolher modelo, ditar. */
   actions?: ReactNode;
   /**
-   * Os textos que o leitor de tela ouve, para trocar o idioma: `hint` e a dica
-   * do teclado ligada ao campo, `count` o que se ouve do contador e `limit` o
-   * aviso ao bater no teto. Passe so os que mudam.
+   * Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do
+   * botao de enviar e do de parar, `hint` a dica do teclado ligada ao campo,
+   * `count` o que se ouve do contador e `limit` o aviso ao bater no teto.
+   * Passe so os que mudam.
    */
   labels?: Partial<PromptInputLabels>;
   classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;
@@ -93,8 +92,6 @@ export function PromptInput({
   disabled = false,
   placeholder = "Escreva uma mensagem",
   label = "Mensagem",
-  submitLabel = "Enviar mensagem",
-  stopLabel = "Parar resposta",
   maxRows = 8,
   maxLength,
   showCount = false,
@@ -252,7 +249,7 @@ export function PromptInput({
           <IconButton
             ref={button}
             type="button"
-            label={stopLabel}
+            label={labels.stop}
             size="sm"
             variant="secondary"
             onClick={onStop}
@@ -264,7 +261,7 @@ export function PromptInput({
           <IconButton
             ref={button}
             type="submit"
-            label={submitLabel}
+            label={labels.submit}
             size="sm"
             disabled={blocked}
             className={classNames?.submit}

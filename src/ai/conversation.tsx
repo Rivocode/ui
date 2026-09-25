@@ -35,9 +35,16 @@ export type ConversationProps = Omit<ComponentPropsWithoutRef<"div">, "role"> & 
   };
   /** Chamado com o texto da sugestao tocada. Sem ele, as sugestoes nao aparecem. */
   onSuggestion?: (suggestion: string) => void;
-  /** O texto do botao que volta ao fim da conversa. Sem ele, "Ir para o fim". */
-  scrollLabel?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao
+   * fim da conversa, "Ir para o fim" sem ele.
+   */
+  labels?: Partial<ConversationLabels>;
   classNames?: Slots<"viewport" | "content" | "empty" | "suggestions" | "scrollButton">;
+};
+
+export type ConversationLabels = {
+  scroll: string;
 };
 
 export function Conversation({
@@ -45,11 +52,12 @@ export function Conversation({
   label = "Conversa",
   empty,
   onSuggestion,
-  scrollLabel = "Ir para o fim",
+  labels,
   className,
   classNames,
   ...props
 }: ConversationProps) {
+  const scrollLabel = labels?.scroll ?? "Ir para o fim";
   const viewport = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const stuck = useRef(true);

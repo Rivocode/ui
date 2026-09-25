@@ -19,6 +19,8 @@ export type NotificationCenterLabels = {
   emptyUnreadTitle: string;
   emptyUnreadDescription: string;
   loadMore: string;
+  loading: string;
+  loaded: string;
 };
 
 export const NOTIFICATION_LABELS: NotificationCenterLabels = {
@@ -40,6 +42,8 @@ export const NOTIFICATION_LABELS: NotificationCenterLabels = {
   emptyUnreadTitle: "Tudo lido",
   emptyUnreadDescription: "Você está em dia. As notificações lidas continuam em Todas.",
   loadMore: "Carregar mais",
+  loading: "Carregando…",
+  loaded: "Conteúdo carregado",
 };
 
 export function unreadOf(items: { read: boolean }[], declared?: number): number {

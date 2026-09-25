@@ -10,9 +10,36 @@ export type PaginationProps = Omit<ComponentProps<"nav">, "onChange"> & {
   page: number;
   /** Quantas paginas existem. */
   pageCount: number;
+  /**
+   * Chamado com a pagina nova, contando de 1, pelas setas e pelos numeros. A
+   * peca nao guarda a pagina: quem troca o `page` e quem chamou.
+   */
   onPageChange: (page: number) => void;
   /** Quantos numeros aparecem em volta da pagina atual. */
   siblings?: number;
+  /**
+   * Os textos da peca, para trocar o idioma: `navigation` e o nome da regiao,
+   * `previous` e `next` os das setas, `page` o de cada numero e `position` a
+   * contagem que aparece no lugar dos numeros em tela estreita. Passe so os que
+   * mudam.
+   */
+  labels?: Partial<PaginationLabels>;
+};
+
+export type PaginationLabels = {
+  navigation: string;
+  previous: string;
+  next: string;
+  page: (page: number) => string;
+  position: (page: number, pageCount: number) => string;
+};
+
+const LABELS: PaginationLabels = {
+  navigation: "Paginação",
+  previous: "Página anterior",
+  next: "Próxima página",
+  page: (page) => `Página ${page}`,
+  position: (page, pageCount) => `${page} de ${pageCount}`,
 };
 
 export function Pagination({
@@ -21,26 +48,26 @@ export function Pagination({
   pageCount,
   onPageChange,
   siblings = 1,
+  labels: labelsProp,
   ...props
 }: PaginationProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const pages = buildPages(page, pageCount, siblings);
 
   return (
     <nav
       {...props}
-      aria-label="Paginação"
+      aria-label={labels.navigation}
       className={cn(
         "flex items-center justify-between gap-2 font-sans sm:justify-start",
         className,
       )}
     >
-      <Step label="Página anterior" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+      <Step label={labels.previous} disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
         <ChevronLeft size={16} aria-hidden="true" />
       </Step>
 
-      <span className="text-sm text-fg-muted sm:hidden">
-        {page} de {pageCount}
-      </span>
+      <span className="text-sm text-fg-muted sm:hidden">{labels.position(page, pageCount)}</span>
 
       <ol className="hidden items-center gap-1 sm:flex">
         {pages.map((number, index) =>
@@ -52,7 +79,7 @@ export function Pagination({
             <li key={number}>
               <button
                 type="button"
-                aria-label={`Página ${number}`}
+                aria-label={labels.page(number)}
                 aria-current={number === page ? "page" : undefined}
                 onClick={() => onPageChange(number)}
                 className={cn(
@@ -72,11 +99,7 @@ export function Pagination({
         )}
       </ol>
 
-      <Step
-        label="Próxima página"
-        disabled={page >= pageCount}
-        onClick={() => onPageChange(page + 1)}
-      >
+      <Step label={labels.next} disabled={page >= pageCount} onClick={() => onPageChange(page + 1)}>
         <ChevronRight size={16} aria-hidden="true" />
       </Step>
     </nav>

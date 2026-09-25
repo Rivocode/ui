@@ -29,15 +29,17 @@ export type ChartFunnelProps<Stage> = Omit<ComponentProps<"div">, "children" | "
    * longos e o olho compara comprimento.
    */
   align?: "center" | "start";
-  /** O que vem depois da taxa entre duas etapas. Sem ele, "da etapa anterior". */
-  rateLabel?: string;
-  /**
-   * A frase da conversao de ponta a ponta, embaixo. Sem ela, "do inicio ao
-   * fim". `false` esconde a linha.
-   */
-  overallLabel?: string | false;
   /** O nome da lista para o leitor de tela: "Funil de emissao do mes". */
   label?: string;
+  /** Mostra a linha da conversao de ponta a ponta, embaixo. Sem ele, mostra. */
+  showOverall?: boolean;
+  /**
+   * Os textos da peca, para trocar o idioma: `rate` e o que vem depois da
+   * taxa entre duas etapas, "da etapa anterior" sem ele, e `overall` a frase
+   * da conversao de ponta a ponta, "do inicio ao fim" sem ela. Passe so os
+   * que mudam.
+   */
+  labels?: Partial<ChartFunnelLabels>;
   /** Classe por parte: `stage`, `bar`, `rate`. */
   classNames?: Slots<"stage" | "bar" | "rate">;
 };
@@ -47,6 +49,11 @@ function valueOf(raw: unknown): number {
   return Number.isFinite(number) ? Math.max(0, number) : 0;
 }
 
+export type ChartFunnelLabels = {
+  rate: string;
+  overall: string;
+};
+
 export function ChartFunnel<Stage extends Record<string, unknown>>({
   data,
   valueKey,
@@ -55,13 +62,15 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   format,
   formatRate = (rate) => percent(rate, 1),
   align = "center",
-  rateLabel = "da etapa anterior",
-  overallLabel = "do início ao fim",
   label,
+  showOverall = true,
+  labels,
   classNames,
   className,
   ...props
 }: ChartFunnelProps<Stage>) {
+  const rateLabel = labels?.rate ?? "da etapa anterior";
+  const overallLabel = labels?.overall ?? "do início ao fim";
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (value: number) => (write ? write(value) : value.toLocaleString("pt-BR"));
 
@@ -130,7 +139,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
         })}
       </ol>
 
-      {overallLabel !== false && rates.overall !== null && (
+      {showOverall && rates.overall !== null && (
         <p className="flex items-baseline gap-1 border-t border-border pt-2 text-xs text-fg-subtle">
           <span className="font-mono text-sm text-fg">{formatRate(rates.overall)}</span>
           <span>{overallLabel}</span>

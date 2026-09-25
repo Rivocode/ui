@@ -115,7 +115,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**196 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -128,7 +128,7 @@ escritos em lugar nenhum.
 | `ActionBar` | `classNames` | `classNames` | sem `actions`: as ações são filhas diretas do painel, e `className` veste o mesmo painel de `bar` |
 | `Alert` | — | `title` | o título vira prop; no web ele é `AlertTitle` por filho |
 | `AlertDialog` | — | `title` | `title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription` |
-| `AlertDialog` | — | `actionLabel` | o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé |
+| `AlertDialog` | — | `onConfirm` | o botão que confirma é `onConfirm` mais `labels.confirm`, e não um `AlertDialogClose` no rodapé |
 | `AlertDialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e não fecha no toque fora |
 | `Autocomplete` | `value` | `value` | `value` e `onValueChange` são obrigatórios, e o valor é sempre o texto (`string`) |
 | `Autocomplete` | `mode` | — | não há completar inline: a folha filtra as sugestões e a pessoa toca ou segue digitando |
@@ -147,7 +147,7 @@ escritos em lugar nenhum.
 | `Carousel` | `classNames` | `classNames` | sem `pause`, porque não há `autoplay` |
 | `ChartContainer` | — | `children` | `children` é função e recebe `{ width, height, colors }`: não há `ResponsiveContainer` para medir por você, e a medida chega zerada no primeiro quadro |
 | `ChartContainer` | `empty` | `empty` | `title` e `description` do vazio são `string`, e não `ReactNode`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
-| `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
+| `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle` e `errorMessage` viram `string` |
 | `ChartDonut` | `centerValue` | `centerValue` | `centerValue` e `centerLabel` viram `string` |
 | `ChartGauge` | `classNames` | `classNames` | sem `arc`: o arco é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe |
 | `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
@@ -171,6 +171,7 @@ escritos em lugar nenhum.
 | `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
 | `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
 | `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
+| `DataTable` → `DataList` | `labels` | `labels` | só `retry` e `selectRow`: sem página e sem cabeçalho, não há `selectAll`, `range`, `pagination`, `loading` nem `loaded` |
 | `DataTable` → `DataList` | `pageSize` | — | lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto |
 | `DataTable` → `DataList` | — | `filterValue` | o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto |
 | `DataTable` → `DataList` | `classNames` | — | a linha é o que `renderItem` devolve, e quem a escreve a veste: não há `table`, `head` nem `cell` |
@@ -236,8 +237,6 @@ escritos em lugar nenhum.
 | `PixCode` | — | `renderCopy` | o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied` |
 | `PixCode` | `classNames` | `classNames` | sem `copy`: o botão é o que `renderCopy` devolve, e quem o escreve o veste |
 | `Popconfirm` → `AlertDialog` | `trigger` | — | não há ancoragem: você desenha o próprio botão e controla `open` |
-| `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | só o nome muda: devolvendo promessa, o modal segura o botão em espera e fecha quando ela resolve |
-| `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
 | `Popconfirm` → `AlertDialog` | `description` | `description` | vira `string` obrigatória: o modal não abre sem dizer o que se perde |
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
 | `Popconfirm` → `AlertDialog` | `classNames` | — | o `AlertDialog` nativo não se veste por classe, nem pela raiz: `title`, `description`, `footer`, `confirm` e `cancel` são o desenho fixo do modal |
@@ -249,7 +248,7 @@ escritos em lugar nenhum.
 | `PromptInput` | `defaultValue` | — | sem estado próprio: quem limpa o campo depois do envio é quem chamou |
 | `QRCode` | `classNames` | `classNames` | só `logo`: `code` é o `Svg`, e o `react-native-svg` não recebe classe |
 | `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
-| `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
+| `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle` e `errorMessage` viram `string` |
 | `Questionnaire` | — | `items` | as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho |
 | `Questionnaire` | `item` | `item` | vira obrigatório: a pergunta aberta é sempre controlada, junto com `onItemChange` |
 | `Questionnaire` | `defaultItem` | — | não há estado interno de pergunta aberta |
@@ -435,8 +434,8 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; um aberto por vez, como no web (`multiple` deixa vários), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
-| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom |
-| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
+| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `labels` como no web, e o ícone também entra por função, na cor do tom |
+| `AlertDialog` | ✔ traduz | `onConfirm`, `onCancel` e `labels` em vez de composição, com os nomes do `Popconfirm`; `tone` `danger` ou `neutral`, e `onConfirm` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ traduz | `value` é o texto e aceita o que não está na lista; `items` em texto na raiz, rasa ou em grupos `{ label, items }`, e o campo abre numa folha que sobe com o teclado |

@@ -19,6 +19,17 @@ export type NumberFieldProps = {
   label: string;
   disabled?: boolean;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `decrement` e `increment`
+   * recebem o `label` e devolvem o nome de cada botao de passo, "Diminuir
+   * Quantidade de parcelas" sem eles. Passe so os que mudam.
+   */
+  labels?: Partial<NumberFieldLabels>;
+};
+
+export type NumberFieldLabels = {
+  decrement: (label: string) => string;
+  increment: (label: string) => string;
 };
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -32,6 +43,7 @@ export function NumberField({
   label,
   disabled,
   className,
+  labels,
 }: NumberFieldProps) {
   const { colors } = useRivo();
   const nudge = (delta: number) => onValueChange(clamp(value + delta, min, max));
@@ -58,7 +70,12 @@ export function NumberField({
         className,
       )}
     >
-      {stepper(-step, "−", `Diminuir ${label}`, value <= min)}
+      {stepper(
+        -step,
+        "−",
+        labels?.decrement ? labels.decrement(label) : `Diminuir ${label}`,
+        value <= min,
+      )}
       <TextInput
         keyboardType="number-pad"
         value={String(value)}
@@ -71,7 +88,12 @@ export function NumberField({
         style={{ textAlign: "center" }}
         className="h-12 min-w-0 flex-1 border-l border-r border-border text-base text-fg"
       />
-      {stepper(step, "+", `Aumentar ${label}`, value >= max)}
+      {stepper(
+        step,
+        "+",
+        labels?.increment ? labels.increment(label) : `Aumentar ${label}`,
+        value >= max,
+      )}
     </View>
   );
 }

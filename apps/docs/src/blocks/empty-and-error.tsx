@@ -120,7 +120,7 @@ export default function InvoiceStatesPage() {
           onRetry={() => setSituation('loading')}
           errorTitle="Não foi possível carregar as notas"
           errorMessage="A prefeitura não respondeu. Tente de novo em alguns minutos."
-          retryLabel="Tentar de novo"
+          labels={{ retry: "Tentar de novo" }}
           columns={COLUMNS}
           rowKey={(invoice) => invoice.id}
           caption="Notas fiscais de agosto"

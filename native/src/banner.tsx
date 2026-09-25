@@ -50,14 +50,21 @@ export type BannerProps = {
   actions?: ReactNode;
   /** Liga o xis de fechar. Quem some com a faixa e quem chamou. */
   onDismiss?: () => void;
-  /** O nome acessivel do xis. Sem ele, "Fechar aviso". */
-  dismissLabel?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, "Fechar
+   * aviso" sem ele.
+   */
+  labels?: Partial<BannerLabels>;
   /**
    * Classe por parte: `icon`, `content` (a coluna do texto), `title`,
    * `description`, `actions` e `dismiss` (o xis).
    */
   classNames?: Slots<"icon" | "content" | "title" | "description" | "actions" | "dismiss">;
+};
+
+export type BannerLabels = {
+  dismiss: string;
 };
 
 export function Banner({
@@ -67,10 +74,11 @@ export function Banner({
   icon,
   actions,
   onDismiss,
-  dismissLabel = "Fechar aviso",
+  labels,
   className,
   classNames,
 }: BannerProps) {
+  const dismissLabel = labels?.dismiss ?? "Fechar aviso";
   const { colors } = useRivo();
   const styles = TONE[tone] ?? TONE.info;
   const urgent = tone === "danger" || tone === "warning";

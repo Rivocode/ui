@@ -27,8 +27,8 @@ razão, e é quase sempre a pergunta de quem abriu o painel.
 
 A taxa é a etapa sobre a anterior, e a de ponta a ponta é a última sobre a
 primeira. Etapa anterior zerada não inventa taxa: aparece "—". `formatRate`
-troca a escrita, e recebe de 0 a 100. `rateLabel` e `overallLabel` trocam as
-frases, que é o que um produto em outra língua precisa; `overallLabel={false}`
+troca a escrita, e recebe de 0 a 100. `labels.rate` e `labels.overall` trocam
+as frases, que é o que um produto em outra língua precisa; `showOverall={false}`
 esconde a linha do total.
 
 ## O desenho
@@ -64,7 +64,7 @@ todo, e etapa de funil não é.
 
 ## No React Native
 
-Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do `react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `rateLabel`, `overallLabel` e `format`, com nome de formatador ou função, atravessam iguais.
+Traduz, em `@rivocode/ui-native/chart`, e é a peça de gráfico que menos precisa do `react-native-svg`: as barras são `View`, e a conta das taxas é a mesma função do web, gerada em `native/src/shared/`. `valueKey`, `nameKey`, `align`, `formatRate`, `showOverall`, `labels` e `format`, com nome de formatador ou função, atravessam iguais.
 
 Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e não cor de CSS. E uma de leitura: no web a peça é uma lista ordenada e o leitor de tela lê o nome, o número e a taxa em pedaços; aqui **cada etapa é uma parada só**, com os três na mesma frase ("Cadastros: 400, 40% da etapa anterior"), porque o leitor de tela do celular anda de elemento em elemento e três paradas por etapa triplicariam o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse papel.
 

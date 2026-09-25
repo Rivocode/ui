@@ -47,7 +47,7 @@ export function DeletingARow() {
                   defaultOpen={row.id === "1"}
                   title={`Excluir a nota ${row.number}?`}
                   description="A linha sai da lista e o cliente deixa de ver o documento."
-                  confirmLabel="Excluir"
+                  labels={{ confirm: "Excluir" }}
                   align="end"
                   trigger={
                     <IconButton
@@ -89,7 +89,7 @@ export function WhileTheRequestRuns() {
       <Popconfirm
         title="Excluir o anexo?"
         description="O arquivo sai do servidor e o link para de responder."
-        confirmLabel="Excluir"
+        labels={{ confirm: "Excluir" }}
         trigger={<Button variant="secondary">{deleted ? "Excluído" : "Excluir anexo"}</Button>}
         onConfirm={remove}
       />
@@ -105,7 +105,7 @@ export function Reversible() {
         tone="neutral"
         title="Arquivar o orçamento?"
         description="Ele sai da lista ativa e continua na busca por arquivados."
-        confirmLabel="Arquivar"
+        labels={{ confirm: "Arquivar" }}
         trigger={<Button variant="secondary">Arquivar</Button>}
         onConfirm={() => {}}
       />

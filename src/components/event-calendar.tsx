@@ -433,8 +433,6 @@ export type EventCalendarProps = Omit<
   /** O titulo do aviso de erro. Sem ele, "Nao foi possivel carregar". */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
-  /** O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo". */
-  retryLabel?: ReactNode;
   /**
    * O que aparece quando a consulta volta sem nada no periodo. Na agenda ele
    * ocupa o lugar da lista; nas grades ele fica por cima, porque a grade
@@ -477,12 +475,26 @@ export type EventCalendarProps = Omit<
   /** O nome do calendario para o leitor de tela. */
   label?: string;
   /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta.
+   */
+  labels?: Partial<EventCalendarLabels>;
+  /**
    * Classe por parte: `toolbar`, `body`, `header`, `gutter`, `column`,
    * `event`, `band`, `cell`, `section`.
    */
   classNames?: Slots<
     "toolbar" | "body" | "header" | "gutter" | "column" | "event" | "band" | "cell" | "section"
   >;
+};
+
+export type EventCalendarLabels = {
+  retry: string;
+  loading: string;
+  loaded: string;
 };
 
 export function EventCalendar({
@@ -500,7 +512,6 @@ export function EventCalendar({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Não foi possível carregar os compromissos.",
-  retryLabel = "Tentar de novo",
   empty,
   onEventSelect,
   onSlotSelect,
@@ -513,10 +524,12 @@ export function EventCalendar({
   maxLanes = 3,
   maxHeight = 560,
   label,
+  labels,
   className,
   classNames,
   ...props
 }: EventCalendarProps) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   const rtl = useDirection() === "rtl";
   const isMobile = useMobile();
   const root = useRef<HTMLDivElement>(null);
@@ -1376,7 +1389,7 @@ export function EventCalendar({
         )}
       </div>
 
-      <LoadingAnnouncement loading={loading} />
+      <LoadingAnnouncement loading={loading} labels={labels} />
       <div role="status" aria-live="polite" className="sr-only">
         {loading ? "" : announcement}
       </div>

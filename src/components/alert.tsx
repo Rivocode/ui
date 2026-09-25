@@ -49,16 +49,23 @@ export type AlertProps = ComponentPropsWithoutRef<"div"> &
      * pode dispensar e o caso, e nao a regra.
      */
     onDismiss?: () => void;
-    /** O nome do botao de fechar. Sem ele, "Fechar aviso". */
-    dismissLabel?: string;
+    /**
+     * Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis,
+     * "Fechar aviso" sem ele.
+     */
+    labels?: Partial<AlertLabels>;
   };
+
+export type AlertLabels = {
+  dismiss: string;
+};
 
 export function Alert({
   className,
   tone,
   icon,
   onDismiss,
-  dismissLabel = "Fechar aviso",
+  labels,
   children,
   ...props
 }: AlertProps) {
@@ -81,7 +88,7 @@ export function Alert({
       {onDismiss && (
         <button
           type="button"
-          aria-label={dismissLabel}
+          aria-label={labels?.dismiss ?? "Fechar aviso"}
           onClick={onDismiss}
           className={cn(
             "-my-1 -mr-1 shrink-0 rounded-sm p-1 outline-none",

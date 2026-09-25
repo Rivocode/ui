@@ -180,16 +180,16 @@
         "required": false
       },
       {
-        "name": "dismissLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome acessivel do xis."
-      },
-      {
         "name": "icon",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": false,
         "note": "O simbolo a esquerda do texto, escondido do leitor de tela."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<AlertLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, \"Fechar aviso\" sem ele."
       },
       {
         "name": "onDismiss",
@@ -208,18 +208,12 @@
     "entry": "native/src/index.ts",
     "props": [
       {
-        "name": "actionLabel",
-        "type": "string",
-        "required": true,
-        "note": "O verbo do botao que confirma: \"Cancelar nota\", \"Arquivar\"."
-      },
-      {
         "name": "description",
         "type": "string",
         "required": true
       },
       {
-        "name": "onAction",
+        "name": "onConfirm",
         "type": "() => unknown",
         "required": true,
         "note": "A acao, que pode devolver promessa para o modal esperar por ela."
@@ -240,21 +234,22 @@
         "required": true
       },
       {
-        "name": "busyLabel",
-        "type": "string",
+        "name": "labels",
+        "type": "Partial<AlertDialogLabels>",
         "required": false,
-        "note": "O que o leitor de tela ouve quando a espera comeca."
-      },
-      {
-        "name": "cancelLabel",
-        "type": "string",
-        "required": false
+        "note": "Os textos do modal, com as mesmas chaves do `Popconfirm` do web."
       },
       {
         "name": "loading",
         "type": "boolean",
         "required": false,
         "note": "Estado de espera vindo de fora, para quem ja tem a chamada em uma store."
+      },
+      {
+        "name": "onCancel",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Chamado em toda saida sem confirmar: o botao de cancelar e o voltar do Android."
       },
       {
         "name": "tone",
@@ -422,16 +417,16 @@
         "note": "Classe por parte: `icon`, `content` (a coluna do texto), `title`, `description`, `actions` e `dismiss` (o xis)."
       },
       {
-        "name": "dismissLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome acessivel do xis."
-      },
-      {
         "name": "icon",
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": false,
         "note": "O simbolo a esquerda, escondido do leitor de tela."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<BannerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `dismiss` e o nome do xis, \"Fechar aviso\" sem ele."
       },
       {
         "name": "onDismiss",
@@ -758,16 +753,16 @@
         "note": "O que o leitor de tela ouve no lugar do desenho, quando o desenho é uma função."
       },
       {
+        "name": "labels",
+        "type": "Partial<ChartContainerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave do web e das pecas de consulta daqui."
+      },
+      {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
         "note": "Sem isto, o erro não oferece nova tentativa."
-      },
-      {
-        "name": "retryLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao que executa o `onRetry`."
       }
     ]
   },
@@ -896,16 +891,16 @@
         "note": "Como a taxa é escrita, recebendo de 0 a 100."
       },
       {
-        "name": "overallLabel",
-        "type": "string | false",
+        "name": "labels",
+        "type": "Partial<ChartFunnelLabels>",
         "required": false,
-        "note": "A frase da conversão de ponta a ponta."
+        "note": "Os textos da peca, para trocar o idioma: `rate` e o que vem depois da taxa entre duas etapas, \"da etapa anterior\" sem ele, e `overall` a frase da conversao de ponta a ponta, \"do inicio ao fim\" sem ela."
       },
       {
-        "name": "rateLabel",
-        "type": "string",
+        "name": "showOverall",
+        "type": "boolean",
         "required": false,
-        "note": "O que vem depois da taxa entre duas etapas."
+        "note": "Mostra a linha da conversao de ponta a ponta, embaixo."
       }
     ]
   },
@@ -1035,16 +1030,16 @@
         "note": "O intervalo da escala, `[menor, maior]`."
       },
       {
-        "name": "emptyLabel",
-        "type": "string",
-        "required": false,
-        "note": "O que a leitura diz na célula sem dado."
-      },
-      {
         "name": "format",
         "type": "Format",
         "required": false,
         "note": "Como o numero e escrito: nome de formatador da casa (`currencyShort`, `percent`, `integer`...) ou funcao propria, o mesmo vocabulario do web."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ChartHeatmapLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na celula sem dado, \"Sem dado\" sem ele, e `next` e `previous` os nomes das duas acoes de ajuste que andam de celula."
       },
       {
         "name": "legend",
@@ -1458,16 +1453,16 @@
         "note": "O texto acima das amostras."
       },
       {
+        "name": "labels",
+        "type": "Partial<ColorPickerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, e `hex` o do campo de texto."
+      },
+      {
         "name": "swatches",
         "type": "ColorSwatch[]",
         "required": false,
         "note": "As amostras."
-      },
-      {
-        "name": "swatchesLabel",
-        "type": "string",
-        "required": false,
-        "note": "O que o leitor de tela chama o conjunto quando não há `label`."
       }
     ]
   },
@@ -1585,16 +1580,16 @@
         "note": "O nome da lista para o leitor de tela."
       },
       {
+        "name": "labels",
+        "type": "Partial<ConversationLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `scroll` e o botao que volta ao fim da conversa, \"Ir para o fim\" sem ele."
+      },
+      {
         "name": "onSuggestion",
         "type": "((suggestion: string) => void)",
         "required": false,
         "note": "Chamado com o texto da sugestao tocada."
-      },
-      {
-        "name": "scrollLabel",
-        "type": "string",
-        "required": false,
-        "note": "O texto do botao que volta ao fim da conversa."
       }
     ]
   },
@@ -1723,6 +1718,12 @@
         "required": false
       },
       {
+        "name": "labels",
+        "type": "Partial<DataListLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry` - a mesma chave do `DataTable` do web -, e `selectRow` o nome da caixa de marcar de cada linha."
+      },
+      {
         "name": "noResultsMessage",
         "type": "string",
         "required": false,
@@ -1742,12 +1743,6 @@
         "name": "onValueChange",
         "type": "((keys: string[]) => void)",
         "required": false
-      },
-      {
-        "name": "retryLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao que executa o `onRetry`."
       },
       {
         "name": "selectable",
@@ -1932,6 +1927,12 @@
         "name": "description",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<DialogLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `close` e o nome do fundo escurecido, que fecha o modal ao toque, \"Fechar\" sem ele."
       }
     ]
   },
@@ -1971,6 +1972,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<EditableLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `edit` e o nome da acao que abre o campo, `hint` a dica de como abrir, `empty` o que o leitor de tela ouve no lugar do valor vazio e `cancel` o botao que fecha sem salvar."
       },
       {
         "name": "placeholder",
@@ -2126,6 +2133,12 @@
         "note": "A letra miúda: formatos e limite, para a pessoa não descobrir na recusa."
       },
       {
+        "name": "labels",
+        "type": "Partial<FileUploadLabels>",
+        "required": false,
+        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais."
+      },
+      {
         "name": "maxSize",
         "type": "number",
         "required": false,
@@ -2179,6 +2192,12 @@
         "type": "string",
         "required": false,
         "note": "Vence o progresso: mostra o texto e oferece nova tentativa."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<FileUploadItemLabels>",
+        "required": false,
+        "note": "Os textos da linha, para trocar o idioma: `retry` e o botao de nova tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o nome do botao de remover e o da barra de progresso."
       },
       {
         "name": "onRetry",
@@ -2815,19 +2834,19 @@
         "name": "external",
         "type": "boolean",
         "required": false,
-        "note": "Sai do app: desenha a seta de saida e avisa o leitor de tela com o `externalLabel`, como dica depois do nome."
-      },
-      {
-        "name": "externalLabel",
-        "type": "string",
-        "required": false,
-        "note": "A dica que o leitor de tela le depois do nome de um link `external`."
+        "note": "Sai do app: desenha a seta de saida e avisa o leitor de tela com o `labels.external`, como dica depois do nome."
       },
       {
         "name": "href",
         "type": "string",
         "required": false,
         "note": "O endereco que o toque abre pelo `Linking` do React Native: `https:`, `mailto:`, `tel:`."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<LinkLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `external` e a dica que o leitor de tela le depois do nome de um link `external`, \"Abre fora do app.\" sem ele."
       },
       {
         "name": "onPress",
@@ -3206,6 +3225,12 @@
         "required": false
       },
       {
+        "name": "labels",
+        "type": "Partial<NumberFieldLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `decrement` e `increment` recebem o `label` e devolvem o nome de cada botao de passo, \"Diminuir Quantidade de parcelas\" sem eles."
+      },
+      {
         "name": "max",
         "type": "number",
         "required": false
@@ -3577,7 +3602,7 @@
         "name": "labels",
         "type": "Partial<PromptInputLabels>",
         "required": false,
-        "note": "Os textos que o leitor de tela ouve, para trocar o idioma: `hint` e a dica ligada ao campo, `count` o que se ouve do contador (tambem na dica do campo) e `limit` o anuncio ao bater no teto."
+        "note": "Os textos da peca, para trocar o idioma: `submit` e `stop` sao os nomes do botao de enviar e do de parar, `hint` a dica ligada ao campo, `count` o que se ouve do contador (tambem na dica do campo) e `limit` o anuncio ao bater no teto."
       },
       {
         "name": "maxLength",
@@ -3609,22 +3634,10 @@
         "note": "Mostra a contagem de caracteres no rodape, no tom de perigo ao bater no teto."
       },
       {
-        "name": "stopLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao de parar."
-      },
-      {
         "name": "streaming",
         "type": "boolean",
         "required": false,
         "note": "A resposta esta chegando: o botao de enviar vira o de parar."
-      },
-      {
-        "name": "submitLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao de enviar."
       }
     ]
   },
@@ -3742,16 +3755,16 @@
         "required": false
       },
       {
+        "name": "labels",
+        "type": "Partial<QueryBoundaryLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave do web e das pecas de consulta daqui -, e `loading` o que o leitor de tela ouve na espera generica, \"Carregando\" sem ele."
+      },
+      {
         "name": "onRetry",
         "type": "(() => void)",
         "required": false,
         "note": "Sem isto, o erro nao oferece nova tentativa."
-      },
-      {
-        "name": "retryLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao que executa o `onRetry`."
       },
       {
         "name": "skeleton",
@@ -4071,6 +4084,12 @@
         "type": "string",
         "required": false,
         "note": "Veste a moldura (a caixa com lupa e limpar), nao o campo interno."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SearchInputLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `clear` e o nome do xis que limpa a busca, \"Limpar a busca\" sem ele."
       }
     ]
   },
@@ -4171,6 +4190,12 @@
         "name": "description",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SheetLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `close` e o nome do fundo escurecido, que fecha a folha ao toque, \"Fechar\" sem ele."
       }
     ]
   },

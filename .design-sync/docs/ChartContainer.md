@@ -52,9 +52,9 @@ Sem eles, o texto padrão continua o de sempre. Os dois nomes são os mesmos do
 padrões. Só o tipo estreita para `string`, porque o título do `Alert` nativo é
 um `Text`.
 
-**O botão de nova tentativa também se traduz.** `retryLabel` (padrão "Tentar de
-novo") nomeia o botão que executa o `onRetry`, com o mesmo nome e o mesmo padrão
-nas quatro peças de consulta. Sem ele, o painel em inglês saía com o título
+**O botão de nova tentativa também se traduz.** `labels.retry` (padrão "Tentar
+de novo") nomeia o botão que executa o `onRetry`, com a mesma chave e o mesmo
+padrão nas peças de consulta. Sem ele, o painel em inglês saía com o título
 traduzido e o botão em português.
 
 **A espera se anuncia em voz alta.** `aria-busy` num nó sem papel não é lido por
@@ -187,7 +187,7 @@ respiro do tema, e com o `format` da casa: `format="dayMonth"` no eixo do tempo,
 
 Traduz, no caminho próprio `@rivocode/ui-native/chart`, com o mesmo arranjo do formulário e pela mesma razão: o `react-native-svg` é peer **opcional**, e no celular ele não é só bytes, é módulo nativo que o app precisa ligar e reconstruir.
 
-**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `retryLabel`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
+**O que atravessa inteiro são os quatro finais.** `isLoading`, `isError`, `onRetry`, `errorTitle`, `errorMessage`, `labels.retry`, `empty` e `data` têm os mesmos nomes e o mesmo sentido, e a espera desenha as mesmas seis barras desiguais. Três diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo. O botão de tentar de novo fica **fora** do aviso: o `Alert` nativo tem título e corpo, e o corpo é uma linha de texto.
 
 **O que muda é o desenho.** No web a moldura embrulha um gráfico da Recharts, que mede o pai sozinho e lê a cor de cada série em `var(--color-série)`. Aqui não há Recharts, não há contentor que meça e não há variável viva. Então a moldura mede com `onLayout`, resolve as cores do `config` e **entrega as duas coisas** a quem desenha, como o `Form` nativo entrega o `submit`:
 

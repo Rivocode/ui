@@ -22,12 +22,16 @@ export type ColorPickerProps = {
   columns?: number;
   /** O texto acima das amostras. */
   label?: string;
-  /** O que o leitor de tela chama o conjunto quando não há `label`. */
-  swatchesLabel?: string;
   /** Esconde o campo de texto e deixa só as amostras. */
   hideInput?: boolean;
   disabled?: boolean;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
+   * das amostras quando nao ha `label`, e `hex` o do campo de texto. Passe so
+   * os que mudam.
+   */
+  labels?: Partial<ColorPickerLabels>;
   /**
    * Classe por parte: `label`, `swatches` (o conjunto das amostras), `swatch`
    * (o toque de cada amostra), `field` (a fileira do campo), `preview` (a cor
@@ -89,18 +93,25 @@ function inRows<T>(items: T[], perRow: number): T[][] {
   return rows;
 }
 
+export type ColorPickerLabels = {
+  swatches: string;
+  hex: string;
+};
+
 export function ColorPicker({
   value,
   onValueChange,
   swatches = DEFAULT_SWATCHES,
   columns = DEFAULT_COLUMNS,
   label,
-  swatchesLabel = "Amostras de cor",
   hideInput,
   disabled,
+  labels,
   className,
   classNames,
 }: ColorPickerProps) {
+  const swatchesLabel = labels?.swatches ?? "Amostras de cor";
+  const hexLabel = labels?.hex ?? "Código hexadecimal da cor";
   const [text, setText] = useState(value);
   const [seenValue, setSeenValue] = useState(value);
   if (value !== seenValue) {
@@ -180,7 +191,7 @@ export function ColorPicker({
             style={{ backgroundColor: current ?? "transparent" }}
           />
           <Input
-            accessibilityLabel="Código hexadecimal da cor"
+            accessibilityLabel={hexLabel}
             keyboardType="default"
             autoCapitalize="none"
             autoCorrect={false}

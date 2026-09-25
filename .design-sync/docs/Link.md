@@ -26,7 +26,7 @@ medida contra aquele fundo e o acento não foi.
 
 `external` abre em outra aba com `rel="noopener noreferrer"`, desenha a seta
 de saída e diz "(abre em nova aba)" ao leitor de tela, depois do texto do
-link. Quem enxerga vê a seta; quem ouve, a frase. O `externalLabel` troca a
+link. Quem enxerga vê a seta; quem ouve, a frase. O `labels.external` troca a
 frase, e o `rel` que você passar é mantido, somado aos dois de segurança.
 
 ```tsx
@@ -70,4 +70,4 @@ Traduz, como um `Text` com `accessibilityRole="link"`, e por isso vai dentro da 
 
 **Quem navega é o `onPress`, e não um `render`.** Não há âncora no React Native para trocar pela do router, então a composição do web vira callback: `onPress={() => router.push("/notas")}`. Sem `onPress`, o toque abre o `href` pelo `Linking`, que é o caminho para `https:`, `mailto:` e `tel:`.
 
-**`external` desenha a seta e avisa pela dica**, a `accessibilityHint`, que o leitor de tela lê depois do nome; o texto é o `externalLabel`, e o padrão é “Abre fora do app.”. Quando o filho é texto puro, o nome acessível é ele, sem a seta. Não há `underline`: no toque não existe passar por cima, e o sublinhado é sempre o do texto corrido.
+**`external` desenha a seta e avisa pela dica**, a `accessibilityHint`, que o leitor de tela lê depois do nome; o texto é o `labels.external`, e o padrão é “Abre fora do app.”. Quando o filho é texto puro, o nome acessível é ele, sem a seta. Não há `underline`: no toque não existe passar por cima, e o sublinhado é sempre o do texto corrido.

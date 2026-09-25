@@ -19,6 +19,15 @@ export type DialogProps = {
   children?: ReactNode;
   /** Veste o cartao central, nao o fundo escurecido. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `close` e o nome do fundo
+   * escurecido, que fecha o modal ao toque, "Fechar" sem ele.
+   */
+  labels?: Partial<DialogLabels>;
+};
+
+export type DialogLabels = {
+  close: string;
 };
 
 export function Dialog({
@@ -28,6 +37,7 @@ export function Dialog({
   description,
   children,
   className,
+  labels,
 }: DialogProps) {
   const reduced = useReducedMotion();
   const keyboard = useKeyboardPadding();
@@ -41,7 +51,7 @@ export function Dialog({
       <Animated.View accessibilityViewIsModal className="flex-1" style={keyboard}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Fechar"
+          accessibilityLabel={labels?.close ?? "Fechar"}
           className="absolute inset-0 bg-overlay"
           onPress={() => onOpenChange(false)}
         />
@@ -63,13 +73,18 @@ export function Dialog({
   );
 }
 
+export type AlertDialogLabels = {
+  confirm: string;
+  cancel: string;
+  busy: string;
+  blocked: string;
+};
+
 export type AlertDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
   description: string;
-  /** O verbo do botao que confirma: "Cancelar nota", "Arquivar". */
-  actionLabel: string;
   /**
    * A acao, que pode devolver promessa para o modal esperar por ela. Com
    * promessa, o modal fica aberto e o botao entra em espera ate ela terminar -
@@ -77,8 +92,13 @@ export type AlertDialogProps = {
    * estado anterior, com o texto ainda na tela. Outro retorno qualquer e
    * ignorado e o modal fecha na hora.
    */
-  onAction: () => unknown;
-  cancelLabel?: string;
+  onConfirm: () => unknown;
+  /**
+   * Chamado em toda saida sem confirmar: o botao de cancelar e o voltar do
+   * Android. O toque no fundo nao sai, como em todo alerta: a pessoa escolhe um
+   * dos dois botoes. Nao dispara durante a espera, que nao deixa sair.
+   */
+  onCancel?: () => void;
   /**
    * `danger` pinta o botao de vermelho; `neutral` serve para o que se desfaz,
    * como arquivar. Os mesmos valores do `Popconfirm` do web.
@@ -86,14 +106,18 @@ export type AlertDialogProps = {
   tone?: "danger" | "neutral";
   /**
    * Estado de espera vindo de fora, para quem ja tem a chamada em uma store.
-   * Soma com a espera da promessa do `onAction`.
+   * Soma com a espera da promessa do `onConfirm`.
    */
   loading?: boolean;
   /**
-   * O que o leitor de tela ouve quando a espera comeca. O padrao repete o
-   * verbo do `actionLabel`.
+   * Os textos do modal, com as mesmas chaves do `Popconfirm` do web. `confirm`
+   * e o verbo do botao que executa - escreva a acao, "Cancelar nota",
+   * "Arquivar". `cancel` e o do botao que sai sem fazer nada. `busy` e o que o
+   * leitor de tela ouve quando a espera comeca, e o padrao repete o `confirm`.
+   * `blocked` e o aviso de quem tenta sair durante a espera. Passe so os que
+   * mudam.
    */
-  busyLabel?: string;
+  labels?: Partial<AlertDialogLabels>;
 };
 
 function isThenable(value: unknown): value is PromiseLike<unknown> {
@@ -104,41 +128,42 @@ function isThenable(value: unknown): value is PromiseLike<unknown> {
   );
 }
 
-const BLOCKED_MESSAGE = "Não dá para cancelar enquanto a ação está em andamento.";
-
 export function AlertDialog({
   open,
   onOpenChange,
   title,
   description,
-  actionLabel,
-  onAction,
-  cancelLabel = "Cancelar",
+  onConfirm,
+  onCancel,
   tone = "danger",
   loading = false,
-  busyLabel,
+  labels,
 }: AlertDialogProps) {
   const reduced = useReducedMotion();
   const [pending, setPending] = useState(false);
   const running = useRef(false);
   const busy = loading || pending;
+  const confirmLabel = labels?.confirm ?? "Confirmar";
+  const cancelLabel = labels?.cancel ?? "Cancelar";
 
-  useAnnounce(open && busy ? (busyLabel ?? `${actionLabel}: ação em andamento. Aguarde.`) : null, {
-    onMount: true,
-  });
+  useAnnounce(
+    open && busy ? (labels?.busy ?? `${confirmLabel}: ação em andamento. Aguarde.`) : null,
+    { onMount: true },
+  );
 
   const dismiss = () => {
     if (busy) {
-      announce(BLOCKED_MESSAGE);
+      announce(labels?.blocked ?? "Não dá para cancelar enquanto a ação está em andamento.");
       return;
     }
     onOpenChange(false);
+    onCancel?.();
   };
 
   const confirm = () => {
     if (busy || running.current) return;
 
-    const result = onAction();
+    const result = onConfirm();
     if (!isThenable(result)) {
       onOpenChange(false);
       return;
@@ -166,7 +191,11 @@ export function AlertDialog({
     >
       <View accessibilityViewIsModal className="flex-1 items-center justify-center bg-overlay p-6">
         <View className="w-full rounded-xl border border-border bg-surface p-6">
-          <Text accessibilityRole="header" font="display" className="text-xl font-rc-display text-fg">
+          <Text
+            accessibilityRole="header"
+            font="display"
+            className="text-xl font-rc-display text-fg"
+          >
             {title}
           </Text>
           <Text className="mt-1 text-sm text-fg-muted">{description}</Text>
@@ -179,7 +208,7 @@ export function AlertDialog({
               loading={busy}
               onPress={confirm}
             >
-              {actionLabel}
+              {confirmLabel}
             </Button>
           </View>
         </View>

@@ -49,7 +49,7 @@ export function SwatchesOnly() {
   const [brand, setBrand] = useState('#d4f34a')
   return (
     <ColorPicker
-      swatchesLabel="Cor da etiqueta"
+      labels={{ swatches: "Cor da etiqueta" }}
       value={brand}
       onValueChange={setBrand}
       swatches={BRAND}

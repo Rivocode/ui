@@ -40,7 +40,7 @@ coisa duas vezes.
 ## Que a pessoa dispensa
 
 `onDismiss` liga o xis no canto direito, com nome acessível ("Fechar aviso", ou
-o que `dismissLabel` disser).
+o que `labels.dismiss` disser).
 
 **Quem some com o aviso é quem chamou.** A peça não guarda estado nenhum, pelo
 mesmo motivo de ela não ter `open`: um aviso que se apaga sozinho é `Toast`, e o
@@ -82,4 +82,4 @@ E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `labels` como no web, e o ícone também entra por função, na cor do tom. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

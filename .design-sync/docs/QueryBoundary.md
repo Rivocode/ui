@@ -152,10 +152,12 @@ nomes e o mesmo papel que têm no `DataTable` e no `ChartContainer`: uma tela qu
 carrega três blocos precisa dizer qual deles falhou, e um produto que não fala
 português precisa dizer isso em outra língua.
 
-`retryLabel` (padrão "Tentar de novo") é o nome do botão que executa o
+`labels.retry` (padrão "Tentar de novo") é o nome do botão que executa o
 `onRetry`, e existe pelo mesmo motivo: sem ele, a tela traduzida saía com o
-título em inglês e o botão em português, que é pior do que tudo em português. O
-nome e o padrão são os mesmos nas quatro peças de consulta.
+título em inglês e o botão em português, que é pior do que tudo em português. A
+chave e o padrão são os mesmos nas peças de consulta, e `labels.loading` e
+`labels.loaded` trocam o que o leitor de tela ouve quando a consulta sai e
+quando volta.
 
 Sem `onRetry` não há botão de nova tentativa. Aviso com botão que não leva a
 lugar nenhum é pior que aviso sem botão.
@@ -192,7 +194,7 @@ Para esse, o que existe é o error boundary do React.
 
 Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o que justifica a peça existir: ela entrega o dado já sem `undefined`, e mata o `!` que a tela escrevia.
 
-Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor e o tamanho. É a mesma nota que o `ChartContainer` já carrega.
+Quatro diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor e o tamanho. É a mesma nota que o `ChartContainer` já carrega.
 
 **`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único jeito de vestir um final sem vestir os outros.
 

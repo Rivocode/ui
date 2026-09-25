@@ -65,16 +65,16 @@ describe("AlertDialog", () => {
     open: true,
     title: "Cancelar a nota?",
     description: "Não dá para desfazer.",
-    actionLabel: "Cancelar nota",
+    labels: { confirm: "Cancelar nota" },
   };
 
   test("o toque fora NÃO fecha: o overlay nem é tocável", () => {
-    const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onAction={() => {}} />);
+    const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onConfirm={() => {}} />);
     expect(byLabel(screen, "Fechar").length).toBe(0);
   });
 
   test("também prende o leitor de tela e anuncia o título como cabeçalho", () => {
-    const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onAction={() => {}} />);
+    const screen = render(<AlertDialog {...props} onOpenChange={() => {}} onConfirm={() => {}} />);
     expect(
       byClass(screen, /items-center/).some((node) => node.props.accessibilityViewIsModal),
     ).toBe(true);
@@ -87,7 +87,7 @@ describe("AlertDialog", () => {
       <AlertDialog
         {...props}
         onOpenChange={(open) => calls.push(`open:${open}`)}
-        onAction={() => calls.push("action")}
+        onConfirm={() => calls.push("action")}
       />,
     );
 

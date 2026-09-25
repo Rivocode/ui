@@ -260,8 +260,8 @@ describe("Dialog, AlertDialog e Sheet", () => {
         onOpenChange={() => {}}
         title="Cancelar a nota?"
         description="Não dá para desfazer."
-        actionLabel="Cancelar nota"
-        onAction={() => {}}
+        labels={{ confirm: "Cancelar nota" }}
+        onConfirm={() => {}}
       />
     );
     const sheet = () => <Sheet open onOpenChange={() => {}} title="Filtros" />;

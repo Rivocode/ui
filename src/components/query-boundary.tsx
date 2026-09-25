@@ -35,15 +35,6 @@ export type QueryBoundaryProps<Data> = {
    */
   errorTitle?: ReactNode;
   errorMessage?: ReactNode;
-  /**
-   * O nome do botao que executa o `onRetry`. Sem ele, "Tentar de novo".
-   *
-   * O `errorTitle` acima ja dizia que um produto que nao fala portugues
-   * precisa dizer isso em outra lingua, e o botao da mesma caixa nao tinha
-   * como: a tela em ingles saia com o titulo traduzido e o botao em portugues.
-   * O mesmo nome em todas as pecas que resolvem os quatro finais.
-   */
-  retryLabel?: ReactNode;
 
   /**
    * O que aparece quando a consulta volta vazia. A descricao e obrigatoria
@@ -83,10 +74,24 @@ export type QueryBoundaryProps<Data> = {
    */
   className?: string;
   /**
+   * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
+   * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
+   * resolvem os quatro finais.
+   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
+   * sai e quando ela volta.
+   */
+  labels?: Partial<QueryBoundaryLabels>;
+  /**
    * Classe por parte: `loading`, `error`, `empty`. Evita o `[&_div]`, que
    * acopla a tela de quem usa a arvore interna da peca.
    */
   classNames?: Slots<"loading" | "error" | "empty">;
+};
+
+export type QueryBoundaryLabels = {
+  retry: string;
+  loading: string;
+  loaded: string;
 };
 
 export function QueryBoundary<Data>({
@@ -96,15 +101,16 @@ export function QueryBoundary<Data>({
   onRetry,
   errorTitle = "Não foi possível carregar",
   errorMessage = "Tente de novo em alguns minutos.",
-  retryLabel = "Tentar de novo",
   empty,
   isEmpty,
   skeleton,
   skeletonRows = 3,
   children,
+  labels,
   className,
   classNames,
 }: QueryBoundaryProps<Data>) {
+  const retryLabel = labels?.retry ?? "Tentar de novo";
   if (isError) {
     return (
       <Alert tone="danger" icon={<CircleX />} className={cn(className, classNames?.error)}>
@@ -132,7 +138,7 @@ export function QueryBoundary<Data>({
   // com o texto dentro nao anuncia nada.
   return (
     <>
-      <LoadingAnnouncement loading={loading} />
+      <LoadingAnnouncement loading={loading} labels={labels} />
 
       {loading ? (
         <div aria-busy="true" className={cn("flex flex-col gap-3", className, classNames?.loading)}>

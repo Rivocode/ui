@@ -48,6 +48,17 @@ export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children
   /** Os que não passaram, cada um com o motivo legível. */
   onReject?: (rejections: Rejection[]) => void;
   className?: string;
+  /**
+   * Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora
+   * do `accept`, e `tooLarge` recebe o limite ja escrito ("5 MB") e devolve o
+   * do arquivo grande demais. Passe so os que mudam.
+   */
+  labels?: Partial<FileUploadLabels>;
+};
+
+export type FileUploadLabels = {
+  invalidType: string;
+  tooLarge: (limit: string) => string;
 };
 
 export function FileUpload({
@@ -59,6 +70,7 @@ export function FileUpload({
   disabled,
   onSelect,
   onReject,
+  labels,
   className,
   ...rest
 }: FileUploadProps) {
@@ -73,9 +85,14 @@ export function FileUpload({
 
     for (const file of files) {
       if (accept && !matchesAccept(file, accept)) {
-        rejected.push({ file, reason: "tipo não aceito" });
+        rejected.push({ file, reason: labels?.invalidType ?? "tipo não aceito" });
       } else if (maxSize !== undefined && file.size > maxSize) {
-        rejected.push({ file, reason: `maior que ${fileSize(maxSize)}` });
+        rejected.push({
+          file,
+          reason: labels?.tooLarge
+            ? labels.tooLarge(fileSize(maxSize))
+            : `maior que ${fileSize(maxSize)}`,
+        });
       } else {
         accepted.push(file);
       }
@@ -158,6 +175,19 @@ export type FileUploadItemProps = {
   onRetry?: () => void;
   onRemove: () => void;
   className?: string;
+  /**
+   * Os textos da linha, para trocar o idioma: `retry` e o botao de nova
+   * tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o
+   * nome do botao de remover e o da barra de progresso. Passe so os
+   * que mudam.
+   */
+  labels?: Partial<FileUploadItemLabels>;
+};
+
+export type FileUploadItemLabels = {
+  retry: string;
+  remove: (name: string) => string;
+  uploading: (name: string) => string;
 };
 
 export function FileUploadItem({
@@ -167,6 +197,7 @@ export function FileUploadItem({
   error,
   onRetry,
   onRemove,
+  labels,
   className,
 }: FileUploadItemProps) {
   const uploading = error === undefined && progress !== undefined;
@@ -192,7 +223,7 @@ export function FileUploadItem({
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={Math.round(progress)}
-            aria-label={`Enviando ${name}`}
+            aria-label={labels?.uploading ? labels.uploading(name) : `Enviando ${name}`}
             className="mt-2 h-1 overflow-hidden rounded-pill bg-skeleton"
           >
             <div
@@ -216,7 +247,7 @@ export function FileUploadItem({
                 )}
               >
                 <RotateCw size={12} aria-hidden="true" />
-                Tentar de novo
+                {labels?.retry ?? "Tentar de novo"}
               </button>
             )}
           </p>
@@ -226,7 +257,7 @@ export function FileUploadItem({
       <IconButton
         size="sm"
         variant="ghost"
-        label={`Remover ${name}`}
+        label={labels?.remove ? labels.remove(name) : `Remover ${name}`}
         onClick={onRemove}
         data-rc-keep-row=""
       >

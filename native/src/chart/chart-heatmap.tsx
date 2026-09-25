@@ -38,16 +38,26 @@ export type ChartHeatmapProps<Cell> = {
   format?: Format;
   /** O que a grade mede, por extenso: é o nome que o leitor de tela anuncia. */
   label: string;
-  /** O que a leitura diz na célula sem dado. Sem ele, "Sem dado". */
-  emptyLabel?: string;
   /** A régua de cor embaixo da grade. Ligada por padrão. */
   legend?: boolean;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `empty` e o que a leitura diz na
+   * celula sem dado, "Sem dado" sem ele, e `next` e `previous` os nomes das
+   * duas acoes de ajuste que andam de celula. Passe so os que mudam.
+   */
+  labels?: Partial<ChartHeatmapLabels>;
   /**
    * Classe por parte: `grid` (a grade que recebe o arrasto), `cell` (cada
    * celula) e `legend` (a regua de cor).
    */
   classNames?: Slots<"grid" | "cell" | "legend">;
+};
+
+export type ChartHeatmapLabels = {
+  empty: string;
+  next: string;
+  previous: string;
 };
 
 export function ChartHeatmap<Cell extends Record<string, unknown>>({
@@ -61,11 +71,12 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   domain,
   format,
   label,
-  emptyLabel = "Sem dado",
   legend = true,
+  labels,
   className,
   classNames,
 }: ChartHeatmapProps<Cell>) {
+  const emptyLabel = labels?.empty ?? "Sem dado";
   const { colors: theme } = useRivo();
   const paint = theme[color];
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
@@ -169,8 +180,8 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
             accessibilityLabel={label}
             accessibilityValue={{ text: describe(at) }}
             accessibilityActions={[
-              { name: "increment", label: "Célula seguinte" },
-              { name: "decrement", label: "Célula anterior" },
+              { name: "increment", label: labels?.next ?? "Célula seguinte" },
+              { name: "decrement", label: labels?.previous ?? "Célula anterior" },
             ]}
             onAccessibilityAction={(event) => {
               const delta = event.nativeEvent.actionName === "increment" ? 1 : -1;

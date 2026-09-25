@@ -75,6 +75,17 @@ export type FileUploadProps = {
   /** Os que não passaram, cada um com o motivo legível. */
   onReject?: (rejections: Rejection[]) => void;
   className?: string;
+  /**
+   * Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora
+   * do `accept`, e `tooLarge` recebe o limite ja escrito ("5 MB") e devolve o
+   * do arquivo grande demais. Passe so os que mudam.
+   */
+  labels?: Partial<FileUploadLabels>;
+};
+
+export type FileUploadLabels = {
+  invalidType: string;
+  tooLarge: (limit: string) => string;
 };
 
 function UploadIcon() {
@@ -96,6 +107,7 @@ export function FileUpload({
   disabled,
   onSelect,
   onReject,
+  labels,
   className,
 }: FileUploadProps) {
   const tokens = tokensOf(accept);
@@ -116,9 +128,14 @@ export function FileUpload({
       };
 
       if (tokens.length > 0 && !matchesAccept(file, tokens)) {
-        rejected.push({ file, reason: "tipo não aceito" });
+        rejected.push({ file, reason: labels?.invalidType ?? "tipo não aceito" });
       } else if (maxSize !== undefined && file.size !== undefined && file.size > maxSize) {
-        rejected.push({ file, reason: `maior que ${fileSize(maxSize)}` });
+        rejected.push({
+          file,
+          reason: labels?.tooLarge
+            ? labels.tooLarge(fileSize(maxSize))
+            : `maior que ${fileSize(maxSize)}`,
+        });
       } else {
         accepted.push(file);
       }
@@ -198,6 +215,21 @@ export type FileUploadItemProps = {
   onRetry?: () => void;
   onRemove: () => void;
   className?: string;
+  /**
+   * Os textos da linha, para trocar o idioma: `retry` e o botao de nova
+   * tentativa, e `remove` e `uploading` recebem o nome do arquivo e devolvem o
+   * nome do botao de remover e o da barra de progresso. `retryFile` e o
+   * nome que o leitor de tela ouve no botao de nova tentativa. Passe so os
+   * que mudam.
+   */
+  labels?: Partial<FileUploadItemLabels>;
+};
+
+export type FileUploadItemLabels = {
+  retry: string;
+  remove: (name: string) => string;
+  uploading: (name: string) => string;
+  retryFile: (name: string) => string;
 };
 
 function CloseIcon() {
@@ -216,6 +248,7 @@ export function FileUploadItem({
   error,
   onRetry,
   onRemove,
+  labels,
   className,
 }: FileUploadItemProps) {
   return (
@@ -236,7 +269,10 @@ export function FileUploadItem({
         </View>
 
         {error === undefined && progress !== undefined && (
-          <Progress value={progress} label={`Enviando ${name}`} />
+          <Progress
+            value={progress}
+            label={labels?.uploading ? labels.uploading(name) : `Enviando ${name}`}
+          />
         )}
 
         {error !== undefined && (
@@ -245,11 +281,15 @@ export function FileUploadItem({
             {onRetry && (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={`Tentar enviar ${name} de novo`}
+                accessibilityLabel={
+                  labels?.retryFile ? labels.retryFile(name) : `Tentar enviar ${name} de novo`
+                }
                 onPress={onRetry}
                 hitSlop={8}
               >
-                <Text className="text-xs font-rc-medium text-fg-muted">Tentar de novo</Text>
+                <Text className="text-xs font-rc-medium text-fg-muted">
+                  {labels?.retry ?? "Tentar de novo"}
+                </Text>
               </Pressable>
             )}
           </View>
@@ -258,7 +298,7 @@ export function FileUploadItem({
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Remover ${name}`}
+        accessibilityLabel={labels?.remove ? labels.remove(name) : `Remover ${name}`}
         onPress={onRemove}
         hitSlop={14}
       >

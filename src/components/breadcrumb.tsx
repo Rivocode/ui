@@ -20,16 +20,29 @@ export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
    * `AvatarGroup` e `TagsInput` ja o chamavam assim, e so a trilha divergia.
    */
   max?: number;
+  /**
+   * Os textos da peca, para trocar o idioma: `navigation` e o nome da regiao,
+   * "Caminho" sem ele.
+   */
+  labels?: Partial<BreadcrumbLabels>;
 };
 
-export function Breadcrumb({ className, items, max = 4, ...props }: BreadcrumbProps) {
+export type BreadcrumbLabels = {
+  navigation: string;
+};
+
+export function Breadcrumb({ className, items, max = 4, labels, ...props }: BreadcrumbProps) {
   const folded = items.length > max;
   const visiveis: (Crumb | "reticencia")[] = folded
     ? [items[0]!, "reticencia", ...items.slice(-2)]
     : items;
 
   return (
-    <nav {...props} aria-label="Caminho" className={cn("font-sans text-sm", className)}>
+    <nav
+      {...props}
+      aria-label={labels?.navigation ?? "Caminho"}
+      className={cn("font-sans text-sm", className)}
+    >
       <ol className="flex items-center gap-1.5">
         {visiveis.map((crumb, index) => {
           const isLast = index === visiveis.length - 1;

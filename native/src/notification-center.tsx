@@ -178,7 +178,9 @@ export function NotificationCenter({
     );
 
     return (
-      <View className={cn("flex-row items-start gap-3 border-b border-border py-3", classNames?.item)}>
+      <View
+        className={cn("flex-row items-start gap-3 border-b border-border py-3", classNames?.item)}
+      >
         <View
           {...HIDDEN}
           className="mt-0.5 size-8 items-center justify-center rounded-pill border border-border"
@@ -223,7 +225,7 @@ export function NotificationCenter({
   const empty = isLoading ? (
     <View
       accessible
-      accessibilityLabel="Carregando…"
+      accessibilityLabel={text.loading}
       accessibilityState={{ busy: true }}
       className="gap-4 py-3"
     >

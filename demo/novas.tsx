@@ -428,7 +428,7 @@ function Confirms({ openPanel }: { openPanel: boolean }) {
           defaultOpen={openPanel}
           title="Excluir a nota 4813?"
           description="A linha sai da lista e o cliente deixa de ver o documento."
-          confirmLabel="Excluir"
+          labels={{ confirm: "Excluir" }}
           trigger={
             <IconButton variant="ghost" size="sm" label="Excluir a nota 4813">
               <Trash2 size={16} aria-hidden="true" />
@@ -445,7 +445,7 @@ function Confirms({ openPanel }: { openPanel: boolean }) {
           tone="neutral"
           title="Arquivar o orcamento?"
           description="Ele sai da lista ativa e continua na busca por arquivados."
-          confirmLabel="Arquivar"
+          labels={{ confirm: "Arquivar" }}
           trigger={<Button variant="secondary">Arquivar</Button>}
           onConfirm={() => {}}
         />
@@ -458,7 +458,7 @@ function Confirms({ openPanel }: { openPanel: boolean }) {
           loading
           title="Excluir o anexo?"
           description="O arquivo sai do servidor e o link para de responder."
-          confirmLabel="Excluir"
+          labels={{ confirm: "Excluir" }}
           trigger={<Button variant="secondary">Excluir anexo</Button>}
           onConfirm={slow}
         />
@@ -469,7 +469,7 @@ function Confirms({ openPanel }: { openPanel: boolean }) {
         <Popconfirm
           title="Excluir o anexo?"
           description="O arquivo sai do servidor e o link para de responder."
-          confirmLabel="Excluir"
+          labels={{ confirm: "Excluir" }}
           trigger={<Button variant="secondary">Excluir anexo</Button>}
           onConfirm={slow}
         />
