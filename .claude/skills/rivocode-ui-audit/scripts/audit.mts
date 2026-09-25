@@ -539,11 +539,8 @@ export const ENTRIES: Record<string, { names: string[]; alsoAtRoot: string[] }> 
     names: [
       "Form",
       "FormField",
-      "forCheckbox",
       "forChecked",
       "forDate",
-      "forDatePicker",
-      "forSelect",
       "forValue",
       "useZodForm",
     ],

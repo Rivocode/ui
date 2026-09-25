@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { Progress } from "../src/components/progress";
 import { Meter } from "../src/components/meter";
-import { formatters } from "../src/lib/format";
+import { formatters } from "../src/shared/format";
 
 /*
  * `format` significava tres coisas na mesma biblioteca: opcoes do Intl no

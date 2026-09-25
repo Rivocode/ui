@@ -47,22 +47,11 @@ export type CheckboxProps = Omit<ComponentProps<typeof BaseCheckbox.Root>, "chil
    * link no meio da frase.
    */
   children?: ReactNode;
-  /**
-   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
-   * `classNames.label`, e continua valendo.
-   */
-  labelClassName?: string;
   /** Classe por parte: `box`, `indicator`, `label`. */
   classNames?: Slots<"box" | "indicator" | "label">;
 };
 
-export function Checkbox({
-  className,
-  children,
-  labelClassName,
-  classNames,
-  ...props
-}: CheckboxProps) {
+export function Checkbox({ className, children, classNames, ...props }: CheckboxProps) {
   const textId = useId();
   const named = children !== undefined;
 
@@ -117,7 +106,6 @@ export function Checkbox({
         "flex min-h-6 w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
-        labelClassName,
       )}
     >
       {box}

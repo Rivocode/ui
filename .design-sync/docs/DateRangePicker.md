@@ -38,8 +38,7 @@ incompleto continua saindo entre os dois cliques quando `confirm={false}`.
 `min` e `max` são inclusivos: desabilitam os dias de fora e param a navegação no
 mês de cada ponta, que é o que um filtro de período precisa para ficar dentro
 dos exercícios abertos. `showOutsideDays` e `locale` atravessam para o
-calendário, como no `DatePicker`. `startMonth` e `endMonth` seguem funcionando,
-mas estão marcados como obsoletos.
+calendário, como no `DatePicker`.
 
 ## O segundo período estende, e não recomeça
 

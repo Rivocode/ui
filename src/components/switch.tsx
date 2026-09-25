@@ -12,16 +12,11 @@ export type SwitchProps = Omit<ComponentProps<typeof BaseSwitch.Root>, "children
    * no texto tambem liga e desliga.
    */
   children?: ReactNode;
-  /**
-   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
-   * `classNames.label`, e continua valendo.
-   */
-  labelClassName?: string;
   /** Classe por parte: `thumb`, `label`. */
   classNames?: Slots<"thumb" | "label">;
 };
 
-export function Switch({ className, children, labelClassName, classNames, ...props }: SwitchProps) {
+export function Switch({ className, children, classNames, ...props }: SwitchProps) {
   const textId = useId();
   const named = children !== undefined;
 
@@ -63,7 +58,6 @@ export function Switch({ className, children, labelClassName, classNames, ...pro
         "flex w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
-        labelClassName,
       )}
     >
       {key}

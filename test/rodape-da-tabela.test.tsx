@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import { currencyShort } from "../src/lib/format";
+import { currencyShort } from "../src/shared/format";
 import { DataTable, type Column } from "../src/components/data-table";
 import {
   Table,

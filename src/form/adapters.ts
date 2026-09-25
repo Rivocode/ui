@@ -27,10 +27,6 @@ export type CheckedProps = Identity & {
   onCheckedChange: (checked: boolean) => void;
 };
 
-export type PropsDeDatePicker = DateProps;
-export type PropsDeSelect = ValueProps;
-export type PropsDeCheckbox = CheckedProps;
-
 export function forDate<V extends FieldValues, N extends FieldPath<V>>(
   field: Field<V, N>,
 ): DateProps {
@@ -65,7 +61,3 @@ export function forChecked<V extends FieldValues, N extends FieldPath<V>>(
     onCheckedChange: (checked) => onChange(checked),
   };
 }
-
-export const forDatePicker = forDate;
-export const forSelect = forValue;
-export const forCheckbox = forChecked;

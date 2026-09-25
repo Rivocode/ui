@@ -3904,13 +3904,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "endMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Ultimo mes que a navegacao alcanca.",
-        "since": "0.4.0"
-      },
-      {
         "name": "firstWeekContainsDate",
         "type": "1 | 4",
         "required": false,
@@ -4001,7 +3994,7 @@
       },
       {
         "name": "mode",
-        "type": "\"multiple\" | \"range\" | \"single\"",
+        "type": "\"multiple\" | \"range\"",
         "required": false,
         "note": "Enable the selection of a single day, multiple days, or a range of days.",
         "since": "0.4.0"
@@ -4134,7 +4127,7 @@
       },
       {
         "name": "onSelect",
-        "type": "OnSelectHandler<Date[]> | OnSelectHandler<Date> | OnSelectHandler<DateRange> | OnSelectHandler<Date[] | undefined> | OnSelectHandler<...>",
+        "type": "OnSelectHandler<Date[]> | OnSelectHandler<DateRange> | OnSelectHandler<Date[] | undefined> | OnSelectHandler<...>",
         "required": false,
         "note": "Chamado a cada clique, com a escolha inteira no formato do `selected`."
       },
@@ -4181,7 +4174,7 @@
       },
       {
         "name": "selected",
-        "type": "Date[] | Date | DateRange",
+        "type": "Date[] | DateRange",
         "required": false,
         "note": "Os dias escolhidos: uma lista em `multiple`, um `{ from, to }` em `range`."
       },
@@ -4197,13 +4190,6 @@
         "type": "boolean",
         "required": false,
         "note": "Show the week numbers column.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "startMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Primeiro mes que a navegacao alcanca.",
         "since": "0.4.0"
       },
       {
@@ -8784,13 +8770,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "labelClassName",
-        "type": "string",
-        "required": false,
-        "note": "Classe do `<label>` de fora, quando ha texto.",
-        "since": "0.4.0"
-      },
-      {
         "name": "name",
         "type": "string",
         "required": false,
@@ -10151,13 +10130,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "endMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Ultimo mes que a navegacao alcanca.",
-        "since": "0.4.0"
-      },
-      {
         "name": "locale",
         "type": "Partial<DayPickerLocale>",
         "required": false,
@@ -10205,13 +10177,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "startMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Primeiro mes que a navegacao alcanca.",
-        "since": "0.4.0"
-      },
-      {
         "name": "value",
         "type": "Date | string | null",
         "required": false,
@@ -10243,12 +10208,6 @@
         "required": false,
         "note": "Dias que nao podem ser escolhidos.",
         "since": "0.4.0"
-      },
-      {
-        "name": "endMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Ultimo mes que a navegacao alcanca."
       },
       {
         "name": "locale",
@@ -10302,12 +10261,6 @@
         "required": false,
         "note": "Tamanho do gatilho, o mesmo vocabulario do Input.",
         "since": "0.4.0"
-      },
-      {
-        "name": "startMonth",
-        "type": "Date",
-        "required": false,
-        "note": "Primeiro mes que a navegacao alcanca."
       },
       {
         "name": "value",
@@ -21753,13 +21706,6 @@
         "since": "0.4.0"
       },
       {
-        "name": "labelClassName",
-        "type": "string",
-        "required": false,
-        "note": "Classe do `<label>` de fora, quando ha texto.",
-        "since": "0.4.0"
-      },
-      {
         "name": "nativeButton",
         "type": "boolean",
         "required": false,
@@ -25359,13 +25305,6 @@
         "type": "Ref<HTMLInputElement>",
         "required": false,
         "note": "A ref to access the hidden `<input>` element.",
-        "since": "0.4.0"
-      },
-      {
-        "name": "labelClassName",
-        "type": "string",
-        "required": false,
-        "note": "Classe do `<label>` de fora, quando ha texto.",
         "since": "0.4.0"
       },
       {

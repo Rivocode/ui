@@ -44,9 +44,8 @@ nunca passa o texto por ele.
 `min` e `max` são inclusivos. Valem para o calendário, que desabilita os dias de
 fora e para a navegação no mês de cada ponta, e para o que se digita: data fora
 da janela não chega ao `onValueChange`, e ao sair do campo o texto volta para a
-última data válida. `startMonth` e `endMonth` seguem funcionando, mas estão
-marcados como obsoletos. `disabledDays` continua para o dia bloqueado avulso,
-como feriado.
+última data válida. `disabledDays` fica para o dia bloqueado avulso, como
+feriado.
 
 ## Data e texto
 

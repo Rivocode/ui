@@ -157,8 +157,7 @@ Alem do pacote principal, quatro familias vivem em subcaminhos e chegam pelo
 mesmo global:
 
 - **`@rivocode/ui/form`**, `Form`, `FormField`, `useZodForm` e os adaptadores
-  `forDate`, `forValue`, `forChecked`: o nome diz o formato, e não a peça, e
-  os nomes antigos (`forDatePicker`, `forSelect`, `forCheckbox`) seguem valendo.
+  `forDate`, `forValue`, `forChecked`: o nome diz o formato, e não a peça.
   O controle vem por funcao,
   nao por clonagem do filho:
 

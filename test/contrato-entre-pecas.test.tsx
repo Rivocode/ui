@@ -270,14 +270,11 @@ test("o estado vazio aceita no no titulo, como as irmas dele", () => {
 });
 
 test("o filtro de periodo consegue limitar aos exercicios abertos", () => {
-  // O DatePicker repassava as quatro props do calendario e o DateRangePicker
-  // so o `locale`, entao o filtro de periodo - que e justamente quem precisa
-  // disso - nao conseguia fechar o ano.
   withTheme(
     <DateRangePicker
       defaultValue={{ from: new Date(2026, 2, 3), to: new Date(2026, 2, 10) }}
-      startMonth={new Date(2026, 0, 1)}
-      endMonth={new Date(2026, 11, 31)}
+      min="2026-01-01"
+      max="2026-12-31"
       numberOfMonths={1}
       showOutsideDays
     />,
@@ -288,7 +285,5 @@ test("o filtro de periodo consegue limitar aos exercicios abertos", () => {
   expect(year.options.length).toBe(1);
   expect(year.options[0]!.textContent).toContain("2026");
 
-  // A quarta prop do repasse, na mesma abertura: sem ela o mes comeca com
-  // buracos nas pontas.
   expect(document.querySelectorAll('[data-outside="true"]').length).toBeGreaterThan(0);
 });

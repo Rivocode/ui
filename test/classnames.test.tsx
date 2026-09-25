@@ -89,12 +89,20 @@ test("a caixa deixa vestir o quadrado e o rotulo", () => {
   wears(container, "rotulo-x", "text-fg");
 });
 
-test("labelClassName continua valendo, com o nome antigo", () => {
-  // Era o unico gancho de parte da biblioteca inteira. Quem ja usa nao paga
-  // por termos generalizado.
-  const { container } = withTheme(<Checkbox labelClassName="rotulo-velho">Aceito</Checkbox>);
+test("a chave e o circulo vestem o rotulo pelo mesmo classNames.label da caixa", () => {
+  const { container } = withTheme(
+    <>
+      <Switch classNames={{ label: "rotulo-s" }}>Avisar</Switch>
+      <RadioGroup defaultValue="pix">
+        <Radio value="pix" classNames={{ label: "rotulo-r" }}>
+          Pix
+        </Radio>
+      </RadioGroup>
+    </>,
+  );
 
-  wears(container, "rotulo-velho", "text-fg");
+  wears(container, "rotulo-s", "text-fg");
+  wears(container, "rotulo-r", "text-fg");
 });
 
 test("a chave deixa vestir o pino", () => {

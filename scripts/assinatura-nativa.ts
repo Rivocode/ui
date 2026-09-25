@@ -295,7 +295,11 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Calendar: {
     rows: [
-      { web: "mode", native: null, note: "só data única: intervalo é o `DateRangePicker`" },
+      {
+        web: "mode",
+        native: null,
+        note: "só data única, que no web é o caminho sem `mode`: intervalo é o `DateRangePicker`, e várias datas soltas não portam",
+      },
       {
         web: "classNames",
         native: "classNames",

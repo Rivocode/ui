@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
 
-import { currencyShort, percent } from "../src/lib/format";
+import { currencyShort, percent } from "../src/shared/format";
 import { Stat } from "../src/components/stat";
 import { RivoProvider } from "../src/provider/rivo-provider";
 

@@ -123,7 +123,7 @@ escritos em lugar nenhum.
 | `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
 | `Button` | `size` | `size` | `cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop` |
 | `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
-| `Calendar` | `mode` | — | só data única: intervalo é o `DateRangePicker` |
+| `Calendar` | `mode` | — | só data única, que no web é o caminho sem `mode`: intervalo é o `DateRangePicker`, e várias datas soltas não portam |
 | `Calendar` | `classNames` | `classNames` | os nomes do `DayPicker`, só os que têm nó no mês desenhado à mão: sem `months`, `month`, `month_caption`, `week`, `outside`, `hidden`, os `range_*` de intervalo e os de animação |
 | `Carousel` | — | `items` | os slides vêm por `items` e `renderItem`, e não como filhos |
 | `Carousel` | `index` | `index` | vira obrigatório, com `onIndexChange`: não há `defaultIndex` |

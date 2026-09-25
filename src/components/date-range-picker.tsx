@@ -112,8 +112,6 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
     disabledDays,
     numberOfMonths = 2,
     locale,
-    startMonth,
-    endMonth,
     showOutsideDays,
     confirm = true,
     min,
@@ -213,8 +211,6 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
         numberOfMonths={numberOfMonths}
         disabled={disabledDays}
         locale={locale}
-        startMonth={startMonth}
-        endMonth={endMonth}
         showOutsideDays={showOutsideDays}
         min={min}
         max={max}

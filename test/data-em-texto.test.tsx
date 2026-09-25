@@ -283,7 +283,7 @@ test("o componente de quem embrulha com o tipo de props exportado continua repas
     <RivoProvider scope="local">
       <OwnDatePicker defaultValue="2026-09-25" onValueChange={(next) => (received = next)} />
       <OwnRangePicker placeholder="Periodo" />
-      <OwnCalendar mode="single" month={new Date(2026, 8, 1)} />
+      <OwnCalendar month={new Date(2026, 8, 1)} />
     </RivoProvider>,
   );
   fireEvent.change(field(), { target: { value: "01/10/2026" } });

@@ -4,14 +4,8 @@ export {
   forChecked,
   forDate,
   forValue,
-  forCheckbox,
-  forDatePicker,
-  forSelect,
   type CheckedProps,
   type DateProps,
   type ValueProps,
-  type PropsDeCheckbox,
-  type PropsDeDatePicker,
-  type PropsDeSelect,
 } from "./adapters";
 export { useZodForm } from "./use-zod-form";

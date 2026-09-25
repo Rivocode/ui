@@ -55,14 +55,8 @@ test("o adaptador de valor veste o grupo de escolha unica", () => {
   expect(marked[0]!.closest("label")!.textContent).toContain("Pix");
 });
 
-test("os nomes antigos continuam valendo", async () => {
-  const {
-    forCheckbox,
-    forSelect,
-    forChecked: next,
-    forValue: nextValue,
-  } = await import("../src/form");
+test("o indice do form expoe so os tres adaptadores de formato", async () => {
+  const exported = Object.keys(await import("../src/form")).filter((name) => name.startsWith("for"));
 
-  expect(forCheckbox).toBe(next);
-  expect(forSelect).toBe(nextValue);
+  expect(exported.sort()).toEqual(["forChecked", "forDate", "forValue"]);
 });

@@ -21,16 +21,11 @@ export type RadioProps = Omit<ComponentProps<typeof BaseRadio.Root>, "children">
    * Sem ele, sai so o circulo, e o arranjo fica com quem monta a tela.
    */
   children?: ReactNode;
-  /**
-   * Classe do `<label>` de fora, quando ha texto. E o nome antigo de
-   * `classNames.label`, e continua valendo.
-   */
-  labelClassName?: string;
   /** Classe por parte: `circle`, `indicator`, `label`. */
   classNames?: Slots<"circle" | "indicator" | "label">;
 };
 
-export function Radio({ className, children, labelClassName, classNames, ...props }: RadioProps) {
+export function Radio({ className, children, classNames, ...props }: RadioProps) {
   const textId = useId();
   const named = children !== undefined;
 
@@ -74,7 +69,6 @@ export function Radio({ className, children, labelClassName, classNames, ...prop
         "flex min-h-6 w-fit cursor-pointer items-center gap-2 font-sans text-base text-fg",
         "has-[[data-disabled]]:cursor-not-allowed has-[[data-disabled]]:text-fg-disabled",
         classNames?.label,
-        labelClassName,
       )}
     >
       {circle}

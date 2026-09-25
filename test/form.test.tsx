@@ -9,7 +9,7 @@ import { DatePicker } from "../src/components/date-picker";
 import { Input } from "../src/components/field";
 import { Form } from "../src/form/form";
 import { FormField } from "../src/form/form-field";
-import { forCheckbox, forDatePicker } from "../src/form/adapters";
+import { forChecked, forDate } from "../src/form/adapters";
 import { useZodForm } from "../src/form/use-zod-form";
 
 const schema = z.object({
@@ -31,10 +31,10 @@ function Example({ aoEnviar = () => {} }: { aoEnviar?: (v: z.output<typeof schem
         </FormField>
 
         <FormField name="dueDate" label="Vencimento">
-          {(field) => <DatePicker {...forDatePicker(field)} />}
+          {(field) => <DatePicker {...forDate(field)} />}
         </FormField>
 
-        <FormField name="aceite">{(field) => <Checkbox {...forCheckbox(field)} />}</FormField>
+        <FormField name="aceite">{(field) => <Checkbox {...forChecked(field)} />}</FormField>
 
         <Button type="submit">Emitir</Button>
       </Form>

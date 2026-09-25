@@ -11,10 +11,7 @@ import { Calendar, type CalendarProps } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import { Input } from "./field";
 
-export type CalendarPassthrough = Pick<
-  CalendarProps,
-  "locale" | "startMonth" | "endMonth" | "showOutsideDays"
->;
+export type CalendarPassthrough = Pick<CalendarProps, "locale" | "showOutsideDays">;
 
 type DatePickerDateValue = {
   /**
@@ -87,8 +84,6 @@ export function DatePicker(props: DatePickerProps): ReactElement {
     disabled,
     disabledDays,
     locale,
-    startMonth,
-    endMonth,
     showOutsideDays,
     confirm,
     name,
@@ -225,8 +220,6 @@ export function DatePicker(props: DatePickerProps): ReactElement {
           }}
           disabled={disabledDays}
           locale={locale}
-          startMonth={startMonth}
-          endMonth={endMonth}
           showOutsideDays={showOutsideDays}
           min={min}
           max={max}

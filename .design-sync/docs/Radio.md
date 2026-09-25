@@ -27,7 +27,6 @@ Sem filho, sai só o círculo, para quando o rótulo tiver estrutura própria.
 
 `classNames` veste cada parte pelo nome: `circle` é o círculo de fora,
 `indicator` é a marca de dentro e `label` é o `<label>` que embrulha os dois.
-`labelClassName` é o nome antigo de `classNames.label`, e continua valendo.
 
 ```tsx
 <Radio value="pix" classNames={{ circle: 'size-5', indicator: 'size-2.5' }}>

@@ -41,11 +41,14 @@ meia-noite em UTC, que em Brasília ainda é dia 24.
 ficam desabilitados, e a navegação para no mês de cada ponta. Tocar de novo no
 dia escolhido não desmarca.
 
-Várias datas soltas e intervalo continuam pelo `mode` do `react-day-picker`,
-com `selected` e `onSelect`. Para data única, `mode="single"`, `selected` e
-`onSelect` seguem funcionando, mas estão marcados como obsoletos, assim como
-`startMonth` e `endMonth`: `value` e `min`/`max` dizem o mesmo e portam para o
-nativo.
+Data única é sempre `value` e `onValueChange`, sem `mode`. Várias datas soltas
+e intervalo vão pelo `mode` do `react-day-picker`, `"multiple"` ou `"range"`,
+com `selected` e `onSelect`; ali o `min` e o `max` aceitam também um número,
+que é a quantidade mínima e máxima de dias da escolha.
+
+```tsx
+<Calendar mode="range" selected={periodo} onSelect={setPeriodo} min="2026-01-01" />
+```
 
 A troca de mês anima: o mês novo entra pelo lado para onde a pessoa andou, em
 200ms, e com "reduzir movimento" ligado a troca é instantânea. `animate={false}`

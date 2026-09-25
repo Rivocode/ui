@@ -9,8 +9,6 @@ import {
   type PropsMultiRequired,
   type PropsRange,
   type PropsRangeRequired,
-  type PropsSingle,
-  type PropsSingleRequired,
 } from "react-day-picker";
 import { ptBR } from "react-day-picker/locale";
 import type { ComponentProps, ReactElement } from "react";
@@ -23,18 +21,7 @@ import { isoFromDate } from "../shared/date";
 type CalendarBase = Omit<
   PropsBase,
   "mode" | "required" | "startMonth" | "endMonth" | "selected" | "onSelect"
-> & {
-  /**
-   * Primeiro mes que a navegacao alcanca.
-   * @deprecated Use `min`, que para a navegacao no mesmo mes e ainda bloqueia os dias antes dele.
-   */
-  startMonth?: Date;
-  /**
-   * Ultimo mes que a navegacao alcanca.
-   * @deprecated Use `max`, que para a navegacao no mesmo mes e ainda bloqueia os dias depois dele.
-   */
-  endMonth?: Date;
-};
+>;
 
 type DayBounds = {
   /**
@@ -52,12 +39,12 @@ type DayBounds = {
 type CountBounds = {
   /**
    * O primeiro dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
-   * Em `range` e `multiple`, um numero continua sendo o minimo de dias da escolha.
+   * Em `range` e `multiple`, um numero e o minimo de dias da escolha.
    */
   min?: Date | string | number;
   /**
    * O ultimo dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`.
-   * Em `range` e `multiple`, um numero continua sendo o maximo de dias da escolha.
+   * Em `range` e `multiple`, um numero e o maximo de dias da escolha.
    */
   max?: Date | string | number;
 };
@@ -87,15 +74,7 @@ type IsoValue = Unselected & {
   onValueChange?: (value: string) => void;
 };
 
-type LegacySingle<P extends PropsSingle | PropsSingleRequired> = Omit<P, "selected" | "onSelect"> &
-  NoValue & {
-    /** @deprecated Use `value`, que aceita `Date` ou `aaaa-mm-dd`. */
-    selected?: P["selected"];
-    /** @deprecated Use `onValueChange`. */
-    onSelect?: P["onSelect"];
-  };
-
-type LegacyMany<P extends PropsMulti | PropsMultiRequired | PropsRange | PropsRangeRequired> = Omit<
+type Selection<P extends PropsMulti | PropsMultiRequired | PropsRange | PropsRangeRequired> = Omit<
   P,
   "min" | "max" | "selected" | "onSelect"
 > &
@@ -113,12 +92,10 @@ export type CalendarIsoProps = CalendarBase & IsoValue & DayBounds;
 
 export type CalendarSelectionProps = CalendarBase &
   (
-    | (LegacySingle<PropsSingle> & DayBounds)
-    | (LegacySingle<PropsSingleRequired> & DayBounds)
-    | LegacyMany<PropsMulti>
-    | LegacyMany<PropsMultiRequired>
-    | LegacyMany<PropsRange>
-    | LegacyMany<PropsRangeRequired>
+    | Selection<PropsMulti>
+    | Selection<PropsMultiRequired>
+    | Selection<PropsRange>
+    | Selection<PropsRangeRequired>
   );
 
 export type CalendarProps = CalendarDateProps | CalendarIsoProps | CalendarSelectionProps;
@@ -169,8 +146,6 @@ export function Calendar(props: CalendarProps): ReactElement {
     locale = ptBR,
     numberOfMonths,
     captionLayout = "dropdown",
-    startMonth,
-    endMonth,
     formatters,
     animate = true,
     disabled,
@@ -210,8 +185,8 @@ export function Calendar(props: CalendarProps): ReactElement {
       numberOfMonths={isMobile ? 1 : numberOfMonths}
       captionLayout={captionLayout}
       animate={animate}
-      startMonth={startMonth ?? (lower ? firstOfMonth(lower) : FAR_PAST())}
-      endMonth={endMonth ?? (upper ? firstOfMonth(upper) : FAR_FUTURE())}
+      startMonth={lower ? firstOfMonth(lower) : FAR_PAST()}
+      endMonth={upper ? firstOfMonth(upper) : FAR_FUTURE()}
       formatters={{
         formatWeekdayName: (dia, options, lib) =>
           lib

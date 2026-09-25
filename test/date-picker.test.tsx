@@ -105,7 +105,7 @@ test("o calendario abre pelo botao do campo", () => {
 test("o calendario fala portugues por padrao", () => {
   render(
     <RivoProvider scope="local">
-      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+      <Calendar month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
   expect(screen.getByRole("grid").getAttribute("aria-label")).toContain("março");
@@ -216,7 +216,7 @@ test("o Aplicar do intervalo so libera com o periodo fechado", () => {
 test("o calendario mostra a inicial do dia numa letra so", () => {
   render(
     <RivoProvider scope="local">
-      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+      <Calendar month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
   const columns = [...document.querySelectorAll("th")].map((c) => c.textContent);
@@ -226,7 +226,7 @@ test("o calendario mostra a inicial do dia numa letra so", () => {
 test("a legenda do mes vira lista de mes e ano", () => {
   render(
     <RivoProvider scope="local">
-      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+      <Calendar month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
   const listas = screen.getAllByRole("combobox");
@@ -236,7 +236,7 @@ test("a legenda do mes vira lista de mes e ano", () => {
 test("no celular estreito o dia do calendario encolhe com a tela, para as sete colunas caberem em 320 pixels", () => {
   render(
     <RivoProvider scope="local">
-      <Calendar mode="single" month={new Date(2026, 2, 1)} />
+      <Calendar onValueChange={() => {}} month={new Date(2026, 2, 1)} />
     </RivoProvider>,
   );
   const shrinking = "size-[min(2.75rem,calc((100vw_-_3.5rem)/7))]";
