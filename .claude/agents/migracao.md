@@ -137,7 +137,7 @@ dentro do `onOpenChange(false)`, o `onCancel` novo é o lugar mais preciso
 (botão de cancelar e voltar do Android).
 
 **`MaskedInput` nativo com `#`.** O `mask` aceita qualquer texto, então o
-`tsc` não acusa o molde antigo. Procure com `Grep` todo `mask=` e todo molde
+`tsc` não acusa o molde antigo (só um aviso no console em desenvolvimento). Procure com `Grep` todo `mask=` e todo molde
 guardado em constante, e troque cada `#` por `9`. Um `A` que no molde antigo
 era letra fixa passa a ser vaga de letra: se ele era literal, o molde precisa
 ser reescrito à mão.

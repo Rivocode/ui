@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, mock, spyOn, test } from "bun:test";
 import { Text } from "react-native";
 
 import {
@@ -425,5 +425,23 @@ describe("TagsInput", () => {
     expect(onValueChange).toHaveBeenCalledWith(["boleto"]);
 
     expect(screen.root.findByType("TextInput" as never).props.editable).toBe(false);
+  });
+});
+
+describe("o molde antigo", () => {
+  test("o MaskedInput avisa quando o molde ainda usa #, que desde a 1.0 e pontuacao fixa", () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      render(<MaskedInput mask="##.###" value="" onValueChange={() => {}} />);
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(String(warn.mock.calls[0]?.[0])).toContain('"9"');
+
+      warn.mockClear();
+      render(<MaskedInput mask="99.999" value="" onValueChange={() => {}} />);
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

@@ -283,7 +283,8 @@ Como no web, várias peças ganharam `labels` para o texto que estava cravado:
 | molde com `#` para dígito, como `"#####-###"` | a sintaxe do web: `9` dígito, `A` letra, `*` letra ou dígito, como `"99999-999"` |
 
 Esta troca o `tsc` não pega: o `mask` aceita qualquer texto, porque o molde
-escrito à mão é texto. Procure `#` nos moldes do projeto e troque cada um por
+escrito à mão é texto. Em desenvolvimento, a peça avisa no console quando o
+molde ainda tem `#`. Procure `#` nos moldes do projeto e troque cada um por
 `9`. Um `A` que no molde antigo era letra fixa passa a ser vaga de letra.
 
 ## O que o tipo não pega
@@ -307,7 +308,8 @@ cada uma delas:
   botão.
 - **`MaskedInput` do nativo com `#` no molde** compila e deixa de pontuar:
   sem nenhuma vaga que ele reconheça, o campo aceita os dígitos crus, sem
-  hífen, sem ponto e sem limite de tamanho. Troque cada `#` por `9`.
+  hífen, sem ponto e sem limite de tamanho. Em desenvolvimento, o console
+  avisa. Troque cada `#` por `9`.
 
 ## Daqui para a frente
 

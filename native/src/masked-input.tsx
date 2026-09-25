@@ -1,6 +1,7 @@
 import { Input, type InputProps } from "./field";
 import { boletoPatternFor } from "./shared/boleto";
 import { applyPattern, isNumericMask, maskText, unmask, type Mask } from "./shared/mask";
+import { useSilentMisuse } from "./silent-misuse";
 
 export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onValueChange"> & {
   /**
@@ -27,6 +28,10 @@ const readTyped = (mask: Mask, text: string) => {
 };
 
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
+  useSilentMisuse(
+    mask.includes("#"),
+    `[rivocode/ui-native] MaskedInput com "#" no molde ("${mask}"): desde a 1.0 o molde segue a sintaxe do web, e o "#" virou pontuacao fixa. Troque cada "#" por "9" (digito).`,
+  );
   const alphanumeric = !isNumericMask(mask);
 
   return (
