@@ -167,8 +167,10 @@ export type GanttProps<Task extends GanttTask = GanttTask> = Omit<
    * sai e quando ela volta. `today` e o botao que rola ate hoje; `day`,
    * `week` e `month` nomeiam as escalas, e `scales` o seletor delas; `resize`
    * e o nome da divisoria da tabela; `hint` e a dica do teclado, que recebe a
-   * escala. `period` diz o periodo desenhado, `range` junta as duas pontas de
-   * um intervalo, `tasks` conta as tarefas de um grupo, e `milestone`,
+   * escala. `period` diz o periodo desenhado; `range` recebe o primeiro e o
+   * ultimo dia de uma tarefa e o `locale`, e devolve a frase inteira - sem ele,
+   * "12 a 18 de outubro" em portugues e o `formatRange` do `Intl` nos outros
+   * idiomas ("October 12 – 18"). `tasks` conta as tarefas de um grupo, e `milestone`,
    * `progress` e `dependsOn` montam o que o leitor de tela ouve em cada
    * tarefa. Os nomes de mes e de dia vem do `locale`. Passe so os que mudam.
    */
@@ -360,7 +362,7 @@ export type GanttLabels = {
   resize: string;
   hint: (scale: GanttScale) => string;
   period: (name: string, from: string, to: string) => string;
-  range: (from: string, to: string) => string;
+  range: (from: Date, to: Date, locale: string) => string;
   tasks: (count: number) => string;
   milestone: (when: string) => string;
   progress: (percent: number) => string;

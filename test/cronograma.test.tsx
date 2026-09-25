@@ -12,6 +12,7 @@ import {
   resizeTask,
   scaleRange,
   spokenRange,
+  GANTT_WORDS,
 } from "../src/lib/gantt-layout";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
@@ -128,6 +129,34 @@ test("a frase falada diz o intervalo como a pessoa diz: 12 a 18 de outubro", () 
   );
   expect(spokenRange({ start: day(3, 5), end: day(3, 6) })).toBe("5 de março");
   expect(spokenRange({ start: day(10, 25), end: day(10, 25) })).toBe("25 de outubro");
+});
+
+test("fora do portugues, o intervalo segue a ordem do idioma, e nao a frase traduzida palavra a palavra", () => {
+  const en = { ...GANTT_WORDS, locale: "en-US" };
+  expect(spokenRange({ start: day(10, 12), end: day(10, 19) }, en)).toBe("October 12 – 18");
+  expect(spokenRange({ start: day(9, 28), end: day(10, 4) }, en)).toBe(
+    "September 28 – October 3",
+  );
+  expect(spokenRange({ start: day(12, 28), end: new Date(2027, 0, 4) }, en)).toBe(
+    "December 28, 2026 – January 3, 2027",
+  );
+  expect(spokenRange({ start: day(10, 25), end: day(10, 25) }, en)).toBe("October 25");
+});
+
+test("o labels.range recebe os dois dias e o locale, e devolve a frase inteira", () => {
+  const seen: Array<[Date, Date, string]> = [];
+  const { container } = gantt({
+    locale: "en-GB",
+    labels: {
+      range: (from, to, locale) => {
+        seen.push([from, to, locale]);
+        return `from ${from.getDate()} to ${to.getDate()}`;
+      },
+    },
+  });
+  expect(speech(container, "t:servidor")!.startsWith("from 12 to 18,")).toBe(true);
+  expect(seen.length).toBeGreaterThan(0);
+  expect(seen.every(([, , locale]) => locale === "en-GB")).toBe(true);
 });
 
 test("o fim e exclusivo: tarefa que acaba ao meio-dia conta o proprio dia", () => {
@@ -796,7 +825,6 @@ test("a barra, as escalas e o que o leitor de tela ouve saem de labels, e os mes
       week: "Week",
       month: "Month",
       scales: "Timeline scale",
-      range: (from, to) => `${from} to ${to}`,
       progress: (percent) => `${percent}% done`,
       dependsOn: (title) => `after ${title}`,
       milestone: (when) => `milestone on ${when}`,
@@ -807,7 +835,7 @@ test("a barra, as escalas e o que o leitor de tela ouve saem de labels, e os mes
   expect(screen.getByText("Week")).toBeDefined();
   expect(container.textContent).toContain("October 2026");
   expect(speech(container, "t:servidor")).toBe(
-    "12 to October 18, 40% done, after Comprar hardware",
+    "October 12 – 18, 40% done, after Comprar hardware",
   );
   expect(speech(container, "t:virada")).toBe("milestone on October 25, after Instalar servidor");
   expect(container.textContent).not.toContain("outubro");

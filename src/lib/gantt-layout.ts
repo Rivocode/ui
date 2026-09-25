@@ -53,12 +53,28 @@ export const PX_PER_DAY: Record<GanttScale, number> = { day: 40, week: 18, month
 
 export type GanttWords = {
   locale: string;
-  range: (from: string, to: string) => string;
+  range: (from: Date, to: Date, locale: string) => string;
 };
+
+function naturalRange(from: Date, to: Date, locale: string): string {
+  const crossesYear = from.getFullYear() !== to.getFullYear();
+  if (!locale.toLowerCase().startsWith("pt")) {
+    return new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "long",
+      ...(crossesYear ? { year: "numeric" } : {}),
+    }).formatRange(from, to);
+  }
+  if (crossesYear) return `${spokenDay(from, true, locale)} a ${spokenDay(to, true, locale)}`;
+  if (from.getMonth() !== to.getMonth()) {
+    return `${spokenDay(from, false, locale)} a ${spokenDay(to, false, locale)}`;
+  }
+  return `${from.toLocaleDateString(locale, { day: "numeric" })} a ${spokenDay(to, false, locale)}`;
+}
 
 export const GANTT_WORDS: GanttWords = {
   locale: "pt-BR",
-  range: (from, to) => `${from} a ${to}`,
+  range: naturalRange,
 };
 
 const shortMonth = (date: Date, locale: string) =>
@@ -150,17 +166,7 @@ export function spokenRange(
 
   const last = lastDay(task);
   if (first.getTime() === last.getTime()) return spokenDay(first, false, locale);
-
-  if (first.getFullYear() !== last.getFullYear()) {
-    return range(spokenDay(first, true, locale), spokenDay(last, true, locale));
-  }
-  if (first.getMonth() !== last.getMonth()) {
-    return range(spokenDay(first, false, locale), spokenDay(last, false, locale));
-  }
-  return range(
-    first.toLocaleDateString(locale, { day: "numeric" }),
-    spokenDay(last, false, locale),
-  );
+  return range(first, last, locale);
 }
 
 export function scaleRange(

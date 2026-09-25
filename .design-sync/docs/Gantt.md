@@ -176,8 +176,27 @@ cada tarefa e a contagem. Passe só as chaves que mudam.
   labels={{
     today: 'Today',
     week: 'Week',
-    range: (from, to) => `${from} to ${to}`,
     progress: (percent) => `${percent}% done`,
+  }}
+/>
+```
+
+O intervalo de cada tarefa não é uma palavra, é uma frase, e a ordem dela muda
+de idioma para idioma: "12 a 18 de outubro" em português, "October 12 – 18" em
+inglês. Por isso `labels.range` recebe os dois dias em `Date` e o `locale`, e
+não dois textos prontos. Sem ele, o português usa a frase com "a" e os outros
+idiomas usam o `Intl.DateTimeFormat#formatRange`, que já junta o mês repetido.
+Troque só quando a frase do `Intl` não servir:
+
+```tsx
+<Gantt
+  tasks={tasks}
+  locale="en-US"
+  labels={{
+    range: (from, to, locale) => {
+      const day = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' })
+      return `${day.format(from)} through ${day.format(to)}`
+    },
   }}
 />
 ```
