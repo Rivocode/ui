@@ -142,6 +142,7 @@ export function Tree({
             const leaves = leavesOf(node);
             const chosen = leaves.filter((leaf) => value.includes(leaf)).length;
             const full = chosen > 0 && chosen === leaves.length;
+            const mixed = chosen > 0 && !full;
 
             if (branch) {
               return (
@@ -151,6 +152,7 @@ export function Tree({
                       accessibilityLabel={`Marcar tudo em ${node.label}`}
                       hitSlop={{ top: 12, bottom: 12, left: 12, right: 6 }}
                       checked={full}
+                      indeterminate={mixed}
                       disabled={node.disabled}
                       onCheckedChange={() => toggle(node)}
                       className="pl-3"
@@ -167,16 +169,9 @@ export function Tree({
                       multiple ? "" : "pl-3"
                     } ${node.disabled ? "opacity-50" : "active:bg-selected"}`}
                   >
-                    <View className="flex-1">
-                      <Text numberOfLines={1} className="text-base text-fg">
-                        {node.label}
-                      </Text>
-                      {multiple && chosen > 0 && !full && (
-                        <Text className="text-xs text-fg-subtle">
-                          {chosen} de {leaves.length} escolhidos
-                        </Text>
-                      )}
-                    </View>
+                    <Text numberOfLines={1} className="flex-1 text-base text-fg">
+                      {node.label}
+                    </Text>
                     <Chevron direction="right" />
                   </Pressable>
                 </View>

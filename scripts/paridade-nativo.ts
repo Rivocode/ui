@@ -1444,10 +1444,10 @@ const PARITY: Record<string, Row> = {
       "último) e volta um nível.\n\n" +
       "Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a " +
       'caixa ao lado marca o galho inteiro: com um alvo só não havia como marcar "Financeiro" ' +
-      "sem visitar as sete folhas de dentro. E **a caixa do galho não usa o estado misto**: " +
-      'o galho meio marcado aparece com a caixa vazia e um "2 de 7 ' +
-      'escolhidos" embaixo do nome (texto, que se lê e se ouve, no lugar de um tracinho que só ' +
-      "se vê).\n\n" +
+      "sem visitar as sete folhas de dentro. E **a caixa do galho usa o estado misto**, como no " +
+      "web: com parte das folhas marcadas, ela desenha o traço e anuncia `mixed`, e tocá-la " +
+      "marca o galho inteiro. A conta exata não aparece na tela, como no web; ela vai no nome " +
+      'falado do galho ("Financeiro, 7 itens, 2 escolhidos"), porque é por ele que se entra.\n\n' +
       "Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada " +
       "com busca já é o `Combobox`), `expanded`/`onExpandedChange` (não há aberto e fechado, há " +
       "o nível onde o dedo está) e o `label` do nó, que aqui é `string`. Ele é montado dentro do " +

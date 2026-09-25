@@ -142,24 +142,47 @@ describe("Tree", () => {
     expect(onValueChange).toHaveBeenCalledWith(["marketing"]);
   });
 
-  test("multiple: o galho meio marcado conta em texto, porque a caixa não tem misto", () => {
+  test("multiple: o galho meio marcado anuncia o estado misto, como no web", () => {
+    const onValueChange = mock(() => {});
     const screen = render(
       <Tree
         items={PLAN}
         multiple
         value={["fornecedores"]}
-        onValueChange={() => {}}
+        onValueChange={onValueChange}
         label="Centro de custo"
       />,
     );
 
-    // A caixa fica vazia: cheia, ela prometeria as tres folhas.
-    expect(byLabel(screen, "Marcar tudo em Financeiro")[0].props.accessibilityState.checked).toBe(
-      false,
-    );
-    // O que se ve e o que se ouve dizem a mesma conta.
-    expect(textOf(screen)).toContain("1 de 3 escolhidos");
+    const box = byLabel(screen, "Marcar tudo em Financeiro")[0];
+    expect(box.props.accessibilityState.checked).toBe("mixed");
+    expect(textOf(screen)).not.toContain("1 de 3 escolhidos");
     expect(byLabel(screen, "Financeiro, 3 itens, 1 escolhido").length).toBe(1);
+
+    act(() => box.props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["fornecedores", "impostos", "receber"]);
+  });
+
+  test("multiple: galho sem nada marcado e galho cheio não ficam mistos", () => {
+    const empty = render(
+      <Tree items={PLAN} multiple value={[]} onValueChange={() => {}} label="Centro de custo" />,
+    );
+    expect(
+      byLabel(empty, "Marcar tudo em Financeiro")[0].props.accessibilityState.checked,
+    ).toBe(false);
+
+    const full = render(
+      <Tree
+        items={PLAN}
+        multiple
+        value={["fornecedores", "impostos", "receber"]}
+        onValueChange={() => {}}
+        label="Centro de custo"
+      />,
+    );
+    expect(byLabel(full, "Marcar tudo em Financeiro")[0].props.accessibilityState.checked).toBe(
+      true,
+    );
   });
 
   test("multiple: a folha é uma caixa de marcar, e alterna sozinha", () => {
