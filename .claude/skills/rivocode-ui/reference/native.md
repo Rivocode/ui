@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**205 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**204 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -208,10 +208,9 @@ escritos em lugar nenhum.
 | `PixCode` | — | `renderCopy` | o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied` |
 | `PixCode` | `classNames` | `className` | um `className` só, na raiz |
 | `Popconfirm` → `AlertDialog` | `trigger` | — | não há ancoragem: você desenha o próprio botão e controla `open` |
-| `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | e não devolve promessa: o modal não segura o botão em espera |
+| `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | só o nome muda: devolvendo promessa, o modal segura o botão em espera e fecha quando ela resolve |
 | `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
 | `Popconfirm` → `AlertDialog` | `description` | `description` | vira `string` obrigatória: o modal não abre sem dizer o que se perde |
-| `Popconfirm` → `AlertDialog` | `tone` | — | o botão é sempre destrutivo, e o painel não cancela ao tocar fora |
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
 | `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
 | `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
@@ -407,7 +406,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
-| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
+| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |

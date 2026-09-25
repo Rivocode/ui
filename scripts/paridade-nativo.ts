@@ -152,7 +152,7 @@ const PARITY: Record<string, Row> = {
   },
   AlertDialog: {
     state: "traduz",
-    note: "`actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web",
+    note: "`actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web",
   },
   AspectRatio: { state: "traduz", note: "`ratio` numérico, igual" },
   Carousel: {
@@ -1417,7 +1417,9 @@ const PARITY: Record<string, Row> = {
       "não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não " +
       "há saída invisível, e é a mesma regra que o `Editable` segue.\n\n" +
       "A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera " +
-      "e a mesma trava contra o segundo toque.",
+      "e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` " +
+      "também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. " +
+      "`confirmLabel` vira `actionLabel`, e `loading` e `busyLabel` têm o mesmo nome.",
   },
   Tree: {
     state: "traduz",

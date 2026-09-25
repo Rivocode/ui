@@ -92,4 +92,4 @@ Vira `AlertDialog`. Painel ancorado não é idioma de toque: uma pergunta de 20r
 
 **Uma diferença de contrato, e ela é deliberada:** no web dispensar CANCELA (`Esc`, clique fora e o botão, os três chamam `onCancel`), porque ali o gesto distraído leva ao resultado seguro. O `AlertDialog` nativo não fecha ao tocar fora, como o do web também não. Então a saída no celular é o botão de cancelar, escrito e visível: sem Escape não há saída invisível, e é a mesma regra que o `Editable` segue.
 
-A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera e a mesma trava contra o segundo toque.
+A ação em curso porta: quem devolve promessa em `onAction` ganha o mesmo botão em espera e a mesma trava contra o segundo toque, e o modal só fecha quando ela resolve. O `tone` também: `danger` é o padrão, e `neutral` pinta o botão primário para o que se desfaz. `confirmLabel` vira `actionLabel`, e `loading` e `busyLabel` têm o mesmo nome.

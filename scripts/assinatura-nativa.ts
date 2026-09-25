@@ -899,18 +899,13 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "onConfirm",
         native: "onAction",
-        note: "e não devolve promessa: o modal não segura o botão em espera",
+        note: "só o nome muda: devolvendo promessa, o modal segura o botão em espera e fecha quando ela resolve",
       },
       { web: "confirmLabel", native: "actionLabel", note: "mesmo papel, e obrigatório" },
       {
         web: "description",
         native: "description",
         note: "vira `string` obrigatória: o modal não abre sem dizer o que se perde",
-      },
-      {
-        web: "tone",
-        native: null,
-        note: "o botão é sempre destrutivo, e o painel não cancela ao tocar fora",
       },
       {
         web: "side",

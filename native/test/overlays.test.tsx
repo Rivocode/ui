@@ -81,7 +81,7 @@ describe("AlertDialog", () => {
     expect(byRole(screen, "header")[0].props.children).toBe("Cancelar a nota?");
   });
 
-  test("confirmar fecha e só então age; cancelar só fecha", () => {
+  test("confirmar age e fecha, na ordem do web; cancelar só fecha", () => {
     const calls: string[] = [];
     const screen = render(
       <AlertDialog
@@ -94,7 +94,7 @@ describe("AlertDialog", () => {
     const buttons = byRole(screen, "button");
     const destructive = buttons.find((node) => /bg-danger/.test(node.props.className ?? ""));
     act(() => destructive!.props.onPress());
-    expect(calls).toEqual(["open:false", "action"]);
+    expect(calls).toEqual(["action", "open:false"]);
 
     calls.length = 0;
     const ghost = byRole(screen, "button").find(

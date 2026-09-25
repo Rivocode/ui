@@ -186,7 +186,7 @@
         "name": "actionLabel",
         "type": "string",
         "required": true,
-        "note": "O rotulo do botao que confirma a acao destrutiva."
+        "note": "O verbo do botao que confirma: \"Cancelar nota\", \"Arquivar\"."
       },
       {
         "name": "description",
@@ -195,8 +195,9 @@
       },
       {
         "name": "onAction",
-        "type": "() => void",
-        "required": true
+        "type": "() => void | Promise<unknown>",
+        "required": true,
+        "note": "A acao."
       },
       {
         "name": "onOpenChange",
@@ -214,9 +215,27 @@
         "required": true
       },
       {
+        "name": "busyLabel",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela ouve quando a espera comeca."
+      },
+      {
         "name": "cancelLabel",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "loading",
+        "type": "boolean",
+        "required": false,
+        "note": "Estado de espera vindo de fora, para quem ja tem a chamada em uma store."
+      },
+      {
+        "name": "tone",
+        "type": "\"danger\" | \"neutral\"",
+        "required": false,
+        "note": "`danger` pinta o botao de vermelho; `neutral` serve para o que se desfaz, como arquivar."
       }
     ]
   },

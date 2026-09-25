@@ -26,4 +26,4 @@ exatamente o hábito que ele existe para impedir.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `AlertDialog` - `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `AlertDialog` - `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

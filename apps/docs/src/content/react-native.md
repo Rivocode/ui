@@ -166,7 +166,7 @@ recusa o que conseguiu medir.
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
-| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; não fecha no toque fora, como no web |
+| `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
 | `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
