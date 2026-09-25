@@ -172,7 +172,7 @@ falha se divergir.
 | `check:classes`         | 369 arquivos, toda classe gera regra, sem lista de excecao                                                   |
 | `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
 | `check:cli`             | 4 arquivos de mesa fora dos 205 arquivos que a biblioteca alcanca no `dist/`                                 |
-| `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 98% do limite   |
+| `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 97% do limite   |
 | `check:skill`           | 128 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
 | `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
 | `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
@@ -182,8 +182,9 @@ falha se divergir.
 | `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
 | `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
 
-O `check:tamanho` esta perto do teto em todas as entradas (a `styles.css` em
-98%): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
+O `check:tamanho` esta perto do teto em todas as entradas (o `/ai` em 97%; a
+`styles.css` desceu de 98% para 92% em 25/09, sem espaco em branco e sem as
+catorze regras que o scanner gerava de palavra que nao era classe): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
 motivo no `why` de `scripts/orcamento-de-tamanho.ts`.
 
 ### Fora do gate: `a11y`, `shot`, `visual` e a bancada
