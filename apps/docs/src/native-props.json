@@ -4671,7 +4671,7 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste a folha de baixo, nao a mascara."
+        "note": "Veste a folha, nao a mascara."
       },
       {
         "name": "labels",
@@ -4690,6 +4690,12 @@
         "type": "((step: number) => void)",
         "required": false,
         "note": "Chamado no \"Pular tour\" e no voltar do Android, com o passo da desistencia."
+      },
+      {
+        "name": "topInset",
+        "type": "number",
+        "required": false,
+        "note": "A altura da area segura de cima, em pontos: `useSafeAreaInsets().top`."
       }
     ]
   },

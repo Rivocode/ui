@@ -70,6 +70,8 @@ export const Platform = {
     spec.ios ?? spec.native ?? spec.default,
 };
 
+export const StatusBar = { currentHeight: undefined as number | undefined };
+
 /* O I18nManager de verdade le a locale do aparelho UMA vez, na carga do
    modulo: o `isRTL` e uma copia de uma constante nativa, e o `forceRTL` fala com
    o lado nativo sem mexer nesse booleano - a troca so vale depois de recarregar

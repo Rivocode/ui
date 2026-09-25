@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import { AccessibilityInfo, Modal, View } from "react-native";
+import {
+  AccessibilityInfo,
+  Modal,
+  Platform,
+  StatusBar,
+  View,
+  type LayoutChangeEvent,
+} from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
@@ -49,19 +56,30 @@ export type TourProps = {
   onSkip?: (step: number) => void;
   /** Os textos dos botoes e do contador, para trocar o idioma ou o termo. */
   labels?: Partial<TourLabels>;
-  /** Veste a folha de baixo, nao a mascara. */
+  /**
+   * A altura da area segura de cima, em pontos: `useSafeAreaInsets().top`. So
+   * pesa quando o alvo esta na metade de baixo e a folha sobe para o topo. Sem
+   * ela, a barra de status do Android, e 48 no iOS.
+   */
+  topInset?: number;
+  /** Veste a folha, nao a mascara. */
   className?: string;
 };
 
 type Box = { x: number; y: number; width: number; height: number };
 
-function measure(target: RefObject<View | null> | undefined, done: (box: Box) => void) {
-  const node = target?.current as
-    | { measureInWindow?: (callback: (...values: number[]) => void) => void }
-    | null
-    | undefined;
-  node?.measureInWindow?.((x = 0, y = 0, width = 0, height = 0) => done({ x, y, width, height }));
+type Measurable = { measureInWindow?: (callback: (...values: number[]) => void) => void };
+
+function measurable(node: unknown): node is Required<Measurable> {
+  return typeof (node as Measurable | null | undefined)?.measureInWindow === "function";
 }
+
+function measure(node: unknown, done: (box: Box | null) => void) {
+  if (!measurable(node)) return done(null);
+  node.measureInWindow((x = 0, y = 0, width = 0, height = 0) => done({ x, y, width, height }));
+}
+
+const DEFAULT_TOP_INSET = Platform.OS === "android" ? (StatusBar.currentHeight ?? 24) : 48;
 
 export function Tour({
   steps,
@@ -72,11 +90,14 @@ export function Tour({
   onFinish,
   onSkip,
   labels,
+  topInset = DEFAULT_TOP_INSET,
   className,
 }: TourProps) {
   const text = { ...TOUR_LABELS, ...labels };
   const reduced = useReducedMotion();
   const [box, setBox] = useState<Box | null>(null);
+  const [root, setRoot] = useState<Box | null>(null);
+  const rootRef = useRef<View>(null);
   const directionRef = useRef<TourDirection>(1);
   const shownRef = useRef<number | null>(null);
   const warnedRef = useRef(new Set<number>());
@@ -102,8 +123,19 @@ export function Tour({
   };
 
   const remeasure = useCallback(() => {
-    measure(active?.target, (next) => setBox(next));
+    measure(rootRef.current, (next) => {
+      if (next) setRoot(next);
+    });
+    measure(active?.target.current, (next) => {
+      if (next) setBox(next);
+    });
   }, [active]);
+
+  const layRoot = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    setRoot((current) => ({ x: current?.x ?? 0, y: current?.y ?? 0, width: 0, height }));
+    remeasure();
+  };
 
   useEffect(() => {
     if (!open) {
@@ -119,7 +151,7 @@ export function Tour({
       total,
       directionRef.current,
       shownRef.current !== null,
-      (index) => Boolean(steps[index]?.target.current),
+      (index) => measurable(steps[index]?.target.current),
       (index) => {
         if (warnedRef.current.has(index) || !__DEV__) return;
         warnedRef.current.add(index);
@@ -152,12 +184,18 @@ export function Tour({
 
   const visible = open && box !== null && active !== undefined;
 
+  const offsetX = root?.x ?? 0;
+  const offsetY = root?.y ?? 0;
   const hole = box && {
-    top: box.y - TOUR_SPOTLIGHT_PADDING,
-    left: box.x - TOUR_SPOTLIGHT_PADDING,
+    top: box.y - offsetY - TOUR_SPOTLIGHT_PADDING,
+    left: box.x - offsetX - TOUR_SPOTLIGHT_PADDING,
     width: box.width + TOUR_SPOTLIGHT_PADDING * 2,
     height: box.height + TOUR_SPOTLIGHT_PADDING * 2,
   };
+  const rootHeight = root?.height ?? 0;
+  const onTop =
+    box !== null && rootHeight > 0 && box.y - offsetY + box.height / 2 > rootHeight / 2;
+  const grabber = <View className="h-1 w-10 self-center rounded-pill bg-border-strong" />;
 
   return (
     <Modal
@@ -167,7 +205,7 @@ export function Tour({
       animationType={reduced ? "none" : "fade"}
       onRequestClose={skip}
     >
-      <View accessibilityViewIsModal className="flex-1" onLayout={remeasure}>
+      <View ref={rootRef} accessibilityViewIsModal className="flex-1" onLayout={layRoot}>
         {hole && (
           <>
             <View
@@ -190,12 +228,14 @@ export function Tour({
           </>
         )}
         <View
+          style={onTop ? { paddingTop: topInset + 12 } : undefined}
           className={cn(
-            "absolute inset-x-0 bottom-0 rounded-t-xl border-t border-border bg-surface px-5 pt-3 pb-8",
+            "absolute inset-x-0 border-border bg-surface px-5",
+            onTop ? "top-0 rounded-b-xl border-b pb-3" : "bottom-0 rounded-t-xl border-t pt-3 pb-8",
             className,
           )}
         >
-          <View className="mb-4 h-1 w-10 self-center rounded-pill bg-border-strong" />
+          {onTop ? null : <View className="mb-4">{grabber}</View>}
           <Text className="text-xs font-rc-medium text-fg-muted">
             {text.counter(current + 1, total)}
           </Text>
@@ -223,6 +263,7 @@ export function Tour({
               {isLast ? text.finish : text.next}
             </Button>
           </View>
+          {onTop ? <View className="mt-4">{grabber}</View> : null}
         </View>
       </View>
     </Modal>

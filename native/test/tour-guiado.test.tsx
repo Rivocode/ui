@@ -2,9 +2,9 @@ import { afterEach, expect, mock, spyOn, test } from "bun:test";
 import { AccessibilityInfo } from "react-native";
 import type { View } from "react-native";
 import { useState, type RefObject } from "react";
-import type { ReactTestRenderer } from "react-test-renderer";
+import { create, type ReactTestRenderer } from "react-test-renderer";
 
-import { Tour, type TourProps, type TourStep } from "../src";
+import { RivoProvider, Tour, type TourProps, type TourStep } from "../src";
 import { act, byRole, byType, render, textOf } from "./helpers";
 
 type Measured = { x: number; y: number; width: number; height: number };
@@ -196,4 +196,75 @@ test("labels troca os textos", () => {
   );
   expect(hasButton(screen, "Next")).toBe(true);
   expect(textOf(screen)).toContain("1/3");
+});
+
+function bands(screen: ReactTestRenderer) {
+  return byType(screen, "View")
+    .filter((node) => String(node.props.className ?? "").split(" ").includes("bg-overlay"))
+    .map((node) => node.props.style);
+}
+
+test("o recorte desconta onde a raiz do Modal comeca na janela, e nao cai pela barra de status", () => {
+  let screen!: ReactTestRenderer;
+  act(() => {
+    screen = create(
+      <RivoProvider>
+        <Harness />
+      </RivoProvider>,
+      {
+        createNodeMock: (element) =>
+          element.props?.accessibilityViewIsModal
+            ? {
+                measureInWindow: (done: (...values: number[]) => void) => done(0, -24, 400, 844),
+              }
+            : null,
+      },
+    );
+  });
+  const root = byType(screen, "View").find((node) => node.props.accessibilityViewIsModal)!;
+  act(() => root.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: 400, height: 844 } } }));
+  const [top] = bands(screen);
+  expect(top).toEqual({ height: 118 });
+  act(() => screen.unmount());
+});
+
+test("ref sem measureInWindow pula o passo com aviso, e nao deixa o tour mudo e invisivel", () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+  const onOpenChange = mock((_: boolean) => {});
+  const list = steps();
+  list[0] = { ...list[0]!, target: { current: {} as unknown as View } };
+  const screen = render(<Harness list={list} onOpenChange={onOpenChange} />);
+
+  expect(textOf(screen)).toContain("Passo 2 de 3");
+  expect(warn).toHaveBeenCalledTimes(1);
+  expect(String(warn.mock.calls[0]?.[0])).toContain("passo 1");
+  warn.mockRestore();
+});
+
+function sheet(screen: ReactTestRenderer) {
+  return byType(screen, "View").find((node) =>
+    String(node.props.className ?? "").split(" ").includes("bg-surface"),
+  )!;
+}
+
+test("com o alvo na metade de baixo, a folha sobe para cima e nao cobre a barra de abas", () => {
+  const TAB = { x: 0, y: 780, width: 390, height: 56 };
+  const list: TourStep[] = [{ target: target(TAB), title: "As abas" }];
+  const screen = render(<Harness list={list} />);
+  const root = byType(screen, "View").find((node) => node.props.accessibilityViewIsModal)!;
+  act(() => root.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: 390, height: 844 } } }));
+
+  const classes = String(sheet(screen).props.className).split(" ");
+  expect(classes).toContain("top-0");
+  expect(classes).not.toContain("bottom-0");
+});
+
+test("com o alvo na metade de cima, a folha continua embaixo", () => {
+  const screen = render(<Harness />);
+  const root = byType(screen, "View").find((node) => node.props.accessibilityViewIsModal)!;
+  act(() => root.props.onLayout({ nativeEvent: { layout: { x: 0, y: 0, width: 390, height: 844 } } }));
+
+  const classes = String(sheet(screen).props.className).split(" ");
+  expect(classes).toContain("bottom-0");
+  expect(classes).not.toContain("top-0");
 });

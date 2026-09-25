@@ -651,14 +651,17 @@ const PARITY: Record<string, Row> = {
   },
   Tour: {
     state: "traduz",
-    note: "sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha de baixo, o passo é controlado e não há `interactive`",
+    note: "sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha, que sobe para o topo quando o alvo está embaixo, o passo é controlado e não há `interactive`",
     page:
       "Traduz sobre o `Modal` do core, sem peer novo: o alvo vem por ref e é medido por " +
       "`measureInWindow` quando o passo abre, e quatro faixas com o `overlay` do tema cercam o " +
-      "recorte. O balão é sempre a folha de baixo, que é o que o web já faz abaixo de 640px, com " +
-      "o mesmo contador, os mesmos botões e os mesmos textos, que moram num arquivo só, " +
-      "compartilhado pelos dois pacotes. Ref vazio pula o passo, com o mesmo aviso em " +
-      "desenvolvimento.\n\n" +
+      "recorte. O recorte desconta onde a raiz do `Modal` começa na janela, e por isso não cai " +
+      "pela altura da barra de status no Android. O balão é sempre uma folha, que é o que o web " +
+      "já faz abaixo de 640px, com o mesmo contador, os mesmos botões e os mesmos textos, que " +
+      "moram num arquivo só, compartilhado pelos dois pacotes. A folha fica embaixo, e sobe para " +
+      "o topo quando o alvo está na metade de baixo da tela, para não cobrir a barra de abas; lá " +
+      "ela respeita `topInset`, a área segura de cima. Ref vazio, ou que não é uma `View` com " +
+      "`measureInWindow`, pula o passo, com o mesmo aviso em desenvolvimento.\n\n" +
       "Três diferenças, e as três são do toque. O passo é controlado (`step` e `onStepChange` " +
       "obrigatórios), como todo o pacote nativo. Não há `interactive`: o `Modal` é outra janela, " +
       "e o toque não atravessa para a tela de trás. E não há rolagem sozinha, porque o React " +

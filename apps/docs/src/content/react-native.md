@@ -156,7 +156,7 @@ recusa o que conseguiu medir.
 
 ## A paridade, peça por peça
 
-**134 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-24:** 103 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 26 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**134 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-25:** 103 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 26 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -288,7 +288,7 @@ recusa o que conseguiu medir.
 | `ToolCall` | ✔ traduz | vive em `@rivocode/ui-native/ai`; os mesmos cinco estados com marca e texto, a entrada e a saída em fonte mono, e aprovar e recusar fora do painel |
 | `Toolbar` | ✕ não porta | superfície de edição de mesa: uma parada de tabulação e navegação por seta, que o toque não tem |
 | `Tooltip` | ✕ não porta | hover não existe no toque; o rótulo precisa estar na tela |
-| `Tour` | ✔ traduz | sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha de baixo, o passo é controlado e não há `interactive` |
+| `Tour` | ✔ traduz | sobre `Modal` e `measureInWindow`, com o alvo por ref; o balão é sempre folha, que sobe para o topo quando o alvo está embaixo, o passo é controlado e não há `interactive` |
 | `Tracker` | ✔ traduz | a faixa inteira é um alvo só: o dedo arrasta e o período lido aparece na linha de baixo; `label` de cada ponto é `string` |
 | `TransferList` | ✔ traduz | as duas listas empilham, cada uma com os próprios botões de mover; os mesmos `items`, `value` e `labels` |
 | `Tree` | ✔ traduz | um nível por vez, empilhado: tocar num galho empurra o nível de dentro e o cabeçalho mostra o caminho e volta; sem recuo, sem busca |
