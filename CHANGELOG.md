@@ -1,5 +1,11 @@
 # Mudancas
 
+## 0.18.1
+
+- `PromptInput`: o contador diz "1 caractere" e "Limite de 1 caractere
+  atingido." no singular; antes saia "1 caracteres". As frases de contagem e
+  de limite passam a morar num lugar so, compartilhado com o nativo.
+
 ## 0.18.0
 
 Treze pecas novas, quatro graficos sem Recharts e o peso da letra como token:

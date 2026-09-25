@@ -1,5 +1,24 @@
 # Mudancas
 
+## 0.14.0
+
+### PromptInput
+
+- `labels` com `hint`, `count` e `limit`, e o tipo `PromptInputLabels`
+  exportado de `@rivocode/ui-native/ai`, com os mesmos nomes do web.
+- A dica e a contagem por extenso chegam ao leitor de tela pelo campo, e o
+  numero visivel sai da arvore de acessibilidade. Ao bater no `maxLength`, o
+  limite e anunciado uma vez por chegada ao teto.
+- A dica padrao chama a tecla pelo nome que o teclado mostra: "A tecla de
+  retorno quebra a linha. Para enviar, use o botão de enviar."
+- O contador diz "1 caractere" no singular, como no web.
+
+### Rating
+
+- Le a direcao do aparelho: em direita para esquerda a estrela cheia fica do
+  lado de inicio, e a meia estrela e medida a partir dele. Da esquerda para a
+  direita nada muda.
+
 ## 0.13.0
 
 ### Pecas novas
