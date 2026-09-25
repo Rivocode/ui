@@ -148,7 +148,7 @@ const PARITY: Record<string, Row> = {
   },
   Alert: {
     state: "traduz",
-    note: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`",
+    note: "`title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom",
   },
   AlertDialog: {
     state: "traduz",

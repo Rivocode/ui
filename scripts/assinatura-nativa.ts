@@ -100,12 +100,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "title",
         note: "o título vira prop; no web ele é `AlertTitle` por filho",
       },
-      { web: "icon", native: null, note: "o ícone é o do tom, e não se troca" },
-      {
-        web: "onDismiss",
-        native: null,
-        note: "não há fechar: aviso que some no toque some sem ninguém ver, e `dismissLabel` sai junto",
-      },
     ],
   },
   ActionBar: {

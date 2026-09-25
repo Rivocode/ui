@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**201 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**199 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -91,8 +91,6 @@ escritos em lugar nenhum.
 | `ActionBar` | `finalFocus` | — | no toque não há foco de teclado para devolver quando a barra sai |
 | `ActionBar` | `classNames` | — | um `className` só, no painel da barra |
 | `Alert` | — | `title` | o título vira prop; no web ele é `AlertTitle` por filho |
-| `Alert` | `icon` | — | o ícone é o do tom, e não se troca |
-| `Alert` | `onDismiss` | — | não há fechar: aviso que some no toque some sem ninguém ver, e `dismissLabel` sai junto |
 | `AlertDialog` | — | `title` | `title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription` |
 | `AlertDialog` | — | `actionLabel` | o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé |
 | `AlertDialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e não fecha no toque fora |
@@ -402,7 +400,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; o padrão é vários abertos (`multiple={false}` dá o um só do web), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
-| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
+| `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom |
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |

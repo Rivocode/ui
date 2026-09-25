@@ -82,4 +82,4 @@ E erro de campo não é nenhum dos dois: pertence ao campo que errou, via
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Alert` - `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription`; `icon`, `onDismiss` e `dismissLabel` como no web, e o ícone também entra por função, na cor do tom. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

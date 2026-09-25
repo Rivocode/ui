@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { ActivityIndicator, Image, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, View } from "react-native";
 
 import { cn } from "./cn";
 import { Entrance, Fill } from "./motion";
@@ -150,31 +150,85 @@ export function Avatar({ fallback, src, alt, size = "md", className }: AvatarPro
   );
 }
 
-const INFO_TONE = { box: "border-info bg-info-subtle", text: "text-info-text" };
+const INFO_TONE = { box: "border-info bg-info-subtle", text: "text-info-text", cross: "bg-info-text" };
 
 const ALERT_TONE = {
   info: INFO_TONE,
-  success: { box: "border-success bg-success-subtle", text: "text-success-text" },
-  warning: { box: "border-warning bg-warning-subtle", text: "text-warning-text" },
-  danger: { box: "border-danger bg-danger-subtle", text: "text-danger-text" },
-} satisfies Record<string, { box: string; text: string }>;
+  success: {
+    box: "border-success bg-success-subtle",
+    text: "text-success-text",
+    cross: "bg-success-text",
+  },
+  warning: {
+    box: "border-warning bg-warning-subtle",
+    text: "text-warning-text",
+    cross: "bg-warning-text",
+  },
+  danger: { box: "border-danger bg-danger-subtle", text: "text-danger-text", cross: "bg-danger-text" },
+} satisfies Record<string, { box: string; text: string; cross: string }>;
+
+const HIDDEN = {
+  accessibilityElementsHidden: true,
+  importantForAccessibility: "no-hide-descendants",
+} as const;
 
 export type AlertProps = {
   tone?: keyof typeof ALERT_TONE;
   title: string;
   children?: ReactNode;
+  /**
+   * O simbolo a esquerda do texto, escondido do leitor de tela. O pacote nao
+   * traz icone: a forma que pinta na cor do tom e a funcao -
+   * `icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`.
+   */
+  icon?: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
+  /** Liga o xis que fecha o aviso, no canto direito. Quem some com o aviso e quem chamou. */
+  onDismiss?: () => void;
+  /** O nome acessivel do xis. Sem ele, "Fechar aviso". */
+  dismissLabel?: string;
   className?: string;
 };
 
-export function Alert({ tone = "info", title, children, className }: AlertProps) {
-  const styles = ALERT_TONE[tone] ?? INFO_TONE;
+export function Alert({
+  tone = "info",
+  title,
+  children,
+  icon,
+  onDismiss,
+  dismissLabel = "Fechar aviso",
+  className,
+}: AlertProps) {
+  const { colors } = useRivo();
+  const known = Object.prototype.hasOwnProperty.call(ALERT_TONE, tone) ? tone : "info";
+  const styles = ALERT_TONE[known];
+  const glyph =
+    typeof icon === "function" ? icon({ color: colors[`${known}-text`], size: 16 }) : icon;
   return (
     <Entrance
       accessibilityRole="alert"
-      className={cn("gap-1 rounded-md border p-4", styles.box, className)}
+      className={cn("flex-row items-start gap-3 rounded-md border p-4", styles.box, className)}
     >
-      <Text className={`text-sm font-rc-medium ${styles.text}`}>{title}</Text>
-      {children && <Text className="text-sm text-fg-muted">{children}</Text>}
+      {glyph ? (
+        <View {...HIDDEN} className="mt-0.5">
+          {glyph}
+        </View>
+      ) : null}
+      <View className="flex-1 gap-1">
+        <Text className={`text-sm font-rc-medium ${styles.text}`}>{title}</Text>
+        {children && <Text className="text-sm text-fg-muted">{children}</Text>}
+      </View>
+      {onDismiss ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={dismissLabel}
+          onPress={onDismiss}
+          hitSlop={10}
+          className="-my-1 -mr-1 size-6 items-center justify-center"
+        >
+          <View className={cn("absolute h-[1.5px] w-3.5 rotate-45 rounded-pill", styles.cross)} />
+          <View className={cn("absolute h-[1.5px] w-3.5 -rotate-45 rounded-pill", styles.cross)} />
+        </Pressable>
+      ) : null}
     </Entrance>
   );
 }

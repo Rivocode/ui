@@ -173,6 +173,24 @@
         "required": false
       },
       {
+        "name": "dismissLabel",
+        "type": "string",
+        "required": false,
+        "note": "O nome acessivel do xis."
+      },
+      {
+        "name": "icon",
+        "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
+        "required": false,
+        "note": "O simbolo a esquerda do texto, escondido do leitor de tela."
+      },
+      {
+        "name": "onDismiss",
+        "type": "(() => void)",
+        "required": false,
+        "note": "Liga o xis que fecha o aviso, no canto direito."
+      },
+      {
         "name": "tone",
         "type": "\"danger\" | \"info\" | \"success\" | \"warning\"",
         "required": false
