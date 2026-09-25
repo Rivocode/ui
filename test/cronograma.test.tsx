@@ -463,6 +463,64 @@ test("a barra veste o tom e o progresso, e a linha de hoje aparece no periodo", 
   expect(container.querySelectorAll("[data-rc-today]").length).toBe(2);
 });
 
+test("a linha de hoje passa por baixo dos rotulos: vem antes no DOM e o rotulo e opaco", () => {
+  const { container } = gantt();
+
+  const header = container.querySelector<HTMLElement>(`[role="columnheader"][aria-colindex="5"]`)!;
+  const today = header.querySelector<HTMLElement>("[data-rc-today]")!;
+  const label = [...header.querySelectorAll<HTMLElement>("[data-rc-label]")].find(
+    (element) => element.textContent === "Q 15",
+  )!;
+  expect(label).toBeDefined();
+  expect(today.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(label.className.split(" ")).toContain("bg-surface");
+
+  const caption = cell(container, "t:servidor", 4).querySelector<HTMLElement>("[data-rc-caption]")!;
+  expect(caption.textContent).toBe("Instalar servidor · 40%");
+  expect(caption.className.split(" ")).toContain("bg-surface");
+});
+
+test("o rotulo da barra que tem sucessora abre espaco para a seta que sai dela", () => {
+  const { container } = gantt();
+  const offset = (id: string) => {
+    const timeline = cell(container, `t:${id}`, 4);
+    const bar = timeline.querySelector<HTMLElement>("[data-rc-bar]");
+    const caption = timeline.querySelector<HTMLElement>("[data-rc-caption]")!.parentElement!;
+    const end = bar
+      ? parseFloat(bar.style.insetInlineStart) + parseFloat(bar.style.width)
+      : parseFloat(timeline.querySelector<HTMLElement>("[data-rc-milestone]")!.style.insetInlineStart) + 14;
+    return parseFloat(caption.style.insetInlineStart) - end;
+  };
+
+  expect(offset("servidor")).toBeGreaterThanOrEqual(16);
+  expect(offset("compra")).toBeGreaterThanOrEqual(16);
+  expect(offset("virada")).toBeLessThan(16);
+});
+
+test("o mes que comeca antes da area visivel encolhe o rotulo ao pedaco que sobrou", () => {
+  const { container } = gantt({ defaultScale: "week" });
+  const viewport = container.querySelector<HTMLElement>('[role="treegrid"]')!;
+  const labels = () =>
+    [...container.querySelectorAll<HTMLElement>("[data-rc-month]")].map((element) => ({
+      text: element.textContent,
+      width: parseFloat(element.style.maxWidth),
+    }));
+
+  const scrollTo = (value: number) =>
+    act(() => {
+      viewport.scrollLeft = value;
+      fireEvent.scroll(viewport);
+    });
+  const september = () => labels().find((label) => label.text === "setembro de 2026")!.width;
+
+  scrollTo(0);
+  expect(september()).toBe(164);
+  scrollTo(100);
+  expect(september()).toBe(64);
+  scrollTo(400);
+  expect(september()).toBe(0);
+});
+
 test("quinhentas tarefas entram, e so um punhado de linhas vai para o DOM", () => {
   const many: GanttTask[] = Array.from({ length: 500 }, (_, index) => ({
     id: String(index),

@@ -77,6 +77,14 @@ O período desenhado sai das tarefas, com folga de uma unidade de cada lado;
 `range` o fixa. A linha vermelha é hoje (`today`, ou o relógio do aparelho), e
 a moldura abre rolada até ela. O botão "Hoje" da barra volta para lá.
 
+**A linha de hoje passa por baixo do texto.** O rótulo do dia no cabeçalho e o
+rótulo de cada barra têm fundo, então a linha, a grade e as setas somem atrás
+das letras em vez de riscá-las. A barra que tem sucessora afasta o rótulo mais
+8px, para a seta que sai do fim dela descer no vão e não no começo do nome. E
+o rótulo do mês ou do ano, quando a coluna começa antes da área visível, fica
+preso junto à tabela e encurta com reticências até o que sobrou da coluna,
+em vez de sumir pela metade atrás dela.
+
 ## Editar: controlado, e nunca sozinho
 
 A edição só existe com `onTaskChange`. Sem ele a grade é só leitura, e se diz

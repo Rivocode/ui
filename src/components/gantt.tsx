@@ -15,6 +15,7 @@ import {
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type RefObject,
 } from "react";
 
 import { cn } from "../lib/cn";
@@ -37,6 +38,7 @@ import {
   totalDays,
   type GanttRange,
   type GanttRow,
+  type HeaderCell,
   type GanttScale,
 } from "../lib/gantt-layout";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
@@ -211,6 +213,57 @@ const TITLE_DEFAULT = 200;
 const PHONE_TABLE = 160;
 const TIMELINE_MIN = 160;
 const HANDLE_STEP = 16;
+const ARROW_CLEARANCE = 8;
+
+function TopTier({
+  cells,
+  ppd,
+  tableWidth,
+  rtl,
+  viewport,
+}: {
+  cells: HeaderCell[];
+  ppd: number;
+  tableWidth: number;
+  rtl: boolean;
+  viewport: RefObject<HTMLDivElement | null>;
+}) {
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const element = viewport.current;
+    if (!element) return;
+    const read = () => setOffset(Math.round(Math.abs(element.scrollLeft)));
+    read();
+    element.addEventListener("scroll", read, { passive: true });
+    return () => element.removeEventListener("scroll", read);
+  }, [viewport, rtl]);
+
+  return (
+    <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2">
+      {cells.map((cell) => {
+        const from = cell.from * ppd;
+        const to = from + cell.days * ppd;
+        const room = to - Math.max(from, offset) - 16;
+        return (
+          <span
+            key={cell.key}
+            style={{ insetInlineStart: from, width: cell.days * ppd }}
+            className="absolute inset-y-0 flex items-center border-s border-border text-xs font-rc-medium text-fg-muted"
+          >
+            <span
+              data-rc-month=""
+              style={{ insetInlineStart: tableWidth + 8, maxWidth: Math.max(room, 0) }}
+              className="sticky ms-2 block truncate"
+            >
+              {cell.label}
+            </span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function clampProgress(value: number | undefined): number | undefined {
   if (value === undefined || Number.isNaN(value)) return undefined;
@@ -352,6 +405,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   );
 
   const byId = useMemo(() => new Map(list.map((task) => [task.id, task])), [list]);
+  const leading = useMemo(() => new Set(list.flatMap((task) => task.dependsOn ?? [])), [list]);
 
   const allColumns = useMemo(() => resolveColumns(columnsProp, list), [columnsProp, list]);
   const columns = isMobile ? allColumns.slice(0, 1) : allColumns;
@@ -723,6 +777,12 @@ export function Gantt<Task extends GanttTask = GanttTask>({
     const barHeight = Math.round(rowHeight * 0.55);
     const top = Math.round((rowHeight - barHeight) / 2);
     const caption = progress !== undefined && !milestone ? `${task.title} · ${progress}%` : task.title;
+    const clearance = leading.has(task.id) ? ARROW_CLEARANCE : 0;
+    const label = (
+      <span data-rc-caption="" className="rounded-sm bg-surface px-1">
+        {caption}
+      </span>
+    );
 
     if (milestone) {
       const size = 14;
@@ -751,10 +811,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
           />
           <span
             aria-hidden="true"
-            style={{ insetInlineStart: x0 + size, height: rowHeight }}
+            style={{ insetInlineStart: x0 + size + clearance, height: rowHeight }}
             className="pointer-events-none absolute top-0 flex items-center whitespace-nowrap text-xs text-fg-muted"
           >
-            {caption}
+            {label}
           </span>
         </>
       );
@@ -809,10 +869,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
         </div>
         <span
           aria-hidden="true"
-          style={{ insetInlineStart: Math.max(x1, x0 + 4) + 8, height: rowHeight }}
+          style={{ insetInlineStart: Math.max(x1, x0 + 4) + 8 + clearance, height: rowHeight }}
           className="pointer-events-none absolute top-0 flex items-center whitespace-nowrap text-xs text-fg-muted"
         >
-          {caption}
+          {label}
         </span>
       </>
     );
@@ -966,22 +1026,15 @@ export function Gantt<Task extends GanttTask = GanttTask>({
           <span className="sr-only">
             {`${label}, de ${spokenDay(origin, true)} a ${spokenDay(lastDay(range), true)}`}
           </span>
-          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/2">
-            {topTier.map((cell) => (
-              <span
-                key={cell.key}
-                style={{ insetInlineStart: cell.from * ppd, width: cell.days * ppd }}
-                className="absolute inset-y-0 flex items-center border-s border-border text-xs font-rc-medium text-fg-muted"
-              >
-                <span
-                  style={{ insetInlineStart: tableWidth + 8, maxWidth: Math.max(cell.days * ppd - 16, 0) }}
-                  className="sticky ms-2 block truncate"
-                >
-                  {cell.label}
-                </span>
-              </span>
-            ))}
-          </div>
+          {todayVisible && (
+            <span
+              aria-hidden="true"
+              data-rc-today=""
+              style={{ insetInlineStart: todayX - 1 }}
+              className="absolute bottom-0 h-1/2 w-0.5 bg-danger"
+            />
+          )}
+          <TopTier cells={topTier} ppd={ppd} tableWidth={tableWidth} rtl={rtl} viewport={viewport} />
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 border-t border-border">
             {bottomTier.map((cell) => (
               <span
@@ -993,18 +1046,15 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                   cell.weekend ? "bg-bg text-fg-subtle" : "text-fg-muted",
                 )}
               >
-                {cell.label}
+                <span
+                  data-rc-label=""
+                  className={cn("rounded-sm px-0.5", cell.weekend ? "bg-bg" : "bg-surface")}
+                >
+                  {cell.label}
+                </span>
               </span>
             ))}
           </div>
-          {todayVisible && (
-            <span
-              aria-hidden="true"
-              data-rc-today=""
-              style={{ insetInlineStart: todayX - 1 }}
-              className="absolute bottom-0 h-1/2 w-0.5 bg-danger"
-            />
-          )}
         </div>
       </div>
     </div>
