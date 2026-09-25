@@ -71,11 +71,13 @@ export type AlertDialogProps = {
   /** O verbo do botao que confirma: "Cancelar nota", "Arquivar". */
   actionLabel: string;
   /**
-   * A acao. Devolvendo promessa, o modal fica aberto e o botao entra em
-   * espera ate ela terminar - e um toque so vira uma chamada so. Promessa que
-   * rejeita devolve o modal ao estado anterior, com o texto ainda na tela.
+   * A acao, que pode devolver promessa para o modal esperar por ela. Com
+   * promessa, o modal fica aberto e o botao entra em espera ate ela terminar -
+   * e um toque so vira uma chamada so. Promessa que rejeita devolve o modal ao
+   * estado anterior, com o texto ainda na tela. Outro retorno qualquer e
+   * ignorado e o modal fecha na hora.
    */
-  onAction: () => void | Promise<unknown>;
+  onAction: () => unknown;
   cancelLabel?: string;
   /**
    * `danger` pinta o botao de vermelho; `neutral` serve para o que se desfaz,
@@ -93,6 +95,14 @@ export type AlertDialogProps = {
    */
   busyLabel?: string;
 };
+
+function isThenable(value: unknown): value is PromiseLike<unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as { then?: unknown }).then === "function"
+  );
+}
 
 const BLOCKED_MESSAGE = "Não dá para cancelar enquanto a ação está em andamento.";
 
@@ -129,7 +139,7 @@ export function AlertDialog({
     if (busy || running.current) return;
 
     const result = onAction();
-    if (!result || typeof result.then !== "function") {
+    if (!isThenable(result)) {
       onOpenChange(false);
       return;
     }

@@ -213,9 +213,9 @@
       },
       {
         "name": "onAction",
-        "type": "() => void | Promise<unknown>",
+        "type": "() => unknown",
         "required": true,
-        "note": "A acao."
+        "note": "A acao, que pode devolver promessa para o modal esperar por ela."
       },
       {
         "name": "onOpenChange",

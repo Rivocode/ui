@@ -56,6 +56,17 @@ describe("AlertDialog: tom", () => {
 });
 
 describe("AlertDialog: ação que devolve promessa", () => {
+  test("ação que devolve outro valor fecha na hora, como antes da promessa", () => {
+    const onAction = mock(() => 42);
+    const { onOpenChange, action } = mount({ onAction });
+
+    act(() => action().props.onPress());
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+    expect(action().props.accessibilityState.busy).toBe(false);
+  });
+
   test("segura o modal aberto, trava o botão e anuncia a espera até resolver", async () => {
     const running = deferred();
     const onAction = mock(() => running.promise);
