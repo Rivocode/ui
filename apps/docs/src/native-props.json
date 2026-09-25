@@ -330,6 +330,12 @@
         "note": "O que dizer quando nenhuma sugestao casa com o texto."
       },
       {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Forca a borda de erro do campo fechado, ou a apaga com `false`, por cima do erro do `Field`."
+      },
+      {
         "name": "placeholder",
         "type": "string",
         "required": false
@@ -1507,6 +1513,12 @@
         "note": "O que dizer quando a busca nao acha nada - com o porque, como sempre."
       },
       {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
+      },
+      {
         "name": "multiple",
         "type": "boolean",
         "required": false
@@ -1800,6 +1812,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "max",
@@ -4126,6 +4144,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "invalid",
+        "type": "boolean",
+        "required": false,
+        "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
         "name": "multiple",

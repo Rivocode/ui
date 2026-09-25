@@ -1,10 +1,9 @@
-import { useState } from "react";
 import { Pressable, ScrollView, SectionList, View } from "react-native";
 
 import { useAnnounce } from "./announce";
 import { Button } from "./button";
 import { cn } from "./cn";
-import { Input } from "./field";
+import { Input, useFieldSheet, WithoutField } from "./field";
 import { flattenItems, fold, isGrouped } from "./picker";
 import { PickerGroupLabel } from "./select";
 import { Sheet } from "./sheet";
@@ -32,6 +31,8 @@ export type AutocompleteProps = {
   /** O que dizer quando nenhuma sugestao casa com o texto. O texto continua valendo. */
   emptyMessage?: string;
   disabled?: boolean;
+  /** Forca a borda de erro do campo fechado, ou a apaga com `false`, por cima do erro do `Field`. */
+  invalid?: boolean;
   /** Veste o campo fechado; a folha de sugestoes e da plataforma. */
   className?: string;
 };
@@ -53,25 +54,33 @@ export function Autocomplete({
   placeholder,
   emptyMessage = "Nenhuma sugestão. O texto digitado vale assim mesmo.",
   disabled,
+  invalid,
   className,
 }: AutocompleteProps) {
-  const [open, setOpen] = useState(false);
+  const sheet = useFieldSheet(value);
+  const { open } = sheet;
+  const flagged = invalid ?? Boolean(sheet.error);
 
   const query = fold(value.trim());
   const matches = (item: string) => !query || fold(item).includes(query);
   const groups = isGrouped<string>(items)
     ? items
-        .map((group) => ({ title: group.label, data: group.items.filter(matches) }))
+        .map((group) => ({
+          title: group.label,
+          data: group.items.filter(matches),
+        }))
         .filter((group) => group.data.length > 0)
     : null;
-  const visible = groups ? groups.flatMap((group) => group.data) : flattenItems(items).filter(matches);
+  const visible = groups
+    ? groups.flatMap((group) => group.data)
+    : flattenItems(items).filter(matches);
 
   const said = open ? spokenCount(visible.length) : null;
   useAnnounce(said, { liveRegion: true });
 
   const choose = (item: string) => {
     onValueChange(item);
-    setOpen(false);
+    sheet.close();
   };
 
   const suggestion = (item: string) => {
@@ -100,57 +109,71 @@ export function Autocomplete({
         accessibilityLabel={label}
         accessibilityValue={{ text: value || placeholder }}
         accessibilityState={{ expanded: open, disabled: Boolean(disabled) }}
-        accessibilityHint="Abre o campo com sugestões."
+        accessibilityHint={sheet.error ?? "Abre o campo com sugestões."}
         disabled={disabled}
-        onPress={() => setOpen(true)}
+        onPress={sheet.show}
         className={cn(
-          "h-12 flex-row items-center rounded-md border border-border-strong bg-surface px-3.5",
+          "h-12 flex-row items-center rounded-md border bg-surface px-3.5",
+          flagged ? "border-danger" : "border-border-strong",
           disabled && "opacity-50",
           className,
         )}
       >
-        <Text numberOfLines={1} className={cn("flex-1 text-base", value ? "text-fg" : "text-fg-subtle")}>
+        <Text
+          numberOfLines={1}
+          className={cn("flex-1 text-base", value ? "text-fg" : "text-fg-subtle")}
+        >
           {value || placeholder || " "}
         </Text>
       </Pressable>
 
-      <Sheet open={open} onOpenChange={setOpen} title={label}>
-        <View className="shrink gap-3">
-          <Input
-            accessibilityLabel={label}
-            value={value}
-            onValueChange={onValueChange}
-            placeholder={placeholder}
-            autoFocus
-            autoCorrect={false}
-            returnKeyType="done"
-            onSubmitEditing={() => setOpen(false)}
-          />
-          <Text accessibilityLiveRegion="polite" accessibilityLabel={said ?? undefined} className="h-0">
-            {""}
-          </Text>
-          {visible.length === 0 ? (
-            <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
-          ) : groups ? (
-            <SectionList
-              className="max-h-72 shrink"
-              keyboardShouldPersistTaps="handled"
-              sections={groups}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => suggestion(item)}
-              renderSectionHeader={({ section }) => <PickerGroupLabel>{section.title}</PickerGroupLabel>}
-              ItemSeparatorComponent={SuggestionGap}
-              stickySectionHeadersEnabled={false}
+      <Sheet open={open} onOpenChange={sheet.onOpenChange} title={label}>
+        <WithoutField>
+          <View className="shrink gap-3">
+            <Input
+              accessibilityLabel={label}
+              accessibilityHint={sheet.error}
+              invalid={flagged}
+              value={value}
+              onValueChange={onValueChange}
+              placeholder={placeholder}
+              autoFocus
+              autoCorrect={false}
+              returnKeyType="done"
+              onSubmitEditing={() => sheet.close("submit")}
             />
-          ) : (
-            <ScrollView className="max-h-72 shrink" keyboardShouldPersistTaps="handled">
-              <View className="gap-1">{visible.map(suggestion)}</View>
-            </ScrollView>
-          )}
-          <Button variant="secondary" onPress={() => setOpen(false)}>
-            Concluir
-          </Button>
-        </View>
+            <Text
+              accessibilityLiveRegion="polite"
+              accessibilityLabel={said ?? undefined}
+              className="h-0"
+            >
+              {""}
+            </Text>
+            {visible.length === 0 ? (
+              <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
+            ) : groups ? (
+              <SectionList
+                className="max-h-72 shrink"
+                keyboardShouldPersistTaps="handled"
+                sections={groups}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => suggestion(item)}
+                renderSectionHeader={({ section }) => (
+                  <PickerGroupLabel>{section.title}</PickerGroupLabel>
+                )}
+                ItemSeparatorComponent={SuggestionGap}
+                stickySectionHeadersEnabled={false}
+              />
+            ) : (
+              <ScrollView className="max-h-72 shrink" keyboardShouldPersistTaps="handled">
+                <View className="gap-1">{visible.map(suggestion)}</View>
+              </ScrollView>
+            )}
+            <Button variant="secondary" onPress={() => sheet.close("submit")}>
+              Concluir
+            </Button>
+          </View>
+        </WithoutField>
       </Sheet>
     </>
   );

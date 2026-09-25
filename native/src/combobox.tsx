@@ -3,6 +3,7 @@ import { Pressable, ScrollView, SectionList, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { useFieldSheet } from "./field";
 import { flattenItems, fold, isGrouped, summarize, toggleValue } from "./picker";
 import { SearchInput } from "./search-input";
 import { PickerGroupLabel, pickerSections } from "./select";
@@ -30,6 +31,8 @@ type ComboboxBaseProps = {
   /** O que dizer quando a busca nao acha nada - com o porque, como sempre. */
   emptyMessage?: string;
   disabled?: boolean;
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
+  invalid?: boolean;
   /** Veste o gatilho; a folha de busca e da plataforma. */
   className?: string;
 };
@@ -52,10 +55,12 @@ export function Combobox(props: ComboboxProps) {
     searchPlaceholder = "Buscar",
     emptyMessage = "Nada com esse nome. Confira a grafia ou tente outro termo.",
     disabled,
+    invalid,
     className,
   } = props;
 
-  const [open, setOpen] = useState(false);
+  const sheet = useFieldSheet(props.value);
+  const flagged = invalid ?? Boolean(sheet.error);
   const [query, setQuery] = useState("");
 
   const chosen = props.multiple ? props.value : props.value === null ? [] : [props.value];
@@ -69,9 +74,13 @@ export function Combobox(props: ComboboxProps) {
     : null;
   const visible = groups ? groups.flatMap((group) => group.items) : flat.filter(matches);
 
-  const close = (next: boolean) => {
-    setOpen(next);
-    if (!next) setQuery("");
+  const close = (next: boolean, exit?: "blur" | "submit") => {
+    if (next) {
+      sheet.show();
+      return;
+    }
+    sheet.close(exit);
+    setQuery("");
   };
 
   const choose = (value: string) => {
@@ -105,10 +114,12 @@ export function Combobox(props: ComboboxProps) {
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityValue={{ text: summary ?? placeholder }}
+        accessibilityHint={sheet.error}
         disabled={disabled}
-        onPress={() => setOpen(true)}
+        onPress={sheet.show}
         className={cn(
-          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          "h-12 flex-row items-center justify-between rounded-md border bg-surface px-3.5",
+          flagged ? "border-danger" : "border-border-strong",
           disabled && "opacity-50",
           className,
         )}
@@ -119,7 +130,7 @@ export function Combobox(props: ComboboxProps) {
         <Text className="text-fg-subtle">▾</Text>
       </Pressable>
 
-      <Sheet open={open} onOpenChange={close} title={label}>
+      <Sheet open={sheet.open} onOpenChange={(next) => close(next)} title={label}>
         <View className="shrink gap-3">
           <SearchInput
             value={query}
@@ -149,7 +160,7 @@ export function Combobox(props: ComboboxProps) {
           )}
 
           {props.multiple && (
-            <Button variant="secondary" onPress={() => close(false)}>
+            <Button variant="secondary" onPress={() => close(false, "submit")}>
               Concluir
             </Button>
           )}

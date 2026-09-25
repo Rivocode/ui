@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn, type Slots } from "./cn";
+import { useFieldSheet } from "./field";
 import { Presence } from "./motion";
 import { dateFromIso, formatIsoDate, isoFromDate, toIsoDate } from "./shared/date";
 import { Sheet } from "./sheet";
@@ -260,6 +261,8 @@ export type DatePickerProps = {
   min?: string;
   max?: string;
   disabled?: boolean;
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
+  invalid?: boolean;
   /** Veste o gatilho; o calendario na folha e o mesmo para todos. */
   className?: string;
 };
@@ -272,9 +275,11 @@ export function DatePicker({
   min,
   max,
   disabled,
+  invalid,
   className,
 }: DatePickerProps) {
-  const [open, setOpen] = useState(false);
+  const sheet = useFieldSheet(value);
+  const flagged = invalid ?? Boolean(sheet.error);
 
   return (
     <>
@@ -282,10 +287,12 @@ export function DatePicker({
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityValue={{ text: value ? formatDate(value) : placeholder }}
+        accessibilityHint={sheet.error}
         disabled={disabled}
-        onPress={() => setOpen(true)}
+        onPress={sheet.show}
         className={cn(
-          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          "h-12 flex-row items-center justify-between rounded-md border bg-surface px-3.5",
+          flagged ? "border-danger" : "border-border-strong",
           disabled && "opacity-50",
           className,
         )}
@@ -296,14 +303,14 @@ export function DatePicker({
         <Text className="text-fg-subtle">▾</Text>
       </Pressable>
 
-      <Sheet open={open} onOpenChange={setOpen} title={label}>
+      <Sheet open={sheet.open} onOpenChange={sheet.onOpenChange} title={label}>
         <Calendar
           value={value}
           min={min}
           max={max}
           onValueChange={(next) => {
             onValueChange(next);
-            setOpen(false);
+            sheet.close();
           }}
         />
       </Sheet>

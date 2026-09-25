@@ -192,6 +192,64 @@ export function useFieldControl(value: TextInputProps["value"]) {
   };
 }
 
+const sameValue = (a: unknown, b: unknown): boolean =>
+  Object.is(a, b) ||
+  (Array.isArray(a) &&
+    Array.isArray(b) &&
+    a.length === b.length &&
+    a.every((item, index) => Object.is(item, b[index])));
+
+type SheetExit = "blur" | "submit";
+
+export function useFieldSheet(value: unknown) {
+  const field = use(FieldControl);
+  const [open, setOpen] = useState(false);
+  const shown = useRef(false);
+  const pending = useRef<SheetExit | null>(null);
+  const reported = useRef(value);
+  const latest = useRef(value);
+  const report = useRef(field);
+  latest.current = value;
+  report.current = field;
+
+  useEffect(() => {
+    if (sameValue(value, reported.current)) return;
+    reported.current = value;
+    report.current?.change(value);
+  }, [value]);
+
+  useEffect(() => {
+    const exit = pending.current;
+    if (exit === null) return;
+    pending.current = null;
+    report.current?.[exit](latest.current);
+  });
+
+  const show = () => {
+    shown.current = true;
+    setOpen(true);
+  };
+
+  const close = (exit: SheetExit = "blur") => {
+    if (!shown.current) return;
+    shown.current = false;
+    pending.current = exit;
+    setOpen(false);
+  };
+
+  return {
+    open,
+    show,
+    close,
+    onOpenChange: (next: boolean) => (next ? show() : close()),
+    error: field?.error,
+  };
+}
+
+export function WithoutField({ children }: { children: ReactNode }) {
+  return <FieldControl value={null}>{children}</FieldControl>;
+}
+
 export type InputProps = TextInputProps & {
   invalid?: boolean;
   /** Recebe o texto a cada tecla, como o `onValueChange` do Input web. Convive com o `onChangeText`: os dois sao chamados. */

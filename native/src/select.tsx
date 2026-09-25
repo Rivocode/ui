@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { Pressable, SectionList, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
+import { useFieldSheet } from "./field";
 import { flattenItems, isGrouped, summarize, toggleValue, type PickerGroup } from "./picker";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
@@ -26,6 +26,8 @@ type SelectBaseProps = {
   placeholder?: string;
   label: string;
   disabled?: boolean;
+  /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
+  invalid?: boolean;
   /** Veste o gatilho; a folha de opcoes e da plataforma. */
   className?: string;
 };
@@ -56,8 +58,9 @@ export function pickerSections<Item>(groups: PickerGroup<Item>[]) {
 }
 
 export function Select(props: SelectProps) {
-  const { items, placeholder, label, disabled, className } = props;
-  const [open, setOpen] = useState(false);
+  const { items, placeholder, label, disabled, invalid, className } = props;
+  const sheet = useFieldSheet(props.value);
+  const flagged = invalid ?? Boolean(sheet.error);
 
   const flat = flattenItems<SelectItem>(items);
   const chosen = props.multiple ? props.value : props.value === null ? [] : [props.value];
@@ -69,7 +72,7 @@ export function Select(props: SelectProps) {
       return;
     }
     props.onValueChange(value);
-    setOpen(false);
+    sheet.close();
   };
 
   const option = (item: SelectItem) => {
@@ -98,10 +101,12 @@ export function Select(props: SelectProps) {
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityValue={{ text: summary ?? placeholder }}
+        accessibilityHint={sheet.error}
         disabled={disabled}
-        onPress={() => setOpen(true)}
+        onPress={sheet.show}
         className={cn(
-          "h-12 flex-row items-center justify-between rounded-md border border-border-strong bg-surface px-3.5",
+          "h-12 flex-row items-center justify-between rounded-md border bg-surface px-3.5",
+          flagged ? "border-danger" : "border-border-strong",
           disabled && "opacity-50",
           className,
         )}
@@ -112,7 +117,7 @@ export function Select(props: SelectProps) {
         <Text className="text-fg-subtle">▾</Text>
       </Pressable>
 
-      <Sheet open={open} onOpenChange={setOpen} title={label}>
+      <Sheet open={sheet.open} onOpenChange={sheet.onOpenChange} title={label}>
         <View className="shrink gap-1">
           {isGrouped<SelectItem>(items) ? (
             <SectionList
@@ -131,7 +136,7 @@ export function Select(props: SelectProps) {
           )}
 
           {props.multiple && (
-            <Button variant="secondary" className="mt-3" onPress={() => setOpen(false)}>
+            <Button variant="secondary" className="mt-3" onPress={() => sheet.close("submit")}>
               Concluir
             </Button>
           )}
