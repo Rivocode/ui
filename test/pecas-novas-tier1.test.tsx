@@ -32,6 +32,15 @@ test("copiar leva o valor e confirma no proprio botao", async () => {
   expect(screen.getByRole("button", { name: "Copiado" })).toBeDefined();
 });
 
+test("o tipo recusa aria-label no Clipboard, e o nome vem so de labels", () => {
+  withTheme(
+    // @ts-expect-error aria-label sai do tipo; o nome e labels.copy
+    <Clipboard value="4813" aria-label="Outro" labels={{ copy: "Copiar CNPJ" }} />,
+  );
+  expect(screen.getByRole("button", { name: "Copiar CNPJ" })).toBeDefined();
+  expect(screen.queryByRole("button", { name: "Outro" })).toBeNull();
+});
+
 test("o texto copiado volta ao normal sozinho", async () => {
   Object.defineProperty(navigator, "clipboard", {
     configurable: true,

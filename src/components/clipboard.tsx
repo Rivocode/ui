@@ -22,6 +22,10 @@ export type ClipboardProps = Omit<
   timeout?: number;
   /** O que o leitor de tela chama o botao antes e depois de copiar. */
   labels?: { copy?: string; copied?: string };
+  /** Recusado pelo tipo: o nome do botao vem de `labels.copy` e `labels.copied`. */
+  "aria-label"?: never;
+  /** Recusado pelo tipo, pelo mesmo motivo do `aria-label`. */
+  "aria-labelledby"?: never;
   /** Chamado depois de copiar, para quem quer disparar um aviso proprio. */
   onCopy?: (value: string) => void;
 };

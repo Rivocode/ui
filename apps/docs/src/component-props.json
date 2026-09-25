@@ -8922,6 +8922,18 @@
         "since": "0.5.0"
       },
       {
+        "name": "aria-label",
+        "type": "undefined",
+        "required": false,
+        "note": "Recusado pelo tipo: o nome do botao vem de `labels.copy` e `labels.copied`."
+      },
+      {
+        "name": "aria-labelledby",
+        "type": "undefined",
+        "required": false,
+        "note": "Recusado pelo tipo, pelo mesmo motivo do `aria-label`."
+      },
+      {
         "name": "labels",
         "type": "{ copy?: string | undefined; copied?: string | undefined; }",
         "required": false,
