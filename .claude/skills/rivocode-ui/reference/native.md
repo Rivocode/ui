@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**196 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -94,8 +94,9 @@ escritos em lugar nenhum.
 | `AlertDialog` | — | `title` | `title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription` |
 | `AlertDialog` | — | `actionLabel` | o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé |
 | `AlertDialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e não fecha no toque fora |
-| `Autocomplete` → `Combobox` | `value` | `value` | no web `value` é o texto digitado e ele pode não estar na lista; no nativo é o item escolhido (`string` ou `string[]`) |
-| `Autocomplete` → `Combobox` | `mode` | — | não há completar inline: a folha filtra e a pessoa toca |
+| `Autocomplete` | `value` | `value` | `value` e `onValueChange` são obrigatórios, e o valor é sempre o texto (`string`) |
+| `Autocomplete` | `mode` | — | não há completar inline: a folha filtra as sugestões e a pessoa toca ou segue digitando |
+| `Autocomplete` | — | `label` | o nome do campo vira prop obrigatória, e é o título da folha; no web é o `aria-label` do `AutocompleteInput` |
 | `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
 | `Banner` | `description` | `description` | `title` e `description` viram `string`: texto no nativo mora dentro de um `Text` |
 | `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
@@ -388,7 +389,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 
 ## A paridade, peça por peça
 
-**134 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-25:** 103 traduzem com o mesmo nome, 5 traduzem com outro, 0 estão na fila e 26 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
+**134 peças no catálogo do web, medidas contra `native/src/index.ts`, `native/src/form/index.ts`, `native/src/chart/index.ts`, `native/src/clipboard/index.ts`, `native/src/file-upload/index.ts`, `native/src/ai/index.ts` e `native/src/dnd/index.ts` em 2026-09-25:** 104 traduzem com o mesmo nome, 4 traduzem com outro, 0 estão na fila e 26 não portam por decisão. A coluna do meio separa as duas ausências, que é a distinção que a tabela existe para fazer: `○` muda com o tempo, `✕` não muda. E `✔` não quer dizer copiar e colar: a seção acima explica por quê.
 
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
@@ -400,7 +401,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `AlertDialog` | ✔ traduz | `actionLabel` e `onAction` em vez de composição; `tone` `danger` ou `neutral`, e `onAction` que devolve promessa segura o modal em espera até ela terminar; não fecha no toque fora, como no web |
 | `AppShell` | ✕ não porta | o esqueleto do app no celular é o router: tab bar, drawer e a barra de título da pilha |
 | `AspectRatio` | ✔ traduz | `ratio` numérico, igual |
-| `Autocomplete` | ✔ vira `Combobox` | e **não** aceita valor fora da lista: a folha escolhe, não digita |
+| `Autocomplete` | ✔ traduz | `value` é o texto e aceita o que não está na lista; `items` em texto na raiz, rasa ou em grupos `{ label, items }`, e o campo abre numa folha que sobe com o teclado |
 | `Avatar` | ✔ traduz | `src` remoto pela `Image` do core; `fallback` é obrigatório, porque é ele que aparece enquanto a foto baixa e se ela falhar |
 | `Badge` | ✔ traduz | os mesmos tons; o texto e filho; NAO tem `size`, porque no nativo so ha uma densidade |
 | `Banner` | ✔ traduz | `title` e `description` em texto; o ícone é opcional e entra por função, porque o pacote não traz ícone |

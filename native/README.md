@@ -44,7 +44,7 @@ O `react-native-keyboard-controller` também é peer obrigatório, e é ele que
 impede o teclado de cobrir o campo. Não há nada para montar: o `RivoProvider`
 já traz o `KeyboardProvider` dentro, e se o seu app já tinha um por fora, ele
 reaproveita o seu em vez de montar o segundo. Com ele, o `Sheet` (e o que abre
-nele: `Select`, `Combobox`, `Menu`, `DatePicker`, `TimePicker`, `TreeSelect`)
+nele: `Select`, `Combobox`, `Autocomplete`, `Menu`, `DatePicker`, `TimePicker`, `TreeSelect`)
 e o `Dialog` sobem com o teclado quadro a quadro, e a tela de formulário é o
 `ScrollArea`, que rola até o campo em foco e prende o botão de enviar num
 `footer` que sobe junto. Com o "reduzir movimento" ligado a folha e o rodapé

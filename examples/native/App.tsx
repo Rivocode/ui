@@ -36,6 +36,7 @@ import {
   AccordionItem,
   AspectRatio,
   Collapsible,
+  Autocomplete,
   Combobox,
   DatePicker,
   DescriptionItem,
@@ -176,6 +177,7 @@ function Painel({
   const [installments, setInstallments] = useState(1);
   const [query, setQuery] = useState("");
   const [customer, setCustomer] = useState<string | null>(null);
+  const [city, setCity] = useState("");
   const [statusFilter, setStatusFilter] = useState<string[]>(["paga"]);
   const [goal, setGoal] = useState(80);
   const [otp, setOtp] = useState("");
@@ -500,6 +502,13 @@ function Painel({
               onValueChange={setCustomer}
               placeholder="Todos os clientes"
               searchPlaceholder="Buscar cliente"
+            />
+            <Autocomplete
+              label="Cidade do tomador"
+              items={["João Pessoa", "Campina Grande", "Cabedelo", "Bayeux", "Patos"]}
+              value={city}
+              onValueChange={setCity}
+              placeholder="Cidade"
             />
             <ToggleGroup
               multiple

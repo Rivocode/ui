@@ -145,6 +145,11 @@ export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { TagsInput, type TagsInputProps } from "./tags-input";
 export { Fieldset, type FieldsetProps } from "./fieldset";
 export {
+  Autocomplete,
+  type AutocompleteItemGroup,
+  type AutocompleteProps,
+} from "./autocomplete";
+export {
   Combobox,
   type ComboboxItem,
   type ComboboxItemGroup,

@@ -914,15 +914,22 @@ const PARITY: Record<string, Row> = {
   },
 
   Autocomplete: {
-    state: "vira",
-    native: "Combobox",
-    note: "e **não** aceita valor fora da lista: a folha escolhe, não digita",
+    state: "traduz",
+    note: "`value` é o texto e aceita o que não está na lista; `items` em texto na raiz, rasa ou em grupos `{ label, items }`, e o campo abre numa folha que sobe com o teclado",
     page:
-      "No React Native quem cobre este caso é o `Combobox`, com uma perda que precisa " +
-      "entrar na sua decisão: ele **não aceita valor fora da lista**. O que o " +
-      "`Autocomplete` tem de próprio, que é deixar a pessoa escrever o que não está " +
-      "cadastrado, não existe lá. Se o campo precisa aceitar o inédito, no celular ele é um " +
-      "`Input` seu com sugestões, e não esta peça.",
+      "Traduz, e o que o `Autocomplete` tem de próprio veio junto: o `value` é o texto " +
+      "digitado, e o que não está na lista vale. No nativo ele é controlado (`value` e " +
+      "`onValueChange` obrigatórios) e as sugestões entram por `items` na raiz, em texto, " +
+      "rasas ou em grupos `{ label, items }` - no lugar do `AutocompleteInput` com o painel " +
+      "do `Combobox` por filho. O `label` é obrigatório: é o nome que o leitor de tela " +
+      "anuncia e o título da folha.\n\n" +
+      "O campo abre numa folha de baixo, com o texto no alto e as sugestões logo abaixo, e " +
+      "não numa lista presa ao campo. É o teclado que decide isso: aberto, ele cobre a " +
+      "metade de baixo da tela, e a lista de um campo no pé do formulário nasceria " +
+      "escondida. A folha sobe junto com ele, como a do `Combobox`. Cada tecla chega ao " +
+      "`onValueChange`, tocar numa sugestão preenche o texto e fecha, e **Concluir** fecha " +
+      "com o que foi digitado. A contagem de sugestões é anunciada a cada mudança, como a " +
+      "região viva do web. Não há completar inline: não existe `mode`.",
   },
   DataTable: {
     state: "vira",

@@ -1,0 +1,157 @@
+import { useState } from "react";
+import { Pressable, ScrollView, SectionList, View } from "react-native";
+
+import { useAnnounce } from "./announce";
+import { Button } from "./button";
+import { cn } from "./cn";
+import { Input } from "./field";
+import { flattenItems, fold, isGrouped } from "./picker";
+import { PickerGroupLabel } from "./select";
+import { Sheet } from "./sheet";
+import { Text } from "./text";
+
+export type AutocompleteItemGroup = {
+  /** O cabecalho da familia na folha, anunciado como cabecalho: "Paraiba". */
+  label: string;
+  items: string[];
+};
+
+export type AutocompleteProps = {
+  /**
+   * As sugestoes, em texto: lista rasa ou grupos `{ label, items }`. Sugestao
+   * nao e restricao - o texto digitado vale mesmo fora dela.
+   */
+  items: string[] | AutocompleteItemGroup[];
+  /** O texto do campo, digitado ou vindo de uma sugestao tocada. */
+  value: string;
+  /** Recebe o texto a cada tecla, e a sugestao inteira quando ela e tocada. */
+  onValueChange: (value: string) => void;
+  /** O nome do campo: rotulo do leitor de tela e titulo da folha. */
+  label: string;
+  placeholder?: string;
+  /** O que dizer quando nenhuma sugestao casa com o texto. O texto continua valendo. */
+  emptyMessage?: string;
+  disabled?: boolean;
+  /** Veste o campo fechado; a folha de sugestoes e da plataforma. */
+  className?: string;
+};
+
+function SuggestionGap() {
+  return <View className="h-1" />;
+}
+
+function spokenCount(count: number): string {
+  if (count === 0) return "Nenhuma sugestão.";
+  return count === 1 ? "1 sugestão." : `${count} sugestões.`;
+}
+
+export function Autocomplete({
+  items,
+  value,
+  onValueChange,
+  label,
+  placeholder,
+  emptyMessage = "Nenhuma sugestão. O texto digitado vale assim mesmo.",
+  disabled,
+  className,
+}: AutocompleteProps) {
+  const [open, setOpen] = useState(false);
+
+  const query = fold(value.trim());
+  const matches = (item: string) => !query || fold(item).includes(query);
+  const groups = isGrouped<string>(items)
+    ? items
+        .map((group) => ({ title: group.label, data: group.items.filter(matches) }))
+        .filter((group) => group.data.length > 0)
+    : null;
+  const visible = groups ? groups.flatMap((group) => group.data) : flattenItems(items).filter(matches);
+
+  const said = open ? spokenCount(visible.length) : null;
+  useAnnounce(said, { liveRegion: true });
+
+  const choose = (item: string) => {
+    onValueChange(item);
+    setOpen(false);
+  };
+
+  const suggestion = (item: string) => {
+    const active = query !== "" && fold(item) === query;
+    return (
+      <Pressable
+        key={item}
+        accessibilityRole="button"
+        accessibilityLabel={item}
+        accessibilityState={{ selected: active }}
+        onPress={() => choose(item)}
+        className={cn(
+          "min-h-11 justify-center rounded-md px-3 py-2.5",
+          active ? "bg-accent-subtle" : "active:bg-selected",
+        )}
+      >
+        <Text className={cn("text-base", active ? "text-accent-text" : "text-fg")}>{item}</Text>
+      </Pressable>
+    );
+  };
+
+  return (
+    <>
+      <Pressable
+        accessibilityRole="combobox"
+        accessibilityLabel={label}
+        accessibilityValue={{ text: value || placeholder }}
+        accessibilityState={{ expanded: open, disabled: Boolean(disabled) }}
+        accessibilityHint="Abre o campo com sugestões."
+        disabled={disabled}
+        onPress={() => setOpen(true)}
+        className={cn(
+          "h-12 flex-row items-center rounded-md border border-border-strong bg-surface px-3.5",
+          disabled && "opacity-50",
+          className,
+        )}
+      >
+        <Text numberOfLines={1} className={cn("flex-1 text-base", value ? "text-fg" : "text-fg-subtle")}>
+          {value || placeholder || " "}
+        </Text>
+      </Pressable>
+
+      <Sheet open={open} onOpenChange={setOpen} title={label}>
+        <View className="shrink gap-3">
+          <Input
+            accessibilityLabel={label}
+            value={value}
+            onValueChange={onValueChange}
+            placeholder={placeholder}
+            autoFocus
+            autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={() => setOpen(false)}
+          />
+          <Text accessibilityLiveRegion="polite" accessibilityLabel={said ?? undefined} className="h-0">
+            {""}
+          </Text>
+          {visible.length === 0 ? (
+            <Text className="px-3 py-6 text-center text-sm text-fg-muted">{emptyMessage}</Text>
+          ) : groups ? (
+            <SectionList
+              className="max-h-72 shrink"
+              keyboardShouldPersistTaps="handled"
+              sections={groups}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => suggestion(item)}
+              renderSectionHeader={({ section }) => <PickerGroupLabel>{section.title}</PickerGroupLabel>}
+              ItemSeparatorComponent={SuggestionGap}
+              stickySectionHeadersEnabled={false}
+            />
+          ) : (
+            <ScrollView className="max-h-72 shrink" keyboardShouldPersistTaps="handled">
+              <View className="gap-1">{visible.map(suggestion)}</View>
+            </ScrollView>
+          )}
+          <Button variant="secondary" onPress={() => setOpen(false)}>
+            Concluir
+          </Button>
+        </View>
+      </Sheet>
+    </>
+  );
+}

@@ -278,6 +278,57 @@
       }
     ]
   },
+  "Autocomplete": {
+    "entry": "native/src/index.ts",
+    "props": [
+      {
+        "name": "items",
+        "type": "string[] | AutocompleteItemGroup[]",
+        "required": true,
+        "note": "As sugestoes, em texto: lista rasa ou grupos `{ label, items }`."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": true,
+        "note": "O nome do campo: rotulo do leitor de tela e titulo da folha."
+      },
+      {
+        "name": "onValueChange",
+        "type": "(value: string) => void",
+        "required": true,
+        "note": "Recebe o texto a cada tecla, e a sugestao inteira quando ela e tocada."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O texto do campo, digitado ou vindo de uma sugestao tocada."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste o campo fechado; a folha de sugestoes e da plataforma."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false
+      },
+      {
+        "name": "emptyMessage",
+        "type": "string",
+        "required": false,
+        "note": "O que dizer quando nenhuma sugestao casa com o texto."
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false
+      }
+    ]
+  },
   "Avatar": {
     "entry": "native/src/index.ts",
     "props": [

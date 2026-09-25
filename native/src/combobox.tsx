@@ -3,7 +3,7 @@ import { Pressable, ScrollView, SectionList, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
-import { flattenItems, isGrouped, summarize, toggleValue } from "./picker";
+import { flattenItems, fold, isGrouped, summarize, toggleValue } from "./picker";
 import { SearchInput } from "./search-input";
 import { PickerGroupLabel, pickerSections } from "./select";
 import { Sheet } from "./sheet";
@@ -43,12 +43,6 @@ export type ComboboxProps = ComboboxBaseProps &
 function OptionGap() {
   return <View className="h-1" />;
 }
-
-const fold = (text: string) =>
-  text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase();
 
 export function Combobox(props: ComboboxProps) {
   const {

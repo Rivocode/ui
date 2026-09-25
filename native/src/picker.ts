@@ -24,3 +24,10 @@ export function summarize(chosen: string[], items: PickerItem[]): string | undef
   if (chosen.length === 1) return items.find((item) => item.value === chosen[0])?.label;
   return `${chosen.length} selecionados`;
 }
+
+export function fold(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}

@@ -147,17 +147,21 @@ export const SIGNATURES: Record<string, Signature> = {
     ],
   },
   Autocomplete: {
-    nativePiece: "Combobox",
     rows: [
       {
         web: "value",
         native: "value",
-        note: "no web `value` é o texto digitado e ele pode não estar na lista; no nativo é o item escolhido (`string` ou `string[]`)",
+        note: "`value` e `onValueChange` são obrigatórios, e o valor é sempre o texto (`string`)",
       },
       {
         web: "mode",
         native: null,
-        note: "não há completar inline: a folha filtra e a pessoa toca",
+        note: "não há completar inline: a folha filtra as sugestões e a pessoa toca ou segue digitando",
+      },
+      {
+        web: null,
+        native: "label",
+        note: "o nome do campo vira prop obrigatória, e é o título da folha; no web é o `aria-label` do `AutocompleteInput`",
       },
     ],
   },
