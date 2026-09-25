@@ -26,7 +26,7 @@ const markerVariants = cva(
   },
 );
 
-export type TimelineItemProps = ComponentProps<"li"> &
+export type TimelineItemProps = Omit<ComponentProps<"li">, "title"> &
   VariantProps<typeof markerVariants> & {
     /** O que aconteceu. */
     title: ReactNode;

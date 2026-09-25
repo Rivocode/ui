@@ -126,7 +126,7 @@ export function SidebarProvider({
   );
 }
 
-export type SidebarProps = ComponentProps<"aside"> & {
+export type SidebarProps = Omit<ComponentProps<"aside">, "title"> & {
   /** Titulo lido no celular, onde a barra vira folha. */
   title?: string;
   /** De que lado da pagina ela mora. */

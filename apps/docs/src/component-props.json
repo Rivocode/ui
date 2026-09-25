@@ -78,6 +78,13 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "note": "O que fica visivel com o item fechado.",
+        "since": "0.4.0"
+      },
+      {
         "name": "disabled",
         "type": "boolean",
         "required": false,
@@ -6422,6 +6429,13 @@
         "since": "0.4.0"
       },
       {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "`'monthShort'`, `'dayMonth'`, ou uma funcao propria.",
+        "since": "0.4.0"
+      },
+      {
         "name": "height",
         "type": "number | \"auto\"",
         "required": false,
@@ -7578,6 +7592,13 @@
         "type": "AxisDomain",
         "required": false,
         "note": "Specify the domain of axis when the axis is a number axis.",
+        "since": "0.4.0"
+      },
+      {
+        "name": "format",
+        "type": "Format",
+        "required": false,
+        "note": "`'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, ou uma funcao propria.",
         "since": "0.4.0"
       },
       {
@@ -8849,6 +8870,13 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "value",
+        "type": "string",
+        "required": true,
+        "note": "O que vai para a area de transferencia.",
+        "since": "0.5.0"
+      },
+      {
         "name": "labels",
         "type": "{ copy?: string | undefined; copied?: string | undefined; }",
         "required": false,
@@ -8934,6 +8962,13 @@
         "type": "boolean",
         "required": false,
         "note": "Numera as linhas a esquerda, para quem vai citar uma delas.",
+        "since": "0.5.0"
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "note": "Nome do arquivo ou da origem, no topo do bloco.",
         "since": "0.5.0"
       }
     ]
@@ -9864,6 +9899,12 @@
         "type": "number",
         "required": false,
         "note": "O menor valor aceito, em centavos."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Some no formulario nativo com os centavos, e nunca com o texto pontuado."
       },
       {
         "name": "onValueChange",
@@ -13177,7 +13218,7 @@
       },
       {
         "name": "defaultValue",
-        "type": "string | (readonly string[] & string)",
+        "type": "string",
         "required": false,
         "note": "O texto inicial, quando o componente controla o proprio estado.",
         "since": "0.4.0"
@@ -14546,13 +14587,6 @@
     "forwardsRoot": true,
     "props": [
       {
-        "name": "length",
-        "type": "number",
-        "required": true,
-        "note": "The number of OTP input slots.",
-        "since": "0.4.0"
-      },
-      {
         "name": "autoComplete",
         "type": "string",
         "required": false,
@@ -14592,6 +14626,13 @@
         "type": "\"decimal\" | \"email\" | \"none\" | \"numeric\" | \"search\" | \"tel\" | \"text\" | \"url\"",
         "required": false,
         "note": "The virtual keyboard hint applied to the slot inputs and hidden validation input.",
+        "since": "0.4.0"
+      },
+      {
+        "name": "length",
+        "type": "number",
+        "required": false,
+        "note": "Quantas casas o codigo tem.",
         "since": "0.4.0"
       },
       {
@@ -24391,6 +24432,13 @@
         "required": false,
         "note": "De que lado da pagina ela mora.",
         "since": "0.4.0"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "required": false,
+        "note": "Titulo lido no celular, onde a barra vira folha.",
+        "since": "0.4.0"
       }
     ]
   },
@@ -25583,6 +25631,13 @@
         "note": "O que o leitor de tela ouve nos botoes da peca."
       },
       {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "note": "Teto de fichas.",
+        "since": "0.5.0"
+      },
+      {
         "name": "onValueChange",
         "type": "((value: string[]) => void)",
         "required": false,
@@ -25705,6 +25760,12 @@
         "note": "Primeira hora da janela, em `\"HH:MM\"`."
       },
       {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Some no formulario nativo com a hora inteira, e nunca com o texto pela metade."
+      },
+      {
         "name": "onValueChange",
         "type": "((value: string) => void)",
         "required": false,
@@ -25743,6 +25804,13 @@
   "TimelineItem": {
     "forwardsRoot": true,
     "props": [
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": true,
+        "note": "O que aconteceu.",
+        "since": "0.5.0"
+      },
       {
         "name": "at",
         "type": "ReactNode",
@@ -25811,6 +25879,12 @@
         "type": "string",
         "required": false,
         "note": "Primeira hora da janela, em `\"HH:MM\"`."
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Some no formulario nativo com a hora inteira, e nunca com o texto pela metade."
       },
       {
         "name": "onValueChange",
@@ -26545,6 +26619,12 @@
         "name": "items",
         "type": "TreeNode[]",
         "required": true,
+        "since": "0.4.0"
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
         "since": "0.4.0"
       },
       {

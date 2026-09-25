@@ -8,7 +8,7 @@ import { inputVariants } from "./field";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { leavesOf, Tree, type TreeNode } from "./tree";
 
-export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "onChange"> & {
+export type TreeSelectProps = Omit<ComponentProps<"button">, "value" | "defaultValue" | "onChange"> & {
   items: TreeNode[];
   /** Ids das folhas escolhidas. */
   value?: string[];

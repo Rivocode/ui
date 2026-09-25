@@ -7,7 +7,7 @@ import { useClipboard } from "../hooks/clipboard";
 import { cn } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
 
-export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy"> & {
+export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy" | "value"> & {
   /** O que vai para a area de transferencia. */
   value: string;
   /** Texto ao lado do icone. Sem ele, o botao e so o icone. */

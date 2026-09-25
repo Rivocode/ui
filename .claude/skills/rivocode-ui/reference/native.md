@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**225 divergências de assinatura em 91 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**222 divergências de assinatura em 91 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -86,7 +86,6 @@ escritos em lugar nenhum.
 | `Accordion` | `value` | — | a raiz não guarda valor: cada `AccordionItem` abre sozinho, com `defaultOpen` |
 | `Accordion` | `multiple` | — | sem raiz controlada, vários abertos é o único modo |
 | `Accordion` | — | `children` | a raiz só empilha; quem tem prop é o item |
-| `AccordionItem` | — | `title` | o cabeçalho vira `title`, no lugar do `AccordionTrigger` por filho |
 | `AccordionItem` | `value` | — | não há valor de item: quem abre e fecha é o próprio item |
 | `ActionBar` | `position` | — | não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela |
 | `ActionBar` | — | `bottomInset` | a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context` |
@@ -210,7 +209,6 @@ escritos em lugar nenhum.
 | `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
 | `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
 | `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
-| `OTPField` | `length` | `length` | no nativo tem padrão (6) e é opcional |
 | `OTPField` | `mask` | — | sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType` |
 | `PageHeader` | `breadcrumb` | — | o caminho de volta é o botão de voltar do router |
 | `PageHeader` | — | `badge` | a pastilha ao lado do título vira prop |
@@ -282,7 +280,6 @@ escritos em lugar nenhum.
 | `Tabs` | — | `items` | `items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu |
 | `Tabs` | `value` | `value` | o valor é `string`, e não o genérico do web |
 | `TagsInput` | `labels` | `removeLabel` | uma função só, e não um objeto de rótulos |
-| `TagsInput` | — | `max` | o teto de fichas é prop, porque não há como cortar por CSS |
 | `Text` | `render` | — | o elemento é sempre `Text`; o bloco é uma `View` em volta |
 | `Text` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `Textarea` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText`, como o `Input` |

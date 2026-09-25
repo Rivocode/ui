@@ -11,7 +11,7 @@ import { inputVariants } from "./field";
 
 export type TagsInputProps = Omit<
   ComponentProps<"input">,
-  "value" | "defaultValue" | "onChange"
+  "value" | "defaultValue" | "onChange" | "max"
 > & {
   /** As fichas de agora, quando quem usa guarda a lista. */
   value?: string[];

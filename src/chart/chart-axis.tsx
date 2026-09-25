@@ -8,12 +8,12 @@ import { resolveFormat, type Format } from "./format";
 type BaseX = ComponentProps<typeof XAxis>;
 type BaseY = ComponentProps<typeof YAxis>;
 
-export type ChartXAxisProps = Omit<BaseX, "tickFormatter"> & {
+export type ChartXAxisProps = Omit<BaseX, "tickFormatter" | "format"> & {
   /** `'monthShort'`, `'dayMonth'`, ou uma funcao propria. */
   format?: Format;
 };
 
-export type ChartYAxisProps = Omit<BaseY, "tickFormatter"> & {
+export type ChartYAxisProps = Omit<BaseY, "tickFormatter" | "format"> & {
   /** `'currencyShort'`, `'compact'`, `'percent'`, `'integer'`, ou uma funcao propria. */
   format?: Format;
 };

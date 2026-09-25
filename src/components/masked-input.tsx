@@ -5,7 +5,7 @@ import { useState, type ComponentProps } from "react";
 import { applyMask, unmask, type Mask } from "../lib/mask";
 import { Input } from "./field";
 
-export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value"> & {
+export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value" | "defaultValue"> & {
   /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
   mask: Mask;
   /** O texto ja com mascara, quando quem usa controla o estado. */

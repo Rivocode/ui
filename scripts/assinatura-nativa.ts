@@ -161,11 +161,6 @@ export const SIGNATURES: Record<string, Signature> = {
   AccordionItem: {
     rows: [
       {
-        web: null,
-        native: "title",
-        note: "o cabeçalho vira `title`, no lugar do `AccordionTrigger` por filho",
-      },
-      {
         web: "value",
         native: null,
         note: "não há valor de item: quem abre e fecha é o próprio item",
@@ -926,7 +921,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   OTPField: {
     rows: [
-      { web: "length", native: "length", note: "no nativo tem padrão (6) e é opcional" },
       {
         web: "mask",
         native: null,
@@ -1212,11 +1206,6 @@ export const SIGNATURES: Record<string, Signature> = {
   TagsInput: {
     rows: [
       { web: "labels", native: "removeLabel", note: "uma função só, e não um objeto de rótulos" },
-      {
-        web: null,
-        native: "max",
-        note: "o teto de fichas é prop, porque não há como cortar por CSS",
-      },
     ],
   },
   Textarea: {

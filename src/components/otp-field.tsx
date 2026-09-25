@@ -5,7 +5,7 @@ import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
 
-export type OTPFieldProps = ComponentProps<typeof BaseOTPField.Root> & {
+export type OTPFieldProps = Omit<ComponentProps<typeof BaseOTPField.Root>, "length"> & {
   /** Quantas casas o codigo tem. */
   length?: number;
 };

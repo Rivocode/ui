@@ -38,6 +38,11 @@ const ENTRY_POINTS = [
  */
 const FORWARDED = new Set(["className", "style", "id", "children"]);
 
+const OWN_SOURCE = `${RAIZ}/src/`.toLowerCase();
+
+const isOwnSource = (path: string) =>
+  path.toLowerCase().startsWith(OWN_SOURCE) && !path.includes("/node_modules/");
+
 export type CatalogProp = {
   name: string;
   type: string;
@@ -99,6 +104,7 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
 
   const { checker, program } = projeto;
   const catalog: Record<string, CatalogPiece> = {};
+  const collisions: string[] = [];
 
   for (const entrada of ENTRY_POINTS) {
     const file = await program.getSourceFile(`${RAIZ}/${entrada}`);
@@ -127,11 +133,12 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
       let forwardsRoot = false;
 
       for (const prop of all) {
-        const declaredIn = prop.declarations[0]?.path ?? "";
-        // O que vem do React e o elemento raiz: 280 atributos de HTML que
-        // dizem o mesmo em toda peca. A presenca deles e a resposta do
-        // forwardsRoot, e nao linha de tabela.
-        const fromReact = declaredIn.includes("@types/react");
+        const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
+        const own = paths.some(isOwnSource);
+        if (own && paths.some((path) => !isOwnSource(path)) && !FORWARDED.has(prop.name)) {
+          collisions.push(`${name}.${prop.name}`);
+        }
+        const fromReact = !own && (paths[0] ?? "").includes("@types/react");
         if (fromReact || FORWARDED.has(prop.name)) {
           if (prop.name === "className") forwardsRoot = true;
           continue;
@@ -169,6 +176,14 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
   }
 
   await api.close();
+
+  if (collisions.length) {
+    console.error(
+      `${collisions.length} prop(s) propria(s) colidem com um atributo herdado de mesmo nome, e o tipo publicado vira a intersecao dos dois. Tire a chave da base com Omit:`,
+    );
+    for (const collision of collisions) console.error(`  ${collision}`);
+    process.exit(1);
+  }
 
   // Ordenado, para o arquivo nao trocar de linha a cada rodada e sujar o diff.
   return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));

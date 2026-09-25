@@ -18,7 +18,7 @@ export function Code({ className, ...props }: CodeProps) {
   );
 }
 
-export type CodeBlockProps = Omit<ComponentProps<"pre">, "children"> & {
+export type CodeBlockProps = Omit<ComponentProps<"pre">, "children" | "title"> & {
   children: string;
   /** Numera as linhas a esquerda, para quem vai citar uma delas. */
   lineNumbers?: boolean;

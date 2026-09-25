@@ -8,7 +8,7 @@ import { cn } from "../lib/cn";
 
 export const Accordion = BaseAccordion.Root;
 
-export type AccordionItemProps = Omit<ComponentProps<typeof BaseAccordion.Item>, "children"> & {
+export type AccordionItemProps = Omit<ComponentProps<typeof BaseAccordion.Item>, "children" | "title"> & {
   /** O que fica visivel com o item fechado. */
   title: ReactNode;
   children: ReactNode;

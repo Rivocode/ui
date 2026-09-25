@@ -50,7 +50,7 @@ function labelOf(node: HTMLInputElement): string | undefined {
 
 export type TimeFieldProps = Omit<
   ComponentProps<typeof Input>,
-  "value" | "defaultValue" | "onChange" | "onValueChange" | "size" | "min" | "max" | "step"
+  "value" | "defaultValue" | "onChange" | "onValueChange" | "size" | "min" | "max" | "step" | "name"
 > & {
   /** A hora escolhida, em 24h e sempre `"HH:MM"`. Campo vazio e `""`. */
   value?: string;

@@ -23,6 +23,7 @@ export type CurrencyInputProps = Omit<
   | "max"
   | "step"
   | "prefix"
+  | "name"
 > & {
   /** O valor em centavos inteiros: `123456` e R$ 1.234,56. Campo vazio e `null`. */
   value?: number | null;
