@@ -83,7 +83,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
       <div className="mt-10 flex flex-col items-start gap-10 sm:flex-row sm:flex-wrap sm:gap-x-12">
         <div>
           <p className="mb-3 text-sm text-fg-muted">Calendario, data unica</p>
-          <Calendar mode="single" selected={dueDate} month={new Date(2026, 2, 1)} />
+          <Calendar value={dueDate} month={new Date(2026, 2, 1)} />
         </div>
 
         <div>
