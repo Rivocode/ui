@@ -7,6 +7,6 @@
 @source './editor';
 @source './form';
 @source './provider';
-@source not inline("{blur,collapse,container,fill-accent-subtle,filter,grow,inline,invert,italic,outline,resize,ring,table,transform}");
+@source not inline("{blur,collapse,container,filter,grow,inline,invert,italic,outline,resize,ring,table,transform}");
 
 @import "./preset.css";
