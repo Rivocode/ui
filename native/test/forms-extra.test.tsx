@@ -213,6 +213,14 @@ describe("OTPField", () => {
     expect(onValueChange).toHaveBeenCalledWith("1234");
     expect(onValueComplete).toHaveBeenCalledWith("1234");
   });
+
+  test("o nome do campo concorda com o numero de casas", () => {
+    const many = render(<OTPField length={4} value="" onValueChange={() => {}} />);
+    expect(byLabel(many, "Código de 4 dígitos").length).toBe(1);
+
+    const one = render(<OTPField length={1} value="" onValueChange={() => {}} />);
+    expect(byLabel(one, "Código de 1 dígito").length).toBe(1);
+  });
 });
 
 describe("SearchInput", () => {

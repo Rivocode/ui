@@ -55,7 +55,7 @@ export function OTPField({
       })}
       <TextInput
         ref={input}
-        accessibilityLabel={`Código de ${length} dígitos`}
+        accessibilityLabel={`Código de ${length} ${length === 1 ? "dígito" : "dígitos"}`}
         value={value}
         onChangeText={handleChange}
         onFocus={() => setFocused(true)}

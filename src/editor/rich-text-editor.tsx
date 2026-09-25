@@ -52,6 +52,7 @@ import { ToolbarButton, ToolbarRoot, ToolbarSeparator } from "../components/tool
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
+import { PROMPT_INPUT_COUNT } from "../shared/ai";
 import { normalizeLinkInput, safeHref, type RichTextJson } from "../shared/rich-text";
 import { RICH_TEXT_CONTENT } from "./content";
 import { RichTextView } from "./rich-text-view";
@@ -110,8 +111,7 @@ const LABELS: RichTextEditorLabels = {
   linkApply: "Aplicar",
   linkRemove: "Remover link",
   linkInvalid: "Use um endereço http, https, mailto ou tel.",
-  count: (count, max) => `${count} de ${max} caracteres`,
-  limit: (max) => `Limite de ${max} caracteres atingido.`,
+  ...PROMPT_INPUT_COUNT,
 };
 
 type Labels = RichTextEditorLabels;

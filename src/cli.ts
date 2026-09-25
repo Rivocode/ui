@@ -456,7 +456,7 @@ function tokens(args: string[]) {
   }
 
   console.log(
-    `${count(result.count, "token", "tokens")} em ${Object.keys(result.files).length} arquivos, em ${out}: ` +
+    `${count(result.count, "token", "tokens")} em ${count(Object.keys(result.files).length, "arquivo", "arquivos")}, em ${out}: ` +
       `${result.themes.join(", ")}.`,
   );
 

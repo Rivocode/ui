@@ -307,6 +307,14 @@ describe("o limite de caracteres", () => {
     expect(screen.getByText("6/6").className.split(" ")).toContain("text-danger-text");
   });
 
+  test("teto de um caractere fala no singular, no contador e no aviso", async () => {
+    const { box } = await open({ defaultValue: "<p>N</p>", maxLength: 1 });
+
+    const hint = document.getElementById(box.getAttribute("aria-describedby")!.split(" ").at(-1)!);
+    expect(hint!.textContent).toBe("1 de 1 caractere");
+    expect(screen.getByRole("status").textContent).toBe("Limite de 1 caractere atingido.");
+  });
+
   test("conteudo salvo maior que o teto abre inteiro, e aceita apagar", async () => {
     const { box, seen } = await open({ defaultValue: "<p>Nota fiscal</p>", maxLength: 4 });
 
