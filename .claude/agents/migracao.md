@@ -69,7 +69,6 @@ que alguém faça o trabalho de achar os pontos de chamada. Esse alguém é voc�
 | `ChartFunnel` | `rateLabel`, `overallLabel="x"` | `labels={{ rate, overall: "x" }}` |
 | `ChartFunnel` | `overallLabel={false}` | `showOverall={false}` |
 | `ChartHeatmap` | `emptyLabel` | `labels={{ empty }}` |
-| `Gantt` | `labels.range: (from: string, to: string) => ...` | `labels.range: (from: Date, to: Date, locale: string) => ...`, a frase inteira; se o override só traduzia a palavra do meio, apague-o, o padrão já segue o `locale` |
 | `@rivocode/ui/form` | `forDatePicker`, `forSelect`, `forCheckbox` | `forDate`, `forValue`, `forChecked` |
 | `@rivocode/ui/form` | tipos `PropsDeDatePicker`, `PropsDeSelect`, `PropsDeCheckbox` | `DateProps`, `ValueProps`, `CheckedProps` |
 
@@ -108,7 +107,7 @@ vez de escrever um segundo `labels`.
 | `MaskedInput` | molde com `#` (`"#####-###"`) | `9` dígito, `A` letra, `*` letra ou dígito (`"99999-999"`); troque cada `#` por `9` |
 | `@rivocode/ui-native/form` | `forChecked` e `forDate` entregavam `accessibilityLabel` | entregam `label`; só importa em componente próprio que lia o `accessibilityLabel` do espalhado |
 
-## As duas reescritas que não são troca de nome
+## As reescritas que não são troca de nome
 
 **`DateRangePicker` com `Date`.** O estado passa a ser `DateRange | null`, e o
 `value` recebe `undefined` no vazio, porque `null` no `value` escolhe o formato
@@ -129,11 +128,19 @@ simplificar: `onValueChange` só entrega período fechado. Quem comparava com
 `undefined` para saber se está vazio passa a comparar com `null`. Com texto
 (`IsoDateRange`), nada muda.
 
-**`AlertDialog` nativo.** O `actionLabel` era obrigatório e `labels.confirm`
-não é: se a migração esquecer, o build passa e o botão diz "Confirmar". Por
-isso procure `actionLabel` com `Grep` mesmo depois do `tsc` verde. Se o projeto
-fazia alguma coisa ao cancelar dentro do `onOpenChange(false)`, o `onCancel`
-novo é o lugar mais preciso (botão de cancelar e voltar do Android).
+**`AlertDialog` nativo.** O `tsc` acusa o `actionLabel` que sobrou, mas ele
+era obrigatório e `labels.confirm` não é: apagar a prop para calar o erro
+compila, e o botão passa a dizer "Confirmar". Mova o texto para
+`labels.confirm` em cada ocorrência, e confira no fim que todo `AlertDialog`
+do projeto tem `labels.confirm`. Se o projeto fazia alguma coisa ao cancelar
+dentro do `onOpenChange(false)`, o `onCancel` novo é o lugar mais preciso
+(botão de cancelar e voltar do Android).
+
+**`MaskedInput` nativo com `#`.** O `mask` aceita qualquer texto, então o
+`tsc` não acusa o molde antigo. Procure com `Grep` todo `mask=` e todo molde
+guardado em constante, e troque cada `#` por `9`. Um `A` que no molde antigo
+era letra fixa passa a ser vaga de letra: se ele era literal, o molde precisa
+ser reescrito à mão.
 
 ## Comportamento: compila e muda a tela
 
@@ -149,6 +156,9 @@ onde aparece:
   rótulo visível é o do `FieldLabel`.
 - `PromptInput` nativo - cresce até 8 linhas, e não mais 6; passe `maxRows={6}`
   se o layout não comporta.
+- `AlertDialog` nativo sem `labels.confirm` - o botão diz "Confirmar".
+- `MaskedInput` nativo com `#` que tenha escapado da reescrita - o campo para
+  de pontuar e aceita dígitos sem limite.
 
 ## O que nunca fazer
 

@@ -153,17 +153,9 @@ português, sem prop nenhuma: `Pagination`, `Breadcrumb`, `NumberField`, `Tree`,
 `TreeSelect`, `SidebarTrigger`, `FileUpload`, `DatePicker`, `DateRangePicker`,
 `EventCalendar`, `Gantt`, `Kbd`, `Stat`, `AvatarGroup`, `OTPField`, `Steps` e
 outras. Isso não quebra nada: sem `labels`, a tela continua em português. O xis
-dos avisos se traduz no provider, com `toastLabels`.
-
-### Gantt
-
-| Peça | Antes | Na 1.0 |
-|---|---|---|
-| `Gantt` | `labels.range(from: string, to: string)`, que recebia o primeiro dia já cortado para o número | `labels.range(from: Date, to: Date, locale: string)`, que devolve a frase inteira |
-
-Sem `labels.range`, o português continua dizendo "12 a 18 de outubro", e os
-outros idiomas usam o `formatRange` do `Intl`: com `locale="en-US"` a frase é
-"October 12 – 18", e não mais "12 to October 18".
+dos avisos se traduz no provider, com `toastLabels`. O `EventCalendar` e o
+`Gantt` ganharam também `locale` para os nomes de mês e de dia, com `pt-BR` de
+padrão.
 
 ### Formulário: `@rivocode/ui/form`
 
@@ -223,9 +215,10 @@ O `AlertDialog` nativo passou a falar com os nomes do `Popconfirm` do web:
 />
 ```
 
-Como `actionLabel` era obrigatório e `labels.confirm` não é, esquecer de
-migrar não quebra o build nessa prop: o botão sai escrito "Confirmar". O
-`onAction` que sobrou, esse sim, o `tsc` acusa.
+O `tsc` acusa o `actionLabel` e o `onAction` que sobraram. O cuidado é na hora
+de calar o erro: `actionLabel` era obrigatório e `labels.confirm` não é, então
+apagar a prop em vez de mover o texto compila, e o botão sai escrito
+"Confirmar".
 
 ### Parte por `classNames`
 
@@ -289,6 +282,10 @@ Como no web, várias peças ganharam `labels` para o texto que estava cravado:
 |---|---|
 | molde com `#` para dígito, como `"#####-###"` | a sintaxe do web: `9` dígito, `A` letra, `*` letra ou dígito, como `"99999-999"` |
 
+Esta troca o `tsc` não pega: o `mask` aceita qualquer texto, porque o molde
+escrito à mão é texto. Procure `#` nos moldes do projeto e troque cada um por
+`9`. Um `A` que no molde antigo era letra fixa passa a ser vaga de letra.
+
 ## O que o tipo não pega
 
 Estas mudanças compilam sem erro e mudam a tela. Depois do `tsc` verde, abra
@@ -308,6 +305,9 @@ cada uma delas:
 - **`PromptInput` do nativo cresce até 8 linhas**, como o do web, e não mais 6.
 - **`AlertDialog` do nativo sem `labels.confirm`** escreve "Confirmar" no
   botão.
+- **`MaskedInput` do nativo com `#` no molde** compila e deixa de pontuar:
+  sem nenhuma vaga que ele reconheça, o campo aceita os dígitos crus, sem
+  hífen, sem ponto e sem limite de tamanho. Troque cada `#` por `9`.
 
 ## Daqui para a frente
 
