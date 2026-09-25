@@ -23,7 +23,11 @@ const WHEN = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'America/Sao_Paulo',
 })
 
-export default function ServerErrorPage() {
+export default function ServerErrorPage({
+  onRetry = () => window.location.reload(),
+}: {
+  onRetry?: () => void | Promise<void>
+}) {
   const [retrying, setRetrying] = useState(false)
 
   return (
@@ -48,9 +52,13 @@ export default function ServerErrorPage() {
         <div className="flex flex-col gap-2 sm:flex-row">
           <Button
             loading={retrying}
-            onClick={() => {
+            onClick={async () => {
               setRetrying(true)
-              window.location.reload()
+              const attempt = onRetry()
+              if (attempt) {
+                await attempt.catch(() => undefined)
+                setRetrying(false)
+              }
             }}
           >
             <RotateCw size={16} aria-hidden="true" />

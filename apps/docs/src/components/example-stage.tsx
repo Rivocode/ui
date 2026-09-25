@@ -211,6 +211,7 @@ export function ExampleStage({
           <div ref={preview} className="flex justify-center-safe overflow-x-auto bg-bg/40 p-4">
             {width ? (
               <ExampleFrame
+                title={`Exemplo ${title ?? titleOf(name)}, em ${width}px de largura`}
                 width={width}
                 fit={picked === null}
                 initialHeight={heldHeight.current}

@@ -130,12 +130,20 @@ function useBoxWidth() {
 const FRAME_DOCUMENT = '<!doctype html><html><head></head><body></body></html>'
 
 export function ExampleFrame({
+  title,
   width,
   fit = false,
   initialHeight,
   minHeight,
   children,
 }: {
+  /**
+   * O nome da moldura para quem navega por leitor de tela. Cada iframe e um
+   * documento, e o leitor anuncia o titulo dele ao entrar e o lista no rotor de
+   * quadros; com todos chamados "Exemplo em outra largura", a lista de /blocos
+   * era dez linhas iguais sem dizer qual bloco cada uma abria.
+   */
+  title: string
   width: number
   /**
    * Acompanha a coluna em vez de miniaturizar. Largura escolhida a mao e o
@@ -219,7 +227,7 @@ export function ExampleFrame({
         // janela e `h-full`, `min-h` e tabela se comportam diferente do site
         // de quem copia o exemplo.
         srcDoc={FRAME_DOCUMENT}
-        title="Exemplo em outra largura"
+        title={title}
         className={`shrink-0 rounded-md border border-border bg-bg transition-opacity duration-200 ${
           settled ? 'opacity-100' : 'opacity-0'
         }`}

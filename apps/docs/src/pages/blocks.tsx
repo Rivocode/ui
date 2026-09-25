@@ -1,6 +1,6 @@
 import { Badge, Button, Clipboard, Tab, TabList, TabPanel, Tabs, useMobile } from '@rivocode/ui'
 import { Code2, Eye, FileText, Monitor, Smartphone } from 'lucide-react'
-import { useState, type ComponentType } from 'react'
+import { useEffect, useRef, useState, type ComponentType } from 'react'
 import { BLOCK_LIST, type BlockEntry } from '@/block-list'
 import { ExampleFrame } from '@/components/example-frame'
 import { linkTo, type Route } from '@/routes'
@@ -23,8 +23,82 @@ import { slugify } from '@/slug'
 
 const MODULES = import.meta.glob('../blocks/*.tsx', { eager: true, import: 'default' }) as Record<
   string,
-  ComponentType
+  ComponentType<Record<string, unknown>>
 >
+
+/**
+ * O que o preview troca num bloco para ele nao agir sobre o site.
+ *
+ * O bloco roda por portal dentro da moldura, mas o `window` do codigo dele e o
+ * da pagina de /blocos: o "Tentar de novo" do 500 chamava
+ * `window.location.reload()` e recarregava a documentacao inteira, levando a
+ * pessoa de volta ao topo. O arquivo que se copia continua recarregando, que e
+ * o certo numa pagina de erro de verdade; aqui a nova tentativa e simulada e
+ * volta ao mesmo erro, como faria com o servidor ainda fora.
+ */
+const PREVIEW_PROPS: Record<string, Record<string, unknown>> = {
+  'server-error': {
+    onRetry: () => new Promise<void>((resolve) => setTimeout(resolve, 1200)),
+  },
+}
+
+/**
+ * Segura o `#` de quem chegou por link direto ate as molduras pararem de crescer.
+ *
+ * O prerender entrega cada moldura com a altura de partida, e ela so assume a
+ * altura do bloco depois de medir, no navegador. O salto do navegador acontece
+ * antes: quem abria /blocos#sem-permissao caia no meio de outro bloco, porque os
+ * nove de cima ainda iam crescer centenas de pixels cada um. O observador
+ * realinha a cada crescimento e desliga no primeiro gesto da pessoa - quem
+ * comecou a rolar escolheu outro lugar, e puxar de volta le como defeito - ou
+ * quando a lista fica quieta.
+ */
+function useHeldAnchor() {
+  const list = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const node = list.current
+    if (!node) return
+
+    let holding = Boolean(window.location.hash)
+    let quiet: ReturnType<typeof setTimeout> | undefined
+
+    const align = () => {
+      if (!holding || !window.location.hash) return
+      const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
+      // `instant`: a folha poe rolagem suave em tudo, e conserto de posicao
+      // animado parece a pagina discutindo com a pessoa.
+      target?.scrollIntoView({ behavior: 'instant', block: 'start' })
+    }
+
+    const release = () => {
+      holding = false
+      clearTimeout(quiet)
+    }
+
+    const observer = new ResizeObserver(() => {
+      if (!holding) return
+      align()
+      clearTimeout(quiet)
+      quiet = setTimeout(() => {
+        align()
+        holding = false
+      }, 1500)
+    })
+    observer.observe(node)
+
+    const gestures = ['wheel', 'touchstart', 'keydown', 'pointerdown'] as const
+    for (const gesture of gestures) window.addEventListener(gesture, release, { passive: true })
+
+    return () => {
+      observer.disconnect()
+      clearTimeout(quiet)
+      for (const gesture of gestures) window.removeEventListener(gesture, release)
+    }
+  }, [])
+
+  return list
+}
 
 const SOURCES = import.meta.glob('../blocks/*.tsx', {
   eager: true,
@@ -53,7 +127,7 @@ function BlockStage({ block }: { block: BlockEntry }) {
     <section
       id={block.slug}
       aria-labelledby={`${block.slug}-titulo`}
-      className="scroll-mt-20 overflow-hidden rounded-lg border border-border bg-surface"
+      className="overflow-hidden rounded-lg border border-border bg-surface"
     >
       <Tabs defaultValue="preview">
         <header className="space-y-3 border-b border-border px-4 py-3">
@@ -119,8 +193,12 @@ function BlockStage({ block }: { block: BlockEntry }) {
         <TabPanel value="preview" className="p-0">
           <div className="bg-bg/40 p-3 sm:p-4">
             {Block ? (
-              <ExampleFrame width={width} initialHeight={480}>
-                <Block />
+              <ExampleFrame
+                title={`Bloco ${block.title}, em ${width}px de largura`}
+                width={width}
+                initialHeight={480}
+              >
+                <Block {...PREVIEW_PROPS[block.file]} />
               </ExampleFrame>
             ) : null}
           </div>
@@ -137,6 +215,8 @@ function BlockStage({ block }: { block: BlockEntry }) {
 }
 
 export function BlocksPage({ navigate }: { navigate: (route: Route) => void }) {
+  const list = useHeldAnchor()
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <header className="max-w-3xl space-y-3">
@@ -175,7 +255,7 @@ export function BlocksPage({ navigate }: { navigate: (route: Route) => void }) {
         </nav>
       </header>
 
-      <div className="mt-10 space-y-10">
+      <div ref={list} className="mt-10 space-y-10">
         {BLOCK_LIST.map((block) => (
           <BlockStage key={block.slug} block={block} />
         ))}
