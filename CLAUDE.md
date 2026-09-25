@@ -496,3 +496,14 @@ Ate `v0.8.0` e `native-v0.3.1` o repositorio era privado e o npm recusava a
 assinatura com 422: essas versoes ficaram sem procedencia e assim continuam -
 publicacao no npm nao se desfaz. Da `v0.9.0` e da `native-v0.4.0` em diante o
 tarball sai assinado, e o endpoint de attestations do registro responde.
+
+**Publicacao confiavel, sem token.** Desde 25/09/2026 os tres workflows
+autenticam no npm pelo mesmo OIDC da procedencia: cada pacote tem, no
+npmjs.com, um publicador confiavel apontando para `Rivocode/ui` e para o
+arquivo do workflow dele, e nao ha `NPM_TOKEN` nem `registry-url` - sem
+`registry-url` o setup-node nao escreve `.npmrc`, e nao sobra token vazio para
+o npm ler. Exige npm 11.5.1 ou mais novo, e por isso o passo "Conferir o npm da
+publicacao confiavel" atualiza o npm e falha cedo se a versao nao chegar la.
+Renomear um desses tres arquivos quebra a publicacao: o nome esta cadastrado
+no registro. O ensaio nao prova a autenticacao, porque o `--dry-run` nao troca
+o token; so o primeiro release de verdade prova.

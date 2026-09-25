@@ -65,42 +65,28 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra so para o `npm publish`: o bun nao escreve o .npmrc a
-      # partir do segredo, e e esse arquivo que autentica no registro.
+      # O Node entra so para o `npm publish`, que autentica pela publicacao
+      # confiavel e nao por .npmrc: sem `registry-url`, nenhum token e escrito.
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: 24
 
       - run: bun install --frozen-lockfile
 
-      # O segredo e conferido ANTES de tudo, e nao no ultimo passo.
-      #
-      # Sem isto, a falta dele so aparece depois do install, do check, do build
-      # e do empacotamento - o `npm publish` morre com ENEEDAUTH e a unica
-      # coisa que restou do gasto e uma tag ja publicada no historico apontando
-      # para uma versao que nunca subiu.
-      #
-      # Duas causas comuns, e a segunda nao se parece com um problema de
-      # segredo: o NPM_TOKEN nao existe no repositorio; ou ele existe como
-      # segredo da ORGANIZACAO, e repositorio privado em plano gratuito nao
-      # enxerga segredo de organizacao. Nos dois casos o valor chega vazio.
-      - name: Conferir o segredo do npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Publicacao confiavel (OIDC): o npm confia neste workflow, deste
+      # repositorio, e nao existe token guardado. Ela exige npm 11.5.1 ou mais
+      # novo, e o npm que vem com o Node pode ser mais velho. Sem ele, o
+      # `npm publish` cai no token que nao existe mais e morre com ENEEDAUTH
+      # depois de o check e o build ja terem gastado a corrida.
+      - name: Conferir o npm da publicacao confiavel
         run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "O segredo NPM_TOKEN chegou vazio."
-            echo
-            echo "Confira em Settings > Secrets and variables > Actions:"
-            echo "  - ele existe como segredo do REPOSITORIO (e nao so da organizacao)?"
-            echo "  - repositorio privado em plano gratuito nao le segredo de organizacao."
-            echo
-            echo "Depois de corrigir, republique sem criar tag nova:"
-            echo "  Actions > este workflow > Run workflow, com a tag existente."
+          npm install -g npm@latest
+          versao=$(npm --version)
+          echo "npm $versao"
+          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$versao"; then
+            echo "::error::A publicacao confiavel exige npm 11.5.1 ou mais novo, e este e o $versao."
             exit 1
           fi
-          echo "Segredo presente."
 
       # A tag e a versao do package.json precisam contar a mesma historia. Sem
       # esta conferencia, `git tag v0.4.0` sobre um package.json em 0.3.0
@@ -167,12 +153,7 @@ jobs:
       # que fazer. Aqui o gasto e maior ainda: o `bun run check` deste pacote
       # roda dezesseis verificacoes antes de chegar ao build.
       - name: Conferir se a versao ja esta publicada
-        # O .npmrc que o setup-node escreveu espera esta variavel. Consultar o
-        # registro nao exige credencial, mas com ela ausente o npm le um token
-        # vazio no proprio arquivo de configuracao, e a falha que aparece fala
-        # de autenticacao em vez de falar da versao.
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           ENSAIO: ${{ inputs.ensaio }}
         run: |
           versao=$(node -p "require('./package.json').version")
@@ -256,8 +237,6 @@ jobs:
       # e build de novo - e o ensaio custaria mais que a estreia.
       - name: Ensaiar a publicacao
         run: npm publish --access public --ignore-scripts --provenance --dry-run
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # `--ignore-scripts` porque o `prepublishOnly` roda check e build de novo,
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
@@ -265,16 +244,9 @@ jobs:
       - name: Publicar
         if: ${{ inputs.ensaio != true }}
         run: npm publish --access public --ignore-scripts --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Dizer que foi ensaio
         if: ${{ inputs.ensaio == true }}
-        # Pelo mesmo motivo do passo que consulta a versao: o .npmrc escrito
-        # pelo setup-node espera esta variavel, e sem ela o `npm view` reclama
-        # de autenticacao em vez de responder o que se perguntou.
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           versao=$(node -p "require('./package.json').version")
           echo "Ensaio concluido. Nada foi publicado."

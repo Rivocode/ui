@@ -51,37 +51,31 @@ jobs:
         with:
           bun-version: latest
 
-      # O Node entra pelo `npm publish` - e o setup-node que escreve o .npmrc
-      # a partir do segredo - e pela fumaca, que roda o bin com `node`, como o
-      # `npx` de quem instala vai rodar.
+      # O Node entra pelo `npm publish` - que autentica pela publicacao
+      # confiavel, sem .npmrc nem segredo - e pela fumaca, que roda o bin com
+      # `node`, como o `npx` de quem instala vai rodar.
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
+          node-version: 24
 
       # O `mcp/` e workspace da raiz: uma instalacao so traz o SDK do MCP para
       # o pacote e para o teste que sobe o servidor em memoria.
       - run: bun install --frozen-lockfile
 
-      # O segredo e conferido ANTES de tudo. Sem isto a falta dele so aparece
-      # no `npm publish`, com ENEEDAUTH, depois do check e do build inteiros.
-      - name: Conferir o segredo do npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Publicacao confiavel (OIDC): o npm confia neste workflow, deste
+      # repositorio, e nao existe token guardado. Ela exige npm 11.5.1 ou mais
+      # novo, e o npm que vem com o Node pode ser mais velho. Sem ele, o
+      # `npm publish` cai no token que nao existe mais e morre com ENEEDAUTH
+      # depois de o check e o build ja terem gastado a corrida.
+      - name: Conferir o npm da publicacao confiavel
         run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "O segredo NPM_TOKEN chegou vazio."
-            echo
-            echo "Confira em Settings > Secrets and variables > Actions se ele existe"
-            echo "como segredo do REPOSITORIO, e se o token tem permissao de publicar"
-            echo "no escopo @rivocode - o pacote @rivocode/ui-mcp e novo, e token"
-            echo "granular restrito a pacotes existentes nao o cria."
-            echo
-            echo "Depois de corrigir, republique sem criar tag nova:"
-            echo "  Actions > este workflow > Run workflow, com a tag existente."
+          npm install -g npm@latest
+          versao=$(npm --version)
+          echo "npm $versao"
+          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$versao"; then
+            echo "::error::A publicacao confiavel exige npm 11.5.1 ou mais novo, e este e o $versao."
             exit 1
           fi
-          echo "Segredo presente."
 
       - name: Conferir o token da procedencia
         # O `--dry-run` do npm NAO exercita procedencia: ha um `if (!dryRun)`
@@ -134,10 +128,7 @@ jobs:
       # A versao pode ja estar no registro, e o npm so conta isso no fim, com um
       # `403` que fala de permissao e nao diz o que fazer.
       - name: Conferir se a versao ja esta publicada
-        # O .npmrc que o setup-node escreveu espera esta variavel; sem ela o
-        # `npm view` reclama de autenticacao em vez de responder a pergunta.
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           ENSAIO: ${{ inputs.ensaio }}
         run: |
           versao=$(node -p "require('./mcp/package.json').version")
@@ -215,7 +206,6 @@ jobs:
       - name: Ensaiar a publicacao
         working-directory: mcp
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           ENSAIO: ${{ inputs.ensaio }}
         run: |
           set +e
@@ -240,15 +230,11 @@ jobs:
         if: ${{ inputs.ensaio != true }}
         working-directory: mcp
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Um ensaio verde parece uma publicacao verde. O recado vai para o resumo
       # da execucao, que e a primeira coisa que a pagina mostra.
       - name: Dizer que foi ensaio
         if: ${{ inputs.ensaio == true }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           versao=$(node -p "require('./mcp/package.json').version")
           {

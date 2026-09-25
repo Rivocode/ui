@@ -80,7 +80,7 @@ jobs:
       # esta no registro, e essa e a unica das quatro guardas que precisa de
       # rede.
       #
-      # Sem `registry-url` de proposito, ao contrario dos releases. Ele e
+      # Sem `registry-url` de proposito, como nos releases. Ele e
       # que escreve o `.npmrc` que espera `NODE_AUTH_TOKEN`, e consultar o
       # registro nao precisa de credencial: sem o arquivo, nao ha token vazio
       # para o npm ler e reclamar de autenticacao em vez de responder a
