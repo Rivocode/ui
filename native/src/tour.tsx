@@ -3,7 +3,6 @@ import {
   AccessibilityInfo,
   Modal,
   Platform,
-  StatusBar,
   View,
   type LayoutChangeEvent,
 } from "react-native";
@@ -59,7 +58,7 @@ export type TourProps = {
   /**
    * A altura da area segura de cima, em pontos: `useSafeAreaInsets().top`. So
    * pesa quando o alvo esta na metade de baixo e a folha sobe para o topo. Sem
-   * ela, a barra de status do Android, e 48 no iOS.
+   * ela, 24 no Android e 48 no iOS, que cobrem a barra de status e nao o entalhe.
    */
   topInset?: number;
   /** Veste a folha, nao a mascara. */
@@ -79,7 +78,7 @@ function measure(node: unknown, done: (box: Box | null) => void) {
   node.measureInWindow((x = 0, y = 0, width = 0, height = 0) => done({ x, y, width, height }));
 }
 
-const DEFAULT_TOP_INSET = Platform.OS === "android" ? (StatusBar.currentHeight ?? 24) : 48;
+const DEFAULT_TOP_INSET = Platform.select({ android: 24, default: 48 }) ?? 48;
 
 export function Tour({
   steps,
