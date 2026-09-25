@@ -447,3 +447,66 @@ test("na mesa o balao e flutuante e os botoes sao os compactos", () => {
     "h-[var(--rc-control-sm)]",
   );
 });
+
+function Vanishing() {
+  const [show, setShow] = useState(true);
+  return (
+    <div>
+      {show && (
+        <button id="novo" type="button">
+          alvo novo
+        </button>
+      )}
+      <button type="button" onClick={() => setShow(false)}>
+        sumir
+      </button>
+    </div>
+  );
+}
+
+test("o alvo que some com o passo aberto pula o passo, sem o tour re-renderizar", async () => {
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+  render(
+    <RivoProvider scope="local">
+      <Vanishing />
+      <button id="busca" type="button">
+        alvo busca
+      </button>
+      <Tour defaultOpen steps={STEPS.slice(0, 2)} />
+    </RivoProvider>,
+  );
+  await settle();
+  expect(dialog().textContent).toContain("Passo 1 de 2");
+
+  fireEvent.click(screen.getByText("sumir"));
+  await settle();
+
+  expect(dialog().textContent).toContain("Passo 2 de 2");
+  expect(screen.getByRole("heading", { level: 2 }).textContent).toBe("Ache pelo CNPJ");
+  expect(warn).toHaveBeenCalledTimes(1);
+  warn.mockRestore();
+});
+
+test("as setas nao trocam de passo com o foco num campo posto em action", () => {
+  const withField: TourStep[] = [
+    { ...STEPS[0]!, action: <input aria-label="Apelido" /> },
+    STEPS[1]!,
+    STEPS[2]!,
+  ];
+  render(<Page steps={withField} />);
+  openTour();
+
+  const field = screen.getByLabelText("Apelido");
+  field.focus();
+  fireEvent.keyDown(field, { key: "ArrowRight" });
+  expect(dialog().textContent).toContain("Passo 1 de 3");
+
+  fireEvent.keyDown(dialog(), { key: "ArrowRight" });
+  expect(dialog().textContent).toContain("Passo 2 de 3");
+});
+
+test("palavra longa sem espaco quebra dentro do balao, e nao vaza", () => {
+  render(<Page />);
+  openTour();
+  expect(dialog().className.split(" ")).toContain("wrap-anywhere");
+});

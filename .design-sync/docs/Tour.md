@@ -60,7 +60,8 @@ está fora da vista, a página rola até ele e o põe no centro; com
 Em cima vem o contador ("Passo 2 de 5"), depois o título e o texto. Embaixo,
 "Pular tour" à esquerda e, à direita, "Voltar" (a partir do segundo passo) e
 "Próximo", que no último passo vira "Concluir". As setas do teclado andam entre
-os passos com o foco no balão.
+os passos com o foco no balão, menos quando o foco está num campo posto em
+`action`: ali a seta anda dentro do texto, e não troca de passo.
 
 `onFinish` só é chamado no "Concluir". "Pular tour" e `Esc` chamam `onSkip`,
 com o índice do passo em que a pessoa desistiu, que é o dado que diz qual passo
@@ -87,6 +88,10 @@ sobre o último passo sem alvo conclui o tour; se nenhum alvo existe, o tour
 fecha sozinho sem chamar `onFinish` nem `onSkip`. É o que acontece quando uma
 permissão esconde um botão, e pular é melhor que um balão apontando para o
 nada.
+
+Vale também para o alvo que some com o passo aberto, quando a tela troca de
+aba ou uma lista recarrega: o tour percebe que o elemento saiu do documento e
+pula o passo do mesmo jeito, em vez de deixar o recorte num canto vazio.
 
 ## No celular ele vira folha de baixo
 

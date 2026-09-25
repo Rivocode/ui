@@ -19,6 +19,7 @@ import { createPortal } from "react-dom";
 import { useReducedMotion } from "../hooks/environment";
 import { cn } from "../lib/cn";
 import { focusIsLost } from "../lib/focus";
+import { isTypingTarget } from "../lib/hotkey";
 import { FLOATING_SIDE_OFFSET } from "../lib/positioning";
 import { useMobile } from "../lib/screen";
 import type { Slots } from "../lib/slots";
@@ -111,6 +112,13 @@ function resolveTarget(target: TourStep["target"] | undefined): Element | null {
 function complain(index: number, target: TourStep["target"]) {
   if (process.env.NODE_ENV === "production") return;
   console.warn(missingTargetComplaint(index, typeof target === "string" ? `"${target}"` : "ref"));
+}
+
+function usesArrows(target: EventTarget | null) {
+  if (isTypingTarget(target) || target instanceof HTMLInputElement) return true;
+  if (!(target instanceof HTMLElement)) return false;
+  const role = target.getAttribute("role");
+  return role === "slider" || role === "spinbutton" || role === "combobox";
 }
 
 function sameBox(a: Box | null, b: Box) {
@@ -252,6 +260,7 @@ export function Tour({
   const [selfStep, setSelfStep] = useState(defaultStep);
   const [element, setElement] = useState<Element | null>(null);
   const [announcement, setAnnouncement] = useState("");
+  const [lost, setLost] = useState(0);
   const directionRef = useRef<TourDirection>(1);
   const returnRef = useRef<Element | null>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
@@ -335,7 +344,18 @@ export function Tour({
       setElement(null);
       setOpen(false);
     }
-  }, [open, current, total, active, steps, goTo, finish, setOpen]);
+  }, [open, current, total, active, steps, goTo, finish, setOpen, lost]);
+
+  useEffect(() => {
+    if (!open || !element || typeof MutationObserver === "undefined") return;
+    const root = element.ownerDocument.body;
+    const observer = new MutationObserver(() => {
+      if (!element.isConnected) setLost((count) => count + 1);
+    });
+    observer.observe(root, { childList: true, subtree: true });
+    if (!element.isConnected) setLost((count) => count + 1);
+    return () => observer.disconnect();
+  }, [open, element]);
 
   useEffect(() => {
     if (!open || !element) return;
@@ -394,7 +414,7 @@ export function Tour({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.defaultPrevented) return;
+    if (event.defaultPrevented || usesArrows(event.target)) return;
     if (event.key === "ArrowRight" && !isLast) {
       event.preventDefault();
       goTo(current + 1);
@@ -441,6 +461,7 @@ export function Tour({
               data-tour-popup=""
               className={cn(
                 floatingPanel,
+                "wrap-anywhere",
                 isMobile
                   ? cn(
                       "w-screen max-w-none rounded-t-xl rounded-b-none border-x-0 border-b-0",
