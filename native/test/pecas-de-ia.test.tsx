@@ -113,7 +113,7 @@ describe("PromptInput", () => {
     const [field] = byLabel(screen, "Mensagem");
     const hint = field!.props.accessibilityHint as string;
 
-    expect(hint).toContain("Enter quebra a linha");
+    expect(hint).toContain("A tecla de retorno quebra a linha");
     expect(hint).toContain("2 de 5 caracteres");
 
     const count = screen.root.findAll(

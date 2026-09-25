@@ -1820,7 +1820,7 @@ const PARITY: Record<string, Row> = {
   },
   PromptInput: {
     state: "traduz",
-    note: "vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha",
+    note: "vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha",
     page:
       "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, " +
       "`onStop`, `attachments`, `actions`, `maxLength`, `showCount`, `labels` e os mesmos " +

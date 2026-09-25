@@ -15,7 +15,7 @@ const HIDDEN = {
 } as const;
 
 const LABELS: PromptInputLabels = {
-  hint: "Enter quebra a linha. Para enviar, use o botão de enviar.",
+  hint: "A tecla de retorno quebra a linha. Para enviar, use o botão de enviar.",
   ...PROMPT_INPUT_COUNT,
 };
 
