@@ -159,7 +159,7 @@ export function Sidebar({
       data-collapsed={collapsed || undefined}
       data-side={side}
       className={cn(
-        "group/sidebar sticky top-0 flex h-dvh shrink-0 flex-col gap-2 overflow-hidden",
+        "sticky top-0 flex h-dvh shrink-0 flex-col gap-2 overflow-hidden",
         "border-border bg-surface p-3",
         side === "right" ? "order-last border-l" : "border-r",
         "w-[var(--rc-sidebar)] transition-[width] duration-[var(--rc-duration-base)] ease-rc",

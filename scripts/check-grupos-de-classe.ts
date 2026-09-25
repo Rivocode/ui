@@ -11,6 +11,13 @@
  * comparar o nome do grupo declarado com o consumido, que e outra pergunta.
  *
  * O mesmo vale para `peer/x`, pela mesma razao.
+ *
+ * O sentido inverso tambem reprova: grupo declarado que ninguem consome. Em
+ * 25/09/2026 o `group/sidebar` da raiz da `Sidebar` estava ali sem consumidor
+ * nenhum - o recolhido passou a ser decidido pelo contexto - e a guarda o
+ * contava entre os "todos com quem declare", anunciando 8 seletores ao lado de
+ * 9 nomes. Declaracao sem consumo e a mesma renomeacao pela metade, vista da
+ * outra ponta, e e o nome que o proximo consumidor vai achar e usar errado.
  */
 import { scanAtLeast } from "./varredura";
 
@@ -49,6 +56,15 @@ for (const [area, floor] of AREAS) {
 }
 
 const orphans = [...consumed.entries()].filter(([key]) => !declared.has(key));
+const unused = [...declared.entries()].filter(([key]) => !consumed.has(key));
+
+if (declared.size < 5) {
+  console.error(
+    `So ${declared.size} grupo(s) declarado(s) em ${AREAS.map(([area]) => area).join(" e ")}.` +
+      "\nA biblioteca tem mais que isso: a expressao ou a varredura parou de ler.",
+  );
+  process.exit(1);
+}
 
 if (orphans.length > 0) {
   console.error(`${orphans.length} seletor(es) de grupo sem quem declare:\n`);
@@ -60,10 +76,22 @@ if (orphans.length > 0) {
     `\nDeclarados hoje: ${[...declared.keys()].sort().join(", ")}` +
       "\nA classe existe e gera CSS; o que esta morto e o seletor, e nada reclama.",
   );
-  process.exit(1);
 }
 
+if (unused.length > 0) {
+  console.error(`${unused.length} grupo(s) declarado(s) que ninguem consome:\n`);
+  for (const [key, files] of unused) {
+    console.error(`  ${key}  declarado em: ${[...files].sort().join(", ")}`);
+  }
+  console.error(
+    "\nE a outra metade da mesma renomeacao: o nome ficou na raiz e o consumidor" +
+      "\nmudou ou sumiu. Apague a declaracao, ou encontre o seletor que devia casar com ela.",
+  );
+}
+
+if (orphans.length > 0 || unused.length > 0) process.exit(1);
+
 console.log(
-  `${consumed.size} seletor(es) de grupo, todos com quem declare` +
-    ` (${[...declared.keys()].sort().join(", ")}).`,
+  `${declared.size} grupo(s) declarado(s), e cada um com quem consome e cada consumo com` +
+    ` quem declare (${[...declared.keys()].sort().join(", ")}).`,
 );
