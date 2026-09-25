@@ -41,7 +41,7 @@ export function WithFrame() {
       </ItemMedia>
       <ItemContent>
         <ItemTitle>Supermercado Tambau</ItemTitle>
-        <ItemDescription>Ultima nota em 18/08</ItemDescription>
+        <ItemDescription>Última nota em 18/08</ItemDescription>
       </ItemContent>
       <ItemActions>
         <Button variant="ghost" size="sm">Abrir</Button>

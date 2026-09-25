@@ -17,7 +17,7 @@ export function Range() {
         defaultValue={[20, 60]}
         label="Faixa de valor"
         showValue
-        thumbLabel={['Valor minimo', 'Valor maximo']}
+        thumbLabel={['Valor mínimo', 'Valor máximo']}
       />
     </div>
   )

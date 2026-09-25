@@ -8,10 +8,10 @@ export function Questions() {
         <AccordionItem value="como-emitir" title="Como emito uma nota?">
           Pelo botão Emitir nota, no topo da listagem. O rascunho fica salvo se você sair no meio.
         </AccordionItem>
-        <AccordionItem value="cancelar" title="Da para cancelar depois?">
-          Da, enquanto a prefeitura não fechar o mês. Depois disso, so com nota de substituição.
+        <AccordionItem value="cancelar" title="Dá para cancelar depois?">
+          Dá, enquanto a prefeitura não fechar o mês. Depois disso, só com nota de substituição.
         </AccordionItem>
-        <AccordionItem value="email" title="Quem recebe o email?">
+        <AccordionItem value="email" title="Quem recebe o e-mail?">
           O endereço do cliente cadastrado, com cópia para o financeiro.
         </AccordionItem>
       </Accordion>

@@ -9,7 +9,7 @@ export function Tones() {
       <Badge tone="success">Pago</Badge>
       <Badge tone="warning">Vence em 3 dias</Badge>
       <Badge tone="danger">Vencido</Badge>
-      <Badge tone="info">Em analise</Badge>
+      <Badge tone="info">Em análise</Badge>
     </div>
   )
 }

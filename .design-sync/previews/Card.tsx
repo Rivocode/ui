@@ -28,7 +28,7 @@ export function Elevations() {
           <CardTitle>Plano</CardTitle>
           <CardDescription>Sobre o fundo da página</CardDescription>
         </CardHeader>
-        <CardContent>A superficie padrão, para conteudo em lista.</CardContent>
+        <CardContent>A superfície padrão, para conteúdo em lista.</CardContent>
       </Card>
       <Card elevation="raised">
         <CardHeader>

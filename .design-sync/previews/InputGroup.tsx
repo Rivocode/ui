@@ -1,4 +1,4 @@
-import { InputAction, InputGroup, InputPrefix, InputSuffix, MaskedInput } from '@rivocode/ui'
+import { Input, InputAction, InputGroup, InputPrefix, InputSuffix, MaskedInput } from '@rivocode/ui'
 
 /** Encostos */
 export function Edges() {
@@ -10,12 +10,12 @@ export function Edges() {
       </InputGroup>
 
       <InputGroup>
-        <MaskedInput aria-label="Subdomínio" mask="" placeholder="minha-empresa" />
+        <Input aria-label="Subdomínio" placeholder="minha-empresa" />
         <InputSuffix>.rivocode.com</InputSuffix>
       </InputGroup>
 
       <InputGroup>
-        <MaskedInput aria-label="Buscar nota ou cliente" mask="" placeholder="Buscar nota ou cliente" />
+        <Input aria-label="Buscar nota ou cliente" placeholder="Buscar nota ou cliente" />
         <InputAction aria-label="Buscar">Ir</InputAction>
       </InputGroup>
     </div>
