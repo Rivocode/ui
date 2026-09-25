@@ -33,19 +33,13 @@ describe("PromptInput", () => {
   test("o botao envia o texto, e campo vazio nao envia", () => {
     const onSubmit = mock<(value: string) => void>(() => {});
     const full = render(
-      <PromptInput
-        value="Quanto faturei?"
-        onValueChange={() => {}}
-        onSubmit={onSubmit}
-      />,
+      <PromptInput value="Quanto faturei?" onValueChange={() => {}} onSubmit={onSubmit} />,
     );
     const [send] = byLabel(full, "Enviar mensagem");
     act(() => send.props.onPress());
     expect(onSubmit).toHaveBeenCalledWith("Quanto faturei?");
 
-    const blank = render(
-      <PromptInput value="   " onValueChange={() => {}} onSubmit={onSubmit} />,
-    );
+    const blank = render(<PromptInput value="   " onValueChange={() => {}} onSubmit={onSubmit} />);
     const [idle] = byLabel(blank, "Enviar mensagem");
     expect(idle.props.disabled).toBe(true);
   });
@@ -53,11 +47,7 @@ describe("PromptInput", () => {
   test("o campo tem nome e repassa cada tecla", () => {
     const onValueChange = mock<(value: string) => void>(() => {});
     const screen = render(
-      <PromptInput
-        value=""
-        onValueChange={onValueChange}
-        onSubmit={() => {}}
-      />,
+      <PromptInput value="" onValueChange={onValueChange} onSubmit={() => {}} />,
     );
     const [field] = byLabel(screen, "Mensagem");
 
@@ -86,12 +76,7 @@ describe("PromptInput", () => {
 
   test("desabilitado nao edita nem envia", () => {
     const screen = render(
-      <PromptInput
-        value="texto"
-        onValueChange={() => {}}
-        onSubmit={() => {}}
-        disabled
-      />,
+      <PromptInput value="texto" onValueChange={() => {}} onSubmit={() => {}} disabled />,
     );
 
     expect(byLabel(screen, "Mensagem")[0]!.props.editable).toBe(false);
@@ -140,15 +125,9 @@ describe("PromptInput", () => {
 
   test("sem showCount, a dica vai sozinha, sem contagem", () => {
     const screen = render(
-      <PromptInput
-        value="12"
-        onValueChange={() => {}}
-        onSubmit={() => {}}
-        maxLength={5}
-      />,
+      <PromptInput value="12" onValueChange={() => {}} onSubmit={() => {}} maxLength={5} />,
     );
-    const hint = byLabel(screen, "Mensagem")[0]!.props
-      .accessibilityHint as string;
+    const hint = byLabel(screen, "Mensagem")[0]!.props.accessibilityHint as string;
     expect(hint).not.toContain("caracteres");
   });
 
@@ -159,16 +138,10 @@ describe("PromptInput", () => {
     };
     spoken.clearAnnouncements();
     const field = (value: string) => (
-      <PromptInput
-        value={value}
-        onValueChange={() => {}}
-        onSubmit={() => {}}
-        maxLength={5}
-      />
+      <PromptInput value={value} onValueChange={() => {}} onSubmit={() => {}} maxLength={5} />
     );
     const screen = render(field("1234"));
-    const again = (value: string) =>
-      screen.update(<RivoProvider>{field(value)}</RivoProvider>);
+    const again = (value: string) => screen.update(<RivoProvider>{field(value)}</RivoProvider>);
     expect(spoken.announced).toHaveLength(0);
 
     act(() => again("12345"));
@@ -188,12 +161,7 @@ describe("PromptInput", () => {
     };
     spoken.clearAnnouncements();
     render(
-      <PromptInput
-        value="12345"
-        onValueChange={() => {}}
-        onSubmit={() => {}}
-        maxLength={5}
-      />,
+      <PromptInput value="12345" onValueChange={() => {}} onSubmit={() => {}} maxLength={5} />,
     );
     expect(spoken.announced).toHaveLength(0);
   });
@@ -220,8 +188,7 @@ describe("PromptInput", () => {
       />
     );
     const screen = render(field("ab"));
-    const again = (value: string) =>
-      screen.update(<RivoProvider>{field(value)}</RivoProvider>);
+    const again = (value: string) => screen.update(<RivoProvider>{field(value)}</RivoProvider>);
     expect(byLabel(screen, "Mensagem")[0]!.props.accessibilityHint).toBe(
       "Return adds a line. 2 of 3 characters",
     );
@@ -276,13 +243,9 @@ describe("Message", () => {
   });
 
   test("o erro sai em texto no tom de perigo", () => {
-    const screen = render(
-      <Message role="assistant" error="A resposta foi interrompida." />,
-    );
+    const screen = render(<Message role="assistant" error="A resposta foi interrompida." />);
     const error = screen.root.findAll(
-      (node) =>
-        node.type === "Text" &&
-        node.props.children === "A resposta foi interrompida.",
+      (node) => node.type === "Text" && node.props.children === "A resposta foi interrompida.",
     )[0]!;
 
     expect(classesOf(error)).toContain("text-danger-text");
@@ -324,13 +287,9 @@ describe("Conversation", () => {
     const [list] = byType(screen, "FlatList");
 
     expect(textOf(screen)).not.toContain("Ir para o fim");
-    act(() =>
-      list!.props.onScroll({ nativeEvent: { contentOffset: { y: 300 } } }),
-    );
+    act(() => list!.props.onScroll({ nativeEvent: { contentOffset: { y: 300 } } }));
     expect(textOf(screen)).toContain("Ir para o fim");
-    expect(
-      byType(screen, "FlatList")[0]!.props.maintainVisibleContentPosition,
-    ).toEqual({
+    expect(byType(screen, "FlatList")[0]!.props.maintainVisibleContentPosition).toEqual({
       minIndexForVisible: 0,
     });
 
@@ -405,9 +364,7 @@ describe("ToolCall", () => {
   });
 
   test("fechado esconde a entrada, e o toque abre", () => {
-    const screen = render(
-      <ToolCall name="buscar_notas" status="done" output="3 notas" />,
-    );
+    const screen = render(<ToolCall name="buscar_notas" status="done" output="3 notas" />);
     const [trigger] = byLabel(screen, "buscar_notas, Concluída");
 
     expect(textOf(screen)).not.toContain("3 notas");
@@ -424,9 +381,7 @@ describe("AILabel", () => {
   });
 
   test("com explicacao, o toque abre a folha", () => {
-    const screen = render(
-      <AILabel explanation="Resumo feito a partir das notas de agosto." />,
-    );
+    const screen = render(<AILabel explanation="Resumo feito a partir das notas de agosto." />);
     expect(textOf(screen)).not.toContain("Resumo feito");
 
     act(() => byLabel(screen, "Conteúdo gerado por IA")[0]!.props.onPress());
@@ -435,13 +390,7 @@ describe("AILabel", () => {
 });
 
 test("as cinco saem de @rivocode/ui-native/ai, e nao do indice da raiz", () => {
-  for (const name of [
-    "AILabel",
-    "Conversation",
-    "Message",
-    "PromptInput",
-    "ToolCall",
-  ]) {
+  for (const name of ["AILabel", "Conversation", "Message", "PromptInput", "ToolCall"]) {
     expect(name in root).toBe(false);
   }
 });

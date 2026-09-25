@@ -29,10 +29,7 @@ const LABELS: PromptInputLabels = {
 function SendGlyph({ color }: { color: string }) {
   return (
     <View className="size-4 items-center justify-center">
-      <View
-        className="absolute h-3.5 w-[2px] rounded-pill"
-        style={{ backgroundColor: color }}
-      />
+      <View className="absolute h-3.5 w-[2px] rounded-pill" style={{ backgroundColor: color }} />
       <View
         className="absolute top-0.5 size-2 -rotate-45 border-t-2 border-r-2"
         style={{ borderColor: color }}
@@ -42,9 +39,7 @@ function SendGlyph({ color }: { color: string }) {
 }
 
 function StopGlyph({ color }: { color: string }) {
-  return (
-    <View className="size-3 rounded-sm" style={{ backgroundColor: color }} />
-  );
+  return <View className="size-3 rounded-sm" style={{ backgroundColor: color }} />;
 }
 
 export type PromptInputProps = {
@@ -113,9 +108,7 @@ export function PromptInput({
   const labels = { ...LABELS, ...labelsProp };
   const blocked = disabled || streaming || value.trim() === "";
   const full = maxLength !== undefined && value.length >= maxLength;
-  const hint = showCount
-    ? `${labels.hint} ${labels.count(value.length, maxLength)}`
-    : labels.hint;
+  const hint = showCount ? `${labels.hint} ${labels.count(value.length, maxLength)}` : labels.hint;
 
   const limit = maxLength === undefined ? "" : labels.limit(maxLength);
   const wasFull = useRef(full);
@@ -134,9 +127,7 @@ export function PromptInput({
       )}
     >
       {attachments ? (
-        <View className="flex-row flex-wrap gap-2 px-1 pt-1">
-          {attachments}
-        </View>
+        <View className="flex-row flex-wrap gap-2 px-1 pt-1">{attachments}</View>
       ) : null}
 
       <TextInput
@@ -164,24 +155,14 @@ export function PromptInput({
           <Text
             {...HIDDEN}
             font="mono"
-            className={cn(
-              "text-xs",
-              full ? "text-danger-text" : "text-fg-subtle",
-            )}
+            className={cn("text-xs", full ? "text-danger-text" : "text-fg-subtle")}
           >
-            {maxLength === undefined
-              ? String(value.length)
-              : `${value.length}/${maxLength}`}
+            {maxLength === undefined ? String(value.length) : `${value.length}/${maxLength}`}
           </Text>
         ) : null}
 
         {streaming ? (
-          <IconButton
-            accessibilityLabel={stopLabel}
-            variant="secondary"
-            size="sm"
-            onPress={onStop}
-          >
+          <IconButton accessibilityLabel={stopLabel} variant="secondary" size="sm" onPress={onStop}>
             {({ color }) => <StopGlyph color={color} />}
           </IconButton>
         ) : (
