@@ -248,7 +248,8 @@ jobs:
         run: |
           npm pack --dry-run --json > /tmp/pack.json
           node -e "
-            const [meta] = require('/tmp/pack.json');
+            const pack = require('/tmp/pack.json');
+            const meta = Array.isArray(pack) ? pack[0] : Object.values(pack)[0];
             const files = meta.files.map((file) => file.path);
             const pkg = require('./package.json');
 
