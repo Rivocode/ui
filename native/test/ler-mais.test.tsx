@@ -1,6 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
 
 import { Spoiler, Text } from "../src";
+import { SPOILER_CLIPPED } from "../src/shared/spoiler";
 import { act, byRole, byType, render, textOf } from "./helpers";
 
 function measure(screen: ReturnType<typeof render>, height: number) {
@@ -42,6 +43,23 @@ describe("Spoiler", () => {
     expect(button!.props.accessibilityState).toEqual({ expanded: false });
     expect(textOf(screen)).toContain("Ler mais");
     expect(clippedAt(screen, 120)).toBe(true);
+  });
+
+  test("recolhido, o leitor de tela ouve que o texto esta cortado; aberto, nao ouve mais", () => {
+    const screen = render(
+      <Spoiler maxHeight={120}>
+        <Text>{LONG}</Text>
+      </Spoiler>,
+    );
+    measure(screen, 400);
+    const hinted = () =>
+      byType(screen, "View").filter((node) => node.props.accessibilityHint === SPOILER_CLIPPED);
+
+    expect(hinted()).toHaveLength(1);
+    expect(hinted()[0]!.props.accessible).toBe(true);
+
+    act(() => byRole(screen, "button")[0]!.props.onPress());
+    expect(hinted()).toHaveLength(0);
   });
 
   test("o toque abre, anuncia expandido e troca o texto; o segundo fecha", () => {

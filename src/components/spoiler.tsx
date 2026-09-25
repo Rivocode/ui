@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import {
+  useEffect,
   useId,
   useLayoutEffect,
   useRef,
@@ -13,7 +14,23 @@ import {
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-import { SPOILER_HEIGHT, SPOILER_LESS, SPOILER_MORE } from "../shared/spoiler";
+import { revealsFocus, SPOILER_HEIGHT, SPOILER_LESS, SPOILER_MORE } from "../shared/spoiler";
+
+function waitOf(node: HTMLElement) {
+  const parts = getComputedStyle(node).transitionDuration.split(",");
+  const times = parts
+    .map((part) => Number.parseFloat(part) * (part.trim().endsWith("ms") ? 1 : 1000))
+    .filter(Number.isFinite);
+  return Math.max(0, ...times);
+}
+
+function fadeOf(node: HTMLElement) {
+  const style = getComputedStyle(node);
+  const line = Number.parseFloat(style.lineHeight);
+  if (Number.isFinite(line)) return line * 2;
+  const font = Number.parseFloat(style.fontSize);
+  return (Number.isFinite(font) ? font : 16) * 1.2 * 2;
+}
 
 export type SpoilerProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /** O conteudo longo: texto corrido, lista, o que couber num bloco. */
@@ -52,6 +69,7 @@ export function Spoiler({
   const [full, setFull] = useState(0);
   const viewport = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
+  const reveal = useRef<Element | null>(null);
 
   useLayoutEffect(() => {
     const node = inner.current;
@@ -64,6 +82,17 @@ export function Spoiler({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const box = viewport.current;
+    const target = reveal.current;
+    if (!open || !box || !target) return;
+    const timer = setTimeout(() => {
+      reveal.current = null;
+      target.scrollIntoView?.({ block: "nearest" });
+    }, waitOf(box));
+    return () => clearTimeout(timer);
+  }, [open]);
+
   const overflowing = full > maxHeight + 1;
   const clipped = overflowing && !open;
 
@@ -73,9 +102,14 @@ export function Spoiler({
   }
 
   function handleFocus(event: FocusEvent<HTMLDivElement>) {
-    if (!clipped || !viewport.current) return;
-    const edge = viewport.current.getBoundingClientRect().top + maxHeight;
-    if (event.target.getBoundingClientRect().bottom > edge) change(true);
+    const box = viewport.current;
+    if (!clipped || !box || !inner.current) return;
+    const bottom =
+      event.target.getBoundingClientRect().bottom - inner.current.getBoundingClientRect().top;
+    if (!revealsFocus({ bottom, scrollTop: box.scrollTop, maxHeight, fade: fadeOf(box) })) return;
+    box.scrollTop = 0;
+    reveal.current = event.target;
+    change(true);
   }
 
   return (
@@ -103,7 +137,7 @@ export function Spoiler({
           aria-controls={contentId}
           onClick={() => change(!open)}
           className={cn(
-            "inline-flex min-h-6 items-center gap-1 rounded-sm font-sans text-sm font-rc-medium",
+            "-mx-1 inline-flex min-h-6 items-center gap-1 rounded-sm px-1 font-sans text-sm font-rc-medium",
             "text-accent-text underline-offset-4 hover:underline",
             "outline-none focus-visible:ring-2 focus-visible:ring-ring",
             classNames?.trigger,

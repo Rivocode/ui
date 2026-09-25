@@ -1790,6 +1790,11 @@ const PARITY: Record<string, Row> = {
       "Traduz, com os mesmos `maxHeight`, `expanded`, `defaultExpanded`, `onExpandedChange` e " +
       "`labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado " +
       "por `accessibilityState.expanded`.\n\n" +
+      "**Recolhido, o leitor de tela ouve que o texto está cortado.** O `overflow` esconde só " +
+      "da vista, e o TalkBack e o VoiceOver leem o bloco inteiro. Então o conteúdo recolhido " +
+      "vira um elemento só para o leitor, com a dica \"Texto cortado. Toque em Ler mais para " +
+      "ver o resto.\"; aberto, a dica sai. Link dentro do bloco recolhido não recebe foco " +
+      "próprio até abrir.\n\n" +
       "**O degradê é pintado, e não máscara.** O React Native não tem máscara sem dependência " +
       "nova, então os últimos 40 pontos recebem faixas na cor do fundo, com opacidade " +
       "crescente. A cor sai de `fadeOver` (`bg`, `surface` ou `surface-raised`, `bg` sem a " +

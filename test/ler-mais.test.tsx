@@ -2,6 +2,7 @@ import { afterAll, beforeAll, expect, mock, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import { Spoiler } from "../src/components/spoiler";
+import { revealsFocus } from "../src/shared/spoiler";
 
 const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "scrollHeight");
 
@@ -118,17 +119,44 @@ test("defaultExpanded nasce aberto, e labels troca os dois textos", () => {
   expect(button.textContent).toBe("Ver tudo");
 });
 
-test("o foco que entra num link escondido abaixo do corte abre o bloco", () => {
+function linkAt(container: HTMLElement, bottom: number, scrollTop: number) {
+  const box = viewport(container);
+  const inner = box.firstElementChild as HTMLElement;
+  const link = document.createElement("a");
+  link.href = "#xml";
+  link.textContent = "Baixar o XML";
+  inner.appendChild(link);
+  box.scrollTop = scrollTop;
+  inner.getBoundingClientRect = () => ({ top: -scrollTop, bottom: 400 - scrollTop }) as DOMRect;
+  link.getBoundingClientRect = () =>
+    ({ top: bottom - 20 - scrollTop, bottom: bottom - scrollTop }) as DOMRect;
+  return { box, link };
+}
+
+test("o foco num link que o navegador ja rolou para dentro do corte abre o bloco, volta o texto ao comeco e traz o link a vista", async () => {
   const { container } = render(
     <Spoiler maxHeight={120}>
       <Long />
     </Spoiler>,
   );
-  const link = document.createElement("a");
-  link.href = "#xml";
-  link.textContent = "Baixar o XML";
-  link.getBoundingClientRect = () => ({ top: 300, bottom: 320 }) as DOMRect;
-  viewport(container).firstElementChild!.appendChild(link);
+  const { box, link } = linkAt(container, 205, 105);
+  const shown = mock((_: ScrollIntoViewOptions) => {});
+  link.scrollIntoView = shown as unknown as typeof link.scrollIntoView;
+
+  fireEvent.focusIn(link);
+  expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("true");
+  expect(box.scrollTop).toBe(0);
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  expect(shown).toHaveBeenCalledWith({ block: "nearest" });
+});
+
+test("o foco num link parado dentro do degrade abre o bloco, mesmo sem rolagem", () => {
+  const { container } = render(
+    <Spoiler maxHeight={120}>
+      <Long />
+    </Spoiler>,
+  );
+  const { link } = linkAt(container, 110, 0);
 
   fireEvent.focusIn(link);
   expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("true");
@@ -140,14 +168,18 @@ test("o foco que entra no que ja esta a vista nao abre nada", () => {
       <Long />
     </Spoiler>,
   );
-  const link = document.createElement("a");
-  link.href = "#topo";
-  link.textContent = "Topo";
-  link.getBoundingClientRect = () => ({ top: 10, bottom: 30 }) as DOMRect;
-  viewport(container).firstElementChild!.appendChild(link);
+  const { link } = linkAt(container, 30, 0);
 
   fireEvent.focusIn(link);
   expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("false");
+});
+
+test("a decisao do foco mede dentro do conteudo, desconta o degrade e abre com qualquer rolagem", () => {
+  expect(revealsFocus({ bottom: 30, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(false);
+  expect(revealsFocus({ bottom: 72, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(false);
+  expect(revealsFocus({ bottom: 73, scrollTop: 0, maxHeight: 120, fade: 48 })).toBe(true);
+  expect(revealsFocus({ bottom: 30, scrollTop: 1, maxHeight: 120, fade: 48 })).toBe(true);
+  expect(revealsFocus({ bottom: 205, scrollTop: 105, maxHeight: 96, fade: 48 })).toBe(true);
 });
 
 test("classNames alcanca a caixa que corta e o botao", () => {

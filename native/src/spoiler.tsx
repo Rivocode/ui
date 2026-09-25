@@ -5,7 +5,7 @@ import Animated from "react-native-reanimated";
 import { cn } from "./cn";
 import { useMotion } from "./motion";
 import { useRivo } from "./provider";
-import { SPOILER_HEIGHT, SPOILER_LESS, SPOILER_MORE } from "./shared/spoiler";
+import { SPOILER_CLIPPED, SPOILER_HEIGHT, SPOILER_LESS, SPOILER_MORE } from "./shared/spoiler";
 import { Text } from "./text";
 
 const FADE = 40;
@@ -65,7 +65,13 @@ export function Spoiler({
         className="w-full"
         style={{ maxHeight: clipped ? maxHeight : undefined, overflow: "hidden" }}
       >
-        <View onLayout={(event) => setFull(event.nativeEvent.layout.height)}>{children}</View>
+        <View
+          accessible={clipped}
+          accessibilityHint={clipped ? SPOILER_CLIPPED : undefined}
+          onLayout={(event) => setFull(event.nativeEvent.layout.height)}
+        >
+          {children}
+        </View>
         {clipped ? (
           <View
             accessibilityElementsHidden

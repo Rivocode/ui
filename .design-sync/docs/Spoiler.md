@@ -54,7 +54,8 @@ Controlado, `expanded` e `onExpandedChange` andam juntos; sem controlar,
 
 O corte é só visual. O leitor de tela lê o texto inteiro, recolhido ou não, e o
 link que estiver abaixo do corte continua na ordem do Tab. Quando o foco entra
-num elemento escondido pelo corte, o `Spoiler` abre sozinho, para ninguém
+num elemento abaixo do corte ou dentro do degradê, o `Spoiler` abre sozinho,
+volta o texto para o começo e traz o elemento focado para a vista, para ninguém
 focar o que não vê.
 
 ## Partes
@@ -79,5 +80,7 @@ texto entram.
 ## No React Native
 
 Traduz, com os mesmos `maxHeight`, `expanded`, `defaultExpanded`, `onExpandedChange` e `labels`, e o mesmo botão que só aparece quando o conteúdo estoura. O botão diz o estado por `accessibilityState.expanded`.
+
+**Recolhido, o leitor de tela ouve que o texto está cortado.** O `overflow` esconde só da vista, e o TalkBack e o VoiceOver leem o bloco inteiro. Então o conteúdo recolhido vira um elemento só para o leitor, com a dica "Texto cortado. Toque em Ler mais para ver o resto."; aberto, a dica sai. Link dentro do bloco recolhido não recebe foco próprio até abrir.
 
 **O degradê é pintado, e não máscara.** O React Native não tem máscara sem dependência nova, então os últimos 40 pontos recebem faixas na cor do fundo, com opacidade crescente. A cor sai de `fadeOver` (`bg`, `surface` ou `surface-raised`, `bg` sem a prop): ponha o fundo em que o bloco pousa, senão o degradê aparece como uma faixa. Não há `classNames`: o `className` vai na raiz.
