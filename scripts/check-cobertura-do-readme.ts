@@ -14,11 +14,12 @@
  *
  * ## A decisao, porque ela nao e obvia
  *
- * A tabela do README nao vai listar as 90, e isso e escolha, e nao atraso.
- * O README e a pagina que o npm mostra: o trabalho dele e instalar alguem e
+ * A tabela do README nao e o indice, e isso e escolha, e nao atraso. O
+ * README e a pagina que o npm mostra: o trabalho dele e instalar alguem e
  * dizer a diferenca entre as pecas que se parecem - `Switch` contra
  * `Checkbox`, `Progress` contra `Meter`, `Accordion` contra `Collapsible`.
- * Noventa linhas afogam exatamente essa parte. O indice de verdade e gerado,
+ * Cada peca ganha UMA linha curta na tabela da familia, e nao a pagina dela:
+ * a linha diz de quem ela se distingue, e so. O indice de verdade e gerado,
  * mora em `/llms.txt` e nunca envelhece, e duplica-lo a mao seria criar o
  * segundo catalogo escrito a mao deste repositorio - o primeiro anunciou 55
  * pecas quando ja eram 83.
@@ -92,85 +93,13 @@ function catalogPieces() {
  * As pecas que o README nao cita, e o motivo de cada uma.
  *
  * O motivo e para quem for decidir se ainda vale ficar de fora, entao ele diz o
- * que IMPEDE, e nao que esta faltando. Quatro coisas diferentes moram nesta
- * lista, e distingui-las e o trabalho inteiro: peca que a linha de uma irma ja
- * cobre, peca de grafico que a secao de graficos trata por contrato e nao por
- * repertorio, peca de nicho que ninguem procura numa pagina de instalacao, e
- * divida de verdade - familia que a tabela abre e deixa pela metade. Quarenta
- * e uma linhas iguais dizendo "falta citar" seriam a mesma coisa que nao ter
- * lista.
+ * que IMPEDE, e nao que esta faltando. A lista chegou a ter 37 linhas - peca
+ * que a irma cobria, grafico, nicho e divida de verdade - e zerou em
+ * 25/09/2026, quando cada uma ganhou linha na tabela da familia dela. Zerar
+ * mostrou que o argumento de "nicho" nao se sustentava: uma linha curta na
+ * tabela custa menos que o paragrafo que justificava a ausencia.
  */
-const OUT_OF_README: Record<string, string> = {
-  Autocomplete:
-    "A irma cobre: o painel e o do `Combobox`, citado, e a linha dele ja diz lista longa com busca. O que ela tem de proprio - aceitar o que nao esta na lista - e uma frase da pagina dela, e nao uma escolha entre duas pecas.",
-  ContextMenu:
-    "A irma cobre: o conteudo e o do `Menu`, citado. O que muda e o gesto que abre, e gesto nao e o que a tabela distingue.",
-  TimePicker:
-    "A irma cobre, quando ela entrar: e o `TimeField` com painel, como o `DatePicker` e o campo de data com painel. Os dois entram na mesma linha ou em nenhuma.",
-  ToastViewport:
-    "A irma cobre: o aplicativo nunca a escreve, o `RivoProvider` a monta. O README ja explica isso em Fiacao de aviso, que e onde ela de fato aparece.",
-  FilterChip:
-    "A irma cobre: e uma ficha dentro do `FilterBar`. Cita-la sozinha seria listar a parte antes do todo, que ainda esta fora.",
-  Kbd: "A irma cobre: nasce colada ao `Command`, no rodape da paleta e no atalho do menu. Entra junto com ele ou nao entra.",
-  CheckboxGroup:
-    "A irma cobre errado, e essa e a divida escondida aqui: a linha do `Checkbox` promete o estado misto do selecionar todos, que so o grupo faz. Ou o grupo ganha linha, ou a linha do `Checkbox` para de prometer o que ele nao entrega.",
-  Sparkline:
-    "Grafico, e depende de outra: sai de `@rivocode/ui/chart` e mora dentro de um `Stat`, que tambem esta fora. Ela so faz sentido na linha que descrever o numero de painel.",
-  AspectRatio:
-    "Nicho: moldura de proporcao. Nao ha decisao a explicar nem irma de quem se distinguir, e quem precisa dela ja sabe o nome - e para esse caso que o llms.txt existe.",
-  Code: "Nicho: peca de uma palavra dentro de um paragrafo. Nao se parece com nada, entao nao ha o que a tabela resolva.",
-  RelativeTime:
-    "Nicho: `há 2 minutos` e uma decisao de escrita com moldura em volta. Ninguem abre um README de instalacao para descobrir se ela existe.",
-  Clipboard: "Nicho: botao de copiar um dado. Nenhuma duvida de escolha para a tabela desfazer.",
-  Indicator:
-    "Nicho: a contagem por cima de outra coisa. Ela nunca aparece sozinha, e o que se escolhe e a coisa de baixo - o sino, a aba, o avatar.",
-  Editable: "Nicho: edicao no lugar e idioma de uma tela so, e nao decisao de montagem de pagina.",
-  ColorPicker:
-    "Nicho: so aparece em construtor de tema. O lugar dela no README seria a secao Tema de cliente, e ali o assunto e contraste medido, e nao a peca que escolhe a cor.",
-  Splitter:
-    "Nicho: divisoria arrastavel aparece em ferramenta, e nao em tela de operacao, que e o que este README ensina a montar.",
-  VirtualList:
-    "Nicho: e otimizacao, e nao repertorio - o `DataTable` ja usa a mesma engrenagem por dentro. Quem chega nela chega por lentidao medida, e nao lendo catalogo.",
-  NumberField:
-    "Divida na tabela Campo, e em par: a linha que falta e a que distingue dela o `Slider` - passo e limite conhecidos contra faixa onde o numero exato nao importa.",
-  Slider:
-    "Divida na tabela Campo, a mesma linha do `NumberField`: as duas so valem citadas juntas, porque a escolha e entre elas.",
-  TimeField:
-    "Divida na tabela Campo: ha `DatePicker`, `DateRangePicker` e `Calendar` para data, e nada para hora. A tabela parece dizer que a biblioteca nao tem hora, e tem duas.",
-  PasswordInput:
-    "Divida na tabela Campo: todo projeto reconstroi o par campo-mais-olho, e e para evitar isso que ela existe. Nao cita-la e garantir a reconstrucao.",
-  SearchInput:
-    "Divida na tabela Campo, e ela mesma prova o custo: sem linha, quem le o README monta a lupa a mao com posicionamento absoluto - o arranjo que esta peca existe para substituir.",
-  TagsInput:
-    "Divida na tabela Campo: e o irmao do `Combobox` para valor que a pessoa escreve em vez de escolher, e a tabela existe justamente para separar irmaos.",
-  Fieldset:
-    "Divida: e o que agrupa os campos que a tabela lista, e a secao Formularios fala de `Form` e `FormField` sem dizer o que junta um endereco num bloco so.",
-  OTPField:
-    "Divida na tabela Campo: a decisao que ela carrega - colar o codigo inteiro espalha os digitos pelas casas - e exatamente o tipo de coisa que a tabela existe para contar.",
-  FileUpload:
-    "Divida na tabela Campo: a area de anexar e o campo que mais se reconstroi errado, e ela nao conhece rede de proposito, como o `DataTable` que o README ja elogia por isso.",
-  Menubar:
-    "Divida na tabela Navegacao: ela se parece com o `Menu`, citado, e a confusao entre os dois e a que a tabela existe para desfazer.",
-  NavigationMenu:
-    "Divida na tabela Navegacao, e a distincao e das mais pedidas: `Menu` lista acoes que se executam, esta lista lugares para onde ir.",
-  Command:
-    "Divida na tabela Navegacao: a paleta de comandos e das primeiras coisas que se procura num design system, e o README nao diz que existe.",
-  Popconfirm:
-    "Divida na tabela Flutuante: e a terceira resposta entre `Dialog` e `AlertDialog`, e a tabela cita os dois e para antes da que confirma sem escurecer a tela.",
-  PreviewCard:
-    "Divida na tabela Flutuante: e `Tooltip` e `Popover` ao pousar sobre um link, os dois citados, e nada ali diz qual usar para o resumo de um link.",
-  Tracker:
-    "Divida na tabela Dado: a faixa de quadradinhos por periodo nao tem irma citada, entao ninguem adivinha o nome dela para procurar no indice.",
-  Stat: "Divida: o numero de painel e a peca mais copiada a mao de qualquer design system, e e a que a tabela nao cita.",
-  DescriptionList:
-    "Divida na tabela Dado: e a folha de detalhes que vem depois da linha da listagem, e a tabela cita `Table`, `DataTable` e `Item` e para antes dela.",
-  PageHeader:
-    "Divida: e o topo que toda rota reescreve um pouco diferente, e a secao Tela de aplicacao monta uma tela inteira sem ele.",
-  FilterBar:
-    "Divida: a secao Listagem com estados de consulta monta o `DataTable` e nao diz o que fica em volta - a fileira de filtros, o limpar e a contagem que toda listagem remonta a mao.",
-  ButtonGroup:
-    "Divida na tabela Acao: `Toggle`, `ToggleGroup` e `Toolbar` estao citados, e o grupo de botoes irmaos nao - o mesmo que ja passou um release inteiro sendo confundido com parte do `Button`.",
-};
+const OUT_OF_README: Record<string, string> = {};
 
 const pieces = catalogPieces();
 const readme = await Bun.file(README).text();

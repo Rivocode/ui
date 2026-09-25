@@ -113,9 +113,10 @@ branco por cima, e vice-versa. Vale o mesmo para o acento.
 
 ## O catálogo
 
-134 peças. **A tabela abaixo não é o índice**: ela cobre as mais usadas e diz a
-diferença entre as que se parecem, que é a parte que costuma faltar. O índice
-completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
+134 peças. **A tabela abaixo não é o índice**: ela cita cada peça numa linha e
+diz a diferença entre as que se parecem, que é a parte que costuma faltar. O
+índice completo, com a página de cada uma e sempre em dia, fica em
+<https://ds.rivocode.com.br/llms.txt>.
 
 ### Tipografia
 
@@ -125,6 +126,8 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Text`    | parágrafo ou trecho nos tons de texto do tema; sem `size` e `tone`, herda da frase |
 | `Link`    | âncora sublinhada, `external` com aviso a quem ouve, e o router pelo `render`     |
 | `Highlight` | pinta o termo buscado dentro do texto, sem acento importar: "sao" acha "São"    |
+| `Code`, `Kbd` | código dentro da frase, e a tecla de um atalho desenhada como tecla |
+| `RelativeTime` | "há 2 minutos", "em 3 dias", com a data inteira ao pousar |
 
 ### Ação
 
@@ -136,6 +139,8 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Toolbar`               | junta os controles numa parada de tabulação só, com setas entre eles |
 | `ActionBar`             | ações em lote sobre a seleção: diz quantos, limpa, gruda no pé da área |
 | `ScrollToTop`           | "Voltar ao topo" que aparece depois de descer e devolve o foco ao `main` |
+| `ButtonGroup`           | botões irmãos encostados, como "emitir" com o menu de variantes colado; não é parte do `Button` |
+| `Clipboard`             | copiar um dado para levar a outro lugar, com o "copiado" dito a quem ouve |
 
 ### Campo
 
@@ -143,22 +148,35 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | ------------------------------- | -------------------------------------------------------------------------- |
 | `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
 | `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
+| `PasswordInput`                 | senha com o olho que revela; o par que todo projeto reconstrói             |
+| `SearchInput`                   | busca com a lupa no lugar, sem `position: absolute` montado à mão          |
+| `NumberField`                   | número com mais e menos, quando passo e limite são conhecidos e o valor exato importa |
+| `Slider`                        | valor numa faixa quando o número exato não importa; se importa, é `NumberField` |
+| `OTPField`                      | código de verificação, uma casa por dígito; colar o código inteiro espalha os dígitos |
 | `MaskedInput`                   | CPF, CNPJ, CEP, telefone, data, hora, placa, cartão, boleto, molde à mão   |
 | `CurrencyInput`                 | dinheiro em centavos inteiros, digitado da direita, com sinal e limite     |
 | `SignaturePad`                  | assinatura com dedo, caneta ou mouse, ou o nome digitado; exporta SVG e PNG |
 | `PostalCodeField`               | CEP que busca o endereço pela `lookup` que você escreve, e preenche o resto |
 | `InputGroup`                    | encosta `R$`, `.com.br` ou botão no campo, sem borda dupla                 |
-| `Checkbox`                      | caixa de marcar, com o estado misto do "selecionar todos"                  |
+| `Fieldset`                      | agrupa os campos que respondem à mesma pergunta: endereço, pagamento       |
+| `Checkbox`                      | caixa de marcar solta                                                      |
+| `CheckboxGroup`                 | caixas que dividem um valor em lista, com a de "todos" no estado misto      |
 | `Radio`, `RadioGroup`           | escolha única quando as opções cabem na tela                               |
 | `Questionnaire`                 | uma pergunta por vez, com progresso, pular, atalho de letra e envio: onboarding, pesquisa, o agente pedindo esclarecimento |
 | `Switch`                        | liga e desliga **na hora**; o Checkbox só vale ao enviar o formulário      |
 | `Select`                        | escolha única em lista curta e fixa                                        |
 | `Combobox`                      | escolha em lista longa ou vinda do servidor, com busca e fichas            |
+| `Autocomplete`                  | o painel do `Combobox`, mas aceita o que a pessoa escreveu fora da lista   |
+| `TagsInput`                     | marcadores que a pessoa escreve, em vez de escolher: etiquetas, emails     |
 | `TreeSelect`, `Tree`            | escolha dentro de uma árvore; guarda a folha, nunca o pai                  |
 | `TransferList`                  | duas listas, disponíveis e escolhidos, com busca, marcar vários e mover nos dois sentidos |
 | `DatePicker`, `DateRangePicker` | data e período: digita ou escolhe, com rodapé Aplicar opcional             |
+| `TimeField`, `TimePicker`       | hora em 24 horas: digitada, ou digitada com o painel de escolher           |
 | `Calendar`                      | o mês cru, para quem quer o calendário na própria tela                     |
 | `Rating`                        | nota em estrelas, com meia estrela e a média só leitura dita "4,5 de 5"   |
+| `FileUpload`                    | a área de anexar: clique, arraste e validação; o envio pela rede é seu     |
+| `ColorPicker`                   | escolha de uma cor, por amostra ou por código, num construtor de tema      |
+| `Editable`                      | edição no lugar: o texto vira campo ao clicar e volta ao confirmar         |
 | `EventCalendar`                 | a agenda: o que acontece, quando e por quanto tempo. O `Calendar` escolhe uma data; este mostra compromisso no tempo |
 | `Gantt`                         | o cronograma de projeto: tarefas em escala, dependência em seta, grupos que recolhem e edição por arrasto e teclado |
 
@@ -168,11 +186,14 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | ------------- | ---------------------------------------------------------------------- |
 | `Dialog`      | janela modal; no celular encosta embaixo                               |
 | `AlertDialog` | confirmação sem volta: não fecha com Esc nem com clique fora           |
+| `Popconfirm`  | confirmação colada no botão que a disparou, sem escurecer a tela       |
 | `Sheet`       | folha que desliza da borda, com gesto de arrastar; é o menu do celular |
 | `Popover`     | painel ancorado de conteúdo livre                                      |
 | `Tooltip`     | dica, para botão que só tem ícone                                      |
+| `PreviewCard` | o resumo de um link ao pousar sobre ele: quem é o cliente, o que é a nota |
 | `Menu`        | menu de ações, com grupos e item destrutivo                            |
-| `Toast`       | aviso que passa, via `useToast()`                                      |
+| `ContextMenu` | o mesmo conteúdo do `Menu`, aberto pelo botão direito                  |
+| `Toast`       | aviso que passa, via `useToast()`; o `ToastViewport` já vem no Provider |
 | `ImageViewer` | foto em tela cheia a partir das miniaturas, com zoom e setas           |
 | `Tour`        | passeio guiado: escurece o resto, recorta o alvo e explica num balão   |
 
@@ -186,6 +207,10 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | `Breadcrumb` | o caminho, que dobra o meio em reticência quando fica longo              |
 | `Pagination` | páginas, com reticência; no celular vira "3 de 12" com as setas          |
 | `Steps`      | a régua de um formulário em etapas, com `useWizard()`                    |
+| `Menubar`    | a barra Arquivo, Editar, Exibir: vários `Menu` lado a lado, coordenados   |
+| `NavigationMenu` | a navegação de topo de site: lista lugares para onde ir, e o `Menu` lista ações |
+| `Command`    | a paleta de comandos: um campo, uma lista e o teclado                    |
+| `PageHeader` | o topo de cada rota: trilha, título, descrição e ações, sempre na mesma ordem |
 | `TableOfContents` | o índice "Nesta página": lê os títulos e marca a seção lida ao rolar |
 
 ### Dado
@@ -194,8 +219,14 @@ completo, sempre em dia, fica em <https://ds.rivocode.com.br/llms.txt>.
 | ----------- | ---------------------------------------------------------------- |
 | `Table`     | tabela semântica, com seleção de linha                           |
 | `DataTable` | tabela com os três estados de consulta: carregando, erro e vazio |
+| `FilterBar`, `FilterChip` | a fileira de filtros aplicados em volta da listagem, com limpar e contagem |
+| `VirtualList` | lista longa que desenha só o que cabe na moldura                 |
+| `DescriptionList` | pares de rótulo e valor em `<dl>`: a folha de detalhes da linha |
+| `Stat`      | o número de painel: rótulo, valor, variação e tendência          |
+| `Tracker`   | a faixa de quadradinhos por período: disponibilidade, emissões   |
 | `Item`      | a linha de lista: ícone, texto e ação                            |
 | `Badge`     | selo de estado, seis tons                                        |
+| `Indicator` | a contagem por cima de outra coisa: o sino, a aba, o avatar      |
 | `Avatar`    | foto de pessoa, com a inicial por trás                           |
 | `Timeline`  | o que já aconteceu, em ordem, com quem e quando                  |
 | `QRCode`    | o texto que a câmera do outro lê, em SVG escuro sobre claro em qualquer tema |
@@ -258,6 +289,8 @@ npm install @dnd-kit/core @dnd-kit/sortable
 | `Container`   | largura máxima centralizada, com respiro lateral, em cinco passos      |
 | `Carousel`    | slides de lado por scroll-snap; `Tabs` se compara, `Grid` se cabe tudo |
 | `ResizablePanelGroup` | áreas com divisória que se arrasta: N painéis, aninhados, que recolhem e lembram o layout |
+| `Splitter`    | a forma curta do anterior para duas áreas, lista e detalhe       |
+| `AspectRatio` | segura a proporção da caixa antes do conteúdo chegar             |
 | `Affix`       | gruda na janela com o empilhamento da casa, e reserva o `scroll-padding` para o foco não parar atrás |
 
 Três coisas que a biblioteca resolve por você e que costumam dar trabalho:
@@ -488,12 +521,13 @@ movimento" ligado é justamente o maior deles.
 A altura fica com você, por classe: gráfico sem altura definida some, porque o
 contêiner mede o pai.
 
-Além da moldura, o subcaminho traz seis gráficos prontos. Os quatro últimos são
+Além da moldura, o subcaminho traz sete gráficos prontos. Os quatro últimos são
 desenho próprio, sem Recharts, e não entram no `ChartContainer`: carregando,
 erro e vazio vêm do `QueryBoundary` em volta.
 
 | Peça           | Para que serve                                                                              |
 | -------------- | ------------------------------------------------------------------------------------------- |
+| `Sparkline`    | a linha miúda sem eixo que cabe dentro de um `Stat`: diz se sobe ou desce, e não quanto   |
 | `ChartDonut`   | partes de um todo, até seis, com o total no buraco e a lista de fatias embaixo              |
 | `ChartRadial`  | uma medida contra a meta: quanto falta para chegar, e subir é sempre melhor                 |
 | `ChartGauge`   | uma medida que é julgada por faixas com nome (em dia, atenção, crítico), e subir pode ser pior |
