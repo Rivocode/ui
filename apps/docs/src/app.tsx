@@ -1,4 +1,4 @@
-import { Button, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
+import { IconButton, Input, RivoProvider, Sheet, SheetContent, SheetTrigger } from '@rivocode/ui'
 import { BookOpen, Bot, Blocks, LayoutGrid, Menu, Palette, Search } from 'lucide-react'
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { ENTRIES, FAMILIES, entriesOfFamily, preloadPage } from '@/catalog'
@@ -298,16 +298,16 @@ export function App() {
                 <Sheet side="left">
                   <SheetTrigger
                     render={
-                      <Button
-                        size="iconSm"
+                      <IconButton
+                        size="sm"
                         variant="ghost"
-                        aria-label="Abrir o menu"
+                        label="Abrir o menu"
                         className="lg:hidden"
-                      />
+                      >
+                        <Menu size={16} />
+                      </IconButton>
                     }
-                  >
-                    <Menu size={16} />
-                  </SheetTrigger>
+                  />
                   <SheetContent className="w-72 p-4 lg:hidden">
                     <Nav route={route} navigate={navigate} />
                   </SheetContent>

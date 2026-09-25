@@ -81,7 +81,7 @@ export function ThemePlayground() {
             <div className="flex flex-wrap items-center gap-2">
               <Button>Emitir nota</Button>
               <Button variant="outline">Cancelar</Button>
-              <Button variant="destructive">Excluir</Button>
+              <Button variant="danger">Excluir</Button>
               <Badge tone="success">Paga</Badge>
               <Badge tone="warning">Vence em 3 dias</Badge>
             </div>

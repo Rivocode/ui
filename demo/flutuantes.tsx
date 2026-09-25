@@ -6,6 +6,7 @@ import {
   Button,
   ContextMenu,
   ContextMenuTrigger,
+  IconButton,
   Menu,
   MenuCheckboxItem,
   MenuContent,
@@ -140,10 +141,12 @@ function Sample({ theme }: { theme: RivoTheme }) {
           <p className="mb-2 text-sm text-fg-muted">Acoes da linha</p>
           <Menu defaultOpen>
             <MenuTrigger
-              render={<Button variant="secondary" size="icon" aria-label="Mais acoes" />}
-            >
-              <MoreHorizontal size={16} aria-hidden="true" />
-            </MenuTrigger>
+              render={
+                <IconButton variant="secondary" label="Mais acoes">
+                  <MoreHorizontal size={16} aria-hidden="true" />
+                </IconButton>
+              }
+            />
             <MenuContent>
               <MenuGroup label="Nota 4813">
                 <MenuItem>
@@ -247,9 +250,13 @@ function Sample({ theme }: { theme: RivoTheme }) {
         <div>
           <p className="mb-2 text-sm text-fg-muted">Dica</p>
           <Tooltip defaultOpen={!narrow}>
-            <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Excluir" />}>
-              <Trash2 size={16} aria-hidden="true" />
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <IconButton variant="ghost" label="Excluir">
+                  <Trash2 size={16} aria-hidden="true" />
+                </IconButton>
+              }
+            />
             <TooltipContent>Excluir nota</TooltipContent>
           </Tooltip>
         </div>

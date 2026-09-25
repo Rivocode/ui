@@ -12,7 +12,7 @@ const ICON: Record<ButtonVariant, { copy: string; fill: string; check: string }>
   secondary: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
   ghost: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
   outline: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
-  destructive: { copy: "border-danger-fg", fill: "bg-danger", check: "border-danger-fg" },
+  danger: { copy: "border-danger-fg", fill: "bg-danger", check: "border-danger-fg" },
 };
 
 function CopyIcon({ variant }: { variant: ButtonVariant }) {
@@ -58,7 +58,7 @@ export type ClipboardProps = {
   toast?: boolean;
   /**
    * O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`. Nos
-   * preenchidos (`primary` e `destructive`) o visto da confirmacao usa a tinta
+   * preenchidos (`primary` e `danger`) o visto da confirmacao usa a tinta
    * do rotulo, porque o verde de sucesso nao se le sobre o fundo deles.
    */
   variant?: ButtonVariant;

@@ -3786,13 +3786,13 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
         "required": false,
         "since": "0.4.0"
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false,
         "since": "0.4.0"
       }
@@ -8933,8 +8933,9 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
+        "note": "A altura do botao, lida de `--rc-control-*`.",
         "since": "0.5.0"
       },
       {
@@ -8946,7 +8947,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false,
         "since": "0.5.0"
       }
@@ -11442,7 +11443,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false
       }
     ]
@@ -19684,12 +19685,12 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
         "required": false
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false
       }
     ]
@@ -19715,12 +19716,12 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
         "required": false
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false
       }
     ]
@@ -19769,12 +19770,12 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
         "required": false
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false
       }
     ]
@@ -19800,12 +19801,12 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"icon\" | \"iconSm\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
         "required": false
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false
       }
     ]
@@ -23823,7 +23824,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\" | null",
         "required": false,
         "note": "A variante do `Button` por baixo."
       },

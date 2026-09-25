@@ -175,7 +175,7 @@ export function AlertDialog({
               {cancelLabel}
             </Button>
             <Button
-              variant={tone === "danger" ? "destructive" : "primary"}
+              variant={tone === "danger" ? "danger" : "primary"}
               loading={busy}
               onPress={confirm}
             >

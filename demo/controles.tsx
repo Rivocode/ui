@@ -19,6 +19,7 @@ import {
   ColorPicker,
   Field,
   FieldLabel,
+  IconButton,
   Progress,
   Radio,
   RadioGroup,
@@ -87,15 +88,15 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
           <Block title="Grupo de botoes">
             <ButtonGroup>
-              <Button variant="secondary" size="icon" aria-label="Ver em lista">
+              <IconButton variant="secondary" label="Ver em lista">
                 <List size={16} aria-hidden="true" />
-              </Button>
-              <Button variant="secondary" size="icon" aria-label="Ver em linhas">
+              </IconButton>
+              <IconButton variant="secondary" label="Ver em linhas">
                 <Rows3 size={16} aria-hidden="true" />
-              </Button>
-              <Button variant="secondary" size="icon" aria-label="Ver em grade">
+              </IconButton>
+              <IconButton variant="secondary" label="Ver em grade">
                 <Grid2x2 size={16} aria-hidden="true" />
-              </Button>
+              </IconButton>
             </ButtonGroup>
 
             <ButtonGroup>
@@ -171,7 +172,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
           <Block title="Acao sem volta">
             <AlertDialog>
-              <AlertDialogTrigger render={<Button variant="destructive" />}>
+              <AlertDialogTrigger render={<Button variant="danger" />}>
                 Cancelar nota
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -183,7 +184,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
                   <AlertDialogClose render={<Button variant="secondary" />}>
                     Manter nota
                   </AlertDialogClose>
-                  <AlertDialogClose render={<Button variant="destructive" />}>
+                  <AlertDialogClose render={<Button variant="danger" />}>
                     Cancelar nota
                   </AlertDialogClose>
                 </AlertDialogFooter>

@@ -30,7 +30,7 @@ function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) 
         <Button>Primario</Button>
         <Button variant="secondary">Secundario</Button>
         <Button variant="ghost">Fantasma</Button>
-        <Button variant="destructive">Excluir</Button>
+        <Button variant="danger">Excluir</Button>
         <Button shape="pill">Pilula</Button>
         <Button loading>Salvando</Button>
         <Button disabled>Desabilitado</Button>

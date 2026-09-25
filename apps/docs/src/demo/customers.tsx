@@ -17,6 +17,7 @@ import {
   ContextMenuTrigger,
   DateRangePicker,
   EmptyState,
+  IconButton,
   Item,
   ItemActions,
   ItemContent,
@@ -324,24 +325,22 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
             <DateRangePicker value={range} onValueChange={setRange} className="w-64" />
 
             <ButtonGroup className="ml-auto">
-              <Button
+              <IconButton
                 variant="secondary"
-                size="icon"
-                aria-label="Ver em lista"
+                label="Ver em lista"
                 aria-pressed={view === 'list'}
                 onClick={() => setView('list')}
               >
                 <List size={16} />
-              </Button>
-              <Button
+              </IconButton>
+              <IconButton
                 variant="secondary"
-                size="icon"
-                aria-label="Ver em grade"
+                label="Ver em grade"
                 aria-pressed={view === 'grid'}
                 onClick={() => setView('grid')}
               >
                 <Grid2x2 size={16} />
-              </Button>
+              </IconButton>
             </ButtonGroup>
 
             <Button

@@ -50,7 +50,7 @@ const CHECK_INK = [
   ["secondary", "text-success-text"],
   ["ghost", "text-success-text"],
   ["outline", "text-success-text"],
-  ["destructive", "text-danger-fg"],
+  ["danger", "text-danger-fg"],
 ] as const;
 
 for (const [variant, ink] of CHECK_INK) {

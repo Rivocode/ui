@@ -1,14 +1,18 @@
 import { Trash2 } from 'lucide-react'
-import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
+import { Button, IconButton, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
 
 /** Em botão de ícone */
 export function OnAnIconButton() {
   return (
     <div className="flex min-h-32 items-end justify-center">
       <Tooltip defaultOpen /* rc-keep-open */>
-        <TooltipTrigger render={<Button variant="ghost" size="icon" aria-label="Excluir" />}>
-          <Trash2 size={16} aria-hidden="true" />
-        </TooltipTrigger>
+        <TooltipTrigger
+          render={
+            <IconButton variant="ghost" label="Excluir">
+              <Trash2 size={16} aria-hidden="true" />
+            </IconButton>
+          }
+        />
         <TooltipContent>Excluir nota</TooltipContent>
       </Tooltip>
     </div>

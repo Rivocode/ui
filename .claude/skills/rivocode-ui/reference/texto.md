@@ -54,7 +54,7 @@ na caixa que confirma uma ação sem volta.
 </AlertDialogDescription>
 <AlertDialogFooter>
   <AlertDialogClose render={<Button variant="secondary" />}>Manter nota</AlertDialogClose>
-  <AlertDialogClose render={<Button variant="destructive" />}>Cancelar nota</AlertDialogClose>
+  <AlertDialogClose render={<Button variant="danger" />}>Cancelar nota</AlertDialogClose>
 </AlertDialogFooter>
 ```
 

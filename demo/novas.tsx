@@ -305,22 +305,22 @@ function Stepped() {
           step={30}
           className="flex-1"
         />
-        <Button
+        <IconButton
           variant="secondary"
-          size="iconSm"
-          aria-label="Meia hora antes"
+          size="sm"
+          label="Meia hora antes"
           onClick={() => walk(-1)}
         >
           -
-        </Button>
-        <Button
+        </IconButton>
+        <IconButton
           variant="secondary"
-          size="iconSm"
-          aria-label="Meia hora depois"
+          size="sm"
+          label="Meia hora depois"
           onClick={() => walk(1)}
         >
           +
-        </Button>
+        </IconButton>
       </div>
       <FieldDescription>Das 08:00 as 18:00, de meia em meia hora.</FieldDescription>
     </Field>
@@ -430,9 +430,9 @@ function Confirms({ openPanel }: { openPanel: boolean }) {
           description="A linha sai da lista e o cliente deixa de ver o documento."
           confirmLabel="Excluir"
           trigger={
-            <Button variant="ghost" size="iconSm" aria-label="Excluir a nota 4813">
+            <IconButton variant="ghost" size="sm" label="Excluir a nota 4813">
               <Trash2 size={16} aria-hidden="true" />
-            </Button>
+            </IconButton>
           }
           onConfirm={() => {}}
         />
@@ -643,7 +643,7 @@ function IconButtons() {
         <IconButton variant="ghost" label="Editar nota" tooltip>
           <Pencil />
         </IconButton>
-        <IconButton variant="destructive" label="Excluir nota">
+        <IconButton variant="danger" label="Excluir nota">
           <Trash2 />
         </IconButton>
       </div>
@@ -698,7 +698,7 @@ function Batch() {
           <Download size={14} aria-hidden="true" />
           Exportar XML
         </Button>
-        <Button size="sm" variant="destructive">
+        <Button size="sm" variant="danger">
           <Trash2 size={14} aria-hidden="true" />
           Cancelar notas
         </Button>

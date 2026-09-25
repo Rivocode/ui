@@ -1,5 +1,6 @@
 import {
   Button,
+  IconButton,
   Popconfirm,
   Table,
   TableBody,
@@ -49,13 +50,13 @@ export function DeletingARow() {
                   confirmLabel="Excluir"
                   align="end"
                   trigger={
-                    <Button
+                    <IconButton
                       variant="ghost"
-                      size="iconSm"
-                      aria-label={`Excluir a nota ${row.number}`}
+                      size="sm"
+                      label={`Excluir a nota ${row.number}`}
                     >
                       <Trash2 size={16} aria-hidden="true" />
-                    </Button>
+                    </IconButton>
                   }
                   onConfirm={() =>
                     setRows((current) => current.filter((item) => item.id !== row.id))

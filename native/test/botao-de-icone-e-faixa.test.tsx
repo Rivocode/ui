@@ -64,14 +64,14 @@ describe("IconButton", () => {
   test("o quadrado sai do mesmo vocabulario de classe do Button", () => {
     const icon = byRole(
       render(
-        <IconButton label="Excluir" variant="destructive">
+        <IconButton label="Excluir" variant="danger">
           {null}
         </IconButton>,
       ),
       "button",
     )[0].props.className.split(" ");
     const button = byRole(
-      render(<Button variant="destructive">x</Button>),
+      render(<Button variant="danger">x</Button>),
       "button",
     )[0].props.className.split(" ");
 

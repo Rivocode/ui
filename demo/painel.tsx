@@ -18,6 +18,7 @@ import {
   DescriptionList,
   Editable,
   Grid,
+  IconButton,
   Kbd,
   Menu,
   MenuContent,
@@ -134,10 +135,12 @@ function Numbers() {
           actions={
             <Menu>
               <MenuTrigger
-                render={<Button variant="ghost" size="iconSm" aria-label="Acoes do indicador" />}
-              >
-                <MoreHorizontal size={16} aria-hidden="true" />
-              </MenuTrigger>
+                render={
+                  <IconButton variant="ghost" size="sm" label="Acoes do indicador">
+                    <MoreHorizontal size={16} aria-hidden="true" />
+                  </IconButton>
+                }
+              />
               <MenuContent>
                 <MenuItem>Ver recebimentos</MenuItem>
                 <MenuItem>Exportar planilha</MenuItem>

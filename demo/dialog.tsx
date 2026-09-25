@@ -35,7 +35,7 @@ function DialogSample({ theme }: { theme: RivoTheme }) {
           </DialogDescription>
           <DialogFooter>
             <DialogClose render={<Button variant="ghost">Cancelar</Button>} />
-            <Button variant="destructive">Excluir projeto</Button>
+            <Button variant="danger">Excluir projeto</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -57,7 +57,7 @@ function AlertSample({ theme }: { theme: RivoTheme }) {
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogClose render={<Button variant="secondary" />}>Manter nota</AlertDialogClose>
-            <AlertDialogClose render={<Button variant="destructive" />}>
+            <AlertDialogClose render={<Button variant="danger" />}>
               Cancelar nota
             </AlertDialogClose>
           </AlertDialogFooter>

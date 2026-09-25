@@ -11,6 +11,7 @@ import {
   Card,
   Checkbox,
   EmptyState,
+  IconButton,
   Menu,
   MenuContent,
   MenuGroup,
@@ -197,10 +198,12 @@ function Tela({ theme, density }: { theme: RivoTheme; density: RivoDensity }) {
                     <TableCell className="text-right">
                       <Menu>
                         <MenuTrigger
-                          render={<Button variant="ghost" size="iconSm" aria-label="Mais acoes" />}
-                        >
-                          <MoreHorizontal size={16} aria-hidden="true" />
-                        </MenuTrigger>
+                          render={
+                            <IconButton variant="ghost" size="sm" label="Mais acoes">
+                              <MoreHorizontal size={16} aria-hidden="true" />
+                            </IconButton>
+                          }
+                        />
                         <MenuContent>
                           <MenuGroup label={`Nota ${nota.id}`}>
                             <MenuItem>

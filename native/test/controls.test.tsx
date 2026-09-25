@@ -85,7 +85,7 @@ describe("Button", () => {
   test("cada variante veste o papel certo, nunca cor literal", () => {
     for (const [variant, expected] of [
       ["primary", "bg-accent"],
-      ["destructive", "bg-danger"],
+      ["danger", "bg-danger"],
     ] as const) {
       const screen = render(<Button variant={variant}>x</Button>);
       expect(byRole(screen, "button")[0].props.className).toContain(expected);

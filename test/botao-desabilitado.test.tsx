@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { Button } from "../src/components/button";
 import { IconButton } from "../src/components/icon-button";
 
-const CONTORNADAS = ["primary", "secondary", "outline", "destructive"] as const;
+const CONTORNADAS = ["primary", "secondary", "outline", "danger"] as const;
 
 for (const variant of CONTORNADAS) {
   test(`o ${variant} desabilitado desenha o contorno de inativo, e nao some sobre a superficie`, () => {
@@ -22,7 +22,7 @@ for (const variant of CONTORNADAS) {
 }
 
 test("o primario e o destrutivo guardam a borda transparente viva, e o tamanho nao pula ao desabilitar", () => {
-  for (const variant of ["primary", "destructive"] as const) {
+  for (const variant of ["primary", "danger"] as const) {
     const { unmount } = render(<Button variant={variant}>Emitir</Button>);
     const classes = screen.getByRole("button").className.split(" ");
     expect(classes).toContain("border");

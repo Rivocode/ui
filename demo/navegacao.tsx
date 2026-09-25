@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 
 import {
   Badge,
-  Button,
+  IconButton,
   Indicator,
   NavigationMenu,
   NavigationMenuContent,
@@ -104,15 +104,15 @@ function ScreenWithSidebar({ theme, isOpen }: { theme: RivoTheme; isOpen: boolea
 
             <div className="ml-auto flex items-center gap-4">
               <Indicator count={7} label="7 avisos nao lidos">
-                <Button variant="ghost" size="icon" aria-label="Avisos">
-                  <Bell size={18} aria-hidden="true" />
-                </Button>
+                <IconButton variant="ghost" label="Avisos">
+                  <Bell size={16} aria-hidden="true" />
+                </IconButton>
               </Indicator>
 
               <Indicator dot label="Ha algo novo nos ajustes">
-                <Button variant="ghost" size="icon" aria-label="Ajustes">
-                  <Settings size={18} aria-hidden="true" />
-                </Button>
+                <IconButton variant="ghost" label="Ajustes">
+                  <Settings size={16} aria-hidden="true" />
+                </IconButton>
               </Indicator>
             </div>
           </header>

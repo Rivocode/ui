@@ -6,12 +6,18 @@ import type { ReactNode } from "react";
 import { useClipboard } from "../hooks/clipboard";
 import { cn } from "../lib/cn";
 import { Button, type ButtonProps } from "./button";
+import { IconButton } from "./icon-button";
 
-export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy" | "value"> & {
+export type ClipboardProps = Omit<
+  ButtonProps,
+  "children" | "onCopy" | "value" | "size" | "aria-label" | "aria-labelledby"
+> & {
   /** O que vai para a area de transferencia. */
   value: string;
-  /** Texto ao lado do icone. Sem ele, o botao e so o icone. */
+  /** Texto ao lado do icone. Sem ele, o botao e so o icone, desenhado pelo `IconButton`. */
   children?: ReactNode;
+  /** A altura do botao, lida de `--rc-control-*`. Sem texto, e o lado do quadrado. */
+  size?: "sm" | "md" | "lg";
   /** Quanto tempo a confirmacao fica na tela, em ms. */
   timeout?: number;
   /** O que o leitor de tela chama o botao antes e depois de copiar. */
@@ -25,7 +31,7 @@ const CHECK: Record<NonNullable<ButtonProps["variant"]>, string> = {
   secondary: "text-success-text",
   ghost: "text-success-text",
   outline: "text-success-text",
-  destructive: "text-danger-fg",
+  danger: "text-danger-fg",
 };
 
 export function Clipboard({
@@ -48,29 +54,46 @@ export function Clipboard({
     if (await clipboard.copy(value)) onCopy?.(value);
   }
 
+  const icon = copied ? (
+    <Check
+      size={14}
+      aria-hidden="true"
+      className={cn(
+        "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]",
+        CHECK[variant ?? "secondary"],
+      )}
+    />
+  ) : (
+    <Copy size={14} aria-hidden="true" />
+  );
+
+  if (!children) {
+    return (
+      <IconButton
+        {...props}
+        type="button"
+        variant={variant}
+        size={size ?? "sm"}
+        onClick={copy}
+        label={copied ? copiedLabel : copyLabel}
+        className={className}
+      >
+        {icon}
+      </IconButton>
+    );
+  }
+
   return (
     <Button
       {...props}
       type="button"
       variant={variant}
-      size={size ?? (children ? "sm" : "iconSm")}
+      size={size ?? "sm"}
       onClick={copy}
-      aria-label={children ? undefined : copied ? copiedLabel : copyLabel}
       className={cn("gap-1.5", className)}
     >
-      {copied ? (
-        <Check
-          size={14}
-          aria-hidden="true"
-          className={cn(
-            "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]",
-            CHECK[variant ?? "secondary"],
-          )}
-        />
-      ) : (
-        <Copy size={14} aria-hidden="true" />
-      )}
-      {children ? (copied ? copiedLabel : copyLabel) : null}
+      {icon}
+      {copied ? copiedLabel : copyLabel}
     </Button>
   );
 }

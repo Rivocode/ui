@@ -42,7 +42,7 @@ export function WithDataTable() {
           <Download aria-hidden="true" size={14} />
           Exportar XML
         </Button>
-        <Button size="sm" variant="destructive">
+        <Button size="sm" variant="danger">
           <Trash2 aria-hidden="true" size={14} />
           Cancelar notas
         </Button>

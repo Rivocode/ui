@@ -4,7 +4,7 @@ import { RotateCw, Trash2, UploadCloud } from "lucide-react";
 import { useRef, useState, type ComponentProps, type DragEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
-import { Button } from "./button";
+import { IconButton } from "./icon-button";
 
 const UNIT = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
 
@@ -223,15 +223,15 @@ export function FileUploadItem({
         )}
       </div>
 
-      <Button
-        size="iconSm"
+      <IconButton
+        size="sm"
         variant="ghost"
-        aria-label={`Remover ${name}`}
+        label={`Remover ${name}`}
         onClick={onRemove}
         data-rc-keep-row=""
       >
         <Trash2 size={14} />
-      </Button>
+      </IconButton>
     </li>
   );
 }

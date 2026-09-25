@@ -29,9 +29,13 @@ verbo não obriga a reescrever a confirmação junto.
 
 O `variant` é o do `Button`. O visto da confirmação sai no verde de sucesso em
 `secondary`, `ghost` e `outline`; nos dois preenchidos, `primary` e
-`destructive`, ele sai na cor do rótulo, porque o verde medido sobre eles fica
+`danger`, ele sai na cor do rótulo, porque o verde medido sobre eles fica
 em 1,41:1 no `accent` do tema escuro e em 1,08:1 no `danger` do claro, contra
 os 3:1 que um ícone pede.
+
+Sem `children`, o botão é um `IconButton`, e o nome acessível é o de `labels`,
+que muda para o de confirmado depois de copiar. `size` escolhe o lado do
+quadrado entre `sm` (o padrão), `md` e `lg`; com texto, escolhe a altura.
 
 ## Quando não usar
 
@@ -49,4 +53,4 @@ Traduz, no caminho próprio `@rivocode/ui-native/clipboard`, com o mesmo arranjo
 
 Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.
 
-**O `variant` é o do `Button`, e aceita os mesmos cinco nomes do web**: `primary`, `secondary` (o padrão), `ghost`, `outline` e `destructive`, cada um com o fundo e o rótulo do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `destructive`, o visto da confirmação sai na cor do rótulo, e não no verde de sucesso: medido, o verde fica em 1,41:1 sobre o `accent` do tema escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 que um ícone pede.
+**O `variant` é o do `Button`, e aceita os mesmos cinco nomes do web**: `primary`, `secondary` (o padrão), `ghost`, `outline` e `danger`, cada um com o fundo e o rótulo do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `danger`, o visto da confirmação sai na cor do rótulo, e não no verde de sucesso: medido, o verde fica em 1,41:1 sobre o `accent` do tema escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 que um ícone pede.

@@ -92,8 +92,8 @@ describe("AlertDialog", () => {
     );
 
     const buttons = byRole(screen, "button");
-    const destructive = buttons.find((node) => /bg-danger/.test(node.props.className ?? ""));
-    act(() => destructive!.props.onPress());
+    const danger = buttons.find((node) => /bg-danger/.test(node.props.className ?? ""));
+    act(() => danger!.props.onPress());
     expect(calls).toEqual(["action", "open:false"]);
 
     calls.length = 0;

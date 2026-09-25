@@ -74,7 +74,7 @@ export function Sample() {
         <Button variant="secondary">Salvar rascunho</Button>
         <Button variant="outline">Ver detalhes</Button>
         <Button variant="ghost">Voltar</Button>
-        <Button variant="destructive">Cancelar nota</Button>
+        <Button variant="danger">Cancelar nota</Button>
         <Button disabled>Travado</Button>
       </div>
 

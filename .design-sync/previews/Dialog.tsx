@@ -5,7 +5,7 @@ export function Confirmation() {
   return (
     <div className="min-h-72">
       <Dialog defaultOpen /* rc-keep-open */>
-        <DialogTrigger render={<Button variant="destructive" />}>Excluir projeto</DialogTrigger>
+        <DialogTrigger render={<Button variant="danger" />}>Excluir projeto</DialogTrigger>
         <DialogContent>
           <DialogTitle>Excluir projeto</DialogTitle>
           <DialogDescription>
@@ -13,7 +13,7 @@ export function Confirmation() {
           </DialogDescription>
           <DialogFooter>
             <DialogClose render={<Button variant="ghost" />}>Cancelar</DialogClose>
-            <Button variant="destructive">Excluir projeto</Button>
+            <Button variant="danger">Excluir projeto</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

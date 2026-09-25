@@ -22,7 +22,7 @@ const [selected, setSelected] = useState<string[]>([])
 />
 <ActionBar count={selected.length} onClear={() => setSelected([])}>
   <Button size="sm" variant="secondary">Exportar XML</Button>
-  <Button size="sm" variant="destructive">Cancelar notas</Button>
+  <Button size="sm" variant="danger">Cancelar notas</Button>
 </ActionBar>
 ```
 

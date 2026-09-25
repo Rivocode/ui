@@ -15,7 +15,7 @@ test("a variante padrao e a primaria", () => {
 });
 
 test("a variante destrutiva usa o token de perigo, nunca um vermelho literal", () => {
-  render(<Button variant="destructive">Excluir</Button>);
+  render(<Button variant="danger">Excluir</Button>);
   const classes = screen.getByRole("button").className;
   expect(classes.split(" ")).toContain("bg-danger");
   expect(classes).not.toMatch(/#[0-9a-f]{3,6}/i);
@@ -70,7 +70,7 @@ test("carregando, o botao mantem a variante em vez de virar cinza", () => {
   // o cinza de desabilitado, e um destrutivo em andamento saia identico a um
   // secundario desligado.
   render(
-    <Button variant="destructive" loading>
+    <Button variant="danger" loading>
       Excluindo
     </Button>,
   );
@@ -83,7 +83,7 @@ test("carregando, o botao mantem a variante em vez de virar cinza", () => {
 
 test("desabilitado de verdade continua neutro, e nao se parece com carregando", () => {
   render(
-    <Button variant="destructive" disabled>
+    <Button variant="danger" disabled>
       Excluir
     </Button>,
   );
@@ -93,15 +93,16 @@ test("desabilitado de verdade continua neutro, e nao se parece com carregando", 
   expect(botao.getAttribute("aria-busy")).toBeNull();
 });
 
-test("o tamanho de icone e quadrado, para o botao de acao da tabela", () => {
+test("o botao nao desenha quadrado de icone: esse papel e so do IconButton", () => {
   render(
+    // @ts-expect-error
     <Button size="icon" aria-label="Mais acoes">
       .
     </Button>,
   );
-  const classes = screen.getByRole("button", { name: "Mais acoes" }).className;
-  expect(classes).toContain("size-[var(--rc-control-md)]");
-  expect(classes.split(" ")).toContain("p-0");
+  const tokens = screen.getByRole("button", { name: "Mais acoes" }).className.split(" ");
+  expect(tokens).not.toContain("size-[var(--rc-control-md)]");
+  expect(tokens).not.toContain("p-0");
 });
 
 test("o botao sabe virar link, porque metade dos botoes de um site e link", () => {

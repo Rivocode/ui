@@ -5,7 +5,7 @@ export function Cancelling() {
   return (
     <div className="min-h-72">
       <AlertDialog defaultOpen /* rc-keep-open */>
-        <AlertDialogTrigger render={<Button variant="destructive" />}>Cancelar nota</AlertDialogTrigger>
+        <AlertDialogTrigger render={<Button variant="danger" />}>Cancelar nota</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogTitle>Cancelar a nota 4813?</AlertDialogTitle>
           <AlertDialogDescription>
@@ -13,7 +13,7 @@ export function Cancelling() {
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogClose render={<Button variant="secondary" />}>Manter nota</AlertDialogClose>
-            <AlertDialogClose render={<Button variant="destructive" />}>Cancelar nota</AlertDialogClose>
+            <AlertDialogClose render={<Button variant="danger" />}>Cancelar nota</AlertDialogClose>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

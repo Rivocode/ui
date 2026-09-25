@@ -26,7 +26,7 @@ da peça: 16px no `sm` e no `md`, 20px no `lg`. Não precisa passar `size` para 
 ## Variantes e tamanhos
 
 As mesmas cinco variantes do `Button` (`primary`, `secondary`, `outline`,
-`ghost`, `destructive`) e a mesma `shape="pill"`, lidas das mesmas classes: o
+`ghost`, `danger`) e a mesma `shape="pill"`, lidas das mesmas classes: o
 `IconButton` é um `Button` por dentro, e não uma cópia dele. O que muda é o
 tamanho. `sm`, `md` e `lg` são quadrados cujo lado é a altura de controle do
 token (`--rc-control-sm`, `-md`, `-lg`), então o botão de ícone encolhe junto
@@ -69,15 +69,16 @@ Botão que fica apertado (negrito, alinhamento, modo de exibição) é `Toggle`:
 `IconButton` dispara uma ação e não guarda estado, e o `Toggle` diz
 `aria-pressed`.
 
-O `Button` ainda aceita `size="icon"` e `size="iconSm"`, e eles continuam
-funcionando. O `IconButton` é o caminho recomendado porque exige o nome, tem o
-terceiro tamanho e resolve a espera sem alargar o quadrado.
+O `Button` não desenha quadrado de ícone: `size` nele é só `sm`, `md`, `lg` e
+`cta`, todos com rótulo escrito. Botão só com ícone é sempre esta peça, porque
+ela exige o nome, tem os três tamanhos e resolve a espera sem alargar o
+quadrado.
 
 ## No React Native
 
 Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo recusa o botão sem ele. O `accessibilityLabel` não entra: o nome é um só, o `label`, e é ele que vira o `accessibilityLabel` do `Pressable`.
 
-**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `outline`, `destructive`), lidas das mesmas classes: só `shape` não atravessa, pelo mesmo motivo de lá.
+**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `outline`, `danger`), lidas das mesmas classes: só `shape` não atravessa, pelo mesmo motivo de lá.
 
 **Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. Se o ícone não se lê sozinho, o botão pede texto: use `Button`.
 

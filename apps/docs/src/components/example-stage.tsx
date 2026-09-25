@@ -1,4 +1,14 @@
-import { Button, RivoProvider, Tab, TabList, TabPanel, Tabs, Tooltip, TooltipContent, TooltipTrigger } from '@rivocode/ui'
+import {
+  IconButton,
+  RivoProvider,
+  Tab,
+  TabList,
+  TabPanel,
+  Tabs,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@rivocode/ui'
 import { Check, Code2, Copy, Eye, Monitor, Smartphone, Tablet } from 'lucide-react'
 import { useEffect, useRef, useState, type ComponentType } from 'react'
 import { anchor } from '@/anchor'
@@ -59,18 +69,18 @@ function CopyButton({ text }: { text: string }) {
     <Tooltip>
       <TooltipTrigger
         render={
-          <Button
-            size="iconSm"
+          <IconButton
+            size="sm"
             variant="ghost"
-            aria-label={copied ? 'Código copiado' : 'Copiar código'}
+            label={copied ? 'Código copiado' : 'Copiar código'}
             onClick={() => {
               navigator.clipboard.writeText(text).then(() => setCopied(true))
             }}
-          />
+          >
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+          </IconButton>
         }
-      >
-        {copied ? <Check size={14} /> : <Copy size={14} />}
-      </TooltipTrigger>
+      />
       <TooltipContent>{copied ? 'Copiado' : 'Copiar código'}</TooltipContent>
     </Tooltip>
   )

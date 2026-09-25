@@ -6,7 +6,7 @@ import { Stat } from "../src/components/stat";
 import { Indicator, indicatorWidthComplaint } from "../src/components/indicator";
 import { AvatarGroup } from "../src/components/avatar-group";
 import { Avatar } from "../src/components/avatar";
-import { Button } from "../src/components/button";
+import { IconButton } from "../src/components/icon-button";
 
 /*
  * O que a reconstrucao de um painel de administracao encontrou: 21% das linhas
@@ -28,7 +28,7 @@ test("o cartao de indicador aceita icone, acoes e rodape", () => {
       delta={20}
       deltaLabel="sobre julho"
       icon={<span data-testid="icone">R$</span>}
-      actions={<Button size="iconSm" aria-label="Mais ações" />}
+      actions={<IconButton size="sm" label="Mais ações"><span /></IconButton>}
       footer={<span>Meta: 82%</span>}
     />,
   );
@@ -51,7 +51,7 @@ test("a variacao tambem sai como pastilha, que e a convencao de painel", () => {
 test("a contagem sobre o sino tem peca, e nao um Badge posicionado na mao", () => {
   withTheme(
     <Indicator count={7} label="7 avisos não lidos">
-      <Button size="icon" aria-label="Avisos" />
+      <IconButton label="Avisos"><span /></IconButton>
     </Indicator>,
   );
 
@@ -63,7 +63,7 @@ test("a contagem sobre o sino tem peca, e nao um Badge posicionado na mao", () =
 test("a contagem grande vira um teto, em vez de esticar a pastilha", () => {
   withTheme(
     <Indicator count={150} max={99}>
-      <Button size="icon" aria-label="Avisos" />
+      <IconButton label="Avisos"><span /></IconButton>
     </Indicator>,
   );
 
@@ -104,7 +104,7 @@ test("alvo pequeno nao e acusado: o sino, o item da barra e o avatar cabem nos 4
   measuring(48, () =>
     withTheme(
       <Indicator count={3} label="3 avisos não lidos">
-        <Button size="icon" aria-label="Avisos" />
+        <IconButton label="Avisos"><span /></IconButton>
       </Indicator>,
     ),
   );
@@ -120,7 +120,7 @@ test("a moldura que mede ainda entrega o no a quem pediu por ref", () => {
 
   withTheme(
     <Indicator count={3} label="3 avisos não lidos" ref={(element) => void (node = element)}>
-      <Button size="icon" aria-label="Avisos" />
+      <IconButton label="Avisos"><span /></IconButton>
     </Indicator>,
   );
 

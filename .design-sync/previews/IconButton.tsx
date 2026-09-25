@@ -17,7 +17,7 @@ export function Variants() {
       <IconButton variant="ghost" label="Editar nota">
         <Pencil />
       </IconButton>
-      <IconButton variant="destructive" label="Excluir nota">
+      <IconButton variant="danger" label="Excluir nota">
         <Trash2 />
       </IconButton>
     </div>

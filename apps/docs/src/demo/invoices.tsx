@@ -6,6 +6,7 @@ import {
   DataTable,
   DescriptionItem,
   DescriptionList,
+  IconButton,
   Menu,
   MenuContent,
   MenuItem,
@@ -109,11 +110,11 @@ export function Invoices() {
         <Menu>
           <MenuTrigger
             render={
-              <Button size="iconSm" variant="ghost" aria-label={`Ações da nota ${invoice.number}`} />
+              <IconButton size="sm" variant="ghost" label={`Ações da nota ${invoice.number}`}>
+                <MoreHorizontal size={16} />
+              </IconButton>
             }
-          >
-            <MoreHorizontal size={16} />
-          </MenuTrigger>
+          />
           <MenuContent>
             <MenuItem onClick={() => setOpen(invoice)}>Ver detalhes</MenuItem>
             <MenuItem
@@ -168,9 +169,9 @@ export function Invoices() {
             </SelectContent>
           </Select>
 
-          <Button variant="secondary" size="icon" aria-label="Mais filtros">
+          <IconButton variant="secondary" label="Mais filtros">
             <SlidersHorizontal size={16} />
-          </Button>
+          </IconButton>
 
           <Button
             variant="secondary"

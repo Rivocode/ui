@@ -12,7 +12,7 @@ export const BUTTON_CONTAINER = {
   secondary: "bg-surface border border-border-strong active:bg-surface-raised",
   ghost: "active:bg-accent-subtle",
   outline: "border-2 border-border-strong active:bg-accent-subtle",
-  destructive: "bg-danger active:opacity-90",
+  danger: "bg-danger active:opacity-90",
 } satisfies Record<string, string>;
 
 export type ButtonVariant = keyof typeof BUTTON_CONTAINER;
@@ -22,7 +22,7 @@ export const BUTTON_LABEL: Record<ButtonVariant, string> = {
   secondary: "text-fg",
   ghost: "text-fg-muted",
   outline: "text-fg",
-  destructive: "text-danger-fg",
+  danger: "text-danger-fg",
 };
 
 export const BUTTON_INK: Record<ButtonVariant, keyof (typeof tokens.themes)["rivocode-dark"]> = {
@@ -30,7 +30,7 @@ export const BUTTON_INK: Record<ButtonVariant, keyof (typeof tokens.themes)["riv
   secondary: "fg",
   ghost: "fg-muted",
   outline: "fg",
-  destructive: "danger-fg",
+  danger: "danger-fg",
 };
 
 export function ButtonSpinner({ variant }: { variant: ButtonVariant }) {

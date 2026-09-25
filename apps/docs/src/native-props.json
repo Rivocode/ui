@@ -479,7 +479,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
         "note": "O desenho do botao, com os nomes do web."
       }
@@ -1341,7 +1341,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
         "note": "O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`."
       }
@@ -2559,7 +2559,7 @@
       },
       {
         "name": "variant",
-        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
+        "type": "\"danger\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
         "note": "As variantes do `Button`, lidas das mesmas classes."
       }

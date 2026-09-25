@@ -1,6 +1,7 @@
 import { Columns3, Download, MoreHorizontal, SlidersHorizontal, Trash2 } from 'lucide-react'
 import {
   Button,
+  IconButton,
   Menu,
   MenuCheckboxItem,
   MenuContent,
@@ -26,9 +27,13 @@ export function RowActions() {
   return (
     <div className="min-h-64">
       <Menu defaultOpen /* rc-keep-open */>
-        <MenuTrigger render={<Button variant="secondary" size="icon" aria-label="Mais ações" />}>
-          <MoreHorizontal size={16} aria-hidden="true" />
-        </MenuTrigger>
+        <MenuTrigger
+          render={
+            <IconButton variant="secondary" label="Mais ações">
+              <MoreHorizontal size={16} aria-hidden="true" />
+            </IconButton>
+          }
+        />
         <MenuContent>
           <MenuGroup label="Nota 4813">
             <MenuItem>

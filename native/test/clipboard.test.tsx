@@ -183,7 +183,7 @@ const VARIANTS = [
     check: "border-success-text",
   },
   {
-    variant: "destructive",
+    variant: "danger",
     fill: ["bg-danger", "active:opacity-90"],
     label: "text-danger-fg",
     copy: "border-danger-fg",

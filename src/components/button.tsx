@@ -27,15 +27,13 @@ export const buttonVariants = cva(
           "border-2 border-border-strong bg-transparent text-fg",
           "hover:border-line-hover hover:bg-accent-subtle",
         ),
-        destructive: "border border-transparent bg-danger text-danger-fg",
+        danger: "border border-transparent bg-danger text-danger-fg",
       },
       size: {
         sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
         md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
         lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
-        icon: "size-[var(--rc-control-md)] p-0",
         cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-rc-bold",
-        iconSm: "size-[var(--rc-control-sm)] p-0",
       },
       shape: {
         default: "rounded-md",

@@ -687,7 +687,7 @@ function Painel({
                 <Text className="text-base text-fg">Emanuel Bacalhau</Text>
                 <Text className="text-xs text-fg-subtle">emissor</Text>
               </View>
-              <Button size="sm" variant="destructive" onPress={() => setConfirming(true)}>
+              <Button size="sm" variant="danger" onPress={() => setConfirming(true)}>
                 Cancelar nota
               </Button>
             </View>

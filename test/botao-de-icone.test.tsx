@@ -56,7 +56,7 @@ test("o quadrado sai do token de altura de controle, nos tres tamanhos", () => {
 
 test("herda as variantes do Button, sem copiar a classe", () => {
   mount(
-    <IconButton label="Excluir" variant="destructive">
+    <IconButton label="Excluir" variant="danger">
       <Trash2 />
     </IconButton>,
   );

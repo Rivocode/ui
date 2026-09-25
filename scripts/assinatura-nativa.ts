@@ -206,7 +206,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "size",
         native: "size",
-        note: "`cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop`",
+        note: "`cta` não porta: alvo de toque não encolhe. Botão só de ícone é o `IconButton` nos dois lados",
       },
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
     ],

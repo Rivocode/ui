@@ -219,7 +219,7 @@ export function Popconfirm({
   const confirmButton = (
     <Button
       type="button"
-      variant={tone === "danger" ? "destructive" : "primary"}
+      variant={tone === "danger" ? "danger" : "primary"}
       size={isMobile ? "md" : "sm"}
       loading={busy}
       onClick={confirm}

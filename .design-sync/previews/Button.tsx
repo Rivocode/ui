@@ -9,7 +9,7 @@ export function Variants() {
       <Button variant="secondary">Cancelar</Button>
       <Button variant="outline">Quero um diagnóstico</Button>
       <Button variant="ghost">Ver detalhes</Button>
-      <Button variant="destructive">Excluir projeto</Button>
+      <Button variant="danger">Excluir projeto</Button>
     </div>
   )
 }

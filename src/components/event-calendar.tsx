@@ -39,6 +39,7 @@ import { useMobile } from "../lib/screen";
 import type { Slots } from "../lib/slots";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { Button } from "./button";
+import { IconButton } from "./icon-button";
 import { Calendar } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import { EmptyState } from "./empty-state";
@@ -1304,31 +1305,23 @@ export function EventCalendar({
         data-rc-toolbar=""
         className={cn("flex flex-wrap items-center gap-2", classNames?.toolbar)}
       >
-        <Button
+        <IconButton
           ref={toolbar}
           variant="secondary"
-          size="iconSm"
-          aria-label="Período anterior"
+          size="sm"
+          label="Período anterior"
           onClick={() => shift(-1)}
         >
-          {rtl ? (
-            <ChevronRight size={16} aria-hidden="true" />
-          ) : (
-            <ChevronLeft size={16} aria-hidden="true" />
-          )}
-        </Button>
-        <Button
+          {rtl ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+        </IconButton>
+        <IconButton
           variant="secondary"
-          size="iconSm"
-          aria-label="Próximo período"
+          size="sm"
+          label="Próximo período"
           onClick={() => shift(1)}
         >
-          {rtl ? (
-            <ChevronLeft size={16} aria-hidden="true" />
-          ) : (
-            <ChevronRight size={16} aria-hidden="true" />
-          )}
-        </Button>
+          {rtl ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+        </IconButton>
         <Button variant="secondary" size="sm" onClick={() => changeDate(new Date())}>
           Hoje
         </Button>

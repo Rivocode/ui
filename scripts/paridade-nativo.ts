@@ -1053,8 +1053,8 @@ const PARITY: Record<string, Row> = {
       "Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` " +
       "para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.\n\n" +
       "**O `variant` é o do `Button`, e aceita os mesmos cinco nomes do web**: `primary`, " +
-      "`secondary` (o padrão), `ghost`, `outline` e `destructive`, cada um com o fundo e o rótulo " +
-      "do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `destructive`, o visto " +
+      "`secondary` (o padrão), `ghost`, `outline` e `danger`, cada um com o fundo e o rótulo " +
+      "do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `danger`, o visto " +
       "da confirmação sai na cor do rótulo, e não no verde de sucesso: medido, o verde fica em " +
       "1,41:1 sobre o `accent` do tema escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 " +
       "que um ícone pede.",
@@ -1537,7 +1537,7 @@ const PARITY: Record<string, Row> = {
       "**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; " +
       "o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem " +
       "crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, " +
-      "`ghost`, `outline`, `destructive`), lidas das mesmas classes: só `shape` não " +
+      "`ghost`, `outline`, `danger`), lidas das mesmas classes: só `shape` não " +
       "atravessa, pelo mesmo motivo de lá.\n\n" +
       "**Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. " +
       "Se o ícone não se lê sozinho, o botão pede texto: use `Button`.\n\n" +

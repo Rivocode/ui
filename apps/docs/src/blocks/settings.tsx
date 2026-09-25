@@ -233,7 +233,7 @@ export default function SettingsPage() {
               </CardHeader>
               <CardFooter className="justify-end">
                 <AlertDialog>
-                  <AlertDialogTrigger render={<Button variant="destructive" />}>
+                  <AlertDialogTrigger render={<Button variant="danger" />}>
                     Excluir a conta
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -246,7 +246,7 @@ export default function SettingsPage() {
                       <AlertDialogClose render={<Button variant="secondary" />}>
                         Manter a conta
                       </AlertDialogClose>
-                      <AlertDialogClose render={<Button variant="destructive" />}>
+                      <AlertDialogClose render={<Button variant="danger" />}>
                         Excluir a conta
                       </AlertDialogClose>
                     </AlertDialogFooter>
