@@ -620,7 +620,8 @@ const PARITY: Record<string, Row> = {
       "O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa " +
       "alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o " +
       "limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega " +
-      "primeiro. Com `moeda`, o limpo são os centavos, sem zero à esquerda.",
+      "primeiro. Com `moeda`, o limpo é o mesmo cru do web, os dígitos do que está na tela: `0,05` " +
+      "entrega `005`, e `12,00` entrega `1200`.",
   },
   CurrencyInput: {
     state: "traduz",

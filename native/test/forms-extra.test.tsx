@@ -202,7 +202,7 @@ describe("MaskedInput", () => {
     expect(cnpj.root.findByType("TextInput" as never).props.value).toBe("12.ABC.345/01DE-35");
   });
 
-  test("telefone troca de molde na nona casa, e moeda entrega os centavos sem zero a esquerda", () => {
+  test("telefone troca de molde na nona casa, e moeda entrega os dígitos da tela, como o cru do web", () => {
     const phone = render(<MaskedInput mask="telefone" value="83999998888" onValueChange={() => {}} />);
     expect(phone.root.findByType("TextInput" as never).props.value).toBe("(83) 99999-8888");
 
@@ -213,7 +213,16 @@ describe("MaskedInput", () => {
     expect(input.props.keyboardType).toBe("number-pad");
 
     act(() => input.props.onChangeText("0,051"));
-    expect(onValueChange).toHaveBeenLastCalledWith("51", "0,51");
+    expect(onValueChange).toHaveBeenLastCalledWith("051", "0,51");
+
+    act(() => input.props.onChangeText("0,0"));
+    expect(onValueChange).toHaveBeenLastCalledWith("", "");
+
+    act(() => input.props.onChangeText("5"));
+    expect(onValueChange).toHaveBeenLastCalledWith("005", "0,05");
+
+    const kept = render(<MaskedInput mask="moeda" value="005" onValueChange={() => {}} />);
+    expect(kept.root.findByType("TextInput" as never).props.value).toBe("0,05");
   });
 });
 

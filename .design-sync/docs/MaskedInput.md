@@ -46,6 +46,10 @@ para a esquerda a cada dígito, o contrário de todo o resto. Os nove primeiros
 vivem em `MASKS`, e `MaskName` é o nome de um deles. O tipo `Mask` da prop
 aceita esse nome, `moeda`, ou um molde escrito à mão.
 
+O cru de `moeda` são os dígitos do que está na tela, com o zero da frente:
+`0,05` entrega `005`, e `12,00` entrega `1200`. Os dois últimos são sempre os
+centavos, e o nativo entrega o mesmo texto.
+
 Nome de molde digitado errado não vira molde literal: `mask="dinheiro"` avisa no
 console em desenvolvimento e deixa o texto passar cru, em vez de escrever
 "dinheiro" dentro do campo, que foi o que a versão anterior fazia.
@@ -99,4 +103,4 @@ telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern
 
 Traduz, com os mesmos moldes: os nomes prontos (`cpf`, `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto` e `moeda`) e o molde escrito à mão, com `9` para dígito, `A` para letra e `*` para os dois, saem de um arquivo só, compartilhado pelos dois pacotes. O molde com `#`, a sintaxe antiga daqui, continua funcionando e está obsoleto: troque `#` por `9`.
 
-O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega primeiro. Com `moeda`, o limpo são os centavos, sem zero à esquerda.
+O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega primeiro. Com `moeda`, o limpo é o mesmo cru do web, os dígitos do que está na tela: `0,05` entrega `005`, e `12,00` entrega `1200`.

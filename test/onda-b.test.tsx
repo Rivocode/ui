@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, mock, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 
@@ -104,6 +104,18 @@ test("o campo de dinheiro enche da direita para a esquerda", () => {
   const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
   fireEvent.change(field, { target: { value: "123456" } });
   expect(field.value).toBe("1.234,56");
+});
+
+test("o cru do dinheiro são os dígitos da tela, com o zero da frente", () => {
+  const onValueChange = mock((_masked: string, _raw: string) => {});
+  withTheme(<MaskedInput mask="moeda" placeholder="Valor" onValueChange={onValueChange} />);
+  const field = screen.getByPlaceholderText("Valor") as HTMLInputElement;
+
+  fireEvent.change(field, { target: { value: "5" } });
+  expect(onValueChange).toHaveBeenLastCalledWith("0,05", "005");
+
+  fireEvent.change(field, { target: { value: "1200" } });
+  expect(onValueChange).toHaveBeenLastCalledWith("12,00", "1200");
 });
 
 test("o campo com mascara abre o teclado de numeros no celular", () => {

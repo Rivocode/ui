@@ -11,7 +11,7 @@ export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onVa
    * letra ou digito, o resto literal) e esta obsoleto: troque `#` por `9`.
    */
   mask: Mask;
-  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. Em `moeda`, os centavos sem zero a esquerda. */
+  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. Em `moeda`, os digitos do texto na tela, como o cru do web: `0,05` entrega `005`, e `12,00` entrega `1200`. */
   value: string;
   /** Chamado a cada tecla com o valor limpo e, no segundo argumento, o texto com mascara que o web entrega primeiro. */
   onValueChange: (clean: string, masked: string) => void;
@@ -48,8 +48,7 @@ const legacyApply = (mask: string, clean: string) => {
 
 const isLegacy = (mask: string) => mask.includes("#");
 
-const cleanOf = (mask: Mask, masked: string) =>
-  mask === "moeda" ? masked.replace(/\D/g, "").replace(/^0+/, "") : unmask(masked).toUpperCase();
+const cleanOf = (masked: string) => unmask(masked).toUpperCase();
 
 const format = (mask: Mask, text: string) =>
   mask === "boleto" ? applyPattern(text, boletoPatternFor(text)) : maskText(text, mask);
@@ -63,7 +62,7 @@ const readTyped = (mask: Mask, text: string) => {
     return { clean, masked: legacyApply(mask, clean) };
   }
   const masked = format(mask, text.toUpperCase());
-  return { clean: cleanOf(mask, masked), masked };
+  return { clean: cleanOf(masked), masked };
 };
 
 const numericKeyboard = (mask: Mask) =>
