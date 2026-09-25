@@ -88,14 +88,110 @@ const pages = readdirSync(DEMO)
   .filter((file) => file.endsWith(".tsx"))
   .sort();
 
+if (pages.length < 15 || pieces.length < 100) {
+  console.error(
+    `A varredura leu ${pages.length} pagina(s) de ${DEMO}/ e ${pieces.length} peca(s) de ${DOCS}/,\n` +
+      "  e o piso e 15 e 100. Lista curta aqui deixa a guarda verde sem ter olhado.",
+  );
+  process.exit(1);
+}
+
 const sources = await Promise.all(
   pages.map(async (page) => [page, await Bun.file(`${DEMO}/${page}`).text()] as const),
 );
 
-/** Onde a peca aparece, por nome inteiro: `Card` nao casa dentro de `CardHeader`. */
+/**
+ * Um arquivo de `demo/` partido nas declaracoes de topo, e o que o render alcanca.
+ *
+ * Em 24/09/2026 a juncao das frentes da 0.18.0 deixou em `demo/novas.tsx` as
+ * funcoes `Transfers`, `Highlights` e `Spoilers` definidas e nunca chamadas: o
+ * `Sample` que as montava perdeu as tres linhas. A guarda antiga procurava o
+ * NOME no texto, e `TransferList`, `Highlight` e `Spoiler` estavam escritos
+ * dentro das funcoes mortas, entao ela ficou verde com as tres pecas fora da
+ * tela. Era o mesmo defeito do dia que a fez nascer - peca que ninguem olhou -
+ * vindo pela porta que ela deixava aberta.
+ *
+ * Agora conta so `<Peca` escrito dentro de codigo que o render ALCANCA. Raiz e
+ * todo comando de topo que nao e declaracao (`createRoot(...).render(...)`,
+ * o `if (view === ...) root.render(...)` das paginas de retrato) e toda
+ * declaracao que chama `createRoot`. Dali, uma declaracao entra quando o nome
+ * dela aparece em codigo ja alcancado. Nao e um analisador de verdade: o recorte
+ * e por linha que comeca na coluna zero, que e como os arquivos de `demo/` sao
+ * escritos, e `{false && <Peca />}` ainda passaria. O que ele fecha e a forma
+ * que de fato aconteceu: funcao inteira que ninguem chama.
+ */
+type Segment = { name: string | null; code: string };
+
+const DECLARATION =
+  /^(?:export\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|const|let|var|class|type|interface|enum)\s+([A-Za-z_$][\w$]*)/;
+
+function segmentsOf(source: string): Segment[] {
+  const segments: Segment[] = [];
+  let current: Segment = { name: "#topo", code: "" };
+
+  for (const line of source.split("\n")) {
+    if (/^[A-Za-z_$]/.test(line) && !/^(?:else|from)\b/.test(line)) {
+      const declared = DECLARATION.exec(line);
+      current = { name: /^import\b/.test(line) ? "#import" : declared ? declared[1]! : null, code: "" };
+      segments.push(current);
+    }
+    current.code += line + "\n";
+  }
+
+  return segments.filter((segment) => segment.name !== "#import");
+}
+
+function reachableCode(source: string) {
+  const segments = segmentsOf(source);
+  const seen = new Set<Segment>(
+    segments.filter((segment) => segment.name === null || segment.code.includes("createRoot(")),
+  );
+  const queue = [...seen];
+
+  while (queue.length > 0) {
+    const code = queue.shift()!.code;
+    for (const segment of segments) {
+      if (seen.has(segment) || !segment.name) continue;
+      if (new RegExp(`(?<![\\w$.])${segment.name.replace(/\$/g, "\\$")}(?![\\w$])`).test(code)) {
+        seen.add(segment);
+        queue.push(segment);
+      }
+    }
+  }
+
+  return {
+    live: segments.filter((segment) => seen.has(segment)).map((segment) => segment.code).join("\n"),
+    dead: segments.filter((segment) => !seen.has(segment)).map((segment) => segment.code).join("\n"),
+  };
+}
+
+const reached = sources.map(([page, source]) => [page, reachableCode(source)] as const);
+
+for (const [page, code] of reached) {
+  if (!/\.render\(/.test(code.live)) {
+    console.error(
+      `${DEMO}/${page}: o recorte nao achou nenhum \`.render(\` em codigo alcancado.\n` +
+        "  Sem raiz, toda peca da pagina contaria como morta - ou, pior, a leitura\n" +
+        "  mudou de forma e a guarda deixou de medir. Confira o recorte em segmentsOf.",
+    );
+    process.exit(1);
+  }
+}
+
+/**
+ * Onde a peca e RENDERIZADA, por nome inteiro: `<Card` nao casa dentro de
+ * `<CardHeader`, e o nome solto num import, numa string ou numa funcao que
+ * ninguem chama nao conta.
+ */
 function pagesWith(piece: string) {
-  const named = new RegExp(`\\b${piece}\\b`);
-  return sources.filter(([, source]) => named.test(source)).map(([page]) => page);
+  const rendered = new RegExp(`<${piece}\\b`);
+  return reached.filter(([, code]) => rendered.test(code.live)).map(([page]) => page);
+}
+
+/** Onde a peca so aparece em codigo morto, para a mensagem dizer onde procurar. */
+function deadPagesWith(piece: string) {
+  const rendered = new RegExp(`<${piece}\\b`);
+  return reached.filter(([, code]) => rendered.test(code.dead)).map(([page]) => page);
 }
 
 const problems: string[] = [];
@@ -123,8 +219,12 @@ for (const piece of pieces) {
     continue;
   }
 
+  const dead = deadPagesWith(piece);
   problems.push(
-    `\`${piece}\` nao aparece em nenhuma pagina de ${DEMO}/*.tsx.\n` +
+    (dead.length > 0
+      ? `\`${piece}\` so aparece em codigo que o render nao alcanca, em ${dead.join(", ")}.\n` +
+        "    A funcao que a monta existe e ninguem a chama: ligue-a no Sample da pagina.\n"
+      : `\`${piece}\` nao e renderizada em nenhuma pagina de ${DEMO}/*.tsx.\n`) +
       "    Renderize a peca numa das paginas e olhe nos DOIS temas e nas DUAS densidades -\n" +
       "    e o unico passo do processo que nenhum teste faz por voce. Se ela nao deve ter\n" +
       "    vitrine, escreva o motivo em SEM_VITRINE, em scripts/check-demo.ts.",
