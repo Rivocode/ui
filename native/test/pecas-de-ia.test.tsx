@@ -166,6 +166,28 @@ describe("PromptInput", () => {
     expect(spoken.announced).toHaveLength(0);
   });
 
+  test("um caractere e singular, no contador sem teto e no teto de um", () => {
+    const hintOf = (props: { value: string; maxLength?: number }) =>
+      byLabel(
+        render(<PromptInput onValueChange={() => {}} onSubmit={() => {}} showCount {...props} />),
+        "Mensagem",
+      )[0]!.props.accessibilityHint as string;
+    expect(hintOf({ value: "a" })).toEndWith(" 1 caractere");
+    expect(hintOf({ value: "a", maxLength: 1 })).toEndWith(" 1 de 1 caractere");
+
+    const spoken = AccessibilityInfo as unknown as {
+      announced: readonly string[];
+      clearAnnouncements: () => void;
+    };
+    spoken.clearAnnouncements();
+    const field = (value: string) => (
+      <PromptInput value={value} onValueChange={() => {}} onSubmit={() => {}} maxLength={1} />
+    );
+    const screen = render(field(""));
+    act(() => screen.update(<RivoProvider>{field("a")}</RivoProvider>));
+    expect(spoken.announced).toEqual(["Limite de 1 caractere atingido."]);
+  });
+
   test("labels troca o idioma da dica, da contagem e do limite", () => {
     const spoken = AccessibilityInfo as unknown as {
       announced: readonly string[];

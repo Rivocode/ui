@@ -233,6 +233,17 @@ describe("PromptInput", () => {
     expect(screen.getByRole("status").textContent).toBe("Limite de 5 caracteres atingido.");
     expect(screen.getByText("5/5").getAttribute("aria-hidden")).toBe("true");
   });
+
+  test("um caractere e singular, no contador sem teto e no teto de um", () => {
+    const view = withTheme(<PromptInput showCount defaultValue="a" />);
+    expect(described(screen.getByRole("textbox"))).toContain("1 caractere");
+    expect(described(screen.getByRole("textbox"))).not.toContain("1 caracteres");
+    view.unmount();
+
+    withTheme(<PromptInput showCount maxLength={1} defaultValue="a" />);
+    expect(described(screen.getByRole("textbox"))).toContain("1 de 1 caractere");
+    expect(screen.getByRole("status").textContent).toBe("Limite de 1 caractere atingido.");
+  });
 });
 
 describe("Message", () => {

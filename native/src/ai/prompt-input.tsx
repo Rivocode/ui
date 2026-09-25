@@ -4,6 +4,7 @@ import { AccessibilityInfo, View } from "react-native";
 import { cn } from "../cn";
 import { IconButton } from "../icon-button";
 import { useRivo } from "../provider";
+import { PROMPT_INPUT_COUNT, type PromptInputLabels } from "../shared/ai";
 import { Text, TextInput } from "../text";
 
 const LINE = 24;
@@ -13,17 +14,9 @@ const HIDDEN = {
   importantForAccessibility: "no-hide-descendants",
 } as const;
 
-export type PromptInputLabels = {
-  hint: string;
-  count: (count: number, max?: number) => string;
-  limit: (max: number) => string;
-};
-
 const LABELS: PromptInputLabels = {
   hint: "Enter quebra a linha. Para enviar, use o botão de enviar.",
-  count: (count, max) =>
-    max === undefined ? `${count} caracteres` : `${count} de ${max} caracteres`,
-  limit: (max) => `Limite de ${max} caracteres atingido.`,
+  ...PROMPT_INPUT_COUNT,
 };
 
 function SendGlyph({ color }: { color: string }) {
@@ -83,6 +76,8 @@ export type PromptInputProps = {
   labels?: Partial<PromptInputLabels>;
   className?: string;
 };
+
+export type { PromptInputLabels };
 
 export function PromptInput({
   value,

@@ -28,3 +28,17 @@ export function toolDataText(data: unknown): string {
     return String(data);
   }
 }
+
+export type PromptInputLabels = {
+  hint: string;
+  count: (count: number, max?: number) => string;
+  limit: (max: number) => string;
+};
+
+const characters = (amount: number) => (amount === 1 ? "caractere" : "caracteres");
+
+export const PROMPT_INPUT_COUNT: Pick<PromptInputLabels, "count" | "limit"> = {
+  count: (count, max) =>
+    max === undefined ? `${count} ${characters(count)}` : `${count} de ${max} ${characters(max)}`,
+  limit: (max) => `Limite de ${max} ${characters(max)} atingido.`,
+};

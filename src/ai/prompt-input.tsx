@@ -17,18 +17,11 @@ import {
 import { IconButton } from "../components/icon-button";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-
-export type PromptInputLabels = {
-  hint: string;
-  count: (count: number, max?: number) => string;
-  limit: (max: number) => string;
-};
+import { PROMPT_INPUT_COUNT, type PromptInputLabels } from "../shared/ai";
 
 const LABELS: PromptInputLabels = {
   hint: "Enter envia, Shift+Enter quebra a linha.",
-  count: (count, max) =>
-    max === undefined ? `${count} caracteres` : `${count} de ${max} caracteres`,
-  limit: (max) => `Limite de ${max} caracteres atingido.`,
+  ...PROMPT_INPUT_COUNT,
 };
 
 export type PromptInputProps = Omit<
@@ -87,6 +80,8 @@ export type PromptInputProps = Omit<
   labels?: Partial<PromptInputLabels>;
   classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;
 };
+
+export type { PromptInputLabels };
 
 export function PromptInput({
   value,
