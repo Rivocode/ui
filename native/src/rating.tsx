@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Pressable, View, type GestureResponderEvent } from "react-native";
+import { I18nManager, Pressable, View, type GestureResponderEvent } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
@@ -26,7 +26,10 @@ export type RatingProps = {
   onValueChange?: (value: number) => void;
   /** Quantas estrelas. Padrao 5. */
   max?: number;
-  /** Aceita meia estrela: o toque na metade da esquerda da `n - 0,5`, e o ajuste anda de meio em meio. */
+  /**
+   * Aceita meia estrela: o toque na metade de inicio da leitura (a esquerda, ou
+   * a direita em rtl) da `n - 0,5`, e o ajuste anda de meio em meio.
+   */
   allowHalf?: boolean;
   /** Tocar de novo na nota escolhida volta a zero. Desligado por padrao. */
   clearable?: boolean;
@@ -72,6 +75,7 @@ export function Rating({
   const shown = readOnly ? Math.min(max, Math.max(0, value)) : Math.round(value / step) * step;
   const interactive = !readOnly && !disabled && onValueChange !== undefined;
   const box = readOnly ? GLYPH[size] : TARGET;
+  const rtl = I18nManager.getConstants().isRTL;
 
   const commit = (next: number) => {
     const bounded = Math.min(max, Math.max(0, next));
@@ -80,8 +84,9 @@ export function Rating({
 
   const press = (index: number, event: GestureResponderEvent) => {
     if (!interactive) return;
-    const left = allowHalf && event.nativeEvent.locationX < box / 2;
-    const option = left ? index + 0.5 : index + 1;
+    const x = event.nativeEvent.locationX;
+    const first = allowHalf && (rtl ? x > box / 2 : x < box / 2);
+    const option = first ? index + 0.5 : index + 1;
     commit(clearable && option === shown ? 0 : option);
   };
 
@@ -112,8 +117,8 @@ export function Rating({
         {layer(false)}
         <View
           testID="rating-fill"
-          className="absolute top-0 bottom-0 left-0 overflow-hidden"
-          style={{ width: box * fill }}
+          className="absolute top-0 bottom-0 overflow-hidden"
+          style={{ start: 0, width: box * fill }}
         >
           <View className="items-center justify-center" style={{ width: box, height: box }}>
             {layer(true)}

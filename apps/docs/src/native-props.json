@@ -3463,7 +3463,7 @@
         "name": "allowHalf",
         "type": "boolean",
         "required": false,
-        "note": "Aceita meia estrela: o toque na metade da esquerda da `n - 0,5`, e o ajuste anda de meio em meio."
+        "note": "Aceita meia estrela: o toque na metade de inicio da leitura (a esquerda, ou a direita em rtl) da `n - 0,5`, e o ajuste anda de meio em meio."
       },
       {
         "name": "className",

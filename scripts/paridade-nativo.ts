@@ -796,7 +796,9 @@ const PARITY: Record<string, Row> = {
       "descer anda uma estrela (meia, com `allowHalf`). Cinco paradas de foco para uma nota " +
       "seriam cinco toques de navegação para chegar ao botão de enviar.\n\n" +
       "**O alvo de toque de cada estrela é sempre 44pt.** O `size` troca só o desenho. Com " +
-      "`allowHalf`, o toque na metade da esquerda dá a meia estrela. Não há prévia: no toque " +
+      "`allowHalf`, o toque na metade de início da leitura dá a meia estrela: a da esquerda, " +
+      "ou a da direita quando o aparelho lê da direita para a esquerda. O preenchimento também " +
+      "começa desse lado, e o gesto de subir continua subindo a nota. Não há prévia: no toque " +
       "não existe pousar.\n\n" +
       "A estrela padrão é o caractere ★ na cor do tema, porque o pacote não traz ícone. Para " +
       "outro desenho, a função recebe a cor já resolvida, o tamanho e a camada: " +

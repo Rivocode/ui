@@ -1,5 +1,6 @@
 import { expect, mock, test } from "bun:test";
 
+import { I18nManager } from "../../test/react-native-mock";
 import { Rating, type RatingProps } from "../src";
 import { act, byRole, byType, render } from "./helpers";
 
@@ -126,4 +127,44 @@ test("a estrela padrao pinta warning cheia e border-strong vazia", () => {
   const glyphs = byType(screen, "Text").map((node) => node.props.className.split(" "));
   expect(glyphs[0]).toContain("text-border-strong");
   expect(glyphs[1]).toContain("text-warning");
+});
+
+function inRTL<T>(run: () => T): T {
+  I18nManager.isRTL = true;
+  try {
+    return run();
+  } finally {
+    I18nManager.isRTL = false;
+  }
+}
+
+test("em rtl, a metade de inicio da leitura e a da direita, e ela da a meia estrela", () => {
+  const { screen, onValueChange } = inRTL(() => rating({ allowHalf: true, value: 2.5 }));
+  tap(screen, 3, 30);
+  expect(onValueChange).toHaveBeenLastCalledWith(3.5);
+  tap(screen, 3, 10);
+  expect(onValueChange).toHaveBeenLastCalledWith(4);
+});
+
+test("o cheio se prende ao lado de inicio da leitura, e nao a esquerda fisica", () => {
+  const { screen } = inRTL(() => rating({ allowHalf: true, value: 2.5 }));
+  const layers = screen.root.findAll(
+    (node) => typeof node.type === "string" && node.props.testID === "rating-fill",
+  );
+  expect(layers).toHaveLength(5);
+  for (const layer of layers) {
+    expect(layer.props.style.start).toBe(0);
+    expect(layer.props.style.left).toBeUndefined();
+    expect(layer.props.className.split(" ")).not.toContain("left-0");
+  }
+  expect(fills(screen)).toEqual([44, 44, 22, 0, 0]);
+});
+
+test("em rtl, o ajuste do leitor de tela continua subindo a nota com incrementar", () => {
+  const { screen, onValueChange } = inRTL(() => rating({ value: 2 }));
+  const [group] = byRole(screen, "adjustable");
+  act(() => group!.props.onAccessibilityAction({ nativeEvent: { actionName: "increment" } }));
+  expect(onValueChange).toHaveBeenLastCalledWith(3);
+  act(() => group!.props.onAccessibilityAction({ nativeEvent: { actionName: "decrement" } }));
+  expect(onValueChange).toHaveBeenLastCalledWith(1);
 });
