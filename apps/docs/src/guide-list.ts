@@ -63,4 +63,9 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     title: 'Skill',
     summary: 'Um comando, e o agente aprende a biblioteca inteira.',
   },
+  {
+    slug: 'migrar-para-1-0',
+    title: 'Migrar para a 1.0',
+    summary: 'Cada nome que mudou da 0.x para a 1.0, peça por peça, no web e no nativo.',
+  },
 ]
