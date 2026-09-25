@@ -2,7 +2,16 @@ import { beforeEach, describe, expect, test } from "bun:test";
 import { useState } from "react";
 import { AccessibilityInfo } from "react-native";
 
-import { Field, Input, MaskedInput, type FieldProps } from "../src";
+import {
+  CurrencyInput,
+  Field,
+  Input,
+  InputGroup,
+  MaskedInput,
+  PasswordInput,
+  PostalCodeField,
+  type FieldProps,
+} from "../src";
 import { Textarea } from "../src/textarea";
 import { act, byClass, byType, render, textOf } from "./helpers";
 
@@ -216,5 +225,84 @@ describe("Field com validate", () => {
     masked.blur();
     expect(seen).toEqual(["oi", "123"]);
     expect(textOf(masked.screen)).toContain("Erro.");
+  });
+
+  test("o PasswordInput tambem fala com o Field: recebe o texto, acende a moldura e ganha a dica", () => {
+    const seen: unknown[] = [];
+    function Password() {
+      const [value, setValue] = useState("");
+      return (
+        <Field
+          label="Senha"
+          validationMode="onBlur"
+          validate={(v) => {
+            seen.push(v);
+            return "Curta demais.";
+          }}
+        >
+          <PasswordInput value={value} onValueChange={setValue} />
+        </Field>
+      );
+    }
+    const field = mount(<Password />);
+    field.type("abc");
+    field.blur();
+    expect(seen).toEqual(["abc"]);
+    expect(field.input().props.accessibilityHint).toBe("Curta demais.");
+    expect(byClass(field.screen, /border-danger/)).toHaveLength(1);
+  });
+
+  test("o CurrencyInput e o PostalCodeField acendem a borda com o erro do Field", () => {
+    const noop = () => {};
+    const money = render(
+      <Field label="Valor" error="Informe o valor.">
+        <CurrencyInput value={null} onValueChange={noop} />
+      </Field>,
+    );
+    const moneyInput = byType(money, "TextInput")[0]!;
+    expect(moneyInput.props.className.split(" ")).toContain("border-danger");
+    expect(moneyInput.props.accessibilityHint).toBe("Informe o valor.");
+
+    const cep = render(
+      <Field label="CEP" error="Informe o CEP.">
+        <PostalCodeField value="" onValueChange={noop} lookup={async () => null} />
+      </Field>,
+    );
+    expect(byType(cep, "TextInput")[0]!.props.className.split(" ")).toContain("border-danger");
+  });
+});
+
+describe("controle fora de um Field", () => {
+  test("fica como era: sem dica inventada e sem borda de erro", () => {
+    const noop = () => {};
+    const screen = render(
+      <>
+        <Input />
+        <Textarea />
+        <InputGroup value="" onValueChange={noop} />
+        <CurrencyInput value={null} onValueChange={noop} />
+      </>,
+    );
+    const inputs = byType(screen, "TextInput");
+    expect(inputs).toHaveLength(4);
+    for (const input of inputs) expect(input.props.accessibilityHint).toBeUndefined();
+    expect(byClass(screen, /border-danger/)).toHaveLength(0);
+    expect(byClass(screen, /border-border-strong/).length).toBeGreaterThanOrEqual(4);
+  });
+
+  test("o invalid explicito do controle vence o erro do Field, nos dois sentidos", () => {
+    const screen = render(
+      <>
+        <Field label="Com erro" error="Errado.">
+          <Input invalid={false} />
+        </Field>
+        <Field label="Sem erro">
+          <Input invalid />
+        </Field>
+      </>,
+    );
+    const [calm, flagged] = byType(screen, "TextInput");
+    expect(calm!.props.className.split(" ")).not.toContain("border-danger");
+    expect(flagged!.props.className.split(" ")).toContain("border-danger");
   });
 });

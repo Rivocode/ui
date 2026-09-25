@@ -125,7 +125,7 @@ export function PostalCodeField({
           keyboardType="number-pad"
           maxLength={9}
           value={formatPostalCode(value)}
-          invalid={invalid || notFound}
+          invalid={notFound || invalid}
           accessibilityState={{ busy: status === "searching", disabled: editable === false }}
           onChangeText={(text) => {
             const next = postalCodeDigits(text);

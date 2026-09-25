@@ -68,7 +68,7 @@ export function CurrencyInput({
         {...props}
         keyboardType={allowNegative ? "numbers-and-punctuation" : "number-pad"}
         value={shown}
-        invalid={invalid || outside}
+        invalid={outside || invalid}
         onSelectionChange={(event) => {
           selection.current = { range: event.nativeEvent.selection, shown };
           onSelectionChange?.(event);

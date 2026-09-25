@@ -492,7 +492,7 @@ const PARITY: Record<string, Row> = {
   },
   Field: {
     state: "traduz",
-    note: "`label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o erro é anunciado, vira a dica do controle, e o texto que chega depois entra por fade",
+    note: "`label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o `validate` recebe o texto dos campos de digitar (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`), e o erro é anunciado, acende a borda deles e vira a dica; o seletor que abre folha (`Select`, `Combobox`, `DatePicker`) não fala com o `Field`. O texto que chega depois entra por fade",
   },
   FilterBar: {
     state: "traduz",

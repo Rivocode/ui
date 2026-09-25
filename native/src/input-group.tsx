@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Pressable, View, type TextInputProps } from "react-native";
 
 import { cn } from "./cn";
+import { useFieldControl } from "./field";
 import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
 
@@ -55,18 +56,22 @@ export function InputGroup({
   invalid,
   onFocus,
   onBlur,
+  onSubmitEditing,
+  accessibilityHint,
   className,
   inputClassName,
   ...props
 }: InputGroupProps) {
   const [focused, setFocused] = useState(false);
   const { colors } = useRivo();
+  const field = useFieldControl(value);
+  const flagged = invalid ?? Boolean(field.error);
 
   return (
     <View
       className={cn(
         "h-12 flex-row items-stretch overflow-hidden rounded-md border bg-surface",
-        invalid ? "border-danger" : focused ? "border-accent" : "border-border-strong",
+        flagged ? "border-danger" : focused ? "border-accent" : "border-border-strong",
         className,
       )}
     >
@@ -74,15 +79,24 @@ export function InputGroup({
 
       <TextInput
         {...props}
+        accessibilityHint={accessibilityHint ?? field.error}
         value={value}
-        onChangeText={onValueChange}
+        onChangeText={(text) => {
+          field.change(text);
+          onValueChange(text);
+        }}
         onFocus={(event) => {
           setFocused(true);
           onFocus?.(event);
         }}
         onBlur={(event) => {
           setFocused(false);
+          field.blur();
           onBlur?.(event);
+        }}
+        onSubmitEditing={(event) => {
+          field.submit();
+          onSubmitEditing?.(event);
         }}
         placeholderTextColor={colors["fg-subtle"]}
         className={cn("h-full flex-1 px-3.5 text-base text-fg", inputClassName)}

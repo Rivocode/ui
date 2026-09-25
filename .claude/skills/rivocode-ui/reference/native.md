@@ -457,7 +457,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
 | `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados |
 | `EventCalendar` | ✕ não porta | grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar` |
-| `Field` | ✔ traduz | `label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o erro é anunciado, vira a dica do controle, e o texto que chega depois entra por fade |
+| `Field` | ✔ traduz | `label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o `validate` recebe o texto dos campos de digitar (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`), e o erro é anunciado, acende a borda deles e vira a dica; o seletor que abre folha (`Select`, `Combobox`, `DatePicker`) não fala com o `Field`. O texto que chega depois entra por fade |
 | `Fieldset` | ✔ traduz | `legend` como prop |
 | `FileUpload` | ✔ traduz | vive em `@rivocode/ui-native/file-upload`; a área de soltar vira um botão, porque no celular não há soltar; o `accept` fala MIME e o tamanho sai formatado sem `Intl` |
 | `FilterBar` | ✔ traduz | rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de alvo de toque; a borda com mais escondido vira regua de 1pt, e nao esmaecido |
