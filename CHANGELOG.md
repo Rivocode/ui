@@ -1,5 +1,96 @@
 # Mudancas
 
+## 1.0.0
+
+A primeira versao em que o contrato vale como promessa. A API fica congelada:
+daqui em diante vale semver a risca - quebra so em versao maior, o que vai sair
+ganha `@deprecated` com o caminho novo e fica pelo menos uma versao menor antes
+de sair, prop e peca nova sao versao menor, correcao e patch. Para chegar
+limpa aqui, a biblioteca tirou o que estava obsoleto e deu um nome so a cada
+ideia. Cada troca, peca por peca, esta em
+<https://ds.rivocode.com.br/migrar-para-1-0> (e em markdown cru em
+`/migrar-para-1-0.md`); quem usa o Claude Code pode copiar o agent `migracao`
+do repositorio, que conhece a tabela e reescreve os pontos de chamada.
+
+Quase tudo abaixo o `tsc` acusa. O que ele nao pega esta no fim.
+
+### Sai o que estava obsoleto
+
+- `Calendar`: `mode="single"` com `selected` e `onSelect` sai; data unica e
+  `value` e `onValueChange`. `multiple` e `range` continuam pelo `mode`.
+- `startMonth` e `endMonth` saem do `Calendar`, do `DatePicker` e do
+  `DateRangePicker`; `min` e `max` param a navegacao no mesmo mes e ainda
+  bloqueiam os dias de fora.
+- `labelClassName` sai do `Checkbox`, do `Radio` e do `Switch`: `classNames.label`.
+- `@rivocode/ui/form`: `forDatePicker`, `forSelect` e `forCheckbox` e os tipos
+  `PropsDeDatePicker`, `PropsDeSelect` e `PropsDeCheckbox` saem; ficam
+  `forDate`, `forValue`, `forChecked`, `DateProps`, `ValueProps` e
+  `CheckedProps`.
+
+### Um nome so para cada coisa
+
+- `variant="destructive"` vira `variant="danger"` no `Button`, no `IconButton`
+  e no `Clipboard`, o mesmo nome do `tone="danger"` do `Popconfirm` e do
+  `MenuItem`. As classes e os pares de contraste nao mudam.
+- Botao so de icone e sempre o `IconButton`: `size="icon"` e `size="iconSm"`
+  saem do `Button`. O `Clipboard` sem texto passa a desenhar um `IconButton`,
+  aceita `size` `sm`, `md` e `lg`, e recusa `aria-label` no tipo - o nome vem
+  de `labels.copy` e `labels.copied`.
+- `size="cta"` do `Button` vira `size="xl"`, com as mesmas medidas, e `xl` e so
+  tamanho: fica no peso medio, como `sm`, `md` e `lg`.
+- Abrir e fechar se chama `open`: o `Spoiler` troca `expanded`,
+  `defaultExpanded` e `onExpandedChange` por `open`, `defaultOpen` e
+  `onOpenChange`, e a `Tree` troca `expanded` e `onExpandedChange` por `open` e
+  `onOpenChange`, e ganha `defaultOpen`.
+- O `Steps` troca `current` e `onStepClick` por `step` e `onStepChange`, como o
+  `Tour` e o `useWizard`.
+
+### Texto de interface em `labels`
+
+As props soltas terminadas em `Label` saem sem apelido, e cada uma vira a chave
+de `labels` com o nome sem o `Label`; onde era `ReactNode`, a chave e `string`:
+`retryLabel` (`QueryBoundary`, `DataTable`, `VirtualList`, `EventCalendar`,
+`Gantt`, `ChartContainer`), `dismissLabel` (`Alert`, `Banner`),
+`confirmLabel`, `cancelLabel` e `busyLabel` (`Popconfirm`), `externalLabel`
+(`Link`), `swatchesLabel` (`ColorPicker`), `scrollLabel` (`Conversation`),
+`submitLabel` e `stopLabel` (`PromptInput`), `rateLabel`, `overallLabel`
+(`ChartFunnel`, e `overallLabel={false}` vira `showOverall={false}`) e
+`emptyLabel` (`ChartHeatmap`).
+
+O texto que estava cravado em portugues sem prop nenhuma ganha chave tambem, e
+sem `labels` a tela continua igual: `Pagination`, `Breadcrumb`, `NumberField`,
+`Tree`, `TreeSelect`, `SidebarTrigger`, `FileUpload`, `FileUploadItem`,
+`DatePicker`, `DateRangePicker`, `ComboboxInput`, `DataTable` (as caixas de
+marcar, a contagem e a paginacao de dentro), `EventCalendar`, `Gantt`, `Kbd`,
+`Stat`, `AvatarGroup`, `OTPField`, `Steps`, `RichTextView`, `ChartDonut`,
+`ChartGauge`, o nome montado do `ChartContainer`, o papel do `Carousel` e cada
+amostra do `ColorPicker`. O xis do aviso se traduz no `RivoProvider`, com
+`toastLabels`, ou no `ToastViewport`. O `EventCalendar` e o `Gantt` ganham
+`locale` para os nomes de mes e de dia, com `pt-BR` de padrao. Cada tipo
+`...Labels` sai do indice ao lado da peca.
+
+### Datas
+
+- O `DateRange` deixa de ser o do `react-day-picker` e passa a ser `{ from:
+  Date; to: Date }`, as duas pontas obrigatorias, como no nativo.
+- O `DateRangePicker` com `Date` so entrega periodo fechado ou `null`, como o
+  formato em texto ja fazia: `onValueChange(range: DateRange | null)`. O
+  periodo pela metade fica no calendario, e o Limpar responde `null`. No
+  `value`, o vazio continua `undefined`.
+- O `Calendar` ganha `defaultValue`, em `Date` ou `aaaa-mm-dd`.
+
+### Adicoes
+
+- `Select`, `Combobox` e `Textarea` ganham `size` (`sm`, `md`, `lg`), com as
+  mesmas classes do `Input`. `SelectProps` e `ComboboxProps` saem do indice.
+
+**Mudanca que pode aparecer (compila e muda a tela):** o `Button size="xl"` nao
+e negrito como era o `cta` - some `className="font-rc-bold"` para a chamada de
+marketing. O `DateRangePicker` com `Date` nao avisa mais no primeiro clique nem
+com `undefined` no Limpar. O `ColorPicker` dentro de um `Field` nao desenha
+mais o proprio `label`: o rotulo na tela e o do `FieldLabel`, e o `label` do
+`ColorPicker` so nomeia a grade para o leitor de tela.
+
 ## 0.20.0
 
 O visto do `Clipboard` passa a se ler sobre os botoes preenchidos, e o

@@ -1,5 +1,26 @@
 # Mudanças
 
+## 0.6.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.0.0 e
+`@rivocode/ui-native` 1.0.0: a API congelada, com semver à risca, o texto de
+interface em `labels`, `danger` no lugar de `destructive` e `open` para abrir e
+fechar em toda a biblioteca. As oito ferramentas continuam as mesmas.
+
+- `get_guide` ganha o guia `migrar-para-1-0`, com cada nome que mudou da 0.x
+  para a 1.0, peça por peça, no web e no nativo.
+- A tabela de props do web vai de 4391 para 4407 props, e a do nativo de 855
+  para 866, nas mesmas 118 peças: são os `labels` novos, o `size` do `Select`,
+  do `Combobox` e do `Textarea`, e o `label` do `Checkbox`, do `Switch`, do
+  `OTPField` e do `SignaturePad` nativos.
+- `get_native_parity`: a tabela de assinatura vai de 189 para 195 linhas, nas
+  mesmas 88 peças, e o `AlertDialog` passa a aparecer com `onConfirm` e
+  `labels`, os nomes do `Popconfirm`. A paridade continua em 104 peças com o
+  mesmo nome e 4 com outro.
+- 52 páginas de peça reescritas, e as convenções, a skill e a auditoria de tela
+  deixam de citar os nomes que saíram; a auditoria cobra `label` no
+  `IconButton` nativo e no `Checkbox` e no `Switch` nativos sem texto.
+
 ## 0.5.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 0.20.0 e

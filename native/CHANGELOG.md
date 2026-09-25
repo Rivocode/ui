@@ -1,5 +1,76 @@
 # Mudancas
 
+## 1.0.0
+
+A primeira versao em que o contrato vale como promessa, junto com a 1.0.0 do
+`@rivocode/ui`. A API fica congelada: daqui em diante vale semver a risca -
+quebra so em versao maior, o que vai sair ganha `@deprecated` e fica pelo menos
+uma versao menor antes de sair, prop e peca nova sao versao menor, correcao e
+patch. O pacote sai da 0.16 sem nada obsoleto e com um nome so para cada coisa,
+o mesmo do web. Cada troca esta em
+<https://ds.rivocode.com.br/migrar-para-1-0>, e o agent `migracao` do
+repositorio reescreve os pontos de chamada.
+
+### Sai o que estava obsoleto
+
+- `IconButton`: `accessibilityLabel` sai, e `label` e obrigatorio.
+- `Spinner`: `size="small"` e `size="large"` saem; ficam `sm`, `md` e `lg`.
+- `DataList`: `selected` e `onSelectedChange` saem; ficam `value` e
+  `onValueChange`.
+- `MaskedInput`: o molde com `#` sai. Vale so a sintaxe do web - `9` digito,
+  `A` letra, `*` letra ou digito.
+- `markClassName` do `Highlight`, `badgeClassName` do `Indicator` e
+  `inputClassName` do `CurrencyInput`, do `PostalCodeField`, do `TagsInput`,
+  do `InputGroup` e do `PasswordInput` saem: `classNames`. O `InputGroup` ganha
+  tambem `prefix`, `suffix` e `action`; o `Menu` troca `triggerClassName` por
+  `classNames` com `trigger`, `content` e `item`; o `ScrollArea` troca
+  `footerClassName` por `classNames.footer` (o `contentContainerClassName`
+  fica).
+
+### Um nome so para cada coisa
+
+- `variant="destructive"` vira `variant="danger"` no `Button`, no `IconButton`
+  e no `Clipboard`.
+- A peca se nomeia por `label`: o `Checkbox` e o `SignaturePad` trocam
+  `accessibilityLabel` por `label`, e o `Switch` e o `OTPField` ganham `label`.
+  `Checkbox` e `Switch` sem `children` exigem `label` no tipo. `forChecked` e
+  `forDate` entregam o rotulo do `FormField` como `label`; `forValue` entrega
+  `label` e `accessibilityLabel`.
+- O `Steps` troca `current` por `step`, e o `Spoiler` troca `expanded`,
+  `defaultExpanded` e `onExpandedChange` por `open`, `defaultOpen` e
+  `onOpenChange`.
+- O `AlertDialog` fala com os nomes do `Popconfirm` do web: `actionLabel`,
+  `cancelLabel` e `busyLabel` viram `labels.confirm`, `labels.cancel` e
+  `labels.busy`, e `onAction` vira `onConfirm`. Ganha `onCancel`, chamado no
+  botao de cancelar e no voltar do Android.
+
+### Texto de interface em `labels`
+
+Saem sem apelido `dismissLabel` (`Alert`, `Banner`), `retryLabel`
+(`QueryBoundary`, `DataList`, `ChartContainer`), `externalLabel` (`Link`),
+`swatchesLabel` (`ColorPicker`), `removeLabel` (`TagsInput`), `scrollLabel`
+(`Conversation`), `submitLabel` e `stopLabel` (`PromptInput`), `rateLabel` e
+`overallLabel` (`ChartFunnel`, e `overallLabel={false}` vira
+`showOverall={false}`) e `emptyLabel` (`ChartHeatmap`): cada um e a chave de
+`labels` sem o `Label`.
+
+Ganham `labels`, para o texto que estava cravado, o `Dialog`, a `Sheet`, o
+`SearchInput`, o `Editable`, o `NumberField`, o `Calendar`, o `DatePicker` e o
+`DateRangePicker` (setas, mes escrito, iniciais da semana, Limpar, Aplicar e as
+duas instrucoes do periodo), o `Select`, o `Combobox`, o `Autocomplete` e a
+`TreeSelect` (o resumo de varias escolhas e o botao da folha), a `Tree`, o
+`Slider`, o `Rating`, o `Tracker`, o `Menu`, o `RelativeTime`, o `Steps`, o
+`FileUpload`, o `FileUploadItem`, as caixas do `DataList`, o `ChartDonut`, o
+`ChartGauge` e o papel do `Carousel`. Sem `labels`, nada muda. Cada tipo
+`...Labels` sai do indice ao lado da peca.
+
+**Mudanca que pode aparecer (compila e muda a tela):** o `Accordion` sem
+`multiple` passa a abrir um item por vez, como no web - passe `multiple` para
+o comportamento antigo. O `PromptInput` cresce ate 8 linhas, e nao mais 6. O
+`AlertDialog` sem `labels.confirm` escreve "Confirmar" no botao. Um
+`MaskedInput` com `#` no molde continua compilando, porque o molde e texto, e
+deixa de pontuar; em desenvolvimento o console avisa. Troque cada `#` por `9`.
+
 ## 0.16.0
 
 O `Autocomplete` chega ao nativo, o `Field` ganha o `validate` do web e quarenta
