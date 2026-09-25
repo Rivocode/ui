@@ -77,6 +77,23 @@ function withoutUndefined(type: string, optional: boolean): string {
   return clean || type;
 }
 
+function unionParts(type: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let index = 0; index < type.length; index++) {
+    const char = type[index]!;
+    if ("(<{[".includes(char)) depth++;
+    else if (")>}]".includes(char) && type[index - 1] !== "=") depth--;
+    else if (char === "|" && depth === 0) {
+      parts.push(type.slice(start, index).trim());
+      start = index + 1;
+    }
+  }
+  parts.push(type.slice(start).trim());
+  return parts.filter(Boolean);
+}
+
 /** Uma linha so, sem quebra: a tabela da doc e a do site nao aceitam paragrafo. */
 function firstSentence(text: string): string | undefined {
   const clean = text.replace(/\s+/g, " ").trim();
@@ -125,45 +142,70 @@ async function readCatalog(): Promise<Record<string, CatalogPiece>> {
       const signatures = await checker.getSignaturesOfType(type, SignatureKind.Call);
       if (!signatures.length) continue;
 
-      const parameter = await checker.getParameterType(signatures[0]!, 0);
-      if (!parameter) continue;
-
-      const all = await checker.getPropertiesOfType(parameter);
-      const props: CatalogProp[] = [];
+      const merged = new Map<string, { types: string[]; required: boolean; note?: string }>();
       let forwardsRoot = false;
+      let read = 0;
 
-      for (const prop of all) {
-        const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
-        const own = paths.some(isOwnSource);
-        if (own && paths.some((path) => !isOwnSource(path)) && !FORWARDED.has(prop.name)) {
-          collisions.push(`${name}.${prop.name}`);
+      const overloaded =
+        signatures.length > 1 &&
+        signatures.every((signature) => isOwnSource(String(signature.declaration?.path ?? "")));
+
+      for (const signature of overloaded ? signatures : signatures.slice(0, 1)) {
+        const parameter = await checker.getParameterType(signature, 0);
+        if (!parameter) continue;
+        read++;
+
+        const all = await checker.getPropertiesOfType(parameter);
+        const seen = new Set<string>();
+
+        for (const prop of all) {
+          const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
+          const own = paths.some(isOwnSource);
+          if (own && paths.some((path) => !isOwnSource(path)) && !FORWARDED.has(prop.name)) {
+            collisions.push(`${name}.${prop.name}`);
+          }
+          const fromReact = !own && (paths[0] ?? "").includes("@types/react");
+          if (fromReact || FORWARDED.has(prop.name)) {
+            if (prop.name === "className") forwardsRoot = true;
+            continue;
+          }
+
+          const propType = await checker.getTypeOfSymbol(prop);
+          const note = firstSentence(await prop.getDocumentationComment(checker));
+          const optional = Boolean(prop.flags & SymbolFlags.Optional);
+          const written = propType
+            ? (await checker.typeToString(propType)).replace(/\s+/g, " ").trim()
+            : "unknown";
+          const type = withoutUndefined(written, optional);
+
+          seen.add(prop.name);
+          const entry = merged.get(prop.name) ?? { types: [], required: read === 1 };
+          for (const part of overloaded ? unionParts(type) : [type]) {
+            if (overloaded && part === "undefined") continue;
+            if (!entry.types.includes(part)) entry.types.push(part);
+          }
+          entry.required &&= !optional;
+          entry.note ??= note;
+          merged.set(prop.name, entry);
         }
-        const fromReact = !own && (paths[0] ?? "").includes("@types/react");
-        if (fromReact || FORWARDED.has(prop.name)) {
-          if (prop.name === "className") forwardsRoot = true;
-          continue;
-        }
 
-        const propType = await checker.getTypeOfSymbol(prop);
-        const note = firstSentence(await prop.getDocumentationComment(checker));
-        const optional = Boolean(prop.flags & SymbolFlags.Optional);
-        const written = propType
-          ? (await checker.typeToString(propType)).replace(/\s+/g, " ").trim()
-          : "unknown";
+        for (const [known, entry] of merged) if (!seen.has(known)) entry.required = false;
+      }
+      if (read === 0) continue;
 
+      const props: CatalogProp[] = [...merged].map(([propName, entry]) => {
         // O carimbo e memoria, e nao derivado do tipo: o compilador nao sabe
         // quando a prop nasceu, entao ele sobrevive de uma geracao a outra
         // vindo do proprio JSON comitado.
-        const since = stamped(name, prop.name);
-
-        props.push({
-          name: prop.name,
-          type: withoutUndefined(written, optional),
-          required: !optional,
-          ...(note ? { note: note } : {}),
+        const since = stamped(name, propName);
+        return {
+          name: propName,
+          type: entry.types.join(" | "),
+          required: entry.required,
+          ...(entry.note ? { note: entry.note } : {}),
           ...(since ? { since } : {}),
-        });
-      }
+        };
+      });
 
       // Obrigatoria antes de opcional, e alfabetica dentro de cada grupo: o
       // que quem chama precisa passar vem antes do que pode passar.

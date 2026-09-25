@@ -3907,7 +3907,7 @@
         "name": "endMonth",
         "type": "Date",
         "required": false,
-        "note": "The latest month to end the month navigation.",
+        "note": "Ultimo mes que a navegacao alcanca.",
         "since": "0.4.0"
       },
       {
@@ -3986,6 +3986,18 @@
         "required": false,
         "note": "The locale object used to localize dates.",
         "since": "0.4.0"
+      },
+      {
+        "name": "max",
+        "type": "string | Date | number",
+        "required": false,
+        "note": "O ultimo dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`."
+      },
+      {
+        "name": "min",
+        "type": "string | Date | number",
+        "required": false,
+        "note": "O primeiro dia que pode ser escolhido, inclusive, em `Date` ou `aaaa-mm-dd`."
       },
       {
         "name": "mode",
@@ -4121,6 +4133,18 @@
         "since": "0.4.0"
       },
       {
+        "name": "onSelect",
+        "type": "OnSelectHandler<Date[]> | OnSelectHandler<Date> | OnSelectHandler<DateRange> | OnSelectHandler<Date[] | undefined> | OnSelectHandler<...>",
+        "required": false,
+        "note": "Chamado a cada clique, com a escolha inteira no formato do `selected`."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: Date) => void) | ((value: string) => void)",
+        "required": false,
+        "note": "Chamado com o dia tocado, no mesmo formato do `value`."
+      },
+      {
         "name": "pagedNavigation",
         "type": "boolean",
         "required": false,
@@ -4156,6 +4180,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "selected",
+        "type": "Date[] | Date | DateRange",
+        "required": false,
+        "note": "Os dias escolhidos: uma lista em `multiple`, um `{ from, to }` em `range`."
+      },
+      {
         "name": "showOutsideDays",
         "type": "boolean",
         "required": false,
@@ -4173,7 +4203,7 @@
         "name": "startMonth",
         "type": "Date",
         "required": false,
-        "note": "The earliest month to start the month navigation.",
+        "note": "Primeiro mes que a navegacao alcanca.",
         "since": "0.4.0"
       },
       {
@@ -4217,6 +4247,12 @@
         "required": false,
         "note": "Enable `DD` and `DDDD` for week year tokens when formatting or parsing dates.",
         "since": "0.4.0"
+      },
+      {
+        "name": "value",
+        "type": "Date | string | null",
+        "required": false,
+        "note": "O dia escolhido, em `Date` ou `aaaa-mm-dd`."
       },
       {
         "name": "weekStartsOn",
@@ -10102,7 +10138,7 @@
       },
       {
         "name": "defaultValue",
-        "type": "Date",
+        "type": "Date | string",
         "required": false,
         "note": "A data inicial, quando o componente controla o proprio estado.",
         "since": "0.4.0"
@@ -10118,7 +10154,7 @@
         "name": "endMonth",
         "type": "Date",
         "required": false,
-        "note": "The latest month to end the month navigation.",
+        "note": "Ultimo mes que a navegacao alcanca.",
         "since": "0.4.0"
       },
       {
@@ -10129,8 +10165,20 @@
         "since": "0.4.0"
       },
       {
+        "name": "max",
+        "type": "string | Date",
+        "required": false,
+        "note": "O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`."
+      },
+      {
+        "name": "min",
+        "type": "string | Date",
+        "required": false,
+        "note": "O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`."
+      },
+      {
         "name": "onValueChange",
-        "type": "((date: Date | undefined) => void)",
+        "type": "((date: Date | undefined) => void) | ((value: string) => void)",
         "required": false,
         "note": "Chamado quando a data muda, pela digitacao ou pelo Aplicar.",
         "since": "0.4.0"
@@ -10160,12 +10208,12 @@
         "name": "startMonth",
         "type": "Date",
         "required": false,
-        "note": "The earliest month to start the month navigation.",
+        "note": "Primeiro mes que a navegacao alcanca.",
         "since": "0.4.0"
       },
       {
         "name": "value",
-        "type": "Date",
+        "type": "Date | string | null",
         "required": false,
         "note": "A data escolhida, quando quem usa controla o estado.",
         "since": "0.4.0"
@@ -10184,7 +10232,7 @@
       },
       {
         "name": "defaultValue",
-        "type": "DateRange",
+        "type": "DateRange | IsoDateRange | null",
         "required": false,
         "note": "O intervalo inicial, quando o componente controla o proprio estado.",
         "since": "0.4.0"
@@ -10200,7 +10248,7 @@
         "name": "endMonth",
         "type": "Date",
         "required": false,
-        "note": "The latest month to end the month navigation."
+        "note": "Ultimo mes que a navegacao alcanca."
       },
       {
         "name": "locale",
@@ -10208,6 +10256,18 @@
         "required": false,
         "note": "The locale object used to localize dates.",
         "since": "0.4.0"
+      },
+      {
+        "name": "max",
+        "type": "string | Date",
+        "required": false,
+        "note": "O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`."
+      },
+      {
+        "name": "min",
+        "type": "string | Date",
+        "required": false,
+        "note": "O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`."
       },
       {
         "name": "numberOfMonths",
@@ -10218,7 +10278,7 @@
       },
       {
         "name": "onValueChange",
-        "type": "((range: DateRange | undefined) => void)",
+        "type": "((range: DateRange | undefined) => void) | ((range: IsoDateRange | null) => void)",
         "required": false,
         "note": "Chamado quando o intervalo muda.",
         "since": "0.4.0"
@@ -10247,11 +10307,11 @@
         "name": "startMonth",
         "type": "Date",
         "required": false,
-        "note": "The earliest month to start the month navigation."
+        "note": "Primeiro mes que a navegacao alcanca."
       },
       {
         "name": "value",
-        "type": "DateRange",
+        "type": "DateRange | IsoDateRange | null",
         "required": false,
         "note": "O intervalo escolhido, quando quem usa controla o estado.",
         "since": "0.4.0"

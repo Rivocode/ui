@@ -3,37 +3,68 @@
 import { CalendarDays } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
-import { useState, type ComponentProps } from "react";
+import { useState, type ComponentProps, type ReactElement } from "react";
 
 import { cn } from "../lib/cn";
-import { formatDate } from "../lib/date";
+import { formatDate, toDate, type DateInput } from "../lib/date";
+import { isoFromDate } from "../shared/date";
 import { Button } from "./button";
-import { Calendar } from "./calendar";
+import { Calendar, type CalendarProps } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import type { CalendarPassthrough } from "./date-picker";
 import { inputVariants } from "./field";
 
 export type { DateRange };
 
-export type DateRangePickerProps = Omit<
-  ComponentProps<"button">,
-  "value" | "defaultValue" | "onChange"
-> &
+export type IsoDateRange = {
+  /** O primeiro dia, em `aaaa-mm-dd`. */
+  from: string;
+  /** O ultimo dia, em `aaaa-mm-dd`. */
+  to: string;
+};
+
+type DateRangePickerDateValue = {
+  /**
+   * O intervalo escolhido, quando quem usa controla o estado. Aceita pontas em
+   * `Date` ou em `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
+   */
+  value?: DateRange;
+  /** O intervalo inicial, quando o componente controla o proprio estado. */
+  defaultValue?: DateRange;
+  /**
+   * Chamado quando o intervalo muda. Com `Date`, vem incompleto entre o
+   * primeiro e o segundo clique e `undefined` no Limpar; com `aaaa-mm-dd`, so
+   * vem fechado, e `null` no Limpar.
+   */
+  onValueChange?: (range: DateRange | undefined) => void;
+};
+
+type DateRangePickerIsoValue =
+  | {
+      value: IsoDateRange | null;
+      defaultValue?: undefined;
+      onValueChange?: (range: IsoDateRange | null) => void;
+    }
+  | {
+      value?: undefined;
+      defaultValue: IsoDateRange | null;
+      onValueChange?: (range: IsoDateRange | null) => void;
+    };
+
+type DateRangePickerBase = Omit<ComponentProps<"button">, "value" | "defaultValue" | "onChange"> &
   CalendarPassthrough & {
-    /** O intervalo escolhido, quando quem usa controla o estado. */
-    value?: DateRange;
-    /** O intervalo inicial, quando o componente controla o proprio estado. */
-    defaultValue?: DateRange;
-    /** Chamado quando o intervalo muda. Vem incompleto entre o primeiro e o segundo clique. */
-    onValueChange?: (range: DateRange | undefined) => void;
     /** Texto do gatilho quando nao ha intervalo. */
     placeholder?: string;
     /** Tamanho do gatilho, o mesmo vocabulario do Input. */
     size?: "sm" | "md" | "lg";
+    /** O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. */
+    min?: Date | string;
+    /** O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. */
+    max?: Date | string;
     /** Quantos meses o calendario mostra lado a lado. No celular e sempre um. */
     numberOfMonths?: number;
     /** Dias que nao podem ser escolhidos. */
-    disabledDays?: ComponentProps<typeof Calendar>["disabled"];
+    disabledDays?: CalendarProps["disabled"];
     /**
      * Rodape com Aplicar. Ligado por padrao: filtro de periodo quase sempre
      * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
@@ -42,30 +73,66 @@ export type DateRangePickerProps = Omit<
     confirm?: boolean;
   };
 
-export function DateRangePicker({
-  value,
-  defaultValue,
-  onValueChange,
-  placeholder = "Escolha o período",
-  size,
-  className,
-  disabled,
-  disabledDays,
-  numberOfMonths = 2,
-  locale,
-  startMonth,
-  endMonth,
-  showOutsideDays,
-  confirm = true,
-  ...props
-}: DateRangePickerProps) {
+export type DateRangePickerDateProps = DateRangePickerBase & DateRangePickerDateValue;
+
+export type DateRangePickerIsoProps = DateRangePickerBase & DateRangePickerIsoValue;
+
+export type DateRangePickerProps = DateRangePickerDateProps | DateRangePickerIsoProps;
+
+type RangeInput = { from?: DateInput; to?: DateInput };
+
+type DateRangePickerRuntimeProps = DateRangePickerBase & {
+  value?: RangeInput | null;
+  defaultValue?: RangeInput | null;
+  onValueChange?: (range: never) => void;
+};
+
+function toRange(input: RangeInput | null | undefined): DateRange | undefined {
+  if (!input) return undefined;
+  const from = toDate(input.from);
+  if (!from) return undefined;
+  return { from, to: toDate(input.to) };
+}
+
+const isIsoRange = (input: RangeInput | null | undefined) =>
+  input === null || typeof input?.from === "string";
+
+export function DateRangePicker(props: DateRangePickerDateProps): ReactElement;
+export function DateRangePicker(props: DateRangePickerIsoProps): ReactElement;
+export function DateRangePicker(props: DateRangePickerProps): ReactElement {
+  const {
+    value,
+    defaultValue,
+    onValueChange,
+    placeholder = "Escolha o período",
+    size,
+    className,
+    disabled,
+    disabledDays,
+    numberOfMonths = 2,
+    locale,
+    startMonth,
+    endMonth,
+    showOutsideDays,
+    confirm = true,
+    min,
+    max,
+    ...rest
+  } = props as DateRangePickerRuntimeProps;
+  const iso = isIsoRange(value) || isIsoRange(defaultValue);
   const controlled = value !== undefined;
-  const [internalRange, setInternalRange] = useState<DateRange | undefined>(defaultValue);
-  const range = controlled ? value : internalRange;
+  const [internalRange, setInternalRange] = useState<DateRange | undefined>(() =>
+    toRange(defaultValue),
+  );
+  const range = controlled ? toRange(value) : internalRange;
+  const emit = onValueChange as
+    | ((next: IsoDateRange | DateRange | null | undefined) => void)
+    | undefined;
 
   const [isOpen, setAberto] = useState(false);
   const [draft, setRascunho] = useState<DateRange | undefined>(range);
-  const picked = confirm && isOpen ? draft : range;
+  const pending = iso && draft?.from !== undefined && draft.to === undefined;
+  const picked = isOpen && (confirm || pending) ? draft : range;
 
   const label = describe(range) ?? placeholder;
   const empty = describe(range) === undefined;
@@ -73,12 +140,18 @@ export function DateRangePicker({
   function change(next: DateRange | undefined) {
     if (!controlled) setInternalRange(next);
     setRascunho(next);
-    onValueChange?.(next);
+    if (!iso) {
+      emit?.(next);
+      return;
+    }
+    emit?.(
+      next?.from && next.to ? { from: isoFromDate(next.from), to: isoFromDate(next.to) } : null,
+    );
   }
 
   const trigger = (
     <button
-      {...props}
+      {...rest}
       type="button"
       disabled={disabled}
       className={cn(
@@ -142,8 +215,10 @@ export function DateRangePicker({
         startMonth={startMonth}
         endMonth={endMonth}
         showOutsideDays={showOutsideDays}
+        min={min}
+        max={max}
         onSelect={(next) => {
-          if (confirm) {
+          if (confirm || (iso && next?.from && !next.to)) {
             setRascunho(next);
             return;
           }

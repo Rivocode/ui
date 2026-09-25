@@ -1354,11 +1354,9 @@ export function EventCalendar({
           }
         >
           <Calendar
-            mode="single"
-            selected={date}
-            defaultMonth={date}
-            onSelect={(picked) => {
-              if (picked) changeDate(picked);
+            value={date}
+            onValueChange={(picked) => {
+              changeDate(picked);
               setPickerOpen(false);
             }}
             autoFocus

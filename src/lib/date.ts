@@ -1,3 +1,13 @@
+import { dateFromIso } from "../shared/date";
+
+export type DateInput = Date | string;
+
+export function toDate(input: DateInput | null | undefined): Date | undefined {
+  if (input === null || input === undefined || input === "") return undefined;
+  if (typeof input === "string") return dateFromIso(input);
+  return Number.isNaN(input.getTime()) ? undefined : input;
+}
+
 export function formatDate(data: Date | undefined): string {
   if (!data || Number.isNaN(data.getTime())) return "";
   const dia = String(data.getDate()).padStart(2, "0");

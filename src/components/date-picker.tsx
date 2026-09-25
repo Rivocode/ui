@@ -1,35 +1,59 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import { useState, type ComponentProps } from "react";
+import { useState, type ComponentProps, type ReactElement } from "react";
 
 import { cn } from "../lib/cn";
-import { formatDate, parseDate, applyDateMask } from "../lib/date";
+import { formatDate, parseDate, applyDateMask, toDate, type DateInput } from "../lib/date";
+import { isoFromDate } from "../shared/date";
 import { Button } from "./button";
-import { Calendar } from "./calendar";
+import { Calendar, type CalendarProps } from "./calendar";
 import { CalendarPanel } from "./calendar-panel";
 import { Input } from "./field";
 
 export type CalendarPassthrough = Pick<
-  ComponentProps<typeof Calendar>,
+  CalendarProps,
   "locale" | "startMonth" | "endMonth" | "showOutsideDays"
 >;
 
-export type DatePickerProps = Omit<
+type DatePickerDateValue = {
+  /**
+   * A data escolhida, quando quem usa controla o estado. Aceita `Date` ou
+   * `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
+   */
+  value?: Date;
+  /** A data inicial, quando o componente controla o proprio estado. `Date` ou `aaaa-mm-dd`. */
+  defaultValue?: Date;
+  /**
+   * Chamado quando a data muda, pela digitacao ou pelo Aplicar. Com `Date`,
+   * vem `undefined` quando o campo esvazia; com `aaaa-mm-dd`, vem `""`.
+   */
+  onValueChange?: (date: Date | undefined) => void;
+};
+
+type DatePickerIsoValue =
+  | { value: string | null; defaultValue?: undefined; onValueChange?: (value: string) => void }
+  | { value?: undefined; defaultValue: string; onValueChange?: (value: string) => void };
+
+type DatePickerBase = Omit<
   ComponentProps<typeof Input>,
-  "value" | "defaultValue" | "onChange" | "onValueChange" | "size"
+  "value" | "defaultValue" | "onChange" | "onValueChange" | "size" | "min" | "max"
 > &
   CalendarPassthrough & {
-    /** A data escolhida, quando quem usa controla o estado. */
-    value?: Date;
-    /** A data inicial, quando o componente controla o proprio estado. */
-    defaultValue?: Date;
-    /** Chamado quando a data muda, pela digitacao ou pelo Aplicar. */
-    onValueChange?: (date: Date | undefined) => void;
     /** Tamanho do campo, o mesmo vocabulario do Input. */
     size?: "sm" | "md" | "lg";
+    /**
+     * O primeiro dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. Vale para o
+     * calendario e para o que se digita.
+     */
+    min?: Date | string;
+    /**
+     * O ultimo dia aceito, inclusive, em `Date` ou `aaaa-mm-dd`. Vale para o
+     * calendario e para o que se digita.
+     */
+    max?: Date | string;
     /** Dias que nao podem ser escolhidos. Vai direto para o calendario. */
-    disabledDays?: ComponentProps<typeof Calendar>["disabled"];
+    disabledDays?: CalendarProps["disabled"];
     /**
      * Sem rodape, o clique no dia ja vale e o painel fecha. Ligue quando a
      * escolha dispara trabalho caro, como recarregar uma listagem.
@@ -37,27 +61,52 @@ export type DatePickerProps = Omit<
     confirm?: boolean;
   };
 
-export function DatePicker({
-  value,
-  defaultValue,
-  onValueChange,
-  size,
-  className,
-  placeholder = "dd/mm/aaaa",
-  disabled,
-  disabledDays,
-  locale,
-  startMonth,
-  endMonth,
-  showOutsideDays,
-  confirm,
-  name,
-  onBlur,
-  ...props
-}: DatePickerProps) {
+export type DatePickerDateProps = DatePickerBase & DatePickerDateValue;
+
+export type DatePickerIsoProps = DatePickerBase & DatePickerIsoValue;
+
+export type DatePickerProps = DatePickerDateProps | DatePickerIsoProps;
+
+type DatePickerRuntimeProps = DatePickerBase & {
+  value?: DateInput | null;
+  defaultValue?: DateInput;
+  onValueChange?: (date: never) => void;
+};
+
+export function DatePicker(props: DatePickerDateProps): ReactElement;
+export function DatePicker(props: DatePickerIsoProps): ReactElement;
+export function DatePicker(props: DatePickerProps): ReactElement {
+  const {
+    value,
+    defaultValue,
+    onValueChange,
+    size,
+    className,
+    placeholder = "dd/mm/aaaa",
+    disabled,
+    disabledDays,
+    locale,
+    startMonth,
+    endMonth,
+    showOutsideDays,
+    confirm,
+    name,
+    onBlur,
+    min,
+    max,
+    ...rest
+  } = props as DatePickerRuntimeProps;
+  const iso = typeof value === "string" || value === null || typeof defaultValue === "string";
   const controlled = value !== undefined;
-  const [internalDate, setInternalDate] = useState<Date | undefined>(defaultValue);
-  const date = controlled ? value : internalDate;
+  const [internalDate, setInternalDate] = useState<Date | undefined>(() => toDate(defaultValue));
+  const date = controlled ? toDate(value) : internalDate;
+  const emit = onValueChange as ((next: DateInput | undefined) => void) | undefined;
+
+  const lower = toDate(min);
+  const upper = toDate(max);
+  const allowed = (day: Date) =>
+    (!lower || isoFromDate(day) >= isoFromDate(lower)) &&
+    (!upper || isoFromDate(day) <= isoFromDate(upper));
 
   const [text, setText] = useState(() => formatDate(date));
   const [rawText, setRawText] = useState(false);
@@ -74,7 +123,7 @@ export function DatePicker({
     if (!controlled) setInternalDate(nova);
     setRascunho(nova);
     if (nova) setMes(nova);
-    onValueChange?.(nova);
+    emit?.(iso ? (nova ? isoFromDate(nova) : "") : nova);
   }
 
   const trigger = (
@@ -98,7 +147,7 @@ export function DatePicker({
   return (
     <div className={cn("relative", className)}>
       <Input
-        {...props}
+        {...rest}
         size={size}
         type="text"
         inputMode="numeric"
@@ -112,7 +161,7 @@ export function DatePicker({
           setRawText(true);
 
           const lida = parseDate(masked);
-          if (lida || masked === "") changeDate(lida);
+          if ((lida && allowed(lida)) || masked === "") changeDate(lida);
         }}
         onBlur={(event) => {
           setRawText(false);
@@ -161,11 +210,10 @@ export function DatePicker({
         }
       >
         <Calendar
-          mode="single"
-          selected={picked}
+          value={picked}
           month={mes}
           onMonthChange={setMes}
-          onSelect={(nova) => {
+          onValueChange={(nova) => {
             setRawText(false);
             if (confirm) {
               setRascunho(nova);
@@ -179,17 +227,13 @@ export function DatePicker({
           startMonth={startMonth}
           endMonth={endMonth}
           showOutsideDays={showOutsideDays}
+          min={min}
+          max={max}
           autoFocus
         />
       </CalendarPanel>
 
-      {name && (
-        <input
-          type="hidden"
-          name={name}
-          value={date ? formatDate(date).split("/").reverse().join("-") : ""}
-        />
-      )}
+      {name && <input type="hidden" name={name} value={date ? isoFromDate(date) : ""} />}
     </div>
   );
 }

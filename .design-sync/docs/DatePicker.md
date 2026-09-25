@@ -15,11 +15,43 @@ para a última valida. `31/02` não vira 3 de marco.
 Com `confirm`, o clique no dia vira rascunho e só o Aplicar escreve o valor. No
 celular o painel vira folha de baixo, pelo `CalendarPanel`.
 
+## Valor
+
+`value` e `defaultValue` aceitam `Date` ou texto `aaaa-mm-dd`, e o
+`onValueChange` responde no formato que recebeu. Em texto, a chamada é a mesma
+do `@rivocode/ui-native`:
+
+```tsx
+const [vencimento, setVencimento] = useState<string | null>(null)
+
+<DatePicker
+  value={vencimento}
+  onValueChange={setVencimento}
+  min="2026-09-01"
+  max="2026-12-31"
+/>
+```
+
+Em texto, o campo que esvazia responde `""`, como o `TimeField`. Com `Date`,
+responde `undefined`, que é o que a peça sempre fez. Para começar vazio sem
+controlar o estado, `defaultValue=""` escolhe o formato de texto.
+
+O texto é lido como dia do calendário, e não como instante: `"2026-09-25"` é
+25 de setembro em qualquer fuso. O `new Date("2026-09-25")` do JavaScript lê
+meia-noite em UTC, que em Brasília ainda é dia 24, e é por isso que a peça
+nunca passa o texto por ele.
+
+`min` e `max` são inclusivos. Valem para o calendário, que desabilita os dias de
+fora e para a navegação no mês de cada ponta, e para o que se digita: data fora
+da janela não chega ao `onValueChange`, e ao sair do campo o texto volta para a
+última data válida. `startMonth` e `endMonth` seguem funcionando, mas estão
+marcados como obsoletos. `disabledDays` continua para o dia bloqueado avulso,
+como feriado.
+
 ## Data e texto
 
-O valor é um `Date`, e não texto. As três funções que fazem a ponte saem pelo
-pacote, porque a tela que mostra data fora de um campo precisa das mesmas
-regras:
+As três funções que fazem a ponte com o `Date` saem pelo pacote, porque a tela
+que mostra data fora de um campo precisa das mesmas regras:
 
 | Função | O que faz |
 |---|---|
@@ -36,4 +68,4 @@ Tudo aqui trabalha na data local do navegador de propósito: a pessoa escolheu
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `DatePicker` - abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `DatePicker` - abre a folha com o mês; guarda ISO `aaaa-mm-dd`, que o web também aceita, e exibe `dd/mm/aaaa`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

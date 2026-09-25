@@ -294,19 +294,7 @@ export const SIGNATURES: Record<string, Signature> = {
     ],
   },
   Calendar: {
-    rows: [
-      {
-        web: null,
-        native: "value",
-        note: "o web é o react-day-picker (`mode`, `selected`, `onSelect`); o nativo é um mês desenhado à mão com `value`/`onValueChange`",
-      },
-      {
-        web: "startMonth",
-        native: null,
-        note: "a faixa é `min`/`max` em ISO `aaaa-mm-dd`, e não `startMonth`/`endMonth` em `Date`",
-      },
-      { web: "mode", native: null, note: "só data única: intervalo é o `DateRangePicker`" },
-    ],
+    rows: [{ web: "mode", native: null, note: "só data única: intervalo é o `DateRangePicker`" }],
   },
   ChartContainer: {
     rows: [
@@ -485,14 +473,9 @@ export const SIGNATURES: Record<string, Signature> = {
   DatePicker: {
     rows: [
       {
-        web: "value",
-        native: "value",
-        note: "o valor é ISO `aaaa-mm-dd` em `string`, e não `Date`; a exibição continua `dd/mm/aaaa`",
-      },
-      {
-        web: "startMonth",
+        web: "disabledDays",
         native: null,
-        note: "a faixa é `min`/`max` em ISO, e `disabledDays` não porta",
+        note: "dia bloqueado avulso não porta: a faixa é `min`/`max`",
       },
       { web: "confirm", native: null, note: "a folha sempre confirma: escolher já fecha" },
       {
@@ -503,14 +486,7 @@ export const SIGNATURES: Record<string, Signature> = {
     ],
   },
   DateRangePicker: {
-    rows: [
-      {
-        web: "value",
-        native: "value",
-        note: "as duas pontas são ISO `string` num `{ from, to }`, e não `Date`",
-      },
-      { web: "numberOfMonths", native: null, note: "um mês por folha, sempre" },
-    ],
+    rows: [{ web: "numberOfMonths", native: null, note: "um mês por folha, sempre" }],
   },
   DescriptionItem: {
     rows: [

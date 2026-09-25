@@ -200,7 +200,7 @@ const PARITY: Record<string, Row> = {
   },
   Calendar: {
     state: "traduz",
-    note: "mês desenhado à mão; valor ISO `aaaa-mm-dd`, exibição `dd/mm/aaaa`; o mês novo entra por fade",
+    note: "mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade",
   },
   Card: {
     state: "traduz",
@@ -431,7 +431,7 @@ const PARITY: Record<string, Row> = {
   },
   DatePicker: {
     state: "traduz",
-    note: "abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa`",
+    note: "abre a folha com o mês; guarda ISO `aaaa-mm-dd`, que o web também aceita, e exibe `dd/mm/aaaa`",
   },
   DescriptionList: {
     state: "traduz",
@@ -1076,7 +1076,7 @@ const PARITY: Record<string, Row> = {
   },
   DateRangePicker: {
     state: "traduz",
-    note: "um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir",
+    note: "um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e o intervalo invertido deixou de existir",
     page:
       "Traduz, com um desenho só: **um mês, numa folha de baixo, com a faixa pintada na " +
       "própria grade**. Os dois meses lado a lado do web não cabem (390px partidos ao meio " +
@@ -1086,8 +1086,9 @@ const PARITY: Record<string, Row> = {
       "fim-antes-do-começo deixou de ser sua**: tocar 20 e depois 5 devolve 5 a 20, porque a " +
       "peça ordena as duas pontas em vez de descartar o primeiro toque, e o `Aplicar` fica " +
       "desligado enquanto falta a segunda. Por isso o tipo mudou: o `DateRange` daqui tem " +
-      "`from` e `to` **obrigatórios**, os dois como ISO `aaaa-mm-dd`, e o vazio é `null`. O " +
-      "intervalo pela metade, que no web sai no `onValueChange` entre os dois cliques para o " +
+      "`from` e `to` **obrigatórios**, os dois como ISO `aaaa-mm-dd`, e o vazio é `null` - " +
+      "o mesmo `IsoDateRange` que o web aceita e devolve quando recebe o valor em texto. O " +
+      "intervalo pela metade, que no web com `Date` sai no `onValueChange` entre os dois cliques para o " +
       "resumo do filtro acompanhar, não sai daqui: sob uma folha não há tela atrás para " +
       "acompanhar nada: quem quiser acompanhar lê o resumo que a própria folha escreve " +
       "acima do mês. Sem `confirm`: a folha sempre confirma, porque o toque fora dela é o " +

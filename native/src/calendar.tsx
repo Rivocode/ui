@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
 import { Presence } from "./motion";
+import { dateFromIso, formatIsoDate, isoFromDate, toIsoDate } from "./shared/date";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
 
@@ -28,13 +29,7 @@ const monthLabel = (month: number) => {
   return name.charAt(0).toUpperCase() + name.slice(1);
 };
 
-const toISO = (year: number, month: number, day: number) =>
-  `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-export const formatDate = (iso: string) => {
-  const [year, month, day] = iso.split("-");
-  return `${day}/${month}/${year}`;
-};
+export const formatDate = formatIsoDate;
 
 export type CalendarProps = {
   /** A data escolhida, como `aaaa-mm-dd`. */
@@ -96,7 +91,7 @@ export function MonthView({
     onMonthChange(next.getFullYear(), next.getMonth());
   };
 
-  const isoToday = toISO(today.getFullYear(), today.getMonth(), today.getDate());
+  const isoToday = isoFromDate(today);
 
   return (
     <View className="gap-3">
@@ -140,7 +135,7 @@ export function MonthView({
         {cells.map((day, index) => {
           if (day === null) return <View key={`vazio-${index}`} className="w-[14.28%] py-1" />;
 
-          const iso = toISO(year, month, day);
+          const iso = toIsoDate(year, month, day);
           const paint = paintOf(iso);
           const active = paint.chosen;
           const blocked = (min !== undefined && iso < min) || (max !== undefined && iso > max);
@@ -185,7 +180,7 @@ export function MonthView({
 }
 
 export function useMonthOf(iso: string | null | undefined) {
-  const anchor = iso ? new Date(`${iso}T12:00:00`) : new Date();
+  const anchor = (iso ? dateFromIso(iso) : undefined) ?? new Date();
   const [year, setYear] = useState(anchor.getFullYear());
   const [month, setMonth] = useState(anchor.getMonth());
 

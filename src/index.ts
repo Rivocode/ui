@@ -166,6 +166,7 @@ export {
   DateRangePicker,
   type DateRange,
   type DateRangePickerProps,
+  type IsoDateRange,
 } from "./components/date-range-picker";
 export { formatDate, parseDate, applyDateMask } from "./lib/date";
 export {
