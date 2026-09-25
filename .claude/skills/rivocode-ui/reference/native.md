@@ -86,10 +86,6 @@ da peça. Três limites, todos do React Native:
   `trigger` do `Spoiler`, o `footer` do `Carousel`), `text-*` não pinta o
   texto de dentro; vista a parte que é o próprio `Text` (`title`, `counter`,
   `message`).
-- **As props de uma parte só continuam valendo, obsoletas**: `markClassName`
-  do `Highlight`, `badgeClassName` do `Indicator` e `inputClassName` do
-  `CurrencyInput`, do `PostalCodeField` e do `TagsInput`. Com as duas, as
-  classes se somam e a de `classNames` vence.
 
 Nem toda peça tem `classNames` aqui. A que tem no web e não tem aqui tem linha
 na tabela abaixo dizendo por quê, e `bun run check:assinatura` cobra a linha:
@@ -104,7 +100,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**189 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**188 divergências de assinatura em 87 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -264,7 +260,6 @@ escritos em lugar nenhum.
 | `Sparkline` | `variant` | `variant` | `area` não porta: pede polígono preenchido, e o desenho nativo é `View` |
 | `Sparkline` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token |
 | `Sparkline` | — | `height` | a altura é prop, porque não há CSS que a dê de fora |
-| `Spinner` | `size` | `size` | `sm`, `md` e `lg` como no web, e `sm` e `md` dão o mesmo giro pequeno do `ActivityIndicator`; `small` e `large` seguem aceitos, obsoletos |
 | `Spoiler` | — | `fadeOver` | o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara |
 | `Stat` | `value` | `value` | `value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta |
 | `Stat` | `deltaVariant` | — | a variação é sempre texto com seta, sem a pastilha preenchida |
@@ -517,7 +512,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web; `classNames` com as seis partes do web |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
-| `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`, e `small`/`large` seguem aceitos, obsoletos |
+| `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
 | `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |

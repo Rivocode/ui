@@ -1638,12 +1638,6 @@
         "note": "A familia do provider que veste o que se digita."
       },
       {
-        "name": "inputClassName",
-        "type": "string",
-        "required": false,
-        "note": "Obsoleta: veste o campo de dentro, hoje em `classNames.input`."
-      },
-      {
         "name": "invalid",
         "type": "boolean",
         "required": false
@@ -1745,11 +1739,6 @@
         "required": false
       },
       {
-        "name": "onSelectedChange",
-        "type": "((keys: string[]) => void)",
-        "required": false
-      },
-      {
         "name": "onValueChange",
         "type": "((keys: string[]) => void)",
         "required": false
@@ -1765,11 +1754,6 @@
         "type": "boolean",
         "required": false,
         "note": "Caixa de marcar a esquerda de cada linha."
-      },
-      {
-        "name": "selected",
-        "type": "string[]",
-        "required": false
       },
       {
         "name": "skeletonRows",
@@ -2516,12 +2500,6 @@
         "note": "Corta depois de tantas linhas, de 1 a 6."
       },
       {
-        "name": "markClassName",
-        "type": "string",
-        "required": false,
-        "note": "Obsoleta: a classe de cada trecho achado, hoje em `classNames.mark`."
-      },
-      {
         "name": "size",
         "type": "TextSize",
         "required": false,
@@ -2557,20 +2535,15 @@
         "note": "O icone."
       },
       {
-        "name": "accessibilityLabel",
+        "name": "label",
         "type": "string",
-        "required": false
+        "required": true,
+        "note": "O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao nao tem outro texto."
       },
       {
         "name": "className",
         "type": "string",
         "required": false
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "note": "O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao nao tem outro texto."
       },
       {
         "name": "loading",
@@ -2664,12 +2637,6 @@
         "type": "string",
         "required": true,
         "note": "O que o leitor de tela ouve no lugar do número: \"3 notificações\"."
-      },
-      {
-        "name": "badgeClassName",
-        "type": "string",
-        "required": false,
-        "note": "Obsoleta: veste a pastilha, hoje em `classNames.badge`."
       },
       {
         "name": "className",
@@ -3477,12 +3444,6 @@
         "type": "RivoFontRole",
         "required": false,
         "note": "A familia do provider que veste o que se digita."
-      },
-      {
-        "name": "inputClassName",
-        "type": "string",
-        "required": false,
-        "note": "Obsoleta: veste o campo de dentro, hoje em `classNames.input`."
       },
       {
         "name": "invalid",
@@ -4493,7 +4454,7 @@
       },
       {
         "name": "size",
-        "type": "\"large\" | \"lg\" | \"md\" | \"sm\" | \"small\"",
+        "type": "\"lg\" | \"md\" | \"sm\"",
         "required": false,
         "note": "Os nomes do web."
       }
@@ -4761,12 +4722,6 @@
         "note": "Classe por parte: `field` (a caixa), `tag` (cada ficha), `remove` (o xis da ficha) e `input` (o campo de digitar)."
       },
       {
-        "name": "inputClassName",
-        "type": "string",
-        "required": false,
-        "note": "Obsoleta: veste o campo de digitar, hoje em `classNames.input`."
-      },
-      {
         "name": "invalid",
         "type": "boolean",
         "required": false
@@ -4782,11 +4737,6 @@
         "type": "number",
         "required": false,
         "note": "Teto de fichas."
-      },
-      {
-        "name": "removeLabel",
-        "type": "((tag: string) => string)",
-        "required": false
       },
       {
         "name": "separators",

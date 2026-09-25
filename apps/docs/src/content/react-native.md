@@ -267,7 +267,7 @@ recusa o que conseguiu medir.
 | `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web; `classNames` com as seis partes do web |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
-| `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`, e `small`/`large` seguem aceitos, obsoletos |
+| `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator` |
 | `Splitter` | ✕ não porta | duas áreas lado a lado não cabem em tela estreita; no celular a lista e o detalhe são duas telas do router |
 | `Spoiler` | ✔ traduz | os mesmos `maxHeight`, `expanded` e `labels`; o degradê é pintado na cor de `fadeOver`, porque não há máscara |
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |

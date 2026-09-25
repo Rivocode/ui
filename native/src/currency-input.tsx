@@ -33,12 +33,6 @@ export type CurrencyInputProps = Omit<
   className?: string;
   /** Classe por parte: `input` (o campo) e `prefix` (o texto do "R$"). */
   classNames?: Slots<"input" | "prefix">;
-  /**
-   * Obsoleta: veste o campo de dentro, hoje em `classNames.input`.
-   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
-   * `classNames.input` vence.
-   */
-  inputClassName?: string;
 };
 
 export function CurrencyInput({
@@ -52,7 +46,6 @@ export function CurrencyInput({
   onSelectionChange,
   className,
   classNames,
-  inputClassName,
   ...props
 }: CurrencyInputProps) {
   const [minus, setMinus] = useState(false);
@@ -81,7 +74,7 @@ export function CurrencyInput({
           setMinus(reading.minus);
           if (reading.cents !== value) onValueChange(reading.cents);
         }}
-        className={cn("pl-11", inputClassName, classNames?.input)}
+        className={cn("pl-11", classNames?.input)}
       />
       <View
         pointerEvents="none"

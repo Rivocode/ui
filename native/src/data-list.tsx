@@ -82,10 +82,6 @@ export type DataListProps<Row> = {
   /** As chaves marcadas, quando quem usa controla a selecao, como no `DataTable` web. Sem ela, a lista guarda a propria selecao. */
   value?: string[];
   onValueChange?: (keys: string[]) => void;
-  /** @deprecated Use `value`. */
-  selected?: string[];
-  /** @deprecated Use `onValueChange`. */
-  onSelectedChange?: (keys: string[]) => void;
 };
 
 const flatten = (text: unknown) =>
@@ -114,18 +110,15 @@ export function DataList<Row>({
   selectable,
   value,
   onValueChange,
-  selected,
-  onSelectedChange,
 }: DataListProps<Row>) {
   const [internalSelection, setInternalSelection] = useState<string[]>([]);
-  const controlled = value ?? selected;
+  const controlled = value;
   const selection = controlled ?? internalSelection;
 
   const toggle = (key: string, checked: boolean) => {
     const next = checked ? [...selection, key] : selection.filter((other) => other !== key);
     if (!controlled) setInternalSelection(next);
     onValueChange?.(next);
-    onSelectedChange?.(next);
   };
 
   if (isError) {

@@ -11,15 +11,14 @@ export function Separator({ className }: { className?: string }) {
   return <View accessibilityRole="none" className={`h-px bg-border ${className ?? ""}`} />;
 }
 
-const SPINNER_SIZE = { sm: "small", md: "small", lg: "large", small: "small", large: "large" } as const;
+const SPINNER_SIZE = { sm: "small", md: "small", lg: "large" } as const;
 
 export type SpinnerProps = {
   /**
    * Os nomes do web. O `ActivityIndicator` so tem dois giros, entao `sm` e `md`
-   * desenham o pequeno e `lg` o grande. `small` e `large` seguem aceitos e
-   * estao obsoletos: use `md` e `lg`.
+   * desenham o pequeno e `lg` o grande.
    */
-  size?: "sm" | "md" | "lg" | "small" | "large";
+  size?: "sm" | "md" | "lg";
   /** O que o leitor de tela anuncia. Vazio esconde o giro da leitura. */
   label?: string;
 };
@@ -32,7 +31,7 @@ export function Spinner({ size = "md", label = "Carregando" }: SpinnerProps) {
       accessibilityLabel={named ? label : undefined}
       accessibilityElementsHidden={!named}
       importantForAccessibility={named ? "auto" : "no-hide-descendants"}
-      size={SPINNER_SIZE[size] ?? "small"}
+      size={SPINNER_SIZE[size]}
       color={colors["fg-subtle"]}
     />
   );

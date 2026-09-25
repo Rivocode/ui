@@ -1648,7 +1648,7 @@ function checkElements(ctx: Context) {
     };
 
     if (name === "IconButton" && !spread(node)) {
-      if (platform === "native" ? !filled("label") && !nativeNamed() : !filled("label")) {
+      if (!filled("label")) {
         add("nome-acessivel", node.start, "`IconButton` sem `label`");
       }
     }

@@ -75,7 +75,7 @@ terceiro tamanho e resolve a espera sem alargar o quadrado.
 
 ## No React Native
 
-Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo recusa o botão sem ele. O `accessibilityLabel`, que foi o nome dele até aqui, continua aceito no lugar do `label` e está marcado `@deprecated`.
+Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo recusa o botão sem ele. O `accessibilityLabel` não entra: o nome é um só, o `label`, e é ele que vira o `accessibilityLabel` do `Pressable`.
 
 **O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `outline`, `destructive`), lidas das mesmas classes: só `shape` não atravessa, pelo mesmo motivo de lá.
 

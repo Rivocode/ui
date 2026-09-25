@@ -114,4 +114,4 @@ Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e c
 
 O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo anúncio do leitor de tela do sistema. O "Tentar de novo" da falha de rede é um botão de verdade, com alvo de toque inteiro.
 
-As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado. O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.
+As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado.

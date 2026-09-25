@@ -42,12 +42,6 @@ export type IndicatorProps = {
   className?: string;
   /** Classe por parte: `badge`, a pastilha. O `className` veste o que embrulha o filho. */
   classNames?: Slots<"badge">;
-  /**
-   * Obsoleta: veste a pastilha, hoje em `classNames.badge`.
-   * @deprecated Use `classNames.badge`. Com os dois, as classes se somam e a de
-   * `classNames.badge` vence.
-   */
-  badgeClassName?: string;
 };
 
 export function Indicator({
@@ -58,7 +52,6 @@ export function Indicator({
   dot,
   className,
   classNames,
-  badgeClassName,
 }: IndicatorProps) {
   const show = dot === true || (count !== undefined && count > 0);
   const written = count !== undefined && count > max ? `${max}+` : String(count ?? "");
@@ -86,7 +79,6 @@ export function Indicator({
             "absolute -top-1 -right-1 flex-row items-center justify-center rounded-pill bg-danger",
             "border-2 border-bg",
             dot === true ? "size-3.5" : "h-[22px] min-w-[22px] px-1",
-            badgeClassName,
             classNames?.badge,
           )}
         >

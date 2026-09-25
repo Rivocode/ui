@@ -94,38 +94,34 @@ describe("DataList", () => {
   });
 
   test("selectable põe uma caixa por linha e devolve as chaves do keyExtractor", () => {
-    const onSelectedChange = mock(() => {});
-    const screen = render(list({ selectable: true, selected: [], onSelectedChange }));
+    const onValueChange = mock(() => {});
+    const screen = render(list({ selectable: true, value: [], onValueChange }));
     const boxes = byRole(screen, "checkbox");
     expect(boxes.length).toBe(2);
     act(() => boxes[1].props.onPress());
-    expect(onSelectedChange).toHaveBeenCalledWith(["2"]);
+    expect(onValueChange).toHaveBeenCalledWith(["2"]);
   });
 
-  test("selected manda no que está marcado, e desmarcar tira só aquela chave", () => {
-    const onSelectedChange = mock(() => {});
-    const screen = render(list({ selectable: true, selected: ["1", "2"], onSelectedChange }));
+  test("value manda no que está marcado, e desmarcar tira só aquela chave", () => {
+    const onValueChange = mock(() => {});
+    const screen = render(list({ selectable: true, value: ["1", "2"], onValueChange }));
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(true);
     act(() => byRole(screen, "checkbox")[0].props.onPress());
-    expect(onSelectedChange).toHaveBeenCalledWith(["2"]);
+    expect(onValueChange).toHaveBeenCalledWith(["2"]);
   });
 
-  test("value e onValueChange falam como o DataTable web, e o selected antigo continua valendo", () => {
+  test("value e onValueChange falam como o DataTable web", () => {
     const onValueChange = mock((_keys: string[]) => {});
-    const onSelectedChange = mock((_keys: string[]) => {});
-    const screen = render(
-      list({ selectable: true, value: ["1"], onValueChange, onSelectedChange }),
-    );
+    const screen = render(list({ selectable: true, value: ["1"], onValueChange }));
     const boxes = byRole(screen, "checkbox");
     expect(boxes[0].props.accessibilityState.checked).toBe(true);
     expect(boxes[1].props.accessibilityState.checked).toBe(false);
     act(() => boxes[1].props.onPress());
     expect(onValueChange).toHaveBeenCalledWith(["1", "2"]);
-    expect(onSelectedChange).toHaveBeenCalledWith(["1", "2"]);
     expect(byRole(screen, "checkbox")[1].props.accessibilityState.checked).toBe(false);
   });
 
-  test("sem selected a lista guarda a própria seleção", () => {
+  test("sem value a lista guarda a própria seleção", () => {
     const screen = render(list({ selectable: true }));
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(false);
     act(() => byRole(screen, "checkbox")[0].props.onPress());
@@ -140,19 +136,19 @@ describe("DataList", () => {
   });
 
   test("a chave sai do índice original: filtrar não renumera a seleção", () => {
-    const onSelectedChange = mock(() => {});
+    const onValueChange = mock(() => {});
     const screen = render(
       list({
         filter: "transportes",
         selectable: true,
-        selected: [],
-        onSelectedChange,
+        value: [],
+        onValueChange,
         keyExtractor: (_row, index) => String(index),
       }),
     );
     act(() => byRole(screen, "checkbox")[0].props.onPress());
     // Ela é a segunda linha do conjunto, e continua sendo com o filtro ligado.
-    expect(onSelectedChange).toHaveBeenCalledWith(["1"]);
+    expect(onValueChange).toHaveBeenCalledWith(["1"]);
   });
 
   test("lista vazia sem busca escrita não fala em busca", () => {

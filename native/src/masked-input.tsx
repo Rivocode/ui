@@ -7,8 +7,7 @@ export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onVa
    * O molde, na mesma sintaxe do web: um nome pronto (`cpf`, `cnpj`, `cep`,
    * `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) ou um
    * molde escrito na mao, com `9` para digito, `A` para letra e `*` para os
-   * dois. Molde com `#` segue a sintaxe antiga do nativo (`#` digito, `*`
-   * letra ou digito, o resto literal) e esta obsoleto: troque `#` por `9`.
+   * dois.
    */
   mask: Mask;
   /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. Em `moeda`, os digitos do texto na tela, como o cru do web: `0,05` entrega `005`, e `12,00` entrega `1200`. */
@@ -17,59 +16,18 @@ export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onVa
   onValueChange: (clean: string, masked: string) => void;
 };
 
-const legacyFits = (slot: string, character: string) =>
-  slot === "#" ? /\d/.test(character) : /[A-Z0-9]/.test(character);
-
-const legacyClean = (mask: string, text: string) => {
-  const slots = [...mask].filter((slot) => slot === "#" || slot === "*");
-  let out = "";
-  for (const character of text.toUpperCase()) {
-    const slot = slots[out.length];
-    if (slot === undefined) break;
-    if (legacyFits(slot, character)) out += character;
-  }
-  return out;
-};
-
-const legacyApply = (mask: string, clean: string) => {
-  let out = "";
-  let cursor = 0;
-  for (const slot of mask) {
-    if (cursor >= clean.length) break;
-    if (slot === "#" || slot === "*") {
-      out += clean[cursor];
-      cursor++;
-    } else {
-      out += slot;
-    }
-  }
-  return out;
-};
-
-const isLegacy = (mask: string) => mask.includes("#");
-
 const cleanOf = (masked: string) => unmask(masked).toUpperCase();
 
 const format = (mask: Mask, text: string) =>
   mask === "boleto" ? applyPattern(text, boletoPatternFor(text)) : maskText(text, mask);
 
-const display = (mask: Mask, clean: string) =>
-  isLegacy(mask) ? legacyApply(mask, clean) : format(mask, clean);
-
 const readTyped = (mask: Mask, text: string) => {
-  if (isLegacy(mask)) {
-    const clean = legacyClean(mask, text);
-    return { clean, masked: legacyApply(mask, clean) };
-  }
   const masked = format(mask, text.toUpperCase());
   return { clean: cleanOf(masked), masked };
 };
 
-const numericKeyboard = (mask: Mask) =>
-  isLegacy(mask) ? !mask.includes("*") : isNumericMask(mask);
-
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
-  const alphanumeric = !numericKeyboard(mask);
+  const alphanumeric = !isNumericMask(mask);
 
   return (
     <Input
@@ -77,7 +35,7 @@ export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInpu
       keyboardType={alphanumeric ? "default" : "number-pad"}
       autoCapitalize={props.autoCapitalize ?? (alphanumeric ? "characters" : undefined)}
       autoCorrect={props.autoCorrect ?? (alphanumeric ? false : undefined)}
-      value={display(mask, value)}
+      value={format(mask, value)}
       onChangeText={(text) => {
         const { clean, masked } = readTyped(mask, text);
         onValueChange(clean, masked);

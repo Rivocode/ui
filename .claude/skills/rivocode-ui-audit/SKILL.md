@@ -102,7 +102,7 @@ onde. Peso: crítico 10, sério 5, moderado 3, menor 1.
 | Regra | Severidade | O que o script acha | Fonte |
 |---|---|---|---|
 | `cor-literal` | crítico | hexadecimal, `rgb()`, `hsl()`, `oklch()`, classe da paleta do Tailwind (`bg-red-500`, `text-white`), valor arbitrário `bg-[#fff]`, `text-[red]` e `shadow-[0_0_0_#000]`, cor por nome em `color`, `fill`, `stroke`; o hexadecimal comparado (`location.hash === "#add"`) passa | SKILL.md, O que nunca fazer |
-| `nome-acessivel` | crítico | `IconButton` sem `label` (no nativo, `accessibilityLabel` ainda vale, `@deprecated`), `Button` ou `<button>` só com ícone e sem nome; no nativo, `Button` e `Pressable` só com ícone e sem `accessibilityLabel`. Nome vazio (`aria-label=""`) não é nome | a11y.md, Nome acessível |
+| `nome-acessivel` | crítico | `IconButton` sem `label` (nos dois pacotes o nome é o `label`), `Button` ou `<button>` só com ícone e sem nome; no nativo, `Button` e `Pressable` só com ícone e sem `accessibilityLabel`. Nome vazio (`aria-label=""`) não é nome | a11y.md, Nome acessível |
 | `z-index-numerico` | sério | `z-10`, `z-[60]`, `zIndex: 5`, `z-index: 5` | SKILL.md, O que nunca fazer |
 | `peca-reescrita` | sério | `<button>`, `<select>`, `<textarea>`, `<table>`, `<dialog>`, `<progress>`, `<meter>`, `<hr>`, `<details>`, `<input>` por tipo (`checkbox` é `Checkbox`, `range` é `Slider`, `password` é `PasswordInput`…), `role="dialog"`, `aria-modal` e o `fixed inset-0` do modal caseiro; no nativo, `Button`, `TextInput`, `Switch`, `Modal`, `ActivityIndicator` e `Touchable*` do react-native | components.md |
 | `campo-sem-rotulo` | sério | `Field` sem `FieldLabel` (nativo: sem `label`), campo fora de `Field`/`FormField` e sem nome, e o `placeholder` fazendo de rótulo | a11y.md; texto.md |

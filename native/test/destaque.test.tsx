@@ -33,7 +33,7 @@ describe("Highlight", () => {
 
   test("o trecho achado veste o fundo cheio de atencao com a tinta dele, e nao o fundo sutil", () => {
     const screen = render(
-      <Highlight query="pix" markClassName="rc-mark" tone="muted">
+      <Highlight query="pix" classNames={{ mark: "rc-mark" }} tone="muted">
         Pague por Pix
       </Highlight>,
     );

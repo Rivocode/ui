@@ -77,4 +77,4 @@ achado.
 
 Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, `lineClamp`).
 
-A classe de cada trecho vai em `classNames.mark`, como no web. O `markClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.mark` vence. O `matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma regra.
+A classe de cada trecho vai em `classNames.mark`, como no web. O `matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma regra.

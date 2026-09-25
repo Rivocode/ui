@@ -1038,15 +1038,6 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: null, native: "height", note: "a altura é prop, porque não há CSS que a dê de fora" },
     ],
   },
-  Spinner: {
-    rows: [
-      {
-        web: "size",
-        native: "size",
-        note: "`sm`, `md` e `lg` como no web, e `sm` e `md` dão o mesmo giro pequeno do `ActivityIndicator`; `small` e `large` seguem aceitos, obsoletos",
-      },
-    ],
-  },
   Stat: {
     rows: [
       {

@@ -511,9 +511,7 @@ igual nos dois pacotes, e a classe de quem usa vence a da peça. Parte que o
 nativo não desenha fica fora do tipo, e não vira nó inventado (o `pause` do
 `Carousel`, sem `autoplay`; o `code` do `QRCode`, que é `Svg` e não recebe
 classe). No React Native a cor de texto não desce de `View` para `Text`: para
-pintar texto, vista a parte que é o próprio texto. As props antigas de uma
-parte só (`markClassName`, `badgeClassName`, `inputClassName`) continuam
-valendo, obsoletas; com as duas, as classes se somam e a de `classNames` vence.
+pintar texto, vista a parte que é o próprio texto.
 
 A regra que desenha o pacote é **um subcaminho por peer, e não um por
 assunto**. Quatro peers são opcionais, e é o peer que decide onde a porta

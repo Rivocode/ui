@@ -89,7 +89,7 @@ describe("MaskedInput", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <MaskedInput
-        mask="##.###.###/####-##"
+        mask="99.999.999/9999-99"
         value="12345678000190"
         onValueChange={onValueChange}
       />,
@@ -106,7 +106,7 @@ describe("MaskedInput", () => {
     const onValueChange = mock(() => {});
     const screen = render(
       <MaskedInput
-        mask="**.***.***/****-##"
+        mask="**.***.***/****-99"
         value="12ABC34501DE35"
         onValueChange={onValueChange}
       />,
@@ -121,9 +121,9 @@ describe("MaskedInput", () => {
     expect(onValueChange).toHaveBeenCalledWith("12ABC34501DE35", "12.ABC.345/01DE-35");
   });
 
-  test("so com # no molde o teclado continua numerico", () => {
+  test("so com 9 no molde o teclado continua numerico", () => {
     const screen = render(
-      <MaskedInput mask="#####-###" value="58000000" onValueChange={() => {}} />,
+      <MaskedInput mask="99999-999" value="58000000" onValueChange={() => {}} />,
     );
     const input = screen.root.findByType("TextInput" as never);
     expect(input.props.keyboardType).toBe("number-pad");
@@ -374,16 +374,11 @@ describe("PasswordInput", () => {
 });
 
 describe("TagsInput", () => {
-  test("labels.remove da nome ao xis, como no web, e o removeLabel antigo continua valendo", () => {
+  test("labels.remove da nome ao xis, como no web", () => {
     const named = render(
       <TagsInput value={["pix"]} onValueChange={() => {}} labels={{ remove: (tag) => `Tirar ${tag}` }} />,
     );
     expect(byLabel(named, "Tirar pix").length).toBe(1);
-
-    const legacy = render(
-      <TagsInput value={["pix"]} onValueChange={() => {}} removeLabel={(tag) => `Apagar ${tag}`} />,
-    );
-    expect(byLabel(legacy, "Apagar pix").length).toBe(1);
 
     const fallback = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
     expect(byLabel(fallback, "Remover pix").length).toBe(1);

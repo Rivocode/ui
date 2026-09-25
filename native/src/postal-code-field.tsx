@@ -46,12 +46,6 @@ export type PostalCodeFieldProps = Omit<
    * e `retry` (o botao de tentar de novo).
    */
   classNames?: Slots<"input" | "suffix" | "message" | "retry">;
-  /**
-   * Obsoleta: veste o campo de dentro, hoje em `classNames.input`.
-   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
-   * `classNames.input` vence.
-   */
-  inputClassName?: string;
 };
 
 export function PostalCodeField({
@@ -65,7 +59,6 @@ export function PostalCodeField({
   editable,
   className,
   classNames,
-  inputClassName,
   ...props
 }: PostalCodeFieldProps) {
   const { colors } = useRivo();
@@ -140,7 +133,7 @@ export function PostalCodeField({
               settleStatus("idle");
             }
           }}
-          className={cn("pr-11", inputClassName, classNames?.input)}
+          className={cn("pr-11", classNames?.input)}
         />
         {status === "searching" ? (
           <View

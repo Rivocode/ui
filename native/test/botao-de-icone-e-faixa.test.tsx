@@ -34,20 +34,14 @@ describe("IconButton", () => {
     expect(missing).toBeDefined();
   });
 
-  test("o accessibilityLabel antigo continua nomeando o botao", () => {
-    const screen = render(<IconButton accessibilityLabel="Excluir nota">{null}</IconButton>);
-    const [button] = byRole(screen, "button");
-    expect(button!.props.accessibilityLabel).toBe("Excluir nota");
-  });
-
-  test("com os dois, o label vence", () => {
-    const screen = render(
+  test("o nome entra so pelo label, e o tipo recusa o accessibilityLabel", () => {
+    const refused = (
+      // @ts-expect-error o nome do botao e o label, como no web
       <IconButton label="Excluir nota" accessibilityLabel="Apagar">
         {null}
-      </IconButton>,
+      </IconButton>
     );
-    const [button] = byRole(screen, "button");
-    expect(button!.props.accessibilityLabel).toBe("Excluir nota");
+    expect(refused).toBeDefined();
   });
 
   test("todo tamanho chega a 44 de alvo, com hitSlop so onde o desenho e menor", () => {

@@ -70,7 +70,7 @@ describe("outline", () => {
     const icon = classesOf(
       byRole(
         render(
-          <IconButton accessibilityLabel="Atualizar" variant="outline">
+          <IconButton label="Atualizar" variant="outline">
             {null}
           </IconButton>,
         ),
@@ -85,7 +85,7 @@ describe("outline", () => {
     const colorOf = (variant: "outline" | "secondary" | "ghost") => {
       const seen: string[] = [];
       render(
-        <IconButton accessibilityLabel="Atualizar" variant={variant}>
+        <IconButton label="Atualizar" variant={variant}>
           {({ color }) => {
             seen.push(color);
             return null;

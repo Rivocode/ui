@@ -33,33 +33,17 @@ export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLa
   size?: "sm" | "md" | "lg";
   /** Em espera: troca o icone pelo giro, nao aceita toque e anuncia `busy`. */
   loading?: boolean;
+  /**
+   * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
+   * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
+   * nota"), e nao o desenho.
+   */
+  label: string;
   className?: string;
-} & (
-    | {
-        /**
-         * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
-         * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
-         * nota"), e nao o desenho.
-         */
-        label?: string;
-        /** @deprecated Use `label`, o mesmo nome do web. */
-        accessibilityLabel: string;
-      }
-    | {
-        /**
-         * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
-         * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
-         * nota"), e nao o desenho.
-         */
-        label: string;
-        /** @deprecated Use `label`, o mesmo nome do web. */
-        accessibilityLabel?: string;
-      }
-  );
+};
 
 export function IconButton({
   label,
-  accessibilityLabel,
   children,
   variant = "primary",
   size = "md",
@@ -84,7 +68,7 @@ export function IconButton({
       accessibilityRole="button"
       hitSlop={hitSlop}
       {...props}
-      accessibilityLabel={label ?? accessibilityLabel}
+      accessibilityLabel={label}
       {...press}
       disabled={blocked}
       accessibilityState={{ disabled: Boolean(blocked), busy: loading }}

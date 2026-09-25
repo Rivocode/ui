@@ -15,11 +15,6 @@ describe("Spinner", () => {
     expect(indicator(<Spinner />).size).toBe("small");
   });
 
-  test("small e large continuam valendo", () => {
-    expect(indicator(<Spinner size="small" />).size).toBe("small");
-    expect(indicator(<Spinner size="large" />).size).toBe("large");
-  });
-
   test("o label e o que o leitor anuncia, com Carregando de padrao", () => {
     expect(indicator(<Spinner />).accessibilityLabel).toBe("Carregando");
     expect(indicator(<Spinner label="Emitindo a nota" />).accessibilityLabel).toBe(

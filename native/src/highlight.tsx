@@ -12,19 +12,12 @@ export type HighlightProps = Omit<TextProps, "children"> & {
   query: string | readonly string[];
   /** Classe por parte: `mark`, cada trecho achado, o `Text` aninhado que pinta o fundo. */
   classNames?: Slots<"mark">;
-  /**
-   * Obsoleta: a classe de cada trecho achado, hoje em `classNames.mark`.
-   * @deprecated Use `classNames.mark`. Com os dois, as classes se somam e a de
-   * `classNames.mark` vence.
-   */
-  markClassName?: string;
 };
 
 export function Highlight({
   children,
   query,
   classNames,
-  markClassName,
   ...props
 }: HighlightProps) {
   const chunks = splitHighlight(children, query);
@@ -36,7 +29,7 @@ export function Highlight({
           <Text
             key={index}
             weight="semibold"
-            className={cn("bg-warning text-warning-fg", markClassName, classNames?.mark)}
+            className={cn("bg-warning text-warning-fg", classNames?.mark)}
           >
             {chunk.text}
           </Text>

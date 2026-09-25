@@ -17,8 +17,6 @@ export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "cl
   max?: number;
   /** O que o leitor de tela ouve nos botoes da peca, como no web e no FilterChip. `remove` recebe a ficha. */
   labels?: { remove?: (tag: string) => string };
-  /** @deprecated Use `labels.remove`. */
-  removeLabel?: (tag: string) => string;
   invalid?: boolean;
   /** Veste a caixa toda, o mesmo no de `classNames.field`. */
   className?: string;
@@ -27,12 +25,6 @@ export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "cl
    * da ficha) e `input` (o campo de digitar).
    */
   classNames?: Slots<"field" | "tag" | "remove" | "input">;
-  /**
-   * Obsoleta: veste o campo de digitar, hoje em `classNames.input`.
-   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
-   * `classNames.input` vence.
-   */
-  inputClassName?: string;
 };
 
 function splitTags(text: string, separators: string[]) {
@@ -56,14 +48,12 @@ export function TagsInput({
   separators = [","],
   max,
   labels = {},
-  removeLabel,
   invalid,
   editable = true,
   onBlur,
   onFocus,
   className,
   classNames,
-  inputClassName,
   ...props
 }: TagsInputProps) {
   const [draft, setDraft] = useState("");
@@ -73,7 +63,7 @@ export function TagsInput({
   const motion = useMotion();
   const settled = useSettled();
 
-  const remove = labels.remove ?? removeLabel ?? ((tag: string) => `Remover ${tag}`);
+  const remove = labels.remove ?? ((tag: string) => `Remover ${tag}`);
 
   const full = max !== undefined && value.length >= max;
 
@@ -157,7 +147,7 @@ export function TagsInput({
           onBlur?.(event);
         }}
         placeholderTextColor={colors["fg-subtle"]}
-        className={cn("h-8 min-w-24 flex-1 text-base text-fg", inputClassName, classNames?.input)}
+        className={cn("h-8 min-w-24 flex-1 text-base text-fg", classNames?.input)}
       />
     </Pressable>
   );

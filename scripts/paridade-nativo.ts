@@ -624,8 +624,7 @@ const PARITY: Record<string, Row> = {
       "Traduz, com os mesmos moldes: os nomes prontos (`cpf`, `cnpj`, `cep`, `data`, `hora`, " +
       "`placa`, `cartao`, `telefone`, `boleto` e `moeda`) e o molde escrito à mão, com `9` " +
       "para dígito, `A` para letra e `*` para os dois, saem de um arquivo só, compartilhado " +
-      "pelos dois pacotes. O molde com `#`, a sintaxe antiga daqui, continua funcionando e " +
-      "está obsoleto: troque `#` por `9`.\n\n" +
+      "pelos dois pacotes.\n\n" +
       "O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa " +
       "alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o " +
       "limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega " +
@@ -644,7 +643,7 @@ const PARITY: Record<string, Row> = {
       "troca para saber o que entrou por cima. Com `allowNegative`, o teclado passa a ser o de " +
       "números e pontuação, que é o que tem o sinal no iPhone. Não há `name`: formulário " +
       "escondido não existe no celular.\n\n" +
-      "As partes vestem pelo mesmo `classNames` do web: `input` e `prefix`, este no texto do \"R$\". O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
+      "As partes vestem pelo mesmo `classNames` do web: `input` e `prefix`, este no texto do \"R$\".",
   },
   PostalCodeField: {
     state: "traduz",
@@ -658,7 +657,7 @@ const PARITY: Record<string, Row> = {
       "O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo " +
       "anúncio do leitor de tela do sistema. O \"Tentar de novo\" da falha de rede é um " +
       "botão de verdade, com alvo de toque inteiro.\n\n" +
-      "As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado. O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
+      "As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado.",
   },
   Questionnaire: {
     state: "traduz",
@@ -895,7 +894,7 @@ const PARITY: Record<string, Row> = {
   },
   Spinner: {
     state: "traduz",
-    note: "`sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`, e `small`/`large` seguem aceitos, obsoletos",
+    note: "`sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`",
   },
   Stack: {
     state: "traduz",
@@ -962,7 +961,7 @@ const PARITY: Record<string, Row> = {
       "padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha " +
       "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
       "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`, com a seleção " +
-      "em `value` e `onValueChange`; `selected` e `onSelectedChange` ficaram obsoletos) e **dois não " +
+      "em `value` e `onValueChange`) e **dois não " +
       "portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem " +
       'cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em ' +
       "cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um " +
@@ -1254,7 +1253,7 @@ const PARITY: Record<string, Row> = {
       "leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O " +
       "anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não " +
       "existe no React Native, e borda ali ocupa por dentro da caixa.\n\n" +
-      "A pastilha se veste por `classNames.badge`, o mesmo nome do web. O `badgeClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.badge` vence.",
+      "A pastilha se veste por `classNames.badge`, o mesmo nome do web.",
   },
   InputGroup: {
     state: "traduz",
@@ -1350,8 +1349,8 @@ const PARITY: Record<string, Row> = {
       "tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que " +
       "já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não " +
       "entra duas vezes e sair do campo fecha o que estava meio escrito. O nome do xis vem " +
-      "por `labels.remove`, como no web; o `removeLabel` antigo está obsoleto." +
-      "\n\nAs partes vestem pelo mesmo `classNames` do web: `field`, `tag`, `remove` e `input`. O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
+      "por `labels.remove`, como no web." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `field`, `tag`, `remove` e `input`.",
   },
   TimeField: {
     state: "traduz",
@@ -1533,8 +1532,8 @@ const PARITY: Record<string, Row> = {
     note: "`label` obrigatório, o mesmo nome do web; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar",
     page:
       "Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo " +
-      "recusa o botão sem ele. O `accessibilityLabel`, que foi o nome dele até aqui, continua " +
-      "aceito no lugar do `label` e está marcado `@deprecated`.\n\n" +
+      "recusa o botão sem ele. O `accessibilityLabel` não entra: o nome é um só, o `label`, e é " +
+      "ele que vira o `accessibilityLabel` do `Pressable`.\n\n" +
       "**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; " +
       "o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem " +
       "crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, " +
@@ -1849,8 +1848,7 @@ const PARITY: Record<string, Row> = {
       "trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o " +
       "peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, " +
       "`lineClamp`).\n\n" +
-      "A classe de cada trecho vai em `classNames.mark`, como no web. O `markClassName` de antes " +
-      "continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.mark` vence. O " +
+      "A classe de cada trecho vai em `classNames.mark`, como no web. O " +
       "`matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma " +
       "regra.",
   },
