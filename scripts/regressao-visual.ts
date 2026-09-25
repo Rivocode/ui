@@ -42,7 +42,6 @@
  * casos, e custa de 122 a 166 bytes por PNG e menos de um segundo de leitura,
  * contra os 77s de Chrome que cada `bun run shot` gasta.
  */
-import { Glob } from "bun";
 
 import {
   type PngImage,
@@ -56,6 +55,7 @@ import {
   driftOf,
   isSection,
 } from "./retratos";
+import { scanAtLeast } from "./varredura";
 
 const GRID = 24;
 
@@ -182,7 +182,7 @@ const broken: string[] = [];
 const outdated: string[] = [];
 const refused = new Set<string>();
 
-for await (const file of new Glob("*.png").scan(SHOTS)) {
+for (const file of await scanAtLeast("*.png", 30, { cwd: SHOTS })) {
   const name = file.replace(/\.png$/, "");
   const image = decodePng(new Uint8Array(await Bun.file(`${SHOTS}/${file}`).arrayBuffer()));
 

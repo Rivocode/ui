@@ -1,8 +1,9 @@
-import { Glob } from "bun";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { deflateSync, inflateSync } from "node:zlib";
+
+import { scanAtLeast } from "./varredura";
 
 export const SHOTS = "demo/dist";
 
@@ -383,7 +384,7 @@ export function isSection(name: string) {
 export async function markers() {
   const found = new Map<string, Set<string>>();
 
-  for await (const file of new Glob("demo/*.tsx").scan(".")) {
+  for (const file of await scanAtLeast("demo/*.tsx", 15)) {
     const page = file.replace(/^demo\/|\.tsx$/g, "");
     const code = await Bun.file(file).text();
     const titles = new Set<string>();

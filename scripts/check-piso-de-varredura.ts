@@ -71,12 +71,7 @@ const withoutProse = (code: string) =>
  * A lista so encolhe, como o `OUT` do `check:scripts`: entrada que nao acusa
  * mais e erro, e a guarda manda apagar a linha.
  */
-const OUT: Record<string, string> = {
-  "scripts/retratos.ts":
-    "Varre `demo/*.tsx` atras dos marcadores `data-rc-shot`, e a vitrine esta em trabalho ativo desde 27/08/2026. Converter para `scanAtLeast` junto com a proxima mexida na vitrine - o piso natural e o numero de paginas de `demo/`.",
-  "scripts/regressao-visual.ts":
-    "Varre `demo/dist/*.png`, que so existe depois de `bun run shot`. Piso fixo ali ficaria vermelho em toda arvore limpa, e o script vive fora do gate pelo mesmo motivo (veja o `OUT` do `check:scripts`). O piso que faz sentido para ele e o numero de assinaturas comitadas, e quem ja cobra isso e o `check:retratos`.",
-};
+const OUT: Record<string, string> = {};
 
 type Problem = string;
 
@@ -182,7 +177,8 @@ const excused = Object.keys(OUT)
   .join(", ");
 
 console.log(
-  "Toda varredura de `scripts/`, `test/` e `native/test/` declara quanto espera" +
-    ` achar. Fora disso, por declaracao: ${excused} - a razao de cada um esta no` +
-    " OUT desta guarda.",
+  "Toda varredura de `scripts/`, `test/` e `native/test/` declara quanto espera achar." +
+    (excused
+      ? ` Fora disso, por declaracao: ${excused} - a razao de cada um esta no OUT desta guarda.`
+      : " O OUT desta guarda esta vazio."),
 );
