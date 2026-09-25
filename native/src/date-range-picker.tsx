@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
+import { useAnnounce } from "./announce";
 import { Button } from "./button";
 import { MonthView, formatDate, useMonthOf, type DayPaint } from "./calendar";
 import { cn } from "./cn";
@@ -98,6 +99,8 @@ function RangeSheet({
   onApply: (range: DateRange | null) => void;
 }) {
   const { year, month, onMonthChange } = useMonthOf(draft?.from);
+  const summary = describe(draft);
+  useAnnounce(summary, { liveRegion: true });
 
   const paintOf = (iso: string): DayPaint => {
     if (draft === null) return { chosen: false };
@@ -120,7 +123,7 @@ function RangeSheet({
   return (
     <View className="gap-4">
       <Text accessibilityLiveRegion="polite" className="text-sm text-fg-muted">
-        {describe(draft)}
+        {summary}
       </Text>
 
       <MonthView

@@ -1326,6 +1326,12 @@
         "note": "Desenha uma mensagem."
       },
       {
+        "name": "announcement",
+        "type": "((item: Item, index: number) => string | null | undefined)",
+        "required": false,
+        "note": "O que o VoiceOver diz quando uma mensagem chega ao fim da lista."
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false

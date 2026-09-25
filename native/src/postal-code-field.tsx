@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
+import { useAnnounce } from "./announce";
 import { Button } from "./button";
 import { cn } from "./cn";
 import { Input, type InputProps } from "./field";
@@ -99,9 +100,7 @@ export function PostalCodeField({
   const announcement =
     status === "searching" ? said.searching : status === "found" ? said.found : message;
 
-  useEffect(() => {
-    if (announcement) AccessibilityInfo.announceForAccessibility(announcement);
-  }, [announcement]);
+  useAnnounce(announcement, { onMount: true });
 
   return (
     <View className={cn("gap-1.5", className)}>

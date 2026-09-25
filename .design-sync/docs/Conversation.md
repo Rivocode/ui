@@ -85,3 +85,5 @@ mensagens), `empty`, `suggestions` e `scrollButton`.
 Traduz, no caminho próprio `@rivocode/ui-native/ai`, sobre uma `FlatList` invertida: o fim da conversa é o começo da lista, então quem está lá continua lá quando o texto cresce, sem conta nenhuma. Rolar para cima mostra o mesmo botão "Ir para o fim", e a lista segura a posição de leitura enquanto a mensagem nova chega embaixo.
 
 **A lista vem por `items`**, como todo o pacote: `renderItem` desenha uma mensagem e `keyExtractor` dá a chave. A ordem é a do web (a mais nova por último), e a inversão é da peça. O `empty` com `suggestions` e o `onSuggestion` atravessam com os mesmos nomes.
+
+**A mensagem nova é anunciada**, como no `role="log"` do web: no Android pela região viva, e no iOS pelo anúncio do sistema, uma vez por mensagem e só quando o `streaming` acaba. O texto dito é o texto solto que o `renderItem` devolve; quem desenha a mensagem por um componente próprio diz a frase em `announcement`, e `null` ali espera.

@@ -134,7 +134,8 @@ o ícone e o nome acessível, como lá, e a peça dispara **também** um aviso,
 porque aqui trocar o `accessibilityLabel` de um `Pressable` que já está sob o
 foco **não é reanunciado** por leitor de tela nenhum. Quem não vê o ícone virar
 visto não ficaria sabendo de nada; o aviso que o `RivoProvider` já monta mora
-num `accessibilityLiveRegion="polite"` e é o único canal desta tela que fala
+num `accessibilityLiveRegion="polite"` (no iOS, onde ela não existe, o mesmo
+texto sai pelo anúncio do sistema) e é o único canal desta tela que fala
 sozinho. `toast={false}` desliga, para a tela que copia várias coisas seguidas.
 E quando a área de transferência recusa (o `setStringAsync` do Expo devolve
 `false`, o que no telefone não acontece e no passe web sim), **nada é

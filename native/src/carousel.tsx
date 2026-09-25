@@ -8,6 +8,7 @@ import {
   type NativeSyntheticEvent,
 } from "react-native";
 
+import { useAnnounce } from "./announce";
 import { cn } from "./cn";
 import { ChevronGlyph } from "./glyph";
 import { IconButton } from "./icon-button";
@@ -107,6 +108,8 @@ export function Carousel<Item>({
   const measure = (event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width);
   const navigable = total > perView;
   const positions = Array.from({ length: last + 1 }, (_, position) => position);
+  const slide = text.slide(current + 1, total);
+  useAnnounce(navigable && !indicators ? slide : null, { liveRegion: true, fromSilence: false });
 
   return (
     <View accessibilityLabel={label} className={cn("gap-3", className)}>
@@ -182,7 +185,7 @@ export function Carousel<Item>({
           ) : (
             <Text
               accessibilityLiveRegion="polite"
-              accessibilityLabel={text.slide(current + 1, total)}
+              accessibilityLabel={slide}
               className="min-w-12 text-center text-sm text-fg-muted"
             >
               {current + 1} de {total}

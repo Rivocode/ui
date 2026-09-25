@@ -244,7 +244,7 @@ Traduz, e é onde a peça vale mais: listagem no celular é onde filtro dói. As
 
 **A linha reservada passa a ser medida em dedo.** No web ela guarda a altura de `--rc-control-sm`; aqui guarda 44pt, que é uma altura de alvo de toque. Não há token de controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do `Tracker`: a tela não pode pular quando o primeiro filtro entra.
 
-A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web: duplicar abriria um `gap` morto na fileira. **Limite de plataforma declarado:** `accessibilityLiveRegion` é do Android; no iOS o anúncio automático não existe sem `announceForAccessibility`, que nenhuma peça do catálogo usa hoje.
+A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web: duplicar abriria um `gap` morto na fileira. `accessibilityLiveRegion` é do Android e do web; no iOS, onde ela não existe, a mesma frase sai pelo `announceForAccessibility`, e só quando a contagem muda, como a região viva.
 
 **RTL foi verificado, e a maior parte o próprio React Native resolve.** A fileira e a ficha já são espelhadas pelo Yoga quando a locale é da direita para a esquerda, e o repouso da rolagem já para na borda onde a leitura começa: inverter de novo seria o erro clássico de espelhar duas vezes. O `contentOffset` que chega ao JavaScript é sempre distância física a partir da esquerda, nos dois sentidos e nas duas plataformas, então a régua marca o lado físico que tem conteúdo além dele, e não troca de lado.
 

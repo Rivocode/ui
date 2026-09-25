@@ -10,6 +10,7 @@ import {
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { announce, spokenSentence } from "./announce";
 import { useMotion } from "./motion";
 import { Text } from "./text";
 
@@ -34,6 +35,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const add = useCallback((toast: { title: string; description?: string }) => {
     const id = nextId.current++;
     setToasts((current) => [...current, { id, ...toast }]);
+    announce(spokenSentence(toast.title, toast.description), { liveRegion: true });
     setTimeout(() => {
       setToasts((current) => current.filter((other) => other.id !== id));
     }, 4000);

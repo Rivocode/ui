@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { AccessibilityInfo, View } from "react-native";
+import { useState, type ReactNode } from "react";
+import { View } from "react-native";
 
+import { useAnnounce } from "../announce";
 import { cn } from "../cn";
 import { IconButton } from "../icon-button";
 import { useRivo } from "../provider";
@@ -106,11 +107,7 @@ export function PromptInput({
   const hint = showCount ? `${labels.hint} ${labels.count(value.length, maxLength)}` : labels.hint;
 
   const limit = maxLength === undefined ? "" : labels.limit(maxLength);
-  const wasFull = useRef(full);
-  useEffect(() => {
-    if (full && !wasFull.current) AccessibilityInfo.announceForAccessibility(limit);
-    wasFull.current = full;
-  }, [full, limit]);
+  useAnnounce(full ? limit : null);
 
   return (
     <View

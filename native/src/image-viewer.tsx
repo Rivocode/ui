@@ -13,6 +13,7 @@ import {
   type NativeSyntheticEvent,
 } from "react-native";
 
+import { useAnnounce } from "./announce";
 import { ChevronGlyph, CrossGlyph, PlusGlyph } from "./glyph";
 import { Grid } from "./grid";
 import { IconButton } from "./icon-button";
@@ -206,9 +207,12 @@ export function ImageViewer({
     setSize({ width, height });
   };
 
+  const counter = current === null ? "" : text.counter(current + 1, total);
+  const spoken = image ? `${counter}: ${image.alt}` : counter;
+  useAnnounce(current === null ? null : spoken, { liveRegion: true, fromSilence: false });
+
   if (total === 0) return null;
 
-  const counter = current === null ? "" : text.counter(current + 1, total);
   const atStart = !loop && current === 0;
   const atEnd = !loop && current === total - 1;
 
@@ -250,7 +254,7 @@ export function ImageViewer({
           <View className="flex-row items-center gap-2 px-4 pb-3">
             <Text
               accessibilityLiveRegion="polite"
-              accessibilityLabel={image ? `${counter}: ${image.alt}` : counter}
+              accessibilityLabel={spoken}
               style={{ color: MEDIA["media-fg-muted"] }}
               className="text-sm"
             >

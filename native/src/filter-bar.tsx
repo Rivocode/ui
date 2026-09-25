@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { useAnnounce } from "./announce";
 import { Button } from "./button";
 import { cn } from "./cn";
 import { useMotion, useSettled } from "./motion";
@@ -230,6 +231,9 @@ export function FilterBar({
     measure();
   };
 
+  const said = status(total);
+  useAnnounce(said, { liveRegion: true });
+
   const canRemove = Boolean(onRemove ?? onFiltersChange);
   const canClear = Boolean(onClear ?? onFiltersChange);
   const line = total === 0 && reserve;
@@ -289,7 +293,7 @@ export function FilterBar({
 
       <Text
         accessibilityLiveRegion="polite"
-        accessibilityLabel={status(total)}
+        accessibilityLabel={said}
         numberOfLines={1}
         className={cn("text-sm text-fg-subtle", !line && "absolute top-0 left-0")}
       >

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
+import { spokenSentence, useAnnounce } from "./announce";
 import { cn } from "./cn";
 import { useRivo } from "./provider";
 import { Text } from "./text";
@@ -69,6 +70,8 @@ export function Banner({
   const urgent = tone === "danger" || tone === "warning";
   const glyph =
     typeof icon === "function" ? icon({ color: colors[`${tone}-text`], size: 16 }) : icon;
+
+  useAnnounce(spokenSentence(title, description), { liveRegion: true, onMount: urgent });
 
   return (
     <View

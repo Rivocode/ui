@@ -152,8 +152,8 @@ nao tenha global nem import de plataforma, e 16 copias declaradas.
 sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
 saiu verde.
 
-A suite: **2775 testes em 206 arquivos, 21778 `expect`**, 0 falhas. Do nativo
-sao 743 testes em 62 arquivos; do web, 2032 em 144. A home do site exibe o
+A suite: **2793 testes em 207 arquivos, 21799 `expect`**, 0 falhas. Do nativo
+sao 761 testes em 63 arquivos; do web, 2032 em 144. A home do site exibe o
 mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
 falha se divergir.
 
@@ -281,10 +281,6 @@ Nenhum destes tem codigo a escrever aqui.
   (`native-props.json`). Os exemplos de `reference/native.md` sao o unico
   pedaco da skill cujas props ninguem confere. Falta o `check:skill` escolher o
   catalogo pelo arquivo, em vez de pular o arquivo.
-- **`accessibilityLiveRegion` e so do Android.** Sete pecas nativas anunciam so
-  por ela - `Banner`, `DateRangePicker`, `ImageViewer`, `FilterBar`, o `toast`,
-  `Carousel` e `Conversation` -, e no iOS nada e anunciado sem
-  `AccessibilityInfo.announceForAccessibility`, que outras nove ja usam.
 - **Ref imperativo sem regra escrita.** `useImperativeHandle` aparece em dois
   lugares do web, `VirtualList` (`scrollToIndex`) e `ResizablePanelGroup`, e
   nem `conventions.md` nem a skill dizem quando expor ref imperativo.
@@ -333,7 +329,7 @@ Nenhum destes tem codigo a escrever aqui.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
-bun run check                # 37 passos, termina nos 2775 testes
+bun run check                # 37 passos, termina nos 2793 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
 bun run fumaca:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
@@ -361,7 +357,7 @@ bun run check:pecas                                 # 134 pecas (222 - 88 partes
 grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
 grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 2775 testes em 206 arquivos
+bun run check:testes                                # 2793 testes em 207 arquivos
 bun test native/test                                # 743 em 62 arquivos
 bun run check:assinatura                            # 225 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117

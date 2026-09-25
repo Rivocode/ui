@@ -500,9 +500,9 @@ const PARITY: Record<string, Row> = {
       "de controle do lado de cá. A fileira tem a mesma altura vazia e cheia, pelo mesmo motivo do " +
       "`Tracker`: a tela não pode pular quando o primeiro filtro entra.\n\n" +
       "A região viva é um `Text` único que acumula as duas funções, em vez dos dois nós do web: " +
-      "duplicar abriria um `gap` morto na fileira. **Limite de plataforma declarado:** " +
-      "`accessibilityLiveRegion` é do Android; no iOS o anúncio automático não existe sem " +
-      "`announceForAccessibility`, que nenhuma peça do catálogo usa hoje.\n\n" +
+      "duplicar abriria um `gap` morto na fileira. `accessibilityLiveRegion` é do Android e do " +
+      "web; no iOS, onde ela não existe, a mesma frase sai pelo `announceForAccessibility`, e " +
+      "só quando a contagem muda, como a região viva.\n\n" +
       "**RTL foi verificado, e a maior parte o próprio React Native resolve.** A fileira e a " +
       "ficha já são espelhadas pelo Yoga quando a locale é da direita para a esquerda, e o " +
       "repouso da rolagem já para na borda onde a leitura começa: inverter de novo seria o " +
@@ -1002,8 +1002,9 @@ const PARITY: Record<string, Row> = {
       "peça dispara **também** um aviso, porque aqui trocar o `accessibilityLabel` de um " +
       "`Pressable` que já está sob o foco **não é reanunciado** nem pelo VoiceOver nem pelo " +
       "TalkBack: quem não vê o ícone virar visto não ficaria sabendo de nada. O aviso que o " +
-      '`RivoProvider` já monta mora num `accessibilityLiveRegion="polite"`, e é o único canal ' +
-      "desta tela que fala sozinho. `toast={false}` desliga, para a tela que copia várias coisas " +
+      '`RivoProvider` já monta mora num `accessibilityLiveRegion="polite"` (no iOS, onde ela não ' +
+      "existe, o mesmo texto sai pelo anúncio do sistema), e é o único canal desta tela que fala " +
+      "sozinho. `toast={false}` desliga, para a tela que copia várias coisas " +
       "seguidas e não quer uma pilha de avisos.\n\n" +
       "**Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve " +
       "`false` quando a área de transferência recusa (o caso do passe web, fora de contexto " +
@@ -1499,7 +1500,9 @@ const PARITY: Record<string, Row> = {
       "`description` são `string`, porque texto no nativo mora dentro de um `Text`.\n\n" +
       "**A urgência sai por região viva.** `danger` e `warning` saem com " +
       '`accessibilityRole="alert"` e anúncio imediato; `info` e `success` saem em região viva ' +
-      "educada, que espera a frase terminar. É a mesma divisão do `role` do web.\n\n" +
+      "educada, que espera a frase terminar. É a mesma divisão do `role` do web. No iOS, onde " +
+      "a região viva não existe, título e descrição saem pelo anúncio do sistema: nos tons " +
+      "urgentes também ao aparecer, e nos quatro a cada troca de texto.\n\n" +
       "**O ícone não vem sozinho.** O pacote nativo não traz biblioteca de ícones, então o " +
       "`icon` é opcional e a forma que pinta na cor do tom é a função: " +
       "`icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`. As ações " +
@@ -1861,7 +1864,11 @@ const PARITY: Record<string, Row> = {
       "**A lista vem por `items`**, como todo o pacote: `renderItem` desenha uma mensagem e " +
       "`keyExtractor` dá a chave. A ordem é a do web (a mais nova por último), e a inversão " +
       "é da peça. O `empty` com `suggestions` e o `onSuggestion` atravessam com os mesmos " +
-      "nomes.",
+      "nomes.\n\n" +
+      "**A mensagem nova é anunciada**, como no `role=\"log\"` do web: no Android pela região " +
+      "viva, e no iOS pelo anúncio do sistema, uma vez por mensagem e só quando o `streaming` " +
+      "acaba. O texto dito é o texto solto que o `renderItem` devolve; quem desenha a mensagem " +
+      "por um componente próprio diz a frase em `announcement`, e `null` ali espera.",
   },
   ToolCall: {
     state: "traduz",
