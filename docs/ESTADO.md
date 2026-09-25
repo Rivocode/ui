@@ -255,10 +255,9 @@ excecao e continua sem.
 
 Nenhum destes tem codigo a escrever aqui.
 
-1. **Conferir o publicador confiavel do `@rivocode/ui-mcp`** no npmjs.com
-   (`Rivocode`, `ui`, `release-mcp.yml`, ambiente vazio): foi o erro do nativo,
-   e so aparece no release de verdade.
-2. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm.
+1. **Apagar o segredo `NPM_TOKEN`** do GitHub e revogar o token no npm.
+2. O publicador confiavel do `@rivocode/ui-mcp` foi conferido pelo dono em
+   25/09; a proxima versao do mcp e a primeira a sair por ele.
 3. **Testar no iPhone** o que teste e `react-native-web` nao alcancam: colar
    valor no `CurrencyInput`; meia estrela do `Rating`, inclusive em RTL; o
    `Tour` nativo; e o anuncio de limite do `PromptInput` com o VoiceOver, que
