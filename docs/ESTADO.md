@@ -19,7 +19,7 @@ CHANGELOGs, e nao e repetida aqui.
 | `@rivocode/ui-mcp`    | `mcp/`    | 0.4.0     | **0.4.0**, com procedencia         | `mcp-v0.4.0`     |
 
 O site `ds.rivocode.com.br` sai de `apps/docs/` a cada push na `main`
-(`docs.yml`), e esta em dia com `c3fa570`. O `origin` tem 36 tags; `gh release
+(`docs.yml`), e esta em dia com `e726dbf`. O `origin` tem 36 tags; `gh release
 list` continua vazio, porque tag nao vira release no GitHub e isso nunca foi
 automatizado.
 
@@ -152,8 +152,8 @@ nao tenha global nem import de plataforma, e 16 copias declaradas.
 sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
 saiu verde.
 
-A suite: **2798 testes em 209 arquivos, 21830 `expect`**, 0 falhas. Do nativo
-sao 762 testes em 63 arquivos; do web, 2036 em 146. A home do site exibe o
+A suite: **2895 testes em 218 arquivos, 22117 `expect`**, 0 falhas. Do nativo
+sao 828 testes em 70 arquivos; do web, 2067 em 148. A home do site exibe o
 mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
 falha se divergir.
 
@@ -315,7 +315,7 @@ Nenhum destes tem codigo a escrever aqui.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
-bun run check                # 37 passos, termina nos 2798 testes
+bun run check                # 37 passos, termina nos 2895 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
 bun run fumaca:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
@@ -343,7 +343,7 @@ bun run check:pecas                                 # 134 pecas (222 - 88 partes
 grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
 grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 2798 testes em 209 arquivos
+bun run check:testes                                # 2895 testes em 218 arquivos
 bun test native/test                                # 762 em 63 arquivos
 bun run check:assinatura                            # 222 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
