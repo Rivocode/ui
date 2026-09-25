@@ -23,10 +23,14 @@ nível 2 sem ele.
 ## A seção marcada
 
 Uma linha imaginária a 30% do alto da janela decide qual seção está sendo
-lida: a marcada é a do último título que já passou dela. A peça não escuta cada
-pixel de rolagem. Um `IntersectionObserver` avisa quando um título cruza a
-faixa de cima, e só aí ela mede de novo. Antes do primeiro título, nenhuma
-linha fica marcada: a introdução não é seção.
+lida: a marcada é a do último título que já passou dela. Um
+`IntersectionObserver` avisa quando um título cruza a faixa de cima, e a
+rolagem mede de novo no máximo uma vez por quadro. Antes do primeiro título,
+nenhuma linha fica marcada: a introdução não é seção.
+
+**No fim da rolagem, a última seção visível fica marcada**, mesmo que o título
+dela nunca chegue à linha: a última seção de uma página curta não sobe até os
+30%, e sem isso ela nunca seria marcada.
 
 A linha marcada leva `aria-current="location"`, que o leitor de tela anuncia
 como "local atual", e o risco da cor de destaque na borda. `onActiveChange`
@@ -39,8 +43,11 @@ faz: o próximo Tab parte dali, e não do índice. O título ganha
 `tabindex="-1"` só enquanto tem o foco, e o perde ao sair. A rolagem é suave,
 e **vira salto** quando o sistema pede para reduzir movimento.
 
-Durante a rolagem suave, a marcação fica presa na linha clicada: sem isso, ela
-passaria piscando por todas as seções do caminho.
+Depois do clique, a marcação fica presa na linha clicada até a pessoa rolar
+por conta própria (roda do mouse, toque, tecla ou barra de rolagem). Sem isso,
+a rolagem suave passaria piscando por todas as seções do caminho, e o salto do
+movimento reduzido marcaria a seção de cima quando o título clicado não
+consegue subir até a linha.
 
 O `href` continua lá, então Ctrl+clique, clique do meio e "copiar endereço do
 link" funcionam como em qualquer link. `updateHash` escreve o `#id` na barra de

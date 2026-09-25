@@ -69,7 +69,7 @@ type Branch = { entry: Entry; depth: number; children: Branch[] };
 
 const DEPTH = ["ps-3", "ps-6", "ps-9", "ps-12"] as const;
 const LINE = 0.3;
-const LOCK = 900;
+const RELEASE = ["wheel", "touchstart", "keydown", "mousedown"] as const;
 
 function levelOf(node: Element) {
   const tag = /^H([1-6])$/.exec(node.tagName);
@@ -137,7 +137,7 @@ export function TableOfContents({
   const titleId = useId();
   const [read, setRead] = useState<Entry[]>([]);
   const [active, setActive] = useState<string | null>(null);
-  const lockedUntil = useRef(0);
+  const held = useRef<string | null>(null);
   const announce = useLatest(onActiveChange);
   const reported = useRef<string | null | undefined>(undefined);
 
@@ -189,28 +189,59 @@ export function TableOfContents({
       .filter((node): node is HTMLElement => node !== null);
     if (targets.length === 0) return;
 
+    const atEnd = () => {
+      if (root) {
+        const room = root.scrollHeight - root.clientHeight;
+        return room > 0 && root.scrollTop >= room - 1;
+      }
+      const room = doc.documentElement.scrollHeight - window.innerHeight;
+      return room > 0 && window.scrollY >= room - 1;
+    };
+
     const measure = () => {
-      if (Date.now() < lockedUntil.current) return;
+      if (held.current !== null) return;
       const box = root?.getBoundingClientRect();
       const top = box?.top ?? 0;
       const height = box?.height ?? window.innerHeight;
       const line = top + offset + (height - offset) * LINE;
+      const bottom = top + height;
+      const end = atEnd();
       let current: string | null = null;
       for (const target of targets) {
-        if (target.getBoundingClientRect().top <= line + 1) current = target.id;
+        const at = target.getBoundingClientRect().top;
+        if (at <= line + 1 || (end && at < bottom)) current = target.id;
       }
       setActive(current);
     };
 
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+    const release = () => {
+      held.current = null;
+    };
+    const scroller: HTMLElement | Window = root ?? window;
+
     measure();
-    if (typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(measure, {
-      root: root ?? null,
-      rootMargin: `-${offset}px 0px -${Math.round((1 - LINE) * 100)}% 0px`,
-      threshold: [0, 1],
-    });
-    for (const target of targets) observer.observe(target);
-    return () => observer.disconnect();
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    for (const name of RELEASE) window.addEventListener(name, release, { capture: true, passive: true });
+    const observer =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(measure, {
+            root: root ?? null,
+            rootMargin: `-${offset}px 0px -${Math.round((1 - LINE) * 100)}% 0px`,
+            threshold: [0, 1],
+          });
+    for (const target of targets) observer?.observe(target);
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener("scroll", onScroll);
+      for (const name of RELEASE) window.removeEventListener(name, release, { capture: true });
+      observer?.disconnect();
+    };
   }, [ids, root, offset]);
 
   useEffect(() => {
@@ -242,7 +273,7 @@ export function TableOfContents({
       window.scrollTo?.({ top: window.scrollY + rect.top - offset, behavior });
     }
 
-    lockedUntil.current = reduced ? 0 : Date.now() + LOCK;
+    held.current = entry.id;
     setActive(entry.id);
     focusLandmark(target);
     if (updateHash) window.history.replaceState(window.history.state, "", `#${entry.id}`);
@@ -267,7 +298,7 @@ export function TableOfContents({
                 data-active={current ? "" : undefined}
                 onClick={(event) => go(entry, event)}
                 className={cn(
-                  "-ms-px block rounded-e-sm border-s-2 py-1 pe-2 font-sans text-sm",
+                  "-ms-px block rounded-e-sm border-s-2 py-1 pe-2 font-sans text-sm wrap-anywhere",
                   "transition-colors duration-fast ease-rc",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   DEPTH[Math.min(depth, DEPTH.length - 1)],

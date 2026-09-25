@@ -112,6 +112,105 @@ test("marca com aria-current a ultima secao que passou da linha ao rolar", () =>
   expect(changes).toEqual(["impostos", "cancelamento"]);
 });
 
+function reduceMotion() {
+  const real = window.matchMedia;
+  window.matchMedia = ((query: string) =>
+    ({
+      matches: query.includes("reduce"),
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+      dispatchEvent: () => false,
+      onchange: null,
+    }) as unknown as MediaQueryList) as typeof window.matchMedia;
+  return () => {
+    window.matchMedia = real;
+  };
+}
+
+function scrollBox(height: number, client: number, top: number) {
+  const box = document.createElement("div");
+  Object.defineProperty(box, "scrollHeight", { value: height, configurable: true });
+  Object.defineProperty(box, "clientHeight", { value: client, configurable: true });
+  box.scrollTop = top;
+  box.getBoundingClientRect = () =>
+    ({ top: 0, bottom: client, height: client, left: 0, right: 0, width: 0, x: 0, y: 0 }) as DOMRect;
+  document.body.appendChild(box);
+  return box;
+}
+
+test("no fim da rolagem, a ultima secao visivel fica marcada mesmo sem passar da linha", () => {
+  const box = scrollBox(1600, 400, 1200);
+  for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
+  page(toc({ root: box }));
+
+  scrollTo({ emissao: -500, impostos: -200, retencoes: 60, cancelamento: 300 });
+  expect(screen.getByRole("link", { name: "Cancelamento" }).getAttribute("aria-current")).toBe(
+    "location",
+  );
+
+  box.scrollTop = 1100;
+  act(() => {
+    box.dispatchEvent(new Event("scroll"));
+  });
+  scrollTo({ emissao: -400, impostos: -100, retencoes: 60, cancelamento: 400 });
+  expect(screen.getByRole("link", { name: "Retenções" }).getAttribute("aria-current")).toBe(
+    "location",
+  );
+  box.remove();
+});
+
+test("a rolagem que chega ao fim sem cruzar a linha tambem marca, pelo evento de rolagem", async () => {
+  const box = scrollBox(1600, 400, 1100);
+  tops.set("emissao", -400);
+  tops.set("impostos", -100);
+  tops.set("retencoes", 60);
+  tops.set("cancelamento", 400);
+  page(toc({ root: box }));
+  expect(screen.getByRole("link", { name: "Retenções" }).getAttribute("aria-current")).toBe(
+    "location",
+  );
+
+  tops.set("cancelamento", 300);
+  box.scrollTop = 1200;
+  await act(async () => {
+    box.dispatchEvent(new Event("scroll"));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  });
+  expect(screen.getByRole("link", { name: "Cancelamento" }).getAttribute("aria-current")).toBe(
+    "location",
+  );
+  box.remove();
+});
+
+test("com movimento reduzido, a secao clicada segura a marca ate a pessoa rolar", () => {
+  const restore = reduceMotion();
+  window.scrollTo = (() => {}) as typeof window.scrollTo;
+  try {
+    page(toc());
+    fireEvent.click(screen.getByRole("link", { name: "Cancelamento" }));
+    scrollTo({ emissao: -900, impostos: -700, retencoes: 100, cancelamento: 500 });
+    expect(screen.getByRole("link", { name: "Cancelamento" }).getAttribute("aria-current")).toBe(
+      "location",
+    );
+
+    fireEvent.wheel(window);
+    scrollTo({ emissao: -950, impostos: -750, retencoes: 50, cancelamento: 450 });
+    expect(screen.getByRole("link", { name: "Retenções" }).getAttribute("aria-current")).toBe(
+      "location",
+    );
+  } finally {
+    restore();
+  }
+});
+
+test("palavra longa sem espaco quebra dentro do link, em vez de estourar a pagina", () => {
+  page(toc({ items: [{ id: "emissao", label: "Notafiscaldeservicoeletronicamunicipal" }] }));
+  expect(screen.getByRole("link").className.split(" ")).toContain("wrap-anywhere");
+});
+
 test("antes do primeiro titulo nada fica marcado", () => {
   for (const [id, top] of Object.entries(BELOW)) tops.set(id, top);
   page(toc());
