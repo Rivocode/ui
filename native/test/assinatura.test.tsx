@@ -233,3 +233,48 @@ test("o SVG exportado no nativo sai com a tinta do token, e vazio e string vazia
   expect(signatureToSvg(null)).toBe("");
   expect(isSignatureEmpty(null)).toBe(true);
 });
+
+const nameInput = (screen: ReactTestRenderer) =>
+  byLabel(screen, "Nome para a assinatura").find((node) => node.type === "TextInput");
+
+test("o pai zerar o value apaga o nome do campo, e voltar a desenhar nao ressuscita o traco", () => {
+  let reset!: () => void;
+  let current: SignatureValue | null = null;
+  function Resettable() {
+    const [value, setValue] = useState<SignatureValue | null>(null);
+    reset = () => setValue(null);
+    current = value;
+    return <SignaturePad value={value} onValueChange={setValue} />;
+  }
+  const screen = render(<Resettable />);
+  lay(screen);
+  stroke([[10, 50], [60, 50]]);
+  press(screen, "Digitar assinatura");
+  act(() => nameInput(screen)!.props.onChangeText("Ana Souza"));
+
+  act(() => reset());
+  expect(nameInput(screen)!.props.value).toBe("");
+
+  act(() => nameInput(screen)!.props.onChangeText("x"));
+  expect(current).toMatchObject({ kind: "typed", text: "x" });
+
+  act(() => nameInput(screen)!.props.onChangeText(""));
+  press(screen, "Desenhar assinatura");
+  expect(current).toBeNull();
+  const ink = byType(screen, "Path").filter(
+    (node) => node.props.fill === tokens.signature["signature-ink"],
+  );
+  expect(ink).toHaveLength(0);
+});
+
+test("limpar um nome que veio de fora continua no modo de digitar", () => {
+  const screen = render(
+    <Controlled initial={{ kind: "typed", text: "Ana", font: "cursive", width: 600, height: 200 }} />,
+  );
+  expect(nameInput(screen)).toBeDefined();
+
+  press(screen, "Limpar assinatura");
+
+  expect(nameInput(screen)?.props.value).toBe("");
+  expect(button(screen, "Desenhar assinatura")).toBeDefined();
+});

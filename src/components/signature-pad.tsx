@@ -272,8 +272,23 @@ function Pad({
   const [chosen, setChosen] = useState<"draw" | "type">(defaultMode);
   const mode = current?.kind === "typed" ? "type" : current?.kind === "drawn" ? "draw" : chosen;
   const [focusTyped, setFocusTyped] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState({ text: "", turn: true });
   const drafts = useRef<{ drawn: SignatureValue | null; typed: string }>({ drawn: null, typed: "" });
+  const known = useRef<SignatureValue | null>(current);
+
+  if (current !== known.current) {
+    if (current === null) drafts.current = { drawn: null, typed: "" };
+    known.current = current;
+  }
+
+  function emit(next: SignatureValue | null) {
+    known.current = isSignatureEmpty(next) ? null : next;
+    commit(next);
+  }
+
+  function announce(message: string) {
+    setStatus((previous) => ({ text: message, turn: message ? !previous.turn : previous.turn }));
+  }
 
   const active = useRef<number | null>(null);
   const stroke = useRef<SignatureStroke>([]);
@@ -340,8 +355,8 @@ function Pad({
     stroke.current = [];
     setLive(null);
     if (done.length === 0) return;
-    setStatus("");
-    commit({ kind: "drawn", strokes: [...strokes, done], ...size });
+    announce("");
+    emit({ kind: "drawn", strokes: [...strokes, done], ...size });
   }
 
   function keepFocus(button: HTMLElement | null) {
@@ -354,8 +369,9 @@ function Pad({
   function undo(event: { currentTarget: HTMLElement }) {
     const rest = strokes.slice(0, -1);
     const target = event.currentTarget;
-    commit(rest.length > 0 ? { kind: "drawn", strokes: rest, ...size } : null);
-    setStatus(labels.undone);
+    if (rest.length === 0) setChosen("draw");
+    emit(rest.length > 0 ? { kind: "drawn", strokes: rest, ...size } : null);
+    announce(labels.undone);
     if (rest.length === 0) keepFocus(target);
   }
 
@@ -363,24 +379,25 @@ function Pad({
     const target = event.currentTarget;
     if (mode === "type") drafts.current.typed = "";
     else drafts.current.drawn = null;
-    commit(null);
-    setStatus(labels.cleared);
+    setChosen(mode);
+    emit(null);
+    announce(labels.cleared);
     keepFocus(target);
   }
 
   function switchMode() {
-    setStatus("");
+    announce("");
     if (mode === "draw") {
       drafts.current.drawn = current?.kind === "drawn" ? current : null;
       setChosen("type");
       const saved = drafts.current.typed;
-      commit(saved.trim() ? { kind: "typed", text: saved, font, ...size } : null);
+      emit(saved.trim() ? { kind: "typed", text: saved, font, ...size } : null);
       setFocusTyped(true);
       return;
     }
     drafts.current.typed = text;
     setChosen("draw");
-    commit(drafts.current.drawn);
+    emit(drafts.current.drawn);
   }
 
   const described =
@@ -523,7 +540,7 @@ function Pad({
             value={text || drafts.current.typed}
             onChange={(event) => {
               drafts.current.typed = event.target.value;
-              commit({ kind: "typed", text: event.target.value, font, ...size });
+              emit({ kind: "typed", text: event.target.value, font, ...size });
             }}
             aria-invalid={(invalid && !disabled) || undefined}
             data-invalid={(invalid && !disabled) || undefined}
@@ -580,7 +597,8 @@ function Pad({
       )}
 
       <p role="status" className="sr-only">
-        {status}
+        {status.text}
+        {status.turn ? " " : ""}
       </p>
     </div>
   );

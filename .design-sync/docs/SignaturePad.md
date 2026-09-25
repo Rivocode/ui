@@ -76,6 +76,9 @@ o desenho. Não há prop que desligue esse modo: a alternativa é a peça.
 `font` é a família cursiva, em CSS. Carregue a fonte na página: sem ela, o
 navegador cai na cursiva do sistema, e o PNG também. Trocar de modo guarda o
 rascunho do outro: quem desenhou, foi digitar e voltou, encontra os traços.
+Quando o pai zera o `value` por fora (um `reset` do formulário), os dois
+rascunhos vão junto: o campo do nome esvazia e voltar a desenhar não traz traço
+antigo. Limpar não troca de modo: quem limpou o nome continua no campo do nome.
 `defaultMode="type"` abre no nome digitado, para a tela em que a maioria assina
 pelo teclado.
 

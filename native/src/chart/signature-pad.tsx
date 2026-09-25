@@ -171,6 +171,12 @@ export function SignaturePad({
   const [live, setLive] = useState<SignatureStroke | null>(null);
   const [chosen, setChosen] = useState<"draw" | "type">(defaultMode);
   const drafts = useRef<{ drawn: SignatureValue | null; typed: string }>({ drawn: null, typed: "" });
+  const known = useRef<SignatureValue | null>(value);
+
+  if (value !== known.current) {
+    if (value === null) drafts.current = { drawn: null, typed: "" };
+    known.current = value;
+  }
 
   const mode = value?.kind === "typed" ? "type" : value?.kind === "drawn" ? "draw" : chosen;
   const strokes = value?.kind === "drawn" ? value.strokes : [];
@@ -178,7 +184,9 @@ export function SignaturePad({
   const empty = isSignatureEmpty(value) && !live;
 
   const commit = (next: SignatureValue | null) => {
-    onValueChange?.(isSignatureEmpty(next) ? null : next);
+    const normalized = isSignatureEmpty(next) ? null : next;
+    known.current = normalized;
+    onValueChange?.(normalized);
   };
 
   const latest = useRef<Latest>({
@@ -235,6 +243,7 @@ export function SignaturePad({
 
   function undo() {
     const rest = strokes.slice(0, -1);
+    if (rest.length === 0) setChosen("draw");
     commit(rest.length > 0 ? { kind: "drawn", strokes: rest, ...size } : null);
     AccessibilityInfo.announceForAccessibility(labels.undone);
   }
@@ -242,6 +251,7 @@ export function SignaturePad({
   function clear() {
     if (mode === "type") drafts.current.typed = "";
     else drafts.current.drawn = null;
+    setChosen(mode);
     commit(null);
     AccessibilityInfo.announceForAccessibility(labels.cleared);
   }

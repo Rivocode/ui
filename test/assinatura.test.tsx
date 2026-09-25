@@ -482,3 +482,66 @@ test("a guarda do papel da assinatura reprova a tinta clara, que sairia invertid
   });
   expect(inverted.some((finding) => !finding.ok && finding.line.includes("invertida"))).toBe(true);
 });
+
+function Resettable({ initial = null }: { initial?: SignatureValue | null }) {
+  const [value, setValue] = useState<SignatureValue | null>(initial);
+  return (
+    <RivoProvider scope="local">
+      <SignaturePad value={value} onValueChange={setValue} />
+      <button type="button" onClick={() => setValue(null)}>
+        Zerar
+      </button>
+      <output data-testid="valor">{value ? JSON.stringify(value) : "null"}</output>
+    </RivoProvider>
+  );
+}
+
+test("o pai zerar o value apaga o nome do campo, e a proxima letra nao herda o nome antigo", () => {
+  const view = render(<Resettable />);
+  const { pad } = parts(view.container);
+  draw(pad, [[10, 50], [60, 50]]);
+  fireEvent.click(screen.getByRole("button", { name: "Digitar assinatura" }));
+  const input = screen.getByLabelText("Nome para a assinatura") as HTMLInputElement;
+  fireEvent.change(input, { target: { value: "Ana Souza" } });
+
+  fireEvent.click(screen.getByText("Zerar"));
+  expect(input.value).toBe("");
+
+  fireEvent.change(input, { target: { value: "x" } });
+  expect(JSON.parse(screen.getByTestId("valor").textContent!)).toMatchObject({ text: "x" });
+
+  fireEvent.change(input, { target: { value: "" } });
+  fireEvent.click(screen.getByRole("button", { name: "Desenhar assinatura" }));
+  expect(screen.getByTestId("valor").textContent).toBe("null");
+  expect(pad.querySelectorAll("path")).toHaveLength(0);
+});
+
+test("limpar um nome que veio de fora continua no modo de digitar", () => {
+  render(
+    <Resettable initial={{ kind: "typed", text: "Ana", font: "cursive", width: 600, height: 200 }} />,
+  );
+  const clear = screen.getByRole("button", { name: "Limpar assinatura" });
+  clear.focus();
+  fireEvent.click(clear);
+
+  const input = screen.getByLabelText("Nome para a assinatura") as HTMLInputElement;
+  expect(input.value).toBe("");
+  expect(document.activeElement).toBe(input);
+});
+
+test("desfazer duas vezes seguidas muda o texto da regiao viva, para o leitor anunciar de novo", () => {
+  const { pad } = mount();
+  draw(pad, [[10, 50], [60, 50]]);
+  draw(pad, [[10, 80], [60, 20]]);
+  draw(pad, [[10, 20], [60, 80]]);
+
+  const undo = screen.getByRole("button", { name: "Desfazer o último traço" });
+  fireEvent.click(undo);
+  const first = screen.getByRole("status").textContent;
+  fireEvent.click(undo);
+  const second = screen.getByRole("status").textContent;
+
+  expect(first!.trim()).toBe("Último traço desfeito");
+  expect(second!.trim()).toBe("Último traço desfeito");
+  expect(second).not.toBe(first);
+});
