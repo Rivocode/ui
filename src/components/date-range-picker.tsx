@@ -79,7 +79,25 @@ type DateRangePickerBase = Omit<ComponentProps<"button">, "value" | "defaultValu
      * que esvazia.
      */
     confirm?: boolean;
+    /**
+     * Os textos da peca, para trocar o idioma: `title` e o titulo do painel,
+     * `clear` e `apply` os dois botoes do rodape do `confirm`. Os nomes dos
+     * meses e dos dias vem do `locale`. Passe so os que mudam.
+     */
+    labels?: Partial<DateRangePickerLabels>;
   };
+
+export type DateRangePickerLabels = {
+  title: string;
+  clear: string;
+  apply: string;
+};
+
+const LABELS: DateRangePickerLabels = {
+  title: "Escolher período",
+  clear: "Limpar",
+  apply: "Aplicar",
+};
 
 export type DateRangePickerDateProps = DateRangePickerBase & DateRangePickerDateValue;
 
@@ -127,8 +145,10 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
     confirm = true,
     min,
     max,
+    labels: labelsProp,
     ...rest
   } = props as DateRangePickerRuntimeProps;
+  const labels = { ...LABELS, ...labelsProp };
   const iso = isIsoRange(value) || isIsoRange(defaultValue);
   const controlled = value !== undefined;
   const [internalRange, setInternalRange] = useState<DayPickerRange | undefined>(() =>
@@ -186,7 +206,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
         if (abrir) setRascunho(range);
       }}
       trigger={trigger}
-      title="Escolher período"
+      title={labels.title}
       align="start"
       footer={
         confirm && (
@@ -199,7 +219,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
                 setAberto(false);
               }}
             >
-              Limpar
+              {labels.clear}
             </Button>
             <Button
               size="sm"
@@ -209,7 +229,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
                 setAberto(false);
               }}
             >
-              Aplicar
+              {labels.apply}
             </Button>
           </div>
         )

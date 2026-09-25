@@ -786,3 +786,29 @@ test("seta na escala por mes nao transforma a tarefa curta em marco", () => {
   expect(timeline.querySelector("[data-rc-milestone]")).toBeNull();
   expect(timeline.querySelector("[data-rc-bar]")).not.toBeNull();
 });
+
+test("a barra, as escalas e o que o leitor de tela ouve saem de labels, e os meses do locale", () => {
+  const { container } = gantt({
+    locale: "en-US",
+    labels: {
+      today: "Today",
+      day: "Day",
+      week: "Week",
+      month: "Month",
+      scales: "Timeline scale",
+      range: (from, to) => `${from} to ${to}`,
+      progress: (percent) => `${percent}% done`,
+      dependsOn: (title) => `after ${title}`,
+      milestone: (when) => `milestone on ${when}`,
+    },
+  });
+  expect(screen.getByRole("button", { name: "Today" })).toBeDefined();
+  expect(screen.getByRole("group", { name: "Timeline scale" })).toBeDefined();
+  expect(screen.getByText("Week")).toBeDefined();
+  expect(container.textContent).toContain("October 2026");
+  expect(speech(container, "t:servidor")).toBe(
+    "12 to October 18, 40% done, after Comprar hardware",
+  );
+  expect(speech(container, "t:virada")).toBe("milestone on October 25, after Instalar servidor");
+  expect(container.textContent).not.toContain("outubro");
+});

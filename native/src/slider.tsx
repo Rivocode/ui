@@ -32,7 +32,20 @@ export type SliderProps = {
    * `value` (os dois textos, so com `showValue`).
    */
   classNames?: Slots<"control" | "track" | "indicator" | "thumb" | "label" | "value">;
+  /**
+   * Os textos da peca, para trocar o idioma: `increment` e `decrement` sao os
+   * nomes das duas acoes de ajuste que o leitor de tela oferece. Passe so os
+   * que mudam.
+   */
+  labels?: Partial<SliderLabels>;
 };
+
+export type SliderLabels = {
+  increment: string;
+  decrement: string;
+};
+
+const LABELS: SliderLabels = { increment: "Aumentar", decrement: "Diminuir" };
 
 const plain = new Intl.NumberFormat("pt-BR");
 
@@ -53,7 +66,9 @@ export function Slider({
   disabled,
   className,
   classNames,
+  labels: labelsProp,
 }: SliderProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const written = write?.(value);
   const [width, setWidth] = useState(0);
@@ -86,8 +101,8 @@ export function Slider({
         ...(written === undefined ? {} : { text: written }),
       }}
       accessibilityActions={[
-        { name: "increment", label: "Aumentar" },
-        { name: "decrement", label: "Diminuir" },
+        { name: "increment", label: labels.increment },
+        { name: "decrement", label: labels.decrement },
       ]}
       onAccessibilityAction={(event) => {
         const delta = event.nativeEvent.actionName === "increment" ? step : -step;

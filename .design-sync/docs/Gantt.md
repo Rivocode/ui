@@ -162,6 +162,26 @@ não há o que dividir, e a linha ganha os 44px de alvo de toque.
 e só então corta. O nome inteiro fica no `title` do cabeçalho da linha, no
 celular e na mesa, e é também o que o leitor de tela anuncia.
 
+## Outro idioma
+
+Os nomes de mês e de dia da semana e a hora saem do `locale`, uma tag BCP 47
+(`"en-US"`, `"es"`), e o padrão é `"pt-BR"`. As palavras fixas em volta saem de
+`labels`: os botões da barra, o nome das escalas, o que o leitor de tela ouve em
+cada tarefa e a contagem. Passe só as chaves que mudam.
+
+```tsx
+<Gantt
+  tasks={tasks}
+  locale="en-US"
+  labels={{
+    today: 'Today',
+    week: 'Week',
+    range: (from, to) => `${from} to ${to}`,
+    progress: (percent) => `${percent}% done`,
+  }}
+/>
+```
+
 ## Acessibilidade
 
 A peça é uma grade de verdade, e o motivo é que ela **é** uma tabela: uma linha

@@ -4,6 +4,9 @@ export const HEAT_ALPHAS = [0.14, 0.32, 0.5, 0.72, 1] as const;
 
 export const TREEMAP_TINT = 0.3;
 
+export const chartName = (series: string[]) =>
+  series.length > 0 ? `Gráfico de ${series.join(", ")}` : "Gráfico";
+
 export const GAUGE_REACH = 38;
 export const GAUGE_RING = 46;
 export const GAUGE_GAP = 1.5;

@@ -56,6 +56,22 @@ export type ChartDonutProps<Slice> = {
    * Sem legenda, o nome sai das fatias, com valor e tudo.
    */
   label?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `name` monta o nome do desenho
+   * sem `label` e sem legenda, e recebe cada fatia ja escrita com o valor;
+   * `hint` e a dica de cada linha da legenda. Passe so os que mudam.
+   */
+  labels?: Partial<ChartDonutLabels>;
+};
+
+export type ChartDonutLabels = {
+  name: (slices: string[]) => string;
+  hint: string;
+};
+
+const LABELS: ChartDonutLabels = {
+  name: (slices) => `Rosca: ${slices.join(", ")}`,
+  hint: "Acende esta fatia e mostra o valor dela no meio",
 };
 
 export function ChartDonut<Slice extends Record<string, unknown>>({
@@ -70,7 +86,9 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
   label,
+  labels: labelsProp,
 }: ChartDonutProps<Slice>) {
+  const labels = { ...LABELS, ...labelsProp };
   const { colors: theme } = useRivo();
 
   const [reading, setReading] = useState<number | null>(null);
@@ -108,7 +126,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
     label ??
     (legend
       ? undefined
-      : `Rosca: ${data.map((slice, index) => `${textOf(slice)} ${write(values[index]!)}`).join(", ")}`);
+      : labels.name(data.map((slice, index) => `${textOf(slice)} ${write(values[index]!)}`)));
 
   const spoken = name
     ? ({ accessible: true, accessibilityRole: "image", accessibilityLabel: name } as const)
@@ -185,7 +203,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
                 accessibilityLabel={`${textOf(slice)}: ${write(values[index]!)}`}
-                accessibilityHint="Acende esta fatia e mostra o valor dela no meio"
+                accessibilityHint={labels.hint}
                 onPress={() => setReading(selected ? null : index)}
                 className={cn(
                   "h-11 flex-row items-center gap-2 rounded-sm px-1",

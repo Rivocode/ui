@@ -3,7 +3,7 @@ import { Pressable, View } from "react-native";
 
 import { useAnnounce } from "./announce";
 import { Button } from "./button";
-import { MonthView, formatDate, useMonthOf, type DayPaint } from "./calendar";
+import { MonthView, formatDate, useMonthOf, type CalendarLabels, type DayPaint } from "./calendar";
 import { cn } from "./cn";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
@@ -29,6 +29,28 @@ export type DateRangePickerProps = {
   disabled?: boolean;
   /** Veste o gatilho; a folha é a mesma para todos. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `clear` e `apply` sao os dois
+   * botoes da folha, `pickFirst` o aviso antes do primeiro toque e `pickLast`
+   * o de depois dele, que recebe o primeiro dia ja escrito. `previous`,
+   * `next`, `caption` e `weekdays` vao para o calendario, com os nomes do
+   * `labels` do `Calendar`. Passe so os que mudam.
+   */
+  labels?: Partial<DateRangePickerLabels>;
+};
+
+export type DateRangePickerLabels = CalendarLabels & {
+  clear: string;
+  apply: string;
+  pickFirst: string;
+  pickLast: (from: string) => string;
+};
+
+const LABELS = {
+  clear: "Limpar",
+  apply: "Aplicar",
+  pickFirst: "Toque no primeiro dia do período.",
+  pickLast: (from: string) => `${from} – toque no último dia.`,
 };
 
 export function DateRangePicker({
@@ -40,6 +62,7 @@ export function DateRangePicker({
   max,
   disabled,
   className,
+  labels,
 }: DateRangePickerProps) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<Draft | null>(value);
@@ -75,6 +98,7 @@ export function DateRangePicker({
           onDraftChange={setDraft}
           min={min}
           max={max}
+          labels={labels}
           onApply={(range) => {
             onValueChange(range);
             setOpen(false);
@@ -90,16 +114,19 @@ function RangeSheet({
   onDraftChange,
   min,
   max,
+  labels: labelsProp,
   onApply,
 }: {
   draft: Draft | null;
   onDraftChange: (draft: Draft | null) => void;
   min?: string;
   max?: string;
+  labels?: Partial<DateRangePickerLabels>;
   onApply: (range: DateRange | null) => void;
 }) {
+  const labels = { ...LABELS, ...labelsProp };
   const { year, month, onMonthChange } = useMonthOf(draft?.from);
-  const summary = describe(draft);
+  const summary = describe(draft, labels);
   useAnnounce(summary, { liveRegion: true });
 
   const paintOf = (iso: string): DayPaint => {
@@ -134,6 +161,7 @@ function RangeSheet({
         max={max}
         paintOf={paintOf}
         onDayPress={(iso) => onDraftChange(nextDraft(draft, iso))}
+        labels={labelsProp}
       />
 
       <View className="flex-row items-center justify-between gap-3">
@@ -144,7 +172,7 @@ function RangeSheet({
             onApply(null);
           }}
         >
-          Limpar
+          {labels.clear}
         </Button>
         <Button
           disabled={draft === null || draft.to === null}
@@ -153,7 +181,7 @@ function RangeSheet({
             onApply({ from: draft.from, to: draft.to });
           }}
         >
-          Aplicar
+          {labels.apply}
         </Button>
       </View>
     </View>
@@ -165,8 +193,8 @@ function nextDraft(draft: Draft | null, iso: string): Draft {
   return iso < draft.from ? { from: iso, to: draft.from } : { from: draft.from, to: iso };
 }
 
-function describe(draft: Draft | null): string {
-  if (draft === null) return "Toque no primeiro dia do período.";
-  if (draft.to === null) return `${formatDate(draft.from)} – toque no último dia.`;
+function describe(draft: Draft | null, labels: typeof LABELS): string {
+  if (draft === null) return labels.pickFirst;
+  if (draft.to === null) return labels.pickLast(formatDate(draft.from));
   return `${formatDate(draft.from)} – ${formatDate(draft.to)}`;
 }

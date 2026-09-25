@@ -35,15 +35,31 @@ export type AutocompleteProps = {
   invalid?: boolean;
   /** Veste o campo fechado; a folha de sugestoes e da plataforma. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `hint` e a dica do campo fechado,
+   * `count` o que o leitor de tela ouve com a quantidade de sugestoes e `done`
+   * o botao que fecha a folha. Passe so os que mudam.
+   */
+  labels?: Partial<AutocompleteLabels>;
+};
+
+export type AutocompleteLabels = {
+  hint: string;
+  count: (count: number) => string;
+  done: string;
+};
+
+const LABELS: AutocompleteLabels = {
+  hint: "Abre o campo com sugestões.",
+  count: (count) => {
+    if (count === 0) return "Nenhuma sugestão.";
+    return count === 1 ? "1 sugestão." : `${count} sugestões.`;
+  },
+  done: "Concluir",
 };
 
 function SuggestionGap() {
   return <View className="h-1" />;
-}
-
-function spokenCount(count: number): string {
-  if (count === 0) return "Nenhuma sugestão.";
-  return count === 1 ? "1 sugestão." : `${count} sugestões.`;
 }
 
 export function Autocomplete({
@@ -56,7 +72,9 @@ export function Autocomplete({
   disabled,
   invalid,
   className,
+  labels: labelsProp,
 }: AutocompleteProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const sheet = useFieldSheet(value);
   const { open } = sheet;
   const flagged = invalid ?? Boolean(sheet.error);
@@ -75,7 +93,7 @@ export function Autocomplete({
     ? groups.flatMap((group) => group.data)
     : flattenItems(items).filter(matches);
 
-  const said = open ? spokenCount(visible.length) : null;
+  const said = open ? labels.count(visible.length) : null;
   useAnnounce(said, { liveRegion: true });
 
   const choose = (item: string) => {
@@ -109,7 +127,7 @@ export function Autocomplete({
         accessibilityLabel={label}
         accessibilityValue={{ text: value || placeholder }}
         accessibilityState={{ expanded: open, disabled: Boolean(disabled) }}
-        accessibilityHint={sheet.error ?? "Abre o campo com sugestões."}
+        accessibilityHint={sheet.error ?? labels.hint}
         disabled={disabled}
         onPress={sheet.show}
         className={cn(
@@ -170,7 +188,7 @@ export function Autocomplete({
               </ScrollView>
             )}
             <Button variant="secondary" onPress={() => sheet.close("submit")}>
-              Concluir
+              {labels.done}
             </Button>
           </View>
         </WithoutField>

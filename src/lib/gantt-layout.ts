@@ -20,7 +20,13 @@ export type GanttTaskLike = {
 
 export type GanttRange = { start: Date; end: Date };
 
-export type HeaderCell = { key: string; label: string; from: number; days: number; weekend?: boolean };
+export type HeaderCell = {
+  key: string;
+  label: string;
+  from: number;
+  days: number;
+  weekend?: boolean;
+};
 
 export type GanttRow<Task extends GanttTaskLike> =
   | {
@@ -45,41 +51,21 @@ export type GanttRow<Task extends GanttTaskLike> =
 
 export const PX_PER_DAY: Record<GanttScale, number> = { day: 40, week: 18, month: 5 };
 
-const MONTHS = [
-  "janeiro",
-  "fevereiro",
-  "março",
-  "abril",
-  "maio",
-  "junho",
-  "julho",
-  "agosto",
-  "setembro",
-  "outubro",
-  "novembro",
-  "dezembro",
-];
+export type GanttWords = {
+  locale: string;
+  range: (from: string, to: string) => string;
+};
 
-const SHORT_MONTHS = [
-  "jan",
-  "fev",
-  "mar",
-  "abr",
-  "mai",
-  "jun",
-  "jul",
-  "ago",
-  "set",
-  "out",
-  "nov",
-  "dez",
-];
+export const GANTT_WORDS: GanttWords = {
+  locale: "pt-BR",
+  range: (from, to) => `${from} a ${to}`,
+};
 
-const WEEKDAY_INITIAL = ["D", "S", "T", "Q", "Q", "S", "S"];
+const shortMonth = (date: Date, locale: string) =>
+  date.toLocaleDateString(locale, { month: "short" }).replace(/\.$/, "");
 
-export function monthName(month: number): string {
-  return MONTHS[((month % 12) + 12) % 12]!;
-}
+const weekdayInitial = (date: Date, locale: string) =>
+  date.toLocaleDateString(locale, { weekday: "narrow" });
 
 export function isMilestone(task: { start: Date; end: Date }): boolean {
   return task.end.getTime() <= task.start.getTime();
@@ -96,7 +82,12 @@ export function dayOffset(origin: Date, date: Date): number {
 
 function withTime(day: Date, source: Date): Date {
   const copy = new Date(day);
-  copy.setHours(source.getHours(), source.getMinutes(), source.getSeconds(), source.getMilliseconds());
+  copy.setHours(
+    source.getHours(),
+    source.getMinutes(),
+    source.getSeconds(),
+    source.getMilliseconds(),
+  );
   return copy;
 }
 
@@ -141,25 +132,35 @@ export function dragTask(
   };
 }
 
-export function spokenDay(day: Date, withYear = false): string {
-  const base = `${day.getDate()} de ${monthName(day.getMonth())}`;
-  return withYear ? `${base} de ${day.getFullYear()}` : base;
+export function spokenDay(day: Date, withYear = false, locale = GANTT_WORDS.locale): string {
+  return day.toLocaleDateString(locale, {
+    day: "numeric",
+    month: "long",
+    ...(withYear ? { year: "numeric" } : {}),
+  });
 }
 
-export function spokenRange(task: { start: Date; end: Date }): string {
+export function spokenRange(
+  task: { start: Date; end: Date },
+  words: GanttWords = GANTT_WORDS,
+): string {
+  const { locale, range } = words;
   const first = startOfDay(task.start);
-  if (isMilestone(task)) return spokenDay(first);
+  if (isMilestone(task)) return spokenDay(first, false, locale);
 
   const last = lastDay(task);
-  if (first.getTime() === last.getTime()) return spokenDay(first);
+  if (first.getTime() === last.getTime()) return spokenDay(first, false, locale);
 
   if (first.getFullYear() !== last.getFullYear()) {
-    return `${spokenDay(first, true)} a ${spokenDay(last, true)}`;
+    return range(spokenDay(first, true, locale), spokenDay(last, true, locale));
   }
   if (first.getMonth() !== last.getMonth()) {
-    return `${spokenDay(first)} a ${spokenDay(last)}`;
+    return range(spokenDay(first, false, locale), spokenDay(last, false, locale));
   }
-  return `${first.getDate()} a ${spokenDay(last)}`;
+  return range(
+    first.toLocaleDateString(locale, { day: "numeric" }),
+    spokenDay(last, false, locale),
+  );
 }
 
 export function scaleRange(
@@ -188,7 +189,11 @@ export function totalDays(range: GanttRange): number {
   return Math.max(daysBetween(range.start, range.end), 1);
 }
 
-export function headerTiers(range: GanttRange, scale: GanttScale): [HeaderCell[], HeaderCell[]] {
+export function headerTiers(
+  range: GanttRange,
+  scale: GanttScale,
+  locale = GANTT_WORDS.locale,
+): [HeaderCell[], HeaderCell[]] {
   const origin = startOfDay(range.start);
   const days = totalDays(range);
   const top: HeaderCell[] = [];
@@ -206,11 +211,15 @@ export function headerTiers(range: GanttRange, scale: GanttScale): [HeaderCell[]
       const length = daysBetween(new Date(year, 0, 1), new Date(year + 1, 0, 1));
       push(top, { key: `y${year}`, label: String(year), from, days: length });
     }
-    for (let month = startOfMonth(origin); daysBetween(origin, month) < days; month = addMonths(month, 1)) {
+    for (
+      let month = startOfMonth(origin);
+      daysBetween(origin, month) < days;
+      month = addMonths(month, 1)
+    ) {
       const from = daysBetween(origin, month);
       push(bottom, {
         key: `m${month.getFullYear()}-${month.getMonth()}`,
-        label: SHORT_MONTHS[month.getMonth()]!,
+        label: shortMonth(month, locale),
         from,
         days: daysBetween(month, addMonths(month, 1)),
       });
@@ -218,10 +227,14 @@ export function headerTiers(range: GanttRange, scale: GanttScale): [HeaderCell[]
     return [top, bottom];
   }
 
-  for (let month = startOfMonth(origin); daysBetween(origin, month) < days; month = addMonths(month, 1)) {
+  for (
+    let month = startOfMonth(origin);
+    daysBetween(origin, month) < days;
+    month = addMonths(month, 1)
+  ) {
     push(top, {
       key: `m${month.getFullYear()}-${month.getMonth()}`,
-      label: `${monthName(month.getMonth())} de ${month.getFullYear()}`,
+      label: month.toLocaleDateString(locale, { month: "long", year: "numeric" }),
       from: daysBetween(origin, month),
       days: daysBetween(month, addMonths(month, 1)),
     });
@@ -233,7 +246,7 @@ export function headerTiers(range: GanttRange, scale: GanttScale): [HeaderCell[]
       const weekday = day.getDay();
       bottom.push({
         key: `d${index}`,
-        label: `${WEEKDAY_INITIAL[weekday]} ${day.getDate()}`,
+        label: `${weekdayInitial(day, locale)} ${day.getDate()}`,
         from: index,
         days: 1,
         weekend: weekday === 0 || weekday === 6,
@@ -292,8 +305,14 @@ export function buildRows<Task extends GanttTaskLike>(
     }
 
     const members = groups.get(entry)!;
-    const start = members.reduce((low, task) => (task.start < low ? task.start : low), members[0]!.start);
-    const end = members.reduce((high, task) => (task.end > high ? task.end : high), members[0]!.end);
+    const start = members.reduce(
+      (low, task) => (task.start < low ? task.start : low),
+      members[0]!.start,
+    );
+    const end = members.reduce(
+      (high, task) => (task.end > high ? task.end : high),
+      members[0]!.end,
+    );
     const expanded = !collapsed.has(entry);
 
     rows.push({

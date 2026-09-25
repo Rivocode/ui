@@ -1,4 +1,6 @@
 import {
+  createContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -33,8 +35,21 @@ export type RichTextViewProps = Omit<ComponentPropsWithoutRef<"div">, "children"
    * `<p></p>` de um editor em branco. Sem ele, a peca nao desenha nada.
    */
   empty?: ReactNode;
+  /**
+   * Os textos da peca, para trocar o idioma: `code` e o nome que o leitor de
+   * tela ouve no bloco de codigo que rola de lado. Passe so os que mudam.
+   */
+  labels?: Partial<RichTextViewLabels>;
   ref?: Ref<HTMLDivElement>;
 };
+
+export type RichTextViewLabels = {
+  code: string;
+};
+
+const LABELS: RichTextViewLabels = { code: "Bloco de código" };
+
+const Labels = createContext<RichTextViewLabels>(LABELS);
 
 const WRAP = {
   code: (child: ReactNode, key: number) => <code key={key}>{child}</code>,
@@ -102,9 +117,8 @@ function block(item: RichTextBlock, key: number): ReactNode {
   }
 }
 
-const CODE_LABEL = "Bloco de código";
-
 function CodeBlock({ text }: { text: string }) {
+  const labels = use(Labels);
   const ref = useRef<HTMLPreElement>(null);
   const [overflow, setOverflow] = useState(false);
 
@@ -124,14 +138,14 @@ function CodeBlock({ text }: { text: string }) {
       ref={ref}
       tabIndex={overflow ? 0 : undefined}
       role={overflow ? "region" : undefined}
-      aria-label={overflow ? CODE_LABEL : undefined}
+      aria-label={overflow ? labels.code : undefined}
     >
       <code>{text}</code>
     </pre>
   );
 }
 
-export function RichTextView({ value, empty, className, ...props }: RichTextViewProps) {
+export function RichTextView({ value, empty, labels, className, ...props }: RichTextViewProps) {
   const blocks = useMemo(() => richTextBlocks(value), [value]);
   const blank = isRichTextEmpty(blocks);
 
@@ -139,7 +153,7 @@ export function RichTextView({ value, empty, className, ...props }: RichTextView
 
   return (
     <div {...props} data-empty={blank || undefined} className={cn(RICH_TEXT_CONTENT, className)}>
-      {blank ? empty : blocks.map(block)}
+      {blank ? empty : <Labels value={{ ...LABELS, ...labels }}>{blocks.map(block)}</Labels>}
     </div>
   );
 }

@@ -12,7 +12,8 @@ import {
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-import { Input } from "./field";
+import { COLOR_PICKER_LABELS, type ColorPickerLabels } from "../shared/color-picker";
+import { Input, useInsideField } from "./field";
 
 export type ColorSwatch = string | { value: string; label: string };
 
@@ -31,7 +32,11 @@ export type ColorPickerProps = Omit<ComponentProps<"div">, "defaultValue" | "chi
   swatches?: ColorSwatch[];
   /** Quantas amostras por linha. E tambem o passo das setas para cima e para baixo. */
   columns?: number;
-  /** Texto acima da grade. Sem ele, a grade leva o nome de `labels.swatches`. */
+  /**
+   * Texto acima da grade. Sem ele, a grade leva o nome de `labels.swatches`.
+   * Dentro de um `Field` ele vira so o nome da grade, sem aparecer: quem
+   * escreve o rotulo na tela ali e o `FieldLabel`.
+   */
   label?: ReactNode;
   /** Esconde o campo de texto e deixa so a grade. */
   hideInput?: boolean;
@@ -39,8 +44,9 @@ export type ColorPickerProps = Omit<ComponentProps<"div">, "defaultValue" | "chi
   className?: string;
   /**
    * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
-   * das amostras quando nao ha `label`, e `hex` o do campo de texto. Passe so
-   * os que mudam.
+   * das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o
+   * de cada amostra em texto puro, que recebe o hexadecimal dela. A amostra
+   * `{ value, label }` se nomeia pelo proprio `label`. Passe so os que mudam.
    */
   labels?: Partial<ColorPickerLabels>;
   /** Classe por parte: `label`, `swatches`, `swatch`, `field`, `preview`, `input`. */
@@ -89,13 +95,10 @@ const DEFAULT_SWATCHES: string[] = [70, 55, 38].flatMap((lightness) =>
 
 const valueOf = (swatch: ColorSwatch) => (typeof swatch === "string" ? swatch : swatch.value);
 
-const nameOf = (swatch: ColorSwatch) =>
-  typeof swatch === "string" ? `Cor ${swatch}` : `${swatch.label}, ${swatch.value}`;
+const nameOf = (swatch: ColorSwatch, named: (value: string) => string) =>
+  typeof swatch === "string" ? named(swatch) : `${swatch.label}, ${swatch.value}`;
 
-export type ColorPickerLabels = {
-  swatches: string;
-  hex: string;
-};
+export type { ColorPickerLabels };
 
 export function ColorPicker({
   value: valueProp,
@@ -106,13 +109,13 @@ export function ColorPicker({
   label,
   hideInput,
   disabled,
-  labels,
+  labels: labelsProp,
   className,
   classNames,
   ...rest
 }: ColorPickerProps) {
-  const swatchesLabel = labels?.swatches ?? "Amostras de cor";
-  const hexLabel = labels?.hex ?? "Código hexadecimal da cor";
+  const labels = { ...COLOR_PICKER_LABELS, ...labelsProp };
+  const insideField = useInsideField();
   const labelId = useId();
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const rtl = useDirection() === "rtl";
@@ -184,14 +187,17 @@ export function ColorPicker({
   return (
     <div {...rest} className={cn("flex flex-col gap-2", className)}>
       {label && (
-        <span id={labelId} className={cn("font-sans text-sm text-fg", classNames?.label)}>
+        <span
+          id={labelId}
+          className={cn(insideField ? "sr-only" : "font-sans text-sm text-fg", classNames?.label)}
+        >
           {label}
         </span>
       )}
 
       <div
         role="radiogroup"
-        aria-label={label ? undefined : swatchesLabel}
+        aria-label={label ? undefined : labels.swatches}
         aria-labelledby={label ? labelId : undefined}
         onKeyDown={walk}
         className={cn("grid w-fit gap-1.5", classNames?.swatches)}
@@ -209,7 +215,7 @@ export function ColorPicker({
               type="button"
               role="radio"
               aria-checked={isSelected}
-              aria-label={nameOf(swatch)}
+              aria-label={nameOf(swatch, labels.swatch)}
               disabled={disabled}
               tabIndex={index === focusable ? 0 : -1}
               onClick={() => choose(color)}
@@ -239,7 +245,7 @@ export function ColorPicker({
             style={{ backgroundColor: current ?? "transparent" }}
           />
           <Input
-            aria-label={hexLabel}
+            aria-label={labels.hex}
             spellCheck={false}
             autoComplete="off"
             disabled={disabled}

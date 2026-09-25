@@ -41,6 +41,10 @@ export const inputVariants = cva(
 
 const FieldRootPresence = createContext(false);
 
+export function useInsideField() {
+  return use(FieldRootPresence);
+}
+
 export function missingFieldRootComplaint(part: string): string {
   return (
     `[rivocode/ui] <${part}> fora de <Field>: a Base UI derruba a árvore inteira quando uma ` +

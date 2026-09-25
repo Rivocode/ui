@@ -19,10 +19,24 @@ export function toggleValue(chosen: string[], value: string): string[] {
   return chosen.includes(value) ? chosen.filter((other) => other !== value) : [...chosen, value];
 }
 
-export function summarize(chosen: string[], items: PickerItem[]): string | undefined {
+export type PickerLabels = {
+  selected: (count: number) => string;
+  done: string;
+};
+
+export const PICKER_LABELS: PickerLabels = {
+  selected: (count) => `${count} selecionados`,
+  done: "Concluir",
+};
+
+export function summarize(
+  chosen: string[],
+  items: PickerItem[],
+  selected: (count: number) => string,
+): string | undefined {
   if (chosen.length === 0) return undefined;
   if (chosen.length === 1) return items.find((item) => item.value === chosen[0])?.label;
-  return `${chosen.length} selecionados`;
+  return selected(chosen.length);
 }
 
 export function fold(text: string): string {

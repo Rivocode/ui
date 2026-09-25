@@ -178,3 +178,19 @@ nos dois pacotes e com as mesmas chaves. Passe só as chaves que mudam.
 Não há prop solta terminada em `Label` para texto de interface. O que continua
 prop é conteúdo: o `label` que dá nome ao campo, o `title` e o `errorTitle` do
 aviso, o `placeholder`.
+
+Data tem duas metades. O nome do mês, do dia da semana e a hora saem do
+`locale` (tag BCP 47, `"en-US"`), no `EventCalendar` e no `Gantt`, e o
+`DatePicker` e o `DateRangePicker` do web recebem o `locale` do calendário. As
+palavras fixas em volta ("Hoje", "+2 mais", "Dia inteiro", "das 9h às 10h",
+"12 a 18") são `labels`. No nativo não há `locale`: o `Calendar`, o
+`DatePicker` e o `DateRangePicker` trocam os nomes do mês e as iniciais por
+`labels.caption` e `labels.weekdays`.
+
+```tsx
+<EventCalendar
+  events={events}
+  locale="en-US"
+  labels={{ today: "Today", week: "Week", events: (count) => `${count} events` }}
+/>
+```

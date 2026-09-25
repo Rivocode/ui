@@ -3,10 +3,10 @@ import { Pressable, ScrollView, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
-import { summarize, type PickerItem } from "./picker";
+import { PICKER_LABELS, summarize, type PickerItem } from "./picker";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
-import { Tree, type TreeNode } from "./tree";
+import { Tree, type TreeLabels, type TreeNode } from "./tree";
 
 export type TreeSelectProps = {
   items: TreeNode[];
@@ -22,6 +22,25 @@ export type TreeSelectProps = {
   disabled?: boolean;
   /** Veste o gatilho; a folha e da plataforma. */
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `selected` e o resumo com mais de
+   * uma escolha, `empty` o rodape da folha sem escolha nenhuma e `apply` o
+   * botao que confirma. `back`, `selectAll`, `branch` e `enter` vao para o
+   * `Tree` de dentro. Passe so os que mudam.
+   */
+  labels?: Partial<TreeSelectLabels>;
+};
+
+export type TreeSelectLabels = TreeLabels & {
+  selected: (count: number) => string;
+  empty: string;
+  apply: string;
+};
+
+const LABELS = {
+  selected: PICKER_LABELS.selected,
+  empty: "Nada escolhido",
+  apply: "Aplicar",
 };
 
 function leafItems(items: TreeNode[]): PickerItem[] {
@@ -39,7 +58,9 @@ export function TreeSelect({
   multiple = true,
   disabled,
   className,
+  labels: labelsProp,
 }: TreeSelectProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<string[]>(value);
 
@@ -47,8 +68,8 @@ export function TreeSelect({
 
   const known = (ids: string[]) => ids.filter((id) => leaves.some((leaf) => leaf.value === id));
 
-  const summary = summarize(known(value), leaves);
-  const draftSummary = summarize(known(draft), leaves);
+  const summary = summarize(known(value), leaves, labels.selected);
+  const draftSummary = summarize(known(draft), leaves, labels.selected);
 
   return (
     <>
@@ -82,18 +103,19 @@ export function TreeSelect({
               onValueChange={setDraft}
               multiple={multiple}
               label={label}
+              labels={labelsProp}
             />
           </ScrollView>
 
           <View className="flex-row items-center justify-between gap-3 border-t border-border pt-3">
-            <Text className="flex-1 text-sm text-fg-muted">{draftSummary ?? "Nada escolhido"}</Text>
+            <Text className="flex-1 text-sm text-fg-muted">{draftSummary ?? labels.empty}</Text>
             <Button
               onPress={() => {
                 onValueChange(draft);
                 setOpen(false);
               }}
             >
-              Aplicar
+              {labels.apply}
             </Button>
           </View>
         </View>

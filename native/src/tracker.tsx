@@ -36,9 +36,22 @@ export type TrackerProps = {
    * periodo). O `label` e so o nome falado da faixa, e nao tem no para vestir.
    */
   classNames?: Slots<"track" | "cell">;
+  /**
+   * Os textos da peca, para trocar o idioma: `next` e `previous` sao os nomes
+   * das duas acoes de ajuste que andam de periodo. Passe so os que mudam.
+   */
+  labels?: Partial<TrackerLabels>;
 };
 
-export function Tracker({ data, label, className, classNames }: TrackerProps) {
+export type TrackerLabels = {
+  next: string;
+  previous: string;
+};
+
+const LABELS: TrackerLabels = { next: "Período seguinte", previous: "Período anterior" };
+
+export function Tracker({ data, label, className, classNames, labels: labelsProp }: TrackerProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const [width, setWidth] = useState(0);
   const widthRef = useRef(0);
   const countRef = useRef(data.length);
@@ -75,8 +88,8 @@ export function Tracker({ data, label, className, classNames }: TrackerProps) {
         accessibilityLabel={label}
         accessibilityValue={{ text: `${at + 1} de ${data.length}: ${point?.label ?? ""}` }}
         accessibilityActions={[
-          { name: "increment", label: "Período seguinte" },
-          { name: "decrement", label: "Período anterior" },
+          { name: "increment", label: labels.next },
+          { name: "decrement", label: labels.previous },
         ]}
         onAccessibilityAction={(event) => {
           const delta = event.nativeEvent.actionName === "increment" ? 1 : -1;

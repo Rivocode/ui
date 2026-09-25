@@ -4,7 +4,15 @@ import { Pressable, ScrollView, SectionList, View } from "react-native";
 import { Button } from "./button";
 import { cn } from "./cn";
 import { useFieldSheet } from "./field";
-import { flattenItems, fold, isGrouped, summarize, toggleValue } from "./picker";
+import {
+  PICKER_LABELS,
+  flattenItems,
+  fold,
+  isGrouped,
+  summarize,
+  toggleValue,
+  type PickerLabels,
+} from "./picker";
 import { SearchInput } from "./search-input";
 import { PickerGroupLabel, pickerSections } from "./select";
 import { Sheet } from "./sheet";
@@ -34,8 +42,15 @@ type ComboboxBaseProps = {
   /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
   /** Veste o gatilho; a folha de busca e da plataforma. */
-  className?: string;
+  className?: string /**
+   * Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho
+   * com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`.
+   * Passe so os que mudam.
+   */;
+  labels?: Partial<ComboboxLabels>;
 };
+
+export type ComboboxLabels = PickerLabels;
 
 export type ComboboxProps = ComboboxBaseProps &
   (
@@ -58,6 +73,7 @@ export function Combobox(props: ComboboxProps) {
     invalid,
     className,
   } = props;
+  const labels = { ...PICKER_LABELS, ...props.labels };
 
   const sheet = useFieldSheet(props.value);
   const flagged = invalid ?? Boolean(sheet.error);
@@ -65,7 +81,7 @@ export function Combobox(props: ComboboxProps) {
 
   const chosen = props.multiple ? props.value : props.value === null ? [] : [props.value];
   const flat = flattenItems<ComboboxItem>(items);
-  const summary = summarize(chosen, flat);
+  const summary = summarize(chosen, flat, labels.selected);
   const matches = (item: ComboboxItem) => !query || fold(item.label).includes(fold(query));
   const groups = isGrouped<ComboboxItem>(items)
     ? items
@@ -161,7 +177,7 @@ export function Combobox(props: ComboboxProps) {
 
           {props.multiple && (
             <Button variant="secondary" onPress={() => close(false, "submit")}>
-              Concluir
+              {labels.done}
             </Button>
           )}
         </View>

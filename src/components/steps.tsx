@@ -4,6 +4,9 @@ import { Check } from "lucide-react";
 import { useCallback, useState, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { STEPS_LABELS, type StepsLabels } from "../shared/steps";
+
+export type { StepsLabels };
 
 export type Step = {
   id: string;
@@ -20,17 +23,29 @@ export type StepsProps = Omit<ComponentProps<"ol">, "onChange"> & {
    * nao e clicavel; com ele, so os passos anteriores ao atual viram botao.
    */
   onStepChange?: (step: number) => void;
+  /**
+   * Os textos da peca, para trocar o idioma: `position` e a contagem "Passo 2
+   * de 5", que recebe o passo atual contando de 1 e o total. Passe so os que
+   * mudam.
+   */
+  labels?: Partial<StepsLabels>;
 };
 
-export function Steps({ className, steps, step: current, onStepChange, ...props }: StepsProps) {
+export function Steps({
+  className,
+  steps,
+  step: current,
+  onStepChange,
+  labels,
+  ...props
+}: StepsProps) {
   const step = steps[current];
+  const { position } = { ...STEPS_LABELS, ...labels };
 
   return (
     <>
       <div className="flex flex-col gap-2 sm:hidden">
-        <p className="font-sans text-sm text-fg-muted">
-          Passo {current + 1} de {steps.length}
-        </p>
+        <p className="font-sans text-sm text-fg-muted">{position(current + 1, steps.length)}</p>
         <p className="font-display font-rc-display text-lg tracking-tight text-fg">{step?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
           <div

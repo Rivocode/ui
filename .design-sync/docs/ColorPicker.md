@@ -77,6 +77,13 @@ para baixo. Por isso é prop, e não uma classe de fora.
   não existe token que garanta contraste contra um valor que a pessoa inventou.
 - O campo de texto tem nome próprio (`Código hexadecimal da cor`), então ele se
   anuncia sozinho mesmo fora de um `Field`.
+- Cada amostra em texto puro se chama `Cor #d4f34a`, e `labels.swatch` troca a
+  frase; a amostra `{ value, label }` se chama pelo próprio `label`.
+- **Dentro de um `Field`, o `label` não aparece de novo.** O rótulo na tela ali
+  é o `FieldLabel`, e escrever os dois deixava a mesma frase duas vezes, uma em
+  cima da outra. O `label` da peça continua nomeando a grade para o leitor de
+  tela, só que escondido. No nativo o `forValue` entrega o `label` do
+  `FormField`, e a peça faz a mesma coisa: nomeia sem desenhar.
 
 ## Sentido da escrita
 

@@ -19,6 +19,7 @@ import { EmptyState } from "../components/empty-state";
 import { Skeleton } from "../components/skeleton";
 import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
+import { chartName } from "../shared/chart-layout";
 import { SETTLED } from "../shared/settled";
 import { useTokenMotion, withMotion, type ChartMotion } from "./use-chart-motion";
 
@@ -83,7 +84,8 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
    * resolvem os quatro finais.
    * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
-   * sai e quando ela volta.
+   * sai e quando ela volta. `name` monta o nome do grafico sem `label`, a
+   * partir dos rotulos das series do `config`.
    */
   labels?: Partial<ChartContainerLabels>;
 };
@@ -190,6 +192,7 @@ export type ChartContainerLabels = {
   retry: string;
   loading: string;
   loaded: string;
+  name: (series: string[]) => string;
 };
 
 export function ChartContainer({
@@ -293,7 +296,7 @@ export function ChartContainer({
         </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">
-          {describe(painted.chart, label ?? nameFromConfig(config))}
+          {describe(painted.chart, label ?? nameFromConfig(config, labels?.name ?? chartName))}
         </ResponsiveContainer>
       )}
     </div>
@@ -406,12 +409,12 @@ function useActivePointAnnouncement(chartId: string): string {
   return announcement;
 }
 
-function nameFromConfig(config: ChartConfig) {
-  const series = Object.values(config)
-    .map((entry) => entry.label)
-    .filter(Boolean);
-
-  return series.length > 0 ? `Gráfico de ${series.join(", ")}` : "Gráfico";
+function nameFromConfig(config: ChartConfig, name: (series: string[]) => string) {
+  return name(
+    Object.values(config)
+      .map((entry) => entry.label)
+      .filter(Boolean),
+  );
 }
 
 function describe(chart: ReactElement, name: string) {

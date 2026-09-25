@@ -58,7 +58,28 @@ type DatePickerBase = Omit<
      * escolha dispara trabalho caro, como recarregar uma listagem.
      */
     confirm?: boolean;
+    /**
+     * Os textos da peca, para trocar o idioma: `open` e o nome do botao do
+     * calendario, `title` o titulo do painel, `clear` e `apply` os dois botoes
+     * do rodape do `confirm`. Os nomes dos meses e dos dias vem do `locale`.
+     * Passe so os que mudam.
+     */
+    labels?: Partial<DatePickerLabels>;
   };
+
+export type DatePickerLabels = {
+  open: string;
+  title: string;
+  clear: string;
+  apply: string;
+};
+
+const LABELS: DatePickerLabels = {
+  open: "Abrir calendário",
+  title: "Escolher data",
+  clear: "Limpar",
+  apply: "Aplicar",
+};
 
 export type DatePickerDateProps = DatePickerBase & DatePickerDateValue;
 
@@ -92,8 +113,10 @@ export function DatePicker(props: DatePickerProps): ReactElement {
     onBlur,
     min,
     max,
+    labels: labelsProp,
     ...rest
   } = props as DatePickerRuntimeProps;
+  const labels = { ...LABELS, ...labelsProp };
   const iso = typeof value === "string" || value === null || typeof defaultValue === "string";
   const controlled = value !== undefined;
   const [internalDate, setInternalDate] = useState<Date | undefined>(() => toDate(defaultValue));
@@ -128,7 +151,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
     <button
       type="button"
       disabled={disabled}
-      aria-label="Abrir calendário"
+      aria-label={labels.open}
       className={cn(
         "absolute top-1/2 right-1.5 inline-flex size-8 -translate-y-1/2",
         "items-center justify-center rounded-md text-fg-muted",
@@ -178,7 +201,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
           }
         }}
         trigger={trigger}
-        title="Escolher data"
+        title={labels.title}
         align="end"
         footer={
           confirm && (
@@ -191,7 +214,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
                   setAberto(false);
                 }}
               >
-                Limpar
+                {labels.clear}
               </Button>
               <Button
                 size="sm"
@@ -201,7 +224,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
                   setAberto(false);
                 }}
               >
-                Aplicar
+                {labels.apply}
               </Button>
             </div>
           )

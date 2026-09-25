@@ -16,6 +16,23 @@ const UNITS = [
 
 export type RelativeUnit = (typeof UNITS)[number]["unit"];
 
+export type RelativeTimeLabels = {
+  now: string;
+  past: (amount: number, unit: RelativeUnit) => string;
+  future: (amount: number, unit: RelativeUnit) => string;
+};
+
+const wordOf = (amount: number, unit: RelativeUnit) => {
+  const range = UNITS.find((one) => one.unit === unit)!;
+  return amount === 1 ? range.one : range.many;
+};
+
+const LABELS: RelativeTimeLabels = {
+  now: "agora",
+  past: (amount, unit) => `há ${amount} ${wordOf(amount, unit)}`,
+  future: (amount, unit) => `em ${amount} ${wordOf(amount, unit)}`,
+};
+
 export const REFRESH: Record<RelativeUnit | "now", number> = {
   now: 15_000,
   minute: 30_000,
@@ -31,12 +48,17 @@ const isoLocal = (date: Date) => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 
-export function describeRelative(value: Date, now: Date, cutoff?: RelativeUnit) {
+export function describeRelative(
+  value: Date,
+  now: Date,
+  cutoff?: RelativeUnit,
+  labels: RelativeTimeLabels = LABELS,
+) {
   const seconds = Math.round((value.getTime() - now.getTime()) / 1000);
   const size = Math.abs(seconds);
   const past = seconds <= 0;
 
-  if (size < 60) return { text: "agora", step: REFRESH.now };
+  if (size < 60) return { text: labels.now, step: REFRESH.now };
 
   const cutIndex = cutoff ? UNITS.findIndex((range) => range.unit === cutoff) : -1;
 
@@ -48,14 +70,13 @@ export function describeRelative(value: Date, now: Date, cutoff?: RelativeUnit) 
     }
 
     const amount = Math.round(size / range.seconds);
-    const word = amount === 1 ? range.one : range.many;
     return {
-      text: past ? `há ${amount} ${word}` : `em ${amount} ${word}`,
+      text: past ? labels.past(amount, range.unit) : labels.future(amount, range.unit),
       step: REFRESH[range.unit],
     };
   }
 
-  return { text: "agora", step: REFRESH.now };
+  return { text: labels.now, step: REFRESH.now };
 }
 
 export type RelativeTimeProps = Omit<TextProps, "children" | "className"> & {
@@ -72,14 +93,27 @@ export type RelativeTimeProps = Omit<TextProps, "children" | "className"> & {
    */
   now?: Date;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `now` e o que sai no primeiro
+   * minuto, e `past` e `future` escrevem a distancia, com o numero e a unidade
+   * (`minute`, `hour`, `day`, `week`, `month`, `year`). Passe so os que mudam.
+   */
+  labels?: Partial<RelativeTimeLabels>;
 };
 
-export function RelativeTime({ value, cutoff, now, className, ...props }: RelativeTimeProps) {
+export function RelativeTime({
+  value,
+  cutoff,
+  now,
+  className,
+  labels,
+  ...props
+}: RelativeTimeProps) {
   const date = value instanceof Date ? value : new Date(value);
   const [tick, setTick] = useState(0);
 
   const current = now ?? new Date();
-  const { text, step } = describeRelative(date, current, cutoff);
+  const { text, step } = describeRelative(date, current, cutoff, { ...LABELS, ...labels });
 
   useEffect(() => {
     if (now !== undefined || step === null) return;

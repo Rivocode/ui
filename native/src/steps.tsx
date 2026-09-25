@@ -3,7 +3,10 @@ import { View } from "react-native";
 
 import { cn } from "./cn";
 import { Fill, Presence } from "./motion";
+import { STEPS_LABELS, type StepsLabels } from "./shared/steps";
 import { Text } from "./text";
+
+export type { StepsLabels };
 
 export type Step = {
   id: string;
@@ -16,16 +19,22 @@ export type StepsProps = {
   /** Índice do passo atual, contando de zero. */
   step: number;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `position` e a contagem "Passo 2
+   * de 5", que recebe o passo atual contando de 1 e o total. Passe so os que
+   * mudam.
+   */
+  labels?: Partial<StepsLabels>;
 };
 
 const percent = (index: number, total: number) => ((index + 1) / total) * 100;
 
-export function Steps({ steps, step: current, className }: StepsProps) {
+export function Steps({ steps, step: current, className, labels }: StepsProps) {
   if (steps.length === 0) return null;
 
   const index = Math.min(Math.max(current, 0), steps.length - 1);
   const step = steps[index]!;
-  const position = `Passo ${index + 1} de ${steps.length}`;
+  const position = { ...STEPS_LABELS, ...labels }.position(index + 1, steps.length);
 
   return (
     <View

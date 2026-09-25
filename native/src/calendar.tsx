@@ -30,6 +30,20 @@ const monthLabel = (month: number) => {
   return name.charAt(0).toUpperCase() + name.slice(1);
 };
 
+export type CalendarLabels = {
+  previous: string;
+  next: string;
+  caption: (year: number, month: number) => string;
+  weekdays: string[];
+};
+
+const LABELS: CalendarLabels = {
+  previous: "Mês anterior",
+  next: "Mês seguinte",
+  caption: (year, month) => `${monthLabel(month)} de ${year}`,
+  weekdays: WEEKDAYS,
+};
+
 export const formatDate = formatIsoDate;
 
 type CalendarPart =
@@ -62,6 +76,13 @@ export type CalendarProps = {
    * `disabled` somam na caixa do dia que esta naquele estado, como no web.
    */
   classNames?: Slots<CalendarPart>;
+  /**
+   * Os textos do calendario, para trocar o idioma: `previous` e `next` sao os
+   * nomes das duas setas, `caption` escreve o mes no alto (recebe o ano e o mes
+   * contando de 0) e `weekdays` sao as sete iniciais a partir do domingo. Passe
+   * so os que mudam.
+   */
+  labels?: Partial<CalendarLabels>;
 };
 
 function Chevron({ left }: { left?: boolean }) {
@@ -93,6 +114,8 @@ export type MonthViewProps = {
   onDayPress: (iso: string) => void;
   /** Classe por parte, os mesmos nomes do `classNames` do `Calendar`. */
   classNames?: Slots<CalendarPart>;
+  /** Os textos, os mesmos do `labels` do `Calendar`. */
+  labels?: Partial<CalendarLabels>;
 };
 
 export function MonthView({
@@ -104,7 +127,9 @@ export function MonthView({
   paintOf,
   onDayPress,
   classNames,
+  labels: labelsProp,
 }: MonthViewProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const today = new Date();
   const firstWeekday = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -125,7 +150,7 @@ export function MonthView({
       <View className={cn("flex-row items-center justify-between", classNames?.nav)}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Mês anterior"
+          accessibilityLabel={labels.previous}
           onPress={() => shift(-1)}
           hitSlop={8}
           className={cn(
@@ -136,11 +161,11 @@ export function MonthView({
           <Chevron left />
         </Pressable>
         <Text className={cn("text-base font-rc-medium text-fg", classNames?.caption_label)}>
-          {monthLabel(month)} de {year}
+          {labels.caption(year, month)}
         </Text>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Mês seguinte"
+          accessibilityLabel={labels.next}
           onPress={() => shift(1)}
           hitSlop={8}
           className={cn(
@@ -153,11 +178,14 @@ export function MonthView({
       </View>
 
       <View className={cn("flex-row", classNames?.weekdays)}>
-        {WEEKDAYS.map((weekday, index) => (
+        {labels.weekdays.map((weekday, index) => (
           <Text
             key={index}
             font="mono"
-            className={cn("flex-1 text-center text-xs text-fg-subtle uppercase", classNames?.weekday)}
+            className={cn(
+              "flex-1 text-center text-xs text-fg-subtle uppercase",
+              classNames?.weekday,
+            )}
           >
             {weekday}
           </Text>
@@ -209,7 +237,11 @@ export function MonthView({
               >
                 <Text
                   className={`text-sm ${
-                    active ? "font-rc-medium text-accent-fg" : blocked ? "text-fg-disabled" : "text-fg"
+                    active
+                      ? "font-rc-medium text-accent-fg"
+                      : blocked
+                        ? "text-fg-disabled"
+                        : "text-fg"
                   }`}
                 >
                   {day}
@@ -236,7 +268,7 @@ export function useMonthOf(iso: string | null | undefined) {
   return { year, month, onMonthChange };
 }
 
-export function Calendar({ value, onValueChange, min, max, classNames }: CalendarProps) {
+export function Calendar({ value, onValueChange, min, max, classNames, labels }: CalendarProps) {
   const { year, month, onMonthChange } = useMonthOf(value);
 
   return (
@@ -249,6 +281,7 @@ export function Calendar({ value, onValueChange, min, max, classNames }: Calenda
       paintOf={(iso) => ({ chosen: iso === value })}
       onDayPress={onValueChange}
       classNames={classNames}
+      labels={labels}
     />
   );
 }
@@ -265,7 +298,11 @@ export type DatePickerProps = {
   invalid?: boolean;
   /** Veste o gatilho; o calendario na folha e o mesmo para todos. */
   className?: string;
+  /** Os textos do calendario da folha, os mesmos do `labels` do `Calendar`. */
+  labels?: Partial<DatePickerLabels>;
 };
+
+export type DatePickerLabels = CalendarLabels;
 
 export function DatePicker({
   value,
@@ -277,6 +314,7 @@ export function DatePicker({
   disabled,
   invalid,
   className,
+  labels,
 }: DatePickerProps) {
   const sheet = useFieldSheet(value);
   const flagged = invalid ?? Boolean(sheet.error);
@@ -308,6 +346,7 @@ export function DatePicker({
           value={value}
           min={min}
           max={max}
+          labels={labels}
           onValueChange={(next) => {
             onValueChange(next);
             sheet.close();

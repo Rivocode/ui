@@ -6,11 +6,16 @@ export {
   type ChartContainerProps,
   type ChartFrame,
 } from "./chart";
-export { ChartDonut, type ChartDonutProps } from "./chart-donut";
+export { ChartDonut, type ChartDonutLabels, type ChartDonutProps } from "./chart-donut";
 export { ChartRadial, type ChartRadialProps } from "./chart-radial";
 export { QRCode, type QRCodeProps } from "./qr-code";
 export { PixCode, type PixCodeLabels, type PixCodeProps } from "./pix-code";
-export { ChartGauge, type ChartGaugeBand, type ChartGaugeProps } from "./chart-gauge";
+export {
+  ChartGauge,
+  type ChartGaugeBand,
+  type ChartGaugeLabels,
+  type ChartGaugeProps,
+} from "./chart-gauge";
 export { ChartHeatmap, type ChartHeatmapLabels, type ChartHeatmapProps } from "./chart-heatmap";
 export { ChartFunnel, type ChartFunnelLabels, type ChartFunnelProps } from "./chart-funnel";
 export { ChartTreemap, type ChartTreemapProps } from "./chart-treemap";

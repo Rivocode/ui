@@ -56,6 +56,20 @@ export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
    * por natureza").
    */
   label?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `name` monta o nome do desenho
+   * sem `label` e sem legenda, a partir dos nomes das fatias. Passe so os que
+   * mudam.
+   */
+  labels?: Partial<ChartDonutLabels>;
+};
+
+export type ChartDonutLabels = {
+  name: (slices: string[]) => string;
+};
+
+const LABELS: ChartDonutLabels = {
+  name: (slices) => `Rosca de ${slices.join(", ")}`,
 };
 
 export function ChartDonut<Slice extends Record<string, unknown>>({
@@ -70,8 +84,10 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   format,
   className,
   label,
+  labels: labelsProp,
   ...rest
 }: ChartDonutProps<Slice>) {
+  const labels = { ...LABELS, ...labelsProp };
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
   const [reading, setReading] = useState(false);
@@ -86,7 +102,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const sliceNames = () =>
     data.map((slice) => config?.[String(slice[nameKey])]?.label ?? String(slice[nameKey]));
 
-  const name = label ?? (legend ? undefined : `Rosca de ${sliceNames().join(", ")}`);
+  const name = label ?? (legend ? undefined : labels.name(sliceNames()));
 
   return (
     <div {...rest} className={cn("w-full", className)}>

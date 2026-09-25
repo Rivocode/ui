@@ -56,8 +56,24 @@ export type ChartGaugeProps = Omit<ComponentProps<"div">, "children"> & {
    * "72 de 100, atencao".
    */
   label?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao
+   * maximo no nome acessivel, e `band` descreve cada faixa na regua que o
+   * leitor de tela ouve. Passe so os que mudam.
+   */
+  labels?: Partial<ChartGaugeLabels>;
   /** Classe por parte: `arc`, `value`, `label`. */
   classNames?: Slots<"arc" | "value" | "label">;
+};
+
+export type ChartGaugeLabels = {
+  value: (value: string, max: string) => string;
+  band: (name: string, from: string, to: string) => string;
+};
+
+const LABELS: ChartGaugeLabels = {
+  value: (value, max) => `${value} de ${max}`,
+  band: (name, from, to) => `${name}: de ${from} a ${to}`,
 };
 
 const TONE_COLOR: Record<ChartGaugeBand["tone"], string> = {
@@ -94,11 +110,13 @@ export function ChartGauge({
   format,
   sweep: askedSweep = 240,
   label,
+  labels: labelsProp,
   classNames,
   className,
   "aria-describedby": describedBy,
   ...props
 }: ChartGaugeProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (number: number) => (write ? write(number) : number.toLocaleString("pt-BR"));
 
@@ -123,7 +141,7 @@ export function ChartGauge({
   const bandsId = useId();
   const written = known ? say(value) : "—";
   const spoken = spokenOf(centerValue) || written;
-  const name = label ?? `${spoken} de ${say(max)}${band ? `, ${band.label}` : ""}`;
+  const name = label ?? `${labels.value(spoken, say(max))}${band ? `, ${band.label}` : ""}`;
 
   const hole = useRef<HTMLDivElement>(null);
   const number = useRef<HTMLSpanElement>(null);
@@ -257,7 +275,7 @@ export function ChartGauge({
           {bands
             .map((item, index) => {
               const begin = index === 0 ? 0 : bands[index - 1]!.until;
-              return `${item.label}: de ${say(begin)} a ${say(item.until)}`;
+              return labels.band(item.label, say(begin), say(item.until));
             })
             .join("; ")}
         </p>

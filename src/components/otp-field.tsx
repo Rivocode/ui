@@ -8,9 +8,24 @@ import { cn } from "../lib/cn";
 export type OTPFieldProps = Omit<ComponentProps<typeof BaseOTPField.Root>, "length"> & {
   /** Quantas casas o codigo tem. */
   length?: number;
+  /**
+   * Os textos da peca, para trocar o idioma: `digit` e o nome de cada casa
+   * depois da primeira, que recebe a posicao contando de 1 e o total. A
+   * primeira leva o nome do campo. Passe so os que mudam.
+   */
+  labels?: Partial<OTPFieldLabels>;
 };
 
-export function OTPField({ className, length = 6, ...props }: OTPFieldProps) {
+export type OTPFieldLabels = {
+  digit: (position: number, length: number) => string;
+};
+
+const LABELS: OTPFieldLabels = {
+  digit: (position, length) => `Dígito ${position} de ${length}`,
+};
+
+export function OTPField({ className, length = 6, labels, ...props }: OTPFieldProps) {
+  const text = { ...LABELS, ...labels };
   return (
     <BaseOTPField.Root
       {...props}
@@ -20,7 +35,7 @@ export function OTPField({ className, length = 6, ...props }: OTPFieldProps) {
       {Array.from({ length }, (_, index) => (
         <BaseOTPField.Input
           key={index}
-          {...(index > 0 ? { "aria-label": `Dígito ${index + 1} de ${length}` } : {})}
+          {...(index > 0 ? { "aria-label": text.digit(index + 1, length) } : {})}
           className={cn(
             "size-11 min-w-8 shrink rounded-md border border-border-strong bg-surface text-center",
             "font-mono text-lg text-fg tabular-nums",

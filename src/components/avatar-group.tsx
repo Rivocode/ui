@@ -14,9 +14,28 @@ export type AvatarGroupProps = ComponentProps<"div"> & {
   max?: number;
   /** O tamanho vale para a fila inteira, inclusive para o "+n". */
   size?: AvatarProps["size"];
+  /**
+   * Os textos da peca, para trocar o idioma: `more` e o que o leitor de tela
+   * ouve no "+n", e recebe quantos ficaram de fora. Passe so os que mudam.
+   */
+  labels?: Partial<AvatarGroupLabels>;
 };
 
-export function AvatarGroup({ className, max, size, children, ...props }: AvatarGroupProps) {
+export type AvatarGroupLabels = {
+  more: (count: number) => string;
+};
+
+const LABELS: AvatarGroupLabels = { more: (count) => `mais ${count}` };
+
+export function AvatarGroup({
+  className,
+  max,
+  size,
+  labels,
+  children,
+  ...props
+}: AvatarGroupProps) {
+  const text = { ...LABELS, ...labels };
   const all = Children.toArray(children).filter(isValidElement) as ReactElement<AvatarProps>[];
   const shown = max ? all.slice(0, max) : all;
   const rest = all.length - shown.length;
@@ -36,7 +55,7 @@ export function AvatarGroup({ className, max, size, children, ...props }: Avatar
         <Avatar
           size={size}
           fallback={`+${rest}`}
-          aria-label={`mais ${rest}`}
+          aria-label={text.more(rest)}
           className="ring-2 ring-bg"
         />
       )}

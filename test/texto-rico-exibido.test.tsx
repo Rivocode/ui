@@ -179,6 +179,16 @@ describe("o bloco de codigo que rola", () => {
     }
   });
 
+  test("o nome do bloco que rola sai de labels.code", () => {
+    const restore = widths(480, 240);
+    try {
+      const { container } = render(<RichTextView value={SAVED} labels={{ code: "Code block" }} />);
+      expect(container.querySelector("pre")!.getAttribute("aria-label")).toBe("Code block");
+    } finally {
+      restore();
+    }
+  });
+
   test("sem estouro, o pre nao ganha parada de tabulacao a toa", () => {
     const restore = widths(240, 240);
     try {

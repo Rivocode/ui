@@ -162,10 +162,11 @@ export {
 } from "./components/popover";
 export { Calendar, type CalendarProps } from "./components/calendar";
 export { CalendarPanel, type CalendarPanelProps } from "./components/calendar-panel";
-export { DatePicker, type DatePickerProps } from "./components/date-picker";
+export { DatePicker, type DatePickerLabels, type DatePickerProps } from "./components/date-picker";
 export {
   DateRangePicker,
   type DateRange,
+  type DateRangePickerLabels,
   type DateRangePickerProps,
   type IsoDateRange,
 } from "./components/date-range-picker";
@@ -367,7 +368,7 @@ export {
   type CookieConsentProps,
 } from "./components/cookie-consent";
 export { Skeleton } from "./components/skeleton";
-export { Kbd, kbdVariants, keyName, type KbdProps } from "./components/kbd";
+export { Kbd, kbdVariants, keyName, type KbdLabels, type KbdProps } from "./components/kbd";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { AspectRatio, type AspectRatioProps } from "./components/aspect-ratio";
 export {
@@ -401,7 +402,7 @@ export {
   type CommandProps,
 } from "./components/command";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
-export { Stat, type StatProps } from "./components/stat";
+export { Stat, type StatLabels, type StatProps } from "./components/stat";
 export {
   DescriptionItem,
   DescriptionList,
@@ -444,7 +445,7 @@ export {
   type NumberFieldLabels,
   type NumberFieldProps,
 } from "./components/number-field";
-export { OTPField, type OTPFieldProps } from "./components/otp-field";
+export { OTPField, type OTPFieldLabels, type OTPFieldProps } from "./components/otp-field";
 export { ContextMenu, ContextMenuTrigger } from "./components/context-menu";
 export { Menubar, MenubarTrigger, type MenubarProps } from "./components/menubar";
 export { Clipboard, type ClipboardProps } from "./components/clipboard";
@@ -487,7 +488,11 @@ export {
   type ColorPickerProps,
   type ColorSwatch,
 } from "./components/color-picker";
-export { AvatarGroup, type AvatarGroupProps } from "./components/avatar-group";
+export {
+  AvatarGroup,
+  type AvatarGroupLabels,
+  type AvatarGroupProps,
+} from "./components/avatar-group";
 export {
   Timeline,
   TimelineItem,
@@ -552,6 +557,7 @@ export {
   ComboboxSeparator,
   ComboboxValue,
   type ComboboxContentProps,
+  type ComboboxInputLabels,
   type ComboboxInputProps,
   type ComboboxProps,
 } from "./components/combobox";
@@ -569,6 +575,7 @@ export {
   WizardFooter,
   type WizardState,
   type Step,
+  type StepsLabels,
   type StepsProps,
 } from "./components/steps";
 export {

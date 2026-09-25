@@ -7,6 +7,7 @@ import { Button } from "../button";
 import { cn } from "../cn";
 import { EmptyState, type EmptyStateProps } from "../empty-state";
 import { useRivo } from "../provider";
+import { chartName } from "../shared/chart-layout";
 import { SETTLED } from "../shared/settled";
 import { useSilentMisuse } from "../silent-misuse";
 import { Skeleton } from "../skeleton";
@@ -113,7 +114,8 @@ export type ChartContainerProps = {
   /**
    * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave do web e das pecas de
-   * consulta daqui.
+   * consulta daqui. `name` monta o nome do desenho sem `label`, a partir dos
+   * rotulos das series do `config`.
    */
   labels?: Partial<ChartContainerLabels>;
 };
@@ -127,6 +129,7 @@ const WAITING = [0.45, 0.7, 0.35, 0.85, 0.6, 0.75];
 
 export type ChartContainerLabels = {
   retry: string;
+  name: (series: string[]) => string;
 };
 
 export function ChartContainer({
@@ -166,7 +169,7 @@ export function ChartContainer({
     ? ({
         accessible: true,
         accessibilityRole: "image",
-        accessibilityLabel: label ?? nameFromConfig(config),
+        accessibilityLabel: label ?? nameFromConfig(config, labels?.name ?? chartName),
       } as const)
     : null;
 
@@ -226,12 +229,12 @@ function StateFrame({ children }: { children: ReactNode }) {
   return <View className="h-full w-full items-center justify-center">{children}</View>;
 }
 
-function nameFromConfig(config: ChartConfig) {
-  const series = Object.values(config)
-    .map((entry) => entry.label)
-    .filter(Boolean);
-
-  return series.length > 0 ? `Gráfico de ${series.join(", ")}` : "Gráfico";
+function nameFromConfig(config: ChartConfig, name: (series: string[]) => string) {
+  return name(
+    Object.values(config)
+      .map((entry) => entry.label)
+      .filter(Boolean),
+  );
 }
 
 const MISSING_DATA =

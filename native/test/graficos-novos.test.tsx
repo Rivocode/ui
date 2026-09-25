@@ -21,6 +21,7 @@ mock.module("react-native-svg", () => {
 });
 
 const { ChartGauge } = await import("../src/chart/chart-gauge");
+const { ChartDonut } = await import("../src/chart/chart-donut");
 const { ChartHeatmap } = await import("../src/chart/chart-heatmap");
 const { ChartFunnel } = await import("../src/chart/chart-funnel");
 const { ChartTreemap } = await import("../src/chart/chart-treemap");
@@ -365,4 +366,39 @@ describe("format aceita o nome do formatador da casa, como no web", () => {
     layout(treemap, 400, 200);
     expect(byRole(treemap, "button")[0]!.props.accessibilityLabel).toStartWith("Serviços: 2,5K");
   });
+});
+
+test("ChartDonut e ChartGauge: a dica da legenda e o nome montado saem de labels", () => {
+  const donut = render(
+    <ChartDonut
+      data={[{ name: "A", value: 1 }]}
+      valueKey="value"
+      nameKey="name"
+      labels={{ hint: "Highlights this slice" }}
+    />,
+  );
+  expect(byLabel(donut, "A: 1")[0]!.props.accessibilityHint).toBe("Highlights this slice");
+
+  const unnamed = render(
+    <ChartDonut
+      data={[{ name: "A", value: 1 }]}
+      valueKey="value"
+      nameKey="name"
+      legend={false}
+      labels={{ name: (slices) => `Donut: ${slices.join(", ")}` }}
+    />,
+  );
+  expect(byLabel(unnamed, "Donut: A 1")).toHaveLength(1);
+
+  const gauge = render(
+    <ChartGauge
+      value={72}
+      bands={[{ until: 100, tone: "success", label: "ok" }]}
+      labels={{
+        value: (value, max) => `${value} of ${max}`,
+        band: (name, from, to) => `${name} from ${from} to ${to}`,
+      }}
+    />,
+  );
+  expect(byLabel(gauge, "72 of 100, ok. ok from 0 to 100")).toHaveLength(1);
 });

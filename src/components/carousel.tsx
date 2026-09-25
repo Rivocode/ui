@@ -37,6 +37,8 @@ export type CarouselLabels = {
   next: string;
   pause: string;
   play: string;
+  roleDescription: string;
+  slideRoleDescription: string;
 };
 
 const LABELS: CarouselLabels = {
@@ -46,6 +48,8 @@ const LABELS: CarouselLabels = {
   next: "Próximo slide",
   pause: "Pausar a rotação",
   play: "Retomar a rotação",
+  roleDescription: "carrossel",
+  slideRoleDescription: "slide",
 };
 
 export type CarouselProps = Omit<ComponentPropsWithoutRef<"section">, "children"> & {
@@ -90,7 +94,13 @@ export type CarouselProps = Omit<ComponentPropsWithoutRef<"section">, "children"
    * depois do ultimo.
    */
   autoplay?: boolean | number;
-  /** Os textos que o leitor de tela ouve, para trocar o idioma ou o termo. */
+  /**
+   * Os textos que o leitor de tela ouve, para trocar o idioma ou o termo:
+   * `slide` e `indicator` recebem a posicao e o total, `previous`, `next`,
+   * `pause` e `play` sao os botoes, e `roleDescription` e
+   * `slideRoleDescription` sao o nome do papel da regiao e de cada slide.
+   * Passe so os que mudam.
+   */
   labels?: Partial<CarouselLabels>;
   classNames?: Slots<
     "viewport" | "slide" | "footer" | "previous" | "next" | "indicators" | "indicator" | "pause"
@@ -278,7 +288,7 @@ export function Carousel({
 
   return (
     <section
-      aria-roledescription="carrossel"
+      aria-roledescription={text.roleDescription}
       aria-label={label}
       {...props}
       data-index={current}
@@ -329,7 +339,7 @@ export function Carousel({
           <div
             key={position}
             role="group"
-            aria-roledescription="slide"
+            aria-roledescription={text.slideRoleDescription}
             aria-label={text.slide(position + 1, total)}
             data-active={position === current || undefined}
             className={cn(

@@ -32,9 +32,23 @@ export type MenuProps = {
    * (a lista de acoes) e `item` (cada acao).
    */
   classNames?: Slots<"trigger" | "content" | "item">;
+  /**
+   * Os textos da peca, para trocar o idioma: `open` e o nome da acao que abre a
+   * folha pelo leitor de tela, e `hint` a dica da area do toque longo, que
+   * recebe o `title`. Passe so os que mudam.
+   */
+  labels?: Partial<MenuLabels>;
 };
 
-const LONG_PRESS_ACTIONS = [{ name: "longpress", label: "Abrir ações" }];
+export type MenuLabels = {
+  open: string;
+  hint: (title: string) => string;
+};
+
+const LABELS: MenuLabels = {
+  open: "Abrir ações",
+  hint: (title) => `Toque e segure para abrir as ações de ${title}`,
+};
 
 export function Menu({
   open,
@@ -44,7 +58,9 @@ export function Menu({
   children,
   className,
   classNames,
+  labels: labelsProp,
 }: MenuProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const sheet = (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>
       <View className={cn("gap-1", className, classNames?.content)}>
@@ -80,8 +96,8 @@ export function Menu({
     <>
       <Pressable
         accessibilityRole="button"
-        accessibilityHint={`Toque e segure para abrir as ações de ${title}`}
-        accessibilityActions={LONG_PRESS_ACTIONS}
+        accessibilityHint={labels.hint(title)}
+        accessibilityActions={[{ name: "longpress", label: labels.open }]}
         onAccessibilityAction={(event: AccessibilityActionEvent) => {
           if (event.nativeEvent.actionName === "longpress") onOpenChange(true);
         }}

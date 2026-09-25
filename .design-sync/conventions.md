@@ -733,6 +733,12 @@ fora de `labels` e CONTEUDO, e continua prop: o `label` que da nome ao campo ou 
 regiao, o `title` e o `errorTitle` de um aviso, o `centerLabel` de um grafico, o
 `deltaLabel` de um `Stat`, o `thumbLabel` de um `Slider`, o `placeholder`.
 
+Data tem duas metades. O nome do mes, do dia da semana e a hora saem do
+`locale` (tag BCP 47), no `EventCalendar` e no `Gantt`; as palavras fixas em
+volta - "Hoje", "+2 mais", "Dia inteiro", "12 a 18" - sao `labels`. No nativo
+nao ha `locale`: o `Calendar`, o `DatePicker` e o `DateRangePicker` trocam o
+mes escrito e as iniciais da semana por `labels.caption` e `labels.weekdays`.
+
 ### As duas formas de aba
 
 `TabList` tem `variant`. O risco embaixo, que e o padrao, diz "esta parte da

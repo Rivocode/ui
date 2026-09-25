@@ -331,6 +331,12 @@
         "note": "Forca a borda de erro do campo fechado, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
+        "name": "labels",
+        "type": "Partial<AutocompleteLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `hint` e a dica do campo fechado, `count` o que o leitor de tela ouve com a quantidade de sugestoes e `done` o botao que fecha a folha."
+      },
+      {
         "name": "placeholder",
         "type": "string",
         "required": false
@@ -499,6 +505,12 @@
         "type": "Partial<Record<CalendarPart, string>>",
         "required": false,
         "note": "Classe por parte, com os nomes do `DayPicker` do web: `root`, `nav` (a fileira das setas), `button_previous`, `button_next`, `caption_label` (o mes escrito), `weekdays` e `weekday`, `month_grid` (a grade dos dias), `day` (a caixa de cada dia) e `day_button` (o toque dele)."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<CalendarLabels>",
+        "required": false,
+        "note": "Os textos do calendario, para trocar o idioma: `previous` e `next` sao os nomes das duas setas, `caption` escreve o mes no alto (recebe o ano e o mes contando de 0) e `weekdays` sao as sete iniciais a partir do domingo."
       },
       {
         "name": "max",
@@ -821,6 +833,12 @@
         "note": "O que o leitor de tela ouve no lugar do desenho."
       },
       {
+        "name": "labels",
+        "type": "Partial<ChartDonutLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `name` monta o nome do desenho sem `label` e sem legenda, e recebe cada fatia ja escrita com o valor; `hint` e a dica de cada linha da legenda."
+      },
+      {
         "name": "legend",
         "type": "boolean",
         "required": false,
@@ -953,6 +971,12 @@
         "type": "string",
         "required": false,
         "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ChartGaugeLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao maximo no nome, e `band` descreve cada faixa na regua que vem junto."
       },
       {
         "name": "max",
@@ -1450,13 +1474,13 @@
         "name": "label",
         "type": "string",
         "required": false,
-        "note": "O texto acima das amostras."
+        "note": "O texto acima das amostras, e o nome delas no leitor de tela."
       },
       {
         "name": "labels",
         "type": "Partial<ColorPickerLabels>",
         "required": false,
-        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, e `hex` o do campo de texto."
+        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o de cada amostra em texto puro, que recebe o hexadecimal dela."
       },
       {
         "name": "swatches",
@@ -1512,6 +1536,11 @@
         "type": "boolean",
         "required": false,
         "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<PickerLabels>",
+        "required": false
       },
       {
         "name": "multiple",
@@ -1799,6 +1828,12 @@
         "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
       },
       {
+        "name": "labels",
+        "type": "Partial<CalendarLabels>",
+        "required": false,
+        "note": "Os textos do calendario da folha, os mesmos do `labels` do `Calendar`."
+      },
+      {
         "name": "max",
         "type": "string",
         "required": false
@@ -1845,6 +1880,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<DateRangePickerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `clear` e `apply` sao os dois botoes da folha, `pickFirst` o aviso antes do primeiro toque e `pickLast` o de depois dele, que recebe o primeiro dia ja escrito."
       },
       {
         "name": "max",
@@ -2942,6 +2983,12 @@
         "type": "Partial<Record<\"content\" | \"item\" | \"trigger\", string>>",
         "required": false,
         "note": "Classe por parte, com os nomes das pecas do web: `trigger` (a area do toque longo, que envolve os filhos, entao herde o layout deles), `content` (a lista de acoes) e `item` (cada acao)."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<MenuLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `open` e o nome da acao que abre a folha pelo leitor de tela, e `hint` a dica da area do toque longo, que recebe o `title`."
       }
     ]
   },
@@ -3920,7 +3967,7 @@
         "name": "labels",
         "type": "Partial<RatingLabels>",
         "required": false,
-        "note": "Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media."
+        "note": "Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media, e `increment` e `decrement`, os nomes das duas acoes de ajuste."
       },
       {
         "name": "max",
@@ -3967,6 +4014,12 @@
         "type": "\"day\" | \"hour\" | \"minute\" | \"month\" | \"week\" | \"year\"",
         "required": false,
         "note": "A partir de qual unidade parar de contar e mostrar a data."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<RelativeTimeLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `now` e o que sai no primeiro minuto, e `past` e `future` escrevem a distancia, com o numero e a unidade (`minute`, `hour`, `day`, `week`, `month`, `year`)."
       },
       {
         "name": "now",
@@ -4133,6 +4186,11 @@
         "type": "boolean",
         "required": false,
         "note": "Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<PickerLabels>",
+        "required": false
       },
       {
         "name": "multiple",
@@ -4332,6 +4390,12 @@
         "type": "Format",
         "required": false,
         "note": "Como o numero e escrito: nome de formatador da casa ou funcao propria, o mesmo vocabulario do web."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<SliderLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `increment` e `decrement` sao os nomes das duas acoes de ajuste que o leitor de tela oferece."
       },
       {
         "name": "max",
@@ -4658,6 +4722,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<StepsLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `position` e a contagem \"Passo 2 de 5\", que recebe o passo atual contando de 1 e o total."
       }
     ]
   },
@@ -5263,6 +5333,12 @@
         "type": "Partial<Record<\"cell\" | \"track\", string>>",
         "required": false,
         "note": "Classe por parte: `track` (a faixa que recebe o arrasto) e `cell` (cada periodo)."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TrackerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `next` e `previous` sao os nomes das duas acoes de ajuste que andam de periodo."
       }
     ]
   },
@@ -5355,6 +5431,12 @@
         "note": "O que dizer quando um nivel nao tem nada dentro."
       },
       {
+        "name": "labels",
+        "type": "Partial<TreeLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `back` e o nome do botao que sobe um nivel, e recebe o nome do nivel de cima; `selectAll` o da caixa que marca um galho inteiro; `branch` o que o leitor de tela ouve num galho, com o total de folhas e quantas estao escolhidas; e `enter` a dica dele."
+      },
+      {
         "name": "multiple",
         "type": "boolean",
         "required": false,
@@ -5397,6 +5479,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TreeSelectLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo com mais de uma escolha, `empty` o rodape da folha sem escolha nenhuma e `apply` o botao que confirma."
       },
       {
         "name": "multiple",

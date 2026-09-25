@@ -8,8 +8,6 @@ export const kbdVariants = cva(
     "inline-flex shrink-0 items-center justify-center gap-0.5",
     "rounded-sm border border-border bg-surface-raised",
     "font-mono font-rc-medium text-fg-muted",
-    // A sombra de baixo e o que faz parecer tecla e nao codigo em linha. Sem
-    // ela, `Ctrl` num paragrafo vira o mesmo cinza de um nome de variavel.
     "shadow-[inset_0_-1px_0_var(--rc-border)]",
   ),
   {
@@ -23,7 +21,6 @@ export const kbdVariants = cva(
   },
 );
 
-/** O que o Mac escreve com simbolo e o resto do mundo escreve por extenso. */
 const MAC: Record<string, string> = {
   mod: "⌘",
   cmd: "⌘",
@@ -60,15 +57,6 @@ const OTHERS: Record<string, string> = {
   right: "→",
 };
 
-/**
- * Como o leitor de tela pronuncia cada tecla.
- *
- * Nem o simbolo desenhado nem o token servem. `⌘` sai como o nome Unicode dele
- * - "place of interest sign" -, e o token cru saia pior ainda: o rotulo do
- * atalho era "mod mais k", e `mod` nao e o nome de tecla nenhuma. Quem ouve
- * precisa da tecla que existe no teclado dele, entao a tabela segue a mesma
- * bifurcacao do desenho.
- */
 const SPOKEN_MAC: Record<string, string> = {
   mod: "Command",
   cmd: "Command",
@@ -93,33 +81,42 @@ const SPOKEN: Record<string, string> = {
   backspace: "Backspace",
   esc: "Esc",
   tab: "Tab",
+};
+
+export type KbdLabels = {
+  plus: string;
+  up: string;
+  down: string;
+  left: string;
+  right: string;
+};
+
+const LABELS: KbdLabels = {
+  plus: "mais",
   up: "seta para cima",
   down: "seta para baixo",
   left: "seta para a esquerda",
   right: "seta para a direita",
 };
 
-/**
- * Verdadeiro num Mac.
- *
- * Le a plataforma uma vez, no modulo, e nao por render: ela nao muda no meio
- * da sessao. No servidor devolve falso, que e a escrita mais longa, entao a
- * troca na hidratacao encolhe a tecla em vez de estourar a linha.
- */
+const ARROWS = ["up", "down", "left", "right"] as const;
+
+const isArrow = (token: string): token is (typeof ARROWS)[number] =>
+  (ARROWS as readonly string[]).includes(token);
+
 const NO_MAC =
   typeof navigator !== "undefined" &&
   /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
-/** Traduz o nome de uma tecla para a escrita da plataforma. */
 export function keyName(key: string) {
   const token = key.toLowerCase();
   const table = NO_MAC ? MAC : OTHERS;
   return table[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 
-/** O mesmo nome, dito em voz alta. */
-function spokenName(key: string) {
+function spokenName(key: string, labels: KbdLabels) {
   const token = key.toLowerCase();
+  if (isArrow(token)) return labels[token];
   const platform = NO_MAC ? SPOKEN_MAC : SPOKEN_OTHERS;
   return platform[token] ?? SPOKEN[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
@@ -131,35 +128,23 @@ export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
      * `⌘` no Mac e `Ctrl` no resto.
      */
     keys?: string;
+    /**
+     * O que o leitor de tela ouve no atalho de `keys`, para trocar o idioma:
+     * `plus` e a palavra entre as teclas, e `up`, `down`, `left` e `right` os
+     * nomes das setas. Passe so os que mudam.
+     */
+    labels?: Partial<KbdLabels>;
   };
 
-/**
- * Uma tecla, ou um atalho inteiro.
- *
- * ```tsx
- * <Kbd keys="mod+k" />
- * <Kbd>Esc</Kbd>
- * ```
- *
- * O `mod` existe porque a alternativa e cada tela decidir sozinha se escreve
- * Ctrl ou Cmd, e metade delas escreve Ctrl para todo mundo. Quem usa Mac ve o
- * simbolo errado e conclui que o atalho nao existe.
- */
-export function Kbd({ className, size, keys, children, ...props }: KbdProps) {
+export function Kbd({ className, size, keys, labels: labelsProp, children, ...props }: KbdProps) {
   if (keys) {
+    const labels = { ...LABELS, ...labelsProp };
     const parts = keys.split("+").map((part) => part.trim());
 
     return (
-      /*
-       * `role="img"`: um `span` cru e generico, e o ARIA proibe dar nome a
-       * generico - o rotulo era simplesmente descartado por parte dos leitores,
-       * e o atalho saia mudo, ja que cada tecla esta escondida. A auditoria de
-       * navegacao agentica do Lighthouse 13 reprovava a pagina por isto.
-       * `img` e o que o grupo e: um desenho unico, que se le de uma vez.
-       */
       <span
         role="img"
-        aria-label={parts.map(spokenName).join(" mais ")}
+        aria-label={parts.map((part) => spokenName(part, labels)).join(` ${labels.plus} `)}
         className="inline-flex items-center gap-1"
       >
         {parts.map((part, index) => (

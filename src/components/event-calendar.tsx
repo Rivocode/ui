@@ -3,6 +3,8 @@
 import { useDirection } from "@base-ui/react/direction-provider";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import {
+  createContext,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -76,16 +78,7 @@ export type CalendarEventInfo = {
   allDay: boolean;
 };
 
-const LOCALE = "pt-BR";
-
 const ALL_VIEWS: EventCalendarView[] = ["agenda", "day", "week", "month"];
-
-const VIEW_LABEL: Record<EventCalendarView, string> = {
-  agenda: "Agenda",
-  day: "Dia",
-  week: "Semana",
-  month: "Mês",
-};
 
 const TONE: Record<CalendarEventTone, string> = {
   neutral: "border-border bg-surface-raised text-fg-muted",
@@ -111,68 +104,121 @@ function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-function clock(date: Date): string {
-  return date.toLocaleTimeString(LOCALE, { hour: "2-digit", minute: "2-digit" });
-}
+export type EventCalendarLabels = {
+  retry: string;
+  loading: string;
+  loaded: string;
+  agenda: string;
+  day: string;
+  week: string;
+  month: string;
+  views: string;
+  previous: string;
+  next: string;
+  today: string;
+  pickDate: string;
+  allDay: string;
+  events: (count: number) => string;
+  weekPeriod: (first: Date, last: Date, locale: string) => string;
+  position: (position: number, total: number) => string;
+  time: (start: string, end: string) => string;
+  continuesBefore: string;
+  continuesAfter: string;
+  more: (count: number) => string;
+  moreIn: (count: number, day: string) => string;
+};
 
-function weekdayName(day: Date, style: "short" | "long"): string {
-  return capitalize(day.toLocaleDateString(LOCALE, { weekday: style })).replace(/\.$/, "");
-}
-
-function dayTitle(day: Date): string {
-  return capitalize(
-    day.toLocaleDateString(LOCALE, { weekday: "long", day: "numeric", month: "long" }),
-  );
-}
-
-function monthTitle(date: Date): string {
-  return capitalize(date.toLocaleDateString(LOCALE, { month: "long", year: "numeric" }));
-}
-
-function countLabel(count: number): string {
-  return count === 1 ? "1 compromisso" : `${count} compromissos`;
-}
-
-function periodTitle(view: EventCalendarView, date: Date, days: Date[]): string {
-  if (view === "day") {
-    return capitalize(
-      date.toLocaleDateString(LOCALE, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }),
-    );
-  }
-
-  if (view === "week") {
-    const first = days[0] ?? date;
-    const last = days[days.length - 1] ?? date;
-    const month = (day: Date) => day.toLocaleDateString(LOCALE, { month: "long" });
-
+const LABELS: Omit<EventCalendarLabels, "retry" | "loading" | "loaded"> = {
+  agenda: "Agenda",
+  day: "Dia",
+  week: "Semana",
+  month: "Mês",
+  views: "Vista do calendário",
+  previous: "Período anterior",
+  next: "Próximo período",
+  today: "Hoje",
+  pickDate: "Ir para a data",
+  allDay: "Dia inteiro",
+  events: (count) => (count === 1 ? "1 compromisso" : `${count} compromissos`),
+  weekPeriod: (first, last, locale) => {
+    const month = (day: Date) => day.toLocaleDateString(locale, { month: "long" });
     if (first.getMonth() === last.getMonth()) {
       return `${first.getDate()} a ${last.getDate()} de ${month(last)} de ${last.getFullYear()}`;
     }
     return `${first.getDate()} de ${month(first)} a ${last.getDate()} de ${month(last)} de ${last.getFullYear()}`;
-  }
+  },
+  position: (position, total) => `${position} de ${total}`,
+  time: (start, end) => `das ${start} às ${end}`,
+  continuesBefore: "continua do dia anterior",
+  continuesAfter: "continua no dia seguinte",
+  more: (count) => `+${count} mais`,
+  moreIn: (count, day) => `Mais ${count} em ${day}`,
+};
 
-  return monthTitle(date);
+type Words = Omit<EventCalendarLabels, "retry" | "loading" | "loaded"> & {
+  locale: string;
+  clock: (date: Date) => string;
+  weekdayName: (day: Date, style: "short" | "long") => string;
+  dayTitle: (day: Date) => string;
+  periodTitle: (view: EventCalendarView, date: Date, days: Date[]) => string;
+  dayGroup: (day: Date, today: boolean, count: number) => string;
+};
+
+function wordsOf(locale: string, labels: Partial<EventCalendarLabels> | undefined): Words {
+  const text = { ...LABELS, ...labels };
+  const clock = (date: Date) =>
+    date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  const dayTitle = (day: Date) =>
+    capitalize(day.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" }));
+
+  return {
+    ...text,
+    locale,
+    clock,
+    dayTitle,
+    weekdayName: (day, style) =>
+      capitalize(day.toLocaleDateString(locale, { weekday: style })).replace(/\.$/, ""),
+    periodTitle: (view, date, days) => {
+      if (view === "day") {
+        return capitalize(
+          date.toLocaleDateString(locale, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }),
+        );
+      }
+      if (view === "week")
+        return text.weekPeriod(days[0] ?? date, days[days.length - 1] ?? date, locale);
+      return capitalize(date.toLocaleDateString(locale, { month: "long", year: "numeric" }));
+    },
+    dayGroup: (day, today, count) =>
+      `${dayTitle(day)}${today ? `, ${text.today.toLocaleLowerCase(locale)}` : ""}, ${text.events(count)}`,
+  };
 }
+
+const WordsContext = createContext<Words>(wordsOf("pt-BR", undefined));
 
 function toneOf(event: CalendarEvent): CalendarEventTone {
   return event.tone ?? "neutral";
 }
 
 function spokenEvent(
+  words: Words,
   segment: EventSegment<CalendarEvent>,
   allDay: boolean,
   position: string,
 ): string {
   const parts = [position, segment.event.title];
 
-  parts.push(allDay ? "dia inteiro" : `das ${clock(segment.start)} às ${clock(segment.end)}`);
-  if (segment.continuesBefore) parts.push("continua do dia anterior");
-  if (segment.continuesAfter) parts.push("continua no dia seguinte");
+  parts.push(
+    allDay
+      ? words.allDay.toLocaleLowerCase(words.locale)
+      : words.time(words.clock(segment.start), words.clock(segment.end)),
+  );
+  if (segment.continuesBefore) parts.push(words.continuesBefore);
+  if (segment.continuesAfter) parts.push(words.continuesAfter);
 
   return parts.join(", ");
 }
@@ -234,6 +280,7 @@ function EventItem({
   keyPrefix = "",
   roving = true,
 }: EventItemProps) {
+  const words = use(WordsContext);
   const tone = toneOf(segment.event);
   const info: CalendarEventInfo = {
     view,
@@ -245,7 +292,7 @@ function EventItem({
     allDay,
   };
 
-  const time = allDay ? "Dia inteiro" : clock(segment.start);
+  const time = allDay ? words.allDay : words.clock(segment.start);
 
   const body = renderEvent ? (
     renderEvent(segment.event, info)
@@ -280,7 +327,7 @@ function EventItem({
         data-rc-tone={tone}
         role={onSelect ? "button" : undefined}
         tabIndex={roving && !active ? -1 : 0}
-        aria-label={spokenEvent(segment, allDay, `${position} de ${total}`)}
+        aria-label={spokenEvent(words, segment, allDay, words.position(position, total))}
         onFocus={() => onFocused(segment.key)}
         onKeyDown={(keyboard) => {
           if ((keyboard.key === "Enter" || keyboard.key === " ") && onSelect) {
@@ -357,13 +404,14 @@ function OverflowChip({
   style,
   children,
 }: OverflowChipProps) {
+  const words = use(WordsContext);
   const trigger = (
     <button
       type="button"
       data-rc-event-key={chipKey}
       data-rc-overflow=""
       tabIndex={active ? 0 : -1}
-      aria-label={`Mais ${count} em ${dayTitle(day)}`}
+      aria-label={words.moreIn(count, words.dayTitle(day))}
       onFocus={() => onFocused(chipKey)}
       onKeyDown={(keyboard) => {
         if (keyboard.key === "Enter" || keyboard.key === " ") return;
@@ -378,7 +426,7 @@ function OverflowChip({
         className,
       )}
     >
-      {`+${count} mais`}
+      {words.more(count)}
     </button>
   );
 
@@ -388,7 +436,7 @@ function OverflowChip({
         open={open}
         onOpenChange={onOpenChange}
         trigger={trigger}
-        title={dayTitle(day)}
+        title={words.dayTitle(day)}
         align="start"
         className="w-[min(20rem,calc(100vw-2rem))] p-0"
       >
@@ -475,11 +523,23 @@ export type EventCalendarProps = Omit<
   /** O nome do calendario para o leitor de tela. */
   label?: string;
   /**
+   * O idioma das datas, das horas e dos nomes de dia e de mes, como tag BCP 47:
+   * `"en-US"`, `"es"`. As palavras fixas da peca nao vem daqui, e sim de
+   * `labels`.
+   */
+  locale?: string;
+  /**
    * Os textos da peca, para trocar o idioma: `retry` e o botao que executa o
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
-   * resolvem os quatro finais.
-   * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
-   * sai e quando ela volta.
+   * resolvem os quatro finais. `loading` e `loaded` sao o que o leitor de tela
+   * ouve quando a consulta sai e quando ela volta. `agenda`, `day`, `week` e
+   * `month` nomeiam as vistas, e `day` tambem a calha da faixa de dia inteiro;
+   * `views` e o nome do seletor delas. `previous`, `next`, `today` e
+   * `pickDate` sao a barra; `weekPeriod` escreve o titulo da semana e recebe o
+   * `locale`. `allDay`, `time`, `continuesBefore`, `continuesAfter` e
+   * `position` montam o que o leitor de tela ouve em cada compromisso,
+   * `events` a contagem de cada dia, e `more` e `moreIn` o "+2 mais" de quando
+   * nao cabe. Passe so os que mudam.
    */
   labels?: Partial<EventCalendarLabels>;
   /**
@@ -489,12 +549,6 @@ export type EventCalendarProps = Omit<
   classNames?: Slots<
     "toolbar" | "body" | "header" | "gutter" | "column" | "event" | "band" | "cell" | "section"
   >;
-};
-
-export type EventCalendarLabels = {
-  retry: string;
-  loading: string;
-  loaded: string;
 };
 
 export function EventCalendar({
@@ -524,12 +578,14 @@ export function EventCalendar({
   maxLanes = 3,
   maxHeight = 560,
   label,
+  locale = "pt-BR",
   labels,
   className,
   classNames,
   ...props
 }: EventCalendarProps) {
   const retryLabel = labels?.retry ?? "Tentar de novo";
+  const words = useMemo(() => wordsOf(locale, labels), [locale, labels]);
   const rtl = useDirection() === "rtl";
   const isMobile = useMobile();
   const root = useRef<HTMLDivElement>(null);
@@ -847,7 +903,7 @@ export function EventCalendar({
 
   const today = startOfDay(now);
   const total = shown.length;
-  const announcement = `${periodTitle(view, date, days)}, ${countLabel(total)}`;
+  const announcement = `${words.periodTitle(view, date, days)}, ${words.events(total)}`;
 
   function agendaList(items: EventSegment<CalendarEvent>[], shapeKey: string) {
     return (
@@ -882,7 +938,7 @@ export function EventCalendar({
         role="group"
         data-rc-day={dayIndex}
         aria-current={isSameDay(day, today) ? "date" : undefined}
-        aria-label={`${dayTitle(day)}${isSameDay(day, today) ? ", hoje" : ""}, ${countLabel(items.length)}`}
+        aria-label={words.dayGroup(day, isSameDay(day, today), items.length)}
         className={cn("border-b border-border last:border-b-0", classNames?.section)}
       >
         <p
@@ -893,7 +949,7 @@ export function EventCalendar({
             isSameDay(day, today) && "text-accent-text",
           )}
         >
-          {dayTitle(day)}
+          {words.dayTitle(day)}
         </p>
         {agendaList(items, "")}
       </div>
@@ -909,7 +965,7 @@ export function EventCalendar({
       )}
     >
       <span className="truncate text-xs text-fg-subtle">
-        {weekdayName(day, short ? "short" : "long")}
+        {words.weekdayName(day, short ? "short" : "long")}
       </span>
       <span
         className={cn(
@@ -996,7 +1052,7 @@ export function EventCalendar({
                 key={day.toISOString()}
                 className="min-w-0 flex-1 truncate px-1 py-1.5 text-center text-xs text-fg-subtle"
               >
-                {weekdayName(day, "short")}
+                {words.weekdayName(day, "short")}
               </span>
             ))}
           </div>
@@ -1024,7 +1080,7 @@ export function EventCalendar({
                     role="group"
                     data-rc-day={dayIndex}
                     aria-current={isSameDay(day, today) ? "date" : undefined}
-                    aria-label={`${dayTitle(day)}${isSameDay(day, today) ? ", hoje" : ""}, ${countLabel(all)}`}
+                    aria-label={words.dayGroup(day, isSameDay(day, today), all)}
                     onClick={() => pickDay(day)}
                     className={cn(
                       "relative min-w-0 flex-1 border-s border-border first:border-s-0",
@@ -1130,11 +1186,11 @@ export function EventCalendar({
                   classNames?.gutter,
                 )}
               >
-                Dia
+                {words.day}
               </span>
               <div
                 role="group"
-                aria-label="Dia inteiro"
+                aria-label={words.allDay}
                 className="relative min-w-0 flex-1 py-1"
                 style={{
                   height: (Math.max(model.band.lanes, 1) + (bandSpill > 0 ? 1 : 0)) * 22 + 8,
@@ -1198,7 +1254,7 @@ export function EventCalendar({
               role="group"
               data-rc-day={column.dayIndex}
               aria-current={isSameDay(column.day, today) ? "date" : undefined}
-              aria-label={`${dayTitle(column.day)}${isSameDay(column.day, today) ? ", hoje" : ""}, ${countLabel(column.count)}`}
+              aria-label={words.dayGroup(column.day, isSameDay(column.day, today), column.count)}
               onClick={(pointer) => {
                 const box = pointer.currentTarget.getBoundingClientRect();
                 pickSlot(
@@ -1308,142 +1364,139 @@ export function EventCalendar({
   };
 
   return (
-    <div
-      {...props}
-      ref={root}
-      data-rc-view={view}
-      className={cn("flex w-full flex-col gap-3 font-sans text-fg", className)}
-    >
+    <WordsContext value={words}>
       <div
-        data-rc-toolbar=""
-        className={cn("flex flex-wrap items-center gap-2", classNames?.toolbar)}
+        {...props}
+        ref={root}
+        data-rc-view={view}
+        className={cn("flex w-full flex-col gap-3 font-sans text-fg", className)}
       >
-        <IconButton
-          ref={toolbar}
-          variant="secondary"
-          size="sm"
-          label="Período anterior"
-          onClick={() => shift(-1)}
-        >
-          {rtl ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-        </IconButton>
-        <IconButton
-          variant="secondary"
-          size="sm"
-          label="Próximo período"
-          onClick={() => shift(1)}
-        >
-          {rtl ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-        </IconButton>
-        <Button variant="secondary" size="sm" onClick={() => changeDate(new Date())}>
-          Hoje
-        </Button>
-
-        <CalendarPanel
-          open={pickerOpen}
-          onOpenChange={setPickerOpen}
-          title="Ir para a data"
-          trigger={
-            <button
-              type="button"
-              className={cn(
-                "inline-flex h-[var(--rc-control-sm)] items-center gap-2 rounded-md px-2",
-                "text-base font-rc-medium text-fg",
-                "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
-                "hover:bg-accent-subtle",
-                "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              )}
-            >
-              <CalendarDays size={16} aria-hidden="true" className="text-fg-muted" />
-              {periodTitle(view, date, days)}
-            </button>
-          }
-        >
-          <Calendar
-            value={date}
-            onValueChange={(picked) => {
-              changeDate(picked);
-              setPickerOpen(false);
-            }}
-            autoFocus
-          />
-        </CalendarPanel>
-
-        <div className="flex-1" />
-
-        {offered.length > 1 && (
-          <ToggleGroup
-            value={[view]}
-            onValueChange={(next) => {
-              const picked = next[0] as EventCalendarView | undefined;
-              if (picked) changeView(picked);
-            }}
-            aria-label="Vista do calendário"
-          >
-            {offered.map((option) => (
-              <Toggle key={option} value={option}>
-                {VIEW_LABEL[option]}
-              </Toggle>
-            ))}
-          </ToggleGroup>
-        )}
-      </div>
-
-      <LoadingAnnouncement loading={loading} labels={labels} />
-      <div role="status" aria-live="polite" className="sr-only">
-        {loading ? "" : announcement}
-      </div>
-
-      {isError ? (
-        <Alert tone="danger">
-          <AlertTitle>{errorTitle}</AlertTitle>
-          <AlertDescription>{errorMessage}</AlertDescription>
-          {onRetry && (
-            <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
-              {retryLabel}
-            </Button>
-          )}
-        </Alert>
-      ) : (
         <div
-          role="group"
-          aria-label={label}
-          tabIndex={entries.length === 0 ? 0 : undefined}
-          className={cn(
-            "relative overflow-hidden rounded-md border border-border-strong bg-surface",
-            "outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            classNames?.body,
-          )}
+          data-rc-toolbar=""
+          className={cn("flex flex-wrap items-center gap-2", classNames?.toolbar)}
         >
-          {body()}
+          <IconButton
+            ref={toolbar}
+            variant="secondary"
+            size="sm"
+            label={words.previous}
+            onClick={() => shift(-1)}
+          >
+            {rtl ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          </IconButton>
+          <IconButton variant="secondary" size="sm" label={words.next} onClick={() => shift(1)}>
+            {rtl ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          </IconButton>
+          <Button variant="secondary" size="sm" onClick={() => changeDate(new Date())}>
+            {words.today}
+          </Button>
 
-          {loading && model.kind !== "agenda" && (
-            <div
-              aria-hidden="true"
-              className={cn(
-                "pointer-events-none absolute inset-x-0 bottom-0 top-14",
-                "flex flex-col gap-3 p-3",
-              )}
+          <CalendarPanel
+            open={pickerOpen}
+            onOpenChange={setPickerOpen}
+            title={words.pickDate}
+            trigger={
+              <button
+                type="button"
+                className={cn(
+                  "inline-flex h-[var(--rc-control-sm)] items-center gap-2 rounded-md px-2",
+                  "text-base font-rc-medium text-fg",
+                  "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
+                  "hover:bg-accent-subtle",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                )}
+              >
+                <CalendarDays size={16} aria-hidden="true" className="text-fg-muted" />
+                {words.periodTitle(view, date, days)}
+              </button>
+            }
+          >
+            <Calendar
+              value={date}
+              onValueChange={(picked) => {
+                changeDate(picked);
+                setPickerOpen(false);
+              }}
+              autoFocus
+            />
+          </CalendarPanel>
+
+          <div className="flex-1" />
+
+          {offered.length > 1 && (
+            <ToggleGroup
+              value={[view]}
+              onValueChange={(next) => {
+                const picked = next[0] as EventCalendarView | undefined;
+                if (picked) changeView(picked);
+              }}
+              aria-label={words.views}
             >
-              <Skeleton className="h-14 w-1/3" />
-              <Skeleton className="h-20 w-1/2 self-end" />
-              <Skeleton className="h-10 w-2/5" />
-            </div>
-          )}
-
-          {!loading && model.kind !== "agenda" && shown.length === 0 && empty && (
-            <div className="pointer-events-none absolute inset-0 z-[var(--rc-z-sticky)] flex items-center justify-center p-4">
-              <EmptyState
-                icon={empty.icon}
-                title={empty.title}
-                description={empty.description}
-                action={empty.action}
-                className="pointer-events-auto max-w-sm rounded-lg border border-border bg-surface px-6 py-8 shadow-2"
-              />
-            </div>
+              {offered.map((option) => (
+                <Toggle key={option} value={option}>
+                  {words[option]}
+                </Toggle>
+              ))}
+            </ToggleGroup>
           )}
         </div>
-      )}
-    </div>
+
+        <LoadingAnnouncement loading={loading} labels={labels} />
+        <div role="status" aria-live="polite" className="sr-only">
+          {loading ? "" : announcement}
+        </div>
+
+        {isError ? (
+          <Alert tone="danger">
+            <AlertTitle>{errorTitle}</AlertTitle>
+            <AlertDescription>{errorMessage}</AlertDescription>
+            {onRetry && (
+              <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+                {retryLabel}
+              </Button>
+            )}
+          </Alert>
+        ) : (
+          <div
+            role="group"
+            aria-label={label}
+            tabIndex={entries.length === 0 ? 0 : undefined}
+            className={cn(
+              "relative overflow-hidden rounded-md border border-border-strong bg-surface",
+              "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              classNames?.body,
+            )}
+          >
+            {body()}
+
+            {loading && model.kind !== "agenda" && (
+              <div
+                aria-hidden="true"
+                className={cn(
+                  "pointer-events-none absolute inset-x-0 bottom-0 top-14",
+                  "flex flex-col gap-3 p-3",
+                )}
+              >
+                <Skeleton className="h-14 w-1/3" />
+                <Skeleton className="h-20 w-1/2 self-end" />
+                <Skeleton className="h-10 w-2/5" />
+              </div>
+            )}
+
+            {!loading && model.kind !== "agenda" && shown.length === 0 && empty && (
+              <div className="pointer-events-none absolute inset-0 z-[var(--rc-z-sticky)] flex items-center justify-center p-4">
+                <EmptyState
+                  icon={empty.icon}
+                  title={empty.title}
+                  description={empty.description}
+                  action={empty.action}
+                  className="pointer-events-auto max-w-sm rounded-lg border border-border bg-surface px-6 py-8 shadow-2"
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </WordsContext>
   );
 }

@@ -38,6 +38,34 @@ export type TreeProps = {
   /** O que dizer quando um nivel nao tem nada dentro. */
   emptyMessage?: string;
   className?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `back` e o nome do botao que
+   * sobe um nivel, e recebe o nome do nivel de cima; `selectAll` o da caixa
+   * que marca um galho inteiro; `branch` o que o leitor de tela ouve num
+   * galho, com o total de folhas e quantas estao escolhidas; e `enter` a dica
+   * dele. Passe so os que mudam.
+   */
+  labels?: Partial<TreeLabels>;
+};
+
+export type TreeLabels = {
+  back: (name: string) => string;
+  selectAll: (name: string) => string;
+  branch: (name: string, total: number, chosen: number) => string;
+  enter: string;
+};
+
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
+
+const LABELS: TreeLabels = {
+  back: (name) => `Voltar para ${name}`,
+  selectAll: (name) => `Marcar tudo em ${name}`,
+  branch: (name, total, chosen) => {
+    const parts = [name, plural(total, "item", "itens")];
+    if (chosen > 0) parts.push(plural(chosen, "escolhido", "escolhidos"));
+    return parts.join(", ");
+  },
+  enter: "Abre o nível de dentro",
 };
 
 export function leavesOf(node: TreeNode): string[] {
@@ -69,14 +97,6 @@ function Chevron({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
-
-function describeBranch(node: TreeNode, total: number, chosen: number, multiple?: boolean) {
-  const parts = [node.label, plural(total, "item", "itens")];
-  if (multiple && chosen > 0) parts.push(plural(chosen, "escolhido", "escolhidos"));
-  return parts.join(", ");
-}
-
 export function Tree({
   items,
   value,
@@ -85,7 +105,9 @@ export function Tree({
   label,
   emptyMessage = "Nada dentro deste nível.",
   className,
+  labels: labelsProp,
 }: TreeProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const [pathIds, setPathIds] = useState<string[]>([]);
 
   const trail = trailOf(items, pathIds);
@@ -120,7 +142,7 @@ export function Tree({
       {trail.length > 0 && (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={`Voltar para ${backName}`}
+          accessibilityLabel={labels.back(backName)}
           onPress={back}
           className="min-h-12 flex-row items-center gap-2.5 rounded-md px-3 active:bg-selected"
         >
@@ -149,7 +171,7 @@ export function Tree({
                 <View key={node.id} className="flex-row items-center gap-2.5">
                   {multiple && (
                     <Checkbox
-                      label={`Marcar tudo em ${node.label}`}
+                      label={labels.selectAll(node.label)}
                       hitSlop={{ top: 12, bottom: 12, left: 12, right: 6 }}
                       checked={full}
                       indeterminate={mixed}
@@ -160,8 +182,12 @@ export function Tree({
                   )}
                   <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={describeBranch(node, leaves.length, chosen, multiple)}
-                    accessibilityHint="Abre o nível de dentro"
+                    accessibilityLabel={labels.branch(
+                      node.label,
+                      leaves.length,
+                      multiple ? chosen : 0,
+                    )}
+                    accessibilityHint={labels.enter}
                     accessibilityState={{ disabled: node.disabled }}
                     disabled={node.disabled}
                     onPress={() => enter(node)}

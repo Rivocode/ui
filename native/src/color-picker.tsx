@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn, type Slots } from "./cn";
-import { Input } from "./field";
+import { Input, useInsideField } from "./field";
+import { COLOR_PICKER_LABELS, type ColorPickerLabels } from "./shared/color-picker";
 import { Text } from "./text";
 
 export type ColorSwatch = string | { value: string; label: string };
@@ -20,7 +21,11 @@ export type ColorPickerProps = {
   swatches?: ColorSwatch[];
   /** Quantas amostras por linha. */
   columns?: number;
-  /** O texto acima das amostras. */
+  /**
+   * O texto acima das amostras, e o nome delas no leitor de tela. Dentro de um
+   * `Field` ele so nomeia, sem aparecer: o rotulo na tela ali e o do `Field`,
+   * e o `forValue` entrega o mesmo texto aqui.
+   */
   label?: string;
   /** Esconde o campo de texto e deixa só as amostras. */
   hideInput?: boolean;
@@ -28,8 +33,9 @@ export type ColorPickerProps = {
   className?: string;
   /**
    * Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto
-   * das amostras quando nao ha `label`, e `hex` o do campo de texto. Passe so
-   * os que mudam.
+   * das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o
+   * de cada amostra em texto puro, que recebe o hexadecimal dela. A amostra
+   * `{ value, label }` se nomeia pelo proprio `label`. Passe so os que mudam.
    */
   labels?: Partial<ColorPickerLabels>;
   /**
@@ -82,8 +88,8 @@ const DEFAULT_SWATCHES: string[] = [70, 55, 38].flatMap((lightness) =>
 
 const valueOf = (swatch: ColorSwatch) => (typeof swatch === "string" ? swatch : swatch.value);
 
-const nameOf = (swatch: ColorSwatch) =>
-  typeof swatch === "string" ? `Cor ${swatch}` : `${swatch.label}, ${swatch.value}`;
+const nameOf = (swatch: ColorSwatch, named: (value: string) => string) =>
+  typeof swatch === "string" ? named(swatch) : `${swatch.label}, ${swatch.value}`;
 
 function inRows<T>(items: T[], perRow: number): T[][] {
   const rows: T[][] = [];
@@ -93,10 +99,7 @@ function inRows<T>(items: T[], perRow: number): T[][] {
   return rows;
 }
 
-export type ColorPickerLabels = {
-  swatches: string;
-  hex: string;
-};
+export type { ColorPickerLabels };
 
 export function ColorPicker({
   value,
@@ -106,12 +109,12 @@ export function ColorPicker({
   label,
   hideInput,
   disabled,
-  labels,
+  labels: labelsProp,
   className,
   classNames,
 }: ColorPickerProps) {
-  const swatchesLabel = labels?.swatches ?? "Amostras de cor";
-  const hexLabel = labels?.hex ?? "Código hexadecimal da cor";
+  const labels = { ...COLOR_PICKER_LABELS, ...labelsProp };
+  const insideField = useInsideField();
   const [text, setText] = useState(value);
   const [seenValue, setSeenValue] = useState(value);
   if (value !== seenValue) {
@@ -142,13 +145,13 @@ export function ColorPicker({
 
   return (
     <View className={cn("gap-2", className)}>
-      {label && (
+      {label && !insideField && (
         <Text className={cn("text-sm font-rc-medium text-fg", classNames?.label)}>{label}</Text>
       )}
 
       <View
         accessibilityRole="radiogroup"
-        accessibilityLabel={label ?? swatchesLabel}
+        accessibilityLabel={label ?? labels.swatches}
         className={cn("gap-2", classNames?.swatches)}
       >
         {inRows(swatches, Math.max(1, columns)).map((row, rowIndex) => (
@@ -161,7 +164,7 @@ export function ColorPicker({
                   key={`${color}-${index}`}
                   accessibilityRole="radio"
                   accessibilityState={{ checked: selected, disabled }}
-                  accessibilityLabel={nameOf(swatch)}
+                  accessibilityLabel={nameOf(swatch, labels.swatch)}
                   disabled={disabled}
                   onPress={() => choose(color)}
                   className={cn(
@@ -191,7 +194,7 @@ export function ColorPicker({
             style={{ backgroundColor: current ?? "transparent" }}
           />
           <Input
-            accessibilityLabel={hexLabel}
+            accessibilityLabel={labels.hex}
             keyboardType="default"
             autoCapitalize="none"
             autoCorrect={false}

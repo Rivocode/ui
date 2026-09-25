@@ -180,6 +180,26 @@ mudança sai uma hora maior ou menor do que a duração real, e nenhuma linha de
 hora se desloca. É a troca escolhida: o erro fica num bloco, e não na grade
 inteira.
 
+## Outro idioma
+
+Os nomes de mês e de dia da semana e a hora saem do `locale`, uma tag BCP 47
+(`"en-US"`, `"es"`), e o padrão é `"pt-BR"`. As palavras fixas em volta saem de
+`labels`: os botões da barra, o nome das vistas, o que o leitor de tela ouve em
+cada compromisso e a contagem. Passe só as chaves que mudam.
+
+```tsx
+<EventCalendar
+  events={events}
+  locale="en-US"
+  labels={{
+    today: 'Today',
+    week: 'Week',
+    events: (count) => `${count} events`,
+    weekPeriod: (first, last) => `${first.getDate()}–${last.getDate()}`,
+  }}
+/>
+```
+
 ## Acessibilidade
 
 Uma grade de calendário é duas coisas incompatíveis: uma tabela bidimensional

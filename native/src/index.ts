@@ -57,9 +57,14 @@ export { ScrollArea, type ScrollAreaProps } from "./scroll-area";
 export { useToast } from "./toast";
 export { DataList, type DataListLabels, type DataListProps } from "./data-list";
 export { QueryBoundary, type QueryBoundaryLabels, type QueryBoundaryProps } from "./query-boundary";
-export { Tracker, type TrackerPoint, type TrackerProps } from "./tracker";
+export { Tracker, type TrackerLabels, type TrackerPoint, type TrackerProps } from "./tracker";
 export { Item, type ItemProps } from "./item";
-export { RelativeTime, type RelativeTimeProps, type RelativeUnit } from "./relative-time";
+export {
+  RelativeTime,
+  type RelativeTimeLabels,
+  type RelativeTimeProps,
+  type RelativeUnit,
+} from "./relative-time";
 export {
   Alert,
   Avatar,
@@ -80,7 +85,13 @@ export {
   type DialogLabels,
   type DialogProps,
 } from "./dialog";
-export { Select, type SelectItem, type SelectItemGroup, type SelectProps } from "./select";
+export {
+  Select,
+  type SelectItem,
+  type SelectItemGroup,
+  type SelectLabels,
+  type SelectProps,
+} from "./select";
 export { Tabs, type TabItem, type TabsProps } from "./tabs";
 export { RadioGroup, type RadioGroupProps, type RadioItem } from "./radio-group";
 export { CheckboxGroup, type CheckboxGroupItem, type CheckboxGroupProps } from "./checkbox-group";
@@ -152,23 +163,36 @@ export { InputGroup, type InputGroupAction, type InputGroupProps } from "./input
 export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { TagsInput, type TagsInputProps } from "./tags-input";
 export { Fieldset, type FieldsetProps } from "./fieldset";
-export { Autocomplete, type AutocompleteItemGroup, type AutocompleteProps } from "./autocomplete";
+export {
+  Autocomplete,
+  type AutocompleteItemGroup,
+  type AutocompleteLabels,
+  type AutocompleteProps,
+} from "./autocomplete";
 export {
   Combobox,
   type ComboboxItem,
   type ComboboxItemGroup,
+  type ComboboxLabels,
   type ComboboxProps,
 } from "./combobox";
-export { Slider, type SliderProps } from "./slider";
+export { Slider, type SliderLabels, type SliderProps } from "./slider";
 export { Rating, type RatingLabels, type RatingProps } from "./rating";
 export {
   Calendar,
   DatePicker,
   formatDate,
+  type CalendarLabels,
   type CalendarProps,
+  type DatePickerLabels,
   type DatePickerProps,
 } from "./calendar";
-export { DateRangePicker, type DateRange, type DateRangePickerProps } from "./date-range-picker";
+export {
+  DateRangePicker,
+  type DateRange,
+  type DateRangePickerLabels,
+  type DateRangePickerProps,
+} from "./date-range-picker";
 export {
   Toggle,
   ToggleGroup,
@@ -189,12 +213,13 @@ export { DescriptionItem, DescriptionList, type DescriptionItemProps } from "./d
 export { AspectRatio, type AspectRatioProps } from "./aspect-ratio";
 export { Stack, type LayoutGap, type StackProps } from "./stack";
 export { Grid, type GridProps } from "./grid";
-export { Menu, type MenuAction, type MenuProps } from "./menu";
+export { Menu, type MenuAction, type MenuLabels, type MenuProps } from "./menu";
 export {
   Steps,
   WizardFooter,
   useWizard,
   type Step,
+  type StepsLabels,
   type StepsProps,
   type WizardFooterProps,
   type WizardState,
@@ -210,8 +235,8 @@ export { Timeline, type TimelineEvent, type TimelineProps, type TimelineTone } f
 export { Code, type CodeProps } from "./code";
 export { RichTextView, type RichTextViewProps } from "./rich-text-view";
 export type { RichTextJson } from "./shared/rich-text";
-export { Tree, leavesOf, type TreeNode, type TreeProps } from "./tree";
-export { TreeSelect, type TreeSelectProps } from "./tree-select";
+export { Tree, leavesOf, type TreeLabels, type TreeNode, type TreeProps } from "./tree";
+export { TreeSelect, type TreeSelectLabels, type TreeSelectProps } from "./tree-select";
 export { Editable, type EditableLabels, type EditableProps } from "./editable";
 export { TimeField, applyTimeMask, formatTime, parseTime, type TimeFieldProps } from "./time-field";
 export { TimePicker, type TimePickerLabels, type TimePickerProps } from "./time-picker";

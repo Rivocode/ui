@@ -102,26 +102,44 @@ export type ComboboxInputProps = ComponentProps<typeof BaseCombobox.Input> & {
    * de dentro so era possivel por variante de descendente.
    */
   classNames?: Slots<"wrapper" | "input">;
+  /**
+   * Os textos da peca, para trocar o idioma: `clear` e o nome do xis que
+   * limpa a escolha, e `open` o da seta que abre a lista. Passe so os que
+   * mudam.
+   */
+  labels?: Partial<ComboboxInputLabels>;
 };
+
+export type ComboboxInputLabels = {
+  clear: string;
+  open: string;
+};
+
+const INPUT_LABELS: ComboboxInputLabels = { clear: "Limpar escolha", open: "Abrir lista" };
 
 export function ComboboxInput({
   className,
   classNames,
   clearable = true,
+  labels: labelsProp,
   ...props
 }: ComboboxInputProps) {
   const size = use(ComboboxSize);
+  const labels = { ...INPUT_LABELS, ...labelsProp };
 
   return (
     <BaseCombobox.InputGroup
       className={cn("relative flex w-full items-center", className, classNames?.wrapper)}
     >
-      <BaseCombobox.Input {...props} className={cn(inputVariants({ size }), "pr-16", classNames?.input)} />
+      <BaseCombobox.Input
+        {...props}
+        className={cn(inputVariants({ size }), "pr-16", classNames?.input)}
+      />
 
       <span className="absolute right-1.5 flex items-center gap-0.5">
         {clearable && (
           <BaseCombobox.Clear
-            aria-label="Limpar escolha"
+            aria-label={labels.clear}
             className={cn(
               "inline-flex size-7 items-center justify-center rounded-sm text-fg-subtle",
               "transition-colors duration-[var(--rc-duration-fast)] ease-rc",
@@ -134,7 +152,7 @@ export function ComboboxInput({
         )}
 
         <BaseCombobox.Trigger
-          aria-label="Abrir lista"
+          aria-label={labels.open}
           className={cn(
             "inline-flex size-7 items-center justify-center rounded-sm text-fg-subtle",
             "transition-colors duration-[var(--rc-duration-fast)] ease-rc",

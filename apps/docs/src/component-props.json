@@ -2234,6 +2234,12 @@
     "forwardsRoot": true,
     "props": [
       {
+        "name": "labels",
+        "type": "Partial<AvatarGroupLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `more` e o que o leitor de tela ouve no \"+n\", e recebe quantos ficaram de fora."
+      },
+      {
         "name": "max",
         "type": "number",
         "required": false,
@@ -4389,7 +4395,7 @@
         "name": "labels",
         "type": "Partial<CarouselLabels>",
         "required": false,
-        "note": "Os textos que o leitor de tela ouve, para trocar o idioma ou o termo."
+        "note": "Os textos que o leitor de tela ouve, para trocar o idioma ou o termo: `slide` e `indicator` recebem a posicao e o total, `previous`, `next`, `pause` e `play` sao os botoes, e `roleDescription` e `slideRoleDescription` sao o nome do papel da regiao e de cada slide."
       },
       {
         "name": "loop",
@@ -4690,6 +4696,12 @@
         "note": "O que o leitor de tela ouve no lugar do desenho."
       },
       {
+        "name": "labels",
+        "type": "Partial<ChartDonutLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `name` monta o nome do desenho sem `label` e sem legenda, a partir dos nomes das fatias."
+      },
+      {
         "name": "legend",
         "type": "boolean",
         "required": false,
@@ -4820,6 +4832,12 @@
         "type": "string",
         "required": false,
         "note": "O que o leitor de tela ouve."
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ChartGaugeLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao maximo no nome acessivel, e `band` descreve cada faixa na regua que o leitor de tela ouve."
       },
       {
         "name": "max",
@@ -9134,7 +9152,7 @@
         "name": "labels",
         "type": "Partial<ColorPickerLabels>",
         "required": false,
-        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, e `hex` o do campo de texto."
+        "note": "Os textos da peca, para trocar o idioma: `swatches` e o nome do conjunto das amostras quando nao ha `label`, `hex` o do campo de texto e `swatch` o de cada amostra em texto puro, que recebe o hexadecimal dela."
       },
       {
         "name": "onValueChange",
@@ -9556,6 +9574,12 @@
         "required": false,
         "note": "Whether the component should ignore user interaction.",
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<ComboboxInputLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `clear` e o nome do xis que limpa a escolha, e `open` o da seta que abre a lista."
       },
       {
         "name": "render",
@@ -10148,6 +10172,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "labels",
+        "type": "Partial<DatePickerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `open` e o nome do botao do calendario, `title` o titulo do painel, `clear` e `apply` os dois botoes do rodape do `confirm`."
+      },
+      {
         "name": "locale",
         "type": "Partial<DayPickerLocale>",
         "required": false,
@@ -10226,6 +10256,12 @@
         "required": false,
         "note": "Dias que nao podem ser escolhidos.",
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<DateRangePickerLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `title` e o titulo do painel, `clear` e `apply` os dois botoes do rodape do `confirm`."
       },
       {
         "name": "locale",
@@ -10672,6 +10708,12 @@
         "type": "Partial<EventCalendarLabels>",
         "required": false,
         "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave em todas as pecas que resolvem os quatro finais."
+      },
+      {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "note": "O idioma das datas, das horas e dos nomes de dia e de mes, como tag BCP 47: `\"en-US\"`, `\"es\"`."
       },
       {
         "name": "maxColumns",
@@ -11270,6 +11312,12 @@
         "note": "Os textos da peca, para trocar o idioma: `retry` e o botao que executa o `onRetry`, \"Tentar de novo\" sem ele - a mesma chave em todas as pecas que resolvem os quatro finais."
       },
       {
+        "name": "locale",
+        "type": "string",
+        "required": false,
+        "note": "O idioma dos nomes de mes e de dia, no cabecalho e no que o leitor de tela ouve, como tag BCP 47: `\"en-US\"`, `\"es\"`."
+      },
+      {
         "name": "maxHeight",
         "type": "string | number",
         "required": false,
@@ -11734,6 +11782,12 @@
         "required": false,
         "note": "O atalho, como `\"mod+k\"`.",
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<KbdLabels>",
+        "required": false,
+        "note": "O que o leitor de tela ouve no atalho de `keys`, para trocar o idioma: `plus` e a palavra entre as teclas, e `up`, `down`, `left` e `right` os nomes das setas."
       },
       {
         "name": "size",
@@ -14676,6 +14730,12 @@
         "required": false,
         "note": "The virtual keyboard hint applied to the slot inputs and hidden validation input.",
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<OTPFieldLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `digit` e o nome de cada casa depois da primeira, que recebe a posicao contando de 1 e o total."
       },
       {
         "name": "length",
@@ -22312,6 +22372,12 @@
         "note": "O que aparece quando o conteudo nao tem texto: `null`, string vazia ou o `<p></p>` de um editor em branco."
       },
       {
+        "name": "labels",
+        "type": "Partial<RichTextViewLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `code` e o nome que o leitor de tela ouve no bloco de codigo que rola de lado."
+      },
+      {
         "name": "ref",
         "type": "Ref<HTMLDivElement>",
         "required": false
@@ -25272,6 +25338,12 @@
         "required": false,
         "note": "Subir e ruim aqui: vencidas, custo, inadimplencia.",
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<StatLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `about` e o nome do botao de informacao do `hint`, e recebe o `label`."
       }
     ]
   },
@@ -25289,6 +25361,12 @@
         "type": "Step[]",
         "required": true,
         "since": "0.4.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<StepsLabels>",
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `position` e a contagem \"Passo 2 de 5\", que recebe o passo atual contando de 1 e o total."
       },
       {
         "name": "onStepChange",

@@ -25,6 +25,11 @@ export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /** Explicacao curta atras de um botao de informacao. */
   hint?: string;
   /**
+   * Os textos da peca, para trocar o idioma: `about` e o nome do botao de
+   * informacao do `hint`, e recebe o `label`. Passe so os que mudam.
+   */
+  labels?: Partial<StatLabels>;
+  /**
    * Subir e ruim aqui: vencidas, custo, inadimplencia. A seta continua
    * apontando para onde o numero foi; o que inverte e o julgamento da cor.
    */
@@ -68,7 +73,14 @@ export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   className?: string;
 };
 
+export type StatLabels = {
+  about: (label: string) => string;
+};
+
+const LABELS: StatLabels = { about: (label) => `Sobre ${label.toLowerCase()}` };
+
 export function Stat({
+  labels,
   label,
   value,
   delta,
@@ -84,6 +96,7 @@ export function Stat({
   className,
   ...rest
 }: StatProps) {
+  const text = { ...LABELS, ...labels };
   const rose = (delta ?? 0) >= 0;
   const good = invert ? !rose : rose;
   const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
@@ -114,7 +127,7 @@ export function Stat({
                 render={
                   <button
                     type="button"
-                    aria-label={`Sobre ${label.toLowerCase()}`}
+                    aria-label={text.about(label)}
                     className={cn(
                       "-my-1 flex size-6 items-center justify-center rounded-sm text-fg-subtle",
                       "outline-none focus-visible:ring-2 focus-visible:ring-ring",

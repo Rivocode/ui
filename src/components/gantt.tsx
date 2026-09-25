@@ -33,9 +33,11 @@ import {
   PX_PER_DAY,
   resizeTask,
   scaleRange,
+  GANTT_WORDS,
   spokenDay,
   spokenRange,
   totalDays,
+  type GanttWords,
   type GanttRange,
   type GanttRow,
   type HeaderCell,
@@ -162,9 +164,21 @@ export type GanttProps<Task extends GanttTask = GanttTask> = Omit<
    * `onRetry`, "Tentar de novo" sem ele - a mesma chave em todas as pecas que
    * resolvem os quatro finais.
    * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
-   * sai e quando ela volta.
+   * sai e quando ela volta. `today` e o botao que rola ate hoje; `day`,
+   * `week` e `month` nomeiam as escalas, e `scales` o seletor delas; `resize`
+   * e o nome da divisoria da tabela; `hint` e a dica do teclado, que recebe a
+   * escala. `period` diz o periodo desenhado, `range` junta as duas pontas de
+   * um intervalo, `tasks` conta as tarefas de um grupo, e `milestone`,
+   * `progress` e `dependsOn` montam o que o leitor de tela ouve em cada
+   * tarefa. Os nomes de mes e de dia vem do `locale`. Passe so os que mudam.
    */
   labels?: Partial<GanttLabels>;
+  /**
+   * O idioma dos nomes de mes e de dia, no cabecalho e no que o leitor de tela
+   * ouve, como tag BCP 47: `"en-US"`, `"es"`. As palavras fixas vem de
+   * `labels`.
+   */
+  locale?: string;
   /**
    * Classe por parte: `toolbar`, `frame`, `header`, `row`, `cell`, `timeline`,
    * `bar`, `milestone` e `handle`.
@@ -186,8 +200,6 @@ type Drag = { id: string; edge: "move" | "start" | "end"; x: number; days: numbe
 type Watch = { id: string; start: number; end: number };
 
 const ALL_SCALES: GanttScale[] = ["day", "week", "month"];
-
-const SCALE_LABEL: Record<GanttScale, string> = { day: "Dia", week: "Semana", month: "Mês" };
 
 const UNIT_LABEL: Record<GanttScale, string> = {
   day: "um dia",
@@ -317,19 +329,21 @@ function resolveColumns<Task extends GanttTask>(
   return [title, ...resolved.filter((column) => column !== title)];
 }
 
-function taskSpeech<Task extends GanttTask>(task: Task, byId: Map<string, Task>): string {
-  const parts = [isMilestone(task) ? `marco em ${spokenRange(task)}` : spokenRange(task)];
+function taskSpeech<Task extends GanttTask>(
+  task: Task,
+  byId: Map<string, Task>,
+  labels: GanttText,
+  words: GanttWords,
+): string {
+  const when = spokenRange(task, words);
+  const parts = [isMilestone(task) ? labels.milestone(when) : when];
   const progress = clampProgress(task.progress);
-  if (progress !== undefined && !isMilestone(task)) parts.push(`${progress}% concluído`);
+  if (progress !== undefined && !isMilestone(task)) parts.push(labels.progress(progress));
 
   for (const id of task.dependsOn ?? []) {
     const before = byId.get(id);
     if (!before) continue;
-    parts.push(
-      task.start.getTime() < before.end.getTime()
-        ? `depende de ${before.title}, e começa antes de ela terminar`
-        : `depende de ${before.title}`,
-    );
+    parts.push(labels.dependsOn(before.title, task.start.getTime() < before.end.getTime()));
   }
   return parts.join(", ");
 }
@@ -338,6 +352,39 @@ export type GanttLabels = {
   retry: string;
   loading: string;
   loaded: string;
+  today: string;
+  day: string;
+  week: string;
+  month: string;
+  scales: string;
+  resize: string;
+  hint: (scale: GanttScale) => string;
+  period: (name: string, from: string, to: string) => string;
+  range: (from: string, to: string) => string;
+  tasks: (count: number) => string;
+  milestone: (when: string) => string;
+  progress: (percent: number) => string;
+  dependsOn: (title: string, early: boolean) => string;
+};
+
+type GanttText = Omit<GanttLabels, "retry" | "loading" | "loaded">;
+
+const LABELS: GanttText = {
+  today: "Hoje",
+  day: "Dia",
+  week: "Semana",
+  month: "Mês",
+  scales: "Escala do cronograma",
+  resize: "Largura da tabela",
+  hint: (scale) =>
+    `Setas movem ${UNIT_LABEL[scale]}, Shift com setas muda a duração, Home volta ao título.`,
+  period: (name, from, to) => `${name}, de ${from} a ${to}`,
+  range: GANTT_WORDS.range,
+  tasks: (count) => (count === 1 ? "1 tarefa" : `${count} tarefas`),
+  milestone: (when) => `marco em ${when}`,
+  progress: (percent) => `${percent}% concluído`,
+  dependsOn: (title, early) =>
+    early ? `depende de ${title}, e começa antes de ela terminar` : `depende de ${title}`,
 };
 
 export function Gantt<Task extends GanttTask = GanttTask>({
@@ -365,11 +412,14 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   errorMessage = "Não foi possível carregar o cronograma.",
   empty,
   labels,
+  locale = GANTT_WORDS.locale,
   className,
   classNames,
   ...props
 }: GanttProps<Task>) {
   const retryLabel = labels?.retry ?? "Tentar de novo";
+  const text: GanttText = { ...LABELS, ...labels };
+  const words: GanttWords = { locale, range: text.range };
   const rtl = useDirection() === "rtl";
   const isMobile = useMobile();
   const { density } = useRivoContext();
@@ -444,7 +494,10 @@ export function Gantt<Task extends GanttTask = GanttTask>({
   const days = totalDays(range);
   const timelineWidth = days * ppd;
   const totalWidth = tableWidth + timelineWidth;
-  const [topTier, bottomTier] = useMemo(() => headerTiers(range, scale), [range, scale]);
+  const [topTier, bottomTier] = useMemo(
+    () => headerTiers(range, scale, locale),
+    [range, scale, locale],
+  );
 
   const rows = useMemo(() => buildRows(list, collapsed), [list, collapsed]);
   const rowIndex = useMemo(() => new Map(rows.map((row, index) => [row.key, index])), [rows]);
@@ -736,7 +789,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
     watch &&
     watched &&
     (watched.start.getTime() !== watch.start || watched.end.getTime() !== watch.end)
-      ? `${watched.title}: ${spokenRange(watched)}`
+      ? `${watched.title}: ${spokenRange(watched, words)}`
       : "";
 
   const arrows = useMemo(() => {
@@ -994,8 +1047,8 @@ export function Gantt<Task extends GanttTask = GanttTask>({
         >
           <span className="sr-only">
             {row.kind === "group"
-              ? `${row.tasks.length === 1 ? "1 tarefa" : `${row.tasks.length} tarefas`}, ${spokenRange(row)}`
-              : taskSpeech(row.task, byId)}
+              ? `${text.tasks(row.tasks.length)}, ${spokenRange(row, words)}`
+              : taskSpeech(row.task, byId, text, words)}
           </span>
           {row.kind === "group" ? (
             <span
@@ -1048,7 +1101,11 @@ export function Gantt<Task extends GanttTask = GanttTask>({
           className="relative h-full shrink-0"
         >
           <span className="sr-only">
-            {`${label}, de ${spokenDay(origin, true)} a ${spokenDay(lastDay(range), true)}`}
+            {text.period(
+              label,
+              spokenDay(origin, true, locale),
+              spokenDay(lastDay(range), true, locale),
+            )}
           </span>
           {todayVisible && (
             <span
@@ -1186,7 +1243,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                 setScrollOffset(element, Math.max(todayX - Math.max(visibleWidth, 0) / 2, 0));
               }}
             >
-              Hoje
+              {text.today}
             </Button>
           )}
           <div className="flex-1" />
@@ -1197,11 +1254,11 @@ export function Gantt<Task extends GanttTask = GanttTask>({
                 const picked = next[0] as GanttScale | undefined;
                 if (picked) changeScale(picked);
               }}
-              aria-label="Escala do cronograma"
+              aria-label={text.scales}
             >
               {offered.map((option) => (
                 <Toggle key={option} value={option}>
-                  {SCALE_LABEL[option]}
+                  {text[option]}
                 </Toggle>
               ))}
             </ToggleGroup>
@@ -1214,7 +1271,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
         {spoken}
       </div>
       <span id={hintId} className="sr-only">
-        {`Setas movem ${UNIT_LABEL[scale]}, Shift com setas muda a duração, Home volta ao título.`}
+        {text.hint(scale)}
       </span>
 
       {isError ? (
@@ -1277,7 +1334,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
             <div
               role="separator"
               tabIndex={0}
-              aria-label="Largura da tabela"
+              aria-label={text.resize}
               aria-orientation="vertical"
               aria-valuenow={tableWidth}
               aria-valuemin={tableMin}

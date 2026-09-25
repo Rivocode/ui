@@ -54,6 +54,12 @@ export type ChartGaugeProps = {
    * régua das faixas, na mesma frase.
    */
   label?: string;
+  /**
+   * Os textos da peca, para trocar o idioma: `value` junta o valor escrito ao
+   * maximo no nome, e `band` descreve cada faixa na regua que vem junto. Passe
+   * so os que mudam.
+   */
+  labels?: Partial<ChartGaugeLabels>;
   className?: string;
   /**
    * Classe por parte: `value` (o numero grande no meio) e `label` (a linha
@@ -61,6 +67,16 @@ export type ChartGaugeProps = {
    * recebe classe: a cor dele sai da faixa.
    */
   classNames?: Slots<"value" | "label">;
+};
+
+export type ChartGaugeLabels = {
+  value: (value: string, max: string) => string;
+  band: (name: string, from: string, to: string) => string;
+};
+
+const LABELS: ChartGaugeLabels = {
+  value: (value, max) => `${value} de ${max}`,
+  band: (name, from, to) => `${name} de ${from} a ${to}`,
 };
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -80,9 +96,11 @@ export function ChartGauge({
   format,
   sweep: askedSweep = 240,
   label,
+  labels: labelsProp,
   className,
   classNames,
 }: ChartGaugeProps) {
+  const labels = { ...LABELS, ...labelsProp };
   const { colors: theme } = useRivo();
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (number: number) => (resolved ? resolved(number) : String(number));
@@ -109,14 +127,15 @@ export function ChartGauge({
   });
 
   const ruler = (bands ?? [])
-    .map(
-      (item, index) =>
-        `${item.label} de ${say(index === 0 ? 0 : bands![index - 1]!.until)} a ${say(item.until)}`,
+    .map((item, index) =>
+      labels.band(item.label, say(index === 0 ? 0 : bands![index - 1]!.until), say(item.until)),
     )
     .join("; ");
   const name =
     label ??
-    [`${written} de ${say(max)}${band ? `, ${band.label}` : ""}`, ruler].filter(Boolean).join(". ");
+    [`${labels.value(written, say(max))}${band ? `, ${band.label}` : ""}`, ruler]
+      .filter(Boolean)
+      .join(". ");
 
   const reach = useTween(to, "slow", from);
 

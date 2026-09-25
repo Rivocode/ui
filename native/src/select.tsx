@@ -3,7 +3,15 @@ import { Pressable, SectionList, View } from "react-native";
 import { Button } from "./button";
 import { cn } from "./cn";
 import { useFieldSheet } from "./field";
-import { flattenItems, isGrouped, summarize, toggleValue, type PickerGroup } from "./picker";
+import {
+  PICKER_LABELS,
+  flattenItems,
+  isGrouped,
+  summarize,
+  toggleValue,
+  type PickerGroup,
+  type PickerLabels,
+} from "./picker";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
 
@@ -29,8 +37,15 @@ type SelectBaseProps = {
   /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
   /** Veste o gatilho; a folha de opcoes e da plataforma. */
-  className?: string;
+  className?: string /**
+   * Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho
+   * com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`.
+   * Passe so os que mudam.
+   */;
+  labels?: Partial<SelectLabels>;
 };
+
+export type SelectLabels = PickerLabels;
 
 export type SelectProps = SelectBaseProps &
   (
@@ -59,12 +74,13 @@ export function pickerSections<Item>(groups: PickerGroup<Item>[]) {
 
 export function Select(props: SelectProps) {
   const { items, placeholder, label, disabled, invalid, className } = props;
+  const labels = { ...PICKER_LABELS, ...props.labels };
   const sheet = useFieldSheet(props.value);
   const flagged = invalid ?? Boolean(sheet.error);
 
   const flat = flattenItems<SelectItem>(items);
   const chosen = props.multiple ? props.value : props.value === null ? [] : [props.value];
-  const summary = summarize(chosen, flat);
+  const summary = summarize(chosen, flat, labels.selected);
 
   const choose = (value: string) => {
     if (props.multiple) {
@@ -87,9 +103,7 @@ export function Select(props: SelectProps) {
           active ? "bg-accent-subtle" : "active:bg-selected"
         }`}
       >
-        <Text className={`text-base ${active ? "text-accent-text" : "text-fg"}`}>
-          {item.label}
-        </Text>
+        <Text className={`text-base ${active ? "text-accent-text" : "text-fg"}`}>{item.label}</Text>
         {active && <Text className="text-accent-text">✓</Text>}
       </Pressable>
     );
@@ -137,7 +151,7 @@ export function Select(props: SelectProps) {
 
           {props.multiple && (
             <Button variant="secondary" className="mt-3" onPress={() => sheet.close("submit")}>
-              Concluir
+              {labels.done}
             </Button>
           )}
         </View>

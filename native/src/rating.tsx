@@ -3,7 +3,7 @@ import { I18nManager, Pressable, View, type GestureResponderEvent } from "react-
 
 import { cn, type Slots } from "./cn";
 import { useRivo } from "./provider";
-import { RATING_LABELS, starFill, type RatingLabels } from "./shared/rating";
+import { RATING_LABELS, starFill, type RatingLabels as RatingText } from "./shared/rating";
 import { Text } from "./text";
 
 const GLYPH = { sm: 18, md: 26, lg: 34 } as const;
@@ -51,7 +51,10 @@ export type RatingProps = {
    * `icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.
    */
   icon?: (glyph: { color: string; size: number; filled: boolean }) => ReactNode;
-  /** Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media. */
+  /**
+   * Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da
+   * media, e `increment` e `decrement`, os nomes das duas acoes de ajuste.
+   */
   labels?: Partial<RatingLabels>;
   className?: string;
   /**
@@ -61,6 +64,13 @@ export type RatingProps = {
    */
   classNames?: Slots<"item" | "empty" | "filled">;
 };
+
+export type RatingLabels = RatingText & {
+  increment: string;
+  decrement: string;
+};
+
+const LABELS: RatingLabels = { ...RATING_LABELS, increment: "Aumentar", decrement: "Diminuir" };
 
 export function Rating({
   value,
@@ -77,7 +87,7 @@ export function Rating({
   classNames,
 }: RatingProps) {
   const { colors } = useRivo();
-  const text = { ...RATING_LABELS, ...labels };
+  const text = { ...LABELS, ...labels };
   const step = allowHalf ? 0.5 : 1;
   const shown = readOnly ? Math.min(max, Math.max(0, value)) : Math.round(value / step) * step;
   const interactive = !readOnly && !disabled && onValueChange !== undefined;
@@ -172,8 +182,8 @@ export function Rating({
       accessibilityActions={
         interactive
           ? [
-              { name: "increment", label: "Aumentar" },
-              { name: "decrement", label: "Diminuir" },
+              { name: "increment", label: text.increment },
+              { name: "decrement", label: text.decrement },
             ]
           : undefined
       }
@@ -188,5 +198,3 @@ export function Rating({
     </View>
   );
 }
-
-export type { RatingLabels };

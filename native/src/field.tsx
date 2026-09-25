@@ -246,6 +246,10 @@ export function useFieldSheet(value: unknown) {
   };
 }
 
+export function useInsideField() {
+  return use(FieldControl) !== null;
+}
+
 export function WithoutField({ children }: { children: ReactNode }) {
   return <FieldControl value={null}>{children}</FieldControl>;
 }
