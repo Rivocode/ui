@@ -3,7 +3,7 @@ import { AccessibilityInfo, View } from "react-native";
 import Animated from "react-native-reanimated";
 
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useMotion } from "./motion";
 import {
   BATCH_ACTIONS,
@@ -34,7 +34,10 @@ export type ActionBarProps = {
     region?: string;
     cleared?: string;
   };
+  /** Veste o painel da barra, o mesmo elemento que `classNames.bar`. */
   className?: string;
+  /** Classe por parte: `bar` (o painel), `count` (a frase da contagem) e `clear` (o botao de limpar). */
+  classNames?: Slots<"bar" | "count" | "clear">;
 };
 
 export function ActionBar({
@@ -44,6 +47,7 @@ export function ActionBar({
   bottomInset = 0,
   labels = {},
   className,
+  classNames,
 }: ActionBarProps) {
   const motion = useMotion();
   const open = count > 0;
@@ -76,12 +80,15 @@ export function ActionBar({
         className={cn(
           "flex-row flex-wrap items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2",
           className,
+          classNames?.bar,
         )}
       >
-        <Text className="px-1 text-sm font-rc-medium text-fg">{sentence}</Text>
+        <Text className={cn("px-1 text-sm font-rc-medium text-fg", classNames?.count)}>
+          {sentence}
+        </Text>
         {children}
         {onClear ? (
-          <Button size="sm" variant="ghost" onPress={onClear} className="ml-auto">
+          <Button size="sm" variant="ghost" onPress={onClear} className={cn("ml-auto", classNames?.clear)}>
             {labels.clear ?? CLEAR_SELECTION}
           </Button>
         ) : null}

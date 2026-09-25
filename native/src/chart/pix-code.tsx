@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AccessibilityInfo, View } from "react-native";
 
 import { Button } from "../button";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { formatBrl, parsePixPayload } from "../shared/pix";
 import { Skeleton } from "../skeleton";
 import { Text } from "../text";
@@ -54,6 +54,11 @@ export type PixCodeProps = {
   /** Os textos da peca, para quem precisa de outro idioma ou outro tom. `loading`, `ready` e `expired` sao ditos ao leitor de tela. */
   labels?: Partial<PixCodeLabels>;
   className?: string;
+  /**
+   * Classe por parte: `code` (o QR, a marca de lugar dele ou o aviso de
+   * expirado), `amount`, `receiver` e `payload` (o texto do copia e cola).
+   */
+  classNames?: Slots<"code" | "amount" | "receiver" | "payload">;
 };
 
 export function PixCode({
@@ -67,6 +72,7 @@ export function PixCode({
   size = 192,
   labels = {},
   className,
+  classNames,
 }: PixCodeProps) {
   const text = { ...LABELS, ...labels };
   const code = payload.trim();
@@ -98,7 +104,7 @@ export function PixCode({
       )}
     >
       {loading ? (
-        <View style={{ width: size, height: size }}>
+        <View style={{ width: size, height: size }} className={classNames?.code}>
           <Skeleton className="h-full w-full" />
         </View>
       ) : broken ? (
@@ -108,7 +114,10 @@ export function PixCode({
       ) : expired ? (
         <View
           style={{ width: size, height: size }}
-          className="items-center justify-center gap-3 rounded-md border border-dashed border-border-strong bg-bg p-4"
+          className={cn(
+            "items-center justify-center gap-3 rounded-md border border-dashed border-border-strong bg-bg p-4",
+            classNames?.code,
+          )}
         >
           <Text className="text-center text-sm text-fg">{text.expired}</Text>
           {onRenew ? (
@@ -118,7 +127,7 @@ export function PixCode({
           ) : null}
         </View>
       ) : (
-        <QRCode value={code} label={qrLabel} size={size} />
+        <QRCode value={code} label={qrLabel} size={size} className={classNames?.code} />
       )}
 
       {money || shownName || loading ? (
@@ -128,10 +137,17 @@ export function PixCode({
               <Skeleton className="h-full w-full" />
             </View>
           ) : money ? (
-            <Text font="display" className="text-2xl tracking-tight text-fg">{money}</Text>
+            <Text
+              font="display"
+              className={cn("text-2xl tracking-tight text-fg", classNames?.amount)}
+            >
+              {money}
+            </Text>
           ) : null}
           {shownName ? (
-            <Text className="text-sm text-fg-muted">{text.receiver(shownName)}</Text>
+            <Text className={cn("text-sm text-fg-muted", classNames?.receiver)}>
+              {text.receiver(shownName)}
+            </Text>
           ) : null}
         </View>
       ) : null}
@@ -150,7 +166,7 @@ export function PixCode({
                 numberOfLines={1}
                 ellipsizeMode="middle"
                 font="mono"
-                className="flex-1 text-xs text-fg-muted"
+                className={cn("flex-1 text-xs text-fg-muted", classNames?.payload)}
               >
                 {code}
               </Text>

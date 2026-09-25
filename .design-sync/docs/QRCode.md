@@ -114,7 +114,7 @@ Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o `re
 
 **O codificador é o mesmo dos dois lados, linha por linha**: ele mora em `src/shared/` e atravessa por espelho, então versão, máscara e correção de erro não divergem. O teste do nativo rasteriza o caminho que a peça desenha e o decodifica de volta, como o do web.
 
-As cores **não** saem do tema: os módulos são `tokens.code["code-ink"]` e o papel `tokens.code["code-paper"]`, escuro sobre claro nos dois esquemas, numa placa de canto arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então nenhum `@theme` de cliente inverte o código sem querer. `level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.
+As cores **não** saem do tema: os módulos são `tokens.code["code-ink"]` e o papel `tokens.code["code-paper"]`, escuro sobre claro nos dois esquemas, numa placa de canto arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então nenhum `@theme` de cliente inverte o código sem querer. `level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro nível a marca não aparece. Das partes do web, só `logo` porta: `code` é o `Svg`, e o `react-native-svg` não recebe classe; o resto veste pela raiz.
 
 ```tsx
 import { QRCode } from '@rivocode/ui-native/chart'

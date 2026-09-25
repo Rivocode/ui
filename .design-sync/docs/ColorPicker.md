@@ -126,4 +126,4 @@ Traduz, e sai pelo índice da raiz: não há peer nenhum atrás dela. As duas en
 
 Quem não vê a cor a ouve por dois caminhos: o `accessibilityState.checked` de cada amostra, e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato ao lado dele sai do leitor de tela: ele repete em cor o que o campo diz em texto, e cor não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.
 
-O `classNames` por parte não porta: como todas as peças daqui, ela veste só pela raiz.
+O `classNames` por parte não porta nesta peça: ela veste só pela raiz.

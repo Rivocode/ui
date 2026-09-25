@@ -3,7 +3,7 @@ import { View } from "react-native";
 import Svg, { Path, Rect } from "react-native-svg";
 
 import { tokens } from "../../tokens";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { encodeQr, qrLogoArea, qrPath, QR_QUIET_ZONE } from "../shared/qr";
 import { useSilentMisuse } from "../silent-misuse";
 import { Text } from "../text";
@@ -22,6 +22,8 @@ export type QRCodeProps = {
   /** Os textos da peca. `tooLong` aparece no lugar do codigo quando o texto passa do que a versao 40 guarda no nivel escolhido. */
   labels?: { tooLong?: string };
   className?: string;
+  /** Classe por parte: `logo`, a caixa de papel que segura a marca no centro. */
+  classNames?: Slots<"logo">;
 };
 
 export function QRCode({
@@ -32,6 +34,7 @@ export function QRCode({
   logo,
   labels,
   className,
+  classNames,
 }: QRCodeProps) {
   const tooLong = labels?.tooLong ?? "Conteúdo longo demais para um QR Code.";
   const chosen = level ?? (logo ? "H" : "M");
@@ -108,7 +111,10 @@ export function QRCode({
             height: (hole.end - hole.start - 1) * unit,
             backgroundColor: paper,
           }}
-          className="absolute items-center justify-center overflow-hidden rounded-sm"
+          className={cn(
+            "absolute items-center justify-center overflow-hidden rounded-sm",
+            classNames?.logo,
+          )}
         >
           {logo}
         </View>

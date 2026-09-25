@@ -116,3 +116,5 @@ A estrela padrão é o caractere ★ na cor do tema, porque o pacote não traz �
 ```tsx
 <Rating value={nota} onValueChange={setNota} allowHalf />
 ```
+
+As partes vestem pelo mesmo `classNames` do web: `item`, `empty` e `filled`. As duas últimas vestem a estrela da casa, que é texto; com `icon`, a cor chega pela função.

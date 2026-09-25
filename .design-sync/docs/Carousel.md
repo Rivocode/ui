@@ -142,3 +142,5 @@ Traduz sobre a `FlatList` horizontal do core: com um slide por vez ela pagina pe
   renderItem={(plano) => <Card>{plano.nome}</Card>}
 />
 ```
+
+As partes vestem pelo mesmo `classNames` do web: `viewport`, `slide`, `footer`, `previous`, `next`, `indicators` e `indicator`. `pause` não existe aqui, porque não há `autoplay`.

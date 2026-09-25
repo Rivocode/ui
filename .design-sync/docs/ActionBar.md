@@ -132,3 +132,5 @@ Traduz, com o mesmo `count`, o mesmo `onClear` e a mesma frase no plural certo. 
 **Ela gruda acima da área segura de baixo.** O pacote não depende do `react-native-safe-area-context`, então a altura da barra do sistema entra por `bottomInset`: `bottomInset={useSafeAreaInsets().bottom}`. A barra fica por cima da lista, em `absolute`, e quem a monta deixa o respiro no fim da lista para a última linha não ficar embaixo dela.
 
 **A contagem é anunciada.** A frase sai pelo anúncio do leitor de tela do sistema, e a barra entra subindo e sai descendo com os tokens de movimento, sem deslize quando o sistema pede para reduzir movimento.
+
+As partes vestem pelo mesmo `classNames` do web: `bar`, `count` e `clear`, e o `className` veste o mesmo painel de `bar`. `actions` não existe aqui: as ações são filhas diretas do painel, sem caixa própria.

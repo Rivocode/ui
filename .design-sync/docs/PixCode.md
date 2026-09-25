@@ -136,3 +136,5 @@ import { Clipboard } from '@rivocode/ui-native/clipboard'
   renderCopy={(payload) => <Clipboard value={payload}>Copiar código</Clipboard>}
 />
 ```
+
+As partes vestem pelo mesmo `classNames` do web: `code`, `amount`, `receiver` e `payload`. `copy` não porta: o botão é o que o `renderCopy` devolve, e quem o escreve já o veste.

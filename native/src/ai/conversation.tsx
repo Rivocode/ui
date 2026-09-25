@@ -3,7 +3,7 @@ import { FlatList, View, type NativeScrollEvent, type NativeSyntheticEvent } fro
 
 import { announce, spokenText } from "../announce";
 import { Button } from "../button";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { EmptyState, type EmptyStateProps } from "../empty-state";
 import { useReducedMotion } from "../motion";
 import { STICK_DISTANCE } from "../shared/ai";
@@ -37,6 +37,12 @@ export type ConversationProps<Item> = {
    */
   announcement?: (item: Item, index: number) => string | null | undefined;
   className?: string;
+  /**
+   * Classe por parte: `viewport` (a lista que rola), `content` (o conteudo
+   * dela, pelo `contentContainerClassName`), `empty`, `suggestions` (a fileira
+   * das sugestoes) e `scrollButton` (o botao de ir para o fim).
+   */
+  classNames?: Slots<"viewport" | "content" | "empty" | "suggestions" | "scrollButton">;
 };
 
 type Listed<Item> = { item: Item; index: number };
@@ -51,6 +57,7 @@ export function Conversation<Item>({
   scrollLabel = "Ir para o fim",
   announcement,
   className,
+  classNames,
 }: ConversationProps<Item>) {
   const list = useRef<FlatList<Listed<Item>>>(null);
   const reduced = useReducedMotion();
@@ -83,9 +90,10 @@ export function Conversation<Item>({
           icon={empty.icon}
           title={empty.title}
           description={empty.description}
+          className={classNames?.empty}
           action={
             empty.suggestions?.length && onSuggestion ? (
-              <View className="flex-row flex-wrap justify-center gap-2">
+              <View className={cn("flex-row flex-wrap justify-center gap-2", classNames?.suggestions)}>
                 {empty.suggestions.map((suggestion) => (
                   <Button
                     key={suggestion}
@@ -129,11 +137,13 @@ export function Conversation<Item>({
         maintainVisibleContentPosition={away ? { minIndexForVisible: 0 } : undefined}
         accessibilityLabel={label}
         accessibilityLiveRegion="polite"
+        className={classNames?.viewport}
+        contentContainerClassName={classNames?.content}
       />
 
       {away ? (
         <View className="absolute bottom-3 w-full items-center" pointerEvents="box-none">
-          <Button variant="secondary" size="sm" onPress={jump}>
+          <Button variant="secondary" size="sm" onPress={jump} className={classNames?.scrollButton}>
             {scrollLabel}
           </Button>
         </View>

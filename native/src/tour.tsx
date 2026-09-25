@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useReducedMotion } from "./motion";
 import {
   missingTargetComplaint,
@@ -63,6 +63,11 @@ export type TourProps = {
   topInset?: number;
   /** Veste a folha, nao a mascara. */
   className?: string;
+  /**
+   * Classe por parte: `mask` (as quatro faixas escuras em volta do alvo),
+   * `counter`, `title`, `description` e `footer` (a fileira dos botoes).
+   */
+  classNames?: Slots<"mask" | "counter" | "title" | "description" | "footer">;
 };
 
 type Box = { x: number; y: number; width: number; height: number };
@@ -91,6 +96,7 @@ export function Tour({
   labels,
   topInset = DEFAULT_TOP_INSET,
   className,
+  classNames,
 }: TourProps) {
   const text = { ...TOUR_LABELS, ...labels };
   const reduced = useReducedMotion();
@@ -209,19 +215,19 @@ export function Tour({
           <>
             <View
               testID="tour-mask"
-              className="absolute inset-x-0 top-0 bg-overlay"
+              className={cn("absolute inset-x-0 top-0 bg-overlay", classNames?.mask)}
               style={{ height: Math.max(0, hole.top) }}
             />
             <View
-              className="absolute inset-x-0 bottom-0 bg-overlay"
+              className={cn("absolute inset-x-0 bottom-0 bg-overlay", classNames?.mask)}
               style={{ top: hole.top + hole.height }}
             />
             <View
-              className="absolute left-0 bg-overlay"
+              className={cn("absolute left-0 bg-overlay", classNames?.mask)}
               style={{ top: hole.top, height: hole.height, width: Math.max(0, hole.left) }}
             />
             <View
-              className="absolute right-0 bg-overlay"
+              className={cn("absolute right-0 bg-overlay", classNames?.mask)}
               style={{ top: hole.top, height: hole.height, left: hole.left + hole.width }}
             />
           </>
@@ -235,21 +241,28 @@ export function Tour({
           )}
         >
           {onTop ? null : <View className="mb-4">{grabber}</View>}
-          <Text className="text-xs font-rc-medium text-fg-muted">
+          <Text className={cn("text-xs font-rc-medium text-fg-muted", classNames?.counter)}>
             {text.counter(current + 1, total)}
           </Text>
           <Text
             accessibilityRole="header"
             font="display"
-            className="mt-1 text-lg font-rc-strong text-fg"
+            className={cn("mt-1 text-lg font-rc-strong text-fg", classNames?.title)}
           >
             {active?.title}
           </Text>
           {active?.description && (
-            <Text className="mt-1 text-sm text-fg-muted">{active.description}</Text>
+            <Text className={cn("mt-1 text-sm text-fg-muted", classNames?.description)}>
+              {active.description}
+            </Text>
           )}
           {active?.action && <View className="mt-3">{active.action}</View>}
-          <View className="mt-5 flex-row flex-wrap items-center justify-end gap-2">
+          <View
+            className={cn(
+              "mt-5 flex-row flex-wrap items-center justify-end gap-2",
+              classNames?.footer,
+            )}
+          >
             <Button variant="ghost" className="mr-auto" onPress={skip}>
               {text.skip}
             </Button>

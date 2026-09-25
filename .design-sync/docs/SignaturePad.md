@@ -182,3 +182,5 @@ import { SignaturePad } from '@rivocode/ui-native/chart'
   onDrawingChange={(desenhando) => setRolagem(!desenhando)}
 />
 ```
+
+As partes vestem pelo mesmo `classNames` do web: `pad`, `placeholder`, `actions` e `input`. `baseline` não porta como parte: a linha de base é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe.

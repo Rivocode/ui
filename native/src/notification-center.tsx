@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AccessibilityInfo, FlatList, Pressable, View } from "react-native";
 
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { EmptyState } from "./empty-state";
 import { IconButton } from "./icon-button";
 import { Indicator } from "./indicator";
@@ -89,8 +89,14 @@ export type NotificationCenterProps = {
   now?: Date;
   /** Os textos da peca, para trocar o idioma ou o termo. */
   labels?: Partial<NotificationCenterLabels>;
-  /** Veste o botao do sino. */
+  /** Veste o botao do sino, o mesmo elemento que `classNames.trigger`. */
   className?: string;
+  /**
+   * Classe por parte: `trigger` (o botao do sino), `panel` (o conteudo da
+   * folha), `header` (a fileira do filtro e do marcar todas), `filters`,
+   * `list`, `item` (cada linha) e `empty`.
+   */
+  classNames?: Slots<"trigger" | "panel" | "header" | "filters" | "list" | "item" | "empty">;
 };
 
 export function NotificationCenter({
@@ -112,6 +118,7 @@ export function NotificationCenter({
   now,
   labels,
   className,
+  classNames,
 }: NotificationCenterProps) {
   const { colors } = useRivo();
   const text = { ...NOTIFICATION_LABELS, ...labels };
@@ -171,7 +178,7 @@ export function NotificationCenter({
     );
 
     return (
-      <View className="flex-row items-start gap-3 border-b border-border py-3">
+      <View className={cn("flex-row items-start gap-3 border-b border-border py-3", classNames?.item)}>
         <View
           {...HIDDEN}
           className="mt-0.5 size-8 items-center justify-center rounded-pill border border-border"
@@ -234,6 +241,7 @@ export function NotificationCenter({
     <EmptyState
       title={active === "unread" ? text.emptyUnreadTitle : text.emptyTitle}
       description={active === "unread" ? text.emptyUnreadDescription : text.emptyDescription}
+      className={classNames?.empty}
     />
   );
 
@@ -243,7 +251,7 @@ export function NotificationCenter({
         label={unread > 0 ? sentence : text.trigger}
         variant="ghost"
         onPress={() => onOpenChange(true)}
-        className={className}
+        className={cn(className, classNames?.trigger)}
       >
         {(glyph) => (
           <Indicator count={unread} max={max} label={sentence}>
@@ -253,8 +261,13 @@ export function NotificationCenter({
       </IconButton>
 
       <Sheet open={open} onOpenChange={onOpenChange} title={text.title}>
-        <View className="shrink gap-3">
-          <View className="flex-row flex-wrap items-center justify-between gap-3">
+        <View className={cn("shrink gap-3", classNames?.panel)}>
+          <View
+            className={cn(
+              "flex-row flex-wrap items-center justify-between gap-3",
+              classNames?.header,
+            )}
+          >
             <ToggleGroup
               items={[
                 { label: text.all, value: "all" },
@@ -265,6 +278,7 @@ export function NotificationCenter({
                 const next = value[0];
                 if (next === "all" || next === "unread") changeFilter(next);
               }}
+              className={classNames?.filters}
             />
             {onMarkAllRead ? (
               <Button
@@ -285,6 +299,7 @@ export function NotificationCenter({
               data={visible}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => row(item)}
+              className={classNames?.list}
             />
           )}
 

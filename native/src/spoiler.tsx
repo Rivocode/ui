@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useMotion } from "./motion";
 import { useRivo } from "./provider";
 import { SPOILER_CLIPPED, SPOILER_HEIGHT, SPOILER_LESS, SPOILER_MORE } from "./shared/spoiler";
@@ -33,6 +33,8 @@ export type SpoilerProps = {
    */
   fadeOver?: "bg" | "surface" | "surface-raised";
   className?: string;
+  /** Classe por parte: `content` (a caixa que corta) e `trigger` (o botao). */
+  classNames?: Slots<"content" | "trigger">;
 };
 
 export function Spoiler({
@@ -44,6 +46,7 @@ export function Spoiler({
   labels = {},
   fadeOver = "bg",
   className,
+  classNames,
 }: SpoilerProps) {
   const motion = useMotion();
   const { colors } = useRivo();
@@ -62,7 +65,7 @@ export function Spoiler({
     <View className={cn("items-start gap-1", className)}>
       <Animated.View
         layout={motion.reflow}
-        className="w-full"
+        className={cn("w-full", classNames?.content)}
         style={{ maxHeight: clipped ? maxHeight : undefined, overflow: "hidden" }}
       >
         <View
@@ -100,7 +103,7 @@ export function Spoiler({
           accessibilityState={{ expanded: open }}
           onPress={() => change(!open)}
           hitSlop={8}
-          className="min-h-11 justify-center"
+          className={cn("min-h-11 justify-center", classNames?.trigger)}
         >
           <Text className="text-sm font-rc-medium text-accent-text">
             {open ? (labels.less ?? SPOILER_LESS) : (labels.more ?? SPOILER_MORE)}

@@ -11,7 +11,7 @@ import Svg, { Line, Path, Text as SvgText } from "react-native-svg";
 
 import { tokens } from "../../tokens";
 import { Button } from "../button";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { Input } from "../field";
 import { IconButton } from "../icon-button";
 import {
@@ -99,6 +99,11 @@ export type SignaturePadProps = {
   /** Os textos da peca, os mesmos do web. */
   labels?: Partial<SignaturePadLabels>;
   className?: string;
+  /**
+   * Classe por parte: `pad` (o papel), `placeholder`, `actions` (a fileira dos
+   * botoes) e `input` (o campo do nome).
+   */
+  classNames?: Slots<"pad" | "placeholder" | "actions" | "input">;
 };
 
 type Latest = {
@@ -158,6 +163,7 @@ export function SignaturePad({
   onDrawingChange,
   labels: labelsProp,
   className,
+  classNames,
 }: SignaturePadProps) {
   const labels = {
     ...SIGNATURE_LABELS,
@@ -294,7 +300,7 @@ export function SignaturePad({
           backgroundColor: PAPER["signature-paper"],
           aspectRatio: size.width / size.height,
         }}
-        className={cn("w-full overflow-hidden rounded-md border", border)}
+        className={cn("w-full overflow-hidden rounded-md border", border, classNames?.pad)}
       >
         <View pointerEvents="none" className="absolute inset-0" {...HIDDEN}>
           <Svg width="100%" height="100%" viewBox={`0 0 ${size.width} ${size.height}`}>
@@ -333,7 +339,7 @@ export function SignaturePad({
                 color: PAPER["signature-guide"],
                 bottom: `${(1 - SIGNATURE_BASELINE) * 100}%`,
               }}
-              className="absolute left-[6%] mb-1.5 text-sm"
+              className={cn("absolute left-[6%] mb-1.5 text-sm", classNames?.placeholder)}
             >
               {labels.placeholder}
             </Text>
@@ -352,6 +358,7 @@ export function SignaturePad({
             editable={interactive}
             invalid={invalid && !disabled}
             value={text || drafts.current.typed}
+            className={classNames?.input}
             onChangeText={(next) => {
               drafts.current.typed = next;
               commit({ kind: "typed", text: next, font, ...size });
@@ -361,7 +368,12 @@ export function SignaturePad({
       ) : null}
 
       {readOnly ? null : (
-        <View className="flex-row flex-wrap items-center justify-between gap-2">
+        <View
+          className={cn(
+            "flex-row flex-wrap items-center justify-between gap-2",
+            classNames?.actions,
+          )}
+        >
           <Button variant="ghost" size="sm" disabled={!interactive} onPress={switchMode}>
             {mode === "draw" ? labels.typeMode : labels.drawMode}
           </Button>

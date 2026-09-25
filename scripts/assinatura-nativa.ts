@@ -119,7 +119,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "no toque não há foco de teclado para devolver quando a barra sai",
       },
-      { web: "classNames", native: null, note: "um `className` só, no painel da barra" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `actions`: as ações são filhas diretas do painel, e `className` veste o mesmo painel de `bar`",
+      },
     ],
   },
   AlertDialog: {
@@ -186,7 +190,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "icon",
         note: "sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho",
       },
-      { web: "classNames", native: null, note: "um `className` só, na raiz da faixa" },
     ],
   },
   Button: {
@@ -205,16 +208,6 @@ export const SIGNATURES: Record<string, Signature> = {
         web: null,
         native: "fadeOver",
         note: "o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara",
-      },
-      { web: "classNames", native: null, note: "um `className` só, na raiz" },
-    ],
-  },
-  TransferList: {
-    rows: [
-      {
-        web: "classNames",
-        native: null,
-        note: "um `className` só, na raiz; as listas empilham e cada uma tem os próprios botões",
       },
     ],
   },
@@ -237,8 +230,8 @@ export const SIGNATURES: Record<string, Signature> = {
       },
       {
         web: "classNames",
-        native: "className",
-        note: "um `className` só, na folha de baixo; a máscara não se veste",
+        native: "classNames",
+        note: "sem `spotlight`: o recorte é o vão entre as quatro faixas de `mask`, e não um nó",
       },
     ],
   },
@@ -249,7 +242,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "index",
         note: "vira obrigatório, com `onIndexChange`: não há `defaultIndex`, e `null` é o fechado",
       },
-      { web: "classNames", native: "className", note: "um `className` só, na grade de miniaturas" },
     ],
   },
   IconButton: {
@@ -285,7 +277,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "no toque a fileira que anda sozinha briga com o dedo; não há rotação nem pausa",
       },
-      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `pause`, porque não há `autoplay`",
+      },
     ],
   },
   Calendar: {
@@ -353,7 +349,11 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   QRCode: {
     rows: [
-      { web: "classNames", native: "className", note: "um `className` só, na raiz; o `svg` e o logo não se vestem por parte" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "só `logo`: `code` é o `Svg`, e o `react-native-svg` não recebe classe",
+      },
     ],
   },
   PixCode: {
@@ -363,7 +363,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "renderCopy",
         note: "o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied`",
       },
-      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `copy`: o botão é o que `renderCopy` devolve, e quem o escreve o veste",
+      },
     ],
   },
   Code: {
@@ -613,7 +617,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "a lista é sempre uma folha de baixo, e não um painel ancorado ao sino",
       },
-      { web: "classNames", native: "className", note: "um `className` só, no botão do sino" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `footer`: o “Carregar mais” fica direto na folha",
+      },
     ],
   },
   Indicator: {
@@ -948,7 +956,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "não há `<form>` para levar a nota num campo escondido",
       },
-      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
     ],
   },
   SignaturePad: {
@@ -968,7 +975,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "onDrawingChange",
         note: "avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar",
       },
-      { web: "classNames", native: "className", note: "um `className` só, na raiz" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `baseline`: a linha de base é um traço dentro do `Svg`",
+      },
     ],
   },
   Slider: {
@@ -1154,7 +1165,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "sem estado próprio: quem limpa o campo depois do envio é quem chamou",
       },
-      { web: "classNames", native: null, note: "um `className` só, na moldura do campo" },
     ],
   },
   Message: {
@@ -1169,7 +1179,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "error",
         note: "`string`: texto no nativo mora dentro de um `Text`",
       },
-      { web: "classNames", native: null, note: "um `className` só, na linha da mensagem" },
     ],
   },
   Conversation: {
@@ -1184,7 +1193,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "empty",
         note: "`title` e `description` viram `string`, e o `icon` é a função que recebe a cor",
       },
-      { web: "classNames", native: null, note: "um `className` só, na raiz da lista" },
     ],
   },
   ToolCall: {
@@ -1194,7 +1202,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "title",
         note: "`string`, como o `error`: texto no nativo mora dentro de um `Text`",
       },
-      { web: "classNames", native: null, note: "um `className` só, no cartão" },
     ],
   },
   AILabel: {

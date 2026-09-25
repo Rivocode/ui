@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Button } from "../button";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { useMotion } from "../motion";
 import { MESSAGE_AUTHOR as AUTHOR, type MessageRole } from "../shared/ai";
 import { Text } from "../text";
@@ -52,9 +52,9 @@ function Dot({ delay }: { delay: number }) {
   return <Animated.View style={style} className="size-1.5 rounded-pill bg-fg-subtle" />;
 }
 
-function TypingIndicator() {
+function TypingIndicator({ className }: { className?: string }) {
   return (
-    <View {...HIDDEN} className="flex-row items-center gap-1 py-1.5">
+    <View {...HIDDEN} className={cn("flex-row items-center gap-1 py-1.5", className)}>
       <Dot delay={0} />
       <Dot delay={150} />
       <Dot delay={300} />
@@ -94,6 +94,12 @@ export type MessageProps = {
   /** A resposta falhou: a frase sai embaixo do conteudo, no tom de perigo. */
   error?: string;
   className?: string;
+  /**
+   * Classe por parte: `avatar`, `bubble`, `content` (o `Text` do conteudo,
+   * quando ele chega como texto), `indicator` (os tres pontos), `error` e
+   * `actions`.
+   */
+  classNames?: Slots<"avatar" | "bubble" | "content" | "indicator" | "error" | "actions">;
 };
 
 export function Message({
@@ -108,12 +114,13 @@ export function Message({
   actions,
   error,
   className,
+  classNames,
 }: MessageProps) {
   const isUser = role === "user";
   const name = author ?? AUTHOR[role] ?? AUTHOR.assistant;
   const body =
     typeof children === "string" || typeof children === "number" ? (
-      <Text className="text-base text-fg">{children}</Text>
+      <Text className={cn("text-base text-fg", classNames?.content)}>{children}</Text>
     ) : (
       children
     );
@@ -124,7 +131,9 @@ export function Message({
     return (
       <View accessibilityLabel={name} className={cn("w-full items-center px-4 py-1", className)}>
         {typeof children === "string" ? (
-          <Text className="text-center text-sm text-fg-muted">{children}</Text>
+          <Text className={cn("text-center text-sm text-fg-muted", classNames?.content)}>
+            {children}
+          </Text>
         ) : (
           children
         )}
@@ -138,20 +147,25 @@ export function Message({
       accessibilityState={{ busy: streaming }}
       className={cn("w-full gap-3", isUser ? "flex-row-reverse" : "flex-row", className)}
     >
-      {avatar ? <View className="pt-0.5">{avatar}</View> : null}
+      {avatar ? <View className={cn("pt-0.5", classNames?.avatar)}>{avatar}</View> : null}
 
       <View className={cn("min-w-0 gap-1.5", isUser ? "max-w-[85%] items-end" : "flex-1")}>
         <View
-          className={cn(isUser ? "rounded-lg rounded-br-sm bg-accent-subtle px-3.5 py-2.5" : "")}
+          className={cn(
+            isUser ? "rounded-lg rounded-br-sm bg-accent-subtle px-3.5 py-2.5" : "",
+            classNames?.bubble,
+          )}
         >
           {hasContent ? body : null}
-          {streaming ? <TypingIndicator /> : null}
+          {streaming ? <TypingIndicator className={classNames?.indicator} /> : null}
         </View>
 
-        {error ? <Text className="text-sm text-danger-text">{error}</Text> : null}
+        {error ? (
+          <Text className={cn("text-sm text-danger-text", classNames?.error)}>{error}</Text>
+        ) : null}
 
         {showActions ? (
-          <View className="flex-row flex-wrap items-center gap-1">
+          <View className={cn("flex-row flex-wrap items-center gap-1", classNames?.actions)}>
             {onCopy ? (
               <Button variant="ghost" size="sm" onPress={onCopy}>
                 {labels.copy ?? "Copiar"}

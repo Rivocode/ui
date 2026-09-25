@@ -14,6 +14,7 @@ import {
 } from "react-native";
 
 import { useAnnounce } from "./announce";
+import { cn, type Slots } from "./cn";
 import { ChevronGlyph, CrossGlyph, PlusGlyph } from "./glyph";
 import { Grid } from "./grid";
 import { IconButton } from "./icon-button";
@@ -77,8 +78,16 @@ export type ImageViewerProps = {
   /** O zoom maximo, em vezes o tamanho que cabe na tela. Sem ele, 4. */
   maxZoom?: number;
   labels?: Partial<ImageViewerLabels>;
-  /** Veste a grade de miniaturas. */
+  /** Veste a grade de miniaturas, o mesmo elemento que `classNames.thumbnails`. */
   className?: string;
+  /**
+   * Classe por parte: `thumbnails` (a grade), `thumbnail` (cada miniatura
+   * tocavel), `viewer` (a tela cheia), `toolbar`, `counter`, `stage` (a area
+   * da imagem), `image` e `caption`.
+   */
+  classNames?: Slots<
+    "thumbnails" | "thumbnail" | "viewer" | "toolbar" | "counter" | "stage" | "image" | "caption"
+  >;
 };
 
 const distanceOf = (event: GestureResponderEvent) => {
@@ -96,6 +105,7 @@ export function ImageViewer({
   maxZoom = 4,
   labels,
   className,
+  classNames,
 }: ImageViewerProps) {
   const text = { ...LABELS, ...labels };
   const reduced = useReducedMotion();
@@ -219,7 +229,7 @@ export function ImageViewer({
   return (
     <>
       {thumbnails && (
-        <View className={className}>
+        <View className={cn(className, classNames?.thumbnails)}>
           <Grid minItemWidth={96} gap="sm">
             {images.map((item, position) => (
               <Pressable
@@ -227,7 +237,10 @@ export function ImageViewer({
                 accessibilityRole="imagebutton"
                 accessibilityLabel={item.alt}
                 onPress={() => change(position)}
-                className="aspect-square overflow-hidden rounded-md border border-border bg-surface active:opacity-80"
+                className={cn(
+                  "aspect-square overflow-hidden rounded-md border border-border bg-surface active:opacity-80",
+                  classNames?.thumbnail,
+                )}
               >
                 <Image
                   source={{ uri: item.thumbnail ?? item.src }}
@@ -249,14 +262,14 @@ export function ImageViewer({
         <View
           accessibilityViewIsModal
           style={{ backgroundColor: MEDIA["media-stage"] }}
-          className="flex-1 pt-12 pb-8"
+          className={cn("flex-1 pt-12 pb-8", classNames?.viewer)}
         >
-          <View className="flex-row items-center gap-2 px-4 pb-3">
+          <View className={cn("flex-row items-center gap-2 px-4 pb-3", classNames?.toolbar)}>
             <Text
               accessibilityLiveRegion="polite"
               accessibilityLabel={spoken}
               style={{ color: MEDIA["media-fg-muted"] }}
-              className="text-sm"
+              className={cn("text-sm", classNames?.counter)}
             >
               {counter}
             </Text>
@@ -290,7 +303,7 @@ export function ImageViewer({
             </View>
           </View>
 
-          <View className="flex-1" onLayout={measure}>
+          <View className={cn("flex-1", classNames?.stage)} onLayout={measure}>
             <FlatList
               ref={listRef}
               horizontal
@@ -327,6 +340,7 @@ export function ImageViewer({
                         resizeMode="contain"
                         onLoad={() => setSettled({ src: item.src, state: "ready" })}
                         onError={() => setSettled({ src: item.src, state: "error" })}
+                        className={classNames?.image}
                         style={{
                           width: size.width || undefined,
                           height: size.height || undefined,
@@ -371,7 +385,10 @@ export function ImageViewer({
 
           <View className="gap-3 px-4 pt-3">
             {image?.caption ? (
-              <Text style={{ color: MEDIA["media-fg"] }} className="text-center text-sm">
+              <Text
+                style={{ color: MEDIA["media-fg"] }}
+                className={cn("text-center text-sm", classNames?.caption)}
+              >
                 {image.caption}
               </Text>
             ) : null}

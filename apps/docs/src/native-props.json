@@ -94,7 +94,14 @@
       {
         "name": "className",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Veste o painel da barra, o mesmo elemento que `classNames.bar`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"bar\" | \"clear\" | \"count\", string>>",
+        "required": false,
+        "note": "Classe por parte: `bar` (o painel), `count` (a frase da contagem) e `clear` (o botao de limpar)."
       },
       {
         "name": "labels",
@@ -403,6 +410,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"content\" | \"description\" | \"dismiss\" | \"icon\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `icon`, `content` (a coluna do texto), `title`, `description`, `actions` e `dismiss` (o xis)."
+      },
+      {
         "name": "dismissLabel",
         "type": "string",
         "required": false,
@@ -583,6 +596,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"footer\" | \"indicator\" | \"indicators\" | \"next\" | \"previous\" | \"slide\" | \"viewport\", string>>",
+        "required": false,
+        "note": "Classe por parte: `viewport` (a janela que rola), `slide`, `footer` (a fileira embaixo), `previous`, `next`, `indicators` e `indicator` (cada ponto tocavel)."
       },
       {
         "name": "controls",
@@ -1492,6 +1511,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"empty\" | \"scrollButton\" | \"suggestions\" | \"viewport\", string>>",
+        "required": false,
+        "note": "Classe por parte: `viewport` (a lista que rola), `content` (o conteudo dela, pelo `contentContainerClassName`), `empty`, `suggestions` (a fileira das sugestoes) e `scrollButton` (o botao de ir para o fim)."
       },
       {
         "name": "empty",
@@ -2514,7 +2539,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste a grade de miniaturas."
+        "note": "Veste a grade de miniaturas, o mesmo elemento que `classNames.thumbnails`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"caption\" | \"counter\" | \"image\" | \"stage\" | \"thumbnail\" | \"thumbnails\" | \"toolbar\" | \"viewer\", string>>",
+        "required": false,
+        "note": "Classe por parte: `thumbnails` (a grade), `thumbnail` (cada miniatura tocavel), `viewer` (a tela cheia), `toolbar`, `counter`, `stage` (a area da imagem), `image` e `caption`."
       },
       {
         "name": "labels",
@@ -2888,6 +2919,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"avatar\" | \"bubble\" | \"content\" | \"error\" | \"indicator\", string>>",
+        "required": false,
+        "note": "Classe por parte: `avatar`, `bubble`, `content` (o `Text` do conteudo, quando ele chega como texto), `indicator` (os tres pontos), `error` e `actions`."
+      },
+      {
         "name": "error",
         "type": "string",
         "required": false,
@@ -3001,7 +3038,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste o botao do sino."
+        "note": "Veste o botao do sino, o mesmo elemento que `classNames.trigger`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"filters\" | \"header\" | \"item\" | \"list\" | \"panel\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `trigger` (o botao do sino), `panel` (o conteudo da folha), `header` (a fileira do filtro e do marcar todas), `filters`, `list`, `item` (cada linha) e `empty`."
       },
       {
         "name": "filter",
@@ -3250,6 +3293,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"amount\" | \"code\" | \"payload\" | \"receiver\", string>>",
+        "required": false,
+        "note": "Classe por parte: `code` (o QR, a marca de lugar dele ou o aviso de expirado), `amount`, `receiver` e `payload` (o texto do copia e cola)."
+      },
+      {
         "name": "expired",
         "type": "boolean",
         "required": false,
@@ -3440,6 +3489,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"attachments\" | \"count\" | \"footer\" | \"submit\" | \"textarea\", string>>",
+        "required": false,
+        "note": "Classe por parte: `attachments`, `textarea` (o campo), `footer` (a fileira de baixo), `count` e `submit` (o botao de enviar, e o de parar no lugar dele)."
+      },
+      {
         "name": "disabled",
         "type": "boolean",
         "required": false
@@ -3524,6 +3579,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"logo\", string>>",
+        "required": false,
+        "note": "Classe por parte: `logo`, a caixa de papel que segura a marca no centro."
       },
       {
         "name": "labels",
@@ -3743,6 +3804,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"filled\" | \"item\", string>>",
+        "required": false,
+        "note": "Classe por parte: `item` (a caixa de cada estrela), `empty` e `filled` (a estrela vazia e a cheia)."
       },
       {
         "name": "clearable",
@@ -4048,6 +4115,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"input\" | \"pad\" | \"placeholder\", string>>",
+        "required": false,
+        "note": "Classe por parte: `pad` (o papel), `placeholder`, `actions` (a fileira dos botoes) e `input` (o campo do nome)."
+      },
+      {
         "name": "defaultMode",
         "type": "\"draw\" | \"type\"",
         "required": false,
@@ -4316,6 +4389,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `content` (a caixa que corta) e `trigger` (o botao)."
       },
       {
         "name": "defaultExpanded",
@@ -4897,6 +4976,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"error\" | \"name\" | \"panel\" | \"status\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `trigger` (o cabecalho que abre), `name`, `status` (o giro e o selo), `panel` (a entrada e a saida), `error` e `actions` (os botoes de aprovar e recusar)."
+      },
+      {
         "name": "defaultOpen",
         "type": "boolean",
         "required": false,
@@ -4996,6 +5081,12 @@
         "note": "Veste a folha, nao a mascara."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"counter\" | \"description\" | \"footer\" | \"mask\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `mask` (as quatro faixas escuras em volta do alvo), `counter`, `title`, `description` e `footer` (a fileira dos botoes)."
+      },
+      {
         "name": "labels",
         "type": "Partial<TourLabels>",
         "required": false,
@@ -5067,6 +5158,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"empty\" | \"header\" | \"list\" | \"option\" | \"panel\" | \"search\", string>>",
+        "required": false,
+        "note": "Classe por parte: `panel` (cada lista com a moldura), `header`, `search`, `list` (a caixa que rola), `option`, `actions` (a fileira dos botoes de mover, embaixo de cada lista) e `empty`."
       },
       {
         "name": "disabled",

@@ -114,3 +114,5 @@ Traduz, com os mesmos quatro tons, o mesmo `title`, `description`, `actions` e `
 **A urgência sai por região viva.** `danger` e `warning` saem com `accessibilityRole="alert"` e anúncio imediato; `info` e `success` saem em região viva educada, que espera a frase terminar. É a mesma divisão do `role` do web. No iOS, onde a região viva não existe, título e descrição saem pelo anúncio do sistema: nos tons urgentes também ao aparecer, e nos quatro a cada troca de texto.
 
 **O ícone não vem sozinho.** O pacote nativo não traz biblioteca de ícones, então o `icon` é opcional e a forma que pinta na cor do tom é a função: `icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`. As ações ficam embaixo do texto, que é onde cabem na largura do telefone.
+
+As partes vestem pelo mesmo `classNames` do web, as seis: `icon`, `content`, `title`, `description`, `actions` e `dismiss`.

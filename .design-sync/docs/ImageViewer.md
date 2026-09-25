@@ -138,3 +138,5 @@ Traduz sobre o `Modal` do core, com as imagens numa `FlatList` horizontal com `p
 `caption` é `string`, a vizinha de cada lado é pedida antes por `Image.prefetch`, e o contador "3 de 8" fica numa região viva que diz também o `alt` da imagem nova.
 
 O palco é escuro nos dois esquemas, como no web: as cores saem de `tokens.media`, e não do tema, então o `Modal` não clareia no tema claro nem no tema de cliente. O controle desabilitado segue a regra do pacote, a camada inteira a 50%.
+
+As partes vestem pelo mesmo `classNames` do web, as oito: `thumbnails`, `thumbnail`, `viewer`, `toolbar`, `counter`, `stage`, `image` e `caption`. O `className` veste a grade de miniaturas, o mesmo nó de `thumbnails`, porque a peça não tem raiz: a grade e o `Modal` são irmãos.

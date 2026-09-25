@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { I18nManager, Pressable, View, type GestureResponderEvent } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useRivo } from "./provider";
 import { RATING_LABELS, starFill, type RatingLabels } from "./shared/rating";
 import { Text } from "./text";
@@ -54,6 +54,12 @@ export type RatingProps = {
   /** Os textos que o leitor de tela ouve: o nome do grupo, o de cada nota e o da media. */
   labels?: Partial<RatingLabels>;
   className?: string;
+  /**
+   * Classe por parte: `item` (a caixa de cada estrela), `empty` e `filled` (a
+   * estrela vazia e a cheia). As duas ultimas vestem a estrela da casa; com
+   * `icon`, a cor chega pela funcao.
+   */
+  classNames?: Slots<"item" | "empty" | "filled">;
 };
 
 export function Rating({
@@ -68,6 +74,7 @@ export function Rating({
   icon,
   labels,
   className,
+  classNames,
 }: RatingProps) {
   const { colors } = useRivo();
   const text = { ...RATING_LABELS, ...labels };
@@ -98,7 +105,13 @@ export function Rating({
         filled,
       });
     return (
-      <Text className={cn(GLYPH_CLASS[size], filled ? "text-warning" : "text-border-strong")}>
+      <Text
+        className={cn(
+          GLYPH_CLASS[size],
+          filled ? "text-warning" : "text-border-strong",
+          filled ? classNames?.filled : classNames?.empty,
+        )}
+      >
         ★
       </Text>
     );
@@ -111,7 +124,7 @@ export function Rating({
         {...HIDDEN}
         pointerEvents="none"
         testID="rating-star"
-        className="items-center justify-center"
+        className={cn("items-center justify-center", classNames?.item)}
         style={{ width: box, height: box }}
       >
         {layer(false)}

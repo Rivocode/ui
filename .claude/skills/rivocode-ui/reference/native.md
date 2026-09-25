@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**190 divergências de assinatura em 87 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**181 divergências de assinatura em 86 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -89,7 +89,7 @@ escritos em lugar nenhum.
 | `ActionBar` | `position` | — | não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela |
 | `ActionBar` | — | `bottomInset` | a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context` |
 | `ActionBar` | `finalFocus` | — | no toque não há foco de teclado para devolver quando a barra sai |
-| `ActionBar` | `classNames` | — | um `className` só, no painel da barra |
+| `ActionBar` | `classNames` | `classNames` | sem `actions`: as ações são filhas diretas do painel, e `className` veste o mesmo painel de `bar` |
 | `Alert` | — | `title` | o título vira prop; no web ele é `AlertTitle` por filho |
 | `AlertDialog` | — | `title` | `title` e `description` viram props obrigatórias, no lugar de `AlertDialogTitle` e `AlertDialogDescription` |
 | `AlertDialog` | — | `actionLabel` | o botão que confirma é `actionLabel` mais `onAction`, e não um `AlertDialogClose` no rodapé |
@@ -100,7 +100,6 @@ escritos em lugar nenhum.
 | `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
 | `Banner` | `description` | `description` | `title` e `description` viram `string`: texto no nativo mora dentro de um `Text` |
 | `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
-| `Banner` | `classNames` | — | um `className` só, na raiz da faixa |
 | `Button` | `size` | `size` | `cta`, `icon` e `iconSm` não portam: alvo de toque não encolhe, e botão de ícone se resolve com `hitSlop` |
 | `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `Calendar` | `mode` | — | só data única: intervalo é o `DateRangePicker` |
@@ -108,7 +107,7 @@ escritos em lugar nenhum.
 | `Carousel` | `index` | `index` | vira obrigatório, com `onIndexChange`: não há `defaultIndex` |
 | `Carousel` | `slidesPerView` | `slidesPerView` | só número: o objeto por largura e o `"auto"` não portam |
 | `Carousel` | `autoplay` | — | no toque a fileira que anda sozinha briga com o dedo; não há rotação nem pausa |
-| `Carousel` | `classNames` | `className` | um `className` só, na raiz |
+| `Carousel` | `classNames` | `classNames` | sem `pause`, porque não há `autoplay` |
 | `ChartContainer` | — | `children` | `children` é função e recebe `{ width, height, colors }`: não há `ResponsiveContainer` para medir por você, e a medida chega zerada no primeiro quadro |
 | `ChartContainer` | `empty` | `empty` | `title` e `description` do vazio são `string`, e não `ReactNode`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
 | `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
@@ -130,7 +129,6 @@ escritos em lugar nenhum.
 | `ContextMenu` → `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe |
 | `Conversation` | — | `items` | as mensagens vêm por `items`, `renderItem` e `keyExtractor`, e não por filhos; a ordem é a mesma, a mais nova por último |
 | `Conversation` | `empty` | `empty` | `title` e `description` viram `string`, e o `icon` é a função que recebe a cor |
-| `Conversation` | `classNames` | — | um `className` só, na raiz da lista |
 | `CurrencyInput` | `value` | `value` | vira obrigatório, com `onValueChange`: não há `defaultValue` |
 | `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
 | `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
@@ -161,7 +159,6 @@ escritos em lugar nenhum.
 | `IconButton` | `tooltip` | — | no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto |
 | `IconButton` | `tooltipSide` | — | sai junto com o `tooltip` |
 | `ImageViewer` | `index` | `index` | vira obrigatório, com `onIndexChange`: não há `defaultIndex`, e `null` é o fechado |
-| `ImageViewer` | `classNames` | `className` | um `className` só, na grade de miniaturas |
 | `Indicator` | `label` | `label` | `label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase |
 | `Input` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `InputGroup` | — | `prefix` | `prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction` |
@@ -177,14 +174,13 @@ escritos em lugar nenhum.
 | `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe |
 | `Message` | `copyValue` | `onCopy` | o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard` |
 | `Message` | `error` | `error` | `string`: texto no nativo mora dentro de um `Text` |
-| `Message` | `classNames` | — | um `className` só, na linha da mensagem |
 | `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `NotificationCenter` | `open` | `open` | vira obrigatório, com `onOpenChange`: não há `defaultOpen` |
 | `NotificationCenter` | — | `icon` | o sino entra por `icon`, obrigatório, porque o pacote não traz ícone; a função recebe a cor do botão |
 | `NotificationCenter` | `onItemClick` | `onItemPress` | a linha não é link: sem `href` no item, quem navega é o router a partir do item recebido |
 | `NotificationCenter` | `defaultFilter` | — | o filtro começa em `all`; `filter` com `onFilterChange` controla |
 | `NotificationCenter` | `align` | — | a lista é sempre uma folha de baixo, e não um painel ancorado ao sino |
-| `NotificationCenter` | `classNames` | `className` | um `className` só, no botão do sino |
+| `NotificationCenter` | `classNames` | `classNames` | sem `footer`: o “Carregar mais” fica direto na folha |
 | `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
 | `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
 | `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
@@ -194,7 +190,7 @@ escritos em lugar nenhum.
 | `PageHeader` | `titleAs` | — | não há nível de título: o cabeçalho é uma parada só do leitor de tela |
 | `PasswordInput` | `labels` | `labels` | `labels.show` e `labels.hide` são obrigatórios juntos, porque o botão troca de nome com o estado |
 | `PixCode` | — | `renderCopy` | o botão de copiar vem de `@rivocode/ui-native/clipboard` por função; no web ele já vem dentro, e por isso o `PixCodeLabels` daqui não tem `copy` nem `copied` |
-| `PixCode` | `classNames` | `className` | um `className` só, na raiz |
+| `PixCode` | `classNames` | `classNames` | sem `copy`: o botão é o que `renderCopy` devolve, e quem o escreve o veste |
 | `Popconfirm` → `AlertDialog` | `trigger` | — | não há ancoragem: você desenha o próprio botão e controla `open` |
 | `Popconfirm` → `AlertDialog` | `onConfirm` | `onAction` | só o nome muda: devolvendo promessa, o modal segura o botão em espera e fecha quando ela resolve |
 | `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
@@ -206,8 +202,7 @@ escritos em lugar nenhum.
 | `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `PromptInput` | `value` | `value` | obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado |
 | `PromptInput` | `defaultValue` | — | sem estado próprio: quem limpa o campo depois do envio é quem chamou |
-| `PromptInput` | `classNames` | — | um `className` só, na moldura do campo |
-| `QRCode` | `classNames` | `className` | um `className` só, na raiz; o `svg` e o logo não se vestem por parte |
+| `QRCode` | `classNames` | `classNames` | só `logo`: `code` é o `Svg`, e o `react-native-svg` não recebe classe |
 | `QueryBoundary` | `empty` | `empty` | `title` e `description` do vazio são `string`; o `icon` atravessa, e aceita também a função do `EmptyState` nativo |
 | `QueryBoundary` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
 | `Questionnaire` | — | `items` | as perguntas vêm por `items`, com `type` `single`, `multiple` ou `text`, no lugar de `QuestionnaireItem` e das partes por filho |
@@ -220,7 +215,6 @@ escritos em lugar nenhum.
 | `Rating` | `value` | `value` | vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe |
 | `Rating` | `icon` | `icon` | é função, e recebe `{ color, size, filled }`: a cor não desce da `View` para o SVG |
 | `Rating` | `name` | — | não há `<form>` para levar a nota num campo escondido |
-| `Rating` | `classNames` | `className` | um `className` só, na raiz |
 | `RivoProvider` | `density` | — | a prop não existe: alvo de toque não encolhe, e `comfortable` é a única altura |
 | `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
 | `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
@@ -235,7 +229,7 @@ escritos em lugar nenhum.
 | `SignaturePad` | `value` | `value` | vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe |
 | `SignaturePad` | `name` | — | não há `<form>` para levar o SVG num campo escondido |
 | `SignaturePad` | — | `onDrawingChange` | avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar |
-| `SignaturePad` | `classNames` | `className` | um `className` só, na raiz |
+| `SignaturePad` | `classNames` | `classNames` | sem `baseline`: a linha de base é um traço dentro do `Svg` |
 | `Slider` | `value` | `value` | um valor só: `number`, e não `number[]` |
 | `Slider` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `Sparkline` | `variant` | `variant` | `area` não porta: pede polígono preenchido, e o desenho nativo é `View` |
@@ -243,7 +237,6 @@ escritos em lugar nenhum.
 | `Sparkline` | — | `height` | a altura é prop, porque não há CSS que a dê de fora |
 | `Spinner` | `size` | `size` | `sm`, `md` e `lg` como no web, e `sm` e `md` dão o mesmo giro pequeno do `ActivityIndicator`; `small` e `large` seguem aceitos, obsoletos |
 | `Spoiler` | — | `fadeOver` | o degradê é pintado na cor do fundo em que o bloco pousa, porque o toque não tem máscara |
-| `Spoiler` | `classNames` | — | um `className` só, na raiz |
 | `Stat` | `value` | `value` | `value` é `string` já formatada, com `currencyShort` e os outros formatadores que a raiz exporta |
 | `Stat` | `deltaVariant` | — | a variação é sempre texto com seta, sem a pastilha preenchida |
 | `Stat` | `icon` | — | sem ícone, sem `footer`, sem `hint` e sem `actions`: o cartão é rótulo, valor e variação |
@@ -262,12 +255,10 @@ escritos em lugar nenhum.
 | `Toggle` | `value` | — | não há formulário nativo para carregar valor: o estado é `pressed` |
 | `ToggleGroup` | — | `items` | `items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual |
 | `ToolCall` | `title` | `title` | `string`, como o `error`: texto no nativo mora dentro de um `Text` |
-| `ToolCall` | `classNames` | — | um `className` só, no cartão |
 | `Tour` | `open` | `open` | vira obrigatório, com `onOpenChange`: não há `defaultOpen` |
 | `Tour` | `step` | `step` | vira obrigatório, com `onStepChange`: não há `defaultStep`, e é no `onStepChange` que a tela rola o alvo |
 | `Tour` | `interactive` | — | o `Modal` é outra janela, e o toque não atravessa o recorte até o alvo |
-| `Tour` | `classNames` | `className` | um `className` só, na folha de baixo; a máscara não se veste |
-| `TransferList` | `classNames` | — | um `className` só, na raiz; as listas empilham e cada uma tem os próprios botões |
+| `Tour` | `classNames` | `classNames` | sem `spotlight`: o recorte é o vão entre as quatro faixas de `mask`, e não um nó |
 | `Tree` | `expanded` | — | não há aberto: um nível por vez, e tocar num galho empurra o de dentro |
 | `Tree` | `filter` | — | sem busca dentro da árvore; `emptyMessage` é o texto de nada encontrado |
 | `Tree` | — | `label` | `label` é obrigatório: é ele que nomeia o nível para o leitor de tela |
@@ -471,8 +462,8 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha |
-| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos e não há `classNames` |
-| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
+| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos, e só o `logo` se veste por parte |
+| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` nesta peca |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `Rating` | ✔ traduz | um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função |

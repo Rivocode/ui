@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { View } from "react-native";
 
 import { useAnnounce } from "../announce";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { IconButton } from "../icon-button";
 import { useRivo } from "../provider";
 import { PROMPT_INPUT_COUNT, type PromptInputLabels } from "../shared/ai";
@@ -76,6 +76,11 @@ export type PromptInputProps = {
    */
   labels?: Partial<PromptInputLabels>;
   className?: string;
+  /**
+   * Classe por parte: `attachments`, `textarea` (o campo), `footer` (a fileira
+   * de baixo), `count` e `submit` (o botao de enviar, e o de parar no lugar dele).
+   */
+  classNames?: Slots<"attachments" | "textarea" | "footer" | "count" | "submit">;
 };
 
 export type { PromptInputLabels };
@@ -98,6 +103,7 @@ export function PromptInput({
   actions,
   labels: labelsProp,
   className,
+  classNames,
 }: PromptInputProps) {
   const { colors } = useRivo();
   const [focused, setFocused] = useState(false);
@@ -119,7 +125,9 @@ export function PromptInput({
       )}
     >
       {attachments ? (
-        <View className="flex-row flex-wrap gap-2 px-1 pt-1">{attachments}</View>
+        <View className={cn("flex-row flex-wrap gap-2 px-1 pt-1", classNames?.attachments)}>
+          {attachments}
+        </View>
       ) : null}
 
       <TextInput
@@ -137,24 +145,30 @@ export function PromptInput({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         style={{ minHeight: LINE + 16, maxHeight: LINE * maxRows + 16 }}
-        className="px-2 py-2 text-base text-fg"
+        className={cn("px-2 py-2 text-base text-fg", classNames?.textarea)}
       />
 
-      <View className="flex-row items-center gap-2">
+      <View className={cn("flex-row items-center gap-2", classNames?.footer)}>
         <View className="flex-1 flex-row items-center gap-1">{actions}</View>
 
         {showCount ? (
           <Text
             {...HIDDEN}
             font="mono"
-            className={cn("text-xs", full ? "text-danger-text" : "text-fg-subtle")}
+            className={cn("text-xs", full ? "text-danger-text" : "text-fg-subtle", classNames?.count)}
           >
             {maxLength === undefined ? String(value.length) : `${value.length}/${maxLength}`}
           </Text>
         ) : null}
 
         {streaming ? (
-          <IconButton label={stopLabel} variant="secondary" size="sm" onPress={onStop}>
+          <IconButton
+            label={stopLabel}
+            variant="secondary"
+            size="sm"
+            onPress={onStop}
+            className={classNames?.submit}
+          >
             {({ color }) => <StopGlyph color={color} />}
           </IconButton>
         ) : (
@@ -165,6 +179,7 @@ export function PromptInput({
             onPress={() => {
               if (!blocked) onSubmit(value);
             }}
+            className={classNames?.submit}
           >
             {({ color }) => <SendGlyph color={color} />}
           </IconButton>

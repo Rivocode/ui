@@ -99,3 +99,5 @@ no tom de perigo, e as ações aparecem mesmo sem conteúdo nenhum.
 Traduz, no caminho próprio `@rivocode/ui-native/ai`, com o mesmo `role`, o mesmo alinhamento, o mesmo `author`, `avatar`, `streaming`, `onRetry`, `actions` e `error`. Em `streaming` a mensagem anuncia `busy` e esconde as ações, como no web.
 
 **Copiar é seu.** O web copia sozinho pelo `copyValue`; aqui a peça tem `onCopy`, porque a área de transferência do celular é o `expo-clipboard`, peer que mora em `@rivocode/ui-native/clipboard` e que o caminho de IA não pode cobrar de quem não copia nada. Texto solto em `children` vira `Text` no corpo da casa; nó entra como veio, para quem renderiza markdown.
+
+As partes vestem pelo mesmo `classNames` do web: `avatar`, `bubble`, `content`, `indicator`, `error` e `actions`. `content` veste o `Text` que embrulha o texto solto; nó que chega pronto entra como veio.

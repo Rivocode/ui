@@ -3,7 +3,7 @@ import { AccessibilityInfo, ScrollView, View } from "react-native";
 
 import { Button } from "./button";
 import { Checkbox } from "./checkbox";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { SearchInput } from "./search-input";
 import { matchesSearch } from "./shared/highlight";
 import {
@@ -57,6 +57,12 @@ export type TransferListProps = {
   /** Os textos da peca, os mesmos do web. */
   labels?: TransferListLabels;
   className?: string;
+  /**
+   * Classe por parte: `panel` (cada lista com a moldura), `header`, `search`,
+   * `list` (a caixa que rola), `option`, `actions` (a fileira dos botoes de
+   * mover, embaixo de cada lista) e `empty`.
+   */
+  classNames?: Slots<"panel" | "header" | "search" | "list" | "option" | "actions" | "empty">;
 };
 
 export function TransferList({
@@ -67,6 +73,7 @@ export function TransferList({
   disabled = false,
   labels = {},
   className,
+  classNames,
 }: TransferListProps) {
   const titles: Record<TransferSide, string> = {
     available: labels.available ?? TRANSFER_TITLES.available,
@@ -116,8 +123,15 @@ export function TransferList({
     const searching = query[side].trim().length > 0;
 
     return (
-      <View className="overflow-hidden rounded-lg border border-border bg-surface">
-        <View className="flex-row flex-wrap items-baseline justify-between gap-2 border-b border-border px-3 py-2">
+      <View
+        className={cn("overflow-hidden rounded-lg border border-border bg-surface", classNames?.panel)}
+      >
+        <View
+          className={cn(
+            "flex-row flex-wrap items-baseline justify-between gap-2 border-b border-border px-3 py-2",
+            classNames?.header,
+          )}
+        >
           <Text accessibilityRole="header" className="text-sm font-rc-medium text-fg">
             {titles[side]}
           </Text>
@@ -125,7 +139,7 @@ export function TransferList({
         </View>
 
         {searchable ? (
-          <View className="border-b border-border p-2">
+          <View className={cn("border-b border-border p-2", classNames?.search)}>
             <SearchInput
               accessibilityLabel={searchInLabel(titles[side])}
               placeholder={labels.search ?? TRANSFER_SEARCH}
@@ -140,10 +154,10 @@ export function TransferList({
           nestedScrollEnabled
           keyboardShouldPersistTaps="handled"
           accessibilityLabel={titles[side]}
-          className="max-h-72"
+          className={cn("max-h-72", classNames?.list)}
         >
           {list.length === 0 ? (
-            <Text className="px-3 py-6 text-center text-sm text-fg-muted">
+            <Text className={cn("px-3 py-6 text-center text-sm text-fg-muted", classNames?.empty)}>
               {searching
                 ? (labels.noResults ?? TRANSFER_NO_RESULTS)
                 : (labels.empty ?? TRANSFER_EMPTY)}
@@ -157,7 +171,7 @@ export function TransferList({
                   checked={checked}
                   disabled={disabled || item.disabled}
                   onCheckedChange={(on) => toggle(side, item.value, on)}
-                  className={cn("min-h-11 px-3 py-2", checked && "bg-selected")}
+                  className={cn("min-h-11 px-3 py-2", checked && "bg-selected", classNames?.option)}
                 >
                   {item.label}
                 </Checkbox>
@@ -166,7 +180,7 @@ export function TransferList({
           )}
         </ScrollView>
 
-        <View className="flex-row flex-wrap gap-2 border-t border-border p-2">
+        <View className={cn("flex-row flex-wrap gap-2 border-t border-border p-2", classNames?.actions)}>
           <Button
             size="sm"
             variant="secondary"

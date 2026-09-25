@@ -245,8 +245,8 @@ recusa o que conseguiu medir.
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
 | `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha |
-| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos e não há `classNames` |
-| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo |
+| `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos, e só o `logo` se veste por parte |
+| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` nesta peca |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `Rating` | ✔ traduz | um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função |

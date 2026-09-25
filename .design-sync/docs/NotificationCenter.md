@@ -132,3 +132,5 @@ A contagem é o nome do botão ("3 notificações não lidas"), e quando ela mud
   onMarkRead={marcar}
 />
 ```
+
+As partes vestem pelo mesmo `classNames` do web: `trigger`, `panel`, `header`, `filters`, `list`, `item` e `empty`. O `className` continua no botão do sino, o mesmo nó de `trigger`. `footer` não existe aqui: o "Carregar mais" fica direto na folha, sem faixa própria.

@@ -110,3 +110,5 @@ para cima e para baixo.
 Traduz, com os mesmos `items`, `value`, `onValueChange`, `searchable`, `disabled` e `labels`, e as mesmas frases de contagem e de anúncio.
 
 **As listas empilham, e cada uma tem os próprios botões.** No telefone não há largura para duas colunas com botões no meio: a lista de cima é a de disponíveis, a de baixo a de escolhidos, e cada uma fecha com “Mover selecionados para …” e “Mover todos para …”. Cada linha é uma caixa de marcar com alvo de 44 pontos, e a lista rola por dentro a partir de 288 pontos. O anúncio sai pelo leitor de tela do sistema.
+
+As partes vestem pelo mesmo `classNames` do web: `panel`, `header`, `search`, `list`, `option`, `actions` e `empty`. Como os botões moram em cada lista, `actions` veste a fileira embaixo de cada uma, e não uma coluna no meio.

@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 
 import { spokenSentence, useAnnounce } from "./announce";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -53,6 +53,11 @@ export type BannerProps = {
   /** O nome acessivel do xis. Sem ele, "Fechar aviso". */
   dismissLabel?: string;
   className?: string;
+  /**
+   * Classe por parte: `icon`, `content` (a coluna do texto), `title`,
+   * `description`, `actions` e `dismiss` (o xis).
+   */
+  classNames?: Slots<"icon" | "content" | "title" | "description" | "actions" | "dismiss">;
 };
 
 export function Banner({
@@ -64,6 +69,7 @@ export function Banner({
   onDismiss,
   dismissLabel = "Fechar aviso",
   className,
+  classNames,
 }: BannerProps) {
   const { colors } = useRivo();
   const styles = TONE[tone] ?? TONE.info;
@@ -80,15 +86,23 @@ export function Banner({
       className={cn("w-full flex-row items-start gap-3 border-b px-4 py-3", styles.box, className)}
     >
       {glyph ? (
-        <View {...HIDDEN} className="mt-0.5">
+        <View {...HIDDEN} className={cn("mt-0.5", classNames?.icon)}>
           {glyph}
         </View>
       ) : null}
 
-      <View className="flex-1 gap-1">
-        {title ? <Text className={cn("text-sm font-rc-medium", styles.text)}>{title}</Text> : null}
-        <Text className="text-sm text-fg">{description}</Text>
-        {actions ? <View className="mt-2 flex-row flex-wrap gap-2">{actions}</View> : null}
+      <View className={cn("flex-1 gap-1", classNames?.content)}>
+        {title ? (
+          <Text className={cn("text-sm font-rc-medium", styles.text, classNames?.title)}>
+            {title}
+          </Text>
+        ) : null}
+        <Text className={cn("text-sm text-fg", classNames?.description)}>{description}</Text>
+        {actions ? (
+          <View className={cn("mt-2 flex-row flex-wrap gap-2", classNames?.actions)}>
+            {actions}
+          </View>
+        ) : null}
       </View>
 
       {onDismiss ? (
@@ -97,7 +111,7 @@ export function Banner({
           accessibilityLabel={dismissLabel}
           onPress={onDismiss}
           hitSlop={10}
-          className="-my-1 -mr-1 size-6 items-center justify-center"
+          className={cn("-my-1 -mr-1 size-6 items-center justify-center", classNames?.dismiss)}
         >
           <View className={cn("absolute h-[1.5px] w-3.5 rotate-45 rounded-pill", styles.cross)} />
           <View className={cn("absolute h-[1.5px] w-3.5 -rotate-45 rounded-pill", styles.cross)} />

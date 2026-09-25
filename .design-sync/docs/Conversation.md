@@ -87,3 +87,5 @@ Traduz, no caminho próprio `@rivocode/ui-native/ai`, sobre uma `FlatList` inver
 **A lista vem por `items`**, como todo o pacote: `renderItem` desenha uma mensagem e `keyExtractor` dá a chave. A ordem é a do web (a mais nova por último), e a inversão é da peça. O `empty` com `suggestions` e o `onSuggestion` atravessam com os mesmos nomes.
 
 **A mensagem nova é anunciada**, como no `role="log"` do web: no Android pela região viva, e no iOS pelo anúncio do sistema, uma vez por mensagem e só quando o `streaming` acaba. O texto dito é o texto solto que o `renderItem` devolve; quem desenha a mensagem por um componente próprio diz a frase em `announcement`, e `null` ali espera.
+
+As partes vestem pelo mesmo `classNames` do web: `viewport` na `FlatList`, `content` no `contentContainerClassName` dela, `empty`, `suggestions` e `scrollButton`.

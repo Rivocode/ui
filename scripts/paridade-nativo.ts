@@ -178,7 +178,8 @@ const PARITY: Record<string, Row> = {
       "  onIndexChange={setIndex}\n" +
       "  renderItem={(plano) => <Card>{plano.nome}</Card>}\n" +
       "/>\n" +
-      "```",
+      "```\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `viewport`, `slide`, `footer`, `previous`, `next`, `indicators` e `indicator`. `pause` não existe aqui, porque não há `autoplay`.",
   },
   Avatar: {
     state: "traduz",
@@ -462,7 +463,8 @@ const PARITY: Record<string, Row> = {
       "O palco é escuro nos dois esquemas, como no web: as cores saem de " +
       "`tokens.media`, e não do tema, então o `Modal` não clareia no tema claro nem no " +
       "tema de cliente. O controle desabilitado segue a regra do pacote, a camada " +
-      "inteira a 50%.",
+      "inteira a 50%.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web, as oito: `thumbnails`, `thumbnail`, `viewer`, `toolbar`, `counter`, `stage`, `image` e `caption`. O `className` veste a grade de miniaturas, o mesmo nó de `thumbnails`, porque a peça não tem raiz: a grade e o `Modal` são irmãos.",
   },
   EmptyState: {
     state: "traduz",
@@ -683,7 +685,8 @@ const PARITY: Record<string, Row> = {
       "e o toque não atravessa para a tela de trás. E não há rolagem sozinha, porque o React " +
       "Native não tem `scrollIntoView`: quem rola é a tela, no `onStepChange`, com " +
       "`scrollTo({ animated: false })` na `ScrollView`, e a peça mede de novo no quadro " +
-      "seguinte. O voltar do Android pula o tour, como o `Esc` no web.",
+      "seguinte. O voltar do Android pula o tour, como o `Esc` no web.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `mask` (as quatro faixas em volta do recorte), `counter`, `title`, `description` e `footer`. `spotlight` não existe aqui: o recorte é o vão entre as faixas, e não um nó que se vista.",
   },
   Menu: {
     state: "traduz",
@@ -704,7 +707,7 @@ const PARITY: Record<string, Row> = {
   },
   QueryBoundary: {
     state: "traduz",
-    note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` no pacote nativo",
+    note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` nesta peca",
     page:
       "Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio " +
       "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
@@ -824,7 +827,8 @@ const PARITY: Record<string, Row> = {
       "`icon={({ color, size }) => <Heart color={color} fill={color} size={size} />}`.\n\n" +
       "```tsx\n" +
       "<Rating value={nota} onValueChange={setNota} allowHalf />\n" +
-      "```",
+      "```\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `item`, `empty` e `filled`. As duas últimas vestem a estrela da casa, que é texto; com `icon`, a cor chega pela função.",
   },
   SignaturePad: {
     state: "traduz",
@@ -856,7 +860,8 @@ const PARITY: Record<string, Row> = {
       "  onValueChange={setAssinatura}\n" +
       "  onDrawingChange={(desenhando) => setRolagem(!desenhando)}\n" +
       "/>\n" +
-      "```",
+      "```\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `pad`, `placeholder`, `actions` e `input`. `baseline` não porta como parte: a linha de base é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe.",
   },
   Slider: {
     state: "traduz",
@@ -962,7 +967,7 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note:
       "vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o " +
-      "mesmo, a tinta e o papel são fixos e não há `classNames`",
+      "mesmo, a tinta e o papel são fixos, e só o `logo` se veste por parte",
     page:
       "Traduz, no caminho `@rivocode/ui-native/chart`: o código é desenhado com o " +
       "`react-native-svg`, e a regra da casa é **um subcaminho por peer**, e não um por assunto. " +
@@ -976,7 +981,8 @@ const PARITY: Record<string, Row> = {
       "arredondado. Não passam pelo CSS do app nem pelo `colors` do `RivoProvider`, então " +
       "nenhum `@theme` de cliente inverte o código sem querer. " +
       "`level`, `size` e `logo` têm o mesmo contrato do web: com `logo` o nível nasce H, e com outro " +
-      "nível a marca não aparece. Não há `classNames`: veste só pela raiz, como toda peça daqui.\n\n" +
+      "nível a marca não aparece. Das partes do web, só `logo` porta: `code` é o `Svg`, e o " +
+      "`react-native-svg` não recebe classe; o resto veste pela raiz.\n\n" +
       "```tsx\n" +
       "import { QRCode } from '@rivocode/ui-native/chart'\n\n" +
       '<QRCode value={link} label="QR Code para consultar a nota 4813" />\n' +
@@ -1006,7 +1012,8 @@ const PARITY: Record<string, Row> = {
       "  payload={cobranca.pixCopiaECola}\n" +
       '  renderCopy={(payload) => <Clipboard value={payload}>Copiar código</Clipboard>}\n' +
       "/>\n" +
-      "```",
+      "```\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `code`, `amount`, `receiver` e `payload`. `copy` não porta: o botão é o que o `renderCopy` devolve, e quem o escreve já o veste.",
   },
   Clipboard: {
     state: "traduz",
@@ -1088,7 +1095,7 @@ const PARITY: Record<string, Row> = {
       "e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato " +
       "ao lado dele sai do leitor de tela: ele repete em cor o que o campo diz em texto, e cor " +
       "não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.\n\n" +
-      "O `classNames` por parte não porta: como todas as peças daqui, ela veste só pela raiz.",
+      "O `classNames` por parte não porta nesta peça: ela veste só pela raiz.",
   },
   DateRangePicker: {
     state: "traduz",
@@ -1220,7 +1227,8 @@ const PARITY: Record<string, Row> = {
       "  onItemPress={abrir}\n" +
       "  onMarkRead={marcar}\n" +
       "/>\n" +
-      "```",
+      "```\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `trigger`, `panel`, `header`, `filters`, `list`, `item` e `empty`. O `className` continua no botão do sino, o mesmo nó de `trigger`. `footer` não existe aqui: o \"Carregar mais\" fica direto na folha, sem faixa própria.",
   },
   Indicator: {
     state: "traduz",
@@ -1542,7 +1550,8 @@ const PARITY: Record<string, Row> = {
       "**O ícone não vem sozinho.** O pacote nativo não traz biblioteca de ícones, então o " +
       "`icon` é opcional e a forma que pinta na cor do tom é a função: " +
       "`icon={({ color, size }) => <TriangleAlert color={color} size={size} />}`. As ações " +
-      "ficam embaixo do texto, que é onde cabem na largura do telefone.",
+      "ficam embaixo do texto, que é onde cabem na largura do telefone.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web, as seis: `icon`, `content`, `title`, `description`, `actions` e `dismiss`.",
   },
 
   ActionBar: {
@@ -1558,7 +1567,8 @@ const PARITY: Record<string, Row> = {
       "linha não ficar embaixo dela.\n\n" +
       "**A contagem é anunciada.** A frase sai pelo anúncio do leitor de tela do sistema, e " +
       "a barra entra subindo e sai descendo com os tokens de movimento, sem deslize quando o " +
-      "sistema pede para reduzir movimento.",
+      "sistema pede para reduzir movimento.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `bar`, `count` e `clear`, e o `className` veste o mesmo painel de `bar`. `actions` não existe aqui: as ações são filhas diretas do painel, sem caixa própria.",
   },
 
   Toggle: { state: "traduz", note: "`pressed` e `onPressedChange`" },
@@ -1843,8 +1853,9 @@ const PARITY: Record<string, Row> = {
       "**O degradê é pintado, e não máscara.** O React Native não tem máscara sem dependência " +
       "nova, então os últimos 40 pontos recebem faixas na cor do fundo, com opacidade " +
       "crescente. A cor sai de `fadeOver` (`bg`, `surface` ou `surface-raised`, `bg` sem a " +
-      "prop): ponha o fundo em que o bloco pousa, senão o degradê aparece como uma faixa. Não " +
-      "há `classNames`: o `className` vai na raiz.",
+      "prop): ponha o fundo em que o bloco pousa, senão o degradê aparece como uma faixa.\n\n" +
+      "O `className` vai na raiz, e as partes vestem pelo mesmo `classNames` do web: " +
+      "`content` (a caixa que corta) e `trigger` (o botão).",
   },
   TransferList: {
     state: "traduz",
@@ -1856,7 +1867,8 @@ const PARITY: Record<string, Row> = {
       "para duas colunas com botões no meio: a lista de cima é a de disponíveis, a de baixo a " +
       "de escolhidos, e cada uma fecha com “Mover selecionados para …” e “Mover todos para …”. " +
       "Cada linha é uma caixa de marcar com alvo de 44 pontos, e a lista rola por dentro a " +
-      "partir de 288 pontos. O anúncio sai pelo leitor de tela do sistema.",
+      "partir de 288 pontos. O anúncio sai pelo leitor de tela do sistema.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `panel`, `header`, `search`, `list`, `option`, `actions` e `empty`. Como os botões moram em cada lista, `actions` veste a fileira embaixo de cada uma, e não uma coluna no meio.",
   },
   PromptInput: {
     state: "traduz",
@@ -1875,7 +1887,8 @@ const PARITY: Record<string, Row> = {
       "**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de " +
       "várias linhas quebra a linha, e é isso que a pessoa espera dela; não há Shift para " +
       "separar os dois gestos. O campo cresce até `maxRows` linhas (6, sem a prop) e rola por " +
-      "dentro.",
+      "dentro.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `attachments`, `textarea`, `footer`, `count` e `submit`, que veste também o botão de parar no lugar dele.",
   },
   Message: {
     state: "traduz",
@@ -1888,7 +1901,8 @@ const PARITY: Record<string, Row> = {
       "porque a área de transferência do celular é o `expo-clipboard`, peer que mora em " +
       "`@rivocode/ui-native/clipboard` e que o caminho de IA não pode cobrar de quem não " +
       "copia nada. Texto solto em `children` vira `Text` no corpo da casa; nó entra como " +
-      "veio, para quem renderiza markdown.",
+      "veio, para quem renderiza markdown.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `avatar`, `bubble`, `content`, `indicator`, `error` e `actions`. `content` veste o `Text` que embrulha o texto solto; nó que chega pronto entra como veio.",
   },
   Conversation: {
     state: "traduz",
@@ -1905,7 +1919,8 @@ const PARITY: Record<string, Row> = {
       "**A mensagem nova é anunciada**, como no `role=\"log\"` do web: no Android pela região " +
       "viva, e no iOS pelo anúncio do sistema, uma vez por mensagem e só quando o `streaming` " +
       "acaba. O texto dito é o texto solto que o `renderItem` devolve; quem desenha a mensagem " +
-      "por um componente próprio diz a frase em `announcement`, e `null` ali espera.",
+      "por um componente próprio diz a frase em `announcement`, e `null` ali espera.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `viewport` na `FlatList`, `content` no `contentContainerClassName` dela, `empty`, `suggestions` e `scrollButton`.",
   },
   ToolCall: {
     state: "traduz",
@@ -1917,7 +1932,8 @@ const PARITY: Record<string, Row> = {
       "um `Text`.\n\n" +
       "**Cor continua não sendo o único sinal.** O pacote não traz ícone, então cada estado " +
       "sai com uma marca de texto (○, ✓, ✕, !) antes do nome, e `running` ganha o giro. O " +
-      "gatilho diz o nome da ferramenta e o estado ao leitor de tela.",
+      "gatilho diz o nome da ferramenta e o estado ao leitor de tela.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web, as seis: `trigger`, `name`, `status`, `panel`, `error` e `actions`.",
   },
   AILabel: {
     state: "traduz",

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import { useAnnounce } from "./announce";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { ChevronGlyph } from "./glyph";
 import { IconButton } from "./icon-button";
 import { useReducedMotion } from "./motion";
@@ -56,6 +56,14 @@ export type CarouselProps<Item> = {
   loop?: boolean;
   labels?: Partial<CarouselLabels>;
   className?: string;
+  /**
+   * Classe por parte: `viewport` (a janela que rola), `slide`, `footer` (a
+   * fileira embaixo), `previous`, `next`, `indicators` e `indicator` (cada
+   * ponto tocavel).
+   */
+  classNames?: Slots<
+    "viewport" | "slide" | "footer" | "previous" | "next" | "indicators" | "indicator"
+  >;
 };
 
 export function Carousel<Item>({
@@ -72,6 +80,7 @@ export function Carousel<Item>({
   loop = false,
   labels,
   className,
+  classNames,
 }: CarouselProps<Item>) {
   const text = { ...LABELS, ...labels };
   const reduced = useReducedMotion();
@@ -113,7 +122,7 @@ export function Carousel<Item>({
 
   return (
     <View accessibilityLabel={label} className={cn("gap-3", className)}>
-      <View onLayout={measure}>
+      <View onLayout={measure} className={classNames?.viewport}>
         <FlatList
           ref={listRef}
           horizontal
@@ -137,6 +146,7 @@ export function Carousel<Item>({
                 width: slideWidth || undefined,
                 marginRight: position < total - 1 ? space : 0,
               }}
+              className={classNames?.slide}
             >
               {renderItem(item, position)}
             </View>
@@ -145,7 +155,7 @@ export function Carousel<Item>({
       </View>
 
       {navigable && (
-        <View className="flex-row items-center justify-center gap-2">
+        <View className={cn("flex-row items-center justify-center gap-2", classNames?.footer)}>
           {controls && (
             <IconButton
               label={text.previous}
@@ -153,13 +163,16 @@ export function Carousel<Item>({
               size="sm"
               disabled={!loop && current <= 0}
               onPress={() => go(current - 1)}
+              className={classNames?.previous}
             >
               <ChevronGlyph direction="left" />
             </IconButton>
           )}
 
           {indicators ? (
-            <View className="flex-row flex-wrap items-center justify-center">
+            <View
+              className={cn("flex-row flex-wrap items-center justify-center", classNames?.indicators)}
+            >
               {positions.map((position) => {
                 const active = position === current;
                 return (
@@ -170,7 +183,7 @@ export function Carousel<Item>({
                     accessibilityState={{ selected: active }}
                     hitSlop={10}
                     onPress={() => go(position)}
-                    className="size-6 items-center justify-center"
+                    className={cn("size-6 items-center justify-center", classNames?.indicator)}
                   >
                     <View
                       className={cn(
@@ -199,6 +212,7 @@ export function Carousel<Item>({
               size="sm"
               disabled={!loop && current >= last}
               onPress={() => go(current + 1)}
+              className={classNames?.next}
             >
               <ChevronGlyph direction="right" />
             </IconButton>

@@ -4,7 +4,7 @@ import { Pressable, View } from "react-native";
 import { Badge, type BadgeProps } from "../badge";
 import { Spinner } from "../basics";
 import { Button } from "../button";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { TOOL_CALL_STATUS_TEXT, toolDataText as asText, type ToolCallStatus } from "../shared/ai";
 import { Text } from "../text";
 
@@ -62,6 +62,12 @@ export type ToolCallProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   className?: string;
+  /**
+   * Classe por parte: `trigger` (o cabecalho que abre), `name`, `status` (o
+   * giro e o selo), `panel` (a entrada e a saida), `error` e `actions` (os
+   * botoes de aprovar e recusar).
+   */
+  classNames?: Slots<"trigger" | "name" | "status" | "panel" | "error" | "actions">;
 };
 
 export function ToolCall({
@@ -78,6 +84,7 @@ export function ToolCall({
   open,
   onOpenChange,
   className,
+  classNames,
 }: ToolCallProps) {
   const state = STATUS[status] ?? STATUS.pending;
   const [own, setOwn] = useState(defaultOpen ?? (status === "approval" || status === "error"));
@@ -107,10 +114,10 @@ export function ToolCall({
         accessibilityState={{ expanded: hasBody ? expanded : undefined, disabled: !hasBody }}
         disabled={!hasBody}
         onPress={toggle}
-        className="min-h-12 flex-row items-center gap-3 px-3 py-2.5"
+        className={cn("min-h-12 flex-row items-center gap-3 px-3 py-2.5", classNames?.trigger)}
       >
         <View className="flex-1 gap-0.5">
-          <Text font="mono" numberOfLines={1} className="text-sm text-fg">
+          <Text font="mono" numberOfLines={1} className={cn("text-sm text-fg", classNames?.name)}>
             {name}
           </Text>
           {title ? (
@@ -120,26 +127,33 @@ export function ToolCall({
           ) : null}
         </View>
 
-        <View className="flex-row items-center gap-1.5">
+        <View className={cn("flex-row items-center gap-1.5", classNames?.status)}>
           {status === "running" ? <Spinner /> : null}
           <Badge tone={state.tone}>{state.mark ? `${state.mark} ${statusText}` : statusText}</Badge>
         </View>
       </Pressable>
 
       {hasBody && expanded ? (
-        <View className="gap-3 border-t border-border px-3 py-3">
+        <View className={cn("gap-3 border-t border-border px-3 py-3", classNames?.panel)}>
           {input !== undefined ? (
             <Block title={labels.input ?? "Entrada"}>{asText(input)}</Block>
           ) : null}
           {output !== undefined ? (
             <Block title={labels.output ?? "Saída"}>{asText(output)}</Block>
           ) : null}
-          {error ? <Text className="text-sm text-danger-text">{error}</Text> : null}
+          {error ? (
+            <Text className={cn("text-sm text-danger-text", classNames?.error)}>{error}</Text>
+          ) : null}
         </View>
       ) : null}
 
       {asking ? (
-        <View className="flex-row justify-end gap-2 border-t border-border px-3 py-2.5">
+        <View
+          className={cn(
+            "flex-row justify-end gap-2 border-t border-border px-3 py-2.5",
+            classNames?.actions,
+          )}
+        >
           {onReject ? (
             <Button variant="secondary" size="sm" onPress={onReject}>
               {labels.reject ?? "Recusar"}

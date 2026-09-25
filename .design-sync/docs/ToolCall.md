@@ -92,3 +92,5 @@ painel), `name`, `status`, `panel`, `error` e `actions`.
 Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `name`, `status`, `input`, `output`, `error`, `onApprove`, `onReject`, `labels`, `defaultOpen`, `open` e `onOpenChange`. `title` e `error` são `string`, porque texto no nativo mora dentro de um `Text`.
 
 **Cor continua não sendo o único sinal.** O pacote não traz ícone, então cada estado sai com uma marca de texto (○, ✓, ✕, !) antes do nome, e `running` ganha o giro. O gatilho diz o nome da ferramenta e o estado ao leitor de tela.
+
+As partes vestem pelo mesmo `classNames` do web, as seis: `trigger`, `name`, `status`, `panel`, `error` e `actions`.
