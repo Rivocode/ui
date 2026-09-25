@@ -21,11 +21,6 @@ const IGNORED_RULES: Record<string, string> = {
     "A pagina de vitrine abre cada amostra com o nome da secao; o `h1` e da tela de quem consome.",
 };
 
-// Excecao por NO, e nao por regra: desligar a regra inteira esconderia o proximo
-// elemento aria-hidden focavel de verdade - o svg do Recharts em `graficos` e um
-// deles, e continua acusado. O seletor casa so a forma exata que a biblioteca
-// desenha, com aria-hidden E tabindex=0 E vazia, para uma sentinela que ganhe
-// conteudo voltar a ser medida.
 const IGNORED_NODES: Record<string, { selector: string; reason: string }[]> = {
   "aria-hidden-focus": [
     {
@@ -74,12 +69,6 @@ const REFLOW_WIDTH = 320;
 
 const DESK = { width: 1240, height: 900 };
 
-// A bancada da CI mede a arvore de base e a da cabeca na mesma maquina e
-// compara uma com a outra. Com `--json`, o que foi achado sai contado por
-// pagina, tipo e alvo num arquivo, e o codigo de saida deixa de julgar: quem
-// julga e o `scripts/comparacao-da-bancada.ts`. O tamanho medido do alvo fica
-// FORA da chave, porque ele muda com a fonte do sistema, e o que se compara e
-// a existencia do problema.
 const jsonFlag = process.argv.indexOf("--json");
 const jsonTo = jsonFlag === -1 ? "" : (process.argv[jsonFlag + 1] ?? "");
 if (jsonFlag !== -1 && !jsonTo) {
@@ -201,15 +190,17 @@ async function launchChrome() {
     return result.result.value as T;
   };
 
-  const press = async (key: "Enter") => {
+  const KEYS = { Enter: { code: 13, text: "\r" }, Tab: { code: 9, text: undefined } } as const;
+  const press = async (key: keyof typeof KEYS) => {
+    const { code, text } = KEYS[key];
     await send("Input.dispatchKeyEvent", {
-      type: "keyDown",
+      type: text ? "keyDown" : "rawKeyDown",
       key,
       code: key,
-      windowsVirtualKeyCode: 13,
-      text: "\r",
+      windowsVirtualKeyCode: code,
+      text,
     });
-    await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode: 13 });
+    await send("Input.dispatchKeyEvent", { type: "keyUp", key, code: key, windowsVirtualKeyCode: code });
   };
 
   await send("Page.enable");
@@ -310,29 +301,6 @@ async function runAxe() {
 
 type SmallTarget = { label: string; size: string };
 
-// Duas medidas que a primeira versao errava para o lado do alarme.
-//
-// A AREA: o getBoundingClientRect so ve a caixa desenhada, e as pecas ampliam o
-// alvo com um ::after absoluto em inset negativo - o AILabel mede 22x20 e
-// recebe o clique em 36x34. O `hitBox` soma os dois pseudo-elementos quando eles sao absolutos, tem
-// conteudo e nao tem pointer-events none, e so CONFIA na soma depois de sondar
-// com elementFromPoint a borda e o meio da area somada: se um vizinho cobre um
-// canto, ou um ancestral recorta com overflow, a sonda cai fora do elemento e a
-// medida volta para a caixa desenhada. E o que segura o link do Breadcrumb:
-// ele declara -inset-y-1.5, mas o `truncate` do proprio link recorta o pseudo,
-// e o clique continua nos 20px desenhados. Pseudo de elemento `static` nao conta,
-// porque o bloco que o contem e outro ancestral e a conta de posicao mentiria.
-//
-// A FRASE: a excecao Inline da 2.5.8 vale para qualquer alvo cujo tamanho e
-// preso pela altura da linha de texto em volta, e nao so para link. Um botao
-// "Tentar de novo" no fim da mensagem de erro esta na frase tanto quanto um
-// link. O criterio e o mesmo para os dois: o alvo tem texto visivel proprio
-// (icone solto nao e frase), e um no de texto de fora dele, no mesmo bloco,
-// divide a LINHA com ele - sobrepoe na vertical, a no maximo um em de
-// distancia na horizontal, e o alvo nao e mais alto que o line-height dessa
-// linha (o retangulo do Range e so a caixa do glifo, 14px numa fonte de 12, e
-// nao serve de altura de linha). A distancia
-// e o que separa a frase do rotulo solto no outro canto de uma fileira flex.
 const TARGET_PROBE = `(() => {
   const min = ${MIN_TARGET};
   const inSentence = (element) => {
@@ -472,6 +440,34 @@ const REFLOW_PROBE = `(() => {
 
 type Reflow = { scroll: number; width: number; culprits: string[] } | null;
 
+const MAX_TABS = 1500;
+
+const REPEATS_TO_STOP = 40;
+
+const CLIPPED_SCROLL_PROBE = `(() => {
+  const element = document.activeElement;
+  if (!element || element === document.body || element === document.documentElement) return { key: "", found: [] };
+  if (!element.hasAttribute("data-rc-tab")) element.setAttribute("data-rc-tab", String(window.__rcTab = (window.__rcTab ?? 0) + 1));
+  const describe = (node) => node.tagName.toLowerCase() + (node.id ? "#" + node.id : "") +
+    (typeof node.className === "string" && node.className ? "." + node.className.trim().split(/\\s+/).slice(0, 4).join(".") : "");
+  const name = (element.getAttribute("aria-label") || element.textContent || "").trim().replace(/\\s+/g, " ").slice(0, 40);
+  const found = [];
+  for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    const clips = [style.overflowX, style.overflowY].some((value) => value === "hidden" || value === "clip");
+    if (!clips || node.scrollTop === 0) continue;
+    const section = node.closest("[data-rc-shot]")?.getAttribute("data-rc-shot") ?? "";
+    found.push({
+      container: describe(node),
+      scrollTop: Math.round(node.scrollTop),
+      focused: element.tagName.toLowerCase() + ' "' + name + '"' + (section ? " em " + section : ""),
+    });
+  }
+  return { key: element.getAttribute("data-rc-tab"), found };
+})()`;
+
+type ClippedScroll = { container: string; scrollTop: number; focused: string };
+
 function grouped(items: string[]) {
   const counts = new Map<string, number>();
   for (const item of items) counts.set(item, (counts.get(item) ?? 0) + 1);
@@ -484,14 +480,9 @@ let axeTotal = 0;
 let smallTotal = 0;
 let reflowTotal = 0;
 let focusTotal = 0;
+let clippedTotal = 0;
+let tabsTotal = 0;
 
-// A sonda de alvo pulou de "mede a caixa" para "mede a area clicavel e acha a
-// frase", e cada um desses passos pode ficar frouxo sem nada acusar: bastaria o
-// hitBox aceitar qualquer pseudo, ou o inSentence aceitar qualquer texto na
-// fileira, para a vitrine inteira ficar verde. Esta bancada roda a sonda num
-// HTML com os casos que ja enganaram - de cada lado - e para tudo se um deles
-// mudar de lado. O `true` e o que tem que continuar passando; o `false` e o
-// alvo pequeno de verdade, que tem que continuar sendo acusado.
 const TARGET_CALIBRATION: { name: string; passes: boolean; html: string }[] = [
   {
     name: "selo com ::after em -8px, como o AILabel",
@@ -640,6 +631,34 @@ try {
       }
     }
 
+    await open(page, DESK.width, DESK.height);
+    const seen = new Set<string>();
+    const clipped = new Map<string, ClippedScroll>();
+    let repeats = 0;
+    for (let tab = 0; tab < MAX_TABS && repeats < REPEATS_TO_STOP; tab++) {
+      await chrome.press("Tab");
+      const { key, found } = await chrome.evaluate<{ key: string; found: ClippedScroll[] }>(CLIPPED_SCROLL_PROBE);
+      if (key && !seen.has(key)) {
+        seen.add(key);
+        repeats = 0;
+      } else {
+        repeats++;
+      }
+      for (const hit of found) if (!clipped.has(hit.container)) clipped.set(hit.container, hit);
+    }
+    tabsTotal += seen.size;
+    if (seen.size === 0) {
+      lines.push("  Tab: nenhuma parada de foco na pagina, entao a rolagem escondida nao foi medida");
+    }
+    if (clipped.size > 0) {
+      clippedTotal += clipped.size;
+      lines.push(`  foco rolou ${clipped.size} caixa(s) com overflow hidden, que nao tem barra para a pessoa voltar:`);
+      for (const hit of clipped.values()) {
+        count(`${page} | rolagem escondida ${hit.container}`);
+        lines.push(`      ${hit.container} rolou ${hit.scrollTop}px ao focar ${hit.focused}`);
+      }
+    }
+
     await open(page, REFLOW_WIDTH, 900);
     const reflow = await chrome.evaluate<Reflow>(REFLOW_PROBE);
     if (reflow) {
@@ -665,7 +684,8 @@ const focusDeclared = FOCUS_TARGETS.filter((target) => pages.includes(target.pag
 console.log(
   `\n${pages.length} pagina(s). axe: ${axeTotal} no(s) em violacao, com ${Object.keys(IGNORED_RULES).length} regra(s) de layout de vitrine ignorada(s) e ${ignoredNodes} no(s) ignorado(s) por IGNORED_NODES.` +
     ` Alvo pequeno: ${smallTotal}. Reflow a ${REFLOW_WIDTH}px: ${reflowTotal} pagina(s).` +
-    ` Foco: ${focusTotal} de ${focusDeclared} acao(oes) declarada(s).`,
+    ` Foco: ${focusTotal} de ${focusDeclared} acao(oes) declarada(s).` +
+    ` Rolagem escondida pelo Tab: ${clippedTotal} caixa(s) em ${tabsTotal} parada(s) de Tab.`,
 );
 
 if (jsonTo) {

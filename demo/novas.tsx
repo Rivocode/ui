@@ -84,6 +84,7 @@ import {
   useMobile,
   VirtualList,
 } from "../src/index";
+import { ChartFunnel } from "../src/chart";
 import { stepTime, timeWindow } from "../src/components/time-field";
 import { PHOTOS } from "./fotos";
 
@@ -1475,6 +1476,70 @@ function Spoilers() {
   );
 }
 
+const LONG_EMAIL = "financeiro.contasapagar.matriz@clinicasaolucasdiagnosticos.com.br";
+const LONG_URL = "https://nfse.rivocode.com.br/consulta/35240612345678000199550010000048131234567890";
+
+const LONG_ROLES: TransferListItem[] = [
+  { value: "aviso", label: `Avisar ${LONG_EMAIL}` },
+  { value: "link", label: LONG_URL },
+  { value: "curto", label: "Emitir nota fiscal" },
+];
+
+const LONG_FUNNEL = [
+  { stage: `Abriram ${LONG_URL}`, total: 1240 },
+  { stage: `Responderam a ${LONG_EMAIL}`, total: 310 },
+];
+
+function LongWords({ prefix }: { prefix: string }) {
+  const [granted, setGranted] = useState<string[]>(["curto"]);
+  const [box, setBox] = useState<HTMLDivElement | null>(null);
+
+  return (
+    <div className="flex flex-col gap-8">
+      <TransferList
+        items={LONG_ROLES}
+        value={granted}
+        onValueChange={setGranted}
+        labels={{ available: "Avisos", chosen: "Ligados" }}
+      />
+      <p className="text-sm wrap-anywhere text-fg-muted">
+        <Highlight query={["rivocode", "financeiro"]}>{`A cópia vai para ${LONG_EMAIL} e o XML fica em ${LONG_URL}.`}</Highlight>
+      </p>
+      <Spoiler maxHeight={44} className="text-sm text-fg-muted">
+        <p>
+          O comprovante de cada nota fica em {LONG_URL}, e a cópia do XML segue para {LONG_EMAIL}{" "}
+          assim que a prefeitura devolve o protocolo de autorização.
+        </p>
+      </Spoiler>
+      <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
+        <div
+          ref={setBox}
+          tabIndex={0}
+          aria-label={`Endereços longos (${prefix})`}
+          className="h-40 min-w-0 overflow-y-auto rounded-md border border-border bg-surface p-4"
+        >
+          <h4 id={`${prefix}-longo-email`} className="mb-2 text-base wrap-anywhere text-fg">
+            {LONG_EMAIL}
+          </h4>
+          <p className="mb-4 text-sm text-fg-muted">Quem recebe a cópia de cada nota emitida.</p>
+          <h4 id={`${prefix}-longo-url`} className="mb-2 text-base wrap-anywhere text-fg">
+            {LONG_URL}
+          </h4>
+          <p className="text-sm text-fg-muted">Onde o tomador confere a nota.</p>
+        </div>
+        <TableOfContents container={box} root={box} selector="h4" label={`Endereços (${prefix})`} />
+      </div>
+      <ChartFunnel
+        data={LONG_FUNNEL}
+        valueKey="total"
+        nameKey="stage"
+        format="integer"
+        label={`Funil com endereço longo (${prefix})`}
+      />
+    </div>
+  );
+}
+
 function Sample({
   theme,
   density,
@@ -1611,6 +1676,10 @@ function Sample({
 
         <Block title="VirtualList">
           <Lists />
+        </Block>
+
+        <Block title="Palavra longa">
+          <LongWords prefix={theme} />
         </Block>
       </div>
     </RivoProvider>
