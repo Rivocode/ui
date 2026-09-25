@@ -144,7 +144,7 @@ const PAI: Record<string, string> = {
 const PARITY: Record<string, Row> = {
   Accordion: {
     state: "traduz",
-    note: "cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir",
+    note: "`value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; o padrão é vários abertos (`multiple={false}` dá o um só do web), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir",
   },
   Alert: {
     state: "traduz",
@@ -420,7 +420,7 @@ const PARITY: Record<string, Row> = {
   },
   Collapsible: {
     state: "traduz",
-    note: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion`",
+    note: "`label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; `open`/`onOpenChange` ou `defaultOpen`, como no web; o mesmo movimento do `Accordion`",
   },
   Combobox: {
     state: "traduz",

@@ -58,7 +58,9 @@ Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
 
 - **No nativo tudo é controlado**: sem `defaultValue`, `defaultChecked`,
   `defaultOpen`. `<Checkbox checked={x} onCheckedChange={setX} />`, as duas
-  obrigatórias.
+  obrigatórias. A exceção é o que abre e fecha no lugar, `Accordion` e
+  `Collapsible`: aceitam os dois modos, `value`/`open` opcionais ao lado de
+  `defaultValue`/`defaultOpen`.
 - **A lista vem por `items`, não por composição**: `RadioGroup`,
   `CheckboxGroup`, `ToggleGroup`, `Combobox`, `Tabs` e `Select` recebem o
   array e desenham a folha: `<Select items={…} value onValueChange label />`,
@@ -77,16 +79,13 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**209 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**205 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
 | `AILabel` | `explanation` | `explanation` | `string`, que vira a descrição da `Sheet` onde a explicação abre |
 | `AILabel` | `side` | — | a explicação abre numa `Sheet`, que não tem lado |
-| `Accordion` | `value` | — | a raiz não guarda valor: cada `AccordionItem` abre sozinho, com `defaultOpen` |
-| `Accordion` | `multiple` | — | sem raiz controlada, vários abertos é o único modo |
 | `Accordion` | — | `children` | a raiz só empilha; quem tem prop é o item |
-| `AccordionItem` | `value` | — | não há valor de item: quem abre e fecha é o próprio item |
 | `ActionBar` | `position` | — | não há `sticky` nem `fixed`: a barra é sempre `absolute` sobre a lista, no pé da tela |
 | `ActionBar` | — | `bottomInset` | a área segura de baixo entra por número, `useSafeAreaInsets().bottom`, porque o pacote não depende do `react-native-safe-area-context` |
 | `ActionBar` | `finalFocus` | — | no toque não há foco de teclado para devolver quando a barra sai |
@@ -123,7 +122,6 @@ escritos em lugar nenhum.
 | `Clipboard` | `variant` | `variant` | só `secondary` e `ghost`: o copiar não é ação destrutiva nem primária |
 | `Clipboard` | — | `toast` | o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado |
 | `Code` | — | `children` | `children` é `string`, e não `ReactNode`: o trecho é texto |
-| `Collapsible` | `open` | — | a peça guarda o próprio aberto; `defaultOpen` é o que se passa |
 | `Collapsible` | — | `label` | o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
 | `ColorPicker` | `label` | `label` | `label` é `string`: sem `ReactNode`, como em toda peça do nativo |
 | `Combobox` | `items` | `items` | `items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `ComboboxItem` por filho |
@@ -405,7 +403,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | Peça | No React Native | O que saber antes de contar com ela |
 | --- | --- | --- |
 | `AILabel` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a explicação abre numa `Sheet`, e não num painel ancorado, e é `string` |
-| `Accordion` | ✔ traduz | cada `AccordionItem` guarda o próprio aberto; não há raiz controlada. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
+| `Accordion` | ✔ traduz | `value`, `defaultValue` e `onValueChange` na raiz, pelo `value` de cada `AccordionItem`; o padrão é vários abertos (`multiple={false}` dá o um só do web), e item sem `value` abre sozinho. Abre com a seta girando e o corpo em fade, e sem movimento quando o sistema pede para reduzir |
 | `ActionBar` | ✔ traduz | o mesmo `count`, `onClear` e a mesma frase; gruda acima da área segura de baixo, que entra por `bottomInset` |
 | `Affix` | ✕ não porta | a plataforma já dá: um irmão da `ScrollView` com `position: absolute` não rola com ela, e o que gruda ao rolar é o `stickyHeaderIndices` da lista |
 | `Alert` | ✔ traduz | `title` é prop e o corpo é filho; sem `AlertTitle`/`AlertDescription` |
@@ -433,7 +431,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web |
 | `Clipboard` | ✔ traduz | vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla: o botão troca de nome e um aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado |
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
-| `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion` |
+| `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; `open`/`onOpenChange` ou `defaultOpen`, como no web; o mesmo movimento do `Accordion` |
 | `ColorPicker` | ✔ traduz | sai na raiz; controlada, e sem seta: cada amostra é um alvo de 44px com o desenho de 32 por dentro, e são seis por linha, não dez |
 | `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, rasa ou em grupos `{ label, items }`, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |

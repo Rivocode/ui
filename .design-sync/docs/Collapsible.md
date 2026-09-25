@@ -21,4 +21,4 @@ movimento.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Collapsible` - `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Collapsible` - `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; `open`/`onOpenChange` ou `defaultOpen`, como no web; o mesmo movimento do `Accordion`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

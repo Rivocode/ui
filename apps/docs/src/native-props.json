@@ -11,6 +11,30 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "defaultValue",
+        "type": "string[]",
+        "required": false,
+        "note": "Os abertos na montagem, para quem nao controla."
+      },
+      {
+        "name": "multiple",
+        "type": "boolean",
+        "required": false,
+        "note": "Padrao `true`: varios abertos ao mesmo tempo."
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string[]) => void)",
+        "required": false,
+        "note": "Recebe a lista inteira de abertos a cada toque num item com `value`."
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "note": "Os itens abertos, pelo `value` de cada `AccordionItem`."
       }
     ]
   },
@@ -35,7 +59,14 @@
       {
         "name": "defaultOpen",
         "type": "boolean",
-        "required": false
+        "required": false,
+        "note": "O aberto na montagem, para item sem `value`."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "note": "O nome do item dentro do `value` da raiz."
       }
     ]
   },
@@ -1204,7 +1235,20 @@
       {
         "name": "defaultOpen",
         "type": "boolean",
-        "required": false
+        "required": false,
+        "note": "O aberto na montagem, para quem nao controla."
+      },
+      {
+        "name": "onOpenChange",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Avisa todo toque no gatilho, controlado ou nao."
+      },
+      {
+        "name": "open",
+        "type": "boolean",
+        "required": false,
+        "note": "Deixa o aberto por conta de quem usa."
       }
     ]
   },

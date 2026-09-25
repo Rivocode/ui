@@ -171,6 +171,7 @@ export {
   AccordionItem,
   Collapsible,
   type AccordionItemProps,
+  type AccordionProps,
   type CollapsibleProps,
 } from "./accordion";
 export { PageHeader, type PageHeaderProps } from "./page-header";

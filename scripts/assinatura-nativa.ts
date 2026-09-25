@@ -149,22 +149,7 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Accordion: {
     rows: [
-      {
-        web: "value",
-        native: null,
-        note: "a raiz não guarda valor: cada `AccordionItem` abre sozinho, com `defaultOpen`",
-      },
-      { web: "multiple", native: null, note: "sem raiz controlada, vários abertos é o único modo" },
       { web: null, native: "children", note: "a raiz só empilha; quem tem prop é o item" },
-    ],
-  },
-  AccordionItem: {
-    rows: [
-      {
-        web: "value",
-        native: null,
-        note: "não há valor de item: quem abre e fecha é o próprio item",
-      },
     ],
   },
   Autocomplete: {
@@ -430,11 +415,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Collapsible: {
     rows: [
-      {
-        web: "open",
-        native: null,
-        note: "a peça guarda o próprio aberto; `defaultOpen` é o que se passa",
-      },
       {
         web: null,
         native: "label",

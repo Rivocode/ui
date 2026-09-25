@@ -499,7 +499,8 @@ mesma fonte do web: `useDisclosure`, `useToggle`, `useCounter`, `useListState`,
 **fonte**: o vocabulário de classes acima é o mesmo, via NativeWind, sobre os
 mesmos tokens. O que atravessa é a classe, o token e a escolha da peça: **o
 JSX se reescreve**. No nativo tudo é controlado (sem `defaultValue`, sem
-`defaultChecked`, sem `defaultOpen`) e a lista vem por `items`, e não por
+`defaultChecked`, sem `defaultOpen`; a exceção é `Accordion` e `Collapsible`,
+que aceitam os dois modos) e a lista vem por `items`, e não por
 composição: `<Select items={…} value onValueChange label />`, sem
 `SelectTrigger` nem `SelectItem`.
 
