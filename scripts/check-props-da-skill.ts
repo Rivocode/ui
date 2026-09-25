@@ -38,15 +38,28 @@ const CATALOG = "apps/docs/src/component-props.json";
 const REACT_TYPES = "node_modules/@types/react/index.d.ts";
 
 /**
- * A skill do nativo fala de outro pacote.
+ * A skill do nativo fala de outro pacote, e confere contra a tabela dele.
  *
  * `Button` e `Card` existem nos dois catalogos com props diferentes, e conferir
  * o exemplo nativo contra a tabela do web acusaria a peca certa pelo motivo
- * errado. Enquanto o `@rivocode/ui-native` nao gerar tabela propria, este
- * arquivo fica de fora - e e melhor dizer isso aqui do que deixar a guarda
- * mentir em silencio.
+ * errado. Ate 25/09/2026 o `reference/native.md` ficava fora por isso, com o
+ * motivo "enquanto o nativo nao gerar tabela propria" - e a tabela ja existia
+ * havia um mes, em `apps/docs/src/native-props.json`, sem a guarda saber.
+ *
+ * A tabela nativa corta o que a peca herda de `ViewProps`, `PressableProps` e
+ * `TextInputProps`, como a do web corta o `@types/react`, mas nao tem o
+ * `forwardsRoot` que diria quais pecas repassam essas props. E a lista delas
+ * nao da para tirar do `.d.ts`, como o web tira do React: o `react-native` so
+ * esta instalado em `examples/native`, que o gate nao instala. Entao o lado
+ * nativo aceita a FAMILIA de prop de plataforma por forma - evento `onAlgo`,
+ * `accessibilityAlgo`, `style`, `testID` - e nao por nome. Prop inventada que
+ * nao tem cara de plataforma (`variant="outline"` num `Card`, `render` num
+ * `FormField`) continua reprovando, e e esse o erro que a guarda existe para
+ * pegar.
  */
-const OUT_OF_SCOPE = new Set(["reference/native.md"]);
+const NATIVE_FILES = new Set(["reference/native.md"]);
+const NATIVE_CATALOG = "apps/docs/src/native-props.json";
+const NATIVE_PLATFORM = /^(on[A-Z]\w*|accessibility\w*|style|testID|className)$/;
 
 type Piece = { forwardsRoot: boolean; props: { name: string }[] };
 
@@ -166,6 +179,8 @@ function attributesOf(code: string) {
 
 const catalog = JSON.parse(await Bun.file(CATALOG).text()) as Record<string, Piece>;
 const dom = await domAttributes();
+const nativeCatalog = JSON.parse(await Bun.file(NATIVE_CATALOG).text()) as Record<string, Piece>;
+let nativeFiles = 0;
 
 const invented: string[] = [];
 let checked = 0;
@@ -176,7 +191,9 @@ let checked = 0;
  * descobrir isso de novo e uma tarde.
  */
 for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
-  if (OUT_OF_SCOPE.has(file)) continue;
+  const native = NATIVE_FILES.has(file);
+  const pieces: Record<string, Piece> = native ? nativeCatalog : catalog;
+  if (native) nativeFiles += 1;
 
   const text = await Bun.file(`${SKILL_DIR}/${file}`).text();
 
@@ -187,7 +204,7 @@ for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
     const offset = text.slice(0, block.index! + block[0].indexOf("\n") + 1).split("\n").length - 1;
 
     for (const { tag, attr, line } of attributesOf(code)) {
-      const piece = catalog[tag];
+      const piece = pieces[tag];
       // Peca que nao esta no catalogo e componente do proprio exemplo
       // (`<InvoiceScreen />`) ou icone do lucide. Nao ha tabela para conferir.
       if (!piece) continue;
@@ -198,6 +215,7 @@ for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
       if (ALWAYS.has(attr) || /^(aria|data)-/.test(attr)) continue;
       // Atributo de DOM so vale onde a peca repassa a raiz.
       if (piece.forwardsRoot && dom.has(attr)) continue;
+      if (native && NATIVE_PLATFORM.test(attr)) continue;
 
       const real = piece.props.map((prop) => prop.name).sort();
       invented.push(
@@ -206,6 +224,15 @@ for (const file of await scanAtLeast("**/*.md", 5, { cwd: SKILL_DIR })) {
       );
     }
   }
+}
+
+if (nativeFiles !== NATIVE_FILES.size) {
+  console.error(
+    `A skill tem ${nativeFiles} de ${NATIVE_FILES.size} arquivo(s) do nativo declarados em NATIVE_FILES.\n` +
+      "O nome mudou ou o arquivo sumiu, e o exemplo nativo passaria a ser conferido contra a\n" +
+      "tabela do web - ou nao seria conferido. Corrija NATIVE_FILES.",
+  );
+  process.exit(1);
 }
 
 if (invented.length > 0) {
@@ -222,4 +249,6 @@ if (invented.length > 0) {
   process.exit(1);
 }
 
-console.log(`${checked} props citadas nos exemplos da skill, todas existentes.`);
+console.log(
+  `${checked} props citadas nos exemplos da skill, todas existentes, ${nativeFiles} arquivo(s) contra a tabela do nativo.`,
+);
