@@ -237,7 +237,26 @@ jobs:
       # e por mais uma: sem ele o ensaio dispararia o `prepublishOnly` - check
       # e build de novo - e o ensaio custaria mais que a estreia.
       - name: Ensaiar a publicacao
-        run: npm publish --access public --ignore-scripts --provenance --dry-run
+        env:
+          ENSAIO: ${{ inputs.ensaio }}
+        run: |
+          set +e
+          saida=$(npm publish --access public --ignore-scripts --provenance --dry-run 2>&1)
+          codigo=$?
+          echo "$saida"
+
+          if [ $codigo -eq 0 ]; then
+            exit 0
+          fi
+
+          if [ "$ENSAIO" = "true" ] &&
+             echo "$saida" | grep -q "cannot publish over the previously published versions"; then
+            echo
+            echo "O registro so recusou o NUMERO: tudo antes disso passou."
+            exit 0
+          fi
+
+          exit $codigo
 
       # `--ignore-scripts` porque o `prepublishOnly` roda check e build de novo,
       # e os dois ja passaram acima. Sem isto a publicacao gasta o dobro do
