@@ -152,8 +152,8 @@ nao tenha global nem import de plataforma, e 16 copias declaradas.
 sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
 saiu verde.
 
-A suite: **2795 testes em 207 arquivos, 21810 `expect`**, 0 falhas. Do nativo
-sao 762 testes em 63 arquivos; do web, 2033 em 144. A home do site exibe o
+A suite: **2798 testes em 209 arquivos, 21830 `expect`**, 0 falhas. Do nativo
+sao 762 testes em 63 arquivos; do web, 2036 em 146. A home do site exibe o
 mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
 falha se divergir.
 
@@ -178,7 +178,7 @@ falha se divergir.
 | `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
 | `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
 | `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
-| `check:demo`            | 131 de 134 na vitrine, 3 declaradas fora, em 21 paginas                                                      |
+| `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                     |
 | `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
 | `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
 
@@ -266,11 +266,6 @@ Nenhum destes tem codigo a escrever aqui.
 
 ### Divida de codigo, conferida contra a arvore
 
-- **`OUT_OF_SCOPE` do `check:skill` esta obsoleto.** O JSDoc dele condiciona a
-  excecao a o nativo nao ter tabela de props, e ela existe
-  (`native-props.json`). Os exemplos de `reference/native.md` sao o unico
-  pedaco da skill cujas props ninguem confere. Falta o `check:skill` escolher o
-  catalogo pelo arquivo, em vez de pular o arquivo.
 - **Ref imperativo sem regra escrita.** `useImperativeHandle` aparece em dois
   lugares do web, `VirtualList` (`scrollToIndex`) e `ResizablePanelGroup`, e
   nem `conventions.md` nem a skill dizem quando expor ref imperativo.
@@ -319,7 +314,7 @@ Nenhum destes tem codigo a escrever aqui.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
-bun run check                # 37 passos, termina nos 2795 testes
+bun run check                # 37 passos, termina nos 2798 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
 bun run fumaca:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
@@ -347,7 +342,7 @@ bun run check:pecas                                 # 134 pecas (222 - 88 partes
 grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
 grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 2795 testes em 207 arquivos
+bun run check:testes                                # 2798 testes em 209 arquivos
 bun test native/test                                # 762 em 63 arquivos
 bun run check:assinatura                            # 222 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
