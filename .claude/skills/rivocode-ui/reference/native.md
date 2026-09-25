@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**196 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -116,7 +116,6 @@ escritos em lugar nenhum.
 | `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
 | `Checkbox` | `parent` | — | o pai de um grupo se monta à mão, com `indeterminate` e o estado dos filhos: o `CheckboxGroup` nativo não tem `allValues` |
 | `Checkbox` | — | `accessibilityLabel` | sem `children`, é ele que nomeia a caixa para o leitor de tela |
-| `Clipboard` | `variant` | `variant` | só `secondary` e `ghost`: o copiar não é ação destrutiva nem primária |
 | `Clipboard` | — | `toast` | o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado |
 | `Code` | — | `children` | `children` é `string`, e não `ReactNode`: o trecho é texto |
 | `Collapsible` | — | `label` | o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |

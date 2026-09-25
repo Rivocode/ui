@@ -17,7 +17,7 @@ export const BUTTON_CONTAINER = {
 
 export type ButtonVariant = keyof typeof BUTTON_CONTAINER;
 
-const LABEL: Record<ButtonVariant, string> = {
+export const BUTTON_LABEL: Record<ButtonVariant, string> = {
   primary: "text-accent-fg",
   secondary: "text-fg",
   ghost: "text-fg-muted",
@@ -95,7 +95,7 @@ export function Button({
       )}
     >
       {loading && <ButtonSpinner variant={variant} />}
-      <Text className={cn("font-rc-medium", text, LABEL[variant])}>{children}</Text>
+      <Text className={cn("font-rc-medium", text, BUTTON_LABEL[variant])}>{children}</Text>
     </AnimatedPressable>
   );
 }

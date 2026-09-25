@@ -354,11 +354,6 @@ export const SIGNATURES: Record<string, Signature> = {
   Clipboard: {
     rows: [
       {
-        web: "variant",
-        native: "variant",
-        note: "só `secondary` e `ghost`: o copiar não é ação destrutiva nem primária",
-      },
-      {
         web: null,
         native: "toast",
         note: "o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado",

@@ -2,23 +2,35 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 import { setStringAsync } from "expo-clipboard";
 
+import { BUTTON_CONTAINER, BUTTON_LABEL, type ButtonVariant } from "../button";
 import { cn } from "../cn";
 import { Text } from "../text";
 import { useToast } from "../toast";
 
-function CopyIcon() {
+const ICON: Record<ButtonVariant, { copy: string; fill: string; check: string }> = {
+  primary: { copy: "border-accent-fg", fill: "bg-accent", check: "border-accent-fg" },
+  secondary: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
+  ghost: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
+  outline: { copy: "border-fg-muted", fill: "bg-surface", check: "border-success-text" },
+  destructive: { copy: "border-danger-fg", fill: "bg-danger", check: "border-danger-fg" },
+};
+
+function CopyIcon({ variant }: { variant: ButtonVariant }) {
+  const { copy, fill } = ICON[variant];
   return (
     <View className="h-4 w-4 items-end justify-end">
-      <View className="absolute top-0 left-0 h-3 w-2.5 rounded-sm border border-fg-muted" />
-      <View className="h-3 w-2.5 rounded-sm border border-fg-muted bg-surface" />
+      <View className={cn("absolute top-0 left-0 h-3 w-2.5 rounded-sm border", copy)} />
+      <View className={cn("h-3 w-2.5 rounded-sm border", copy, fill)} />
     </View>
   );
 }
 
-function CheckIcon() {
+function CheckIcon({ variant }: { variant: ButtonVariant }) {
   return (
     <View className="h-4 w-4 items-center justify-center">
-      <View className="mb-0.5 h-1.5 w-2.5 -rotate-45 border-b-2 border-l-2 border-success-text" />
+      <View
+        className={cn("mb-0.5 h-1.5 w-2.5 -rotate-45 border-b-2 border-l-2", ICON[variant].check)}
+      />
     </View>
   );
 }
@@ -44,15 +56,14 @@ export type ClipboardProps = {
    * avisos, ou quando o próprio app já avisa por outro caminho.
    */
   toast?: boolean;
-  /** Os dois papéis que um botão de copiar tem: ao lado do dado, ou solto. */
-  variant?: "secondary" | "ghost";
+  /**
+   * O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`. Nos
+   * preenchidos (`primary` e `destructive`) o visto da confirmacao usa a tinta
+   * do rotulo, porque o verde de sucesso nao se le sobre o fundo deles.
+   */
+  variant?: ButtonVariant;
   disabled?: boolean;
   className?: string;
-};
-
-const CONTAINER: Record<string, string> = {
-  secondary: "bg-surface border border-border-strong active:bg-surface-raised",
-  ghost: "active:bg-accent-subtle",
 };
 
 export function Clipboard({
@@ -104,13 +115,15 @@ export function Clipboard({
       className={cn(
         "flex-row items-center justify-center gap-2 rounded-md",
         children ? "h-11 px-4" : "h-11 w-11",
-        CONTAINER[variant],
+        BUTTON_CONTAINER[variant],
         disabled && "opacity-50",
         className,
       )}
     >
-      {copied ? <CheckIcon /> : <CopyIcon />}
-      {children ? <Text className="text-base font-rc-medium text-fg">{spoken}</Text> : null}
+      {copied ? <CheckIcon variant={variant} /> : <CopyIcon variant={variant} />}
+      {children ? (
+        <Text className={cn("text-base font-rc-medium", BUTTON_LABEL[variant])}>{spoken}</Text>
+      ) : null}
     </Pressable>
   );
 }

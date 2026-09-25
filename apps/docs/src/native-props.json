@@ -1280,9 +1280,9 @@
       },
       {
         "name": "variant",
-        "type": "\"ghost\" | \"secondary\"",
+        "type": "\"destructive\" | \"ghost\" | \"outline\" | \"primary\" | \"secondary\"",
         "required": false,
-        "note": "Os dois papéis que um botão de copiar tem: ao lado do dado, ou solto."
+        "note": "O desenho do botao, com os mesmos nomes e o mesmo visual do `Button`."
       }
     ]
   },

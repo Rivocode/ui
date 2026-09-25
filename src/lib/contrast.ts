@@ -969,6 +969,16 @@ for (const state of STATES) pair(`${state}-fg`, [state], MIN_TEXT);
 
 pair("accent-fg", ["accent-active"], MIN_TEXT, "botão primário sob o dedo");
 
+for (const background of ["bg", "surface"]) {
+  pair("fg-muted", ["accent-subtle", background], MIN_TEXT, "botão ghost e outline sob o dedo");
+  pair(
+    "success-text",
+    ["accent-subtle", background],
+    MIN_NON_TEXTUAL,
+    "visto do Clipboard ghost e outline sob o dedo",
+  );
+}
+
 pair("fg", ["selected", "selected", "surface"], MIN_BODY, "dia do intervalo sob o dedo");
 
 

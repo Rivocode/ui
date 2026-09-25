@@ -42,3 +42,5 @@ Traduz, no caminho próprio `@rivocode/ui-native/clipboard`, com o mesmo arranjo
 **Quando não copiou, nada é confirmado**, como no web: o `setStringAsync` do Expo devolve `false` quando a área de transferência recusa (o caso do passe web, fora de contexto seguro), e no iOS e no Android ele sempre resolve `true`.
 
 Sem `children` o botão é só o ícone, e aí o alvo é 44px cheios, sem depender de `hitSlop` para chegar lá. O ícone é desenhado com `View`, como o olho do `PasswordInput`.
+
+**O `variant` é o do `Button`, e aceita os mesmos cinco nomes do web**: `primary`, `secondary` (o padrão), `ghost`, `outline` e `destructive`, cada um com o fundo e o rótulo do `Button` nativo daquela variante. Nos dois preenchidos, `primary` e `destructive`, o visto da confirmação sai na cor do rótulo, e não no verde de sucesso: medido, o verde fica em 1,41:1 sobre o `accent` do tema escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 que um ícone pede.

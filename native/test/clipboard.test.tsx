@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 
-import { act, byLabel, byRole, render, textOf } from "./helpers";
+import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
 /*
  * O expo-clipboard nao esta instalado onde a suite roda, e nao vai estar: ele
@@ -151,4 +151,93 @@ describe("Clipboard", () => {
     expect(className).toContain("h-14");
     expect(className).not.toContain("h-11 w-11");
   });
+});
+
+const VARIANTS = [
+  {
+    variant: "primary",
+    fill: ["bg-accent", "active:bg-accent-active"],
+    label: "text-accent-fg",
+    copy: "border-accent-fg",
+    check: "border-accent-fg",
+  },
+  {
+    variant: "secondary",
+    fill: ["bg-surface", "border", "border-border-strong", "active:bg-surface-raised"],
+    label: "text-fg",
+    copy: "border-fg-muted",
+    check: "border-success-text",
+  },
+  {
+    variant: "ghost",
+    fill: ["active:bg-accent-subtle"],
+    label: "text-fg-muted",
+    copy: "border-fg-muted",
+    check: "border-success-text",
+  },
+  {
+    variant: "outline",
+    fill: ["border-2", "border-border-strong", "active:bg-accent-subtle"],
+    label: "text-fg",
+    copy: "border-fg-muted",
+    check: "border-success-text",
+  },
+  {
+    variant: "destructive",
+    fill: ["bg-danger", "active:opacity-90"],
+    label: "text-danger-fg",
+    copy: "border-danger-fg",
+    check: "border-danger-fg",
+  },
+] as const;
+
+describe("Clipboard nas variantes do Button", () => {
+  test("sem variant o desenho continua o secundario", () => {
+    reset();
+    const screen = render(<Clipboard value={CHAVE} />);
+    const tokens = (byLabel(screen, "Copiar")[0]!.props.className as string).split(" ");
+
+    expect(tokens).toContain("bg-surface");
+    expect(tokens).toContain("border-border-strong");
+    expect(tokens).not.toContain("bg-accent");
+  });
+
+  for (const { variant, fill, label, copy, check } of VARIANTS) {
+    test(`${variant}: o fundo, o rotulo e os dois icones sao os do Button ${variant}`, async () => {
+      reset();
+      const screen = render(
+        <Clipboard value={CHAVE} variant={variant} toast={false}>
+          Copiar
+        </Clipboard>,
+      );
+
+      const button = byLabel(screen, "Copiar")[0]!;
+      const tokens = (button.props.className as string).split(" ");
+      for (const token of fill) expect(tokens).toContain(token);
+      for (const other of VARIANTS) {
+        if (other.variant === variant) continue;
+        for (const token of other.fill) if (!fill.includes(token as never)) expect(tokens).not.toContain(token);
+      }
+
+      const text = byClass(screen, /font-rc-medium/);
+      expect(text.length).toBeGreaterThan(0);
+      for (const node of text) {
+        const words = (node.props.className as string).split(" ");
+        expect(words).toContain(label);
+      }
+
+      const frames = byClass(screen, /rounded-sm/);
+      expect(frames).toHaveLength(2);
+      for (const frame of frames) {
+        expect((frame.props.className as string).split(" ")).toContain(copy);
+      }
+
+      await press(button);
+      const ticks = byClass(screen, /-rotate-45/);
+      expect(ticks).toHaveLength(1);
+      const tick = (ticks[0]!.props.className as string).split(" ");
+      expect(tick).toContain(check);
+      if (check !== "border-success-text") expect(tick).not.toContain("border-success-text");
+    });
+  }
 });
