@@ -180,11 +180,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "não há completar inline: a folha filtra e a pessoa toca",
       },
-      {
-        web: "items",
-        native: "items",
-        note: "grupos (`Group[]`) não portam: a folha recebe uma lista rasa de `{ label, value }`",
-      },
     ],
   },
   Avatar: {
@@ -461,7 +456,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "items",
         native: "items",
-        note: "`items` na raiz e obrigatória; sem `ComboboxItem` por filho e sem grupos",
+        note: "`items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `ComboboxItem` por filho",
       },
       {
         web: null,
@@ -1007,7 +1002,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "items",
         native: "items",
-        note: "`items` na raiz e obrigatória; sem `SelectTrigger`, `SelectContent` e `SelectItem`",
+        note: "`items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `SelectTrigger`, `SelectContent` e `SelectItem`",
       },
       {
         web: null,

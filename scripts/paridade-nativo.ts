@@ -424,7 +424,7 @@ const PARITY: Record<string, Row> = {
   },
   Combobox: {
     state: "traduz",
-    note: "a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho",
+    note: "a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, rasa ou em grupos `{ label, items }`, não `ComboboxItem` por filho",
   },
   DatePicker: {
     state: "traduz",
@@ -776,14 +776,17 @@ const PARITY: Record<string, Row> = {
   SearchInput: { state: "traduz", note: "`value` e `onValueChange` obrigatórios" },
   Select: {
     state: "traduz",
-    note: "poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo",
+    note: "poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo, em seções quando `items` vem em grupos",
     page:
       "Traduz, e a forma de escrever é outra. No web o `Select` pede `items` na raiz **e** " +
       "as quatro partes (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); no " +
       "nativo ele é uma tag só (`<Select items={…} value={…} onValueChange={…} " +
       'label="Período" />`), e a lista abre numa folha de baixo, que é o idioma da ' +
       "plataforma para escolher. O `label` é obrigatório: é por ele que o leitor de tela " +
-      "anuncia o gatilho, papel que no web era do `SelectTrigger`.",
+      "anuncia o gatilho, papel que no web era do `SelectTrigger`.\n\n" +
+      "Famílias de opções entram pelo mesmo `items`, em grupos `{ label, items }` - a forma " +
+      "que o `items` do web também aceita. A folha vira uma `SectionList`, e cada `label` de " +
+      "grupo é anunciado como cabeçalho, no lugar do `SelectGroupLabel`.",
   },
   Separator: { state: "traduz", note: "só a linha horizontal" },
   Sheet: {

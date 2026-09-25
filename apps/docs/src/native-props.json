@@ -1270,8 +1270,9 @@
     "props": [
       {
         "name": "items",
-        "type": "ComboboxItem[]",
-        "required": true
+        "type": "ComboboxItem[] | ComboboxItemGroup[]",
+        "required": true,
+        "note": "Lista rasa, ou grupos `{ label, items }` - a mesma forma que o `items` do web aceita."
       },
       {
         "name": "label",
@@ -3748,8 +3749,9 @@
     "props": [
       {
         "name": "items",
-        "type": "SelectItem[]",
-        "required": true
+        "type": "SelectItem[] | SelectItemGroup[]",
+        "required": true,
+        "note": "Lista rasa de `{ label, value }`, ou grupos `{ label, items }` - a mesma forma que o `items` do web aceita."
       },
       {
         "name": "label",

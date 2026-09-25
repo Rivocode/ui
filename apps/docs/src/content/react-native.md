@@ -192,7 +192,7 @@ recusa o que conseguiu medir.
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion` |
 | `ColorPicker` | ✔ traduz | sai na raiz; controlada, e sem seta: cada amostra é um alvo de 44px com o desenho de 32 por dentro, e são seis por linha, não dez |
-| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho |
+| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, rasa ou em grupos `{ label, items }`, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `Container` | ✕ não porta | o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
@@ -258,7 +258,7 @@ recusa o que conseguiu medir.
 | `ScrollArea` | ✔ traduz | a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo em foco e prende um `footer` que sobe com ele |
 | `ScrollToTop` | ✕ não porta | a plataforma já dá: o toque na barra de status no iOS e o toque de novo na aba do router sobem a lista |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
-| `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
+| `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo, em seções quando `items` vem em grupos |
 | `Separator` | ✔ traduz | só a linha horizontal |
 | `Sheet` | ✔ traduz | só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado |
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |

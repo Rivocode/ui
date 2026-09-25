@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**210 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**209 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -99,7 +99,6 @@ escritos em lugar nenhum.
 | `AlertDialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e não fecha no toque fora |
 | `Autocomplete` → `Combobox` | `value` | `value` | no web `value` é o texto digitado e ele pode não estar na lista; no nativo é o item escolhido (`string` ou `string[]`) |
 | `Autocomplete` → `Combobox` | `mode` | — | não há completar inline: a folha filtra e a pessoa toca |
-| `Autocomplete` → `Combobox` | `items` | `items` | grupos (`Group[]`) não portam: a folha recebe uma lista rasa de `{ label, value }` |
 | `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
 | `Banner` | `description` | `description` | `title` e `description` viram `string`: texto no nativo mora dentro de um `Text` |
 | `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
@@ -127,7 +126,7 @@ escritos em lugar nenhum.
 | `Collapsible` | `open` | — | a peça guarda o próprio aberto; `defaultOpen` é o que se passa |
 | `Collapsible` | — | `label` | o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
 | `ColorPicker` | `label` | `label` | `label` é `string`: sem `ReactNode`, como em toda peça do nativo |
-| `Combobox` | `items` | `items` | `items` na raiz e obrigatória; sem `ComboboxItem` por filho e sem grupos |
+| `Combobox` | `items` | `items` | `items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `ComboboxItem` por filho |
 | `Combobox` | — | `label` | `label` é obrigatório: é ele que o leitor de tela anuncia, no lugar do `aria-label` |
 | `Combobox` | — | `searchPlaceholder` | a folha tem busca própria; `emptyMessage` é o texto de lista vazia |
 | `Combobox` | `filter` | — | o filtro é da peça e ignora acento; não se troca |
@@ -244,7 +243,7 @@ escritos em lugar nenhum.
 | `RivoProvider` | `toastPosition` | — | o aviso sobe de baixo, e `scope` e `dir` saem junto |
 | `SearchInput` | `onClear` | — | o limpar é botão da própria peça, e ele chama `onValueChange("")` |
 | `SearchInput` | `shortcut` | — | não há teclado para desenhar o `Kbd` dentro do campo |
-| `Select` | `items` | `items` | `items` na raiz e obrigatória; sem `SelectTrigger`, `SelectContent` e `SelectItem` |
+| `Select` | `items` | `items` | `items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `SelectTrigger`, `SelectContent` e `SelectItem` |
 | `Select` | — | `label` | `label` é obrigatório: é ele que o leitor de tela anuncia |
 | `Select` | `value` | `value` | o valor é `string` ou `string[]`, e não o item genérico do web |
 | `Sheet` | `side` | — | só de baixo, que já era o modo estreito do web; `snapPoints` sai junto |
@@ -436,7 +435,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |
 | `Collapsible` | ✔ traduz | `label` no lugar de `CollapsibleTrigger` e `CollapsiblePanel`; o mesmo movimento do `Accordion` |
 | `ColorPicker` | ✔ traduz | sai na raiz; controlada, e sem seta: cada amostra é um alvo de 44px com o desenho de 32 por dentro, e são seis por linha, não dez |
-| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, não `ComboboxItem` por filho |
+| `Combobox` | ✔ traduz | a lista abre numa folha com busca sem acento, e a folha sobe com o teclado; `items` na raiz, rasa ou em grupos `{ label, items }`, não `ComboboxItem` por filho |
 | `Command` | ✕ não porta | paleta de comandos é gesto de mesa: um campo, uma lista e o teclado |
 | `Container` | ✕ não porta | o celular já é mais estreito que o menor passo; o respiro lateral é o padding da tela, dentro da área segura |
 | `ContextMenu` | ✔ vira `Menu` | o toque longo é o botão direito do celular: a área alvo vai como `children` do `Menu` |
@@ -502,7 +501,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ScrollArea` | ✔ traduz | a barra continua a do sistema; o que a peça traz no celular é o teclado: rola até o campo em foco e prende um `footer` que sobe com ele |
 | `ScrollToTop` | ✕ não porta | a plataforma já dá: o toque na barra de status no iOS e o toque de novo na aba do router sobem a lista |
 | `SearchInput` | ✔ traduz | `value` e `onValueChange` obrigatórios |
-| `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo |
+| `Select` | ✔ traduz | poucas opções fixas; `items` e `label` na raiz, e a lista abre numa folha de baixo, em seções quando `items` vem em grupos |
 | `Separator` | ✔ traduz | só a linha horizontal |
 | `Sheet` | ✔ traduz | só o comportamento de baixo, que já era o modo estreito do web; sobe deslizando, e sem transição quando o sistema pede para reduzir movimento; com campo dentro, a folha sobe junto com o teclado |
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |

@@ -53,6 +53,41 @@ export const FlatList = ({ data = [], renderItem, keyExtractor, ref, ...props }:
 
 export const flatListScrolls = listScrolls;
 
+type Section = AnyProps & { data: unknown[] };
+
+type SectionListProps = AnyProps & {
+  sections?: Section[];
+  renderItem: (info: { item: unknown; index: number; section: Section }) => ReactNode;
+  renderSectionHeader?: (info: { section: Section }) => ReactNode;
+  keyExtractor?: (item: unknown, index: number) => string;
+};
+
+export const SectionList = ({
+  sections = [],
+  renderItem,
+  renderSectionHeader,
+  keyExtractor,
+  ...props
+}: SectionListProps) =>
+  createElement(
+    "SectionList",
+    { ...props, sections },
+    sections.map((section, sectionIndex) =>
+      createElement(
+        Fragment,
+        { key: String(section.key ?? sectionIndex) },
+        renderSectionHeader?.({ section }),
+        section.data.map((item, index) =>
+          createElement(
+            Fragment,
+            { key: keyExtractor?.(item, index) ?? String(index) },
+            renderItem({ item, index, section }),
+          ),
+        ),
+      ),
+    ),
+  );
+
 /** Como no aparelho: com visible={false} o conteudo do Modal nao existe. */
 export const Modal = (props: AnyProps & { visible?: boolean }) =>
   props.visible === false ? null : createElement("Modal", props);

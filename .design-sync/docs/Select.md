@@ -28,3 +28,5 @@ uma vez e economiza o clique de abrir. E para um liga-desliga, o `Switch`.
 ## No React Native
 
 Traduz, e a forma de escrever é outra. No web o `Select` pede `items` na raiz **e** as quatro partes (`SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`); no nativo ele é uma tag só (`<Select items={…} value={…} onValueChange={…} label="Período" />`), e a lista abre numa folha de baixo, que é o idioma da plataforma para escolher. O `label` é obrigatório: é por ele que o leitor de tela anuncia o gatilho, papel que no web era do `SelectTrigger`.
+
+Famílias de opções entram pelo mesmo `items`, em grupos `{ label, items }` - a forma que o `items` do web também aceita. A folha vira uma `SectionList`, e cada `label` de grupo é anunciado como cabeçalho, no lugar do `SelectGroupLabel`.

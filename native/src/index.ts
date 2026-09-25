@@ -71,7 +71,7 @@ export {
   type ProgressProps,
 } from "./basics";
 export { AlertDialog, Dialog, type AlertDialogProps, type DialogProps } from "./dialog";
-export { Select, type SelectItem, type SelectProps } from "./select";
+export { Select, type SelectItem, type SelectItemGroup, type SelectProps } from "./select";
 export { Tabs, type TabItem, type TabsProps } from "./tabs";
 export { RadioGroup, type RadioGroupProps, type RadioItem } from "./radio-group";
 export { CheckboxGroup, type CheckboxGroupItem, type CheckboxGroupProps } from "./checkbox-group";
@@ -143,7 +143,12 @@ export { InputGroup, type InputGroupAction, type InputGroupProps } from "./input
 export { PasswordInput, type PasswordInputProps } from "./password-input";
 export { TagsInput, type TagsInputProps } from "./tags-input";
 export { Fieldset, type FieldsetProps } from "./fieldset";
-export { Combobox, type ComboboxItem, type ComboboxProps } from "./combobox";
+export {
+  Combobox,
+  type ComboboxItem,
+  type ComboboxItemGroup,
+  type ComboboxProps,
+} from "./combobox";
 export { Slider, type SliderProps } from "./slider";
 export { Rating, type RatingLabels, type RatingProps } from "./rating";
 export {
