@@ -1,7 +1,7 @@
 import { useRef, type ReactNode } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Entrance } from "./motion";
 import { Text } from "./text";
 
@@ -40,7 +40,13 @@ export type IndicatorProps = {
   /** Sem contagem: só o ponto, para "tem algo novo aqui". */
   dot?: boolean;
   className?: string;
-  /** Veste a pastilha. O `className` veste o que embrulha o filho. */
+  /** Classe por parte: `badge`, a pastilha. O `className` veste o que embrulha o filho. */
+  classNames?: Slots<"badge">;
+  /**
+   * Obsoleta: veste a pastilha, hoje em `classNames.badge`.
+   * @deprecated Use `classNames.badge`. Com os dois, as classes se somam e a de
+   * `classNames.badge` vence.
+   */
   badgeClassName?: string;
 };
 
@@ -51,6 +57,7 @@ export function Indicator({
   label,
   dot,
   className,
+  classNames,
   badgeClassName,
 }: IndicatorProps) {
   const show = dot === true || (count !== undefined && count > 0);
@@ -80,6 +87,7 @@ export function Indicator({
             "border-2 border-bg",
             dot === true ? "size-3.5" : "h-[22px] min-w-[22px] px-1",
             badgeClassName,
+            classNames?.badge,
           )}
         >
           {dot !== true && <Text className="text-xs font-rc-medium text-danger-fg">{written}</Text>}

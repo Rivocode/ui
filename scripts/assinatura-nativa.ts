@@ -199,15 +199,6 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
     ],
   },
-  Highlight: {
-    rows: [
-      {
-        web: "classNames",
-        native: "markClassName",
-        note: "a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text`",
-      },
-    ],
-  },
   Spoiler: {
     rows: [
       {
@@ -632,11 +623,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "label",
         note: "`label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase",
       },
-      {
-        web: "classNames",
-        native: "badgeClassName",
-        note: "uma classe só, a da pastilha: não há `classNames` no pacote nativo",
-      },
     ],
   },
   Input: {
@@ -747,11 +733,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "value",
         note: "vira obrigatório, com `onValueChange`: não há `defaultValue`",
       },
-      {
-        web: "classNames",
-        native: "inputClassName",
-        note: "`className` veste a raiz e `inputClassName` o campo; o \"R$\" não se veste",
-      },
     ],
   },
   PostalCodeField: {
@@ -762,11 +743,6 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "vira obrigatório e são só os dígitos; no web aceita o texto com máscara",
       },
       { web: "defaultValue", native: null, note: "não há estado interno: o campo é controlado" },
-      {
-        web: "classNames",
-        native: "inputClassName",
-        note: "`className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem",
-      },
     ],
   },
   Menu: {

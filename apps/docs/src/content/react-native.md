@@ -216,7 +216,7 @@ recusa o que conseguiu medir.
 | `Gantt` | ✕ não porta | cronograma é idioma de mesa; no telefone a tarefa por dia é lista, e o prazo é o `Calendar` |
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
 | `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
-| `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark` |
+| `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `classNames.mark` como no web |
 | `IconButton` | ✔ traduz | `label` obrigatório, o mesmo nome do web; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |

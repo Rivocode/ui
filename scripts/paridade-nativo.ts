@@ -634,7 +634,8 @@ const PARITY: Record<string, Row> = {
       "O React Native não avisa quando a pessoa cola, então o campo lê a seleção de antes da " +
       "troca para saber o que entrou por cima. Com `allowNegative`, o teclado passa a ser o de " +
       "números e pontuação, que é o que tem o sinal no iPhone. Não há `name`: formulário " +
-      "escondido não existe no celular.",
+      "escondido não existe no celular.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `input` e `prefix`, este no texto do \"R$\". O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
   },
   PostalCodeField: {
     state: "traduz",
@@ -647,7 +648,8 @@ const PARITY: Record<string, Row> = {
       "segundo argumento.\n\n" +
       "O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo " +
       "anúncio do leitor de tela do sistema. O \"Tentar de novo\" da falha de rede é um " +
-      "botão de verdade, com alvo de toque inteiro.",
+      "botão de verdade, com alvo de toque inteiro.\n\n" +
+      "As partes vestem pelo mesmo `classNames` do web: `input`, `suffix`, `message` e `retry`. O `suffix` só existe enquanto a busca corre, porque aqui não há o visto do endereço achado. O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
   },
   Questionnaire: {
     state: "traduz",
@@ -1231,7 +1233,8 @@ const PARITY: Record<string, Row> = {
       '"3" solto entre os dois. Embrulhar filho e pastilha num elemento só resolveria a ' +
       "leitura e quebraria o toque, porque o botão de dentro deixaria de ser alcançável. O " +
       "anel que separa a pastilha do que está embaixo vira borda da cor do fundo: `ring` não " +
-      "existe no React Native, e borda ali ocupa por dentro da caixa.",
+      "existe no React Native, e borda ali ocupa por dentro da caixa.\n\n" +
+      "A pastilha se veste por `classNames.badge`, o mesmo nome do web. O `badgeClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.badge` vence.",
   },
   InputGroup: {
     state: "traduz",
@@ -1814,13 +1817,14 @@ const PARITY: Record<string, Row> = {
   },
   Highlight: {
     state: "traduz",
-    note: "sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark`",
+    note: "sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `classNames.mark` como no web",
     page:
       "Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada " +
       "trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o " +
       "peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, " +
       "`lineClamp`).\n\n" +
-      "No lugar do `classNames.mark` do web, a classe de cada trecho vai em `markClassName`. O " +
+      "A classe de cada trecho vai em `classNames.mark`, como no web. O `markClassName` de antes " +
+      "continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.mark` vence. O " +
       "`matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma " +
       "regra.",
   },

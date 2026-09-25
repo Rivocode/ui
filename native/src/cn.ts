@@ -19,3 +19,5 @@ export function cn(...classes: Parameters<typeof merge>): string {
 
   return merged;
 }
+
+export type Slots<Part extends string> = Partial<Record<Part, string>>;

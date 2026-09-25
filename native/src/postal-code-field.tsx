@@ -3,7 +3,7 @@ import { ActivityIndicator, View } from "react-native";
 
 import { useAnnounce } from "./announce";
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Input, type InputProps } from "./field";
 import { Presence } from "./motion";
 import { useRivo } from "./provider";
@@ -39,8 +39,18 @@ export type PostalCodeFieldProps = Omit<
   onStatusChange?: (status: PostalCodeStatus) => void;
   /** Os mesmos textos do web: `searching`, `found`, `notFound`, `failed` e `retry`. */
   labels?: Partial<typeof POSTAL_CODE_MESSAGES>;
-  /** Veste a raiz, que embrulha o campo e o aviso. O campo de dentro e `inputClassName`. */
+  /** Veste a raiz, que embrulha o campo e o aviso. */
   className?: string;
+  /**
+   * Classe por parte: `input`, `suffix` (o giro, so enquanto busca), `message`
+   * e `retry` (o botao de tentar de novo).
+   */
+  classNames?: Slots<"input" | "suffix" | "message" | "retry">;
+  /**
+   * Obsoleta: veste o campo de dentro, hoje em `classNames.input`.
+   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
+   * `classNames.input` vence.
+   */
   inputClassName?: string;
 };
 
@@ -54,6 +64,7 @@ export function PostalCodeField({
   invalid,
   editable,
   className,
+  classNames,
   inputClassName,
   ...props
 }: PostalCodeFieldProps) {
@@ -129,13 +140,13 @@ export function PostalCodeField({
               settleStatus("idle");
             }
           }}
-          className={cn("pr-11", inputClassName)}
+          className={cn("pr-11", inputClassName, classNames?.input)}
         />
         {status === "searching" ? (
           <View
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
-            className="absolute right-3.5"
+            className={cn("absolute right-3.5", classNames?.suffix)}
           >
             <ActivityIndicator size="small" color={colors["fg-subtle"]} />
           </View>
@@ -144,7 +155,13 @@ export function PostalCodeField({
 
       <Presence show={message !== null} swapKey={status}>
         <View className="items-start gap-2">
-          <Text className={cn("text-xs", notFound ? "text-danger-text" : "text-fg-muted")}>
+          <Text
+            className={cn(
+              "text-xs",
+              notFound ? "text-danger-text" : "text-fg-muted",
+              classNames?.message,
+            )}
+          >
             {message}
           </Text>
           {failed ? (
@@ -153,6 +170,7 @@ export function PostalCodeField({
               variant="secondary"
               disabled={editable === false}
               onPress={() => run(digits)}
+              className={classNames?.retry}
             >
               {said.retry}
             </Button>

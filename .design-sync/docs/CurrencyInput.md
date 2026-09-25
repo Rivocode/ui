@@ -114,3 +114,5 @@ põe os centavos num campo escondido: o que chega ao servidor é `123456`, e nã
 Traduz, com a mesma conta: o valor em centavos, a digitação que anda da direita para a esquerda, o `-` que põe e tira o sinal e a leitura do texto colado moram num arquivo só, compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` são obrigatórios.
 
 O React Native não avisa quando a pessoa cola, então o campo lê a seleção de antes da troca para saber o que entrou por cima. Com `allowNegative`, o teclado passa a ser o de números e pontuação, que é o que tem o sinal no iPhone. Não há `name`: formulário escondido não existe no celular.
+
+As partes vestem pelo mesmo `classNames` do web: `input` e `prefix`, este no texto do "R$". O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.

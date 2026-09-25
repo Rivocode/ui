@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Input, type InputProps } from "./field";
 import {
   formatCents,
@@ -29,8 +29,15 @@ export type CurrencyInputProps = Omit<
    * o que tem o sinal no iPhone.
    */
   allowNegative?: boolean;
-  /** Veste a raiz, que embrulha o campo e o "R$". O campo de dentro e `inputClassName`. */
+  /** Veste a raiz, que embrulha o campo e o "R$". */
   className?: string;
+  /** Classe por parte: `input` (o campo) e `prefix` (o texto do "R$"). */
+  classNames?: Slots<"input" | "prefix">;
+  /**
+   * Obsoleta: veste o campo de dentro, hoje em `classNames.input`.
+   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
+   * `classNames.input` vence.
+   */
   inputClassName?: string;
 };
 
@@ -44,6 +51,7 @@ export function CurrencyInput({
   placeholder = "0,00",
   onSelectionChange,
   className,
+  classNames,
   inputClassName,
   ...props
 }: CurrencyInputProps) {
@@ -73,7 +81,7 @@ export function CurrencyInput({
           setMinus(reading.minus);
           if (reading.cents !== value) onValueChange(reading.cents);
         }}
-        className={cn("pl-11", inputClassName)}
+        className={cn("pl-11", inputClassName, classNames?.input)}
       />
       <View
         pointerEvents="none"
@@ -81,7 +89,7 @@ export function CurrencyInput({
         importantForAccessibility="no-hide-descendants"
         className="absolute left-3.5"
       >
-        <Text className="text-base text-fg-subtle">R$</Text>
+        <Text className={cn("text-base text-fg-subtle", classNames?.prefix)}>R$</Text>
       </View>
     </View>
   );

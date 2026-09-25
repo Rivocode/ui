@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**194 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**190 divergências de assinatura em 87 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -132,7 +132,6 @@ escritos em lugar nenhum.
 | `Conversation` | `empty` | `empty` | `title` e `description` viram `string`, e o `icon` é a função que recebe a cor |
 | `Conversation` | `classNames` | — | um `className` só, na raiz da lista |
 | `CurrencyInput` | `value` | `value` | vira obrigatório, com `onValueChange`: não há `defaultValue` |
-| `CurrencyInput` | `classNames` | `inputClassName` | `className` veste a raiz e `inputClassName` o campo; o "R$" não se veste |
 | `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
 | `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
 | `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
@@ -158,14 +157,12 @@ escritos em lugar nenhum.
 | `Form` | — | `children` | `children` é função e recebe `{ submit, isSubmitting }`: nada envia sozinho, porque não há `<form>` nem `type="submit"` |
 | `FormField` | `label` | `label` | `label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle |
 | `FormField` | `description` | `description` | `description` é `string` |
-| `Highlight` | `classNames` | `markClassName` | a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text` |
 | `IconButton` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `IconButton` | `tooltip` | — | no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto |
 | `IconButton` | `tooltipSide` | — | sai junto com o `tooltip` |
 | `ImageViewer` | `index` | `index` | vira obrigatório, com `onIndexChange`: não há `defaultIndex`, e `null` é o fechado |
 | `ImageViewer` | `classNames` | `className` | um `className` só, na grade de miniaturas |
 | `Indicator` | `label` | `label` | `label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase |
-| `Indicator` | `classNames` | `badgeClassName` | uma classe só, a da pastilha: não há `classNames` no pacote nativo |
 | `Input` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `InputGroup` | — | `prefix` | `prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction` |
 | `InputGroup` | — | `value` | a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro |
@@ -205,7 +202,6 @@ escritos em lugar nenhum.
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
 | `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
 | `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
-| `PostalCodeField` | `classNames` | `inputClassName` | `className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem |
 | `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
 | `Progress` | `label` | `label` | `label` vira obrigatório e é `string` |
 | `PromptInput` | `value` | `value` | obrigatório, junto com `onValueChange` e `onSubmit`: no nativo todo campo é controlado |
@@ -446,7 +442,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Gantt` | ✕ não porta | cronograma é idioma de mesa; no telefone a tarefa por dia é lista, e o prazo é o `Calendar` |
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
 | `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
-| `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark` |
+| `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `classNames.mark` como no web |
 | `IconButton` | ✔ traduz | `label` obrigatório, o mesmo nome do web; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |

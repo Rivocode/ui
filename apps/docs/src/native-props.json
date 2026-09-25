@@ -1547,6 +1547,12 @@
         "note": "Veste a raiz, que embrulha o campo e o \"R$\"."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"prefix\", string>>",
+        "required": false,
+        "note": "Classe por parte: `input` (o campo) e `prefix` (o texto do \"R$\")."
+      },
+      {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
@@ -1555,7 +1561,8 @@
       {
         "name": "inputClassName",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Obsoleta: veste o campo de dentro, hoje em `classNames.input`."
       },
       {
         "name": "invalid",
@@ -2388,6 +2395,12 @@
         "note": "O termo buscado, ou uma lista deles."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"mark\", string>>",
+        "required": false,
+        "note": "Classe por parte: `mark`, cada trecho achado, o `Text` aninhado que pinta o fundo."
+      },
+      {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
@@ -2403,7 +2416,7 @@
         "name": "markClassName",
         "type": "string",
         "required": false,
-        "note": "Classe de cada trecho achado, o `Text` aninhado que pinta o fundo."
+        "note": "Obsoleta: a classe de cada trecho achado, hoje em `classNames.mark`."
       },
       {
         "name": "size",
@@ -2547,12 +2560,18 @@
         "name": "badgeClassName",
         "type": "string",
         "required": false,
-        "note": "Veste a pastilha."
+        "note": "Obsoleta: veste a pastilha, hoje em `classNames.badge`."
       },
       {
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"badge\", string>>",
+        "required": false,
+        "note": "Classe por parte: `badge`, a pastilha."
       },
       {
         "name": "count",
@@ -3302,6 +3321,12 @@
         "note": "Veste a raiz, que embrulha o campo e o aviso."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"message\" | \"retry\" | \"suffix\", string>>",
+        "required": false,
+        "note": "Classe por parte: `input`, `suffix` (o giro, so enquanto busca), `message` e `retry` (o botao de tentar de novo)."
+      },
+      {
         "name": "font",
         "type": "RivoFontRole",
         "required": false,
@@ -3310,7 +3335,8 @@
       {
         "name": "inputClassName",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Obsoleta: veste o campo de dentro, hoje em `classNames.input`."
       },
       {
         "name": "invalid",
