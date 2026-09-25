@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**194 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -149,7 +149,6 @@ escritos em lugar nenhum.
 | `EmptyState` | `title` | `title` | `title` e `description` são `string` |
 | `EmptyState` | `icon` | `icon` | aceita também uma função que recebe `color` e `size`, porque a cor não desce da `View` para o SVG |
 | `Field` | — | `label` | `label`, `description` e `error` viram props: sem `FieldLabel`, `FieldDescription` e `FieldError` |
-| `Field` | `validate` | — | a validação é do formulário, e não do campo: veja `@rivocode/ui-native/form` |
 | `Fieldset` | — | `legend` | `legend` vira prop obrigatória, no lugar do `FieldsetLegend` |
 | `FileUpload` | `onSelect` | `onSelect` | o que volta é `PickedFile` com `uri` local, e não `File`: `size` pode faltar |
 | `FileUpload` | `accept` | `accept` | aceita lista, e fala MIME: é o que o seletor do sistema sabe filtrar |
@@ -438,7 +437,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
 | `EmptyState` | ✔ traduz | `description` obrigatória, pelo mesmo motivo do web; `icon` e `illustration` nos dois lados |
 | `EventCalendar` | ✕ não porta | grade de tempo e idioma de mesa; no telefone a resposta e a lista, e o mes e o `Calendar` |
-| `Field` | ✔ traduz | `label`, `description` e `error` como props; o erro vence a descrição, como no web, e o texto que chega depois entra por fade |
+| `Field` | ✔ traduz | `label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o erro é anunciado, vira a dica do controle, e o texto que chega depois entra por fade |
 | `Fieldset` | ✔ traduz | `legend` como prop |
 | `FileUpload` | ✔ traduz | vive em `@rivocode/ui-native/file-upload`; a área de soltar vira um botão, porque no celular não há soltar; o `accept` fala MIME e o tamanho sai formatado sem `Intl` |
 | `FilterBar` | ✔ traduz | rola na horizontal com o limpar ancorado FORA do que rola; a linha reservada e uma altura de alvo de toque; a borda com mais escondido vira regua de 1pt, e nao esmaecido |

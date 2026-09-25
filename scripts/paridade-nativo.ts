@@ -485,7 +485,7 @@ const PARITY: Record<string, Row> = {
   },
   Field: {
     state: "traduz",
-    note: "`label`, `description` e `error` como props; o erro vence a descrição, como no web, e o texto que chega depois entra por fade",
+    note: "`label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o erro é anunciado, vira a dica do controle, e o texto que chega depois entra por fade",
   },
   FilterBar: {
     state: "traduz",
@@ -1179,9 +1179,9 @@ const PARITY: Record<string, Row> = {
       "`{ submit, isSubmitting }`), e continua aceitando JSX comum para quando o botão mora " +
       "fora, numa barra fixa no rodapé da tela.\n\n" +
       "**E muda a ponte com o controle.** No web o `Field` da Base UI liga rótulo, ajuda e " +
-      "erro a qualquer controle que esteja dentro, pelo contexto; aqui não há contexto nenhum: " +
-      "o `Field` nativo desenha um `Text` em cima e outro embaixo, e o controle do meio não " +
-      "fica sabendo de nada. Por isso o campo que o `FormField` entrega leva duas coisas a " +
+      "erro a qualquer controle que esteja dentro, pelo contexto; aqui o contexto é mais " +
+      "estreito: o `Field` nativo leva ao `Input` e ao `Textarea` só o erro, como dica, e a " +
+      "validação do `validate`, mas o rótulo não chega ao controle. Por isso o campo que o `FormField` entrega leva duas coisas a " +
       "mais, `accessibilityLabel` e `invalid`, e os adaptadores as põem no controle: sem " +
       "isso, um `TextInput` sob um rótulo fica **sem nome nenhum** para o leitor de tela. O " +
       "`label` do `FormField` é obrigatório aqui pela mesma razão.\n\n" +

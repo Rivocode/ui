@@ -2,6 +2,7 @@ import { useState } from "react";
 import { type TextInputProps } from "react-native";
 
 import { cn } from "./cn";
+import { useFieldControl } from "./field";
 import { useRivo } from "./provider";
 import { TextInput } from "./text";
 
@@ -20,19 +21,24 @@ export function Textarea({
   onBlur,
   onChangeText,
   onValueChange,
+  accessibilityHint,
   style,
   className,
   ...props
 }: TextareaProps) {
   const [focused, setFocused] = useState(false);
   const { colors } = useRivo();
+  const field = useFieldControl(props.value);
+  const flagged = invalid ?? Boolean(field.error);
 
   return (
     <TextInput
       multiline
       textAlignVertical="top"
       {...props}
+      accessibilityHint={accessibilityHint ?? field.error}
       onChangeText={(text) => {
+        field.change(text);
         onChangeText?.(text);
         onValueChange?.(text);
       }}
@@ -42,13 +48,14 @@ export function Textarea({
       }}
       onBlur={(event) => {
         setFocused(false);
+        field.blur();
         onBlur?.(event);
       }}
       placeholderTextColor={colors["fg-subtle"]}
       style={[{ minHeight: rows * 24 }, style]}
       className={cn(
         "rounded-md border bg-surface px-3.5 py-3 text-base text-fg",
-        invalid ? "border-danger" : focused ? "border-accent" : "border-border-strong",
+        flagged ? "border-danger" : focused ? "border-accent" : "border-border-strong",
         className,
       )}
     />

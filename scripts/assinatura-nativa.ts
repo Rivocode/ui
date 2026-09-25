@@ -532,11 +532,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "label",
         note: "`label`, `description` e `error` viram props: sem `FieldLabel`, `FieldDescription` e `FieldError`",
       },
-      {
-        web: "validate",
-        native: null,
-        note: "a validação é do formulário, e não do campo: veja `@rivocode/ui-native/form`",
-      },
     ],
   },
   Fieldset: {

@@ -1965,6 +1965,24 @@
         "type": "string",
         "required": false,
         "note": "O erro vence a descricao, como no web."
+      },
+      {
+        "name": "validate",
+        "type": "((value: unknown, formValues: Record<string, unknown>) => Promise<FieldVerdict> | FieldVerdict)",
+        "required": false,
+        "note": "A validacao do proprio campo, com a assinatura do web: recebe o valor do controle e devolve a mensagem, uma lista delas, ou nada quando o valor serve."
+      },
+      {
+        "name": "validationDebounceTime",
+        "type": "number",
+        "required": false,
+        "note": "Espera, em milissegundos, entre a tecla e o `validate` no modo `onChange`."
+      },
+      {
+        "name": "validationMode",
+        "type": "FieldValidationMode",
+        "required": false,
+        "note": "Quando o `validate` roda, como no web."
       }
     ]
   },
