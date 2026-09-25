@@ -668,6 +668,24 @@ decisão) está em <https://ds.rivocode.com.br/react-native.md>.
 
 **Nunca invente prop.** Se o `.md` da peca nao a lista, ela nao existe.
 
+### Versões
+
+Da 1.0 em diante, o `@rivocode/ui` e o `@rivocode/ui-native` seguem
+versionamento semântico à risca, cada um no seu número:
+
+- **Quebra só em versão maior.** Tirar ou renomear prop, peça ou export,
+  trocar o padrão de uma prop ou o formato de um callback é quebra, e só sai
+  numa versão maior.
+- **O que vai sair fica obsoleto antes.** A prop antiga continua funcionando
+  com `@deprecated` no tipo, dizendo o caminho novo, por pelo menos uma versão
+  menor, e só sai na versão maior seguinte.
+- **Prop nova e peça nova são versão menor.**
+- **Correção é versão de correção.**
+
+Quem vem da 0.x tem a tabela de cada troca, peça por peça, em
+<https://ds.rivocode.com.br/migrar-para-1-0.md>. Prop marcada `@deprecated`
+não se usa em código novo: o `.md` da peça diz o nome que fica.
+
 ### Os nomes do estado
 
 Cada ideia de estado tem um nome só, nos dois pacotes: o controlado, o inicial

@@ -487,3 +487,13 @@ O catálogo do web atravessa por tradução e não por porte: `DataTable` vira
 folha, e `Sidebar`, `Menubar` e `Tooltip` não portam (são idiomas de desktop).
 A tabela completa de tradução está no guia, e ela é gerada: quantas atravessam
 e quantas não portam se lê lá, e não aqui.
+
+## Versões
+
+O `@rivocode/ui-native` tem número próprio, e anda na velocidade dele, mas a
+regra é a mesma do web. Da 1.0 em diante, semver à risca: quebra só em versão
+maior; o que vai sair passa pelo menos uma versão menor marcado com
+`@deprecated` no tipo, com o caminho novo, e só sai na versão maior seguinte;
+prop nova e peça nova são versão menor; correção é versão de correção. Quem vem
+da 0.x tem a tabela de cada troca em
+<https://ds.rivocode.com.br/migrar-para-1-0>.

@@ -377,6 +377,13 @@ Tres tags, tres workflows, e o prefixo e o que separa:
 - `native-v*` publica `@rivocode/ui-native` (versao em `native/package.json`).
 - `mcp-v*` publica `@rivocode/ui-mcp` (versao em `mcp/package.json`).
 
+**Da 1.0 em diante, semver a risca**, nos tres pacotes: quebra (tirar ou
+renomear prop, peca ou export, trocar padrao ou formato de callback) so em
+versao maior; o que vai sair ganha `@deprecated` com o caminho novo e fica pelo
+menos uma versao menor antes de sair na maior seguinte; prop nova e peca nova
+sao menor; correcao e patch. A tabela da 0.x para a 1.0 mora em
+`apps/docs/src/content/migrar-para-1-0.md` e no agent `migracao`.
+
 Os pacotes andam em velocidades diferentes de proposito. A tag tem que bater
 com a versao do `package.json` correspondente, e o workflow confere isso -
 junto com o segredo e com a existencia da versao no registro - ANTES de gastar
