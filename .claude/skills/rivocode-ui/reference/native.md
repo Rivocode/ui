@@ -70,6 +70,29 @@ Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
 Nunca prometa que a tela do web "vai rodar no celular": o que se reaproveita é
 o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
 
+**A parte se veste pelo mesmo nome do web.** `className` veste a raiz, como
+lá, e a peça nativa que aceita `classNames` usa as chaves da seção "Partes" da
+página web: `<Banner classNames={{ title: 'font-rc-strong' }} />` se escreve
+igual nos dois pacotes. A classe de quem usa vem por último no `cn` e vence a
+da peça. Três limites, todos do React Native:
+
+- **Parte que o nativo não desenha fica fora do tipo**, e não vira nó
+  inventado: o `pause` do `Carousel` (não há `autoplay`), o `spotlight` do
+  `Tour` (o recorte é o vão entre as faixas), o `code` do `QRCode` e o
+  `baseline` do `SignaturePad` (moram dentro do `Svg`, que não recebe classe).
+  Cada uma tem linha na tabela abaixo.
+- **Cor de texto não desce de `View` para `Text`.** Numa parte que é caixa (o
+  `trigger` do `Spoiler`, o `footer` do `Carousel`), `text-*` não pinta o
+  texto de dentro; vista a parte que é o próprio `Text` (`title`, `counter`,
+  `message`).
+- **As props de uma parte só continuam valendo, obsoletas**: `markClassName`
+  do `Highlight`, `badgeClassName` do `Indicator` e `inputClassName` do
+  `CurrencyInput` e do `PostalCodeField`. Com as duas, as classes se somam e a
+  de `classNames` vence.
+
+Nem toda peça tem `classNames` aqui: a tabela de props de cada página diz quais
+têm. Sem ele, a peça veste só pela raiz.
+
 O que sobra dessas duas regras — prop que troca de nome, tipo que troca de
 forma, variante que só existe de um lado — está na tabela da próxima seção,
 peça por peça. Leia a linha antes de reescrever a chamada: os seis casos que
