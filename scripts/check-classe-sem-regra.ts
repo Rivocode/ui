@@ -217,7 +217,10 @@ if (problems.length > 0) {
       "sai sem o estilo, o gate fica verde e o pacote publica. Foi assim que o\n" +
       "polegar do Slider nativo viveu sem sombra.\n" +
       "Ou o nome esta errado, ou o token que o sustenta nao existe naquele\n" +
-      "pacote - e a segunda hipotese e a que ninguem lembra de conferir.",
+      "pacote - e a segunda hipotese e a que ninguem lembra de conferir.\n" +
+      "No web ha uma terceira: a palavra esta no `@source not inline` de\n" +
+      "src/styles.css, que corta nome de evento, de tag e de metodo que o\n" +
+      "scanner lia como classe. Se ela virou classe de verdade, saia de la.",
   );
   process.exit(1);
 }

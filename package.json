@@ -80,7 +80,7 @@
     "build:mcp": "bun run --cwd mcp build",
     "fumaca:mcp": "bun run scripts/fumaca-do-mcp.ts",
     "build:tokens": "bun dist/cli.js tokens --out dist/tokens",
-    "build:css": "tailwindcss -i src/styles.css -o dist/styles.css && bun run build:fonts && bun run scripts/build-preset.ts",
+    "build:css": "tailwindcss -i src/styles.css -o dist/styles.css && bun run scripts/compactar-css.ts dist/styles.css && bun run build:fonts && bun run scripts/build-preset.ts",
     "build:fonts": "tailwindcss -i src/tokens/themes/rivocode-fonts.css -o dist/fonts.css && bun run scripts/copy-fonts.ts dist/fonts.css",
     "test": "bun test",
     "lint": "oxlint",

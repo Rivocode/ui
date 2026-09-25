@@ -32,7 +32,7 @@ export const BUDGET: Record<string, Budget> = {
   },
   "./styles.css": {
     limit: 20_200,
-    why: "17,9 KB: a CSS que o Tailwind gera das classes das pecas, mais os tokens dos dois temas e das duas densidades. Todo mundo baixa ela inteira, em toda tela, e por isso o limite e o mais apertado em proporcao ao que entrega.",
+    why: "18,2 KB: a CSS que o Tailwind gera das classes das pecas, mais os tokens dos dois temas e das duas densidades. Todo mundo baixa ela inteira, em toda tela, e por isso o limite e o mais apertado em proporcao ao que entrega. Em 25/09/2026 ela tinha chegado a 19,4 KB (98% do limite) e desceu 1,3 KB sem mudar um pixel dos 56 retratos: 0,8 KB do espaco em branco que o `compactCss` (scripts/compactar-css.ts) tira - o `--minify` do Tailwind foi medido e recusado, porque quantiza o alfa das cores e mudou a borda do Gantt -, e 0,4 KB de catorze regras que nenhuma peca usa: o scanner lia como classe o `filter(` de array, o `\"resize\"` de evento, o `\"table\"` de tag e o `outline` de nome de variante, e o `.filter`, o `.blur` e o `.invert` arrastavam treze `@property`. Elas saem pelo `@source not inline` de src/styles.css, e o `check:classes` acusa se uma delas virar classe de verdade.",
   },
   "./form": {
     limit: 2_700,

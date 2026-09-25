@@ -30,9 +30,10 @@
  * uma construcao anterior. Medir ele seria responder sobre outro codigo - verde
  * ou vermelho, os dois mentiriam. Entao a guarda constroi o JavaScript e a CSS
  * numa pasta propria, com o mesmo `tsdown.config.ts` e a mesma entrada do
- * Tailwind do build, e mede o que acabou de sair. Custa menos de um segundo, e
- * por isso cabe no `bun run check` em vez de ficar num passo da CI que a
- * maquina de ninguem roda.
+ * Tailwind do build, passa a CSS pelo mesmo `compactCss` do `build:css`, e mede
+ * o que acabou de sair. Sem o corte aqui, a guarda mediria uma CSS que ninguem
+ * publica. Custa menos de um segundo, e por isso cabe no `bun run check` em
+ * vez de ficar num passo da CI que a maquina de ninguem roda.
  *
  * ## O que ela mede
  *
@@ -55,6 +56,7 @@ import { mkdirSync, rmSync } from "node:fs";
 import { dirname, join, normalize } from "node:path";
 import { gzipSync } from "node:zlib";
 
+import { compactCss } from "./compactar-css";
 import { BUDGET, BUTTON_ALONE } from "./orcamento-de-tamanho";
 
 const OUT = "node_modules/.cache/check-tamanho";
@@ -84,6 +86,8 @@ mkdirSync(OUT, { recursive: true });
 
 await run(["node_modules/.bin/tsdown", "--no-dts", "-d", OUT, "-l", "error"]);
 await run(["node_modules/.bin/tailwindcss", "-i", CSS_ENTRY, "-o", join(OUT, "styles.css")]);
+const cssOut = join(OUT, "styles.css");
+await Bun.write(cssOut, compactCss(await Bun.file(cssOut).text()));
 
 const inBuild = (path: string) => join(OUT, path.replace(/^\.\/dist\//, ""));
 
