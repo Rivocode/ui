@@ -226,6 +226,23 @@ describe("a tabela publicada", () => {
     expect(validate(SIGNATURES, real, realNative)).toEqual([]);
   });
 
+  test("a regra do classNames le as partes dos dois lados, e so o Calendar do web fica sem leitura", async () => {
+    const real = (await Bun.file("apps/docs/src/component-props.json").json()) as Catalog;
+    const realNative = (await Bun.file("apps/docs/src/native-props.json").json()) as Catalog;
+    const slotsOf = (catalog: Catalog, piece: string) =>
+      catalog[piece]?.props.find((prop) => prop.name === "classNames")?.type;
+
+    const shared = Object.keys(real).filter(
+      (piece) => slotsOf(real, piece) && slotsOf(realNative, piece),
+    );
+    expect(shared.length).toBeGreaterThan(30);
+
+    const unread = shared.filter(
+      (piece) => !parts(slotsOf(real, piece)!) || !parts(slotsOf(realNative, piece)!),
+    );
+    expect(unread).toEqual(["Calendar"]);
+  });
+
   test("cobre os casos que custaram a tarde de quem portou a tela e que ainda divergem", () => {
     const cases: [string, string | null, string | null][] = [
       ["SearchInput", "onClear", null],

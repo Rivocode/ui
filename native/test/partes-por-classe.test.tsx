@@ -959,6 +959,41 @@ describe("classNames no nativo", () => {
     expect(CASES.flatMap((entry) => Object.keys(entry.parts)).length).toBeGreaterThan(160);
   });
 
+  test("toda parte que o tipo publica tem caso aqui", async () => {
+    const published = (await Bun.file(
+      new URL("../../apps/docs/src/native-props.json", import.meta.url),
+    ).json()) as Record<string, { props: { name: string; type: string }[] }>;
+
+    const calendarSource = await Bun.file(new URL("../src/calendar.tsx", import.meta.url)).text();
+    const union = /type CalendarPart =([^;]+);/.exec(calendarSource)?.[1] ?? "";
+    const CALENDAR_PARTS = [...union.matchAll(/"(\w+)"/g)].map((match) => match[1]!);
+    expect(CALENDAR_PARTS.length).toBeGreaterThan(10);
+
+    const covered = new Map<string, Set<string>>();
+    for (const entry of CASES) {
+      const piece = entry.name.split(" ")[0]!;
+      const seen = covered.get(piece) ?? new Set<string>();
+      for (const part of Object.keys(entry.parts)) seen.add(part);
+      covered.set(piece, seen);
+    }
+
+    const missing: string[] = [];
+    let checked = 0;
+    for (const [piece, entry] of Object.entries(published)) {
+      if (piece === "SortableList") continue;
+      const type = entry.props.find((prop) => prop.name === "classNames")?.type;
+      if (!type) continue;
+      const declared = [...type.matchAll(/"(\w+)"/g)].map((match) => match[1]!);
+      const names = declared.length > 0 ? declared : piece === "Calendar" ? CALENDAR_PARTS : [];
+      expect({ piece, readable: names.length > 0 }).toEqual({ piece, readable: true });
+      checked += 1;
+      for (const part of names) if (!covered.get(piece)?.has(part)) missing.push(`${piece}.${part}`);
+    }
+
+    expect(checked).toBeGreaterThanOrEqual(40);
+    expect(missing).toEqual([]);
+  });
+
   for (const entry of CASES) {
     test(`${entry.name}: cada parte veste o no dela, e so ele`, async () => {
       const classNames = Object.fromEntries(
