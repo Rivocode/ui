@@ -1776,7 +1776,7 @@ const PARITY: Record<string, Row> = {
     note: "sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark`",
     page:
       "Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada " +
-      "trecho achado é um `Text` aninhado com o mesmo fundo `warning-subtle`, a tinta `fg` e o " +
+      "trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o " +
       "peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, " +
       "`lineClamp`).\n\n" +
       "No lugar do `classNames.mark` do web, a classe de cada trecho vai em `markClassName`. O " +

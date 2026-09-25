@@ -788,7 +788,6 @@ for (const state of STATES)
   pair(`${state}-fg`, [state], MIN_TEXT);
 pair("accent-fg", ["accent-active"], MIN_TEXT, "botão primário sob o dedo");
 pair("fg", ["selected", "selected", "surface"], MIN_BODY, "dia do intervalo sob o dedo");
-pair("fg", ["warning-subtle", "surface-raised"], MIN_BODY, "trecho achado do Highlight");
 export const MAP_BOUNDARIES = [];
 for (const background of BACKGROUNDS) {
   MAP_BOUNDARIES.push({ front: "border-strong", layers: [background], min: MIN_NON_TEXTUAL });
@@ -811,6 +810,12 @@ for (const state of STATES) {
     note: "botão secundário dentro do Banner"
   });
 }
+MAP_BOUNDARIES.push({
+  front: "warning",
+  layers: ["surface-raised"],
+  min: MIN_NON_TEXTUAL,
+  note: "fundo do trecho achado do Highlight"
+});
 MAP_BOUNDARIES.push({
   front: "border-strong",
   layers: ["selected", "surface"],

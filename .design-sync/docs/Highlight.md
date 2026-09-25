@@ -46,11 +46,14 @@ ignorado: `query=""` devolve o texto inteiro, sem marca nenhuma.
 
 ## A cor
 
-Cada trecho sai num `<mark>` com o fundo `warning-subtle`, a tinta `fg` e peso
-semibold. O par é medido em `src/lib/contrast.ts` sobre os três fundos da casa
-(`bg`, `surface` e `surface-raised`), nos dois temas, com o alfa composto, e
-passa dos 7:1. A tinta é a principal mesmo quando o parágrafo em volta é
-`fg-muted`, e o peso diz "achado" para quem não distingue a cor.
+Cada trecho sai num `<mark>` com o fundo cheio `warning`, a tinta
+`warning-fg` e peso semibold. São dois pares medidos em `src/lib/contrast.ts`,
+nos dois temas: o fundo contra os três fundos da casa (`bg`, `surface` e
+`surface-raised`) passa dos 3:1, então o trecho se destaca pela cor e não só
+pelo peso; e a tinta sobre o fundo passa dos 4,5:1. O fundo sutil
+`warning-subtle` foi descartado por isso: ele media 1,14:1 contra o fundo no
+claro e 1,27:1 no escuro, e o destaque vivia só do negrito. A tinta do trecho
+não segue o parágrafo em volta, nem quando ele é `fg-muted`.
 
 O `<mark>` não é anunciado pela maioria dos leitores de tela, e não precisa:
 quem ouve já sabe o que buscou.
@@ -72,6 +75,6 @@ achado.
 
 ## No React Native
 
-Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada trecho achado é um `Text` aninhado com o mesmo fundo `warning-subtle`, a tinta `fg` e o peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, `lineClamp`).
+Traduz, sobre o `Text` do pacote, com o mesmo `query` e a mesma regra sem acento. Cada trecho achado é um `Text` aninhado com o mesmo fundo cheio `warning`, a tinta `warning-fg` e o peso semibold, e o de fora aceita todas as props do `Text` (`size`, `tone`, `weight`, `lineClamp`).
 
 No lugar do `classNames.mark` do web, a classe de cada trecho vai em `markClassName`. O `matchesSearch` também sai do pacote nativo, para o filtro e o destaque usarem a mesma regra.

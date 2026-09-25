@@ -24,7 +24,7 @@ export function Highlight({ children, query, markClassName, ...props }: Highligh
           <Text
             key={index}
             weight="semibold"
-            className={cn("bg-warning-subtle text-fg", markClassName)}
+            className={cn("bg-warning text-warning-fg", markClassName)}
           >
             {chunk.text}
           </Text>

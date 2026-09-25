@@ -3,7 +3,7 @@ import { describe, expect, test } from "bun:test";
 import { Highlight } from "../src";
 import { byClass, render, textOf } from "./helpers";
 
-const MARK = /(^| )bg-warning-subtle( |$)/;
+const MARK = /(^| )bg-warning( |$)/;
 
 const marks = (screen: ReturnType<typeof render>) =>
   byClass(screen, MARK).map((node) => node.props.children);
@@ -31,7 +31,7 @@ describe("Highlight", () => {
     expect(textOf(screen)).toBe("Recife");
   });
 
-  test("o trecho achado veste a tinta principal sobre o fundo de atencao, o par medido", () => {
+  test("o trecho achado veste o fundo cheio de atencao com a tinta dele, e nao o fundo sutil", () => {
     const screen = render(
       <Highlight query="pix" markClassName="rc-mark" tone="muted">
         Pague por Pix
@@ -40,7 +40,10 @@ describe("Highlight", () => {
     const [mark] = byClass(screen, MARK);
     const classes = String(mark!.props.className).split(" ");
 
-    expect(classes).toContain("text-fg");
+    expect(classes).toContain("bg-warning");
+    expect(classes).toContain("text-warning-fg");
+    expect(classes).not.toContain("bg-warning-subtle");
+    expect(classes).not.toContain("text-fg");
     expect(classes).not.toContain("text-fg-muted");
     expect(classes).toContain("rc-mark");
   });

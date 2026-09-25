@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import { render } from "@testing-library/react";
 
 import { Highlight } from "../src/components/highlight";
+import { compose, contrastRatio, readTokens } from "../src/lib/contrast";
 import { splitHighlight } from "../src/shared/highlight";
 
 const marks = (container: HTMLElement) =>
@@ -57,7 +58,7 @@ test("o acento escrito em duas partes fica dentro do destaque, e nao solto depoi
   expect(container.textContent).toBe(decomposed);
 });
 
-test("o mark se pinta no fundo de atencao com a tinta principal, que e o par medido", () => {
+test("o mark se pinta no fundo cheio de atencao com a tinta dele, e nao no fundo sutil", () => {
   const { container } = render(
     <Highlight query="pix" classNames={{ mark: "rc-mark" }} className="rc-root">
       Pague por Pix
@@ -65,11 +66,34 @@ test("o mark se pinta no fundo de atencao com a tinta principal, que e o par med
   );
   const mark = container.querySelector("mark")!;
 
-  expect(tokens(mark)).toContain("bg-warning-subtle");
-  expect(tokens(mark)).toContain("text-fg");
-  expect(tokens(mark)).not.toContain("text-fg-muted");
+  expect(tokens(mark)).toContain("bg-warning");
+  expect(tokens(mark)).toContain("text-warning-fg");
+  expect(tokens(mark)).not.toContain("bg-warning-subtle");
+  expect(tokens(mark)).not.toContain("text-fg");
   expect(tokens(mark)).toContain("rc-mark");
   expect(tokens(container.firstElementChild!)).toContain("rc-root");
+});
+
+test("o fundo do mark se distingue do fundo em volta e a tinta se le sobre ele, nos dois temas", async () => {
+  const { container } = render(<Highlight query="pix">Pague por Pix</Highlight>);
+  const classes = tokens(container.querySelector("mark")!);
+  const fill = classes.find((name) => name.startsWith("bg-"))!.slice(3);
+  const ink = classes.find((name) => /^text-(fg|warning-fg|accent-fg)/.test(name))!.slice(5);
+  const palette = await Bun.file("src/tokens/palette.css").text();
+  const measured: number[] = [];
+
+  for (const theme of ["rivocode-light", "rivocode-dark"]) {
+    const css = await Bun.file(`src/tokens/themes/${theme}.css`).text();
+    const colors = readTokens(`${palette}\n${css}`);
+    for (const around of ["bg", "surface", "surface-raised"]) {
+      const under = colors[`--rc-${around}`]!;
+      const paint = compose(colors[`--rc-${fill}`]!, under);
+      measured.push(contrastRatio(paint, under));
+      expect(contrastRatio(paint, under)).toBeGreaterThanOrEqual(3);
+      expect(contrastRatio(colors[`--rc-${ink}`]!, paint)).toBeGreaterThanOrEqual(4.5);
+    }
+  }
+  expect(measured).toHaveLength(6);
 });
 
 test("a conta pura corta pelo texto original, com a sobreposicao fundida", () => {

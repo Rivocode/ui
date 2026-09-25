@@ -27,7 +27,7 @@ export function Highlight({ children, query, className, classNames, ...props }: 
           <mark
             key={index}
             className={cn(
-              "rounded-sm bg-warning-subtle font-rc-strong text-fg box-decoration-clone",
+              "rounded-sm bg-warning font-rc-strong text-warning-fg box-decoration-clone",
               classNames?.mark,
             )}
           >
