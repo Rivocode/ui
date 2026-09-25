@@ -70,7 +70,7 @@ Botão que fica apertado (negrito, alinhamento, modo de exibição) é `Toggle`:
 `aria-pressed`.
 
 O `Button` não desenha quadrado de ícone: `size` nele é só `sm`, `md`, `lg` e
-`cta`, todos com rótulo escrito. Botão só com ícone é sempre esta peça, porque
+`xl`, todos com rótulo escrito. Botão só com ícone é sempre esta peça, porque
 ela exige o nome, tem os três tamanhos e resolve a espera sem alargar o
 quadrado.
 

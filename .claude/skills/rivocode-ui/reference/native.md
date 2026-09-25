@@ -136,7 +136,7 @@ escritos em lugar nenhum.
 | `Avatar` | `fallback` | `fallback` | vira obrigatória: é ela que ocupa o lugar enquanto a foto baixa, e é ela que volta se a foto falhar |
 | `Banner` | `description` | `description` | `title` e `description` viram `string`: texto no nativo mora dentro de um `Text` |
 | `Banner` | `icon` | `icon` | sem ícone padrão, porque o pacote não traz ícone; a função recebe a cor do tom e o tamanho |
-| `Button` | `size` | `size` | `cta` não porta: alvo de toque não encolhe. Botão só de ícone é o `IconButton` nos dois lados |
+| `Button` | `size` | `size` | `xl` não porta: o nativo tem `sm`, `md` e `lg`, e o `lg` já é a chamada no toque. Botão só de ícone é o `IconButton` nos dois lados |
 | `Button` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `Calendar` | `mode` | — | só data única, que no web é o caminho sem `mode`: intervalo é o `DateRangePicker`, e várias datas soltas não portam |
 | `Calendar` | `classNames` | `classNames` | os nomes do `DayPicker`, só os que têm nó no mês desenhado à mão: sem `months`, `month`, `month_caption`, `week`, `outside`, `hidden`, os `range_*` de intervalo e os de animação |

@@ -769,5 +769,5 @@ controle prometer o que ele nao faz.
 </RivoProvider>
 ```
 
-Botao em pilula (`shape="pill"`) e o tamanho `cta` sao de pagina de marketing.
+Botao em pilula (`shape="pill"`) e o tamanho `xl` sao de pagina de marketing.
 Em tela de produto o padrao e o canto de 8px.

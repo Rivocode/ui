@@ -12,8 +12,9 @@ de marketing. `ghost` para ação discreta em tabela ou cabeçalho. `danger`
 para o que apaga, e só para isso.
 
 **Tamanho.** `sm`, `md` e `lg` leem a altura do token de densidade, então encolhem
-sozinhos no modo compacto. `cta` é de marketing: maior, em negrito, com
-medida própria.
+sozinhos no modo compacto. `xl` é de marketing: maior, com medida própria, que
+não encolhe no compacto. Ele é só tamanho, como os outros três: o peso continua
+o médio da casa. Para o negrito de uma chamada, some `className="font-rc-bold"`.
 
 **Botão só com ícone é `IconButton`.** Ele exige `label`, que vira o nome
 acessível, tem os três tamanhos quadrados lidos do token de controle, troca o

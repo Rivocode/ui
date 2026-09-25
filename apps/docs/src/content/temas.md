@@ -235,7 +235,7 @@ intenção, e o número mora num token que o tema pode redefinir.
 | `--rc-weight-regular` | `font-rc-regular` | 400 | O corpo, e o trecho que volta ao normal dentro de um rótulo |
 | `--rc-weight-medium` | `font-rc-medium` | 500 | Rótulo de campo, botão, aba, selo, cabeçalho de tabela, título de aviso |
 | `--rc-weight-strong` | `font-rc-strong` | 600 | Ênfase forte no corpo: o título do cartão do `Kanban`, o `AiLabel`, o `Text weight="semibold"` |
-| `--rc-weight-bold` | `font-rc-bold` | 700 | O negrito do texto rico, o `Button size="cta"`, o `Text weight="bold"` |
+| `--rc-weight-bold` | `font-rc-bold` | 700 | O negrito do texto rico e o `Text weight="bold"` |
 | `--rc-weight-display` | `font-rc-display` | 600 | Todo texto em `font-display`: `Heading`, títulos de `Card`, `Dialog`, `Sheet`, `PageHeader`, o valor do `Stat` |
 
 Os cinco vivem em `src/tokens/forma.css`, com valor de `:root` por baixo, e são

@@ -21,7 +21,7 @@ export function Sizes() {
       <Button size="sm">Pequeno</Button>
       <Button size="md">Médio</Button>
       <Button size="lg">Grande</Button>
-      <Button size="cta" shape="pill">
+      <Button size="xl" shape="pill">
         <MessageCircle size={18} aria-hidden="true" />
         Falar no WhatsApp
       </Button>
@@ -42,7 +42,7 @@ export function States() {
 /** Como link */
 export function AsLink() {
   return (
-    <Button render={<a href="https://rivocode.com" />} size="cta" shape="pill">
+    <Button render={<a href="https://rivocode.com" />} size="xl" shape="pill">
       Ver o site da RivoCode
     </Button>
   )

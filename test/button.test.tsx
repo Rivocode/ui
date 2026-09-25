@@ -117,11 +117,14 @@ test("o botao sabe virar link, porque metade dos botoes de um site e link", () =
   expect(link.className).toContain("rounded-pill");
 });
 
-test("o tamanho de chamada tem o peso de marketing, nao o de formulario", () => {
-  render(<Button size="cta">Quero um diagnostico</Button>);
-  const classes = screen.getByRole("button").className;
-  expect(classes.split(" ")).toContain("font-rc-bold");
-  expect(classes).not.toContain("--rc-control-md");
+test("o xl e so tamanho: medida propria, fora do token de densidade, e o peso dos outros tres", () => {
+  render(<Button size="xl">Quero um diagnostico</Button>);
+  const tokens = screen.getByRole("button").className.split(" ");
+  expect(tokens).toContain("px-6.5");
+  expect(tokens).toContain("text-[15.5px]");
+  expect(tokens).toContain("font-rc-medium");
+  expect(tokens).not.toContain("font-rc-bold");
+  expect(tokens.some((token) => token.includes("--rc-control-"))).toBe(false);
 });
 
 test("a variante de contorno nao preenche, e engrossa a borda", () => {

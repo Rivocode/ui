@@ -33,7 +33,7 @@ export const buttonVariants = cva(
         sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
         md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
         lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
-        cta: "gap-2.5 px-6.5 py-3.75 text-[15.5px] font-rc-bold",
+        xl: "gap-2.5 px-6.5 py-3.75 text-[15.5px]",
       },
       shape: {
         default: "rounded-md",

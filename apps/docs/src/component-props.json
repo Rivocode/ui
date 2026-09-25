@@ -3798,7 +3798,7 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\" | \"xl\" | null",
         "required": false,
         "since": "0.4.0"
       },
@@ -19763,7 +19763,7 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\" | \"xl\" | null",
         "required": false
       },
       {
@@ -19794,7 +19794,7 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\" | \"xl\" | null",
         "required": false
       },
       {
@@ -19848,7 +19848,7 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\" | \"xl\" | null",
         "required": false
       },
       {
@@ -19879,7 +19879,7 @@
       },
       {
         "name": "size",
-        "type": "\"cta\" | \"lg\" | \"md\" | \"sm\" | null",
+        "type": "\"lg\" | \"md\" | \"sm\" | \"xl\" | null",
         "required": false
       },
       {
