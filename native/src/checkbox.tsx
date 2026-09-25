@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Pressable, View, type PressableProps } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Presence } from "./motion";
 import { Text } from "./text";
 
@@ -30,6 +30,11 @@ export type CheckboxProps = {
    */
   hitSlop?: PressableProps["hitSlop"];
   className?: string;
+  /**
+   * Classe por parte: `box` (a caixa desenhada), `indicator` (o tique ou o
+   * traco dentro dela) e `label` (o texto ao lado).
+   */
+  classNames?: Slots<"box" | "indicator" | "label">;
 };
 
 export function Checkbox({
@@ -41,6 +46,7 @@ export function Checkbox({
   accessibilityLabel,
   hitSlop,
   className,
+  classNames,
 }: CheckboxProps) {
   const filled = checked || indeterminate;
   return (
@@ -54,19 +60,28 @@ export function Checkbox({
       className={cn("flex-row items-center gap-2.5", disabled && "opacity-50", className)}
     >
       <View
-        className={`size-5 items-center justify-center rounded-sm border ${
-          filled ? "border-accent-text bg-accent-text" : "border-border-strong bg-surface"
-        }`}
+        className={cn(
+          "size-5 items-center justify-center rounded-sm border",
+          filled ? "border-accent-text bg-accent-text" : "border-border-strong bg-surface",
+          classNames?.box,
+        )}
       >
         <Presence show={filled} swapKey={indeterminate ? "mixed" : "checked"} enter="popIn">
           {indeterminate ? (
-            <View className="h-0.5 w-2.5 rounded-pill bg-surface-raised" />
+            <View
+              className={cn("h-0.5 w-2.5 rounded-pill bg-surface-raised", classNames?.indicator)}
+            />
           ) : (
-            <View className="mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-surface-raised" />
+            <View
+              className={cn(
+                "mb-0.5 h-2 w-3 -rotate-45 border-b-2 border-l-2 border-surface-raised",
+                classNames?.indicator,
+              )}
+            />
           )}
         </Presence>
       </View>
-      {children && <Text className="text-base text-fg">{children}</Text>}
+      {children && <Text className={cn("text-base text-fg", classNames?.label)}>{children}</Text>}
     </Pressable>
   );
 }

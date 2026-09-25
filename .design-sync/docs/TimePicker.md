@@ -109,3 +109,5 @@ Traduz como gatilho mais **folha de baixo**, que é a decisão da casa para pain
 **A diferença de estrutura, e ela não é estética:** no web o relógio mora DENTRO do campo; aqui não. Um `TextInput` dentro de um `Pressable` engole o toque do pai, e o gatilho precisa ser um alvo único para o leitor de tela. Todo picker nativo da casa (`DatePicker`, `DateRangePicker`, `Select`, `Combobox`, `TreeSelect`) já é gatilho mais folha, e a divisão sai mais limpa do que no web: `TimeField` é digitação, `TimePicker` é toque.
 
 A hora não fecha a folha e preserva o minuto; o minuto fecha. O `labels` perde `open` e `title`, porque aqui o `label` obrigatório já nomeia o gatilho E titula a folha, o mesmo arranjo do `DateRangePicker`.
+
+As partes vestem pelo mesmo `classNames` do web: `trigger`, `panel` (a folha), `column` e `option`. `field` não existe aqui: o relógio não mora dentro de um campo, e o gatilho já é o `trigger`.

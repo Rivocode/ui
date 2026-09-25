@@ -201,7 +201,7 @@ const PARITY: Record<string, Row> = {
   },
   Calendar: {
     state: "traduz",
-    note: "mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade",
+    note: "mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade; `classNames` com os nomes do `DayPicker` do web",
   },
   Card: {
     state: "traduz",
@@ -335,7 +335,8 @@ const PARITY: Record<string, Row> = {
       "o caminho. Não há `label`: no toque não existe nome de lista, e o título do cartão faz esse " +
       "papel.\n\n" +
       "As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, " +
-      'pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.',
+      'pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.' +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`.",
   },
   ChartGauge: {
     state: "traduz",
@@ -353,7 +354,8 @@ const PARITY: Record<string, Row> = {
       "ela entra no fim do nome acessível (\"72 de 100, Atenção. Bom de 0 a 60; Atenção de 60 a " +
       '85; Crítico de 85 a 100"). O papel é `image`, pela mesma razão do `ChartRadial`.\n\n' +
       "O arco e o ponteiro andam juntos até o valor novo, pelo Reanimated, e nascem no lugar com " +
-      '"reduzir movimento".',
+      '"reduzir movimento".' +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `value` e `label`, os dois textos do meio. `arc` não porta como parte: o arco é desenhado no `Svg`, e o `react-native-svg` não recebe classe.",
   },
   ChartHeatmap: {
     state: "traduz",
@@ -375,7 +377,8 @@ const PARITY: Record<string, Row> = {
       "a mesma decisão do `Tracker`: cento e sessenta e oito paradas dentro de um cartão seriam " +
       "um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.\n\n" +
       "Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a " +
-      "tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura.",
+      "tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`.",
   },
   ChartTreemap: {
     state: "traduz",
@@ -395,7 +398,8 @@ const PARITY: Record<string, Row> = {
       "nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o " +
       "contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por " +
       "isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem " +
-      "um nem outro existe. O título do cartão faz esse papel.",
+      "um nem outro existe. O título do cartão faz esse papel." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele.",
   },
   Checkbox: {
     state: "traduz",
@@ -408,7 +412,8 @@ const PARITY: Record<string, Row> = {
       "**O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e " +
       'anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca ' +
       "tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe " +
-      "lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.",
+      "lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `box`, `indicator` (o tique ou o traço) e `label`.",
   },
   CheckboxGroup: {
     state: "traduz",
@@ -531,8 +536,9 @@ const PARITY: Record<string, Row> = {
       "escondido, que aparece e some sozinha conforme a rolagem, não custa largura nenhuma e " +
       "não come o arrasto que começa nela. É a mesma pista, mais dura, e é o mesmo `inset 1px` " +
       "com que o `DataTable` marca a coluna congelada no web.\n\n" +
-      "Caem `classNames` por parte (não há `[&_li]` de que fugir sem DOM) e a parada de " +
-      "tabulação do web, porque não há foco de teclado aqui.",
+      "Cai a parada de tabulação do web, porque não há foco de teclado aqui. As partes vestem " +
+      "pelo mesmo `classNames` do web: `list` no conteúdo do que rola, `item`, `chip`, `clear` " +
+      "e `empty`, esta só na linha reservada.",
   },
   FilterChip: {
     state: "traduz",
@@ -547,7 +553,8 @@ const PARITY: Record<string, Row> = {
       "Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai " +
       "do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta " +
       "alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa: " +
-      "o dedo não encolhe junto com a ficha.",
+      "o dedo não encolhe junto com a ficha." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `label`, `value` e `remove`, o toque do xis.",
   },
   EventCalendar: {
     state: "nao",
@@ -700,14 +707,17 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo",
   },
-  PageHeader: { state: "traduz", note: "`title`, `description`, `badge` e `actions` como props" },
+  PageHeader: {
+    state: "traduz",
+    note: "`title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web",
+  },
   Progress: {
     state: "traduz",
-    note: "`value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo",
+    note: "`value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo; `classNames` com as quatro partes do web",
   },
   QueryBoundary: {
     state: "traduz",
-    note: "mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` nesta peca",
+    note: "mesmos nomes e mesma ordem; texto vira `string`, e `classNames` com `loading`, `error` e `empty`",
     page:
       "Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e vazio " +
       "só vale depois que a resposta chegou. O `children` também aceita função aqui, que é o " +
@@ -717,10 +727,11 @@ const PARITY: Record<string, Row> = {
       "`errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`. " +
       "O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor " +
       "e o tamanho. É a mesma nota que o `ChartContainer` já carrega.\n\n" +
-      "**`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que " +
-      "ninguém alcance o nó interno por `[&_div]` e acople a tela à árvore da peça. No React " +
-      "Native não há seletor de descendente, então essa escotilha não existe e a prop não teria " +
-      "o que evitar. O `className` veste os três finais, como no web.\n\n" +
+      "**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` " +
+      "continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que " +
+      "reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a " +
+      "borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único " +
+      "jeito de vestir um final sem vestir os outros.\n\n" +
       "O esqueleto genérico fica na peça, e não vem de quem chama: sem ele, `isLoading` sem " +
       "`skeleton` colapsaria a tela para altura zero e ela pularia quando o dado chegasse. No " +
       "celular isso dói mais, porque não há barra de rolagem nem indicador de rede para " +
@@ -865,7 +876,7 @@ const PARITY: Record<string, Row> = {
   },
   Slider: {
     state: "traduz",
-    note: "anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web",
+    note: "anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web; `classNames` com as seis partes do web",
   },
   Sparkline: {
     state: "traduz",
@@ -896,7 +907,7 @@ const PARITY: Record<string, Row> = {
   },
   Switch: {
     state: "traduz",
-    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma",
+    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma",
   },
   Tabs: {
     state: "traduz",
@@ -1095,7 +1106,7 @@ const PARITY: Record<string, Row> = {
       "e o texto do próprio campo, que tem nome próprio (`Código hexadecimal da cor`). O retrato " +
       "ao lado dele sai do leitor de tela: ele repete em cor o que o campo diz em texto, e cor " +
       "não se ouve. Com `hideInput`, o estado da amostra fica sendo o único canal.\n\n" +
-      "O `classNames` por parte não porta nesta peça: ela veste só pela raiz.",
+      "As partes vestem pelo mesmo `classNames` do web, as seis: `label`, `swatches`, `swatch` (o alvo de 44px de cada amostra), `field`, `preview` e `input`.",
   },
   DateRangePicker: {
     state: "traduz",
@@ -1138,7 +1149,8 @@ const PARITY: Record<string, Row> = {
       "O resto é o contrato de sempre: `value` e `onValueChange` **obrigatórios**, sem " +
       "`defaultValue`, e `label` obrigatório. Fechada, a peça anuncia `label` e valor juntos, " +
       'porque "Nome do cliente" sozinho manda a pessoa abrir a edição só para descobrir o que ' +
-      "há lá dentro.",
+      "há lá dentro." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `preview`, a área que se segura para editar, e `input`, o campo aberto.",
   },
   FileUpload: {
     state: "traduz",
@@ -1281,11 +1293,12 @@ const PARITY: Record<string, Row> = {
       "Só daqui há o `valueLabel`, para a medida que já chega escrita, e ele ganha do `format` " +
       "quando os dois vêm. O papel de acessibilidade muda, e por uma razão: o React Native " +
       "não tem equivalente de `meter`, então a peça se anuncia como texto com valor, e nunca " +
-      "como `progressbar`, que é justamente o erro que ela existe para evitar.",
+      "como `progressbar`, que é justamente o erro que ela existe para evitar." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `label`, `value`, `track` e `indicator`.",
   },
   PasswordInput: {
     state: "traduz",
-    note: "o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo",
+    note: "o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action`",
   },
   RelativeTime: {
     state: "traduz",
@@ -1337,7 +1350,8 @@ const PARITY: Record<string, Row> = {
       "tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que " +
       "já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não " +
       "entra duas vezes e sair do campo fecha o que estava meio escrito. O nome do xis vem " +
-      "por `labels.remove`, como no web; o `removeLabel` antigo está obsoleto.",
+      "por `labels.remove`, como no web; o `removeLabel` antigo está obsoleto." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `field`, `tag`, `remove` e `input`. O `inputClassName` de antes continua valendo, obsoleto; com os dois, as classes se somam e a de `classNames.input` vence.",
   },
   TimeField: {
     state: "traduz",
@@ -1376,7 +1390,8 @@ const PARITY: Record<string, Row> = {
       "toque.\n\n" +
       "A hora não fecha a folha e preserva o minuto; o minuto fecha. O `labels` perde `open` e " +
       "`title`, porque aqui o `label` obrigatório já nomeia o gatilho E titula a folha, o " +
-      "mesmo arranjo do `DateRangePicker`.",
+      "mesmo arranjo do `DateRangePicker`." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `trigger`, `panel` (a folha), `column` e `option`. `field` não existe aqui: o relógio não mora dentro de um campo, e o gatilho já é o `trigger`.",
   },
   Timeline: {
     state: "traduz",
@@ -1418,7 +1433,8 @@ const PARITY: Record<string, Row> = {
       "parada só, do tipo ajustável (o mesmo contrato do `Slider`), e cada passo anuncia o " +
       "texto de um período. Nenhum dado fica inalcançável e nenhum vira obstáculo. Por isso o " +
       "`label` de cada ponto é `string`, e não `ReactNode`: ele vai inteiro para o valor " +
-      "acessível da faixa, e de um `ReactNode` não há como ler o texto de volta.",
+      "acessível da faixa, e de um `ReactNode` não há como ler o texto de volta." +
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `track`, a faixa que recebe o arrasto, e `cell`. `label` não porta como parte: no web ele é um texto escondido, e aqui o nome vai só no `accessibilityLabel` da faixa, sem nó que se vista.",
   },
   VirtualList: {
     state: "nao",

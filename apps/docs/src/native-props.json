@@ -494,6 +494,12 @@
         "note": "A data escolhida, como `aaaa-mm-dd`."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<CalendarPart, string>>",
+        "required": false,
+        "note": "Classe por parte, com os nomes do `DayPicker` do web: `root`, `nav` (a fileira das setas), `button_previous`, `button_next`, `caption_label` (o mes escrito), `weekdays` e `weekday`, `month_grid` (a grade dos dias), `day` (a caixa de cada dia) e `day_button` (o toque dele)."
+      },
+      {
         "name": "max",
         "type": "string",
         "required": false
@@ -860,6 +866,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"bar\" | \"rate\" | \"stage\", string>>",
+        "required": false,
+        "note": "Classe por parte: `stage` (o bloco de cada etapa), `bar` (a barra) e `rate` (a linha da taxa entre duas etapas)."
+      },
+      {
         "name": "color",
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
@@ -924,6 +936,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `value` (o numero grande no meio) e `label` (a linha embaixo dele)."
+      },
+      {
         "name": "format",
         "type": "Format",
         "required": false,
@@ -985,6 +1003,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"grid\" | \"legend\", string>>",
+        "required": false,
+        "note": "Classe por parte: `grid` (a grade que recebe o arrasto), `cell` (cada celula) e `legend` (a regua de cor)."
       },
       {
         "name": "color",
@@ -1149,6 +1173,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `cell` (o bloco de cada categoria) e `label` (o nome e o valor escritos dentro dele)."
+      },
+      {
         "name": "config",
         "type": "ChartConfig",
         "required": false,
@@ -1191,6 +1221,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"box\" | \"indicator\" | \"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `box` (a caixa desenhada), `indicator` (o tique ou o traco dentro dela) e `label` (o texto ao lado)."
       },
       {
         "name": "disabled",
@@ -1385,6 +1421,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"field\" | \"input\" | \"label\" | \"preview\" | \"swatch\" | \"swatches\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `swatches` (o conjunto das amostras), `swatch` (o toque de cada amostra), `field` (a fileira do campo), `preview` (a cor de agora ao lado do campo) e `input`."
       },
       {
         "name": "columns",
@@ -1918,6 +1960,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"input\" | \"preview\", string>>",
+        "required": false,
+        "note": "Classe por parte: `preview` (o valor lido, a area que se segura para editar) e `input` (o campo aberto)."
+      },
+      {
         "name": "disabled",
         "type": "boolean",
         "required": false
@@ -2174,6 +2222,12 @@
         "note": "Veste a fileira inteira."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"chip\" | \"clear\" | \"empty\" | \"item\" | \"list\", string>>",
+        "required": false,
+        "note": "Classe por parte: `list` (a fileira que rola, pelo conteudo dela), `item` (o embrulho de cada ficha), `chip` (a ficha), `clear` (o botao de limpar) e `empty` (a linha guardada quando nao ha filtro)."
+      },
+      {
         "name": "clearFrom",
         "type": "number",
         "required": false,
@@ -2243,6 +2297,12 @@
         "type": "string",
         "required": false,
         "note": "Veste a ficha inteira - a faixa de toque de 44pt, e nao a pilula pintada dentro dela."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\" | \"remove\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label` (o campo), `value` (o escolhido) e `remove` (o toque do xis)."
       },
       {
         "name": "disabled",
@@ -2977,6 +3037,12 @@
         "required": false
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, `value` (o numero escrito), `track` (o trilho) e `indicator` (o preenchimento)."
+      },
+      {
         "name": "format",
         "type": "Format",
         "required": false,
@@ -3225,7 +3291,14 @@
       {
         "name": "className",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Veste a raiz, a mesma fileira de `classNames.row`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"actions\" | \"description\" | \"heading\" | \"row\" | \"title\", string>>",
+        "required": false,
+        "note": "Classe por parte: `row` (a fileira do titulo com as acoes), `heading` (a coluna do titulo e da descricao), `title`, `description` e `actions`."
       },
       {
         "name": "description",
@@ -3253,6 +3326,12 @@
         "type": "string",
         "required": false,
         "note": "Veste a moldura."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"action\" | \"input\" | \"wrapper\", string>>",
+        "required": false,
+        "note": "Classe por parte: `wrapper` (a moldura, o mesmo no de `className`), `input` (o campo) e `action` (o botao do olho)."
       },
       {
         "name": "inputClassName",
@@ -3434,7 +3513,14 @@
       {
         "name": "className",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Veste a raiz: sem `showValue`, o trilho, o mesmo no de `classNames.track`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"indicator\" | \"label\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label` e `value` (os dois textos, so com `showValue`), `track` (o trilho) e `indicator` (o preenchimento)."
       },
       {
         "name": "format",
@@ -3626,6 +3712,12 @@
         "type": "string",
         "required": false,
         "note": "Veste os tres finais, e nao os filhos: a moldura que reserva a altura vale igual para o esqueleto, para o aviso de erro e para o vazio."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"empty\" | \"error\" | \"loading\", string>>",
+        "required": false,
+        "note": "Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso com o botao) e `empty` (o estado vazio)."
       },
       {
         "name": "data",
@@ -4208,7 +4300,14 @@
       {
         "name": "className",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Veste a raiz: sem `showValue`, o controle, o mesmo no de `classNames.control`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"control\" | \"indicator\" | \"label\" | \"thumb\" | \"track\" | \"value\", string>>",
+        "required": false,
+        "note": "Classe por parte: `control` (a area que recebe o arrasto), `track` (o trilho), `indicator` (o preenchimento), `thumb` (o polegar), e `label` e `value` (os dois textos, so com `showValue`)."
       },
       {
         "name": "disabled",
@@ -4574,6 +4673,12 @@
         "note": "Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"label\", string>>",
+        "required": false,
+        "note": "Classe por parte: `label`, o texto ao lado."
+      },
+      {
         "name": "disabled",
         "type": "boolean",
         "required": false
@@ -4623,12 +4728,19 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste a caixa toda."
+        "note": "Veste a caixa toda, o mesmo no de `classNames.field`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"field\" | \"input\" | \"remove\" | \"tag\", string>>",
+        "required": false,
+        "note": "Classe por parte: `field` (a caixa), `tag` (cada ficha), `remove` (o xis da ficha) e `input` (o campo de digitar)."
       },
       {
         "name": "inputClassName",
         "type": "string",
-        "required": false
+        "required": false,
+        "note": "Obsoleta: veste o campo de digitar, hoje em `classNames.input`."
       },
       {
         "name": "invalid",
@@ -4849,7 +4961,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste o gatilho; a folha e a mesma para todos."
+        "note": "Veste o gatilho, o mesmo no de `classNames.trigger`."
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"column\" | \"option\" | \"panel\" | \"trigger\", string>>",
+        "required": false,
+        "note": "Classe por parte: `trigger` (o gatilho), `panel` (a folha), `column` (a lista de cada coluna) e `option` (cada hora e cada minuto)."
       },
       {
         "name": "disabled",
@@ -5130,6 +5248,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "classNames",
+        "type": "Partial<Record<\"cell\" | \"track\", string>>",
+        "required": false,
+        "note": "Classe por parte: `track` (a faixa que recebe o arrasto) e `cell` (cada periodo)."
       }
     ]
   },

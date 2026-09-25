@@ -43,4 +43,4 @@ ser lido em voz alta do celular.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `PasswordInput` - o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `PasswordInput` - o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action`. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

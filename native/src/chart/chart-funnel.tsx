@@ -2,7 +2,7 @@ import { View } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 
 import type { RivoNativeColorRole } from "../../tokens";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { useTween } from "../motion";
 import { useRivo } from "../provider";
 import { funnelRates } from "../shared/chart-layout";
@@ -35,6 +35,11 @@ export type ChartFunnelProps<Stage> = {
   /** A frase da conversão de ponta a ponta. `false` esconde a linha. */
   overallLabel?: string | false;
   className?: string;
+  /**
+   * Classe por parte: `stage` (o bloco de cada etapa), `bar` (a barra) e
+   * `rate` (a linha da taxa entre duas etapas).
+   */
+  classNames?: Slots<"stage" | "bar" | "rate">;
 };
 
 function valueOf(raw: unknown): number {
@@ -57,6 +62,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   rateLabel = "da etapa anterior",
   overallLabel = "do início ao fim",
   className,
+  classNames,
 }: ChartFunnelProps<Stage>) {
   const { colors: theme } = useRivo();
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
@@ -80,12 +86,18 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
               : `${name}: ${say(value)}`;
 
           return (
-            <View key={`${index}-${name}`} accessible accessibilityLabel={spoken} className="gap-1">
+            <View
+              key={`${index}-${name}`}
+              accessible
+              accessibilityLabel={spoken}
+              className={cn("gap-1", classNames?.stage)}
+            >
               {index > 0 && (
                 <View
                   className={cn(
                     "flex-row items-center gap-1",
                     align === "center" && "justify-center",
+                    classNames?.rate,
                   )}
                 >
                   <Text className="text-xs text-fg-subtle">↓</Text>
@@ -111,7 +123,11 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
                   align === "center" ? "justify-center" : "justify-start",
                 )}
               >
-                <Bar percent={widest > 0 ? (value / widest) * 100 : 0} color={theme[color]} />
+                <Bar
+                  percent={widest > 0 ? (value / widest) * 100 : 0}
+                  color={theme[color]}
+                  className={classNames?.bar}
+                />
               </View>
             </View>
           );
@@ -130,7 +146,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   );
 }
 
-function Bar({ percent, color }: { percent: number; color: string }) {
+function Bar({ percent, color, className }: { percent: number; color: string; className?: string }) {
   const width = useTween(percent, "slow", 0);
 
   const style = useAnimatedStyle(() => {
@@ -138,5 +154,5 @@ function Bar({ percent, color }: { percent: number; color: string }) {
     return { width: `${width.value}%`, backgroundColor: color };
   });
 
-  return <Animated.View className="h-full rounded-sm" style={style} />;
+  return <Animated.View className={cn("h-full rounded-sm", className)} style={style} />;
 }

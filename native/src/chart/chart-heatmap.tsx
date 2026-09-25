@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
 import type { RivoNativeColorRole } from "../../tokens";
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { Entrance } from "../motion";
 import { useRivo } from "../provider";
 import { HEAT_ALPHAS, axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
@@ -43,6 +43,11 @@ export type ChartHeatmapProps<Cell> = {
   /** A régua de cor embaixo da grade. Ligada por padrão. */
   legend?: boolean;
   className?: string;
+  /**
+   * Classe por parte: `grid` (a grade que recebe o arrasto), `cell` (cada
+   * celula) e `legend` (a regua de cor).
+   */
+  classNames?: Slots<"grid" | "cell" | "legend">;
 };
 
 export function ChartHeatmap<Cell extends Record<string, unknown>>({
@@ -59,6 +64,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   emptyLabel = "Sem dado",
   legend = true,
   className,
+  classNames,
 }: ChartHeatmapProps<Cell>) {
   const { colors: theme } = useRivo();
   const paint = theme[color];
@@ -174,6 +180,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
               const { width, height } = event.nativeEvent.layout;
               area.current = { width, height };
             }}
+            className={classNames?.grid}
             {...pan.panHandlers}
           >
             {rows.map((row, rowIndex) => (
@@ -189,7 +196,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
                     <View
                       key={column}
                       pointerEvents="none"
-                      className="min-w-0 flex-1 overflow-hidden rounded-sm"
+                      className={cn("min-w-0 flex-1 overflow-hidden rounded-sm", classNames?.cell)}
                       style={
                         step === null
                           ? {
@@ -236,7 +243,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
         <View
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
-          className="flex-row flex-wrap items-center gap-x-4 gap-y-2"
+          className={cn("flex-row flex-wrap items-center gap-x-4 gap-y-2", classNames?.legend)}
         >
           <View className="flex-row items-center gap-1.5">
             <Text font="mono" className="text-xs text-fg-subtle">

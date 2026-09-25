@@ -194,6 +194,6 @@ Traduz com os mesmos nomes de prop e a mesma ordem: **erro vence carregando**, e
 
 Cinco diferenças de tipo, todas porque texto no nativo mora dentro de um `Text`: `errorTitle`, `errorMessage`, `retryLabel`, `empty.title` e `empty.description` são `string`. O `empty.icon` atravessa, e aceita também a função do `EmptyState` nativo, que entrega a cor e o tamanho. É a mesma nota que o `ChartContainer` já carrega.
 
-**`classNames` não porta, e a razão não é preguiça:** a prop existe no web para que ninguém alcance o nó interno por `[&_div]` e acople a tela à árvore da peça. No React Native não há seletor de descendente, então essa escotilha não existe e a prop não teria o que evitar. O `className` veste os três finais, como no web.
+**`classNames` porta com os nomes do web:** `loading`, `error` e `empty`. O `className` continua vestindo os três finais, como no web, e a parte veste só o seu: a moldura que reserva a altura vale igual para os três, mas o erro que pede borda não pode levar a borda para o esqueleto. Sem seletor de descendente no React Native, a parte é o único jeito de vestir um final sem vestir os outros.
 
 O esqueleto genérico fica na peça, e não vem de quem chama: sem ele, `isLoading` sem `skeleton` colapsaria a tela para altura zero e ela pularia quando o dado chegasse. No celular isso dói mais, porque não há barra de rolagem nem indicador de rede para explicar a espera.

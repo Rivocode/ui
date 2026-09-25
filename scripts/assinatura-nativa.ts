@@ -285,7 +285,23 @@ export const SIGNATURES: Record<string, Signature> = {
     ],
   },
   Calendar: {
-    rows: [{ web: "mode", native: null, note: "só data única: intervalo é o `DateRangePicker`" }],
+    rows: [
+      { web: "mode", native: null, note: "só data única: intervalo é o `DateRangePicker`" },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "os nomes do `DayPicker`, só os que têm nó no mês desenhado à mão: sem `months`, `month`, `month_caption`, `week`, `outside`, `hidden`, os `range_*` de intervalo e os de animação",
+      },
+    ],
+  },
+  ChartGauge: {
+    rows: [
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `arc`: o arco é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe",
+      },
+    ],
   },
   ChartContainer: {
     rows: [
@@ -1047,6 +1063,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "não há formulário nativo para carregar valor: o estado é `checked`",
       },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "só `label`: sem `thumb`, porque o polegar é do `Switch` da plataforma, que não recebe classe",
+      },
     ],
   },
   Tabs: {
@@ -1074,6 +1095,11 @@ export const SIGNATURES: Record<string, Signature> = {
         web: null,
         native: "label",
         note: "`label` é obrigatório, e a folha tem duas colunas: NÃO embute o `TimeField`",
+      },
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `field`: não há campo de digitar dentro do gatilho, e o gatilho é o `trigger`",
       },
     ],
   },
@@ -1103,6 +1129,15 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "tone",
         native: null,
         note: "`tone` e `pending` viram campos de `items[]`, e `by` e `title` também",
+      },
+    ],
+  },
+  Tracker: {
+    rows: [
+      {
+        web: "classNames",
+        native: "classNames",
+        note: "sem `label`: o nome da faixa é só o `accessibilityLabel` dela, sem texto escondido que se vista",
       },
     ],
   },

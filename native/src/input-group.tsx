@@ -15,6 +15,8 @@ export type InputGroupAction = {
   /** O desenho do botão: texto curto entra como string, ícone como nó. */
   children?: ReactNode;
   disabled?: boolean;
+  /** Veste o botao, a caixa de toque colada no campo. */
+  className?: string;
 };
 
 export type InputGroupProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
@@ -99,6 +101,7 @@ export function InputGroup({
           className={cn(
             "h-full w-12 shrink-0 items-center justify-center border-l border-border",
             action.disabled ? "opacity-40" : "active:bg-selected",
+            action.className,
           )}
         >
           {typeof action.children === "string" || typeof action.children === "number" ? (

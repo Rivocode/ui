@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pressable, type AccessibilityActionEvent } from "react-native";
 
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Input } from "./field";
 import { Presence } from "./motion";
 import { Text } from "./text";
@@ -18,6 +18,11 @@ export type EditableProps = {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  /**
+   * Classe por parte: `preview` (o valor lido, a area que se segura para
+   * editar) e `input` (o campo aberto).
+   */
+  classNames?: Slots<"preview" | "input">;
 };
 
 const EDIT_ACTIONS = [{ name: "longpress", label: "Editar" }];
@@ -29,6 +34,7 @@ export function Editable({
   placeholder = "—",
   disabled,
   className,
+  classNames,
 }: EditableProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -60,6 +66,7 @@ export function Editable({
           className={cn(
             "min-h-11 min-w-0 flex-1 justify-center rounded-sm px-2 active:bg-accent-subtle",
             disabled && "opacity-50",
+            classNames?.preview,
           )}
         >
           <Text numberOfLines={1} className={`text-base ${value ? "text-fg" : "text-fg-subtle"}`}>
@@ -84,7 +91,7 @@ export function Editable({
         onSubmitEditing={commit}
         value={draft}
         onChangeText={setDraft}
-        className="min-w-0 flex-1"
+        className={cn("min-w-0 flex-1", classNames?.input)}
       />
       <Button variant="ghost" onPress={() => setEditing(false)}>
         Cancelar

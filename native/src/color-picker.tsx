@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Input } from "./field";
 import { Text } from "./text";
 
@@ -28,6 +28,12 @@ export type ColorPickerProps = {
   hideInput?: boolean;
   disabled?: boolean;
   className?: string;
+  /**
+   * Classe por parte: `label`, `swatches` (o conjunto das amostras), `swatch`
+   * (o toque de cada amostra), `field` (a fileira do campo), `preview` (a cor
+   * de agora ao lado do campo) e `input`.
+   */
+  classNames?: Slots<"label" | "swatches" | "swatch" | "field" | "preview" | "input">;
 };
 
 const HEX = /^([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -93,6 +99,7 @@ export function ColorPicker({
   hideInput,
   disabled,
   className,
+  classNames,
 }: ColorPickerProps) {
   const [text, setText] = useState(value);
   const [seenValue, setSeenValue] = useState(value);
@@ -124,12 +131,14 @@ export function ColorPicker({
 
   return (
     <View className={cn("gap-2", className)}>
-      {label && <Text className="text-sm font-rc-medium text-fg">{label}</Text>}
+      {label && (
+        <Text className={cn("text-sm font-rc-medium text-fg", classNames?.label)}>{label}</Text>
+      )}
 
       <View
         accessibilityRole="radiogroup"
         accessibilityLabel={label ?? swatchesLabel}
-        className="gap-2"
+        className={cn("gap-2", classNames?.swatches)}
       >
         {inRows(swatches, Math.max(1, columns)).map((row, rowIndex) => (
           <View key={rowIndex} className="flex-row gap-2">
@@ -148,6 +157,7 @@ export function ColorPicker({
                     "size-11 items-center justify-center rounded-md border-2",
                     selected ? "border-accent" : "border-transparent",
                     disabled && "opacity-50",
+                    classNames?.swatch,
                   )}
                 >
                   <View
@@ -162,11 +172,11 @@ export function ColorPicker({
       </View>
 
       {!hideInput && (
-        <View className="flex-row items-center gap-2">
+        <View className={cn("flex-row items-center gap-2", classNames?.field)}>
           <View
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
-            className="size-12 rounded-md border border-border"
+            className={cn("size-12 rounded-md border border-border", classNames?.preview)}
             style={{ backgroundColor: current ?? "transparent" }}
           />
           <Input
@@ -181,7 +191,7 @@ export function ColorPicker({
             onChangeText={typeText}
             onBlur={settle}
             font="mono"
-            className={cn("flex-1", disabled && "opacity-50")}
+            className={cn("flex-1", disabled && "opacity-50", classNames?.input)}
           />
         </View>
       )}

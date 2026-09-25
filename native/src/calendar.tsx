@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Presence } from "./motion";
 import { dateFromIso, formatIsoDate, isoFromDate, toIsoDate } from "./shared/date";
 import { Sheet } from "./sheet";
@@ -31,6 +31,21 @@ const monthLabel = (month: number) => {
 
 export const formatDate = formatIsoDate;
 
+type CalendarPart =
+  | "root"
+  | "nav"
+  | "button_previous"
+  | "button_next"
+  | "caption_label"
+  | "weekdays"
+  | "weekday"
+  | "month_grid"
+  | "day"
+  | "day_button"
+  | "today"
+  | "selected"
+  | "disabled";
+
 export type CalendarProps = {
   /** A data escolhida, como `aaaa-mm-dd`. */
   value: string | null;
@@ -38,6 +53,14 @@ export type CalendarProps = {
   /** Limites inclusivos, no mesmo formato. */
   min?: string;
   max?: string;
+  /**
+   * Classe por parte, com os nomes do `DayPicker` do web: `root`, `nav` (a
+   * fileira das setas), `button_previous`, `button_next`, `caption_label` (o
+   * mes escrito), `weekdays` e `weekday`, `month_grid` (a grade dos dias), `day`
+   * (a caixa de cada dia) e `day_button` (o toque dele). `today`, `selected` e
+   * `disabled` somam na caixa do dia que esta naquele estado, como no web.
+   */
+  classNames?: Slots<CalendarPart>;
 };
 
 function Chevron({ left }: { left?: boolean }) {
@@ -67,6 +90,8 @@ export type MonthViewProps = {
   /** Como cada dia se pinta, decidido por quem chama. */
   paintOf: (iso: string) => DayPaint;
   onDayPress: (iso: string) => void;
+  /** Classe por parte, os mesmos nomes do `classNames` do `Calendar`. */
+  classNames?: Slots<CalendarPart>;
 };
 
 export function MonthView({
@@ -77,6 +102,7 @@ export function MonthView({
   max,
   paintOf,
   onDayPress,
+  classNames,
 }: MonthViewProps) {
   const today = new Date();
   const firstWeekday = new Date(year, month, 1).getDay();
@@ -94,18 +120,21 @@ export function MonthView({
   const isoToday = isoFromDate(today);
 
   return (
-    <View className="gap-3">
-      <View className="flex-row items-center justify-between">
+    <View className={cn("gap-3", classNames?.root)}>
+      <View className={cn("flex-row items-center justify-between", classNames?.nav)}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Mês anterior"
           onPress={() => shift(-1)}
           hitSlop={8}
-          className="size-9 items-center justify-center rounded-md active:bg-selected"
+          className={cn(
+            "size-9 items-center justify-center rounded-md active:bg-selected",
+            classNames?.button_previous,
+          )}
         >
           <Chevron left />
         </Pressable>
-        <Text className="text-base font-rc-medium text-fg">
+        <Text className={cn("text-base font-rc-medium text-fg", classNames?.caption_label)}>
           {monthLabel(month)} de {year}
         </Text>
         <Pressable
@@ -113,25 +142,32 @@ export function MonthView({
           accessibilityLabel="Mês seguinte"
           onPress={() => shift(1)}
           hitSlop={8}
-          className="size-9 items-center justify-center rounded-md active:bg-selected"
+          className={cn(
+            "size-9 items-center justify-center rounded-md active:bg-selected",
+            classNames?.button_next,
+          )}
         >
           <Chevron />
         </Pressable>
       </View>
 
-      <View className="flex-row">
+      <View className={cn("flex-row", classNames?.weekdays)}>
         {WEEKDAYS.map((weekday, index) => (
           <Text
             key={index}
             font="mono"
-            className="flex-1 text-center text-xs text-fg-subtle uppercase"
+            className={cn("flex-1 text-center text-xs text-fg-subtle uppercase", classNames?.weekday)}
           >
             {weekday}
           </Text>
         ))}
       </View>
 
-      <Presence swapKey={`${year}-${month}`} exit="none" className="flex-row flex-wrap">
+      <Presence
+        swapKey={`${year}-${month}`}
+        exit="none"
+        className={cn("flex-row flex-wrap", classNames?.month_grid)}
+      >
         {cells.map((day, index) => {
           if (day === null) return <View key={`vazio-${index}`} className="w-[14.28%] py-1" />;
 
@@ -148,6 +184,10 @@ export function MonthView({
                 (paint.within === true || paint.edge !== undefined) && "bg-selected",
                 (paint.edge === "start" || paint.edge === "both") && "rounded-l-pill",
                 (paint.edge === "end" || paint.edge === "both") && "rounded-r-pill",
+                classNames?.day,
+                iso === isoToday && classNames?.today,
+                active && classNames?.selected,
+                blocked && classNames?.disabled,
               )}
             >
               <Pressable
@@ -159,9 +199,12 @@ export function MonthView({
                 }}
                 disabled={blocked}
                 onPress={() => onDayPress(iso)}
-                className={`size-10 items-center justify-center rounded-pill ${
-                  active ? "bg-accent" : blocked ? "" : "active:bg-selected"
-                } ${iso === isoToday && !active ? "border border-border-strong" : ""}`}
+                className={cn(
+                  "size-10 items-center justify-center rounded-pill",
+                  active ? "bg-accent" : blocked ? "" : "active:bg-selected",
+                  iso === isoToday && !active && "border border-border-strong",
+                  classNames?.day_button,
+                )}
               >
                 <Text
                   className={`text-sm ${
@@ -192,7 +235,7 @@ export function useMonthOf(iso: string | null | undefined) {
   return { year, month, onMonthChange };
 }
 
-export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
+export function Calendar({ value, onValueChange, min, max, classNames }: CalendarProps) {
   const { year, month, onMonthChange } = useMonthOf(value);
 
   return (
@@ -204,6 +247,7 @@ export function Calendar({ value, onValueChange, min, max }: CalendarProps) {
       max={max}
       paintOf={(iso) => ({ chosen: iso === value })}
       onDayPress={onValueChange}
+      classNames={classNames}
     />
   );
 }

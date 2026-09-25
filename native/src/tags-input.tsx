@@ -2,7 +2,7 @@ import { useRef, useState, type ComponentRef } from "react";
 import { Pressable, View, type TextInputProps } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useMotion, useSettled } from "./motion";
 import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
@@ -20,8 +20,18 @@ export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "cl
   /** @deprecated Use `labels.remove`. */
   removeLabel?: (tag: string) => string;
   invalid?: boolean;
-  /** Veste a caixa toda. O campo de digitar é `inputClassName`. */
+  /** Veste a caixa toda, o mesmo no de `classNames.field`. */
   className?: string;
+  /**
+   * Classe por parte: `field` (a caixa), `tag` (cada ficha), `remove` (o xis
+   * da ficha) e `input` (o campo de digitar).
+   */
+  classNames?: Slots<"field" | "tag" | "remove" | "input">;
+  /**
+   * Obsoleta: veste o campo de digitar, hoje em `classNames.input`.
+   * @deprecated Use `classNames.input`. Com os dois, as classes se somam e a de
+   * `classNames.input` vence.
+   */
   inputClassName?: string;
 };
 
@@ -52,6 +62,7 @@ export function TagsInput({
   onBlur,
   onFocus,
   className,
+  classNames,
   inputClassName,
   ...props
 }: TagsInputProps) {
@@ -98,6 +109,7 @@ export function TagsInput({
         invalid ? "border-danger" : focused ? "border-accent" : "border-border-strong",
         !editable && "opacity-60",
         className,
+        classNames?.field,
       )}
     >
       {value.map((tag) => (
@@ -106,7 +118,10 @@ export function TagsInput({
           entering={settled ? motion.popIn : undefined}
           exiting={motion.fadeOut}
           layout={motion.reflow}
-          className="flex-row items-center gap-1.5 rounded-sm bg-accent-subtle py-1 pr-1.5 pl-2"
+          className={cn(
+            "flex-row items-center gap-1.5 rounded-sm bg-accent-subtle py-1 pr-1.5 pl-2",
+            classNames?.tag,
+          )}
         >
           <Text className="text-sm text-fg">{tag}</Text>
           <Pressable
@@ -116,7 +131,7 @@ export function TagsInput({
             disabled={!editable}
             onPress={() => onValueChange(value.filter((current) => current !== tag))}
             hitSlop={8}
-            className="size-4 items-center justify-center"
+            className={cn("size-4 items-center justify-center", classNames?.remove)}
           >
             <View className="absolute h-[1.5px] w-2.5 rotate-45 rounded-pill bg-fg-subtle" />
             <View className="absolute h-[1.5px] w-2.5 -rotate-45 rounded-pill bg-fg-subtle" />
@@ -142,7 +157,7 @@ export function TagsInput({
           onBlur?.(event);
         }}
         placeholderTextColor={colors["fg-subtle"]}
-        className={cn("h-8 min-w-24 flex-1 text-base text-fg", inputClassName)}
+        className={cn("h-8 min-w-24 flex-1 text-base text-fg", inputClassName, classNames?.input)}
       />
     </Pressable>
   );

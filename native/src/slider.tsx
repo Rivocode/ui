@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { resolveFormat, type Format } from "./shared/format";
 import { Text } from "./text";
 
@@ -24,7 +24,14 @@ export type SliderProps = {
    */
   format?: Format;
   disabled?: boolean;
+  /** Veste a raiz: sem `showValue`, o controle, o mesmo no de `classNames.control`. */
   className?: string;
+  /**
+   * Classe por parte: `control` (a area que recebe o arrasto), `track` (o
+   * trilho), `indicator` (o preenchimento), `thumb` (o polegar), e `label` e
+   * `value` (os dois textos, so com `showValue`).
+   */
+  classNames?: Slots<"control" | "track" | "indicator" | "thumb" | "label" | "value">;
 };
 
 const plain = new Intl.NumberFormat("pt-BR");
@@ -45,6 +52,7 @@ export function Slider({
   format,
   disabled,
   className,
+  classNames,
 }: SliderProps) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const written = write?.(value);
@@ -93,14 +101,21 @@ export function Slider({
         "h-11 justify-center",
         disabled && "opacity-50",
         !showValue && className,
+        classNames?.control,
       )}
       {...(disabled ? {} : pan.panHandlers)}
     >
-      <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <View className="h-full rounded-pill bg-accent-text" style={{ width: fraction * width }} />
+      <View className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", classNames?.track)}>
+        <View
+          className={cn("h-full rounded-pill bg-accent-text", classNames?.indicator)}
+          style={{ width: fraction * width }}
+        />
       </View>
       <View
-        className="absolute size-5 rounded-pill border border-border-strong bg-fg"
+        className={cn(
+          "absolute size-5 rounded-pill border border-border-strong bg-fg",
+          classNames?.thumb,
+        )}
         style={{ left: Math.max(0, fraction * width - 10) }}
       />
     </View>
@@ -115,8 +130,10 @@ export function Slider({
         importantForAccessibility="no-hide-descendants"
         className={cn("flex-row items-baseline justify-between gap-4", disabled && "opacity-50")}
       >
-        <Text className="text-sm text-fg">{label}</Text>
-        <Text className="text-xs text-fg-subtle">{written ?? plain.format(value)}</Text>
+        <Text className={cn("text-sm text-fg", classNames?.label)}>{label}</Text>
+        <Text className={cn("text-xs text-fg-subtle", classNames?.value)}>
+          {written ?? plain.format(value)}
+        </Text>
       </View>
       {control}
     </View>

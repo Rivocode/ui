@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Pressable, Switch as NativeSwitch } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
@@ -12,9 +12,21 @@ export type SwitchProps = {
   disabled?: boolean;
   /** Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir. */
   className?: string;
+  /**
+   * Classe por parte: `label`, o texto ao lado. O polegar e desenhado pelo
+   * `Switch` da plataforma e nao recebe classe; a cor dele sai do tema.
+   */
+  classNames?: Slots<"label">;
 };
 
-export function Switch({ checked, onCheckedChange, children, disabled, className }: SwitchProps) {
+export function Switch({
+  checked,
+  onCheckedChange,
+  children,
+  disabled,
+  className,
+  classNames,
+}: SwitchProps) {
   const { colors } = useRivo();
 
   const control = (
@@ -42,7 +54,7 @@ export function Switch({ checked, onCheckedChange, children, disabled, className
         className,
       )}
     >
-      <Text className="shrink text-base text-fg">{children}</Text>
+      <Text className={cn("shrink text-base text-fg", classNames?.label)}>{children}</Text>
       {control}
     </Pressable>
   );

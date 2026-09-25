@@ -107,3 +107,5 @@ Uma mudança de tipo: `color` é papel de token (`chart-3`).
 **O que muda é como se lê uma célula.** No web o ponteiro pousa e a dica abre, e o leitor de tela navega uma tabela escondida. No celular não há dica nem tabela: o dedo toca ou arrasta sobre a grade e escolhe a célula debaixo dele, que ganha contorno, e a linha, a coluna e o número aparecem escritos embaixo da grade. Para o leitor de tela a grade é **uma parada `adjustable` só**, que anda célula a célula com o gesto de subir e descer, a mesma decisão do `Tracker`: cento e sessenta e oito paradas dentro de um cartão seriam um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.
 
 Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura.
+
+As partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`.

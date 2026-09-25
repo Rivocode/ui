@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
 import { formatTime, isOutsideWindow, parseTime, timeWindow } from "./time-field";
@@ -13,9 +13,18 @@ type ColumnProps = {
   options: number[];
   selected: number | undefined;
   onSelect: (option: number) => void;
+  className?: string;
+  optionClassName?: string;
 };
 
-function TimeColumn({ label, options, selected, onSelect }: ColumnProps) {
+function TimeColumn({
+  label,
+  options,
+  selected,
+  onSelect,
+  className,
+  optionClassName,
+}: ColumnProps) {
   const list = useRef<ScrollView | null>(null);
   const found = options.indexOf(selected ?? -1);
 
@@ -28,7 +37,7 @@ function TimeColumn({ label, options, selected, onSelect }: ColumnProps) {
       <Text className="px-1 text-xs text-fg-subtle">{label}</Text>
       <ScrollView
         ref={list}
-        className="max-h-72 rounded-md border border-border p-1"
+        className={cn("max-h-72 rounded-md border border-border p-1", className)}
         accessibilityLabel={label}
       >
         {options.map((option) => {
@@ -42,9 +51,11 @@ function TimeColumn({ label, options, selected, onSelect }: ColumnProps) {
               accessibilityLabel={`${label} ${written}`}
               accessibilityState={{ selected: active }}
               onPress={() => onSelect(option)}
-              className={`h-12 items-center justify-center rounded-sm ${
-                active ? "bg-accent" : "active:bg-selected"
-              }`}
+              className={cn(
+                "h-12 items-center justify-center rounded-sm",
+                active ? "bg-accent" : "active:bg-selected",
+                optionClassName,
+              )}
             >
               <Text className={`text-base ${active ? "font-rc-medium text-accent-fg" : "text-fg"}`}>
                 {written}
@@ -82,8 +93,13 @@ export type TimePickerProps = {
   disabled?: boolean;
   /** Os nomes das duas colunas. Trocar um nao apaga o outro. */
   labels?: TimePickerLabels;
-  /** Veste o gatilho; a folha e a mesma para todos. */
+  /** Veste o gatilho, o mesmo no de `classNames.trigger`. */
   className?: string;
+  /**
+   * Classe por parte: `trigger` (o gatilho), `panel` (a folha), `column` (a
+   * lista de cada coluna) e `option` (cada hora e cada minuto).
+   */
+  classNames?: Slots<"trigger" | "panel" | "column" | "option">;
 };
 
 export function TimePicker({
@@ -97,6 +113,7 @@ export function TimePicker({
   disabled,
   labels,
   className,
+  classNames,
 }: TimePickerProps) {
   const [open, setOpen] = useState(false);
 
@@ -150,6 +167,7 @@ export function TimePicker({
           wrong ? "border-danger" : "border-border-strong",
           disabled && "opacity-50",
           className,
+          classNames?.trigger,
         )}
       >
         <Text
@@ -161,19 +179,23 @@ export function TimePicker({
         <Text className="text-fg-subtle">▾</Text>
       </Pressable>
 
-      <Sheet open={open} onOpenChange={setOpen} title={label}>
+      <Sheet open={open} onOpenChange={setOpen} title={label} className={classNames?.panel}>
         <View className="flex-row gap-3">
           <TimeColumn
             label={labels?.hours ?? "Hora"}
             options={hours}
             selected={chosenHour}
             onSelect={pickHour}
+            className={classNames?.column}
+            optionClassName={classNames?.option}
           />
           <TimeColumn
             label={labels?.minutes ?? "Minuto"}
             options={minutesOf(columnHour)}
             selected={chosenMinute}
             onSelect={pickMinute}
+            className={classNames?.column}
+            optionClassName={classNames?.option}
           />
         </View>
       </Sheet>

@@ -254,4 +254,4 @@ O que precisou de conta foi o valor de REPOUSO. O código guardava zero até che
 
 O que ficou: uma régua de 1pt em `border-strong` encostada na borda que tem conteúdo escondido, que aparece e some sozinha conforme a rolagem, não custa largura nenhuma e não come o arrasto que começa nela. É a mesma pista, mais dura, e é o mesmo `inset 1px` com que o `DataTable` marca a coluna congelada no web.
 
-Caem `classNames` por parte (não há `[&_li]` de que fugir sem DOM) e a parada de tabulação do web, porque não há foco de teclado aqui.
+Cai a parada de tabulação do web, porque não há foco de teclado aqui. As partes vestem pelo mesmo `classNames` do web: `list` no conteúdo do que rola, `item`, `chip`, `clear` e `empty`, esta só na linha reservada.

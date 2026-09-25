@@ -31,4 +31,4 @@ na mesma página não dão erro em lugar nenhum: quem navega por título de nív
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `PageHeader` - `title`, `description`, `badge` e `actions` como props. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `PageHeader` - `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

@@ -176,7 +176,7 @@ recusa o que conseguiu medir.
 | `Breadcrumb` | ✕ não porta | o caminho de volta é o botão de voltar do router |
 | `Button` | ✔ traduz | contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento |
 | `ButtonGroup` | ✕ não porta | `Tabs` e `ToggleGroup` cobrem o caso; botão encostado em botão vira um alvo só no dedo |
-| `Calendar` | ✔ traduz | mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade |
+| `Calendar` | ✔ traduz | mês desenhado à mão; `value`, `onValueChange`, `min` e `max` em ISO `aaaa-mm-dd`, que o web também aceita; exibição `dd/mm/aaaa`; o mês novo entra por fade; `classNames` com os nomes do `DayPicker` do web |
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` (sem `CardFooter`) |
 | `Carousel` | ✔ traduz | sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay` |
 | `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função: não há Recharts, nem contentor que meça, nem `var(--color-série)` |
@@ -235,18 +235,18 @@ recusa o que conseguiu medir.
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo |
-| `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props |
+| `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
-| `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo |
+| `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action` |
 | `PixCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, junto do `QRCode`; o copiar entra por `renderCopy`, porque o `Clipboard` mora em outro caminho |
 | `Popconfirm` | ✔ vira `AlertDialog` | vira `AlertDialog`; no celular a confirmacao e modal e NAO cancela ao tocar fora |
 | `Popover` | ✕ não porta | painel ancorado que o próprio dedo cobre: use `Sheet` |
 | `PostalCodeField` | ✔ traduz | a mesma `lookup` e os mesmos quatro finais; o valor são os dígitos, sem a pontuação |
 | `PreviewCard` | ✕ não porta | aparece ao pousar o ponteiro, e não há pousar no toque |
-| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo |
+| `Progress` | ✔ traduz | `value` de 0 a 100 e `label`; `showValue` e `format` como no web; a barra anda até o valor novo; `classNames` com as quatro partes do web |
 | `PromptInput` | ✔ traduz | vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque a tecla de retorno do teclado do celular quebra a linha |
 | `QRCode` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o codificador é o mesmo, a tinta e o papel são fixos, e só o `logo` se veste por parte |
-| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e nao ha `classNames` nesta peca |
+| `QueryBoundary` | ✔ traduz | mesmos nomes e mesma ordem; texto vira `string`, e `classNames` com `loading`, `error` e `empty` |
 | `Questionnaire` | ✔ traduz | controlado, com as perguntas por `items` (`single`, `multiple`, `text`); os mesmos estados e os mesmos textos, sem atalho de teclado |
 | `RadioGroup` | ✔ traduz | `items` na raiz; nao existe `Radio` solto; `label` nomeia o grupo, no lugar do `aria-label` do web; o ponto aparece crescendo |
 | `Rating` | ✔ traduz | um controle ajustável só para o leitor de tela, com `value` controlado; cada estrela tem 44pt de alvo, e o ícone entra por função |
@@ -264,7 +264,7 @@ recusa o que conseguiu medir.
 | `Sidebar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `SignaturePad` | ✔ traduz | vive em `@rivocode/ui-native/chart`, porque desenha com o `react-native-svg`; o traço é o mesmo arquivo do web, o gesto é o `PanResponder`, e o PNG fica de fora por não haver canvas |
 | `Skeleton` | ✔ traduz | mesma marca de lugar, mesmo token, e o mesmo pulso de 2 s; parado com reduzir movimento |
-| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web |
+| `Slider` | ✔ traduz | anda por gesto e responde às ações do leitor de tela; um valor só, `label` obrigatório, e `showValue` e `format` como no web; `classNames` com as seis partes do web |
 | `SortableList` | ✔ traduz | vive em `@rivocode/ui-native/dnd`, sem peer: o gesto é o `PanResponder` do core, e só a alça arrasta; o leitor de tela move por ações, um passo por vez |
 | `Sparkline` | ✔ traduz | `line` e `bar` valem nos dois lados; `area` fica de fora (pede polígono preenchido, e o desenho nativo é `View`) |
 | `Spinner` | ✔ traduz | `sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`, e `small`/`large` seguem aceitos, obsoletos |
@@ -273,7 +273,7 @@ recusa o que conseguiu medir.
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
-| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma |
+| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `TableOfContents` | ✕ não porta | tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |

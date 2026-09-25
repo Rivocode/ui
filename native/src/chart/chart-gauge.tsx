@@ -3,7 +3,7 @@ import { View, type LayoutChangeEvent } from "react-native";
 import Animated, { useAnimatedProps } from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { useTween } from "../motion";
 import { useRivo } from "../provider";
 import { GAUGE_GAP, GAUGE_REACH, GAUGE_RING, bandAt } from "../shared/chart-layout";
@@ -55,6 +55,12 @@ export type ChartGaugeProps = {
    */
   label?: string;
   className?: string;
+  /**
+   * Classe por parte: `value` (o numero grande no meio) e `label` (a linha
+   * embaixo dele). O arco e desenhado no `Svg`, e o `react-native-svg` nao
+   * recebe classe: a cor dele sai da faixa.
+   */
+  classNames?: Slots<"value" | "label">;
 };
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -75,6 +81,7 @@ export function ChartGauge({
   sweep: askedSweep = 240,
   label,
   className,
+  classNames,
 }: ChartGaugeProps) {
   const { colors: theme } = useRivo();
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
@@ -189,12 +196,15 @@ export function ChartGauge({
             adjustsFontSizeToFit
             minimumFontScale={0.4}
             font="display"
-            className="w-full text-center text-xl font-rc-strong text-fg"
+            className={cn("w-full text-center text-xl font-rc-strong text-fg", classNames?.value)}
           >
             {written}
           </Text>
           {(centerLabel ?? band?.label) && (
-            <Text numberOfLines={2} className="mt-0.5 w-full text-center text-xs text-fg-subtle">
+            <Text
+              numberOfLines={2}
+              className={cn("mt-0.5 w-full text-center text-xs text-fg-subtle", classNames?.label)}
+            >
               {centerLabel ?? band?.label}
             </Text>
           )}

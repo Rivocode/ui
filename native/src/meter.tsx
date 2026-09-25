@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Fill } from "./motion";
 import { resolveFormat, type Format } from "./shared/format";
 import { Text } from "./text";
@@ -31,6 +31,11 @@ export type MeterProps = {
    */
   valueLabel?: string;
   className?: string;
+  /**
+   * Classe por parte: `label`, `value` (o numero escrito), `track` (o trilho)
+   * e `indicator` (o preenchimento).
+   */
+  classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };
 
 export function Meter({
@@ -42,6 +47,7 @@ export function Meter({
   format,
   valueLabel,
   className,
+  classNames,
 }: MeterProps) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const span = max - min;
@@ -59,14 +65,18 @@ export function Meter({
       className={cn("gap-2", className)}
     >
       <View className="flex-row items-baseline justify-between gap-4">
-        <Text className="text-sm text-fg">{label}</Text>
+        <Text className={cn("text-sm text-fg", classNames?.label)}>{label}</Text>
         {(showValue || valueLabel !== undefined) && (
-          <Text className="text-xs text-fg-subtle">{spoken}</Text>
+          <Text className={cn("text-xs text-fg-subtle", classNames?.value)}>{spoken}</Text>
         )}
       </View>
 
-      <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">
-        <Fill percent={percent} enter className="h-full rounded-pill bg-accent-text" />
+      <View className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", classNames?.track)}>
+        <Fill
+          percent={percent}
+          enter
+          className={cn("h-full rounded-pill bg-accent-text", classNames?.indicator)}
+        />
       </View>
     </View>
   );

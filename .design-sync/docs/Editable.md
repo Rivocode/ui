@@ -54,3 +54,5 @@ Traduz, com os dois gestos trocados. E os dois eram a peça inteira no web, ent�
 **Sair do campo não salva.** No web, clicar fora confirma; aqui não há clicar fora: há o teclado que se esconde, e o próprio `Cancelar` tira o foco do campo antes de rodar, então um `blur` que salvasse salvaria o rascunho no caminho de cancelá-lo. Nada sai daqui sem confirmação explícita (o botão de retorno do teclado) e nada se perde sem o `Cancelar`, que é visível ao lado do campo porque sem Escape não existe saída invisível.
 
 O resto é o contrato de sempre: `value` e `onValueChange` **obrigatórios**, sem `defaultValue`, e `label` obrigatório. Fechada, a peça anuncia `label` e valor juntos, porque "Nome do cliente" sozinho manda a pessoa abrir a edição só para descobrir o que há lá dentro.
+
+As partes vestem pelo mesmo `classNames` do web: `preview`, a área que se segura para editar, e `input`, o campo aberto.

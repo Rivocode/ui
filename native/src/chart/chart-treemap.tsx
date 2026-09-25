@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View, type LayoutChangeEvent } from "react-native";
 
-import { cn } from "../cn";
+import { cn, type Slots } from "../cn";
 import { Entrance } from "../motion";
 import { useRivo } from "../provider";
 import { TREEMAP_TINT, labelFit, squarify } from "../shared/chart-layout";
@@ -24,6 +24,11 @@ export type ChartTreemapProps<Item> = {
    */
   format?: Format;
   className?: string;
+  /**
+   * Classe por parte: `cell` (o bloco de cada categoria) e `label` (o nome e o
+   * valor escritos dentro dele).
+   */
+  classNames?: Slots<"cell" | "label">;
 };
 
 function valueOf(raw: unknown): number {
@@ -44,6 +49,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
   config,
   format,
   className,
+  classNames,
 }: ChartTreemapProps<Item>) {
   const { colors: theme } = useRivo();
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -95,7 +101,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
               style={{ left: box.x, top: box.y, width: box.width, height: box.height }}
             >
               <View
-                className="h-full w-full overflow-hidden rounded-sm p-2"
+                className={cn("h-full w-full overflow-hidden rounded-sm p-2", classNames?.cell)}
                 style={{ borderWidth: selected ? 2 : 1, borderColor: selected ? theme.fg : color }}
               >
                 <View
@@ -103,7 +109,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
                   style={{ backgroundColor: color, opacity: TREEMAP_TINT }}
                 />
                 {fit !== "none" && (
-                  <View>
+                  <View className={classNames?.label}>
                     <Text numberOfLines={1} className="text-xs font-rc-medium text-fg">
                       {name}
                     </Text>

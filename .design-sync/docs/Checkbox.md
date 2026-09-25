@@ -86,3 +86,5 @@ desmarca a irmã ao ser marcada é um rádio malfeito.
 Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é **sempre controlado**. `checked` e `onCheckedChange` são obrigatórios e não há `defaultChecked`. Copiar `<Checkbox defaultChecked>ISS retido</Checkbox>` do web não compila.
 
 **O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.
+
+As partes vestem pelo mesmo `classNames` do web: `box`, `indicator` (o tique ou o traço) e `label`.

@@ -3,7 +3,7 @@ import { View } from "react-native";
 
 import { Alert } from "./basics";
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { EmptyState, type EmptyStateProps } from "./empty-state";
 import { Skeleton } from "./skeleton";
 import { useSilentMisuse } from "./silent-misuse";
@@ -111,6 +111,12 @@ export type QueryBoundaryProps<Data> = {
    * igual para o esqueleto, para o aviso de erro e para o vazio.
    */
   className?: string;
+  /**
+   * Classe por parte: `loading` (a moldura do esqueleto), `error` (a do aviso
+   * com o botao) e `empty` (o estado vazio). Cada uma veste so o seu final, no
+   * mesmo no que o `className`.
+   */
+  classNames?: Slots<"loading" | "error" | "empty">;
 };
 
 export function QueryBoundary<Data>({
@@ -127,6 +133,7 @@ export function QueryBoundary<Data>({
   skeletonRows = 3,
   children,
   className,
+  classNames,
 }: QueryBoundaryProps<Data>) {
   const needsData = typeof children === "function";
   const loading = needsData ? isLoading || data === undefined : (isLoading ?? data === undefined);
@@ -139,7 +146,7 @@ export function QueryBoundary<Data>({
 
   if (isError) {
     return (
-      <View className={cn("items-start gap-3", className)}>
+      <View className={cn("items-start gap-3", className, classNames?.error)}>
         <Alert tone="danger" title={errorTitle} className="w-full">
           {errorMessage}
         </Alert>
@@ -160,7 +167,7 @@ export function QueryBoundary<Data>({
         accessible={generic}
         accessibilityLabel={generic ? "Carregando" : undefined}
         accessibilityState={{ busy: true }}
-        className={cn("gap-3", className)}
+        className={cn("gap-3", className, classNames?.loading)}
       >
         {skeleton ??
           Array.from({ length: skeletonRows }, (_, line) => (
@@ -176,7 +183,7 @@ export function QueryBoundary<Data>({
   if (empty && blank) {
     return (
       <EmptyState
-        className={className}
+        className={cn(className, classNames?.empty)}
         title={empty.title}
         description={empty.description}
         action={empty.action}

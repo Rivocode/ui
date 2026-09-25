@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { ActivityIndicator, Image, Pressable, View } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Entrance, Fill } from "./motion";
 import { useRivo } from "./provider";
 import { percent, resolveFormat, type Format } from "./shared/format";
@@ -54,15 +54,32 @@ export type ProgressProps = {
    * anuncio.
    */
   format?: Format;
+  /** Veste a raiz: sem `showValue`, o trilho, o mesmo no de `classNames.track`. */
   className?: string;
+  /**
+   * Classe por parte: `label` e `value` (os dois textos, so com `showValue`),
+   * `track` (o trilho) e `indicator` (o preenchimento).
+   */
+  classNames?: Slots<"label" | "value" | "track" | "indicator">;
 };
 
-export function Progress({ value, label, showValue, format, className }: ProgressProps) {
+export function Progress({
+  value,
+  label,
+  showValue,
+  format,
+  className,
+  classNames,
+}: ProgressProps) {
   const clamped = Math.min(100, Math.max(0, value));
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const written = write?.(clamped);
   const bar = (
-    <Fill percent={clamped} enter className="h-full rounded-pill bg-accent-text" />
+    <Fill
+      percent={clamped}
+      enter
+      className={cn("h-full rounded-pill bg-accent-text", classNames?.indicator)}
+    />
   );
   const range = {
     min: 0,
@@ -77,7 +94,7 @@ export function Progress({ value, label, showValue, format, className }: Progres
         accessibilityRole="progressbar"
         accessibilityLabel={label}
         accessibilityValue={range}
-        className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className)}
+        className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", className, classNames?.track)}
       >
         {bar}
       </View>
@@ -93,10 +110,14 @@ export function Progress({ value, label, showValue, format, className }: Progres
       className={cn("gap-2", className)}
     >
       <View className="flex-row items-baseline justify-between gap-4">
-        <Text className="text-sm text-fg">{label}</Text>
-        <Text className="text-xs text-fg-subtle">{written ?? percent(clamped)}</Text>
+        <Text className={cn("text-sm text-fg", classNames?.label)}>{label}</Text>
+        <Text className={cn("text-xs text-fg-subtle", classNames?.value)}>
+          {written ?? percent(clamped)}
+        </Text>
       </View>
-      <View className="h-1.5 overflow-hidden rounded-pill bg-skeleton">{bar}</View>
+      <View className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", classNames?.track)}>
+        {bar}
+      </View>
     </View>
   );
 }

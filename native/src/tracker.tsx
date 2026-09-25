@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Entrance } from "./motion";
 import { Text } from "./text";
 
@@ -31,9 +31,14 @@ export type TrackerProps = {
   /** O que a faixa mede, dito por extenso: "Emissões dos últimos 90 dias". */
   label: string;
   className?: string;
+  /**
+   * Classe por parte: `track` (a faixa que recebe o arrasto) e `cell` (cada
+   * periodo). O `label` e so o nome falado da faixa, e nao tem no para vestir.
+   */
+  classNames?: Slots<"track" | "cell">;
 };
 
-export function Tracker({ data, label, className }: TrackerProps) {
+export function Tracker({ data, label, className, classNames }: TrackerProps) {
   const [width, setWidth] = useState(0);
   const widthRef = useRef(0);
   const countRef = useRef(data.length);
@@ -81,13 +86,17 @@ export function Tracker({ data, label, className }: TrackerProps) {
           widthRef.current = event.nativeEvent.layout.width;
           setWidth(event.nativeEvent.layout.width);
         }}
-        className="h-11 w-full flex-row items-center gap-0.5"
+        className={cn("h-11 w-full flex-row items-center gap-0.5", classNames?.track)}
         {...pan.panHandlers}
       >
         {data.map((entry, position) => (
           <View
             key={position}
-            className={cn("h-7 min-w-0 flex-1 rounded-sm", TONE[entry.tone ?? "neutral"])}
+            className={cn(
+              "h-7 min-w-0 flex-1 rounded-sm",
+              TONE[entry.tone ?? "neutral"],
+              classNames?.cell,
+            )}
           />
         ))}
 

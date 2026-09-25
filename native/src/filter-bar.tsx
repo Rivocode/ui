@@ -12,7 +12,7 @@ import Animated from "react-native-reanimated";
 
 import { useAnnounce } from "./announce";
 import { Button } from "./button";
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useMotion, useSettled } from "./motion";
 import { Text } from "./text";
 
@@ -62,6 +62,8 @@ export type FilterChipProps = {
   labels?: { remove?: (filter: string) => string };
   /** Veste a ficha inteira - a faixa de toque de 44pt, e nao a pilula pintada dentro dela. */
   className?: string;
+  /** Classe por parte: `label` (o campo), `value` (o escolhido) e `remove` (o toque do xis). */
+  classNames?: Slots<"label" | "value" | "remove">;
 };
 
 export function FilterChip({
@@ -72,6 +74,7 @@ export function FilterChip({
   size = "md",
   labels = {},
   className,
+  classNames,
 }: FilterChipProps) {
   const remove = labels.remove ?? ((filter: string) => `Remover filtro ${filter}`);
   const hasValue = value !== undefined && value !== "";
@@ -96,12 +99,15 @@ export function FilterChip({
         )}
       />
 
-      <Text numberOfLines={1} className={cn("text-fg-muted", FONT[size])}>
+      <Text numberOfLines={1} className={cn("text-fg-muted", FONT[size], classNames?.label)}>
         {label}
       </Text>
 
       {hasValue && (
-        <Text numberOfLines={1} className={cn("max-w-40 font-rc-medium text-fg", FONT[size])}>
+        <Text
+          numberOfLines={1}
+          className={cn("max-w-40 font-rc-medium text-fg", FONT[size], classNames?.value)}
+        >
           {value}
         </Text>
       )}
@@ -114,7 +120,7 @@ export function FilterChip({
           disabled={disabled}
           onPress={onRemove}
           hitSlop={{ top: 0, bottom: 0, left: 14, right: 14 }}
-          className="w-4 items-center justify-center self-stretch"
+          className={cn("w-4 items-center justify-center self-stretch", classNames?.remove)}
         >
           <View className={cn(cross, "rotate-45")} />
           <View className={cn(cross, "-rotate-45")} />
@@ -168,6 +174,12 @@ export type FilterBarProps = {
   };
   /** Veste a fileira inteira. */
   className?: string;
+  /**
+   * Classe por parte: `list` (a fileira que rola, pelo conteudo dela), `item`
+   * (o embrulho de cada ficha), `chip` (a ficha), `clear` (o botao de limpar)
+   * e `empty` (a linha guardada quando nao ha filtro).
+   */
+  classNames?: Slots<"list" | "item" | "chip" | "clear" | "empty">;
 };
 
 export function FilterBar({
@@ -182,6 +194,7 @@ export function FilterBar({
   disabled,
   labels = {},
   className,
+  classNames,
 }: FilterBarProps) {
   const total = filters.length;
   const status = labels.status ?? applied;
@@ -258,7 +271,7 @@ export function FilterBar({
             onLayout={onLayout}
             onContentSizeChange={onContentSizeChange}
             onScroll={onScroll}
-            contentContainerClassName="flex-row items-center gap-2"
+            contentContainerClassName={cn("flex-row items-center gap-2", classNames?.list)}
           >
             {filters.map((filter) => (
               <Animated.View
@@ -266,6 +279,7 @@ export function FilterBar({
                 entering={settled ? motion.fadeIn : undefined}
                 exiting={motion.fadeOut}
                 layout={motion.reflow}
+                className={classNames?.item}
               >
                 <FilterChip
                   label={filter.label}
@@ -273,6 +287,7 @@ export function FilterBar({
                   size={size}
                   disabled={disabled}
                   labels={labels}
+                  className={classNames?.chip}
                   onRemove={
                     filter.removable === false || !canRemove
                       ? undefined
@@ -295,7 +310,11 @@ export function FilterBar({
         accessibilityLiveRegion="polite"
         accessibilityLabel={said}
         numberOfLines={1}
-        className={cn("text-sm text-fg-subtle", !line && "absolute top-0 left-0")}
+        className={cn(
+          "text-sm text-fg-subtle",
+          !line && "absolute top-0 left-0",
+          line && classNames?.empty,
+        )}
       >
         {line ? empty : ""}
       </Text>
@@ -305,6 +324,7 @@ export function FilterBar({
           variant="ghost"
           size="sm"
           disabled={disabled}
+          className={classNames?.clear}
           onPress={() => {
             onClear?.();
             onFiltersChange?.([]);

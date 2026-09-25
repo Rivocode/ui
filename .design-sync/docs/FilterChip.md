@@ -98,3 +98,5 @@ Traduz, com o mesmo vocabulário do web: rótulo, valor e o botão de tirar, sem
 **O alvo cresce sem a ficha engordar.** A raiz é uma faixa de 44pt e a pílula pintada é um filho absoluto dentro dela, então ela continua com 28pt como no web. O xis herda os 44 verticais da faixa e ganha `hitSlop` horizontal.
 
 A faixa foi esticada em vez de dar `hitSlop` vertical por uma razão de plataforma: **no Android o toque fora dos limites do pai não é entregue**. Com a pílula de 28pt como pai do botão, a folga acima e abaixo seria descartada justamente no aparelho onde mais falta alvo. Consequência declarada: `size` muda só a pílula desenhada, nunca a altura da faixa: o dedo não encolhe junto com a ficha.
+
+As partes vestem pelo mesmo `classNames` do web: `label`, `value` e `remove`, o toque do xis.

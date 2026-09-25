@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 
+import { cn, type Slots } from "./cn";
 import { InputGroup, type InputGroupProps } from "./input-group";
 
 export type PasswordInputProps = Omit<
@@ -9,6 +10,11 @@ export type PasswordInputProps = Omit<
 > & {
   /** O que o leitor de tela ouve no botão, antes e depois de revelar. */
   labels?: { show: string; hide: string };
+  /**
+   * Classe por parte: `wrapper` (a moldura, o mesmo no de `className`), `input`
+   * (o campo) e `action` (o botao do olho).
+   */
+  classNames?: Slots<"wrapper" | "input" | "action">;
 };
 
 function EyeIcon({ crossed }: { crossed: boolean }) {
@@ -24,6 +30,9 @@ function EyeIcon({ crossed }: { crossed: boolean }) {
 export function PasswordInput({
   labels = { show: "Mostrar senha", hide: "Esconder senha" },
   onBlur,
+  className,
+  inputClassName,
+  classNames,
   ...props
 }: PasswordInputProps) {
   const [revealed, setRevealed] = useState(false);
@@ -34,6 +43,8 @@ export function PasswordInput({
       autoCorrect={false}
       textContentType="password"
       {...props}
+      className={cn(className, classNames?.wrapper)}
+      inputClassName={cn(inputClassName, classNames?.input)}
       secureTextEntry={!revealed}
       onBlur={(event) => {
         setRevealed(false);
@@ -44,6 +55,7 @@ export function PasswordInput({
           label: revealed ? labels.hide : labels.show,
           onPress: () => setRevealed((current) => !current),
           children: <EyeIcon crossed={revealed} />,
+          className: classNames?.action,
         },
       ]}
     />
