@@ -37,7 +37,7 @@ const CONVENTIONS = here('../../../.design-sync/conventions.md')
  */
 const SKILL_DIR = here('../../../.claude/skills/rivocode-ui')
 const AUDIT_DIR = here('../../../.claude/skills/rivocode-ui-audit')
-export const AUDIT_FILES = ['SKILL.md', 'scripts/audit.ts']
+export const AUDIT_FILES = ['SKILL.md', 'scripts/audit.mts']
 const GUIDES_DIR = here('./content')
 const BLOCKS_DIR = here('./blocks')
 
@@ -273,7 +273,7 @@ adivinhada pelo nome.
 
 - [Skill](/skill.md): instruções completas, inclusive sem gerenciador de pacote
 - [SKILL.md](/skill/SKILL.md): a skill crua, para ler sem instalar
-- [Skill de auditoria](/skill-auditoria/SKILL.md): confere uma tela pronta contra as regras da casa e dá uma nota de 0 a 100, com o script em [/skill-auditoria/scripts/audit.ts](/skill-auditoria/scripts/audit.ts)
+- [Skill de auditoria](/skill-auditoria/SKILL.md): confere uma tela pronta contra as regras da casa e dá uma nota de 0 a 100, com o script em [/skill-auditoria/scripts/audit.mts](/skill-auditoria/scripts/audit.mts)
 
 ## Se não der para instalar
 

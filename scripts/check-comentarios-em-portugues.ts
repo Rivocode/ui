@@ -43,7 +43,7 @@ const AREAS: [area: string, floor: number][] = [
   ["demo/*.tsx", 10],
   ["native/src/**/*.{ts,tsx}", 60],
   ["mcp/src/**/*.ts", 3],
-  [".claude/skills/*/scripts/*.ts", 1],
+  [".claude/skills/*/scripts/*.{ts,mts}", 1],
   ["apps/docs/src/**/*.{ts,tsx}", 20],
   ["apps/docs/*.ts", 1],
   [".design-sync/previews/*.tsx", 80],

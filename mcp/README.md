@@ -58,7 +58,7 @@ site é a referência.
 | `get_tokens` | Papéis de cor nos dois temas, escalas, densidade e movimento. Com `file`, o JSON DTCG 2025.10 cru. |
 | `get_native_parity` | A linha de paridade (traduz, vira outra, não porta), a seção React Native da página, cada prop que muda na chamada e as props da peça nativa. |
 | `get_guide` | Um guia inteiro: convenções, instalação, temas, tokens, densidade, ícones, React Native, IA e agents, e as referências da skill (método, fluxo, texto, layout, design, escolha de peça, acessibilidade, formulários, gráficos). Sem `name`, lista os guias. |
-| `audit_screen` | Audita arquivos de tela (caminho e texto) contra as regras da casa e devolve o relatório com nota de 0 a 100, determinística. Com `package_json`, confere os peers dos subcaminhos; com `findings` e `dismissals`, leva o julgamento do agent para a mesma conta. É a auditoria da skill `rivocode-ui-audit`. |
+| `audit_screen` | Audita arquivos de tela (caminho e texto) contra as regras da casa e devolve o relatório com nota de 0 a 100, determinística. Com `package_jsons` (os manifestos do mais perto da tela ao da raiz do monorepo, que somam) ou `package_json` (um só), confere os peers; com `findings` e `dismissals`, leva o julgamento do agent para a mesma conta. É a auditoria da skill `rivocode-ui-audit`. |
 
 Cada página também sai como resource MCP: `rivocode://docs/componentes/<peça>.md`,
 `rivocode://docs/<guia>.md`, `rivocode://docs/skill/...` e

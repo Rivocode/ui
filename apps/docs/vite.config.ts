@@ -19,6 +19,7 @@ const CONTENT_TYPES: Record<string, string> = {
   md: 'text/markdown; charset=utf-8',
   txt: 'text/plain; charset=utf-8',
   ts: 'text/plain; charset=utf-8',
+  mts: 'text/plain; charset=utf-8',
 }
 
 /**
@@ -36,7 +37,7 @@ function rawDocs(): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const path = (req.url ?? '').split('?')[0]
-        const kind = /\.(md|txt|ts)$/.exec(path)?.[1]
+        const kind = /\.(md|txt|m?ts)$/.exec(path)?.[1]
         if (!kind) return next()
 
         const found = agentFiles().get(decodeURIComponent(path.slice(1)))

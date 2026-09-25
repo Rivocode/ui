@@ -1,5 +1,14 @@
 import { expect, test } from "bun:test";
-import { readdirSync, readFileSync } from "node:fs";
+import {
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import {
   ACCENTS,
@@ -15,12 +24,12 @@ import {
   WEIGHTS,
   type Finding,
   type SourceFile,
-} from "../.claude/skills/rivocode-ui-audit/scripts/audit";
+} from "../.claude/skills/rivocode-ui-audit/scripts/audit.mjs";
 import { agentFiles } from "../apps/docs/src/agent-docs";
 import { WORDS } from "../scripts/acentuar";
 
 const SKILL_DIR = ".claude/skills/rivocode-ui-audit";
-const SCRIPT = `${SKILL_DIR}/scripts/audit.ts`;
+const SCRIPT = `${SKILL_DIR}/scripts/audit.mts`;
 const FIXTURES = "test/fixtures/auditoria";
 
 function read(dir: string): SourceFile[] {
@@ -62,22 +71,22 @@ test("a tela ruim das fixtures cai para zero, e toda regra mecanica morde em alg
   expect(report.verdict).toBe("Fora do contrato");
 });
 
-test("os blocos de pagina do site tiram nota alta", () => {
+test("os blocos de pagina do site tiram 100, com os manifestos do app e da raiz", () => {
   const files = read("apps/docs/src/blocks");
   expect(files.length).toBeGreaterThan(4);
 
   const report = audit({
     files,
-    manifests: [{ path: "package.json", source: readFileSync("package.json", "utf8") }],
+    manifests: ["apps/docs/package.json", "package.json"].map((path) => ({
+      path,
+      source: readFileSync(path, "utf8"),
+    })),
   });
 
   expect(report.files.length).toBe(files.length);
-  expect(report.score).toBeGreaterThanOrEqual(90);
-  expect(
-    report.findings.filter(
-      (item) => RULES.find((rule) => rule.id === item.rule)!.severity === "critico",
-    ),
-  ).toEqual([]);
+  expect(report.findings).toEqual([]);
+  expect(report.files.every((file) => file.score === 100)).toBe(true);
+  expect(report.score).toBe(100);
 });
 
 test("mesma entrada, mesma nota: a ordem dos arquivos e a repeticao nao mudam o relatorio", () => {
@@ -133,7 +142,13 @@ test("a conta: peso por severidade, teto de tres por regra, media dos arquivos e
           'import { ChartContainer } from "@rivocode/ui/chart";\nexport const C = () => <main />',
       },
     ],
-    manifests: [{ path: "package.json", source: '{"dependencies":{"lucide-react":"1"}}' }],
+    manifests: [
+      {
+        path: "package.json",
+        source:
+          '{"dependencies":{"lucide-react":"1","react":"19","react-dom":"19","tailwindcss":"4"}}',
+      },
+    ],
   });
   expect(withPeer.findings.map((item) => item.rule)).toEqual(["peer-faltando"]);
   expect(withPeer.files[0]!.score).toBe(100);
@@ -511,13 +526,13 @@ test("toda regra esta na skill, e a skill nao cita regra que nao existe", () => 
 
 test("o site entrega a skill de auditoria e o script, iguais ao disco, e o para-agents ensina a usar", () => {
   const files = agentFiles();
-  for (const file of ["SKILL.md", "scripts/audit.ts"]) {
+  for (const file of ["SKILL.md", "scripts/audit.mts"]) {
     expect(files.get(`skill-auditoria/${file}`)).toBe(readFileSync(`${SKILL_DIR}/${file}`, "utf8"));
   }
 
   const guide = files.get("para-agents.md") ?? "";
   expect(guide).toContain("/skill-auditoria/SKILL.md");
-  expect(guide).toContain("/skill-auditoria/scripts/audit.ts");
+  expect(guide).toContain("/skill-auditoria/scripts/audit.mts");
   expect(guide).toContain("`audit_screen`");
   expect(files.get("llms.txt")).toContain("(/skill-auditoria/SKILL.md)");
 });
@@ -560,4 +575,387 @@ test("o script roda sozinho, imprime a nota e corta a CI abaixo do minimo", asyn
   expect(judged.code).toBe(0);
   expect(judged.out).toContain("**Nota: 89/100.** Ajustes pontuais.");
   expect(judged.out).toContain("**provider-ausente** (crítico, julgamento)");
+});
+
+test("o leitor de JSX atravessa a tag com tipo generico, e a tela com generico perde a mesma nota", () => {
+  const body = (table: string) =>
+    [
+      'import { Card, DataTable, IconButton } from "@rivocode/ui";',
+      "type Row = { id: string };",
+      "export function Tela({ rows }: { rows: Row[] }) {",
+      "  return (",
+      "    <Card>",
+      "      <IconButton />",
+      "      <div onClick={() => {}}>Abrir</div>",
+      '      <img src="/a.png" />',
+      `      ${table}`,
+      "    </Card>",
+      "  );",
+      "}",
+    ].join("\n");
+
+  const plain = auditSource("a.tsx", body("<DataTable columns={[]} data={rows} />"));
+  const generic = auditSource("a.tsx", body("<DataTable<Row> columns={[]} data={rows} />"));
+  const nested = auditSource(
+    "a.tsx",
+    body("<DataTable<Map<string, Row[]>> columns={[]} data={rows}></DataTable>"),
+  );
+
+  expect(plain.findings.map((item) => item.rule)).toEqual([
+    "nome-acessivel",
+    "elemento-clicavel",
+    "imagem-sem-alt",
+  ]);
+  expect(generic.findings).toEqual(plain.findings);
+  expect(nested.findings).toEqual(plain.findings);
+  expect(parse(body("<DataTable<Row> columns={[]} />")).elements.map((node) => node.name)).toEqual([
+    "Card",
+    "IconButton",
+    "div",
+    "img",
+    "DataTable",
+  ]);
+});
+
+test("o achado de importacao sai na linha do import, e a supressao nessa linha vale", () => {
+  const found = auditSource(
+    "a.tsx",
+    [
+      'import { Button } from "@rivocode/ui";',
+      'import { Card } from "@rivocode/ui";',
+      'import { QRCode } from "qrcode.react";',
+      'import { useForm } from "react-hook-form"',
+      "export const A = () => <Button>Ir</Button>;",
+    ].join("\n"),
+  );
+  expect(found.findings.map((item) => [item.rule, item.line])).toEqual([
+    ["pix-qr-caseiro", 3],
+    ["useform-direto", 4],
+  ]);
+
+  const waived = auditSource(
+    "b.tsx",
+    [
+      'import { Button } from "@rivocode/ui";',
+      'import { useForm } from "react-hook-form"; // rivocode-audit-ignore useform-direto: formulario legado',
+      "export const A = () => <Button>Ir</Button>;",
+    ].join("\n"),
+  );
+  expect(waived.findings).toEqual([]);
+  expect(waived.waived.map((item) => [item.rule, item.line, item.reason])).toEqual([
+    ["useform-direto", 2, "formulario legado"],
+  ]);
+});
+
+const HEAD =
+  'import { Button, Card, CodeBlock, Field, FieldLabel, Input, InputGroup, InputPrefix, MaskedInput, Text, cn, currency } from "@rivocode/ui";\nimport { Form, FormField, useZodForm } from "@rivocode/ui/form";\n';
+
+test("o que a casa escreve certo nao vira achado", () => {
+  const clean: [rule: string, source: string][] = [
+    [
+      "documento-sem-validador",
+      'import { clienteSchema } from "./schema";\nexport function C() {\n  const form = useZodForm(clienteSchema);\n  return <Form form={form} onSubmit={() => {}}><FormField name="cpf" label="CPF" render={({ field }) => <MaskedInput mask="cpf" {...field} />} /></Form>;\n}',
+    ],
+    [
+      "foco-apagado",
+      'export const A = ({ on }: { on: boolean }) => <a href="/x" className={cn("rounded outline-none", "focus-visible:ring-2 focus-visible:ring-ring", on && "bg-surface")}>Ir</a>;',
+    ],
+    [
+      "foco-apagado",
+      'const base = cn("outline-none", "focus-visible:ring-2 focus-visible:ring-ring");\nexport const A = () => <a href="/x" className={base}>Ir</a>;',
+    ],
+    [
+      "dinheiro-float",
+      "export function A({ customWidth, feedbackCount, totalDeNotas }: Record<string, string>) {\n  const width = Number(customWidth);\n  const n = parseFloat(feedbackCount);\n  const notas = Number(totalDeNotas);\n  return <Card style={{ width }}>{n + notas}</Card>;\n}",
+    ],
+    [
+      "dinheiro-float",
+      "export function A({ row }: { row: { valorEmCentavos: string; amountCents: string } }) {\n  const cents = Number(row.valorEmCentavos) + Number(row.amountCents);\n  return <Text>{currency(cents / 100)}</Text>;\n}",
+    ],
+    ["texto-em-ingles", "export const A = () => <Text>Continue de onde parou.</Text>;"],
+    [
+      "texto-em-ingles",
+      'export async function load() {\n  const r = await fetch("/api");\n  if (!r.ok) throw new Error("Failed to load the invoice list");\n  return r.json();\n}\nexport const B = () => <Button onClick={load}>Carregar notas</Button>;',
+    ],
+    [
+      "dinheiro-escrito",
+      "export const A = () => <Field><FieldLabel>Valor</FieldLabel><InputGroup><InputPrefix>R$</InputPrefix><Input /></InputGroup></Field>;",
+    ],
+    [
+      "import-caminho-errado",
+      'const sample = `\nimport { FormField } from "@rivocode/ui";\n`;\nexport const Doc = () => <CodeBlock code={sample} language="tsx" />;',
+    ],
+    [
+      "pix-qr-caseiro",
+      'const sample = `\nimport { QRCode } from "qrcode.react";\n`;\nexport const Doc = () => <CodeBlock code={sample} language="tsx" />;',
+    ],
+    [
+      "cor-literal",
+      'export function A() {\n  const go = () => { if (location.hash === "#add") scrollTo(0, 0); };\n  return <Button onClick={go}>Adicionar item</Button>;\n}',
+    ],
+    [
+      "texto-sem-acento",
+      'export const A = () => <Field><FieldLabel>E-mail</FieldLabel><Input placeholder="voce@empresa.com" /></Field>;',
+    ],
+  ];
+  expect(clean.length).toBeGreaterThan(10);
+
+  for (const [rule, body] of clean) {
+    expect([rule, body, rulesOf(`${HEAD}${body}\n`).includes(rule)]).toEqual([rule, body, false]);
+  }
+
+  const stillBites: [rule: string, source: string][] = [
+    [
+      "foco-apagado",
+      'export const A = () => <a href="/x" className={cn("outline-none", "px-2")}>Ir</a>;',
+    ],
+    [
+      "dinheiro-float",
+      "export const A = ({ price }: { price: string }) => <Text>{parseFloat(price)}</Text>;",
+    ],
+    [
+      "dinheiro-float",
+      "export const A = ({ valorTotal }: { valorTotal: string }) => <Text>{Number(valorTotal)}</Text>;",
+    ],
+    ["texto-em-ingles", "export const A = () => <Button>Save changes</Button>;"],
+    [
+      "import-caminho-errado",
+      'import { Badge } from "@rivocode/ui/form";\nexport const A = () => <main />;',
+    ],
+    ["cor-literal", 'export const A = () => <p style={{ color: "#add" }}>Nota</p>;'],
+    ["dinheiro-escrito", "export const A = () => <InputPrefix>R$ 10,00</InputPrefix>;"],
+  ];
+  for (const [rule, body] of stillBites) {
+    expect([rule, body, rulesOf(`${HEAD}${body}\n`).includes(rule)]).toEqual([rule, body, true]);
+  }
+});
+
+test("o que escapava agora morde: nome vazio, link sem href, cor arbitraria por nome e o toque cru do nativo", () => {
+  const web =
+    'import { Button, IconButton } from "@rivocode/ui";\nimport { X } from "lucide-react";\n';
+  const native =
+    'import { Pressable, Text, TouchableWithoutFeedback, View } from "react-native";\nimport { Button } from "@rivocode/ui-native";\n';
+  const bites: [rule: string, source: string][] = [
+    ["nome-acessivel", `${web}export const A = () => <Button aria-label=""><X /></Button>;`],
+    ["nome-acessivel", `${web}export const A = () => <IconButton label="  "><X /></IconButton>;`],
+    ["elemento-clicavel", `${web}export const A = () => <a onClick={() => {}}>Abrir</a>;`],
+    ["cor-literal", `${web}export const A = () => <p className="text-[red]">Nota</p>;`],
+    ["cor-literal", `${web}export const A = () => <p className="shadow-[0_0_0_#000]">Nota</p>;`],
+    [
+      "peca-reescrita",
+      `${native}export const A = () => <TouchableWithoutFeedback onPress={() => {}}><View /></TouchableWithoutFeedback>;`,
+    ],
+    [
+      "nome-acessivel",
+      `${native}export const A = () => <Pressable onPress={() => {}}><Icon /></Pressable>;`,
+    ],
+    [
+      "nome-acessivel",
+      `${native}export const A = () => <Button onPress={() => {}}><Icon /></Button>;`,
+    ],
+  ];
+  for (const [rule, source] of bites) {
+    expect([rule, source, rulesOf(source).includes(rule)]).toEqual([rule, source, true]);
+  }
+
+  const fine: [rule: string, source: string][] = [
+    ["nome-acessivel", `${web}export const A = () => <Button aria-label="Fechar"><X /></Button>;`],
+    [
+      "elemento-clicavel",
+      `${web}export const A = () => <a href="/notas" onClick={() => {}}>Abrir</a>;`,
+    ],
+    [
+      "nome-acessivel",
+      `${native}export const A = () => <Pressable onPress={() => {}}><Text>Salvar</Text></Pressable>;`,
+    ],
+    [
+      "nome-acessivel",
+      `${native}export const A = () => <Pressable accessibilityLabel="Salvar" onPress={() => {}}><Icon /></Pressable>;`,
+    ],
+  ];
+  for (const [rule, source] of fine) {
+    expect([rule, source, rulesOf(source).includes(rule)]).toEqual([rule, source, false]);
+  }
+});
+
+test("os peers obrigatorios de cada pacote sao cobrados de quem importa qualquer entrada dele", () => {
+  type Manifest = {
+    peerDependencies: Record<string, string>;
+    peerDependenciesMeta: Record<string, { optional: boolean }>;
+  };
+  const sides = [
+    ["package.json", "@rivocode/ui"],
+    ["native/package.json", "@rivocode/ui-native"],
+  ] as const;
+
+  for (const [file, root] of sides) {
+    const manifest = JSON.parse(readFileSync(file, "utf8")) as Manifest;
+    const required = Object.keys(manifest.peerDependencies)
+      .filter((name) => !manifest.peerDependenciesMeta[name]?.optional)
+      .sort();
+    expect(required.length).toBeGreaterThan(2);
+    expect([root, [...(PEERS[root]?.always ?? [])].sort()]).toEqual([root, required]);
+  }
+
+  const onlySubpath = audit({
+    files: [
+      {
+        path: "a.tsx",
+        source:
+          'import { View } from "react-native";\nimport { Form } from "@rivocode/ui-native/form";\nexport const A = () => <View />;',
+      },
+    ],
+    manifests: [{ path: "package.json", source: '{"dependencies":{"react-hook-form":"7"}}' }],
+  });
+  const missing = onlySubpath.findings.map((item) => item.message);
+  expect(missing.some((message) => message.includes("`react-native-reanimated`"))).toBe(true);
+  expect(missing.some((message) => message.includes("`react-hook-form`"))).toBe(false);
+});
+
+test("achado e descarte de julgamento aceitam a mesma forma, e a forma errada vira aviso", () => {
+  const report = audit({
+    files: [{ path: "a.tsx", source: 'export const A = () => <div className="bg-white" />' }],
+    findings: [
+      { rule: "escolha-de-peca", file: "a.tsx", line: "1" as unknown as number, message: "x" },
+      { rule: "escolha-de-peca", file: "a.tsx", line: 1 } as unknown as Finding,
+    ],
+    dismissals: [
+      { rule: "cor-literal", file: "a.tsx", line: "1" as unknown as number, reason: "amostra" },
+      { rule: "cor-literal", file: "a.tsx", line: 1 } as never,
+    ],
+  });
+  expect(report.findings.map((item) => item.rule)).toEqual(["cor-literal"]);
+  expect(report.notes.filter((note) => note.startsWith("Achado recusado")).length).toBe(2);
+  expect(report.notes.filter((note) => note.startsWith("Descarte recusado")).length).toBe(2);
+  expect(report.notes).toContain("Descarte recusado, sem motivo: `cor-literal` em a.tsx:1.");
+});
+
+const SCRIPT_ABSOLUTE = `${process.cwd()}/${SCRIPT}`;
+
+async function runScript(args: string[], cwd?: string) {
+  const child = Bun.spawn(["bun", SCRIPT_ABSOLUTE, ...args], {
+    stdout: "pipe",
+    stderr: "pipe",
+    cwd,
+  });
+  const [out, err, code] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ]);
+  return { out, err, code };
+}
+
+test("o --julgamento com forma errada responde com aviso ou com erro legivel, e nunca com pilha", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "auditoria-"));
+  const target = `${process.cwd()}/${FIXTURES}/boa`;
+  const manifestArgs = ["--manifesto", `${target}/package.json`];
+  const write = (name: string, value: unknown) => {
+    writeFileSync(join(dir, name), JSON.stringify(value));
+    return join(dir, name);
+  };
+
+  const noReason = await runScript([
+    target,
+    ...manifestArgs,
+    "--julgamento",
+    write("sem-motivo.json", { dismissals: [{ rule: "cor-literal", file: "x.tsx", line: 1 }] }),
+  ]);
+  expect(noReason.err).toBe("");
+  expect(noReason.code).toBe(0);
+  expect(noReason.out).toContain("Descarte recusado, sem motivo");
+
+  const shapes: unknown[] = [[], "texto", { findings: {} }, { dismissals: [1] }];
+  for (const shape of shapes) {
+    const wrong = await runScript([
+      target,
+      ...manifestArgs,
+      "--julgamento",
+      write("forma.json", shape),
+    ]);
+    expect([shape, wrong.code]).toEqual([shape, 2]);
+    expect(wrong.err).toContain("forma.json");
+    expect(wrong.err).not.toContain("    at ");
+  }
+});
+
+test("com mais de um alvo, os package.json de cada um entram na conta", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "auditoria-"));
+  mkdirSync(join(dir, ".git"));
+  const apps: [name: string, deps: Record<string, string>, source: string][] = [
+    [
+      "web",
+      { "lucide-react": "1", react: "19", "react-dom": "19", tailwindcss: "4" },
+      'import { Card } from "@rivocode/ui";\nexport const A = () => <Card />;',
+    ],
+    [
+      "grafico",
+      { "lucide-react": "1", react: "19", "react-dom": "19", recharts: "3", tailwindcss: "4" },
+      'import { ChartContainer } from "@rivocode/ui/chart";\nexport const B = () => <ChartContainer config={{}} />;',
+    ],
+  ];
+  for (const [app, deps, source] of apps) {
+    mkdirSync(join(dir, app));
+    writeFileSync(join(dir, app, "package.json"), JSON.stringify({ dependencies: deps }));
+    writeFileSync(join(dir, app, "tela.tsx"), source);
+  }
+
+  const both = await runScript(["web", "grafico", "--json"], dir);
+  expect(both.code).toBe(0);
+  const report = JSON.parse(both.out) as { findings: Finding[]; score: number };
+  expect(report.findings).toEqual([]);
+  expect(report.score).toBe(100);
+});
+
+test("o script tem extensao .mts, e o node o roda num projeto commonjs", async () => {
+  expect(SCRIPT.endsWith(".mts")).toBe(true);
+
+  const dir = mkdtempSync(join(tmpdir(), "auditoria-cjs-"));
+  mkdirSync(join(dir, ".git"));
+  mkdirSync(join(dir, "scripts"));
+  copyFileSync(SCRIPT, join(dir, "scripts", "audit.mts"));
+  writeFileSync(
+    join(dir, "package.json"),
+    JSON.stringify({
+      type: "commonjs",
+      dependencies: {
+        "@rivocode/ui": "*",
+        "lucide-react": "*",
+        react: "*",
+        "react-dom": "*",
+        tailwindcss: "*",
+      },
+    }),
+  );
+  writeFileSync(
+    join(dir, "tela.tsx"),
+    'import { Card } from "@rivocode/ui";\nexport const A = () => <Card className="z-10" />;',
+  );
+
+  const node = Bun.which("node");
+  if (!node) return;
+  const probe = Bun.spawnSync([node, "--version"]).stdout.toString().trim();
+  const [major, minor] = probe.replace(/^v/, "").split(".").map(Number) as [number, number];
+  if (major < 22 || (major === 22 && minor < 6)) return;
+
+  const child = Bun.spawn(
+    [
+      node,
+      "--experimental-strip-types",
+      "--no-warnings",
+      "scripts/audit.mts",
+      "tela.tsx",
+      "--json",
+    ],
+    { cwd: dir, stdout: "pipe", stderr: "pipe" },
+  );
+  const [out, err, code] = await Promise.all([
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+    child.exited,
+  ]);
+  expect([code, err]).toEqual([0, ""]);
+  const report = JSON.parse(out) as { score: number; findings: Finding[] };
+  expect(report.findings.map((item) => item.rule)).toEqual(["z-index-numerico"]);
+  expect(report.score).toBe(95);
 });

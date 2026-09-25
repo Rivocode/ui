@@ -1,7 +1,11 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { audit, renderMarkdown, RULES } from "../../.claude/skills/rivocode-ui-audit/scripts/audit";
+import {
+  audit,
+  renderMarkdown,
+  RULES,
+} from "../../.claude/skills/rivocode-ui-audit/scripts/audit.mjs";
 import type { ComponentEntry, Content } from "./content";
 import { clip, compact, fold, overlap, stems, terms, words } from "./text";
 
@@ -640,7 +644,24 @@ export function createServer(content: Content, options: ServerOptions): McpServe
         package_json: z
           .string()
           .optional()
-          .describe("O texto do package.json do app, para conferir os peers dos subcaminhos."),
+          .describe(
+            "O texto do package.json do app, para conferir os peers. Num monorepo, use `package_jsons`.",
+          ),
+        package_jsons: z
+          .array(
+            z.object({
+              path: z
+                .string()
+                .min(1)
+                .describe("O caminho do package.json, como `apps/web/package.json`."),
+              source: z.string().describe("O texto do package.json."),
+            }),
+          )
+          .max(20)
+          .optional()
+          .describe(
+            "Os package.json do mais perto da tela ao da raiz do monorepo. Somam: o peer na raiz conta, como no script da skill.",
+          ),
         findings: z
           .array(located.extend({ message: z.string().min(1).describe("O que está errado.") }))
           .optional()
@@ -654,11 +675,13 @@ export function createServer(content: Content, options: ServerOptions): McpServe
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async ({ files, package_json, findings, dismissals }) => {
+    async ({ files, package_json, package_jsons, findings, dismissals }) => {
       const report = audit({
         files,
-        manifests:
-          package_json === undefined ? [] : [{ path: "package.json", source: package_json }],
+        manifests: [
+          ...(package_json === undefined ? [] : [{ path: "package.json", source: package_json }]),
+          ...(package_jsons ?? []),
+        ],
         findings,
         dismissals,
       });

@@ -557,7 +557,16 @@ const ASSET_PATHS = [
 ];
 
 export const PEERS: Record<string, { always: string[]; withZod?: string[] }> = {
-  "@rivocode/ui": { always: ["lucide-react"] },
+  "@rivocode/ui": { always: ["lucide-react", "react", "react-dom", "tailwindcss"] },
+  "@rivocode/ui-native": {
+    always: [
+      "nativewind",
+      "react",
+      "react-native",
+      "react-native-keyboard-controller",
+      "react-native-reanimated",
+    ],
+  },
   "@rivocode/ui/form": { always: ["react-hook-form"], withZod: ["zod", "@hookform/resolvers"] },
   "@rivocode/ui/chart": { always: ["recharts"] },
   "@rivocode/ui/dnd": { always: ["@dnd-kit/core", "@dnd-kit/sortable"] },
@@ -740,7 +749,6 @@ const ENGLISH = new Set([
   "password",
   "username",
   "confirm",
-  "continue",
   "edit",
   "update",
   "create",
@@ -760,10 +768,96 @@ const ENGLISH = new Set([
   "hide",
 ]);
 
-const MONEY =
-  /pre[cç]o|price|valor|amount|total|money|saldo|balance|fee|tarifa|desconto|discount|sal[aá]rio|salary|custo|cost|pagamento|payment|fatura|invoice|cobran[cç]a|reais|\bbrl\b/i;
+const MONEY_WORDS = new Set([
+  "preco",
+  "precos",
+  "price",
+  "prices",
+  "valor",
+  "valores",
+  "amount",
+  "amounts",
+  "total",
+  "totais",
+  "totals",
+  "subtotal",
+  "money",
+  "saldo",
+  "saldos",
+  "balance",
+  "fee",
+  "fees",
+  "tarifa",
+  "tarifas",
+  "desconto",
+  "descontos",
+  "discount",
+  "salario",
+  "salary",
+  "custo",
+  "custos",
+  "cost",
+  "costs",
+  "pagamento",
+  "pagamentos",
+  "payment",
+  "payments",
+  "fatura",
+  "faturas",
+  "invoice",
+  "invoices",
+  "cobranca",
+  "cobrancas",
+  "reais",
+  "brl",
+]);
 
-const NOT_MONEY = /page|count|qty|quantit|quantidade|index|length|\bid\b|percent/i;
+const NOT_MONEY_WORDS = new Set([
+  "page",
+  "pages",
+  "pagina",
+  "paginas",
+  "count",
+  "qty",
+  "quantity",
+  "quantidade",
+  "index",
+  "length",
+  "id",
+  "percent",
+  "percentual",
+  "porcentagem",
+  "centavo",
+  "centavos",
+  "cent",
+  "cents",
+  "notas",
+  "itens",
+  "items",
+  "linhas",
+  "rows",
+  "registros",
+  "dias",
+  "days",
+]);
+
+function wordsOf(text: string): string[] {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+}
+
+function talksMoney(text: string): boolean {
+  const words = wordsOf(text);
+  return (
+    words.some((word) => MONEY_WORDS.has(word)) && !words.some((word) => NOT_MONEY_WORDS.has(word))
+  );
+}
 
 const WRITTEN_MONEY = /R\$\s?(?:\d|\$\{)|R\$\s*$/;
 
@@ -773,6 +867,12 @@ const COLOR_UTILITY =
   "bg|text|border|border-[xytrblse]|ring|ring-offset|outline|fill|stroke|divide|from|via|to|shadow|inset-shadow|drop-shadow|decoration|placeholder|caret|accent";
 const PALETTE_CLASS = new RegExp(
   `^(?:${COLOR_UTILITY})-(?:(?:${PALETTE})-(?:50|[1-9]00|950)|white|black)(?:\\/(?:\\d+|\\[[^\\]]+\\]))?$`,
+);
+const COLOR_NAMES =
+  "white|black|red|green|blue|yellow|orange|purple|pink|gray|grey|silver|gold|brown|navy|teal|cyan|magenta|lime|maroon|olive|aqua|fuchsia|crimson|tomato|coral|salmon|indigo|violet";
+const ARBITRARY_NAMED = new RegExp(
+  `^(?:${COLOR_UTILITY})-\\[(?:color:)?(?:${COLOR_NAMES})\\](?:\\/(?:\\d+|\\[[^\\]]+\\]))?$`,
+  "i",
 );
 const HEX = /^\s*#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\s*$/i;
 const COLOR_FUNCTION = /(?:^|[^\w-])((?:rgba?|hsla?|oklch|oklab|hwb)\(\s*[\d.])/i;
@@ -888,6 +988,8 @@ const NATIVE_PRIMITIVES: Record<string, string> = {
   ActivityIndicator: "`Spinner`",
   TouchableOpacity: "`Button` ou `IconButton`",
   TouchableHighlight: "`Button` ou `IconButton`",
+  TouchableWithoutFeedback: "`Button`, `IconButton` ou `Pressable` com `accessibilityRole`",
+  TouchableNativeFeedback: "`Button` ou `IconButton`",
 };
 
 const QR_LIBRARIES = new Set([
@@ -940,6 +1042,7 @@ type Parsed = {
   literals: Literal[];
   comments: Literal[];
   code: string;
+  bare: string;
 };
 
 const KEYWORDS_BEFORE_EXPRESSION = new Set([
@@ -967,10 +1070,17 @@ export function parse(source: string): Parsed {
   const literals: Literal[] = [];
   const comments: Literal[] = [];
   const blanked = src.split("");
+  const bare = src.split("");
   const stack: number[] = [];
 
   const blank = (from: number, to: number) => {
-    for (let at = from; at < to; at++) if (blanked[at] !== "\n") blanked[at] = " ";
+    for (let at = from; at < to; at++) {
+      if (blanked[at] !== "\n") blanked[at] = " ";
+      if (bare[at] !== "\n") bare[at] = " ";
+    }
+  };
+  const blankLiteral = (from: number, to: number) => {
+    for (let at = from; at < to; at++) if (bare[at] !== "\n") bare[at] = " ";
   };
 
   const readString = (start: number, quote: string): number => {
@@ -985,6 +1095,7 @@ export function parse(source: string): Parsed {
       at += 1;
     }
     literals.push({ value: src.slice(start + 1, at), start: start + 1 });
+    blankLiteral(start + 1, at);
     return at + 1;
   };
 
@@ -999,10 +1110,12 @@ export function parse(source: string): Parsed {
       }
       if (char === "`") {
         literals.push({ value: src.slice(from, at), start: from });
+        blankLiteral(from, at);
         return at + 1;
       }
       if (char === "$" && src[at + 1] === "{") {
         literals.push({ value: src.slice(from, at), start: from });
+        blankLiteral(from, at);
         at = readCode(at + 2, true);
         from = at;
         continue;
@@ -1150,6 +1263,24 @@ export function parse(source: string): Parsed {
       if (!match) return fail();
       name = match[0];
       at += name.length;
+      let peek = at;
+      while (peek < size && /\s/.test(src[peek]!)) peek += 1;
+      if (src[peek] === "<") {
+        let depth = 0;
+        let cursor = peek;
+        const limit = Math.min(size, peek + 400);
+        while (cursor < limit) {
+          const char = src[cursor]!;
+          if (char === "<") depth += 1;
+          else if (char === ">" && src[cursor - 1] !== "=") {
+            depth -= 1;
+            if (depth === 0) break;
+          }
+          cursor += 1;
+        }
+        if (depth !== 0) return fail();
+        at = cursor + 1;
+      }
     }
 
     const node: JsxNode = {
@@ -1279,7 +1410,7 @@ export function parse(source: string): Parsed {
   }
   readCode(begin, false);
 
-  return { elements, literals, comments, code: blanked.join("") };
+  return { elements, literals, comments, code: blanked.join(""), bare: bare.join("") };
 }
 
 type Import = {
@@ -1290,18 +1421,22 @@ type Import = {
   names: { imported: string; local: string; typeOnly: boolean }[];
 };
 
-function importsOf(code: string, lineOf: (offset: number) => number): Import[] {
+function importsOf(bare: string, text: string, lineOf: (offset: number) => number): Import[] {
   const found: Import[] = [];
   const statement =
-    /(^|[;\n])\s*import\s+(type\s+)?([^"';]*?)\s*from\s*["']([^"']+)["']|(^|[;\n])\s*import\s*["']([^"']+)["']/g;
-  for (const match of code.matchAll(statement)) {
-    const offset = match.index! + (match[1] ?? match[5] ?? "").length;
-    if (match[6]) {
-      found.push({ source: match[6], line: lineOf(offset), offset, typeOnly: false, names: [] });
+    /(?:^|[;\n])\s*import\s+(type\s+)?([^"';]*?)\s*from\s*["']([^"']+)["']|(?:^|[;\n])\s*import\s*["']([^"']+)["']/dg;
+  for (const match of bare.matchAll(statement)) {
+    const offset = match.index! + match[0].search(/import/);
+    const group = match[4] !== undefined ? 4 : 3;
+    const [from, to] = match.indices![group]!;
+    const source = text.slice(from, to).trim();
+    if (!source) continue;
+    if (group === 4) {
+      found.push({ source, line: lineOf(offset), offset, typeOnly: false, names: [] });
       continue;
     }
-    const clause = match[3]!;
-    const typeOnly = Boolean(match[2]);
+    const clause = match[2]!;
+    const typeOnly = Boolean(match[1]);
     const names: Import["names"] = [];
     const braces = /\{([\s\S]*)\}/.exec(clause);
     if (braces) {
@@ -1325,7 +1460,7 @@ function importsOf(code: string, lineOf: (offset: number) => number): Import[] {
     if (namespace) names.push({ imported: "*", local: namespace[1]!, typeOnly });
     else if (outside)
       names.push({ imported: "default", local: outside.split(/\s+/)[0]!, typeOnly });
-    found.push({ source: match[4]!, line: lineOf(offset), offset, typeOnly, names });
+    found.push({ source, line: lineOf(offset), offset, typeOnly, names });
   }
   return found;
 }
@@ -1384,15 +1519,20 @@ function checkColors(ctx: Context) {
     const value = literal.value;
     if (addresses.some(([from, to]) => literal.start > from! && literal.start < to!)) continue;
     if (HEX.test(value)) {
-      add("cor-literal", literal.start, `cor hexadecimal \`${value.trim()}\``);
+      const before = parsed.bare.slice(Math.max(0, literal.start - 60), literal.start - 1);
+      const address =
+        /(?:[!=]==?|\bcase)\s*$/.test(before) || /\.hash\b|\bhash\s*[:=]/.test(before);
+      if (!address) add("cor-literal", literal.start, `cor hexadecimal \`${value.trim()}\``);
       continue;
     }
     const functional = COLOR_FUNCTION.exec(value);
     if (functional)
       add("cor-literal", literal.start, `cor em função \`${excerpt(functional[1]!, 20)}…\``);
     for (const { token, base } of classTokens(value)) {
-      if (/\[#[0-9a-f]{3,8}\]/i.test(token))
+      if (/\[[^\]]*#[0-9a-f]{3,8}(?![0-9a-z])[^\]]*\]/i.test(token))
         add("cor-literal", literal.start, `classe com cor arbitrária \`${token}\``);
+      else if (ARBITRARY_NAMED.test(base))
+        add("cor-literal", literal.start, `classe com cor por nome \`${token}\``);
       else if (PALETTE_CLASS.test(base))
         add("cor-literal", literal.start, `classe da paleta do Tailwind \`${token}\``);
     }
@@ -1400,6 +1540,32 @@ function checkColors(ctx: Context) {
   for (const match of parsed.code.matchAll(NAMED_COLOR)) {
     add("cor-literal", match.index!, `cor por nome \`${match[1]}\``);
   }
+}
+
+const CLASS_ATTRIBUTES = new Set(["className", "classNames"]);
+
+function classGroupOf(ctx: Context, offset: number): number {
+  for (const node of ctx.parsed.elements) {
+    for (const attribute of node.attrs) {
+      if (
+        CLASS_ATTRIBUTES.has(attribute.name) &&
+        offset > attribute.start &&
+        offset < attribute.end
+      )
+        return attribute.start;
+    }
+  }
+  const bare = ctx.parsed.bare;
+  let depth = 0;
+  for (let at = offset - 1; at >= 0 && at > offset - 4000; at--) {
+    const char = bare[at]!;
+    if (char === ")" || char === "]" || char === "}") depth += 1;
+    else if (char === "(" || char === "[" || char === "{") {
+      if (depth === 0) return char === "{" ? offset : at;
+      depth -= 1;
+    }
+  }
+  return offset;
 }
 
 function checkClasses(ctx: Context) {
@@ -1418,7 +1584,17 @@ function checkClasses(ctx: Context) {
     }
     if (/z-index\s*:\s*-?\d/.test(literal.value))
       add("z-index-numerico", literal.start, "`z-index` numérico em CSS");
-    if (platform === "web") {
+  }
+  if (platform === "web") {
+    const groups = new Map<number, Literal[]>();
+    for (const literal of parsed.literals) {
+      const key = classGroupOf(ctx, literal.start);
+      groups.set(key, [...(groups.get(key) ?? []), literal]);
+    }
+    for (const literals of groups.values()) {
+      const tokens = literals.flatMap((literal) =>
+        classTokens(literal.value).map((item) => ({ ...item, start: literal.start })),
+      );
       const hides = tokens.find(({ base }) => base === "outline-none" || base === "outline-hidden");
       const restores = tokens.some(({ token }) =>
         /^(?:focus-visible|focus|focus-within):(?:ring|outline-(?!none|hidden))/.test(token),
@@ -1426,7 +1602,7 @@ function checkClasses(ctx: Context) {
       if (hides && !restores)
         add(
           "foco-apagado",
-          literal.start,
+          hides.start,
           `\`${hides.token}\` sem \`focus-visible:ring\` na mesma classe`,
         );
     }
@@ -1445,9 +1621,34 @@ function checkElements(ctx: Context) {
     const name = house(node);
     const lower = /^[a-z]/.test(node.name) ? node.name : undefined;
     const has = (attribute: string) => attr(node, attribute) !== undefined;
+    const filled = (attribute: string) => {
+      const found = attr(node, attribute);
+      if (!found) return false;
+      if (found.kind === "string") return /\S/.test(found.value);
+      if (found.kind === "expression") return !/^\s*(?:(["'`])\s*\1)?\s*$/.test(found.value);
+      return found.kind === "bare";
+    };
+    const nativeNamed = () =>
+      filled("accessibilityLabel") || filled("aria-label") || filled("aria-labelledby");
+    const onlyIcons = (outer: JsxNode) => {
+      const inside = outer.children.filter((child) => child.kind === "element");
+      if (outer.children.some((child) => child.kind === "text" && /\S/.test(child.value)))
+        return false;
+      if (outer.children.some((child) => child.kind === "expression")) return false;
+      return (
+        inside.length > 0 &&
+        descendants(outer).every(
+          (inner) =>
+            !inner.children.some(
+              (grand) =>
+                (grand.kind === "text" && /\S/.test(grand.value)) || grand.kind === "expression",
+            ),
+        )
+      );
+    };
 
     if (name === "IconButton" && !spread(node)) {
-      if (platform === "native" ? !has("accessibilityLabel") : !has("label")) {
+      if (platform === "native" ? !nativeNamed() : !filled("label")) {
         add(
           "nome-acessivel",
           node.start,
@@ -1457,22 +1658,27 @@ function checkElements(ctx: Context) {
     }
 
     if (platform === "web" && (name === "Button" || lower === "button") && !spread(node)) {
-      const named = has("aria-label") || has("aria-labelledby") || has("title");
-      const text = node.children.some((child) => child.kind === "text" && /\S/.test(child.value));
-      const expression = node.children.some((child) => child.kind === "expression");
-      const elementsInside = node.children.filter((child) => child.kind === "element");
-      if (!named && !text && !expression && elementsInside.length > 0) {
-        const onlyIcons = elementsInside.every((child) => {
-          const inner = parsed.elements[(child as { node: number }).node]!;
-          return !inner.children.some((grand) => grand.kind === "text" && /\S/.test(grand.value));
-        });
-        if (onlyIcons)
-          add(
-            "nome-acessivel",
-            node.start,
-            `${tagOf(node)} só com ícone e sem nome: é \`IconButton\` com \`label\``,
-          );
-      }
+      const named = filled("aria-label") || filled("aria-labelledby") || filled("title");
+      if (!named && onlyIcons(node))
+        add(
+          "nome-acessivel",
+          node.start,
+          `${tagOf(node)} só com ícone e sem nome: é \`IconButton\` com \`label\``,
+        );
+    }
+
+    if (
+      platform === "native" &&
+      (name === "Button" || native(node) === "Pressable") &&
+      !spread(node) &&
+      !nativeNamed() &&
+      onlyIcons(node)
+    ) {
+      add(
+        "nome-acessivel",
+        node.start,
+        `${tagOf(node)} só com ícone e sem \`accessibilityLabel\`: é \`IconButton\` com \`accessibilityLabel\``,
+      );
     }
 
     if (platform === "web" && lower === "img" && !spread(node) && !has("alt")) {
@@ -1482,11 +1688,12 @@ function checkElements(ctx: Context) {
     if (
       platform === "web" &&
       lower &&
-      NON_INTERACTIVE.has(lower) &&
+      (NON_INTERACTIVE.has(lower) || (lower === "a" && !has("href"))) &&
       has("onClick") &&
       !has("role")
     ) {
-      add("elemento-clicavel", node.start, `\`<${lower} onClick>\``);
+      const suffix = lower === "a" ? " sem `href`" : "";
+      add("elemento-clicavel", node.start, `\`<${lower} onClick>\`${suffix}`);
     }
 
     const tab = attr(node, "tabIndex");
@@ -1536,17 +1743,17 @@ function checkElements(ctx: Context) {
       ) {
         add("campo-sem-rotulo", node.start, "`Field` sem `FieldLabel`");
       }
-      if (platform === "native" && !has("label"))
+      if (platform === "native" && !filled("label"))
         add("campo-sem-rotulo", node.start, "`Field` sem `label`");
     }
 
     const controls = platform === "native" ? CONTROLS_NATIVE : CONTROLS_WEB;
     if (name && controls.has(name) && !spread(node)) {
       const named =
-        has("aria-label") ||
-        has("aria-labelledby") ||
-        has("label") ||
-        has("accessibilityLabel") ||
+        filled("aria-label") ||
+        filled("aria-labelledby") ||
+        filled("label") ||
+        filled("accessibilityLabel") ||
         (has("id") && htmlFor);
       const wrapped = ancestors(node).some((outer) =>
         LABEL_WRAPPERS.has(house(outer) ?? outer.name),
@@ -1652,7 +1859,7 @@ function checkElements(ctx: Context) {
           ),
         )
         .join(" ");
-      if (MONEY.test(labels))
+      if (talksMoney(labels))
         add(
           "dinheiro-float",
           node.start,
@@ -1668,9 +1875,9 @@ function checkCode(ctx: Context) {
   const lines = code.split("\n");
   let offset = 0;
   for (const line of lines) {
-    if (/\b(?:parseFloat|Number)\s*\(/.test(line) && MONEY.test(line) && !NOT_MONEY.test(line)) {
+    if (/\b(?:parseFloat|Number)\s*\(/.test(line) && talksMoney(line)) {
       add("dinheiro-float", offset, `\`${excerpt(line, 50)}\``);
-    } else if (/\.toFixed\s*\(\s*2\s*\)/.test(line) && (MONEY.test(line) || line.includes("R$"))) {
+    } else if (/\.toFixed\s*\(\s*2\s*\)/.test(line) && (talksMoney(line) || line.includes("R$"))) {
       add("dinheiro-float", offset, `\`${excerpt(line, 50)}\``);
     }
     if (/style\s*:\s*["']currency["']|currency\s*:\s*["']BRL["']/.test(line)) {
@@ -1682,8 +1889,16 @@ function checkCode(ctx: Context) {
     offset += line.length + 1;
   }
 
+  const affixes = parsed.elements.flatMap((node) =>
+    node.attrs
+      .filter((attribute) => attribute.name === "prefix" || attribute.name === "suffix")
+      .map((attribute) => [attribute.start, attribute.end] as const),
+  );
+  const isAffix = (literal: Literal) =>
+    literal.value.trim() === "R$" &&
+    affixes.some(([from, to]) => literal.start > from && literal.start < to);
   for (const literal of parsed.literals) {
-    if (WRITTEN_MONEY.test(literal.value))
+    if (WRITTEN_MONEY.test(literal.value) && !isAffix(literal))
       add("dinheiro-escrito", literal.start, `\`${excerpt(literal.value, 40)}\``);
     if (/\$1[\s.\-/)]\s*\(?\$2/.test(literal.value))
       add("mascara-a-mao", literal.start, `\`${literal.value}\``);
@@ -1692,7 +1907,9 @@ function checkCode(ctx: Context) {
     }
   }
   for (const node of parsed.elements) {
+    const affix = ["InputPrefix", "InputSuffix"].includes(ctx.house(node) ?? "");
     for (const child of node.children) {
+      if (affix && child.kind === "text" && child.value.trim() === "R$") continue;
       if (child.kind === "text" && WRITTEN_MONEY.test(child.value))
         add("dinheiro-escrito", child.start, `\`${excerpt(child.value, 40)}\` escrito no JSX`);
     }
@@ -1701,7 +1918,7 @@ function checkCode(ctx: Context) {
   const mentions = /\b(?:cpf|cnpj)\b/i.exec(code);
   if (mentions && !/\bisValid(?:Cpf|Cnpj)\b/.test(code)) {
     const validates =
-      /\bz\.|\.regex\s*\(|\.test\s*\(|\.length\s*[!=]==?\s*1[14]\b|\.(?:length|min|max)\s*\(\s*1[14]\b|\bvalidate\b|\buseZodForm\b/.test(
+      /\bz\.|\.regex\s*\(|\.test\s*\(|\.length\s*[!=]==?\s*1[14]\b|\.(?:length|min|max)\s*\(\s*1[14]\b|\bvalidate\b/.test(
         code,
       );
     if (validates)
@@ -1845,7 +2062,8 @@ function screenTexts(ctx: Context): Literal[] {
     if (classy) continue;
     if (words.filter((word) => /^\p{L}{2,}[.,;:!?]?$/u.test(word)).length < 2) continue;
     const line = lines[ctx.lineOf(literal.start) - 1] ?? "";
-    if (/console\.\w+\(|\bimport\b|\bfrom\s+["']/.test(line)) continue;
+    if (/console\.\w+\(|\bimport\b|\bfrom\s+["']|\bnew\s+\w*Error\s*\(|\bthrow\b/.test(line))
+      continue;
     texts.push(literal);
   }
 
@@ -1854,9 +2072,10 @@ function screenTexts(ctx: Context): Literal[] {
 
 function checkText(ctx: Context) {
   for (const text of screenTexts(ctx)) {
-    const words = [...text.value.replace(/\$\{[^}]*\}/g, " ").matchAll(/\p{L}+/gu)].map(
-      (match) => match[0],
-    );
+    const prose = text.value
+      .replace(/\$\{[^}]*\}/g, " ")
+      .replace(/\S+@\S+|\b(?:https?:\/\/|www\.)\S+/g, " ");
+    const words = [...prose.matchAll(/\p{L}+/gu)].map((match) => match[0]);
     const missing: string[] = [];
     const english: string[] = [];
     for (const word of words) {
@@ -1917,7 +2136,7 @@ export function auditSource(path: string, source: string): FileAudit {
     return low + 1;
   };
 
-  const imports = importsOf(parsed.code, lineOf);
+  const imports = importsOf(parsed.bare, source, lineOf);
   const houseNames = new Map<string, string>();
   const nativeNames = new Map<string, string>();
   for (const entry of imports) {
@@ -2043,13 +2262,12 @@ export function auditPeers(
   for (const audit of audits) {
     if (!audit.relevant) continue;
     const keys = new Set(
-      audit.entries.map((entry) =>
-        PEERS[entry]
-          ? entry
-          : entry.startsWith("@rivocode/ui-native")
-            ? "@rivocode/ui-native"
-            : "@rivocode/ui",
-      ),
+      audit.entries.flatMap((entry) => {
+        const root = entry.startsWith("@rivocode/ui-native")
+          ? "@rivocode/ui-native"
+          : "@rivocode/ui";
+        return PEERS[entry] && entry !== root ? [root, entry] : [root];
+      }),
     );
     for (const key of keys) used.set(key, (used.get(key) ?? 0) + 1);
     if (audit.usesZod) zod = true;
@@ -2123,6 +2341,23 @@ export function verdictOf(score: number, critical: boolean): string {
   return critical && band === "Segue a casa" ? "Ajustes pontuais" : band;
 }
 
+function shapeProblem(item: unknown, text: "message" | "reason"): string | undefined {
+  if (!item || typeof item !== "object" || Array.isArray(item))
+    return `\`${JSON.stringify(item)}\` não é um objeto com \`rule\`, \`file\`, \`line\` e \`${text}\``;
+  const record = item as Record<string, unknown>;
+  const where = `\`${String(record.rule)}\` em ${String(record.file)}:${String(record.line)}`;
+  if (typeof record.rule !== "string" || record.rule.length === 0)
+    return `${where}, sem \`rule\` em texto`;
+  if (typeof record.file !== "string" || record.file.length === 0)
+    return `${where}, sem \`file\` em texto`;
+  if (typeof record.line !== "number" || !Number.isInteger(record.line) || record.line < 1)
+    return `${where}, com \`line\` que não é um inteiro a partir de 1`;
+  const value = record[text];
+  if (typeof value !== "string" || value.trim().length === 0)
+    return text === "reason" ? "sem motivo" : `${where}, sem \`message\``;
+  return undefined;
+}
+
 export function audit(input: AuditInput): Report {
   const files = [...input.files].sort((a, b) => a.path.localeCompare(b.path));
   const audits = files.map((file) => auditSource(file.path, file.source));
@@ -2135,6 +2370,11 @@ export function audit(input: AuditInput): Report {
   const known = new Set(relevant.map((item) => item.path));
   const judged: Finding[] = [];
   for (const finding of input.findings ?? []) {
+    const shape = shapeProblem(finding, "message");
+    if (shape) {
+      notes.push(`Achado recusado: ${shape}.`);
+      continue;
+    }
     const rule = RULE_BY_ID.get(finding.rule);
     if (!rule) {
       notes.push(`Achado recusado: a regra \`${finding.rule}\` não existe.`);
@@ -2148,7 +2388,7 @@ export function audit(input: AuditInput): Report {
     judged.push({
       rule: finding.rule,
       file: finding.file,
-      line: Math.max(1, Math.trunc(finding.line)),
+      line: finding.line,
       message: finding.message,
     });
   }
@@ -2156,14 +2396,21 @@ export function audit(input: AuditInput): Report {
   const all = [...relevant.flatMap((item) => item.findings), ...peers.findings, ...judged];
   const waived = relevant.flatMap((item) => item.waived);
   const kept: Finding[] = [];
-  const dismissals = [...(input.dismissals ?? [])];
+  const dismissals: Dismissal[] = [];
+  for (const item of input.dismissals ?? []) {
+    const shape = shapeProblem(item, "reason");
+    if (!shape) {
+      dismissals.push(item);
+    } else if (shape === "sem motivo") {
+      notes.push(`Descarte recusado, sem motivo: \`${item.rule}\` em ${item.file}:${item.line}.`);
+    } else {
+      notes.push(`Descarte recusado: ${shape}.`);
+    }
+  }
   for (const finding of all) {
     const index = dismissals.findIndex(
       (item) =>
-        item.rule === finding.rule &&
-        item.file === finding.file &&
-        item.line === finding.line &&
-        item.reason.trim().length > 0,
+        item.rule === finding.rule && item.file === finding.file && item.line === finding.line,
     );
     if (index >= 0) {
       waived.push({ ...finding, reason: dismissals[index]!.reason.trim() });
@@ -2174,9 +2421,7 @@ export function audit(input: AuditInput): Report {
   }
   for (const item of dismissals) {
     notes.push(
-      item.reason.trim().length === 0
-        ? `Descarte recusado, sem motivo: \`${item.rule}\` em ${item.file}:${item.line}.`
-        : `Descarte sem achado correspondente: \`${item.rule}\` em ${item.file}:${item.line}.`,
+      `Descarte sem achado correspondente: \`${item.rule}\` em ${item.file}:${item.line}.`,
     );
   }
 
@@ -2349,6 +2594,22 @@ function manifestsAbove(from: string): string[] {
   }
 }
 
+function judgmentProblem(value: unknown): string | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return 'o topo tem que ser um objeto, `{ "findings": [...], "dismissals": [...] }`';
+  const record = value as Record<string, unknown>;
+  for (const key of ["findings", "dismissals"]) {
+    const list = record[key];
+    if (list === undefined) continue;
+    if (!Array.isArray(list)) return `\`${key}\` tem que ser uma lista`;
+    const index = list.findIndex(
+      (item) => !item || typeof item !== "object" || Array.isArray(item),
+    );
+    if (index >= 0) return `\`${key}[${index}]\` tem que ser um objeto`;
+  }
+  return undefined;
+}
+
 function main(argv: string[]) {
   const targets: string[] = [];
   let json = false;
@@ -2363,13 +2624,13 @@ function main(argv: string[]) {
     else if (arg === "--minimo") minimum = Number(argv[++at]);
     else if (arg === "--ajuda" || arg === "-h" || arg === "--help") {
       console.log(
-        "Uso: bun audit.ts <arquivo-ou-pasta>... [--json] [--julgamento achados.json] [--manifesto package.json] [--minimo 85]",
+        "Uso: bun audit.mts <arquivo-ou-pasta>... [--json] [--julgamento achados.json] [--manifesto package.json] [--minimo 85]",
       );
       return 0;
     } else targets.push(arg);
   }
   if (targets.length === 0) {
-    console.error("Diga o que auditar: bun audit.ts src/pages");
+    console.error("Diga o que auditar: bun audit.mts src/pages");
     return 2;
   }
 
@@ -2387,19 +2648,28 @@ function main(argv: string[]) {
     source: readFileSync(path, "utf8"),
   }));
 
-  const found = manifestPath ? [manifestPath] : manifestsAbove(targets[0]!);
+  const found = manifestPath
+    ? [resolve(manifestPath)]
+    : [...new Set(targets.flatMap((target) => manifestsAbove(target)))];
   const manifests = found
     .filter((path) => existsSync(path))
     .map((path) => ({ path: relative(base, path) || path, source: readFileSync(path, "utf8") }));
 
   let extra: { findings?: Finding[]; dismissals?: Dismissal[] } = {};
   if (judgment) {
+    let parsedJudgment: unknown;
     try {
-      extra = JSON.parse(readFileSync(judgment, "utf8")) as typeof extra;
+      parsedJudgment = JSON.parse(readFileSync(judgment, "utf8"));
     } catch (error) {
       console.error(`${judgment} não é um JSON legível: ${(error as Error).message}`);
       return 2;
     }
+    const problem = judgmentProblem(parsedJudgment);
+    if (problem) {
+      console.error(`${judgment} não tem a forma do julgamento: ${problem}.`);
+      return 2;
+    }
+    extra = parsedJudgment as typeof extra;
   }
 
   const report = audit({
@@ -2415,5 +2685,5 @@ function main(argv: string[]) {
 
 const entry =
   (import.meta as { main?: boolean }).main ??
-  /[\\/]scripts[\\/]audit\.ts$/.test(process.argv[1] ?? "");
+  /[\\/]scripts[\\/]audit\.m?ts$/.test(process.argv[1] ?? "");
 if (entry) process.exitCode = main(process.argv.slice(2));

@@ -10,7 +10,9 @@ import { Trash } from "lucide-react";
 
 const PAYLOAD = "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
 
-export function IssueScreen({ rows }: { rows: { id: string }[] }) {
+type Row = { id: string };
+
+export function IssueScreen({ rows }: { rows: Row[] }) {
   const [price, setPrice] = useState("");
   const [cpf, setCpf] = useState("");
   const [open, setOpen] = useState(true);
@@ -53,7 +55,7 @@ export function IssueScreen({ rows }: { rows: { id: string }[] }) {
         <img src="/logo.png" />
         <span tabIndex={3}>Atalho</span>
         <p>Total: R$ {total.toFixed(2)}</p>
-        <DataTable data={rows} isLoading={false} rowKey={(row) => row.id} columns={[]} />
+        <DataTable<Row> data={rows} isLoading={false} rowKey={(row) => row.id} columns={[]} />
         <Card className="[&_h3]:text-lg" />
         <FormField name="notes" label="Notas">
           {(field) => <Input {...field} />}

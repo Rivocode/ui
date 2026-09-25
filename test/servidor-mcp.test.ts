@@ -7,7 +7,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import type { Content } from "../mcp/src/content";
 import { createServer } from "../mcp/src/server";
 import { buildContent, cells, leadSentence } from "../scripts/conteudo-do-mcp";
-import { audit, renderMarkdown } from "../.claude/skills/rivocode-ui-audit/scripts/audit";
+import { audit, renderMarkdown } from "../.claude/skills/rivocode-ui-audit/scripts/audit.mjs";
 
 const content: Content = buildContent();
 const client = new Client({ name: "teste", version: "0.0.0" });
@@ -292,7 +292,7 @@ test("o servidor nao fala com a rede em tempo de execucao", () => {
     "mcp/src/server.ts",
     "mcp/src/cli.ts",
     "mcp/src/text.ts",
-    ".claude/skills/rivocode-ui-audit/scripts/audit.ts",
+    ".claude/skills/rivocode-ui-audit/scripts/audit.mts",
   ]) {
     const source = readFileSync(file, "utf8");
     expect(source).not.toMatch(/\bfetch\(|node:https?|node:net|XMLHttpRequest|WebSocket/);
@@ -357,4 +357,26 @@ test("audit_screen leva o julgamento e o descarte para a nota", async () => {
   });
   expect(dismissed.text).toContain("**Nota: 100/100.**");
   expect(dismissed.text).toContain("Motivo: Amostra de marca do cliente");
+});
+
+test("audit_screen le os manifestos do mais perto ao da raiz, e chega a mesma nota do script num monorepo", async () => {
+  const dir = "apps/docs/src/blocks";
+  const names = ["dashboard.tsx", "forbidden.tsx", "listing.tsx", "login.tsx", "settings.tsx"];
+  const files = names.map((name) => ({
+    path: `${dir}/${name}`,
+    source: readFileSync(`${dir}/${name}`, "utf8"),
+  }));
+  const manifests = ["apps/docs/package.json", "package.json"].map((path) => ({
+    path,
+    source: readFileSync(path, "utf8"),
+  }));
+
+  const nearestOnly = await call("audit_screen", { files, package_json: manifests[0]!.source });
+  expect(nearestOnly.text).toContain("**peer-faltando**");
+
+  const answer = await call("audit_screen", { files, package_jsons: manifests });
+  expect(answer.isError).toBe(false);
+  expect(answer.text).toStartWith(renderMarkdown(audit({ files, manifests })));
+  expect(answer.text).toContain("**Nota: 100/100.** Segue a casa.");
+  expect(answer.text).not.toContain("**peer-faltando**");
 });

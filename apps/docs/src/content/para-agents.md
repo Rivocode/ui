@@ -73,17 +73,17 @@ achados, arquivo e linha, e uma nota de 0 a 100.
 ```bash
 dir=$HOME/.claude/skills/rivocode-ui-audit && mkdir -p "$dir/scripts" && \
   curl -fsSL https://ds.rivocode.com.br/skill-auditoria/SKILL.md -o "$dir/SKILL.md" && \
-  curl -fsSL https://ds.rivocode.com.br/skill-auditoria/scripts/audit.ts -o "$dir/scripts/audit.ts"
+  curl -fsSL https://ds.rivocode.com.br/skill-auditoria/scripts/audit.mts -o "$dir/scripts/audit.mts"
 ```
 
 Trocando `$HOME/.claude` por `.claude` ela entra só no projeto. Depois, peça ao
 agent "audite as telas de `src/pages`", ou rode o script você mesmo:
 
 ```bash
-bun ~/.claude/skills/rivocode-ui-audit/scripts/audit.ts src/pages
+bun ~/.claude/skills/rivocode-ui-audit/scripts/audit.mts src/pages
 ```
 
-O script não tem dependência, e roda também no Node 23.6 ou mais novo, ou com
+O script não tem dependência, e o `.mts` roda também no Node 23.6 ou mais novo, mesmo em projeto `commonjs`, ou com
 `npx tsx` em qualquer Node. `--json` troca o relatório por JSON e `--minimo 85`
 sai com código 1 abaixo da nota, para barrar na CI.
 
@@ -107,17 +107,17 @@ faltando. O agent não dá nota: ele acrescenta ou descarta achados, e o
 descarte aparece no relatório com o motivo.
 
 Quem usa o servidor MCP audita pela ferramenta `audit_screen`, sem instalar
-nada: ela recebe os arquivos, o `package.json` opcional e o mesmo JSON de
+nada: ela recebe os arquivos, os `package.json` do app e da raiz e o mesmo JSON de
 julgamento, e devolve o mesmo relatório. A skill crua mora em
 [/skill-auditoria/SKILL.md](/skill-auditoria/SKILL.md), e o script em
-[/skill-auditoria/scripts/audit.ts](/skill-auditoria/scripts/audit.ts).
+[/skill-auditoria/scripts/audit.mts](/skill-auditoria/scripts/audit.mts).
 
 ## Os endereços
 
 | Endereço                       | O que entrega                                              |
 | ------------------------------ | ---------------------------------------------------------- |
 | `/skill/SKILL.md`              | a skill crua, para ler sem instalar                        |
-| `/skill-auditoria/SKILL.md`    | a skill de auditoria, com o script em `/skill-auditoria/scripts/audit.ts` |
+| `/skill-auditoria/SKILL.md`    | a skill de auditoria, com o script em `/skill-auditoria/scripts/audit.mts` |
 | `/llms.txt`                    | o índice no formato de [llmstxt.org](https://llmstxt.org), por família, com uma linha sobre cada documento |
 | `/llms-full.txt`               | tudo num arquivo só: convenções, guias e cada peça         |
 | `/componentes/<nome>.md`       | o documento de uma peça: prosa, importação, exemplos, props e React Native |

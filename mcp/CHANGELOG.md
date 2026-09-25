@@ -1,5 +1,20 @@
 # Mudanças
 
+## Próxima versão
+
+Esta seção ainda não tem número: o número e o fechamento são do release.
+
+### A oitava ferramenta: `audit_screen`
+
+O servidor passa de sete para oito ferramentas. `audit_screen` recebe os
+arquivos de tela e devolve o relatório da skill `rivocode-ui-audit`, com a
+mesma nota de 0 a 100 que o script dela daria, e `get_guide` serve a skill com
+o nome `auditoria`.
+
+Os manifestos entram por `package_jsons`, do mais perto da tela ao da raiz do
+monorepo, e somam como no script: o peer instalado na raiz conta.
+`package_json`, com o texto de um manifesto só, continua aceito.
+
 ## 0.2.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 0.17.0 e
