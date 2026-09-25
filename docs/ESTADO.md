@@ -138,7 +138,7 @@ As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
 reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
 reescreve. `check:assinatura` confere **222 divergencias de assinatura em 91
 pecas** contra os dois catalogos de props - o do nativo,
-`apps/docs/src/native-props.json` (117 pecas, 772 props), e artefato comitado,
+`apps/docs/src/native-props.json` (117 pecas, 773 props), e artefato comitado,
 porque gerar exige `examples/native` instalado; `check:props:nativo` o mantem
 em dia no job `nativo` da CI, ao lado do `check:native:types`.
 
