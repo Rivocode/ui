@@ -780,6 +780,39 @@ test("o que escapava agora morde: nome vazio, link sem href, cor arbitraria por 
   }
 });
 
+test("no nativo, Checkbox e Switch sem texto ao lado se nomeiam pelo label", () => {
+  const native =
+    'import { View } from "react-native";\nimport { Checkbox, Switch, Text } from "@rivocode/ui-native";\n';
+  const screen = (jsx: string) => `${native}export const A = () => ${jsx};\n`;
+
+  const bites = [
+    "<Checkbox checked onCheckedChange={set} />",
+    "<Switch checked onCheckedChange={set} />",
+    '<Checkbox label=" " checked onCheckedChange={set} />',
+  ];
+  for (const jsx of bites) {
+    expect([jsx, rulesOf(screen(jsx)).includes("nome-acessivel")]).toEqual([jsx, true]);
+  }
+
+  const fine = [
+    '<Checkbox label="Selecionar a nota 4813" checked onCheckedChange={set} />',
+    '<Switch label="Notificar por e-mail" checked onCheckedChange={set} />',
+    "<Switch checked onCheckedChange={set}>Notificar por e-mail</Switch>",
+  ];
+  for (const jsx of fine) {
+    expect([jsx, rulesOf(screen(jsx))]).toEqual([jsx, []]);
+  }
+
+  const beside = rulesOf(
+    screen("<View><Switch checked onCheckedChange={set} /><Text>Enviar o XML</Text></View>"),
+  );
+  expect(beside).toContain("rotulo-fora-do-controle");
+  expect(beside).not.toContain("nome-acessivel");
+
+  const web = 'import { Checkbox } from "@rivocode/ui";\n';
+  expect(rulesOf(`${web}export const A = () => <Checkbox />;\n`)).not.toContain("nome-acessivel");
+});
+
 test("os peers obrigatorios de cada pacote sao cobrados de quem importa qualquer entrada dele", () => {
   type Manifest = {
     peerDependencies: Record<string, string>;

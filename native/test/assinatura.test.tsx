@@ -85,7 +85,7 @@ function Controlled({
   return (
     <SignaturePad
       {...props}
-      accessibilityLabel="Assinatura do locatário"
+      label="Assinatura do locatário"
       value={value}
       onValueChange={(next) => {
         setValue(next);

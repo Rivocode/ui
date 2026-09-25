@@ -74,8 +74,12 @@ export type SignaturePadProps = {
   value: SignatureValue | null;
   /** Chamado ao fim de cada traco, a cada letra, ao desfazer e ao limpar. Sem ele, a peca so exibe. */
   onValueChange?: (value: SignatureValue | null) => void;
-  /** O nome que o leitor de tela ouve no grupo. Dentro do `FormField`, chega sozinho pelo `forValue`. */
-  accessibilityLabel?: string;
+  /**
+   * O nome que o leitor de tela ouve no grupo, antes do resumo do que esta
+   * assinado. Padrao `labels.group`. Dentro do `FormField`, chega sozinho pelo
+   * `forValue`.
+   */
+  label?: string;
   /** Trava o desenho, o nome e os botoes. A camada esmaece, como em todo o pacote nativo. */
   disabled?: boolean;
   /** So exibe a assinatura: sem desenho, sem botoes e sem o modo de digitar. */
@@ -153,7 +157,7 @@ function Glyph({ paths, color, size }: { paths: string[]; color: string; size: n
 export function SignaturePad({
   value,
   onValueChange,
-  accessibilityLabel,
+  label,
   disabled = false,
   readOnly = false,
   invalid = false,
@@ -291,7 +295,7 @@ export function SignaturePad({
       <View
         accessible
         accessibilityRole="image"
-        accessibilityLabel={`${accessibilityLabel ?? labels.group}: ${summary}`}
+        accessibilityLabel={`${label ?? labels.group}: ${summary}`}
         accessibilityHint={readOnly ? undefined : labels.instruction}
         accessibilityState={{ disabled }}
         onLayout={(event: LayoutChangeEvent) => setWidth(event.nativeEvent.layout.width)}

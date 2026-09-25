@@ -433,7 +433,9 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
   });
 
   test("a marca do Checkbox e do RadioGroup aparece crescendo, e so ao marcar", () => {
-    const box = (checked: boolean) => <Checkbox checked={checked} onCheckedChange={() => {}} />;
+    const box = (checked: boolean) => (
+      <Checkbox label="Aceito" checked={checked} onCheckedChange={() => {}} />
+    );
     const born = render(box(true));
     expect(entered(born)).toEqual([]);
 
@@ -502,8 +504,8 @@ describe("formulario: Field, Checkbox, RadioGroup, Toggle e TagsInput", () => {
         <Text>campo</Text>
       </Field>,
     );
-    const box = render(<Checkbox checked={false} onCheckedChange={() => {}} />);
-    swap(box, <Checkbox checked onCheckedChange={() => {}} />);
+    const box = render(<Checkbox label="Aceito" checked={false} onCheckedChange={() => {}} />);
+    swap(box, <Checkbox label="Aceito" checked onCheckedChange={() => {}} />);
     const tags = render(<TagsInput value={[]} onValueChange={() => {}} />);
     swap(tags, <TagsInput value={["iss"]} onValueChange={() => {}} />);
 

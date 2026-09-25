@@ -7,11 +7,19 @@ type Row<V extends FieldValues, N extends FieldPath<V>> = FormFieldRow<V, N>;
 type Identity = {
   name: string;
   disabled?: boolean;
-  /** O rótulo do `FormField`, para o controle carregar o próprio nome. */
+};
+
+type Named = {
+  /** O rotulo do `FormField`, no `label` da peca, que e o nome dela no leitor de tela. */
+  label: string;
+};
+
+type Spoken = {
+  /** O rotulo do `FormField`, no nome do `TextInput` de baixo. */
   accessibilityLabel: string;
 };
 
-export type TextProps = Identity & {
+export type TextProps = Identity & Spoken & {
   ref: RefCallBack;
   onBlur: Noop;
   value: string;
@@ -20,17 +28,17 @@ export type TextProps = Identity & {
   invalid: boolean;
 };
 
-export type ValueProps<Value = unknown> = Identity & {
+export type ValueProps<Value = unknown> = Identity & Named & Spoken & {
   value: Value;
   onValueChange: (value: Value) => void;
 };
 
-export type CheckedProps = Identity & {
+export type CheckedProps = Identity & Named & {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
 };
 
-export type NullableProps<Value = unknown> = Identity & {
+export type NullableProps<Value = unknown> = Identity & Named & {
   value: Value | null;
   onValueChange: (value: Value | null) => void;
 };
@@ -58,6 +66,7 @@ export function forValue<V extends FieldValues, N extends FieldPath<V>>(
   return {
     name,
     disabled,
+    label: accessibilityLabel,
     accessibilityLabel,
     value,
     onValueChange: (next) => {
@@ -73,7 +82,7 @@ export function forChecked<V extends FieldValues, N extends FieldPath<V>>(
   return {
     name,
     disabled,
-    accessibilityLabel,
+    label: accessibilityLabel,
     checked: Boolean(value),
     onCheckedChange: (checked) => {
       onChange(checked);
@@ -88,7 +97,7 @@ export function forDate<V extends FieldValues, N extends FieldPath<V>>(
   return {
     name,
     disabled,
-    accessibilityLabel,
+    label: accessibilityLabel,
     value: value ?? null,
     onValueChange: (next) => {
       onChange(next);

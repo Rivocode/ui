@@ -27,4 +27,4 @@ encolhem até 32 pixels cada, em vez de empurrar a página para o lado.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `OTPField` - caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `OTPField` - caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

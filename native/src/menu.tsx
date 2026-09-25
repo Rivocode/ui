@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Pressable, View, type AccessibilityActionEvent } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { Sheet } from "./sheet";
 import { Text } from "./text";
 
@@ -24,10 +24,14 @@ export type MenuProps = {
    * Sem ela o menu so abre por `open`, e o gatilho fica por sua conta.
    */
   children?: ReactNode;
-  /** Veste a area do toque longo. Ela envolve os filhos, entao herde o layout deles. */
-  triggerClassName?: string;
-  /** Veste a lista de acoes dentro da folha. */
+  /** Veste a lista de acoes dentro da folha, o mesmo no de `classNames.content`. */
   className?: string;
+  /**
+   * Classe por parte, com os nomes das pecas do web: `trigger` (a area do
+   * toque longo, que envolve os filhos, entao herde o layout deles), `content`
+   * (a lista de acoes) e `item` (cada acao).
+   */
+  classNames?: Slots<"trigger" | "content" | "item">;
 };
 
 const LONG_PRESS_ACTIONS = [{ name: "longpress", label: "Abrir ações" }];
@@ -38,12 +42,12 @@ export function Menu({
   title,
   actions,
   children,
-  triggerClassName,
   className,
+  classNames,
 }: MenuProps) {
   const sheet = (
     <Sheet open={open} onOpenChange={onOpenChange} title={title}>
-      <View className={cn("gap-1", className)}>
+      <View className={cn("gap-1", className, classNames?.content)}>
         {actions.map((action) => (
           <Pressable
             key={action.label}
@@ -53,9 +57,11 @@ export function Menu({
               onOpenChange(false);
               action.onSelect();
             }}
-            className={`min-h-12 flex-row items-center rounded-md px-3 ${
-              action.disabled ? "opacity-50" : "active:bg-selected"
-            }`}
+            className={cn(
+              "min-h-12 flex-row items-center rounded-md px-3",
+              action.disabled ? "opacity-50" : "active:bg-selected",
+              classNames?.item,
+            )}
           >
             <Text
               className={`text-base ${action.tone === "danger" ? "text-danger-text" : "text-fg"}`}
@@ -80,7 +86,7 @@ export function Menu({
           if (event.nativeEvent.actionName === "longpress") onOpenChange(true);
         }}
         onLongPress={() => onOpenChange(true)}
-        className={cn("active:bg-selected", triggerClassName)}
+        className={cn("active:bg-selected", classNames?.trigger)}
       >
         {children}
       </Pressable>

@@ -27,7 +27,7 @@ obrigatórias:
 
 ```tsx
 web     <Checkbox defaultChecked>ISS retido</Checkbox>
-nativo  <Checkbox checked={retido} onCheckedChange={setRetido} />   os dois obrigatórios
+nativo  <Checkbox checked={retido} onCheckedChange={setRetido}>ISS retido</Checkbox>   os dois obrigatórios
 ```
 
 **A lista vem por `items`, e não por composição.** O web monta o gatilho, o
@@ -70,7 +70,9 @@ Duas diferenças mordem na primeira tela. **Nada envia sozinho**: não há
 por função: `{({ submit, isSubmitting }) => …}`. E **o rótulo viaja no
 campo**: no web o `Field` da Base UI liga rótulo e controle pelo `for`, e aqui
 não há `for` nem `id`; o `FormField` põe `accessibilityLabel` e `invalid`
-dentro do campo, e o adaptador os leva ao controle. Sem isso, um `TextInput`
+dentro do campo, e o adaptador os leva ao controle - como `label` nas peças,
+que se nomeiam por ele, e como `accessibilityLabel` no `Input` e no
+`Textarea`. Sem isso, um `TextInput`
 embaixo de um rótulo fica sem nome para o leitor de tela.
 
 ## O gráfico entra por outro caminho, e traz um peer nativo
@@ -227,14 +229,14 @@ recusa o que conseguiu medir.
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `Link` | ✔ traduz | `Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router |
 | `MaskedInput` | ✔ traduz | os mesmos moldes do web (`cpf`, `cnpj`, `moeda`, o `9` do molde escrito à mão); o valor chega limpo, e o texto com máscara vem no segundo argumento do `onValueChange` |
-| `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
+| `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo; `classNames` com `trigger`, `content` e `item` |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
 | `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
-| `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo |
+| `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action` |
@@ -273,7 +275,7 @@ recusa o que conseguiu medir.
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
-| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma |
+| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `TableOfContents` | ✕ não porta | tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |

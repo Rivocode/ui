@@ -57,7 +57,7 @@ Onde o nome da peça é o mesmo, o nome da prop também é (`Avatar fallback`,
 Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
 
 - **No nativo tudo é controlado**: sem `defaultValue`, `defaultChecked`,
-  `defaultOpen`. `<Checkbox checked={x} onCheckedChange={setX} />`, as duas
+  `defaultOpen`. `<Checkbox checked={x} onCheckedChange={setX}>ISS retido</Checkbox>`, as duas
   obrigatórias. A exceção é o que abre e fecha no lugar, `Accordion` e
   `Collapsible`: aceitam os dois modos, `value`/`open` opcionais ao lado de
   `defaultValue`/`defaultOpen`.
@@ -66,6 +66,14 @@ Nenhuma peça aceita o mesmo JSX dos dois lados, por duas regras:
   array e desenham a folha: `<Select items={…} value onValueChange label />`,
   sem `SelectTrigger`/`SelectContent`/`SelectItem`. O `label` é obrigatório
   porque é ele que o leitor de tela anuncia.
+
+**O nome falado é `label`, sempre**, no lugar do `aria-label` do web: o
+`Select`, o `Slider`, o `IconButton`, o `Checkbox` e o `Switch` sem texto ao
+lado (`<Checkbox label="Selecionar a nota" … />`, e o tipo recusa a caixa sem
+`children` e sem `label`), o `OTPField`, o `SignaturePad`. O
+`accessibilityLabel` só aparece onde a peça É o `TextInput` da plataforma
+(`Input`, `Textarea`, `CurrencyInput`, `PasswordInput`) e no `Item`, cuja
+linha já fala o próprio texto e ele só troca a frase.
 
 Nunca prometa que a tela do web "vai rodar no celular": o que se reaproveita é
 o vocabulário de classes, o token e a escolha da peça. O JSX se reescreve.
@@ -87,6 +95,13 @@ da peça. Três limites, todos do React Native:
   texto de dentro; vista a parte que é o próprio `Text` (`title`, `counter`,
   `message`).
 
+Não há prop `<parte>ClassName`: a parte se veste só pelo `classNames`, e isso
+vale também onde o web compõe peças e o nativo desenha tudo numa só - o
+`input`, o `prefix`, o `suffix` e o `action` do `InputGroup`; o `trigger`, o
+`content` e o `item` do `Menu`; o `footer` do `ScrollArea`. A exceção é o
+`contentContainerClassName` do `ScrollArea`, que é o nome que a `ScrollView`
+já dá ao conteúdo que rola.
+
 Nem toda peça tem `classNames` aqui. A que tem no web e não tem aqui tem linha
 na tabela abaixo dizendo por quê, e `bun run check:assinatura` cobra a linha:
 sem ela, a peça veste só pela raiz sem ninguém avisar.
@@ -100,7 +115,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**188 divergências de assinatura em 87 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**194 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -137,7 +152,7 @@ escritos em lugar nenhum.
 | `ChartGauge` | `classNames` | `classNames` | sem `arc`: o arco é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe |
 | `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
 | `Checkbox` | `parent` | — | o pai de um grupo se monta à mão, com `indeterminate` e o estado dos filhos: o `CheckboxGroup` nativo não tem `allValues` |
-| `Checkbox` | — | `accessibilityLabel` | sem `children`, é ele que nomeia a caixa para o leitor de tela |
+| `Checkbox` | — | `label` | o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois |
 | `Clipboard` | — | `toast` | o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado |
 | `Code` | — | `children` | `children` é `string`, e não `ReactNode`: o trecho é texto |
 | `Collapsible` | — | `label` | o cabeçalho vira `label`, no lugar de `CollapsibleTrigger` e `CollapsiblePanel` |
@@ -187,6 +202,7 @@ escritos em lugar nenhum.
 | `Input` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `InputGroup` | — | `prefix` | `prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction` |
 | `InputGroup` | — | `value` | a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro |
+| `InputGroup` | — | `classNames` | as partes que no web são peças vestem pelo `classNames`, com o nome delas: `input`, `prefix`, `suffix` e `action` |
 | `Item` | — | `title` | `title`, `description`, `media` e `actions` viram props: sem `ItemTitle`, `ItemDescription` e `ItemMedia` |
 | `Item` | `interactive` | `onPress` | quem torna a linha tocável é o `onPress`, e não um booleano |
 | `Link` | `render` | `onPress` | o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar |
@@ -196,6 +212,7 @@ escritos em lugar nenhum.
 | `Menu` | — | `title` | a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata |
 | `Menu` | — | `children` | não há `MenuTrigger`: `children` é a área que abre no toque longo, e o botão de três pontinhos é seu |
 | `Menu` | `open` | `open` | `open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe |
+| `Menu` | — | `classNames` | o que no web é `MenuTrigger`, `MenuContent` e `MenuItem` veste pelo `classNames`: `trigger`, `content` e `item` |
 | `Message` | `copyValue` | `onCopy` | o botão chama quem copia, porque o `expo-clipboard` mora em `@rivocode/ui-native/clipboard` |
 | `Message` | `error` | `error` | `string`: texto no nativo mora dentro de um `Text` |
 | `Meter` | `label` | `label` | `label` vira obrigatório e é `string` |
@@ -209,6 +226,7 @@ escritos em lugar nenhum.
 | `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
 | `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
 | `OTPField` | `mask` | — | sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType` |
+| `OTPField` | — | `label` | o nome falado é `label`, no lugar do `aria-label`; sem ele, o leitor diz quantos dígitos o código tem |
 | `PageHeader` | `breadcrumb` | — | o caminho de volta é o botão de voltar do router |
 | `PageHeader` | — | `badge` | a pastilha ao lado do título vira prop |
 | `PageHeader` | `titleAs` | — | não há nível de título: o cabeçalho é uma parada só do leitor de tela |
@@ -244,6 +262,7 @@ escritos em lugar nenhum.
 | `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
 | `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
 | `RivoProvider` | `toastPosition` | — | o aviso sobe de baixo, e `scope` e `dir` saem junto |
+| `ScrollArea` | — | `classNames` | só `footer`, a faixa presa embaixo da rolagem; o conteúdo que rola continua no `contentContainerClassName` da `ScrollView` |
 | `SearchInput` | `onClear` | — | o limpar é botão da própria peça, e ele chama `onValueChange("")` |
 | `SearchInput` | `shortcut` | — | não há teclado para desenhar o `Kbd` dentro do campo |
 | `Select` | `items` | `items` | `items` na raiz e obrigatória, rasa ou em grupos `{ label, items }`; sem `SelectTrigger`, `SelectContent` e `SelectItem` |
@@ -254,6 +273,7 @@ escritos em lugar nenhum.
 | `SignaturePad` | `value` | `value` | vira obrigatório: não há `defaultValue`, e sem `onValueChange` a peça só exibe |
 | `SignaturePad` | `name` | — | não há `<form>` para levar o SVG num campo escondido |
 | `SignaturePad` | — | `onDrawingChange` | avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar |
+| `SignaturePad` | — | `label` | o nome do grupo é `label`, no lugar do `aria-label`; sem ele vale `labels.group` |
 | `SignaturePad` | `classNames` | `classNames` | sem `baseline`: a linha de base é um traço dentro do `Svg` |
 | `Slider` | `value` | `value` | um valor só: `number`, e não `number[]` |
 | `Slider` | `label` | `label` | `label` vira obrigatório e é `string` |
@@ -267,6 +287,7 @@ escritos em lugar nenhum.
 | `Steps` | `onStepClick` | — | só o modo estreito do web (texto e barra), e ele nunca foi clicável |
 | `Switch` | `value` | — | não há formulário nativo para carregar valor: o estado é `checked` |
 | `Switch` | `classNames` | `classNames` | só `label`: sem `thumb`, porque o polegar é do `Switch` da plataforma, que não recebe classe |
+| `Switch` | — | `label` | o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório |
 | `Tabs` | — | `items` | `items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu |
 | `Tabs` | `value` | `value` | o valor é `string`, e não o genérico do web |
 | `Text` | `render` | — | o elemento é sempre `Text`; o bloco é uma `View` em volta |
@@ -308,7 +329,9 @@ import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'
 Duas diferenças mordem logo: **nada envia sozinho** (sem `<form>`, sem
 `type="submit"`, sem Enter: o `Form` entrega `{ submit, isSubmitting }` por
 função), e **o rótulo viaja no campo** (sem `for` nem `id`, o `FormField` põe
-`accessibilityLabel` e `invalid` na linha, e o adaptador os leva ao controle).
+`accessibilityLabel` e `invalid` na linha, e o adaptador os leva ao controle:
+como `label` nas peças, que se nomeiam por ele, e como `accessibilityLabel` no
+`Input` e no `Textarea`).
 
 ## O gráfico também, e ele traz um peer nativo
 
@@ -472,14 +495,14 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `Link` | ✔ traduz | `Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router |
 | `MaskedInput` | ✔ traduz | os mesmos moldes do web (`cpf`, `cnpj`, `moeda`, o `9` do molde escrito à mão); o valor chega limpo, e o texto com máscara vem no segundo argumento do `onValueChange` |
-| `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
+| `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo; `classNames` com `trigger`, `content` e `item` |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
 | `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
 | `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
-| `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo |
+| `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |
 | `PasswordInput` | ✔ traduz | o botão troca de nome com o estado (`labels.show`/`labels.hide`), e sair do campo esconde de novo; `classNames` com `wrapper`, `input` e `action` |
@@ -518,7 +541,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Stack` | ✔ traduz | mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta |
 | `Stat` | ✔ traduz | `value` já formatado, `delta` numérico escrito pelo `deltaFormat` do web, e o slot `chart` que a `Sparkline` nativa preenche |
 | `Steps` | ✔ traduz | só o modo estreito do web (texto e barra), e por isso sem `onStepClick`; o `useWizard()` atravessa inteiro; a barra anda e o passo novo entra por fade |
-| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma |
+| `Switch` | ✔ traduz | `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma |
 | `Table` | ✕ não porta | não há tabela no celular; a consulta vira `DataList` |
 | `TableOfContents` | ✕ não porta | tela de app não tem índice lateral: texto longo no celular vira seções numa lista que abre cada uma, ou `Tabs` |
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |

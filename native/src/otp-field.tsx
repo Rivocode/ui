@@ -12,6 +12,12 @@ export type OTPFieldProps = {
   onValueChange: (value: string) => void;
   /** Chamado uma vez, quando o ultimo digito entra. Mesmo nome do web. */
   onValueComplete?: (value: string) => void;
+  /**
+   * O nome que o leitor de tela ouve no campo: "Codigo enviado por SMS".
+   * Sem ele, o leitor diz quantos digitos o codigo tem. Dentro do `FormField`, chega sozinho pelo
+   * `forValue`.
+   */
+  label?: string;
   className?: string;
 };
 
@@ -20,6 +26,7 @@ export function OTPField({
   value,
   onValueChange,
   onValueComplete,
+  label,
   className,
 }: OTPFieldProps) {
   const input = useRef<ComponentRef<typeof TextInput>>(null);
@@ -55,7 +62,9 @@ export function OTPField({
       })}
       <TextInput
         ref={input}
-        accessibilityLabel={`Código de ${length} ${length === 1 ? "dígito" : "dígitos"}`}
+        accessibilityLabel={
+          label ?? `Código de ${length} ${length === 1 ? "dígito" : "dígitos"}`
+        }
         value={value}
         onChangeText={handleChange}
         onFocus={() => setFocused(true)}

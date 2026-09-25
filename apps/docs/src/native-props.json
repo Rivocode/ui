@@ -1212,16 +1212,10 @@
         "required": true
       },
       {
-        "name": "accessibilityLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome falado, para a caixa que nao tem rotulo ao lado - a de marcar uma linha de lista, por exemplo."
-      },
-      {
         "name": "children",
         "type": "ReactNode",
         "required": false,
-        "note": "O rotulo."
+        "note": "O rotulo visivel."
       },
       {
         "name": "className",
@@ -1250,6 +1244,12 @@
         "type": "boolean",
         "required": false,
         "note": "O terceiro estado, o da caixa mestra de uma lista meio marcada: desenha um traco no lugar do tique e anuncia `mixed`."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome falado, obrigatorio quando nao ha `children`."
       }
     ]
   },
@@ -2722,9 +2722,10 @@
         "note": "Veste a moldura."
       },
       {
-        "name": "inputClassName",
-        "type": "string",
-        "required": false
+        "name": "classNames",
+        "type": "Partial<Record<\"action\" | \"input\" | \"prefix\" | \"suffix\", string>>",
+        "required": false,
+        "note": "Classe por parte, com os nomes das pecas do web: `input` (o campo), `prefix`, `suffix` e `action` (cada botao colado no campo, antes do `className` da propria acao)."
       },
       {
         "name": "invalid",
@@ -2915,13 +2916,13 @@
         "name": "className",
         "type": "string",
         "required": false,
-        "note": "Veste a lista de acoes dentro da folha."
+        "note": "Veste a lista de acoes dentro da folha, o mesmo no de `classNames.content`."
       },
       {
-        "name": "triggerClassName",
-        "type": "string",
+        "name": "classNames",
+        "type": "Partial<Record<\"content\" | \"item\" | \"trigger\", string>>",
         "required": false,
-        "note": "Veste a area do toque longo."
+        "note": "Classe por parte, com os nomes das pecas do web: `trigger` (a area do toque longo, que envolve os filhos, entao herde o layout deles), `content` (a lista de acoes) e `item` (cada acao)."
       }
     ]
   },
@@ -3240,6 +3241,12 @@
         "required": false
       },
       {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome que o leitor de tela ouve no campo: \"Codigo enviado por SMS\"."
+      },
+      {
         "name": "length",
         "type": "number",
         "required": false,
@@ -3317,11 +3324,6 @@
         "type": "Partial<Record<\"action\" | \"input\" | \"wrapper\", string>>",
         "required": false,
         "note": "Classe por parte: `wrapper` (a moldura, o mesmo no de `className`), `input` (o campo) e `action` (o botao do olho)."
-      },
-      {
-        "name": "inputClassName",
-        "type": "string",
-        "required": false
       },
       {
         "name": "invalid",
@@ -4031,6 +4033,12 @@
         "note": "Veste a caixa de fora, a que ocupa a tela."
       },
       {
+        "name": "classNames",
+        "type": "Partial<Record<\"footer\", string>>",
+        "required": false,
+        "note": "Classe por parte: `footer`, a faixa do `footer` - fundo, borda e respiro."
+      },
+      {
         "name": "contentContainerClassName",
         "type": "string",
         "required": false,
@@ -4041,12 +4049,6 @@
         "type": "ReactNode",
         "required": false,
         "note": "O que fica preso embaixo da rolagem e sobe junto com o teclado: a acao de enviar o formulario."
-      },
-      {
-        "name": "footerClassName",
-        "type": "string",
-        "required": false,
-        "note": "Veste a faixa do `footer`: fundo, borda e respiro."
       }
     ]
   },
@@ -4181,12 +4183,6 @@
         "note": "A assinatura, controlada: os tracos (`kind: \"drawn\"`) ou o nome digitado (`kind: \"typed\"`)."
       },
       {
-        "name": "accessibilityLabel",
-        "type": "string",
-        "required": false,
-        "note": "O nome que o leitor de tela ouve no grupo."
-      },
-      {
         "name": "className",
         "type": "string",
         "required": false
@@ -4220,6 +4216,12 @@
         "type": "boolean",
         "required": false,
         "note": "A borda de perigo."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome que o leitor de tela ouve no grupo, antes do resumo do que esta assinado."
       },
       {
         "name": "labels",
@@ -4649,7 +4651,8 @@
       {
         "name": "children",
         "type": "ReactNode",
-        "required": false
+        "required": false,
+        "note": "O rotulo visivel, na mesma linha do interruptor; tocar nele tambem troca."
       },
       {
         "name": "className",
@@ -4667,6 +4670,12 @@
         "name": "disabled",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O nome falado, obrigatorio quando nao ha `children`."
       }
     ]
   },

@@ -510,7 +510,17 @@ igual nos dois pacotes, e a classe de quem usa vence a da peça. Parte que o
 nativo não desenha fica fora do tipo, e não vira nó inventado (o `pause` do
 `Carousel`, sem `autoplay`; o `code` do `QRCode`, que é `Svg` e não recebe
 classe). No React Native a cor de texto não desce de `View` para `Text`: para
-pintar texto, vista a parte que é o próprio texto.
+pintar texto, vista a parte que é o próprio texto. Não há prop
+`<parte>ClassName` em nenhum dos dois pacotes: onde o web compõe peças e o
+nativo desenha uma só, as peças viram partes (`<InputGroup classNames={{ prefix
+}} />`, `<Menu classNames={{ trigger }} />`). A exceção é o
+`contentContainerClassName` do `ScrollArea` nativo, nome que a `ScrollView` já
+dá ao conteúdo que rola.
+
+**O nome falado é `label` nas peças nativas**, no lugar do `aria-label` do
+web: o `Checkbox` e o `Switch` sem texto ao lado exigem `label`, e o
+`OTPField` e o `SignaturePad` o aceitam. `accessibilityLabel` fica só onde a
+peça é o `TextInput` da plataforma e no `Item`, cuja linha já tem texto.
 
 A regra que desenha o pacote é **um subcaminho por peer, e não um por
 assunto**. Quatro peers são opcionais, e é o peer que decide onde a porta
@@ -539,7 +549,9 @@ não devolve evento: o `TextInput` entrega o texto direto, e `forValue` não
 serve. E **nada envia sozinho**: sem `<form>`, sem `type="submit"` e sem
 Enter, o `Form` entrega `{ submit, isSubmitting }` por função. O rótulo viaja
 no campo: sem `for` nem `id`, o `FormField` põe `accessibilityLabel` e
-`invalid` na linha, e o adaptador os leva ao controle.
+`invalid` na linha, e o adaptador os leva ao controle: como `label` nas peças,
+que se nomeiam por ele, e como `accessibilityLabel` no `Input` e no `Textarea`,
+que são o `TextInput` da plataforma.
 
 ```tsx
 import { Form, FormField, forText, useZodForm } from '@rivocode/ui-native/form'

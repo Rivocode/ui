@@ -6,7 +6,7 @@ import { InputGroup, type InputGroupProps } from "./input-group";
 
 export type PasswordInputProps = Omit<
   InputGroupProps,
-  "actions" | "prefix" | "suffix" | "secureTextEntry"
+  "actions" | "prefix" | "suffix" | "secureTextEntry" | "classNames"
 > & {
   /** O que o leitor de tela ouve no botão, antes e depois de revelar. */
   labels?: { show: string; hide: string };
@@ -31,7 +31,6 @@ export function PasswordInput({
   labels = { show: "Mostrar senha", hide: "Esconder senha" },
   onBlur,
   className,
-  inputClassName,
   classNames,
   ...props
 }: PasswordInputProps) {
@@ -44,7 +43,7 @@ export function PasswordInput({
       textContentType="password"
       {...props}
       className={cn(className, classNames?.wrapper)}
-      inputClassName={cn(inputClassName, classNames?.input)}
+      classNames={{ input: classNames?.input, action: classNames?.action }}
       secureTextEntry={!revealed}
       onBlur={(event) => {
         setRevealed(false);
@@ -55,7 +54,6 @@ export function PasswordInput({
           label: revealed ? labels.hide : labels.show,
           onPress: () => setRevealed((current) => !current),
           children: <EyeIcon crossed={revealed} />,
-          className: classNames?.action,
         },
       ]}
     />

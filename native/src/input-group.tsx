@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Pressable, View, type TextInputProps } from "react-native";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { useFieldControl } from "./field";
 import { useRivo } from "./provider";
 import { Text, TextInput } from "./text";
@@ -30,9 +30,14 @@ export type InputGroupProps = Omit<TextInputProps, "value" | "onChangeText" | "c
   /** Os botões colados no campo, depois do sufixo. */
   actions?: InputGroupAction[];
   invalid?: boolean;
-  /** Veste a moldura. O campo de dentro é `inputClassName`. */
+  /** Veste a moldura. */
   className?: string;
-  inputClassName?: string;
+  /**
+   * Classe por parte, com os nomes das pecas do web: `input` (o campo),
+   * `prefix`, `suffix` e `action` (cada botao colado no campo, antes do
+   * `className` da propria acao).
+   */
+  classNames?: Slots<"input" | "prefix" | "suffix" | "action">;
 };
 
 function Affix({ children, className }: { children: ReactNode; className?: string }) {
@@ -59,7 +64,7 @@ export function InputGroup({
   onSubmitEditing,
   accessibilityHint,
   className,
-  inputClassName,
+  classNames,
   ...props
 }: InputGroupProps) {
   const [focused, setFocused] = useState(false);
@@ -75,7 +80,9 @@ export function InputGroup({
         className,
       )}
     >
-      {prefix !== undefined && <Affix className="border-r border-border">{prefix}</Affix>}
+      {prefix !== undefined && (
+        <Affix className={cn("border-r border-border", classNames?.prefix)}>{prefix}</Affix>
+      )}
 
       <TextInput
         {...props}
@@ -99,10 +106,12 @@ export function InputGroup({
           onSubmitEditing?.(event);
         }}
         placeholderTextColor={colors["fg-subtle"]}
-        className={cn("h-full flex-1 px-3.5 text-base text-fg", inputClassName)}
+        className={cn("h-full flex-1 px-3.5 text-base text-fg", classNames?.input)}
       />
 
-      {suffix !== undefined && <Affix className="border-l border-border">{suffix}</Affix>}
+      {suffix !== undefined && (
+        <Affix className={cn("border-l border-border", classNames?.suffix)}>{suffix}</Affix>
+      )}
 
       {actions?.map((action) => (
         <Pressable
@@ -115,6 +124,7 @@ export function InputGroup({
           className={cn(
             "h-full w-12 shrink-0 items-center justify-center border-l border-border",
             action.disabled ? "opacity-40" : "active:bg-selected",
+            classNames?.action,
             action.className,
           )}
         >

@@ -75,7 +75,7 @@ describe("o gráfico e o botão saem do mesmo tema, na mesma tela", () => {
     const screen = render(
       <>
         <Button>Emitir</Button>
-        <Switch checked onCheckedChange={() => {}} />
+        <Switch label="Ativo" checked onCheckedChange={() => {}} />
         <ChartContainer config={{ pagas: { label: "Pagas" } }} data={[1]}>
           {(frame) => {
             series = frame.colors;

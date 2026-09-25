@@ -181,7 +181,7 @@ describe("Menu", () => {
         onOpenChange={(next) => calls.push(`open:${next}`)}
         title="Nota 4813"
         actions={acoes}
-        triggerClassName="flex-1"
+        classNames={{ trigger: "flex-1" }}
       >
         <Text>Nota 4813</Text>
       </Menu>,

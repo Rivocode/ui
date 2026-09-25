@@ -87,4 +87,6 @@ Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é **s
 
 **O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.
 
+**O nome falado é `label`, no lugar do `aria-label` do web**, o mesmo nome que as outras peças nativas usam. Com `children` ele é opcional e troca o texto que o leitor de tela lê; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois - a de marcar uma linha de lista seria anunciada só como "caixa de seleção, marcado". Dentro do `FormField`, o `forChecked` já entrega o `label`.
+
 As partes vestem pelo mesmo `classNames` do web: `box`, `indicator` (o tique ou o traço) e `label`.

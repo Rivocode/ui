@@ -35,4 +35,4 @@ No React Native o mesmo caso existe, e o gesto muda: o `Menu` do
 
 ## No React Native
 
-Vira `Menu`, e não peça nova: o menu do botão direito é, no celular, o toque longo, e quem abre a folha de ações já é o `Menu`. Passe a área alvo como `children` dele — o que no web é o `ContextMenuTrigger` — e ela chama `onOpenChange(true)` no toque longo, com `triggerClassName` para o layout que os filhos exigem. Quem navega por leitor de tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.
+Vira `Menu`, e não peça nova: o menu do botão direito é, no celular, o toque longo, e quem abre a folha de ações já é o `Menu`. Passe a área alvo como `children` dele — o que no web é o `ContextMenuTrigger` — e ela chama `onOpenChange(true)` no toque longo, com `classNames.trigger` para o layout que os filhos exigem. Quem navega por leitor de tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.

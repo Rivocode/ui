@@ -362,8 +362,8 @@ export const SIGNATURES: Record<string, Signature> = {
       },
       {
         web: null,
-        native: "accessibilityLabel",
-        note: "sem `children`, é ele que nomeia a caixa para o leitor de tela",
+        native: "label",
+        note: "o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois",
       },
     ],
   },
@@ -684,6 +684,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "value",
         note: "a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro",
       },
+      {
+        web: null,
+        native: "classNames",
+        note: "as partes que no web são peças vestem pelo `classNames`, com o nome delas: `input`, `prefix`, `suffix` e `action`",
+      },
     ],
   },
   Item: {
@@ -809,6 +814,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "open",
         note: "`open` e `onOpenChange` são obrigatórios, e `defaultOpen` não existe",
       },
+      {
+        web: null,
+        native: "classNames",
+        note: "o que no web é `MenuTrigger`, `MenuContent` e `MenuItem` veste pelo `classNames`: `trigger`, `content` e `item`",
+      },
     ],
   },
   Meter: {
@@ -837,6 +847,11 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "mask",
         native: null,
         note: "sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType`",
+      },
+      {
+        web: null,
+        native: "label",
+        note: "o nome falado é `label`, no lugar do `aria-label`; sem ele, o leitor diz quantos dígitos o código tem",
       },
     ],
   },
@@ -935,6 +950,15 @@ export const SIGNATURES: Record<string, Signature> = {
       },
     ],
   },
+  ScrollArea: {
+    rows: [
+      {
+        web: null,
+        native: "classNames",
+        note: "só `footer`, a faixa presa embaixo da rolagem; o conteúdo que rola continua no `contentContainerClassName` da `ScrollView`",
+      },
+    ],
+  },
   SearchInput: {
     rows: [
       {
@@ -1015,6 +1039,11 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "avisa o começo e o fim do traço, para a `ScrollView` em volta parar de rolar",
       },
       {
+        web: null,
+        native: "label",
+        note: "o nome do grupo é `label`, no lugar do `aria-label`; sem ele vale `labels.group`",
+      },
+      {
         web: "classNames",
         native: "classNames",
         note: "sem `baseline`: a linha de base é um traço dentro do `Svg`",
@@ -1081,6 +1110,11 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "classNames",
         native: "classNames",
         note: "só `label`: sem `thumb`, porque o polegar é do `Switch` da plataforma, que não recebe classe",
+      },
+      {
+        web: null,
+        native: "label",
+        note: "o nome falado é `label`, no lugar do `aria-label`; sem `children` ele é obrigatório",
       },
     ],
   },

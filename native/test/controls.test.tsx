@@ -109,7 +109,7 @@ describe("Checkbox", () => {
   });
 
   test("marcado anuncia checked e desenha o visto", () => {
-    const screen = render(<Checkbox checked onCheckedChange={() => {}} />);
+    const screen = render(<Checkbox label="Aceito" checked onCheckedChange={() => {}} />);
     const [box] = byRole(screen, "checkbox");
     expect(box.props.accessibilityState.checked).toBe(true);
     // O visto é borda rotacionada, nunca glyph de fonte.
@@ -125,7 +125,9 @@ describe("Checkbox", () => {
   });
 
   test("indeterminate anuncia mixed e desenha o traco cheio, sem o visto", () => {
-    const screen = render(<Checkbox checked={false} indeterminate onCheckedChange={() => {}} />);
+    const screen = render(
+      <Checkbox label="Todas" checked={false} indeterminate onCheckedChange={() => {}} />,
+    );
     const [box] = byRole(screen, "checkbox");
     expect(box.props.accessibilityState.checked).toBe("mixed");
 
@@ -140,7 +142,9 @@ describe("Checkbox", () => {
 
   test("indeterminate vence o checked, e o toque marca tudo", () => {
     const onCheckedChange = mock(() => {});
-    const screen = render(<Checkbox checked indeterminate onCheckedChange={onCheckedChange} />);
+    const screen = render(
+      <Checkbox label="Todas" checked indeterminate onCheckedChange={onCheckedChange} />,
+    );
     const [box] = byRole(screen, "checkbox");
     expect(box.props.accessibilityState.checked).toBe("mixed");
     expect(byClass(screen, /-rotate-45/).length).toBe(0);
@@ -163,11 +167,11 @@ describe("Switch", () => {
   });
 
   test("o trilho ligado veste o acento que se lê sobre o fundo", () => {
-    const dark = render(<Switch checked onCheckedChange={() => {}} />);
+    const dark = render(<Switch label="Modo escuro" checked onCheckedChange={() => {}} />);
     const track = dark.root.findByType("Switch" as never);
     expect(track.props.trackColor.true).toBe(tokens.themes["rivocode-dark"]["accent-text"]);
 
-    const light = render(<Switch checked onCheckedChange={() => {}} />, {
+    const light = render(<Switch label="Modo escuro" checked onCheckedChange={() => {}} />, {
       theme: "rivocode-light",
     });
     const lightTrack = light.root.findByType("Switch" as never);

@@ -412,7 +412,12 @@ const PARITY: Record<string, Row> = {
       "**O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e " +
       'anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca ' +
       "tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe " +
-      "lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda." +
+      "lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.\n\n" +
+      "**O nome falado é `label`, no lugar do `aria-label` do web**, o mesmo nome que as outras " +
+      "peças nativas usam. Com `children` ele é opcional e troca o texto que o leitor de tela " +
+      "lê; sem `children` ele é obrigatório, e o tipo recusa a caixa sem os dois - a de marcar " +
+      "uma linha de lista seria anunciada só como \"caixa de seleção, marcado\". Dentro do " +
+      "`FormField`, o `forChecked` já entrega o `label`." +
       "\n\nAs partes vestem pelo mesmo `classNames` do web: `box`, `indicator` (o tique ou o traço) e `label`.",
   },
   CheckboxGroup: {
@@ -696,7 +701,7 @@ const PARITY: Record<string, Row> = {
   },
   Menu: {
     state: "traduz",
-    note: "folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo",
+    note: "folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo; `classNames` com `trigger`, `content` e `item`",
   },
   NumberField: {
     state: "traduz",
@@ -704,7 +709,7 @@ const PARITY: Record<string, Row> = {
   },
   OTPField: {
     state: "traduz",
-    note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo",
+    note: "caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo",
   },
   PageHeader: {
     state: "traduz",
@@ -746,9 +751,9 @@ const PARITY: Record<string, Row> = {
       "cobrar, e o buraco era pior do que faltar a prop: o `forValue` do subcaminho de " +
       "formulário já entregava `accessibilityLabel`, mas o tipo é fechado e espalhamento em " +
       "JSX não confere propriedade excedente, então o nome era **descartado em silêncio com o " +
-      "TypeScript verde**.\n\n" +
-      "Ele não desenha nada: o texto visível é do `Field`, como no `Select` e no `Combobox`. " +
-      "Dentro de um `FormField`, repita ali o mesmo texto do `label` dele.",
+      "TypeScript verde**. Hoje o `forValue` entrega o rótulo do `FormField` também como " +
+      "`label`, e o grupo sai nomeado sem repetir o texto.\n\n" +
+      "Ele não desenha nada: o texto visível é do `Field`, como no `Select` e no `Combobox`.",
   },
   RivoProvider: {
     state: "traduz",
@@ -871,6 +876,8 @@ const PARITY: Record<string, Row> = {
       "  onDrawingChange={(desenhando) => setRolagem(!desenhando)}\n" +
       "/>\n" +
       "```\n\n" +
+      "O nome do grupo é `label`, no lugar do `aria-label` do web, e sem ele vale o " +
+      "`labels.group`. Dentro do `FormField`, o `forValue` já entrega o `label`.\n\n" +
       "As partes vestem pelo mesmo `classNames` do web: `pad`, `placeholder`, `actions` e `input`. `baseline` não porta como parte: a linha de base é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe.",
   },
   Slider: {
@@ -906,7 +913,7 @@ const PARITY: Record<string, Row> = {
   },
   Switch: {
     state: "traduz",
-    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma",
+    note: "`checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma",
   },
   Tabs: {
     state: "traduz",
@@ -1205,6 +1212,11 @@ const PARITY: Record<string, Row> = {
       "mais, `accessibilityLabel` e `invalid`, e os adaptadores as põem no controle: sem " +
       "isso, um `TextInput` sob um rótulo fica **sem nome nenhum** para o leitor de tela. O " +
       "`label` do `FormField` é obrigatório aqui pela mesma razão.\n\n" +
+      "O adaptador entrega o rótulo no nome que a peça lê. As peças nativas se nomeiam por " +
+      "`label`, e o `forValue`, o `forChecked` e o `forDate` o entregam assim; o `forText` o " +
+      "entrega como `accessibilityLabel`, porque o `Input` e o `Textarea` são o `TextInput` da " +
+      "plataforma. O `forValue` leva os dois, porque serve também a campo de texto com valor " +
+      "próprio, como o `CurrencyInput`.\n\n" +
       "Os adaptadores são quatro. `forValue`, `forChecked` e `forDate` têm o nome e o " +
       "trabalho do web. O `forDate` agora converte o vazio para `null` e fala ISO, que é o " +
       "que o `DatePicker` e o `DateRangePicker` nativos pedem. O quarto é só daqui: " +
@@ -1265,7 +1277,9 @@ const PARITY: Record<string, Row> = {
       "mesma árvore lá ganharia duas bordas encaixadas sem jeito de apagar a de dentro. Por " +
       "isso a moldura nativa desenha o campo: `value`, `onValueChange`, `prefix`, `suffix` e " +
       "`actions` são props dela. Não há `size`: altura de controle é única no nativo, porque " +
-      "alvo de toque não encolhe.",
+      "alvo de toque não encolhe.\n\n" +
+      "As peças de dentro viram partes do `classNames`, com o nome delas: `input`, `prefix`, " +
+      "`suffix` e `action`.",
   },
   Item: {
     state: "traduz",
@@ -1614,7 +1628,7 @@ const PARITY: Record<string, Row> = {
       "Vira `Menu`, e não peça nova: o menu do botão direito é, no celular, o toque longo, e " +
       "quem abre a folha de ações já é o `Menu`. Passe a área alvo como `children` dele — o " +
       "que no web é o `ContextMenuTrigger` — e ela chama `onOpenChange(true)` no toque longo, " +
-      "com `triggerClassName` para o layout que os filhos exigem. Quem navega por leitor de " +
+      "com `classNames.trigger` para o layout que os filhos exigem. Quem navega por leitor de " +
       "tela entra pela mesma porta: a área expõe a ação `longpress`, que o VoiceOver e o " +
       "TalkBack oferecem no menu de ações, então o gesto nunca é o único caminho.",
   },
@@ -1694,7 +1708,9 @@ const PARITY: Record<string, Row> = {
       "continua, porque sem ela o campo fica coberto.\n\n" +
       "Não há `horizontal`: fila de cartões que rola de lado é `ScrollView` puro, e não tem campo " +
       "para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o " +
-      "`KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.",
+      "`KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.\n\n" +
+      "O conteúdo que rola se veste pelo `contentContainerClassName`, o nome que a `ScrollView` " +
+      "já dá a ele, e a faixa do `footer` pelo `classNames.footer`.",
   },
   TableOfContents: {
     state: "nao",

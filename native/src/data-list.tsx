@@ -200,7 +200,7 @@ export function DataList<Row>({
         return (
           <View key={key} className="flex-row items-center gap-3">
             <Checkbox
-              accessibilityLabel="Selecionar linha"
+              label="Selecionar linha"
               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
               checked={selection.includes(key)}
               onCheckedChange={(checked) => toggle(key, checked)}

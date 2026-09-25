@@ -5,7 +5,7 @@ import {
   type KeyboardAwareScrollViewProps,
 } from "react-native-keyboard-controller";
 
-import { cn } from "./cn";
+import { cn, type Slots } from "./cn";
 import { KeyboardRiser } from "./keyboard";
 
 const GAP = 16;
@@ -32,8 +32,8 @@ export type ScrollAreaProps = Omit<
   className?: string;
   /** Veste o conteudo que rola: `gap-4 p-5` e o comum. */
   contentContainerClassName?: string;
-  /** Veste a faixa do `footer`: fundo, borda e respiro. */
-  footerClassName?: string;
+  /** Classe por parte: `footer`, a faixa do `footer` - fundo, borda e respiro. */
+  classNames?: Slots<"footer">;
 };
 
 export function ScrollArea({
@@ -42,7 +42,7 @@ export function ScrollArea({
   bottomOffset = GAP,
   className,
   contentContainerClassName,
-  footerClassName,
+  classNames,
   ...props
 }: ScrollAreaProps) {
   const [footerHeight, setFooterHeight] = useState(0);
@@ -61,7 +61,7 @@ export function ScrollArea({
       {footer && (
         <KeyboardRiser
           onLayout={(event: LayoutChangeEvent) => setFooterHeight(event.nativeEvent.layout.height)}
-          className={cn("border-t border-border bg-bg px-5 py-3", footerClassName)}
+          className={cn("border-t border-border bg-bg px-5 py-3", classNames?.footer)}
         >
           {footer}
         </KeyboardRiser>

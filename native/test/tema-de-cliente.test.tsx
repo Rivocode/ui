@@ -63,7 +63,7 @@ describe("o cliente veste os papéis no CSS do app, e a tela inteira segue", () 
       <>
         <Probe />
         <Button loading>Emitir</Button>
-        <Switch checked onCheckedChange={() => {}} />
+        <Switch label="Ativo" checked onCheckedChange={() => {}} />
         <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" legend={false} />
       </>,
       { theme: "rivocode-dark" },

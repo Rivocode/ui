@@ -61,4 +61,4 @@ da tela sem salvar, a resposta é não.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `Switch` - `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `classNames` só com `label`, porque o pino é da plataforma. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz: o `@rivocode/ui-native` exporta `Switch` - `checked` e `onCheckedChange` obrigatórios; o trilho é o do sistema, pintado por token, e o pino desliza pela animação da própria plataforma; `label` é o nome falado, obrigatório sem `children`; `classNames` só com `label`, porque o pino é da plataforma. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

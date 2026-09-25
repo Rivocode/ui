@@ -18,6 +18,8 @@ import {
   Highlight,
   ImageViewer,
   Indicator,
+  InputGroup,
+  Menu,
   Meter,
   NotificationCenter,
   PageHeader,
@@ -26,6 +28,7 @@ import {
   Progress,
   QueryBoundary,
   Rating,
+  ScrollArea,
   Slider,
   Spoiler,
   Switch,
@@ -605,7 +608,13 @@ const CASES: Case[] = [
     name: "Checkbox indeterminado",
     mount: (classNames) =>
       render(
-        <Checkbox checked={false} indeterminate onCheckedChange={noop} classNames={classNames} />,
+        <Checkbox
+          label="Todas"
+          checked={false}
+          indeterminate
+          onCheckedChange={noop}
+          classNames={classNames}
+        />,
       ),
     parts: { indicator: "h-0.5" },
   },
@@ -682,6 +691,61 @@ const CASES: Case[] = [
       description: says("Emitidas neste mês."),
       actions: holds(says("Emitir")),
     },
+  },
+  {
+    name: "InputGroup",
+    mount: (classNames) =>
+      render(
+        <InputGroup
+          value="4813"
+          onValueChange={noop}
+          prefix="R$"
+          suffix="kg"
+          actions={[{ label: "Copiar", onPress: noop, children: "C" }]}
+          classNames={classNames}
+        />,
+      ),
+    parts: {
+      input: ofType("TextInput"),
+      prefix: both("border-r", says("R$")),
+      suffix: both("border-l", says("kg")),
+      action: labelled("Copiar"),
+    },
+  },
+  {
+    name: "Menu",
+    mount: (classNames) =>
+      render(
+        <Menu
+          open
+          onOpenChange={noop}
+          title="Nota 4813"
+          actions={[
+            { label: "Baixar o PDF", onSelect: noop },
+            { label: "Cancelar a nota", onSelect: noop, tone: "danger" },
+          ]}
+          classNames={classNames}
+        >
+          <Text>Nota 4813</Text>
+        </Menu>,
+      ),
+    parts: {
+      trigger: (node) => typeof node.props.onLongPress === "function",
+      content: both("gap-1", says("Baixar o PDF"), says("Cancelar a nota")),
+      item: (node) =>
+        node.props.accessibilityRole === "button" && mentions(/Baixar|Cancelar/)(node),
+    },
+    count: { trigger: 1, content: 1, item: 2 },
+  },
+  {
+    name: "ScrollArea",
+    mount: (classNames) =>
+      render(
+        <ScrollArea footer={<Button>Emitir nota</Button>} classNames={classNames}>
+          <Text>Descrição</Text>
+        </ScrollArea>,
+      ),
+    parts: { footer: both("border-t", says("Emitir nota")) },
   },
   {
     name: "PasswordInput",
@@ -957,6 +1021,45 @@ describe("classNames no nativo", () => {
   test("a tabela cobre as quarenta pecas que ganharam classNames", () => {
     expect(PIECES.size).toBeGreaterThanOrEqual(40);
     expect(CASES.flatMap((entry) => Object.keys(entry.parts)).length).toBeGreaterThan(160);
+  });
+
+  test("parte so se veste por classNames, e nunca por uma prop <parte>ClassName", async () => {
+    const read = async (path: string) =>
+      (await Bun.file(new URL(path, import.meta.url)).json()) as Record<
+        string,
+        { props: { name: string }[] }
+      >;
+    const catalogs = {
+      native: await read("../../apps/docs/src/native-props.json"),
+      web: await read("../../apps/docs/src/component-props.json"),
+    };
+
+    const THIRD_PARTY = new Set([
+      "web:Calendar.modifiersClassNames",
+      "web:ChartTooltip.labelClassName",
+      "web:ChartTooltip.wrapperClassName",
+    ]);
+    const OWN_NAME = new Set(["className", "classNames", "contentContainerClassName"]);
+
+    const found: string[] = [];
+    const excused = new Set<string>();
+    let seen = 0;
+    for (const [side, catalog] of Object.entries(catalogs)) {
+      expect(Object.keys(catalog).length).toBeGreaterThan(80);
+      for (const [piece, entry] of Object.entries(catalog)) {
+        for (const prop of entry.props) {
+          if (!/[cC]lassNames?$/.test(prop.name)) continue;
+          seen += 1;
+          const id = `${side}:${piece}.${prop.name}`;
+          if (THIRD_PARTY.has(id)) excused.add(id);
+          else if (!OWN_NAME.has(prop.name)) found.push(id);
+        }
+      }
+    }
+
+    expect(seen).toBeGreaterThan(150);
+    expect([...excused].sort()).toEqual([...THIRD_PARTY].sort());
+    expect(found).toEqual([]);
   });
 
   test("toda parte que o tipo publica tem caso aqui", async () => {

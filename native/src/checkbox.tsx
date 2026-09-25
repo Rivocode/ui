@@ -5,11 +5,29 @@ import { cn, type Slots } from "./cn";
 import { Presence } from "./motion";
 import { Text } from "./text";
 
-export type CheckboxProps = {
+type CheckboxName =
+  | {
+      /** O rotulo visivel. Como no web, clicar no texto tambem marca. */
+      children: ReactNode;
+      /**
+       * O nome falado, obrigatorio quando nao ha `children`. Com texto ao
+       * lado, troca o nome que o leitor de tela le.
+       */
+      label?: string;
+    }
+  | {
+      children?: undefined;
+      /**
+       * O nome falado da caixa sem texto ao lado - a de marcar uma linha de
+       * lista. Obrigatorio aqui: sem ele o leitor de tela le "caixa de
+       * selecao, marcado" e a pessoa nao fica sabendo o que marcou.
+       */
+      label: string;
+    };
+
+export type CheckboxProps = CheckboxName & {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
-  /** O rotulo. Como no web, clicar no texto tambem marca. */
-  children?: ReactNode;
   disabled?: boolean;
   /**
    * O terceiro estado, o da caixa mestra de uma lista meio marcada: desenha um
@@ -17,12 +35,6 @@ export type CheckboxProps = {
    * toque marca tudo.
    */
   indeterminate?: boolean;
-  /**
-   * O nome falado, para a caixa que nao tem rotulo ao lado - a de marcar uma
-   * linha de lista, por exemplo. Sem ele o leitor de tela le "caixa de
-   * selecao, marcado" e a pessoa nao fica sabendo o que marcou.
-   */
-  accessibilityLabel?: string;
   /**
    * Area de toque alem do desenho. A caixa desenha 20px, bem abaixo dos 44pt
    * da Apple e dos 48dp do Android, e quem a poe sem rotulo ao lado perde o
@@ -43,7 +55,7 @@ export function Checkbox({
   children,
   disabled,
   indeterminate = false,
-  accessibilityLabel,
+  label,
   hitSlop,
   className,
   classNames,
@@ -52,7 +64,7 @@ export function Checkbox({
   return (
     <Pressable
       accessibilityRole="checkbox"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={label}
       accessibilityState={{ checked: indeterminate ? "mixed" : checked, disabled }}
       hitSlop={hitSlop}
       disabled={disabled}

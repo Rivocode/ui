@@ -1766,7 +1766,12 @@ function checkElements(ctx: Context) {
       node.selfClosing &&
       !spread(node)
     ) {
-      if (!has("aria-label") && !has("accessibilityLabel") && node.parent >= 0) {
+      const labelled =
+        has("aria-label") ||
+        has("accessibilityLabel") ||
+        (platform === "native" && filled("label"));
+      let outside = false;
+      if (!labelled && node.parent >= 0) {
         const siblings = parsed.elements[node.parent]!.children.filter(
           (child) => child.kind === "element" || (child.kind === "text" && /\S/.test(child.value)),
         );
@@ -1777,6 +1782,7 @@ function checkElements(ctx: Context) {
         if (next && next.kind === "element") {
           const neighbor = parsed.elements[next.node]!;
           if (["span", "label", "p"].includes(neighbor.name) || house(neighbor) === "Text") {
+            outside = true;
             add(
               "rotulo-fora-do-controle",
               node.start,
@@ -1784,6 +1790,13 @@ function checkElements(ctx: Context) {
             );
           }
         }
+      }
+      if (!labelled && !outside && platform === "native" && name !== "Radio") {
+        add(
+          "nome-acessivel",
+          node.start,
+          `\`${name}\` sem texto ao lado e sem \`label\`: no nativo o nome falado é o \`label\``,
+        );
       }
     }
 

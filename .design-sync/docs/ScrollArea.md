@@ -38,3 +38,5 @@ Então o `ScrollArea` nativo é a tela de formulário. Por baixo é o `KeyboardA
 O `footer` é a ação presa embaixo da rolagem, e ele **sobe junto com o teclado**: o botão de enviar fica sempre à vista. A altura dele entra na conta de onde o campo em foco para, então nenhum campo fica escondido atrás do botão. Com o "reduzir movimento" ligado, o rodapé pula direto para cima do teclado em vez de acompanhá-lo; a rolagem até o campo continua, porque sem ela o campo fica coberto.
 
 Não há `horizontal`: fila de cartões que rola de lado é `ScrollView` puro, e não tem campo para o teclado cobrir. A `react-native-keyboard-controller` é peer do pacote, e o `KeyboardProvider` que ela pede já vem dentro do `RivoProvider`.
+
+O conteúdo que rola se veste pelo `contentContainerClassName`, o nome que a `ScrollView` já dá a ele, e a faixa do `footer` pelo `classNames.footer`.

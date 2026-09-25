@@ -149,7 +149,7 @@ export function Tree({
                 <View key={node.id} className="flex-row items-center gap-2.5">
                   {multiple && (
                     <Checkbox
-                      accessibilityLabel={`Marcar tudo em ${node.label}`}
+                      label={`Marcar tudo em ${node.label}`}
                       hitSlop={{ top: 12, bottom: 12, left: 12, right: 6 }}
                       checked={full}
                       indeterminate={mixed}

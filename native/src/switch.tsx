@@ -5,10 +5,28 @@ import { cn, type Slots } from "./cn";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
-export type SwitchProps = {
+type SwitchName =
+  | {
+      /** O rotulo visivel, na mesma linha do interruptor; tocar nele tambem troca. */
+      children: ReactNode;
+      /**
+       * O nome falado, obrigatorio quando nao ha `children`. Com texto ao
+       * lado, troca o nome que o leitor de tela le.
+       */
+      label?: string;
+    }
+  | {
+      children?: undefined;
+      /**
+       * O nome falado do interruptor sem texto ao lado. Obrigatorio aqui: sem
+       * ele o leitor de tela anuncia so "interruptor, desligado".
+       */
+      label: string;
+    };
+
+export type SwitchProps = SwitchName & {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
-  children?: ReactNode;
   disabled?: boolean;
   /** Veste a LINHA (rotulo + interruptor); sem rotulo nao ha o que vestir. */
   className?: string;
@@ -23,6 +41,7 @@ export function Switch({
   checked,
   onCheckedChange,
   children,
+  label,
   disabled,
   className,
   classNames,
@@ -31,6 +50,7 @@ export function Switch({
 
   const control = (
     <NativeSwitch
+      accessibilityLabel={children ? undefined : label}
       value={checked}
       onValueChange={onCheckedChange}
       disabled={disabled}
@@ -45,6 +65,7 @@ export function Switch({
   return (
     <Pressable
       accessibilityRole="switch"
+      accessibilityLabel={label}
       accessibilityState={{ checked, disabled }}
       disabled={disabled}
       onPress={() => onCheckedChange(!checked)}

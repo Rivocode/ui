@@ -183,4 +183,6 @@ import { SignaturePad } from '@rivocode/ui-native/chart'
 />
 ```
 
+O nome do grupo é `label`, no lugar do `aria-label` do web, e sem ele vale o `labels.group`. Dentro do `FormField`, o `forValue` já entrega o `label`.
+
 As partes vestem pelo mesmo `classNames` do web: `pad`, `placeholder`, `actions` e `input`. `baseline` não porta como parte: a linha de base é um traço dentro do `Svg`, e o `react-native-svg` não recebe classe.
