@@ -131,7 +131,9 @@ botão de enviar e o de parar, que ocupam o mesmo lugar).
 
 ## No React Native
 
-Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, `onStop`, `attachments`, `actions`, `maxLength`, `showCount` e os mesmos nomes acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").
+Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, `onStop`, `attachments`, `actions`, `maxLength`, `showCount`, `labels` e os mesmos nomes acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").
+
+**O contador chega pelo campo.** A dica (`labels.hint`) e a contagem por extenso (`labels.count`) vão no `accessibilityHint` do campo, e o número visível fica fora da árvore de acessibilidade. Ao bater no `maxLength`, o leitor de tela anuncia `labels.limit`, uma vez por chegada ao teto. A dica padrão fala da tecla de retorno, que aqui quebra a linha.
 
 **É controlado.** `value` e `onValueChange` são obrigatórios, como todo campo do pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.
 

@@ -1823,8 +1823,13 @@ const PARITY: Record<string, Row> = {
     note: "vive em `@rivocode/ui-native/ai`; controlado (`value` e `onValueChange` obrigatórios), e o envio é só pelo botão, porque o Enter do teclado do celular quebra a linha",
     page:
       "Traduz, no caminho próprio `@rivocode/ui-native/ai`, com os mesmos `streaming`, " +
-      "`onStop`, `attachments`, `actions`, `maxLength`, `showCount` e os mesmos nomes " +
-      'acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").\n\n' +
+      "`onStop`, `attachments`, `actions`, `maxLength`, `showCount`, `labels` e os mesmos " +
+      'nomes acessíveis ("Mensagem", "Enviar mensagem", "Parar resposta").\n\n' +
+      "**O contador chega pelo campo.** A dica (`labels.hint`) e a contagem por extenso " +
+      "(`labels.count`) vão no `accessibilityHint` do campo, e o número visível fica fora da " +
+      "árvore de acessibilidade. Ao bater no `maxLength`, o leitor de tela anuncia " +
+      "`labels.limit`, uma vez por chegada ao teto. A dica padrão fala da tecla de retorno, " +
+      "que aqui quebra a linha.\n\n" +
       "**É controlado.** `value` e `onValueChange` são obrigatórios, como todo campo do " +
       "pacote, e quem limpa o campo depois do `onSubmit` é quem chamou.\n\n" +
       "**O envio é só pelo botão.** No teclado do celular, a tecla de retorno de um campo de " +
