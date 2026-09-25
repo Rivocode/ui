@@ -1,5 +1,27 @@
 # Mudancas
 
+## 0.20.0
+
+O visto do `Clipboard` passa a se ler sobre os botoes preenchidos, e o
+`check-theme` passa a medir o que o primario e o ghost pintam sob o ponteiro.
+Nada que compilava na 0.19.0 deixa de compilar.
+
+- `Clipboard`: nos preenchidos, `primary` e `destructive`, o visto da
+  confirmacao sai na cor do rotulo (`accent-fg` e `danger-fg`), e nao mais no
+  verde de sucesso. Medido, o verde ficava em 1,41:1 sobre o `accent` do tema
+  escuro e em 1,08:1 sobre o `danger` do claro, contra os 3:1 que um icone
+  pede. `secondary`, `ghost` e `outline` continuam no verde.
+- Pares novos de contraste, medidos nos dois temas: `accent-fg` sobre
+  `accent-hover` e sobre `accent-active` (o rotulo e o visto do primario sob o
+  ponteiro, pior caso 12,27:1), e `success-text` sobre `accent-subtle` em `bg`
+  e em `surface` (o visto do ghost e do outline sob o ponteiro, pior caso
+  5,02:1).
+
+**Mudanca que pode aparecer:** o `rivocode-ui check-theme` mede esses pares.
+Tema de cliente com `accent-hover` ou `accent-active` claro demais para o
+`accent-fg`, ou com `success-text` apagado sobre o `accent-subtle`, passava na
+0.19.0 e passa a reprovar no CI. Por isso a versao sobe o segundo numero.
+
 ## 0.19.0
 
 As datas passam a aceitar texto `aaaa-mm-dd`, com os mesmos nomes do nativo, e

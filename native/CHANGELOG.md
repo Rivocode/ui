@@ -1,5 +1,82 @@
 # Mudancas
 
+## 0.16.0
+
+O `Autocomplete` chega ao nativo, o `Field` ganha o `validate` do web e quarenta
+pecas se vestem por parte com os nomes do web. Nada que compilava na 0.15.0
+deixa de compilar.
+
+### `Autocomplete`
+
+Campo de texto com sugestoes que aceita o que nao esta na lista: o `value` e o
+texto digitado. Controlado (`value`, `onValueChange` e `label` obrigatorios),
+com as sugestoes em `items`, em texto, rasas ou em grupos `{ label, items }`.
+O campo abre numa folha de baixo que sobe com o teclado; cada tecla chega ao
+`onValueChange`, tocar numa sugestao preenche e fecha, e Concluir fecha com o
+texto digitado. A busca ignora acento e caixa, a sugestao igual ao texto sai
+marcada, e a contagem de sugestoes e anunciada a cada mudanca. Nao ha `mode`
+de completar inline. Na tabela de paridade ele deixa de "virar `Combobox`".
+
+### `Field` com `validate`
+
+- `validate`, `validationMode` (`onSubmit`, o padrao, `onBlur` e `onChange`) e
+  `validationDebounceTime`, com o nome, a assinatura e o momento do web. Pode
+  ser assincrono, e so a ultima resposta vale; o `error` explicito vence. O
+  `formValues` chega vazio, porque nao ha `<form>`.
+- Falam com o `Field` os campos de digitar (`Input`, `Textarea`,
+  `MaskedInput`, `CurrencyInput`, `PostalCodeField`, `InputGroup` e
+  `PasswordInput`) e as pecas de folha (`Autocomplete`, `Select`, `Combobox` e
+  `DatePicker`). Nas de folha, fechar a folha e a saida do campo, e o Concluir
+  e o envio. O `Select` de escolha unica e o `DatePicker` nao tem Concluir: no
+  `onSubmit` padrao eles so mostram o `error` explicito, e validam com
+  `validationMode="onBlur"` ou `"onChange"`.
+- O erro e anunciado, vira o `accessibilityHint` do campo e acende a borda
+  dele (no gatilho, nas pecas de folha). `Autocomplete`, `Select`, `Combobox` e
+  `DatePicker` ganham `invalid`; a dica e o `invalid` escritos no campo
+  continuam vencendo.
+
+**Mudanca que pode aparecer:** campo dentro de um `Field` com `error` passa a
+ficar com a borda vermelha e com o erro como dica mesmo sem `invalid`, e o erro
+passa a ser anunciado ao aparecer, inclusive o do `FormField`. Num envio com
+varios erros, o iOS fala o ultimo. Campo fora de um `Field` nao muda.
+
+### `Clipboard` nas cinco variantes do `Button`
+
+`variant` aceita `primary`, `secondary` (o padrao), `ghost`, `outline` e
+`destructive`, com o fundo e o rotulo do `Button` daquela variante. Nos
+preenchidos o visto sai na cor do rotulo, pelo mesmo motivo do web.
+
+**Mudanca que pode aparecer:** o rotulo do `ghost` passa de `fg` para
+`fg-muted`, o mesmo do `Button` ghost.
+
+### `classNames` com os nomes do web
+
+Quarenta pecas aceitam `classNames` com as chaves da secao "Partes" da pagina
+web: `ActionBar`, `Banner`, `Calendar`, `Carousel`, `ChartFunnel`,
+`ChartGauge`, `ChartHeatmap`, `ChartTreemap`, `Checkbox`, `ColorPicker`,
+`Conversation`, `CurrencyInput`, `Editable`, `FilterBar`, `FilterChip`,
+`Highlight`, `ImageViewer`, `Indicator`, `Message`, `Meter`,
+`NotificationCenter`, `PageHeader`, `PasswordInput`, `PixCode`,
+`PostalCodeField`, `Progress`, `PromptInput`, `QRCode`, `QueryBoundary`,
+`Rating`, `SignaturePad`, `Slider`, `Spoiler`, `Switch`, `TagsInput`,
+`TimePicker`, `ToolCall`, `Tour`, `Tracker` e `TransferList`. A classe de quem
+usa vence a da peca, e o `className` continua no mesmo no. A parte que o nativo
+nao desenha fica fora do tipo, com a linha na tabela de assinatura dizendo por
+que, e o `check:assinatura` passa a cobrar essa linha. `InputGroupAction`
+ganha `className`, e o `MonthView` ganha `classNames`.
+
+`markClassName` do `Highlight`, `badgeClassName` do `Indicator` e
+`inputClassName` do `CurrencyInput`, do `PostalCodeField` e do `TagsInput`
+continuam valendo, marcados `@deprecated`: com os dois, as classes se somam e
+a de `classNames` vence.
+
+### Contraste
+
+O mapa do `@rivocode/ui-native/contrast` mede `fg-muted` e `success-text` sobre
+`accent-subtle`, em `bg` e em `surface` (o ghost e o outline sob o dedo, pior
+caso 5,74:1 e 5,02:1). Tema de cliente que deixava esses pares abaixo do piso
+passava e passa a reprovar.
+
 ## 0.15.0
 
 A leva que faz o nativo falar os nomes do web: o que se escrevia diferente nos

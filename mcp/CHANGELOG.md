@@ -1,5 +1,23 @@
 # Mudanças
 
+## 0.5.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 0.20.0 e
+`@rivocode/ui-native` 0.16.0: o `Autocomplete` nativo, o `validate` do `Field`
+e o `classNames` com os nomes do web em quarenta peças nativas. As oito
+ferramentas continuam as mesmas.
+
+- `get_native_parity`: o `Autocomplete` passa a traduzir com o mesmo nome (104
+  peças com o mesmo nome e 4 com outro; eram 103 e 5), e a tabela de assinatura
+  cai de 195 para 189 diferenças, nas mesmas 88 peças: as linhas de
+  "um `className` só" saíram, e as que ficaram nomeiam a parte que o nativo não
+  desenha.
+- A tabela de props do nativo vai de 800 para 855 props, em 118 peças (eram
+  117). A do web continua com 4391.
+- 44 páginas de peça reescritas, as convenções ganham a regra da classe por
+  parte, e o guia e a referência de React Native da skill ensinam o
+  `classNames` e o `validate` do `Field`.
+
 ## 0.4.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 0.19.0 e
