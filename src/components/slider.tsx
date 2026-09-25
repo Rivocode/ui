@@ -89,6 +89,7 @@ export function Slider({
               key={index}
               index={index}
               aria-label={thumbName}
+              getAriaValueText={write ? (_, value) => write(value) : undefined}
               aria-labelledby={!thumbName && label ? labelId : undefined}
               className={cn(
                 "size-4 rounded-pill border border-accent-text bg-surface-raised select-none",

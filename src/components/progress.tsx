@@ -43,6 +43,10 @@ export function Progress({
   return (
     <BaseProgress.Root
       {...props}
+      getAriaValueText={
+        props.getAriaValueText ??
+        (write && props.value !== null ? (_, value) => (value === null ? "" : write(value)) : undefined)
+      }
       format={numberFormat}
       className={cn("flex flex-col gap-2", className)}
     >

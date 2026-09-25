@@ -38,6 +38,7 @@ export function Meter({
   return (
     <BaseMeter.Root
       {...props}
+      getAriaValueText={props.getAriaValueText ?? (write ? (_, value) => write(value) : undefined)}
       format={numberFormat}
       className={cn("flex flex-col gap-2", className)}
     >
