@@ -362,12 +362,20 @@ function Times() {
   );
 }
 
+let pickerClicked: () => void = () => {};
+const pickerOpening = new Promise<void>((resolve) => {
+  pickerClicked = resolve;
+});
+
 function OpenPicker({ open }: { open: boolean }) {
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
-    const timer = setTimeout(() => box.current?.querySelector("button")?.click(), 60);
+    const timer = setTimeout(() => {
+      box.current?.querySelector("button")?.click();
+      pickerClicked();
+    }, 60);
     return () => clearTimeout(timer);
   }, [open]);
 
@@ -1113,8 +1121,16 @@ function Notifications({ openPanel }: { openPanel: boolean }) {
 
   useEffect(() => {
     if (!openPanel) return;
-    const timer = setTimeout(() => bar.current?.querySelector("button")?.click(), 90);
-    return () => clearTimeout(timer);
+    let timer = 0;
+    let gone = false;
+    void pickerOpening.then(() => {
+      if (gone) return;
+      timer = window.setTimeout(() => bar.current?.querySelector("button")?.click(), 30);
+    });
+    return () => {
+      gone = true;
+      window.clearTimeout(timer);
+    };
   }, [openPanel]);
 
   return (

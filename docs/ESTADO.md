@@ -376,6 +376,57 @@ PNG carrega a marca do build que o gerou, num pedaco `tEXt` chamado `rc-build`
 com o resumo de conteudo de cada arquivo que o navegador carregou. Custa de 122
 a 166 bytes por PNG, contra os 77s de Chrome de cada `bun run shot`.
 
+### O retrato sai igual duas vezes seguidas, no mac e no linux
+
+A primeira corrida da bancada no GitHub (cabeca `65b9605`, base `ca067c5`, so
+um arquivo de teste mudado entre as duas) saiu vermelha: `novas` com 315 de 576
+quadrados, `secao-controles-chave-rivocode-dark` com a moldura de 84x18 para
+84x22 celulas e `tour-claro` com 1 quadrado. Nada de tela tinha mudado. Medido
+em 25/09, o `bun run shot` antigo nao repetia a si mesmo: duas corridas seguidas
+no mesmo mac divergiam em `cronograma` (278 de 576) e `novas`. As causas, cada
+uma provada:
+
+- **Ladrilho sem pintar.** O `--screenshot` do Chrome sem janela tira a foto
+  antes de rasterizar a pagina inteira, e pagina alta sai com retangulos
+  brancos que mudam de lugar a cada corrida - `cronograma` e `novas` no mac,
+  `novas` no linux. Mesmo pelo protocolo de depuracao, uma captura de 29600px
+  de altura deixa buracos no mesmo lugar; recortada em faixas de 2048px, sai
+  inteira. O `shot.ts` agora dirige o Chrome pelo protocolo (o mesmo
+  `launchChrome` do `a11y`, que mudou para `scripts/retratos.ts`), captura em
+  faixas e costura o PNG.
+- **Fonte chegando depois da medida.** O `demo/secao.html` media a secao na
+  primeira vez que ela aparecia, com a fonte de reserva: o rotulo da `Chave`
+  quebrava em duas linhas e a moldura ficava 4 celulas mais alta. Agora ele
+  espera o `document.fonts.ready` da pagina de dentro, remede quando ela muda de
+  tamanho, e so se declara pronto (`data-rc-ready`) depois disso. O mesmo
+  atraso deslocava o destaque do `Tour`.
+- **Ordem de foco decidida por relogio.** Na `novas`, o `NotificationCenter` do
+  escuro abria por clique aos 90ms e o `TimePicker` do claro aos 60ms; o
+  segundo clique fecha o primeiro painel. Em carga fria o `TimePicker` montava
+  depois e a ordem invertia - o painel de notificacoes sumia. Agora o clique das
+  notificacoes espera o do seletor. Na `dialogo`, seis molduras abrem modal e
+  cada uma rouba o foco; ficava com o anel quem terminasse por ultimo, e as
+  outras cinco perdiam o foco de vez. Entregar a "ultima" nao funciona, porque
+  depois da disputa so a vencedora ainda tem elemento ativo. O `shot.ts` tira o
+  foco de documento que tem mais de uma moldura quando uma delas o segura: a
+  `dialogo` sai sem anel nenhum, sempre.
+- **Relogio, fuso e idioma da maquina.** A captura congela o `Date` em
+  15/10/2026 13:00 UTC, fixa `America/Sao_Paulo` e `pt-BR`, e liga a emulacao
+  de foco (sem ela o anel de foco do `Tour` sumia).
+
+A captura so acontece quando a pagina parou: fontes carregadas em todas as
+molduras, animacao finita levada ao fim e infinita parada no quadro zero, e
+tres leituras seguidas, com 150ms entre elas, da caixa de cada elemento e do
+foco iguais - com piso de 1,5s, porque a vitrine tem clique agendado. Pagina
+que nao para em 20s derruba a corrida com o nome.
+
+Prova, com o Chrome 154 dos dois lados: tres corridas seguidas num container
+ubuntu 24.04 amd64 e duas no mac sairam com os 56 PNG iguais pixel a pixel, e
+as 56 assinaturas iguais byte a byte. Nao sobrou ruido, e o comparador da
+bancada continua sem tolerancia a mais. As assinaturas foram regravadas: parte
+do que estava comitado era retrato com buraco (`novas`, `cronograma`), sem os
+`Select` abertos da `flutuantes` e sem a fonte na moldura.
+
 ### `check:classes`: classe usada e nao gerada falha o gate
 
 Nasceu do `shadow-1` do polegar do `Slider` nativo, que nunca gerou um byte:
@@ -855,11 +906,9 @@ dizendo os dois numeros. Localmente, `ENTRIES` em `apps/docs/src/catalog.ts`.
   `@font-face` em `dist/styles.css` contra catorze em `dist/fonts.css`, e zero
   ocorrencia de `contrastRatio` ou `oklch` em `dist/index.js`, contra 69 KB de
   `dist/cli.js`. O pacote nao foi instalado num consumidor depois dele.
-- **Por que quatro retratos divergem.** Em 24/09 o `bun run visual` rodou sobre
-  build novo e acusou `novas`, `novas-celular`, `painel` e `painel-celular`
-  (de 38% a 63% dos quadrados), com os mesmos numeros ANTES e DEPOIS das
-  mudancas daquele dia - entao a divergencia e anterior a elas, e nenhum commit
-  depois de `75ccd5c`, que gravou as assinaturas, tocou essas duas paginas. As
-  imagens foram olhadas e estao certas; a causa nao foi medida, e as assinaturas
-  nao foram aceitas. Suspeitos: texto relativo ao relogio ("ha 6 horas") e a
-  maquina que fotografou.
+- **Por que quatro retratos divergiam em 24/09.** Em 25/09, antes do conserto
+  da captura, `painel` e `painel-celular` ja batiam com o comitado, e a `novas`
+  divergia de uma corrida para a outra por ladrilho sem pintar - ver "O retrato
+  sai igual duas vezes seguidas". A causa do `painel` naquele dia nao foi
+  isolada. E o retrato no runner do GitHub so se confirma na proxima corrida da
+  bancada.

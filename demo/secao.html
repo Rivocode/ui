@@ -41,6 +41,7 @@
     <div id="frame"><iframe id="tela" title="Secao da vitrine"></iframe></div>
     <script>
       const PAD = 8;
+      document.documentElement.dataset.rcReady = "0";
       const [page, name, theme, density] = decodeURIComponent(location.hash.slice(1)).split("|");
 
       const frame = document.getElementById("frame");
@@ -68,14 +69,14 @@
           if (++tries > 60) {
             clearInterval(timer);
             fail("secao nao encontrada em " + page + "\n" + query);
+            document.documentElement.dataset.rcReady = "1";
           }
           return;
         }
 
         clearInterval(timer);
-        tela.style.height = doc.documentElement.scrollHeight + "px";
-
-        requestAnimationFrame(() => {
+        const place = () => {
+          tela.style.height = doc.documentElement.scrollHeight + "px";
           const box = target.getBoundingClientRect();
           const left = Math.max(0, Math.floor(box.left + doc.documentElement.scrollLeft) - PAD);
           const top = Math.max(0, Math.floor(box.top + doc.documentElement.scrollTop) - PAD);
@@ -83,6 +84,13 @@
           frame.style.height = Math.ceil(box.height) + PAD * 2 + "px";
           tela.style.left = -left + "px";
           tela.style.top = -top + "px";
+        };
+
+        doc.fonts.ready.then(() => {
+          place();
+          new ResizeObserver(place).observe(target);
+          new ResizeObserver(place).observe(doc.documentElement);
+          document.documentElement.dataset.rcReady = "1";
         });
       }, 50);
     </script>

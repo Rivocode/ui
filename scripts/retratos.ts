@@ -1,4 +1,8 @@
 import { Glob } from "bun";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { deflateSync, inflateSync } from "node:zlib";
 
 export const SHOTS = "demo/dist";
 
@@ -24,6 +28,266 @@ export async function requireChrome() {
       "Aponte a variavel RC_CHROME para o binario - no linux, `which google-chrome`.",
   );
   process.exit(1);
+}
+
+type Pending = { resolve: (value: any) => void; reject: (error: Error) => void };
+
+export async function launchChrome(extraFlags: string[] = []) {
+  const profile = mkdtempSync(join(tmpdir(), "rc-chrome-"));
+  const proc = Bun.spawn(
+    [
+      CHROME,
+      ...CHROME_FLAGS,
+      "--headless=new",
+      "--remote-debugging-port=0",
+      `--user-data-dir=${profile}`,
+      "--no-first-run",
+      "--hide-scrollbars",
+      "--force-prefers-reduced-motion",
+      ...extraFlags,
+      "about:blank",
+    ],
+    { stderr: "pipe", stdout: "ignore" },
+  );
+
+  const reader = proc.stderr.getReader();
+  const decoder = new TextDecoder();
+  let seen = "";
+  let browserUrl = "";
+  const deadline = Date.now() + 15000;
+  while (!browserUrl && Date.now() < deadline) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    seen += decoder.decode(value);
+    browserUrl = /DevTools listening on (ws:\/\/\S+)/.exec(seen)?.[1] ?? "";
+  }
+  reader.releaseLock();
+  if (!browserUrl) throw new Error(`o Chrome nao abriu a porta de depuracao:\n${seen}`);
+
+  const port = new URL(browserUrl).port;
+  const list = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()) as {
+    type: string;
+    webSocketDebuggerUrl: string;
+  }[];
+  const tab = list.find((entry) => entry.type === "page");
+  if (!tab) throw new Error("o Chrome abriu sem aba");
+
+  const socket = new WebSocket(tab.webSocketDebuggerUrl);
+  await new Promise((resolve, reject) => {
+    socket.onopen = resolve;
+    socket.onerror = reject;
+  });
+
+  let next = 0;
+  const pending = new Map<number, Pending>();
+  socket.onmessage = (event) => {
+    const message = JSON.parse(String(event.data));
+    const waiting = message.id ? pending.get(message.id) : undefined;
+    if (!waiting) return;
+    pending.delete(message.id);
+    if (message.error) waiting.reject(new Error(JSON.stringify(message.error)));
+    else waiting.resolve(message.result);
+  };
+
+  const send = (method: string, params: Record<string, unknown> = {}) =>
+    new Promise<any>((resolve, reject) => {
+      const id = ++next;
+      pending.set(id, { resolve, reject });
+      socket.send(JSON.stringify({ id, method, params }));
+    });
+
+  const evaluate = async <T>(expression: string): Promise<T> => {
+    const result = await send("Runtime.evaluate", {
+      expression,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (result.exceptionDetails) {
+      throw new Error(
+        result.exceptionDetails.exception?.description ?? result.exceptionDetails.text,
+      );
+    }
+    return result.result.value as T;
+  };
+
+  const KEYS = { Enter: { code: 13, text: "\r" }, Tab: { code: 9, text: undefined } } as const;
+  const press = async (key: keyof typeof KEYS) => {
+    const { code, text } = KEYS[key];
+    await send("Input.dispatchKeyEvent", {
+      type: text ? "keyDown" : "rawKeyDown",
+      key,
+      code: key,
+      windowsVirtualKeyCode: code,
+      text,
+    });
+    await send("Input.dispatchKeyEvent", {
+      type: "keyUp",
+      key,
+      code: key,
+      windowsVirtualKeyCode: code,
+    });
+  };
+
+  await send("Page.enable");
+  await send("Runtime.enable");
+  await send("Emulation.setEmulatedMedia", {
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+  });
+
+  const close = () => {
+    socket.close();
+    proc.kill();
+    try {
+      rmSync(profile, { recursive: true, force: true });
+    } catch {}
+  };
+
+  return { send, evaluate, press, close };
+}
+
+export type PngImage = {
+  width: number;
+  height: number;
+  channels: number;
+  pixels: Uint8Array;
+  build?: string;
+};
+
+export function decodePng(bytes: Uint8Array): PngImage {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let at = 8;
+
+  let width = 0;
+  let height = 0;
+  let channels = 4;
+  let build: string | undefined;
+  const data: Uint8Array[] = [];
+
+  while (at < bytes.length) {
+    const length = view.getUint32(at);
+    const type = String.fromCharCode(...bytes.subarray(at + 4, at + 8));
+    const body = bytes.subarray(at + 8, at + 8 + length);
+
+    if (type === "IHDR") {
+      width = view.getUint32(at + 8);
+      height = view.getUint32(at + 12);
+      const depth = body[8];
+      const color = body[9];
+      const interlace = body[12];
+
+      if (depth !== 8 || interlace !== 0 || (color !== 6 && color !== 2)) {
+        throw new Error(`PNG fora do que este decodificador le: ${depth}/${color}/${interlace}`);
+      }
+      channels = color === 6 ? 4 : 3;
+    }
+
+    if (type === "tEXt") {
+      const split = body.indexOf(0);
+      const keyword = split < 0 ? "" : new TextDecoder().decode(body.subarray(0, split));
+      if (keyword === BUILD_KEYWORD) build = new TextDecoder().decode(body.subarray(split + 1));
+    }
+
+    if (type === "IDAT") data.push(body);
+    if (type === "IEND") break;
+
+    at += 12 + length;
+  }
+
+  const deflated = new Uint8Array(data.reduce((sum, part) => sum + part.length, 0));
+  let offset = 0;
+  for (const part of data) {
+    deflated.set(part, offset);
+    offset += part.length;
+  }
+
+  const raw = inflateSync(deflated);
+  const stride = width * channels;
+  const pixels = new Uint8Array(width * height * channels);
+
+  for (let y = 0; y < height; y++) {
+    const filter = raw[y * (stride + 1)]!;
+    const from = y * (stride + 1) + 1;
+    const to = y * stride;
+
+    for (let x = 0; x < stride; x++) {
+      const value = raw[from + x]!;
+      const left = x >= channels ? pixels[to + x - channels]! : 0;
+      const up = y > 0 ? pixels[to - stride + x]! : 0;
+      const upLeft = y > 0 && x >= channels ? pixels[to - stride + x - channels]! : 0;
+
+      let restored = value;
+      if (filter === 1) restored = value + left;
+      else if (filter === 2) restored = value + up;
+      else if (filter === 3) restored = value + ((left + up) >> 1);
+      else if (filter === 4) {
+        const p = left + up - upLeft;
+        const dLeft = Math.abs(p - left);
+        const dUp = Math.abs(p - up);
+        const dUpLeft = Math.abs(p - upLeft);
+        restored = value + (dLeft <= dUp && dLeft <= dUpLeft ? left : dUp <= dUpLeft ? up : upLeft);
+      }
+
+      pixels[to + x] = restored & 0xff;
+    }
+  }
+
+  return { width, height, channels, pixels, build };
+}
+
+export function pngChunk(type: string, body: Uint8Array) {
+  const chunk = new Uint8Array(12 + body.length);
+  const view = new DataView(chunk.buffer);
+
+  view.setUint32(0, body.length);
+  for (let index = 0; index < 4; index++) chunk[4 + index] = type.charCodeAt(index);
+  chunk.set(body, 8);
+  view.setUint32(8 + body.length, Bun.hash.crc32(chunk.subarray(4, 8 + body.length)) >>> 0);
+
+  return chunk;
+}
+
+export function encodePng({ width, height, channels, pixels }: PngImage): Uint8Array {
+  const header = new Uint8Array(13);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, width);
+  view.setUint32(4, height);
+  header[8] = 8;
+  header[9] = channels === 4 ? 6 : 2;
+
+  const stride = width * channels;
+  const raw = new Uint8Array(height * (stride + 1));
+  for (let y = 0; y < height; y++) {
+    raw.set(pixels.subarray(y * stride, (y + 1) * stride), y * (stride + 1) + 1);
+  }
+
+  const parts = [
+    new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+    pngChunk("IHDR", header),
+    pngChunk("IDAT", deflateSync(raw)),
+    pngChunk("IEND", new Uint8Array(0)),
+  ];
+  const png = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+  let offset = 0;
+  for (const part of parts) {
+    png.set(part, offset);
+    offset += part.length;
+  }
+  return png;
+}
+
+export function stackPngs(slices: PngImage[]): PngImage {
+  const first = slices[0]!;
+  const height = slices.reduce((sum, slice) => sum + slice.height, 0);
+  const pixels = new Uint8Array(first.width * height * first.channels);
+  let offset = 0;
+  for (const slice of slices) {
+    if (slice.width !== first.width || slice.channels !== first.channels) {
+      throw new Error("fatias de retrato com largura ou canais diferentes");
+    }
+    pixels.set(slice.pixels, offset);
+    offset += slice.pixels.length;
+  }
+  return { width: first.width, height, channels: first.channels, pixels };
 }
 
 export const SIGNATURES = "demo/assinaturas.json";

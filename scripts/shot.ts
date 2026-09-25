@@ -1,8 +1,10 @@
-/** Fotografa a vitrine, para revisao visual sem abrir navegador na mao. */
 import {
   BUILD_KEYWORD,
-  CHROME,
-  CHROME_FLAGS,
+  decodePng,
+  encodePng,
+  launchChrome,
+  pngChunk,
+  stackPngs,
   SECTIONS,
   SHOTS as SHOTS_DIR,
   address,
@@ -13,11 +15,6 @@ import {
 } from "./retratos";
 import { servir } from "./serve";
 
-/**
- * Cada pagina sai duas vezes: na largura de mesa e na de celular. O retrato
- * estreito e o que pega painel que sai da tela, tabela que empurra a pagina e
- * calendario de dois meses que nao cabe.
- */
 const PAGES = [
   { rota: "/index.html", name: "vitrine", height: 2600, alturaCelular: 4200 },
   { rota: "/dialog.html", name: "dialogo", height: 2800, alturaCelular: 2800 },
@@ -43,19 +40,45 @@ const PAGES = [
   { rota: "/cronograma.html", name: "cronograma", height: 5600, alturaCelular: 6400 },
 ];
 
-/** O piso de largura de janela do Chrome no macOS. */
 const LARGURA_JANELA_MINIMA = 500;
+
+const FROZEN_CLOCK = Date.UTC(2026, 9, 15, 13, 0, 0);
+
+const FROZEN_CLOCK_SCRIPT = `(() => {
+  const Real = Date;
+  const start = performance.now();
+  const now = () => ${FROZEN_CLOCK} + Math.floor(performance.now() - start);
+  function Frozen(...args) {
+    if (!new.target) return new Real(now()).toString();
+    return args.length === 0 ? new Real(now()) : new Real(...args);
+  }
+  Frozen.prototype = Real.prototype;
+  Frozen.now = now;
+  Frozen.parse = Real.parse;
+  Frozen.UTC = Real.UTC;
+  globalThis.Date = Frozen;
+})();`;
+
+const SETTLE_DEADLINE = 20_000;
+const SETTLE_FLOOR = 1_500;
+const CALM_CHECKS = 3;
+const CALM_INTERVAL = 150;
+const SLICE_HEIGHT = 2048;
 
 await requireChrome();
 
 const servidor = servir();
+const chrome = await launchChrome([
+  "--disable-gpu",
+  "--force-color-profile=srgb",
+  "--font-render-hinting=none",
+  "--disable-lcd-text",
+]);
+await chrome.send("Emulation.setTimezoneOverride", { timezoneId: "America/Sao_Paulo" });
+await chrome.send("Emulation.setLocaleOverride", { locale: "pt-BR" });
+await chrome.send("Emulation.setFocusEmulationEnabled", { enabled: true });
+await chrome.send("Page.addScriptToEvaluateOnNewDocument", { source: FROZEN_CLOCK_SCRIPT });
 
-/**
- * O Chrome no macOS nao abre janela abaixo de 500px de largura. Pedir 390
- * devolve um retrato cortado em 390 com layout de 500, que e pior do que nao
- * ter retrato: parece certo e esconde o que quebrou. Por isso a largura de
- * celular vem de um iframe dentro de `celular.html`.
- */
 const SHOTS = PAGES.flatMap(({ rota, name, height, alturaCelular }) => [
   { rota, output: `demo/dist/${name}.png`, janela: `1240,${height}` },
   {
@@ -65,13 +88,6 @@ const SHOTS = PAGES.flatMap(({ rota, name, height, alturaCelular }) => [
   },
 ]);
 
-/**
- * A janela do retrato de secao e folgada de proposito, e o excedente sai em
- * magenta: o `regressao-visual.ts` apara essa borda e descobre a moldura
- * sozinho, entao a secao nao precisa ter altura declarada aqui. Secao maior que
- * esta janela nao ganha borda para aparar, e a guarda recusa em vez de comparar
- * um retrato cortado.
- */
 const SECTION_WINDOW = "1240,900";
 
 const asked = process.argv.indexOf("--secao");
@@ -96,15 +112,6 @@ if (asked !== -1 && SECTION_SHOTS.length === 0) {
   process.exit(1);
 }
 
-/**
- * Os arquivos que o navegador carrega para desenhar uma rota: o HTML pedido, a
- * CSS e o pacote que ele referencia, e - quando a rota e moldura - o HTML de
- * dentro do `#`, com o que ele referencia tambem.
- *
- * A lista sai do proprio HTML em vez de ser declarada aqui: o que a marca de
- * build promete e "estes bytes desenharam este retrato", e declaracao a mao
- * mente na primeira vez que alguem troca o `src` de uma pagina.
- */
 async function servedBy(rota: string, found = new Set<string>()) {
   const [path, hash = ""] = rota.split("#");
   const html = `demo${path}`;
@@ -122,25 +129,6 @@ async function servedBy(rota: string, found = new Set<string>()) {
   return found;
 }
 
-function pngChunk(type: string, body: Uint8Array) {
-  const chunk = new Uint8Array(12 + body.length);
-  const view = new DataView(chunk.buffer);
-
-  view.setUint32(0, body.length);
-  for (let index = 0; index < 4; index++) chunk[4 + index] = type.charCodeAt(index);
-  chunk.set(body, 8);
-  view.setUint32(8 + body.length, Bun.hash.crc32(chunk.subarray(4, 8 + body.length)) >>> 0);
-
-  return chunk;
-}
-
-/**
- * Costura a marca de build no PNG, logo depois do `IHDR`.
- *
- * O Chrome nao tem como escrever isto, entao a costura e aqui. Vai dentro da
- * imagem, e nao num arquivo ao lado, porque a pergunta e sobre a IMAGEM: o
- * retrato copiado para outra pasta continua sabendo de que build ele veio.
- */
 async function stampBuild(output: string, stamp: string) {
   const bytes = new Uint8Array(await Bun.file(output).arrayBuffer());
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
@@ -155,64 +143,124 @@ async function stampBuild(output: string, stamp: string) {
   await Bun.write(output, marked);
 }
 
-/**
- * Um retrato, com prazo e uma segunda chance.
- *
- * O `--screenshot` do Chrome sem janela as vezes nao volta: medido num ubuntu
- * 24.04 com o google-chrome 154, o processo ficou dez minutos parado no
- * `formulario-celular`, sem CPU e sem arquivo, na segunda rodada de tres.
- * Na maquina alguem aperta Ctrl+C; na CI o job morreria no `timeout-minutes`
- * sem dizer qual retrato travou. Entao cada tentativa tem prazo, o arquivo
- * velho sai antes dela - arquivo que existe depois e arquivo que ESTA
- * tentativa escreveu -, e a segunda falha derruba a corrida com o nome.
- */
-const SHOT_DEADLINE = 90_000;
-const SHOT_ATTEMPTS = 2;
+const SETTLE_SCRIPT = `(async () => {
+  const documents = () => {
+    const found = [];
+    const walk = (doc) => {
+      found.push(doc);
+      for (const frame of doc.querySelectorAll("iframe")) {
+        if (frame.contentDocument) walk(frame.contentDocument);
+      }
+    };
+    walk(document);
+    return found;
+  };
+  const frames = () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+  const loaded = (doc) =>
+    doc.readyState === "complete" &&
+    doc.location.href !== "about:blank" &&
+    (!doc.getElementById("root") || doc.getElementById("root").childElementCount > 0) &&
+    doc.documentElement.dataset.rcReady !== "0";
+  const stillAnimations = (doc) => {
+    for (const animation of doc.getAnimations()) {
+      const timing = animation.effect && animation.effect.getComputedTiming();
+      if (timing && timing.iterations === Infinity) {
+        animation.pause();
+        animation.currentTime = 0;
+      } else {
+        animation.finish();
+      }
+    }
+  };
+  const fingerprint = (doc) => {
+    let text =
+      doc.location.href + "|" + doc.fonts.status + "|" + doc.documentElement.scrollHeight + "|" + doc.hasFocus();
+    for (const element of doc.querySelectorAll("*")) {
+      const box = element.getBoundingClientRect();
+      text += "|" + box.x + "," + box.y + "," + box.width + "," + box.height;
+      if (element === doc.activeElement) text += ",active";
+    }
+    return text;
+  };
+
+  const began = performance.now();
+  const deadline = began + ${SETTLE_DEADLINE};
+  let previous = "";
+  let calm = 0;
+  while (performance.now() < deadline) {
+    const all = documents();
+    if (all.every(loaded)) {
+      await Promise.all(all.map((doc) => doc.fonts.ready));
+      all.forEach(stillAnimations);
+      await frames();
+      const current = documents().map(fingerprint).join("#");
+      calm = current === previous ? calm + 1 : 0;
+      previous = current;
+      if (calm >= ${CALM_CHECKS} && performance.now() - began >= ${SETTLE_FLOOR}) {
+        const contested = documents().find(
+          (doc) =>
+            doc.querySelectorAll("iframe").length > 1 &&
+            doc.activeElement &&
+            doc.activeElement.tagName === "IFRAME",
+        );
+        if (!contested) return "ok";
+        contested.activeElement.blur();
+        calm = 0;
+      }
+    }
+    await new Promise((done) => setTimeout(done, ${CALM_INTERVAL}));
+  }
+  return documents().every(loaded) ? "a pagina nao parou de mudar" : "a pagina nao terminou de carregar";
+})()`;
+
+let visits = 0;
 
 async function shoot(rota: string, output: string, janela: string) {
-  for (let attempt = 1; attempt <= SHOT_ATTEMPTS; attempt++) {
-    await Bun.file(output)
-      .delete()
-      .catch(() => {});
+  const [width, height] = janela.split(",").map(Number) as [number, number];
+  await chrome.send("Emulation.setDeviceMetricsOverride", {
+    width,
+    height,
+    deviceScaleFactor: 2,
+    mobile: false,
+  });
 
-    const proc = Bun.spawn(
-      [
-        CHROME,
-        ...CHROME_FLAGS,
-        "--headless",
-        "--disable-gpu",
-        "--hide-scrollbars",
-        "--force-device-scale-factor=2",
-        `--screenshot=${output}`,
-        `--window-size=${janela}`,
-        "--virtual-time-budget=4000",
-        // Sem isto, grafico com animacao sai sem as marcas: a Recharts interpola
-        // em JS e o retrato acontece antes de o primeiro quadro chegar.
-        "--force-prefers-reduced-motion",
-        `http://127.0.0.1:${servidor.port}${rota}`,
-      ],
-      { stderr: "ignore", stdout: "ignore" },
-    );
+  const [path, hash] = rota.split("#");
+  const visit = `?visita=${++visits}`;
+  const url = `http://127.0.0.1:${servidor.port}${path}${visit}${hash === undefined ? "" : `#${hash}`}`;
+  await chrome.send("Page.navigate", { url });
 
-    const timer = setTimeout(() => proc.kill("SIGKILL"), SHOT_DEADLINE);
-    await proc.exited;
-    clearTimeout(timer);
-
-    if (await Bun.file(output).exists()) return;
-    console.log(`${output}  a tentativa ${attempt} nao escreveu o retrato em ${SHOT_DEADLINE / 1000}s`);
+  let settled = "";
+  const deadline = Date.now() + SETTLE_DEADLINE + 5000;
+  while (!settled && Date.now() < deadline) {
+    settled = await chrome
+      .evaluate<string>(`location.search === ${JSON.stringify(visit)} ? ${SETTLE_SCRIPT} : ""`)
+      .catch(() => "");
+    if (!settled) await Bun.sleep(CALM_INTERVAL);
   }
 
-  console.error(`${output}: o Chrome falhou ${SHOT_ATTEMPTS} vezes seguidas em ${rota}.`);
-  process.exit(1);
+  if (settled !== "ok") {
+    console.error(`${output}: ${settled || "a navegacao nao chegou"} em ${rota}.`);
+    process.exit(1);
+  }
+
+  const slices: Uint8Array[] = [];
+  for (let top = 0; top < height; top += SLICE_HEIGHT) {
+    const shot = await chrome.send("Page.captureScreenshot", {
+      format: "png",
+      clip: { x: 0, y: top, width, height: Math.min(SLICE_HEIGHT, height - top), scale: 1 },
+    });
+    slices.push(new Uint8Array(Buffer.from(shot.data, "base64")));
+  }
+
+  await Bun.write(
+    output,
+    slices.length === 1 ? slices[0]! : encodePng(stackPngs(slices.map(decodePng))),
+  );
 }
 
 for (const { rota, output, janela } of asked === -1
   ? [...SHOTS, ...SECTION_SHOTS]
   : SECTION_SHOTS) {
-  // A bancada da CI roda este arquivo tambem sobre a arvore de BASE, que pode
-  // nao ter a pagina que a cabeca acabou de criar. Pagina que nao existe sai
-  // sem retrato, e quem compara ve o nome faltando - retrato de um 404 seria
-  // pior, porque teria assinatura.
   const served = await servedBy(rota).catch(() => undefined);
   if (!served) {
     console.log(`${output}  pulou: a rota ${rota} cita pagina que nao existe nesta arvore`);
@@ -225,4 +273,5 @@ for (const { rota, output, janela } of asked === -1
   console.log(`${output}  ${(bytes / 1024).toFixed(0)} KB`);
 }
 
+chrome.close();
 await servidor.stop(true);
