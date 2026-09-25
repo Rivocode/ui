@@ -196,7 +196,7 @@ export function NotificationCenter({
 
         {!item.read && onMarkRead ? (
           <IconButton
-            accessibilityLabel={text.markRead}
+            label={text.markRead}
             variant="ghost"
             size="sm"
             onPress={() => onMarkRead(item.id)}
@@ -240,7 +240,7 @@ export function NotificationCenter({
   return (
     <>
       <IconButton
-        accessibilityLabel={unread > 0 ? sentence : text.trigger}
+        label={unread > 0 ? sentence : text.trigger}
         variant="ghost"
         onPress={() => onOpenChange(true)}
         className={className}

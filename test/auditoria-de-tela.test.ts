@@ -382,8 +382,8 @@ test("as regras de codigo e de importacao mordem e soltam", () => {
 test("no nativo, a primitiva do react-native, o Field sem label e o IconButton sem nome mordem", () => {
   const head =
     'import { Modal, Switch, View } from "react-native";\nimport { Field, IconButton, Input } from "@rivocode/ui-native";\n';
-  const bad = `${head}export const S = () => <View><Modal /><Switch /><Field><Input /></Field><IconButton label="Compartilhar"><Share /></IconButton></View>;`;
-  const good = `${head}export const S = () => <View><Field label="Cliente"><Input /></Field><IconButton accessibilityLabel="Compartilhar"><Share /></IconButton></View>;`;
+  const bad = `${head}export const S = () => <View><Modal /><Switch /><Field><Input /></Field><IconButton><Share /></IconButton></View>;`;
+  const good = `${head}export const S = () => <View><Field label="Cliente"><Input /></Field><IconButton label="Compartilhar"><Share /></IconButton><IconButton accessibilityLabel="Salvar"><Save /></IconButton></View>;`;
 
   const found = auditSource("s.tsx", bad);
   expect(found.platform).toBe("native");

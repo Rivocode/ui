@@ -117,7 +117,7 @@ export const RULES: Rule[] = [
     kind: "mecanica",
     scope: "arquivo",
     title: "Controle sem nome acessível",
-    fix: "`IconButton` com `label` (no nativo, `accessibilityLabel`). Botão só com ícone é `IconButton`, e não `Button` com um ícone dentro.",
+    fix: "`IconButton` com `label`, nos dois pacotes. Botão só com ícone é `IconButton`, e não `Button` com um ícone dentro.",
     source: "reference/a11y.md, Nome acessível; reference/components.md, Botão só com ícone",
   },
   {
@@ -1648,12 +1648,8 @@ function checkElements(ctx: Context) {
     };
 
     if (name === "IconButton" && !spread(node)) {
-      if (platform === "native" ? !nativeNamed() : !filled("label")) {
-        add(
-          "nome-acessivel",
-          node.start,
-          `\`IconButton\` sem \`${platform === "native" ? "accessibilityLabel" : "label"}\``,
-        );
+      if (platform === "native" ? !filled("label") && !nativeNamed() : !filled("label")) {
+        add("nome-acessivel", node.start, "`IconButton` sem `label`");
       }
     }
 
@@ -1677,7 +1673,7 @@ function checkElements(ctx: Context) {
       add(
         "nome-acessivel",
         node.start,
-        `${tagOf(node)} só com ícone e sem \`accessibilityLabel\`: é \`IconButton\` com \`accessibilityLabel\``,
+        `${tagOf(node)} só com ícone e sem \`accessibilityLabel\`: é \`IconButton\` com \`label\``,
       );
     }
 

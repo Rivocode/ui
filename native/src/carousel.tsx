@@ -148,7 +148,7 @@ export function Carousel<Item>({
         <View className="flex-row items-center justify-center gap-2">
           {controls && (
             <IconButton
-              accessibilityLabel={text.previous}
+              label={text.previous}
               variant="secondary"
               size="sm"
               disabled={!loop && current <= 0}
@@ -194,7 +194,7 @@ export function Carousel<Item>({
 
           {controls && (
             <IconButton
-              accessibilityLabel={text.next}
+              label={text.next}
               variant="secondary"
               size="sm"
               disabled={!loop && current >= last}

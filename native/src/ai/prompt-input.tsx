@@ -154,12 +154,12 @@ export function PromptInput({
         ) : null}
 
         {streaming ? (
-          <IconButton accessibilityLabel={stopLabel} variant="secondary" size="sm" onPress={onStop}>
+          <IconButton label={stopLabel} variant="secondary" size="sm" onPress={onStop}>
             {({ color }) => <StopGlyph color={color} />}
           </IconButton>
         ) : (
           <IconButton
-            accessibilityLabel={submitLabel}
+            label={submitLabel}
             size="sm"
             disabled={blocked}
             onPress={() => {

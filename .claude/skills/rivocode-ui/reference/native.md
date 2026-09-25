@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**203 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**202 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -166,7 +166,6 @@ escritos em lugar nenhum.
 | `FormField` | `label` | `label` | `label` vira obrigatório e é `string`: é ele que vira `accessibilityLabel` no controle |
 | `FormField` | `description` | `description` | `description` é `string` |
 | `Highlight` | `classNames` | `markClassName` | a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text` |
-| `IconButton` | `label` | `accessibilityLabel` | o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele |
 | `IconButton` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `IconButton` | `tooltip` | — | no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto |
 | `IconButton` | `tooltipSide` | — | sai junto com o `tooltip` |
@@ -456,7 +455,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Grid` | ✔ traduz | `columns`, `minItemWidth` em pontos e `gap`; a grade mede a própria largura para contar as colunas |
 | `Heading` | ✔ traduz | `level` e `size` com os mesmos nomes e a mesma escala; sai como `Text` com `accessibilityRole="header"`, e o leitor de tela do celular não anuncia o nível |
 | `Highlight` | ✔ traduz | sobre o `Text`, com o mesmo `query` e a mesma regra sem acento; `markClassName` no lugar do `classNames.mark` |
-| `IconButton` | ✔ traduz | `accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
+| `IconButton` | ✔ traduz | `label` obrigatório, o mesmo nome do web; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
 | `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque; `onValueChange` recebe o texto, como no web, e o `onChangeText` do `TextInput` continua valendo |

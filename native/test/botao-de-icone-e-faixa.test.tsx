@@ -7,10 +7,10 @@ import { act, byLabel, byRole, render, textOf } from "./helpers";
 const SIDE = { sm: 32, md: 44, lg: 48 } as const;
 
 describe("IconButton", () => {
-  test("o accessibilityLabel e o nome, e o icone fica escondido do leitor", () => {
+  test("o label e o nome, e o icone fica escondido do leitor", () => {
     const onPress = mock(() => {});
     const screen = render(
-      <IconButton accessibilityLabel="Excluir nota" onPress={onPress}>
+      <IconButton label="Excluir nota" onPress={onPress}>
         <View testID="glifo" />
       </IconButton>,
     );
@@ -29,16 +29,32 @@ describe("IconButton", () => {
   });
 
   test("o tipo recusa botao de icone sem nome", () => {
-    // @ts-expect-error accessibilityLabel e obrigatorio
+    // @ts-expect-error label e obrigatorio
     const missing = <IconButton>{null}</IconButton>;
     expect(missing).toBeDefined();
+  });
+
+  test("o accessibilityLabel antigo continua nomeando o botao", () => {
+    const screen = render(<IconButton accessibilityLabel="Excluir nota">{null}</IconButton>);
+    const [button] = byRole(screen, "button");
+    expect(button!.props.accessibilityLabel).toBe("Excluir nota");
+  });
+
+  test("com os dois, o label vence", () => {
+    const screen = render(
+      <IconButton label="Excluir nota" accessibilityLabel="Apagar">
+        {null}
+      </IconButton>,
+    );
+    const [button] = byRole(screen, "button");
+    expect(button!.props.accessibilityLabel).toBe("Excluir nota");
   });
 
   test("todo tamanho chega a 44 de alvo, com hitSlop so onde o desenho e menor", () => {
     for (const size of ["sm", "md", "lg"] as const) {
       const [button] = byRole(
         render(
-          <IconButton accessibilityLabel={size} size={size}>
+          <IconButton label={size} size={size}>
             {null}
           </IconButton>,
         ),
@@ -54,7 +70,7 @@ describe("IconButton", () => {
   test("o quadrado sai do mesmo vocabulario de classe do Button", () => {
     const icon = byRole(
       render(
-        <IconButton accessibilityLabel="Excluir" variant="destructive">
+        <IconButton label="Excluir" variant="destructive">
           {null}
         </IconButton>,
       ),
@@ -73,7 +89,7 @@ describe("IconButton", () => {
   test("a funcao recebe a cor da variante e o tamanho do glifo", () => {
     const seen: { color: string; size: number }[] = [];
     render(
-      <IconButton accessibilityLabel="Baixar" variant="secondary" size="lg">
+      <IconButton label="Baixar" variant="secondary" size="lg">
         {(glyph) => {
           seen.push(glyph);
           return null;
@@ -86,7 +102,7 @@ describe("IconButton", () => {
 
   test("carregando troca o icone pelo giro, trava o toque e anuncia busy", () => {
     const screen = render(
-      <IconButton accessibilityLabel="Sincronizar" loading>
+      <IconButton label="Sincronizar" loading>
         <View testID="glifo" />
       </IconButton>,
     );
@@ -100,7 +116,7 @@ describe("IconButton", () => {
   test("desabilitado anuncia o estado", () => {
     const [button] = byLabel(
       render(
-        <IconButton accessibilityLabel="Excluir" disabled>
+        <IconButton label="Excluir" disabled>
           {null}
         </IconButton>,
       ),

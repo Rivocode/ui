@@ -1482,10 +1482,11 @@ const PARITY: Record<string, Row> = {
 
   IconButton: {
     state: "traduz",
-    note: "`accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar",
+    note: "`label` obrigatório, o mesmo nome do web; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar",
     page:
-      "Traduz, com o nome obrigatório do mesmo jeito: lá ele é `accessibilityLabel`, que é o " +
-      "nome que o React Native já usa, e o tipo recusa o botão sem ele.\n\n" +
+      "Traduz, com o nome obrigatório do mesmo jeito e com o mesmo nome: `label`, e o tipo " +
+      "recusa o botão sem ele. O `accessibilityLabel`, que foi o nome dele até aqui, continua " +
+      "aceito no lugar do `label` e está marcado `@deprecated`.\n\n" +
       "**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; " +
       "o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem " +
       "crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, " +
@@ -1496,7 +1497,7 @@ const PARITY: Record<string, Row> = {
       "O ícone entra como filho, e a forma que pinta na cor da variante é a função, porque a " +
       "cor não desce da `View` para o SVG:\n\n" +
       "```tsx\n" +
-      '<IconButton accessibilityLabel="Excluir nota" variant="ghost" onPress={excluir}>\n' +
+      '<IconButton label="Excluir nota" variant="ghost" onPress={excluir}>\n' +
       "  {({ color, size }) => <Trash2 color={color} size={size} />}\n" +
       "</IconButton>\n" +
       "```",

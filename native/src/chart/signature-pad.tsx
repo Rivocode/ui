@@ -370,7 +370,7 @@ export function SignaturePad({
               <IconButton
                 variant="ghost"
                 size="sm"
-                accessibilityLabel={labels.undo}
+                label={labels.undo}
                 disabled={!interactive || strokes.length === 0}
                 onPress={undo}
               >
@@ -380,7 +380,7 @@ export function SignaturePad({
             <IconButton
               variant="ghost"
               size="sm"
-              accessibilityLabel={labels.clear}
+              label={labels.clear}
               disabled={!interactive || isSignatureEmpty(value)}
               onPress={clear}
             >

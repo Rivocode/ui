@@ -38,6 +38,13 @@ describe("o vocabulario de variante e o do web", () => {
     expect(nativeSide.length).toBeGreaterThan(3);
     expect(nativeSide).toEqual(literals(web, piece, prop));
   });
+
+  test("a IconButton se nomeia por label, o mesmo nome do web", () => {
+    const names = (catalog: Catalog) =>
+      catalog.IconButton?.props.map((entry) => entry.name) ?? [];
+    expect(names(web)).toContain("label");
+    expect(names(native)).toContain("label");
+  });
 });
 
 describe("outline", () => {

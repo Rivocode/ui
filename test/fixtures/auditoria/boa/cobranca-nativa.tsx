@@ -24,7 +24,7 @@ export function ChargeScreen({ payload }: { payload: string }) {
       <PixCode payload={payload} />
       <Clipboard value={payload} />
 
-      <IconButton accessibilityLabel="Compartilhar a cobrança">
+      <IconButton label="Compartilhar a cobrança">
         <Share />
       </IconButton>
       <Button onPress={() => setCustomer("")}>Emitir cobrança</Button>

@@ -19,12 +19,6 @@ const HIDDEN = {
 
 export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLabel" | "className"> & {
   /**
-   * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao
-   * nao tem outro texto. O mesmo papel do `label` do web. Diga a acao
-   * ("Excluir nota"), e nao o desenho.
-   */
-  accessibilityLabel: string;
-  /**
    * O icone. A cor nao desce da `View` para o SVG, entao a forma que pinta
    * sozinha e a funcao: ela recebe a cor da variante e o tamanho do quadrado -
    * `{({ color, size }) => <Trash2 color={color} size={size} />}`.
@@ -40,9 +34,32 @@ export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLa
   /** Em espera: troca o icone pelo giro, nao aceita toque e anuncia `busy`. */
   loading?: boolean;
   className?: string;
-};
+} & (
+    | {
+        /**
+         * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
+         * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
+         * nota"), e nao o desenho.
+         */
+        label: string;
+        /** @deprecated Use `label`, o mesmo nome do web. */
+        accessibilityLabel?: string;
+      }
+    | {
+        /**
+         * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o
+         * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
+         * nota"), e nao o desenho.
+         */
+        label?: string;
+        /** @deprecated Use `label`, o mesmo nome do web. */
+        accessibilityLabel: string;
+      }
+  );
 
 export function IconButton({
+  label,
+  accessibilityLabel,
   children,
   variant = "primary",
   size = "md",
@@ -67,6 +84,7 @@ export function IconButton({
       accessibilityRole="button"
       hitSlop={hitSlop}
       {...props}
+      accessibilityLabel={label ?? accessibilityLabel}
       {...press}
       disabled={blocked}
       accessibilityState={{ disabled: Boolean(blocked), busy: loading }}

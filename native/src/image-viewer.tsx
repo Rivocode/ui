@@ -262,7 +262,7 @@ export function ImageViewer({
             </Text>
             <View className="ml-auto flex-row items-center gap-2">
               <IconButton
-                accessibilityLabel={text.zoomOut}
+                label={text.zoomOut}
                 variant="secondary"
                 style={CONTROL}
                 disabled={view.zoom <= 1}
@@ -271,7 +271,7 @@ export function ImageViewer({
                 <PlusGlyph minus color={MEDIA["media-fg"]} />
               </IconButton>
               <IconButton
-                accessibilityLabel={text.zoomIn}
+                label={text.zoomIn}
                 variant="secondary"
                 style={CONTROL}
                 disabled={view.zoom >= maxZoom || status !== "ready"}
@@ -280,7 +280,7 @@ export function ImageViewer({
                 <PlusGlyph color={MEDIA["media-fg"]} />
               </IconButton>
               <IconButton
-                accessibilityLabel={text.close}
+                label={text.close}
                 variant="secondary"
                 style={CONTROL}
                 onPress={() => change(null)}
@@ -378,7 +378,7 @@ export function ImageViewer({
             {total > 1 && (
               <View className="flex-row items-center justify-center gap-3">
                 <IconButton
-                  accessibilityLabel={text.previous}
+                  label={text.previous}
                   variant="secondary"
                   style={CONTROL}
                   disabled={atStart}
@@ -387,7 +387,7 @@ export function ImageViewer({
                   <ChevronGlyph direction="left" color={MEDIA["media-fg"]} />
                 </IconButton>
                 <IconButton
-                  accessibilityLabel={text.next}
+                  label={text.next}
                   variant="secondary"
                   style={CONTROL}
                   disabled={atEnd}
