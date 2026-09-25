@@ -168,12 +168,12 @@ falha se divergir.
 | `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
 | `check:doc`             | 222 paginas, todas com codigo                                                                                |
 | `check:exemplos`        | nomes dos blocos `tsx` contra 752 nomes publicados por 14 entradas                                           |
-| `check:readme`          | 97 de 134 pecas citadas, 37 declaradas fora                                                                  |
+| `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                             |
 | `check:classes`         | 369 arquivos, toda classe gera regra, sem lista de excecao                                                   |
-| `check:grupos`          | 8 seletores de grupo consumidos, todos declarados                                                            |
+| `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
 | `check:cli`             | 4 arquivos de mesa fora dos 205 arquivos que a biblioteca alcanca no `dist/`                                 |
 | `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 98% do limite   |
-| `check:skill`           | 115 props citadas nos exemplos da skill, todas existentes                                                    |
+| `check:skill`           | 128 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
 | `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
 | `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
 | `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
@@ -231,19 +231,19 @@ no fim e infinita no quadro zero, tres leituras seguidas iguais com piso de
 Toda lista de excecao **so encolhe**: entrada que nao acusa mais e erro, e a
 guarda manda apagar a linha.
 
-| Lista             | Guarda                  | Tamanho | Quem esta nela                                                                                                                   |
-| ----------------- | ----------------------- | ------: | -------------------------------------------------------------------------------------------------------------------------------- |
-| `DEBT`            | `check:comentarios`     |       0 | vazia                                                                                                                            |
-| `DEBT`            | `check:nomes`           |       0 | vazia                                                                                                                            |
-| `DEBT`            | `check:contrast:nativo` |       0 | vazia                                                                                                                            |
-| `FILA_DECLARADA`  | `check:paridade`        |       0 | vazia                                                                                                                            |
-| `OUT_OF_SCOPE`    | `check:skill`           |       1 | `reference/native.md` - linha obsoleta, veja abaixo                                                                              |
-| `OUT`             | `check:piso`            |       2 | `retratos`, `regressao-visual`                                                                                                   |
-| `SEM_VITRINE`     | `check:demo`            |       3 | `ToastViewport`, `Autocomplete`, `Editable`                                                                                      |
-| `DECLARADAS`      | `check:opacidade`       |       4 | legenda de grafico (2), `Button` carregando, `ColorPicker` desabilitado                                                          |
-| `OUT`             | `check:scripts`         |       8 | `regressao-visual`, `shot`, `acessibilidade`, `serve`, `props-do-catalogo-nativo`, `build-preset`, `copy-fonts`, `fumaca-do-mcp` |
-| `COPIA_DECLARADA` | `check:compartilhado`   |      16 | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 13                                                |
-| `OUT_OF_README`   | `check:readme`          |      37 | 37 pecas nao citadas no `README.md`, cada uma com o motivo                                                                       |
+| Lista             | Guarda                  | Tamanho | Quem esta nela                                                                                     |
+| ----------------- | ----------------------- | ------: | -------------------------------------------------------------------------------------------------- |
+| `DEBT`            | `check:comentarios`     |       0 | vazia                                                                                              |
+| `DEBT`            | `check:nomes`           |       0 | vazia                                                                                              |
+| `DEBT`            | `check:contrast:nativo` |       0 | vazia                                                                                              |
+| `FILA_DECLARADA`  | `check:paridade`        |       0 | vazia                                                                                              |
+| `OUT_OF_SCOPE`    | `check:skill`           |       0 | removida: `reference/native.md` confere contra `native-props.json`                                 |
+| `OUT`             | `check:piso`            |       0 | vazia: `retratos` e `regressao-visual` varrem com `scanAtLeast`                                    |
+| `OUT_OF_README`   | `check:readme`          |       0 | vazia: o `README.md` cita as 134 pecas                                                             |
+| `SEM_VITRINE`     | `check:demo`            |       1 | `ToastViewport` - o `RivoProvider` a monta, e nenhum app a escreve                                 |
+| `DECLARADAS`      | `check:opacidade`       |       4 | legenda de grafico (2), `Button` carregando, `ColorPicker` desabilitado                            |
+| `OUT`             | `check:scripts`         |       6 | `regressao-visual`, `shot`, `acessibilidade`, `serve`, `props-do-catalogo-nativo`, `fumaca-do-mcp` |
+| `COPIA_DECLARADA` | `check:compartilhado`   |      16 | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 13                  |
 
 Fora do `check`, no `a11y`: `IGNORED_RULES` com 6 regras de layout de vitrine e
 `IGNORED_NODES` com 2 nos de biblioteca. `check:classes` nasceu sem lista de
@@ -355,9 +355,9 @@ bun run check:compartilhado                         # 38 espelhados, 16 copias
 bun run check:contrast | grep -cE '^ +ok'          # 290: 138 por tema mais 14 de scales.css
 bun run check:contrast:nativo                       # 60 + 47 + 1 + 16 + 3 por esquema
 bun run check:tamanho                               # a tabela do orcamento
-bun run check:demo                                  # 131 de 134, 3 fora
-bun run check:readme                                # 97 de 134, 37 fora
-bun run check:scripts                               # 8 fora do gate
+bun run check:demo                                  # 133 de 134, 1 fora
+bun run check:readme                                # 134 de 134, 0 fora
+bun run check:scripts                               # 6 fora do gate
 node -e 'console.log(Object.keys(require("./demo/assinaturas.json")).length)'   # 56 retratos
 gh run list --workflow=bancada --limit 5            # verde em 946d594 e d5f98c2
 node -e 'j=require("./apps/docs/src/component-props.json");console.log(j.Clipboard.props.some(p=>p.name==="value"))'   # false: a divida das props
