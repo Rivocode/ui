@@ -78,7 +78,12 @@ navegador cai na cursiva do sistema, e o PNG também. Trocar de modo guarda o
 rascunho do outro: quem desenhou, foi digitar e voltou, encontra os traços.
 Quando o pai zera o `value` por fora (um `reset` do formulário), os dois
 rascunhos vão junto: o campo do nome esvazia e voltar a desenhar não traz traço
-antigo. Limpar não troca de modo: quem limpou o nome continua no campo do nome.
+antigo. Um caso escapa: se o valor já era `null` quando o pai zera, o React não
+avisa a peça, e o rascunho do outro modo continua guardado. Isso acontece quando
+a pessoa desenhou, trocou para "Digitar" sem escrever nada e o formulário foi
+zerado. Para um reset que apaga tudo sem exceção, remonte a peça com `key`:
+`<SignaturePad key={tentativa} … />`, trocando `tentativa` no reset.
+Limpar não troca de modo: quem limpou o nome continua no campo do nome.
 `defaultMode="type"` abre no nome digitado, para a tela em que a maioria assina
 pelo teclado.
 
