@@ -667,8 +667,9 @@ cada troca em <https://ds.rivocode.com.br/migrar-para-1-0>.
 - A Base UI é o pacote `@base-ui/react`. O nome antigo,
   `@base-ui-components/react`, parou num candidato a lançamento e não deve ser
   usado.
-- A publicação é manual e disparada por tag, nunca automática em push. Biblioteca
-  que publica sozinha publica engano.
+- A publicação só acontece quando uma pessoa sobe o número da versão e fecha o
+  CHANGELOG: a tag nasce sozinha depois que o gate inteiro passa sobre aquele
+  commit, e merge de trabalho pela metade não publica nada.
 - O retrato de celular sai de dentro de um iframe, em `demo/celular.html`, e não
   do tamanho da janela: o Chrome no macOS não abre janela abaixo de 500px, e
   pedir 390 devolvia uma foto cortada em 390 **com layout de 500**.

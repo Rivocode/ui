@@ -42,11 +42,12 @@ type ComboboxBaseProps = {
   /** Forca a borda de erro do gatilho, ou a apaga com `false`, por cima do erro do `Field`. */
   invalid?: boolean;
   /** Veste o gatilho; a folha de busca e da plataforma. */
-  className?: string /**
+  className?: string;
+  /**
    * Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho
    * com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`.
    * Passe so os que mudam.
-   */;
+   */
   labels?: Partial<ComboboxLabels>;
 };
 

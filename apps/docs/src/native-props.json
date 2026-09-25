@@ -1540,7 +1540,8 @@
       {
         "name": "labels",
         "type": "Partial<PickerLabels>",
-        "required": false
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`."
       },
       {
         "name": "multiple",
@@ -4190,7 +4191,8 @@
       {
         "name": "labels",
         "type": "Partial<PickerLabels>",
-        "required": false
+        "required": false,
+        "note": "Os textos da peca, para trocar o idioma: `selected` e o resumo do gatilho com mais de uma escolha, e `done` o botao que fecha a folha no `multiple`."
       },
       {
         "name": "multiple",
