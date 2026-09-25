@@ -871,7 +871,10 @@ const PARITY: Record<string, Row> = {
       "calar. E ela entra **só esmaecendo**, como no web, em `duration-base`: não se desenha " +
       'nem anda na troca de dados, e com "reduzir movimento" aparece parada.',
   },
-  Spinner: { state: "traduz", note: "`small` e `large`, os dois tamanhos do `ActivityIndicator`" },
+  Spinner: {
+    state: "traduz",
+    note: "`sm`, `md` e `lg` e o mesmo `label`; `sm` e `md` são o giro pequeno do `ActivityIndicator`, e `small`/`large` seguem aceitos, obsoletos",
+  },
   Stack: {
     state: "traduz",
     note: "mesmas props, menos `render`; o vão é a escala confortável, porque no toque não há densidade compacta",

@@ -4171,9 +4171,16 @@
     "entry": "native/src/index.ts",
     "props": [
       {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "note": "O que o leitor de tela anuncia."
+      },
+      {
         "name": "size",
-        "type": "\"large\" | \"small\"",
-        "required": false
+        "type": "\"large\" | \"lg\" | \"md\" | \"sm\" | \"small\"",
+        "required": false,
+        "note": "Os nomes do web."
       }
     ]
   },

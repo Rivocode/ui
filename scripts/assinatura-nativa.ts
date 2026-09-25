@@ -1057,12 +1057,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "size",
         native: "size",
-        note: "os dois tamanhos do `ActivityIndicator`: `small` e `large`, e não `sm`/`md`/`lg`",
-      },
-      {
-        web: "label",
-        native: null,
-        note: "sem rótulo próprio: quem nomeia a espera é o texto ao lado",
+        note: "`sm`, `md` e `lg` como no web, e `sm` e `md` dão o mesmo giro pequeno do `ActivityIndicator`; `small` e `large` seguem aceitos, obsoletos",
       },
     ],
   },

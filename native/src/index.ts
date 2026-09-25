@@ -69,6 +69,7 @@ export {
   type AlertProps,
   type AvatarProps,
   type ProgressProps,
+  type SpinnerProps,
 } from "./basics";
 export { AlertDialog, Dialog, type AlertDialogProps, type DialogProps } from "./dialog";
 export { Select, type SelectItem, type SelectItemGroup, type SelectProps } from "./select";
