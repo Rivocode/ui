@@ -41,9 +41,9 @@ export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLa
          * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
          * nota"), e nao o desenho.
          */
-        label: string;
+        label?: string;
         /** @deprecated Use `label`, o mesmo nome do web. */
-        accessibilityLabel?: string;
+        accessibilityLabel: string;
       }
     | {
         /**
@@ -51,9 +51,9 @@ export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLa
          * botao nao tem outro texto. O mesmo nome do web. Diga a acao ("Excluir
          * nota"), e nao o desenho.
          */
-        label?: string;
+        label: string;
         /** @deprecated Use `label`, o mesmo nome do web. */
-        accessibilityLabel: string;
+        accessibilityLabel?: string;
       }
   );
 
