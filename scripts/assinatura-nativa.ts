@@ -26,17 +26,26 @@
  *    tipo ou por obrigatoriedade. Linha que descreve divergencia que acabou e
  *    ruido, e ruido e o comeco de tabela que ninguem le.
  * 4. Toda variante que existe de um lado so - prop de mesmo nome cujos
- *    literais divergem - tem que ter linha. Esta e a unica familia de
- *    divergencia que se deriva sozinha, e por isso e a unica cuja COBERTURA a
- *    guarda cobra. Foi ela que pegou o `Spinner`, que ninguem tinha citado: o
- *    web fala `sm`/`md`/`lg` e o nativo fala `small`/`large`.
+ *    literais divergem - tem que ter linha. Foi ela que pegou o `Spinner`,
+ *    que ninguem tinha citado: o web fala `sm`/`md`/`lg` e o nativo fala
+ *    `small`/`large`.
+ * 5. Todo `classNames` do web que nao atravessa inteiro - a peca existe no
+ *    nativo e la a prop falta, ou o conjunto de partes e outro - tem que ter
+ *    linha `classNames`, e a nota tem que nomear cada parte que falta. Nasceu
+ *    em 25/09/2026: vinte pecas nativas tinham o `classNames` do web faltando
+ *    e nenhuma linha dizia, porque a guarda so cobrava cobertura de variante.
+ *    Quem porta a tela escrevia `classNames={{ indicator }}` e descobria no
+ *    `tsc`.
+ *
+ * As regras 4 e 5 sao as familias de divergencia que se derivam sozinhas, e
+ * por isso as unicas cuja COBERTURA a guarda cobra.
  *
  * O que fica de fora, e de proposito: prop com nome diferente que ninguem
  * declarou aqui. Derivar isso seria adivinhar intencao, e o resultado seria
- * uma lista de excecao do tamanho do catalogo - as 79 pecas comuns divergem em
- * quase toda prop, porque `defaultValue`, `render`, `classNames` e a metade
- * controlada do web simplesmente nao existem no toque. Essas quatro regras
- * gerais ja estao na prosa da pagina; a tabela e para o que sobra.
+ * uma lista de excecao do tamanho do catalogo - as pecas comuns divergem em
+ * quase toda prop, porque `defaultValue`, `render` e a metade controlada do
+ * web simplesmente nao existem no toque. Essas regras gerais ja estao na prosa
+ * da pagina; a tabela e para o que sobra.
  *
  * ## De onde saem os dois lados
  *
@@ -478,6 +487,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "filterValue",
         note: "o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto",
       },
+      {
+        web: "classNames",
+        native: null,
+        note: "a linha é o que `renderItem` devolve, e quem a escreve a veste: não há `table`, `head` nem `cell`",
+      },
     ],
   },
   DatePicker: {
@@ -866,6 +880,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "`align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela",
       },
+      {
+        web: "classNames",
+        native: null,
+        note: "o `AlertDialog` nativo não se veste por classe, nem pela raiz: `title`, `description`, `footer`, `confirm` e `cancel` são o desenho fixo do modal",
+      },
     ],
   },
   Progress: {
@@ -1130,6 +1149,11 @@ export const SIGNATURES: Record<string, Signature> = {
         native: null,
         note: "`tone` e `pending` viram campos de `items[]`, e `by` e `title` também",
       },
+      {
+        web: "classNames",
+        native: null,
+        note: "o item vira `items[]`, sem classe por item: o `Timeline` nativo veste só pela raiz, sem `marker`, `content`, `title` nem `meta`",
+      },
     ],
   },
   Tracker: {
@@ -1316,6 +1340,55 @@ export function sizeGone(web: Catalog, native: Catalog) {
     });
 }
 
+/** As partes de um `classNames`, pela forma `Partial<Record<...>>` ou pelo objeto literal. */
+export function parts(type: string): Set<string> | undefined {
+  const record = /^Partial<Record<(.+), string>>$/.exec(type.trim());
+  if (record) return literals(record[1]!);
+
+  const object = /^\{(.*)\}$/.exec(type.trim());
+  if (!object) return undefined;
+
+  const names = [...object[1]!.matchAll(/(\w+)\?:/g)].map((match) => `"${match[1]}"`);
+  return names.length > 0 ? new Set(names) : undefined;
+}
+
+/**
+ * As pecas cujo `classNames` nao atravessa inteiro.
+ *
+ * Segunda familia que se deriva sozinha: o web tem `classNames`, a peca existe
+ * no nativo, e la ou a prop falta, ou o conjunto de partes e outro. Quem porta
+ * a tela escreve `classNames={{ indicator: ... }}` e descobre no `tsc`.
+ */
+export function slotGaps(web: Catalog, native: Catalog) {
+  const gaps: { piece: string; absent: boolean; onlyWeb: string[]; onlyNative: string[] }[] = [];
+
+  for (const piece of Object.keys(web).sort()) {
+    const other = native[nativeNameOf(piece)];
+    if (!other) continue;
+
+    const here = web[piece]!.props.find((prop) => prop.name === "classNames");
+    if (!here) continue;
+
+    const twin = other.props.find((prop) => prop.name === "classNames");
+    if (!twin) {
+      gaps.push({ piece, absent: true, onlyWeb: [], onlyNative: [] });
+      continue;
+    }
+
+    const mine = parts(here.type);
+    const theirs = parts(twin.type);
+    if (!mine || !theirs) continue;
+
+    const onlyWeb = [...mine].filter((one) => !theirs.has(one)).sort();
+    const onlyNative = [...theirs].filter((one) => !mine.has(one)).sort();
+    if (!onlyWeb.length && !onlyNative.length) continue;
+
+    gaps.push({ piece, absent: false, onlyWeb, onlyNative });
+  }
+
+  return gaps;
+}
+
 export function validate(
   signatures: Record<string, Signature>,
   web: Catalog,
@@ -1477,6 +1550,37 @@ export function validate(
         "    e nenhuma linha diz isso. Quem porta a tela escreve a variante que conhece e\n" +
         "    descobre no `tsc`, uma de cada vez. Escreva a linha em SIGNATURES.",
     );
+  }
+
+  for (const gap of slotGaps(web, native)) {
+    const row = signatures[gap.piece]?.rows.find((one) => one.web === "classNames");
+
+    if (!row) {
+      const what = gap.absent
+        ? "e o nativo nao tem `classNames`"
+        : `e as partes divergem (${[
+            gap.onlyWeb.length ? `so no web: ${gap.onlyWeb.join(", ")}` : "",
+            gap.onlyNative.length ? `so no nativo: ${gap.onlyNative.join(", ")}` : "",
+          ]
+            .filter(Boolean)
+            .join("; ")})`;
+      problems.push(
+        `\`${gap.piece}.classNames\` existe no web ${what},\n` +
+          "    e nenhuma linha diz isso. Quem porta a tela escreve a parte que conhece e\n" +
+          "    descobre no `tsc`. Escreva a linha `classNames` em SIGNATURES, ou porte a prop.",
+      );
+      continue;
+    }
+
+    const unnamed = [...gap.onlyWeb, ...gap.onlyNative]
+      .map((part) => part.slice(1, -1))
+      .filter((part) => !row.note.includes(`\`${part}\``));
+    if (unnamed.length > 0) {
+      problems.push(
+        `\`${gap.piece}\` (classNames): a nota nao nomeia ${unnamed.map((part) => `\`${part}\``).join(", ")}.\n` +
+          "    Parte que falta de um lado se escreve pelo nome, com o motivo, para quem porta nao procurar.",
+      );
+    }
   }
 
   return problems;

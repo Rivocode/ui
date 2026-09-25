@@ -3,9 +3,11 @@ import { describe, expect, test } from "bun:test";
 import {
   type Catalog,
   literals,
+  parts,
   type Signature,
   SIGNATURES,
   sizeGone,
+  slotGaps,
   validate,
   variantGaps,
 } from "../scripts/assinatura-nativa";
@@ -131,6 +133,86 @@ describe("o que a guarda deriva sozinha", () => {
 
   test("`sizeGone` acha quem perde `size` e ignora quem mantem", () => {
     expect(sizeGone(web, native)).toEqual(["Meter"]);
+  });
+});
+
+describe("o classNames que nao atravessa inteiro", () => {
+  const slotWeb: Catalog = {
+    Checkbox: {
+      props: [
+        {
+          name: "classNames",
+          type: 'Partial<Record<"box" | "indicator" | "label", string>>',
+          required: false,
+        },
+      ],
+    },
+    Switch: {
+      props: [
+        { name: "classNames", type: 'Partial<Record<"label" | "thumb", string>>', required: false },
+      ],
+    },
+    Banner: {
+      props: [
+        { name: "classNames", type: 'Partial<Record<"icon" | "title", string>>', required: false },
+      ],
+    },
+  };
+
+  const slotNative: Catalog = {
+    Checkbox: { props: [{ name: "checked", type: "boolean", required: true }] },
+    Switch: {
+      props: [{ name: "classNames", type: 'Partial<Record<"label", string>>', required: false }],
+    },
+    Banner: {
+      props: [
+        {
+          name: "classNames",
+          type: "{ icon?: string | undefined; title?: string | undefined; }",
+          required: false,
+        },
+      ],
+    },
+  };
+
+  test("`parts` le as duas formas que o compilador escreve", () => {
+    expect([...parts('Partial<Record<"a" | "b", string>>')!]).toEqual(['"a"', '"b"']);
+    expect([...parts("{ item?: string | undefined; handle?: string | undefined; }")!]).toEqual([
+      '"item"',
+      '"handle"',
+    ]);
+    expect(parts("Partial<ClassNames>")).toBeUndefined();
+  });
+
+  test("`slotGaps` acha a prop que falta e a parte que falta, e ignora o conjunto igual", () => {
+    expect(slotGaps(slotWeb, slotNative)).toEqual([
+      { piece: "Checkbox", absent: true, onlyWeb: [], onlyNative: [] },
+      { piece: "Switch", absent: false, onlyWeb: ['"thumb"'], onlyNative: [] },
+    ]);
+  });
+
+  test("sem linha, as duas lacunas reprovam", () => {
+    const problems = validate({}, slotWeb, slotNative);
+    expect(problems).toHaveLength(2);
+    expect(problems[0]).toContain("`Checkbox.classNames` existe no web e o nativo nao tem");
+    expect(problems[1]).toContain("so no web: \"thumb\"");
+  });
+
+  test("a linha tem que nomear a parte que falta", () => {
+    const vague = validate(
+      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "o pino e da plataforma" }] } },
+      { Switch: slotWeb.Switch! },
+      { Switch: slotNative.Switch! },
+    );
+    expect(vague).toHaveLength(1);
+    expect(vague[0]).toContain("a nota nao nomeia `thumb`");
+
+    const named = validate(
+      { Switch: { rows: [{ web: "classNames", native: "classNames", note: "sem `thumb`" }] } },
+      { Switch: slotWeb.Switch! },
+      { Switch: slotNative.Switch! },
+    );
+    expect(named).toEqual([]);
   });
 });
 

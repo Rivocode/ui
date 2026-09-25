@@ -78,20 +78,22 @@ da peça. Três limites, todos do React Native:
 
 - **Parte que o nativo não desenha fica fora do tipo**, e não vira nó
   inventado: o `pause` do `Carousel` (não há `autoplay`), o `spotlight` do
-  `Tour` (o recorte é o vão entre as faixas), o `code` do `QRCode` e o
-  `baseline` do `SignaturePad` (moram dentro do `Svg`, que não recebe classe).
-  Cada uma tem linha na tabela abaixo.
+  `Tour` (o recorte é o vão entre as faixas), o `code` do `QRCode`, o
+  `baseline` do `SignaturePad` e o `arc` do `ChartGauge` (moram dentro do
+  `Svg`, que não recebe classe), o `thumb` do `Switch` (o polegar é da
+  plataforma). Cada uma tem linha na tabela abaixo.
 - **Cor de texto não desce de `View` para `Text`.** Numa parte que é caixa (o
   `trigger` do `Spoiler`, o `footer` do `Carousel`), `text-*` não pinta o
   texto de dentro; vista a parte que é o próprio `Text` (`title`, `counter`,
   `message`).
 - **As props de uma parte só continuam valendo, obsoletas**: `markClassName`
   do `Highlight`, `badgeClassName` do `Indicator` e `inputClassName` do
-  `CurrencyInput` e do `PostalCodeField`. Com as duas, as classes se somam e a
-  de `classNames` vence.
+  `CurrencyInput`, do `PostalCodeField` e do `TagsInput`. Com as duas, as
+  classes se somam e a de `classNames` vence.
 
-Nem toda peça tem `classNames` aqui: a tabela de props de cada página diz quais
-têm. Sem ele, a peça veste só pela raiz.
+Nem toda peça tem `classNames` aqui. A que tem no web e não tem aqui tem linha
+na tabela abaixo dizendo por quê, e `bun run check:assinatura` cobra a linha:
+sem ela, a peça veste só pela raiz sem ninguém avisar.
 
 O que sobra dessas duas regras — prop que troca de nome, tipo que troca de
 forma, variante que só existe de um lado — está na tabela da próxima seção,
@@ -102,7 +104,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**186 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**189 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -160,6 +162,7 @@ escritos em lugar nenhum.
 | `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
 | `DataTable` → `DataList` | `pageSize` | — | lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto |
 | `DataTable` → `DataList` | — | `filterValue` | o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto |
+| `DataTable` → `DataList` | `classNames` | — | a linha é o que `renderItem` devolve, e quem a escreve a veste: não há `table`, `head` nem `cell` |
 | `DatePicker` | `disabledDays` | — | dia bloqueado avulso não porta: a faixa é `min`/`max` |
 | `DatePicker` | `confirm` | — | a folha sempre confirma: escolher já fecha |
 | `DatePicker` | — | `label` | `label` é obrigatório, e o campo não vive dentro de um `Field` |
@@ -221,6 +224,7 @@ escritos em lugar nenhum.
 | `Popconfirm` → `AlertDialog` | `confirmLabel` | `actionLabel` | mesmo papel, e obrigatório |
 | `Popconfirm` → `AlertDialog` | `description` | `description` | vira `string` obrigatória: o modal não abre sem dizer o que se perde |
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
+| `Popconfirm` → `AlertDialog` | `classNames` | — | o `AlertDialog` nativo não se veste por classe, nem pela raiz: `title`, `description`, `footer`, `confirm` e `cancel` são o desenho fixo do modal |
 | `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
 | `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
 | `Progress` | `min` | — | a escala é 0 a 100, e `max` sai junto |
@@ -279,6 +283,7 @@ escritos em lugar nenhum.
 | `Timeline` | — | `label` | `label` diz o que a linha conta, e entra no anúncio de cada parada |
 | `TimelineItem` → `Timeline` | `at` | — | vira `items[].at` e é `string` já escrita: um `RelativeTime` vivo lá dentro deixaria o rótulo falado preso na hora em que montou |
 | `TimelineItem` → `Timeline` | `tone` | — | `tone` e `pending` viram campos de `items[]`, e `by` e `title` também |
+| `TimelineItem` → `Timeline` | `classNames` | — | o item vira `items[]`, sem classe por item: o `Timeline` nativo veste só pela raiz, sem `marker`, `content`, `title` nem `meta` |
 | `Toggle` | `value` | — | não há formulário nativo para carregar valor: o estado é `pressed` |
 | `ToggleGroup` | — | `items` | `items` na raiz, no lugar de `Toggle` por filho; `multiple` continua igual |
 | `ToolCall` | `title` | `title` | `string`, como o `error`: texto no nativo mora dentro de um `Text` |
