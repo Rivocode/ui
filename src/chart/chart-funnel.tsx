@@ -79,7 +79,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
 
           return (
             <li
-              key={String(stage[nameKey])}
+              key={`${index}-${String(stage[nameKey])}`}
               data-rc-funnel-stage=""
               className={cn("flex flex-col gap-1", classNames?.stage)}
             >
@@ -101,7 +101,9 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
               )}
 
               <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="min-w-0 text-fg-muted">{String(stage[nameKey])}</span>
+                <span className="min-w-0 wrap-anywhere text-fg-muted">
+                  {String(stage[nameKey])}
+                </span>
                 <span className="shrink-0 font-mono text-fg">{say(value)}</span>
               </div>
 

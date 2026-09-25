@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, mock, spyOn, test } from "bun:test";
 import { createElement } from "react";
 import type { ReactTestRenderer } from "react-test-renderer";
 
@@ -75,6 +75,42 @@ describe("ChartGauge", () => {
     expect(strokes).toEqual([light.skeleton, light["accent-text"]]);
     expect(byLabel(screen, "30 de 100")).toHaveLength(1);
   });
+
+  test("acima do maximo o numero e o real; so o arco e a faixa param na ponta", () => {
+    const screen = render(<ChartGauge value={140} bands={BANDS} />);
+    const [figure] = byRole(screen, "image");
+    expect(figure!.props.accessibilityLabel.startsWith("140 de 100, Crítico.")).toBe(true);
+    expect(textOf(screen)).toContain("140");
+  });
+
+  test("numero que nao e numero vira travessao, sem faixa", () => {
+    const screen = render(<ChartGauge value={Number.NaN} bands={BANDS} />);
+    const [figure] = byRole(screen, "image");
+    expect(figure!.props.accessibilityLabel.startsWith("— de 100.")).toBe(true);
+    expect(textOf(screen)).toContain("—");
+    expect(textOf(screen)).not.toContain("Bom");
+  });
+
+  test("com centerValue, o nome diz o mesmo texto que a tela", () => {
+    const screen = render(<ChartGauge value={1234.5} max={2000} centerValue="R$ 1.234,50" />);
+    expect(byLabel(screen, "R$ 1.234,50 de 2000")).toHaveLength(1);
+  });
+
+  test("sweep de 360 desenha o trilho inteiro, em dois arcos", () => {
+    const screen = render(<ChartGauge value={50} sweep={360} />, { theme: "rivocode-light" });
+    const trail = byType(screen, "Path").find((node) => node.props.stroke === light.skeleton)!;
+    expect(trail.props.d.match(/A /g)).toHaveLength(2);
+  });
+
+  test("o texto do meio tem a largura do furo do arco, medida pelo desenho", () => {
+    const screen = render(<ChartGauge value={72} bands={BANDS} />);
+    layout(screen, 600, 176);
+    const center = screen.root.findAll(
+      (node) => typeof node.type === "string" && node.props?.style?.maxWidth !== undefined,
+    );
+    expect(center.length).toBeGreaterThan(0);
+    for (const node of center) expect(node.props.style.maxWidth).toBeLessThanOrEqual(176 * 0.52);
+  });
 });
 
 const EMISSIONS = [
@@ -149,6 +185,57 @@ describe("ChartHeatmap", () => {
     );
     expect(byRole(screen, "adjustable")[0]!.props.accessibilityValue.text).toBe("Seg, 9h: 12");
   });
+
+  test("as linhas e as celulas nao pegam o toque, para o locationX/Y ser da grade", () => {
+    const screen = render(
+      <ChartHeatmap
+        data={EMISSIONS}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Emissões"
+      />,
+    );
+    const [grid] = byRole(screen, "adjustable");
+    const inside = grid!.findAll((node) => typeof node.type === "string" && node !== grid);
+    expect(inside.length).toBeGreaterThan(4);
+    for (const node of inside) expect(node.props.pointerEvents).toBe("none");
+  });
+
+  test("grade toda em zero pinta o degrau mais ralo", () => {
+    const screen = render(
+      <ChartHeatmap
+        data={[
+          { dia: "Seg", hora: "8h", total: 0 },
+          { dia: "Seg", hora: "9h", total: 0 },
+        ]}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Emissões"
+        legend={false}
+      />,
+    );
+    const tints = byType(screen, "View")
+      .map((node) => node.props.style)
+      .filter((style) => style && typeof style.opacity === "number")
+      .map((style) => style.opacity);
+    expect(tints).toEqual([HEAT_ALPHAS[0], HEAT_ALPHAS[0]]);
+  });
+
+  test("o rotulo de linha comprido tem teto de largura", () => {
+    const screen = render(
+      <ChartHeatmap
+        data={[{ dia: "Clínica São Lucas Serviços Médicos Ltda", hora: "8h", total: 1 }]}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Emissões"
+      />,
+    );
+    const column = byType(screen, "View").find((node) => node.props.style?.maxWidth === "40%");
+    expect(column).toBeDefined();
+  });
 });
 
 describe("ChartFunnel", () => {
@@ -165,6 +252,24 @@ describe("ChartFunnel", () => {
     expect(byLabel(screen, "Cadastros: 400, 40% da etapa anterior")).toHaveLength(1);
     expect(byLabel(screen, "Primeira nota: 100, 25% da etapa anterior")).toHaveLength(1);
     expect(textOf(screen)).toContain("10% do início ao fim");
+  });
+
+  test("nome repetido nao repete chave", () => {
+    const warn = spyOn(console, "error").mockImplementation(() => {});
+    const screen = render(
+      <ChartFunnel
+        data={[
+          { etapa: "Retorno", total: 10 },
+          { etapa: "Retorno", total: 5 },
+        ]}
+        valueKey="total"
+        nameKey="etapa"
+      />,
+    );
+    const keys = warn.mock.calls.filter((call) => String(call[0]).includes("same key"));
+    warn.mockRestore();
+    expect(keys).toHaveLength(0);
+    expect(byLabel(screen, "Retorno: 5, 50% da etapa anterior")).toHaveLength(1);
   });
 });
 
@@ -187,6 +292,25 @@ describe("ChartTreemap", () => {
     ]);
     expect(textOf(screen)).toContain("Serviços");
     expect(textOf(screen)).not.toContain("Retenções de ISS");
+  });
+
+  test("nome repetido nao repete chave", () => {
+    const warn = spyOn(console, "error").mockImplementation(() => {});
+    const screen = render(
+      <ChartTreemap
+        data={[
+          { natureza: "Outros", total: 10 },
+          { natureza: "Outros", total: 5 },
+        ]}
+        valueKey="total"
+        nameKey="natureza"
+      />,
+    );
+    layout(screen, 400, 200);
+    const keys = warn.mock.calls.filter((call) => String(call[0]).includes("same key"));
+    warn.mockRestore();
+    expect(keys).toHaveLength(0);
+    expect(byRole(screen, "button")).toHaveLength(2);
   });
 
   test("a tinta da categoria e o alfa medido", () => {

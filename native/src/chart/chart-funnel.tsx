@@ -75,7 +75,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
               : `${name}: ${say(value)}`;
 
           return (
-            <View key={name} accessible accessibilityLabel={spoken} className="gap-1">
+            <View key={`${index}-${name}`} accessible accessibilityLabel={spoken} className="gap-1">
               {index > 0 && (
                 <View
                   className={cn(

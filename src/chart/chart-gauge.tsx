@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useId, useState, type ComponentProps, type ReactNode } from "react";
+import {
+  isValidElement,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentProps,
+  type ReactNode,
+} from "react";
 
 import { cn } from "../lib/cn";
 import { resolveFormat, type Format } from "../lib/format";
@@ -17,7 +26,11 @@ export type ChartGaugeBand = {
 };
 
 export type ChartGaugeProps = Omit<ComponentProps<"div">, "children"> & {
-  /** De 0 a `max`. Fora disso o ponteiro para na ponta, e nao da a volta. */
+  /**
+   * De 0 a `max`. Fora disso o numero escrito e o nome acessivel dizem o valor
+   * real ("140 de 100"), e so o arco, o ponteiro e a faixa param na ponta.
+   * `NaN` ou infinito vira "—", sem faixa.
+   */
   value: number;
   max?: number;
   /**
@@ -26,13 +39,17 @@ export type ChartGaugeProps = Omit<ComponentProps<"div">, "children"> & {
    * boa ou ruim fica por conta de quem le.
    */
   bands?: readonly ChartGaugeBand[];
-  /** O numero grande no meio. Sem ele, o `value` escrito pelo `format`. */
+  /**
+   * O numero grande no meio. Sem ele, o `value` escrito pelo `format`. O texto
+   * dele entra no nome acessivel no lugar do valor, e a fonte encolhe para
+   * caber no furo do arco.
+   */
   centerValue?: ReactNode;
   /** A linha pequena embaixo do numero. Sem ela, o nome da faixa em que o valor caiu. */
   centerLabel?: ReactNode;
   /** Como o numero e escrito, no meio e no nome acessivel. */
   format?: Format;
-  /** Quantos graus o arco cobre, com a abertura embaixo. */
+  /** Quantos graus o arco cobre, com a abertura embaixo. De 0 a 360; 360 fecha o anel. */
   sweep?: number;
   /**
    * O que o leitor de tela ouve. Sem ela, o valor, o maximo e o nome da faixa:
@@ -55,8 +72,17 @@ function pointAt(radius: number, degrees: number) {
 }
 
 function arcPath(radius: number, from: number, to: number) {
-  const long = Math.abs(to - from) > 180 ? 1 : 0;
-  return `M ${pointAt(radius, from)} A ${radius} ${radius} 0 ${long} 1 ${pointAt(radius, to)}`;
+  const middle = (from + to) / 2;
+  const turn = `A ${radius} ${radius} 0 0 1`;
+  return `M ${pointAt(radius, from)} ${turn} ${pointAt(radius, middle)} ${turn} ${pointAt(radius, to)}`;
+}
+
+function spokenOf(node: ReactNode): string {
+  if (node === null || node === undefined || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(spokenOf).join("");
+  if (isValidElement<{ children?: ReactNode }>(node)) return spokenOf(node.props.children);
+  return "";
 }
 
 export function ChartGauge({
@@ -66,7 +92,7 @@ export function ChartGauge({
   centerValue,
   centerLabel,
   format,
-  sweep = 240,
+  sweep: askedSweep = 240,
   label,
   classNames,
   className,
@@ -76,9 +102,11 @@ export function ChartGauge({
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
   const say = (number: number) => (write ? write(number) : number.toLocaleString("pt-BR"));
 
-  const clamped = Math.max(0, Math.min(value, max));
-  const share = max > 0 ? clamped / max : 0;
-  const band = bands && bands.length > 0 ? bandAt(bands, clamped) : undefined;
+  const known = Number.isFinite(value);
+  const sweep = Math.min(Math.max(askedSweep, 0), 360);
+  const clamped = known ? Math.max(0, Math.min(value, max)) : 0;
+  const share = known && max > 0 ? clamped / max : 0;
+  const band = known && bands && bands.length > 0 ? bandAt(bands, clamped) : undefined;
   const paint = band ? TONE_COLOR[band.tone] : "var(--rc-accent-text)";
 
   const [shown, setShown] = useState(0);
@@ -93,7 +121,34 @@ export function ChartGauge({
     from + sweep * (max > 0 ? Math.max(0, Math.min(number, max)) / max : 0);
 
   const bandsId = useId();
-  const name = label ?? `${say(clamped)} de ${say(max)}${band ? `, ${band.label}` : ""}`;
+  const written = known ? say(value) : "—";
+  const spoken = spokenOf(centerValue) || written;
+  const name = label ?? `${spoken} de ${say(max)}${band ? `, ${band.label}` : ""}`;
+
+  const hole = useRef<HTMLDivElement>(null);
+  const number = useRef<HTMLSpanElement>(null);
+  const [fit, setFit] = useState(1);
+
+  useLayoutEffect(() => {
+    const room = hole.current;
+    const text = number.current;
+    if (!room || !text) return;
+    const measure = () => {
+      const width = room.clientWidth;
+      const need = text.offsetWidth;
+      if (width <= 0 || need <= 0) return;
+      setFit((current) => {
+        const next = Math.min(1, (current * width) / need);
+        return Math.abs(next - current) < 0.01 ? current : next;
+      });
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(measure);
+    observer.observe(room);
+    observer.observe(text);
+    return () => observer.disconnect();
+  }, [spoken]);
   const described = [describedBy, bands?.length ? bandsId : undefined].filter(Boolean).join(" ");
 
   let start = 0;
@@ -155,7 +210,7 @@ export function ChartGauge({
           className="transition-[stroke-dasharray,stroke] duration-[var(--rc-duration-slow)] ease-rc"
         />
 
-        {bands && bands.length > 0 && (
+        {known && bands && bands.length > 0 && (
           <line
             data-rc-gauge-needle=""
             x1={0}
@@ -171,25 +226,30 @@ export function ChartGauge({
         )}
       </svg>
 
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-        <span
-          className={cn(
-            "max-w-[62%] text-center font-display font-rc-display text-2xl leading-tight text-balance text-fg",
-            classNames?.value,
-          )}
-        >
-          {centerValue ?? say(clamped)}
-        </span>
-        {(centerLabel ?? band?.label) && (
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center [container-type:size]">
+        <div ref={hole} data-rc-gauge-hole="" className="flex w-[52cqmin] flex-col items-center">
           <span
+            ref={number}
+            data-rc-gauge-center=""
+            style={{ fontSize: `calc(min(1.5rem, 14cqmin) * ${fit})` }}
             className={cn(
-              "mt-0.5 max-w-[70%] text-center text-xs text-fg-subtle",
-              classNames?.label,
+              "inline-block text-center font-display font-rc-display leading-tight whitespace-nowrap text-fg",
+              classNames?.value,
             )}
           >
-            {centerLabel ?? band?.label}
+            {centerValue ?? written}
           </span>
-        )}
+          {(centerLabel ?? band?.label) && (
+            <span
+              className={cn(
+                "mt-0.5 line-clamp-2 max-w-full text-center text-xs text-fg-subtle",
+                classNames?.label,
+              )}
+            >
+              {centerLabel ?? band?.label}
+            </span>
+          )}
+        </div>
       </div>
 
       {bands && bands.length > 0 && (

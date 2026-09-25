@@ -185,7 +185,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
 
           return (
             <div
-              key={nameOf(item)}
+              key={`${index}-${nameOf(item)}`}
               data-rc-tile={index}
               data-rc-fit={fit}
               aria-hidden="true"
@@ -245,7 +245,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
 
       <ul aria-label={label} className="sr-only">
         {data.map((item, index) => (
-          <li key={nameOf(item)}>{describe(index)}</li>
+          <li key={`${index}-${nameOf(item)}`}>{describe(index)}</li>
         ))}
       </ul>
 

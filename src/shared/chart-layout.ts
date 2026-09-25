@@ -102,7 +102,7 @@ export function squarify(values: readonly number[], width: number, height: numbe
 
 export function heatStep(value: number, low: number, high: number, steps: number): number {
   if (steps <= 1) return 0;
-  if (!(high > low)) return steps - 1;
+  if (!(high > low)) return 0;
   const share = (value - low) / (high - low);
   return Math.min(steps - 1, Math.max(0, Math.floor(share * steps)));
 }
@@ -139,10 +139,10 @@ export function bandAt<Band extends { until: number }>(
   return bands.find((band) => value <= band.until) ?? bands.at(-1);
 }
 
-const CHARACTER = 7;
-const PADDING = 16;
-const ONE_LINE = 24;
-const TWO_LINES = 44;
+const CHARACTER = 8;
+const PADDING = 24;
+const ONE_LINE = 40;
+const TWO_LINES = 56;
 
 export type LabelFit = "both" | "name" | "none";
 

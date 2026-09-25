@@ -8,6 +8,8 @@ import { useRivo } from "../provider";
 import { HEAT_ALPHAS, axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
 import { Text } from "../text";
 
+const LABEL_COLUMN = { maxWidth: "40%" } as const;
+
 export type ChartHeatmapProps<Cell> = {
   /**
    * Uma linha por célula preenchida, no formato longo que a consulta devolve.
@@ -124,7 +126,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   return (
     <Entrance effect="fadeIn" className={cn("w-full gap-2", className)}>
       <View className="flex-row">
-        <View className="pe-2 pt-5">
+        <View className="shrink pe-2 pt-5" style={LABEL_COLUMN}>
           {rows.map((row) => (
             <View key={row} className="mb-0.5 h-6 justify-center">
               <Text numberOfLines={1} className="text-right text-xs text-fg-subtle">
@@ -170,7 +172,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
             {...pan.panHandlers}
           >
             {rows.map((row, rowIndex) => (
-              <View key={row} className="mb-0.5 h-6 flex-row gap-0.5">
+              <View key={row} pointerEvents="none" className="mb-0.5 h-6 flex-row gap-0.5">
                 {columns.map((column, columnIndex) => {
                   const cell = rowIndex * columns.length + columnIndex;
                   const value = valueAt(cell);
@@ -181,6 +183,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
                   return (
                     <View
                       key={column}
+                      pointerEvents="none"
                       className="min-w-0 flex-1 overflow-hidden rounded-sm"
                       style={
                         step === null
@@ -194,12 +197,14 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
                     >
                       {step !== null && (
                         <View
+                          pointerEvents="none"
                           className="absolute inset-0"
                           style={{ backgroundColor: paint, opacity: HEAT_ALPHAS[step] }}
                         />
                       )}
                       {chosen && (
                         <View
+                          pointerEvents="none"
                           className="absolute inset-0 rounded-sm"
                           style={{ borderWidth: 2, borderColor: theme.fg }}
                         />

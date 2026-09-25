@@ -81,7 +81,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
 
           return (
             <Pressable
-              key={nameOf(item)}
+              key={`${index}-${nameOf(item)}`}
               accessibilityRole="button"
               accessibilityLabel={describe(index)}
               accessibilityState={{ selected }}

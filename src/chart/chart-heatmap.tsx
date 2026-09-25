@@ -131,16 +131,19 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   const [focused, setFocused] = useState<Reading | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [anchor, setAnchor] = useState<CSSProperties>({});
-  const [gridWidth, setGridWidth] = useState(0);
+  const [cellsWidth, setCellsWidth] = useState(0);
 
   useLayoutEffect(() => {
     const element = group.current;
     if (!element) return;
-    const measure = () => setGridWidth(element.clientWidth);
+    const corner = element.querySelector<HTMLElement>("[data-rc-heat-corner]");
+    const measure = () =>
+      setCellsWidth(Math.max(0, element.clientWidth - (corner?.offsetWidth ?? 0)));
     measure();
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
     observer.observe(element);
+    if (corner) observer.observe(corner);
     return () => observer.disconnect();
   }, []);
 
@@ -213,7 +216,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
     setDismissed(false);
   }
 
-  const fitting = gridWidth > 0 ? Math.max(1, Math.floor(gridWidth / LABEL_WIDTH)) : 12;
+  const fitting = cellsWidth > 0 ? Math.max(1, Math.floor(cellsWidth / LABEL_WIDTH)) : 12;
   const every = Math.max(1, Math.ceil(columns.length / fitting));
 
   return (
@@ -237,7 +240,9 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
           setFocused(null);
           setDismissed(false);
         }}
-        style={{ gridTemplateColumns: `auto repeat(${columns.length}, minmax(0, 1fr))` }}
+        style={{
+          gridTemplateColumns: `fit-content(min(40%, 10rem)) repeat(${columns.length}, minmax(0, 1fr))`,
+        }}
         className={cn(
           "relative grid w-full animate-appear items-center gap-0.5 rounded-sm",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -245,12 +250,15 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
           classNames?.grid,
         )}
       >
-        <span aria-hidden="true" />
+        <span aria-hidden="true" data-rc-heat-corner="" />
         {columns.map((column, index) => (
           <span
             key={column}
             aria-hidden="true"
-            className={cn("relative mb-1 h-4 text-xs text-fg-subtle", index % every !== 0 && "invisible")}
+            className={cn(
+              "relative mb-1 h-4 text-xs text-fg-subtle",
+              index % every !== 0 && "invisible",
+            )}
           >
             <span className="absolute start-1/2 -translate-x-1/2 whitespace-nowrap rtl:translate-x-1/2">
               {column}

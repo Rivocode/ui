@@ -37,9 +37,18 @@ régua**, e é para isso que existe o `domain`: sem ele, o degrau mais cheio de
 cada uma quer dizer um número diferente.
 
 Os rótulos de coluna aparecem de tanto em tanto quando não cabem todos: a
-peça mede a largura da grade e deixa uns quarenta pixels para cada rótulo que
-escreve, então 24 horas num cartão de celular saem de quatro em quatro, sem
-reticências. O rótulo que não aparece continua na tabela do leitor de tela.
+peça mede a largura das células, sem a coluna dos rótulos de linha, e deixa uns
+quarenta pixels para cada rótulo que escreve, então 24 horas num cartão de
+celular saem de quatro em quatro, sem reticências. O rótulo que não aparece
+continua na tabela do leitor de tela.
+
+O rótulo de linha ocupa o que precisa até 40% da grade, e nunca mais de
+`10rem`: o nome comprido de um cliente termina em reticências, e o resto da
+largura fica com as células. O nome inteiro está na dica e na tabela.
+
+Uma grade sem variação (tudo zero, ou um `domain` com os dois números iguais)
+pinta o degrau mais ralo, e não o mais cheio: sem diferença para mostrar, a
+grade não grita.
 
 ## Zero não é vazio
 

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, spyOn, test } from "bun:test";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 
 import { ChartFunnel } from "../src/chart/chart-funnel";
@@ -131,6 +131,42 @@ describe("ChartHeatmap", () => {
     const { container } = heatmap({ domain: [0, 120] });
     expect(container.querySelector('[data-rc-cell="0-1"]')!.getAttribute("data-rc-step")).toBe("0");
   });
+
+  test("grade toda em zero, ou dominio sem largura, pinta o degrau mais ralo, e nao o mais cheio", () => {
+    const zeros = heatmap({
+      data: [
+        { dia: "Seg", hora: "8h", total: 0 },
+        { dia: "Seg", hora: "9h", total: 0 },
+      ],
+    });
+    const steps = () =>
+      [...document.querySelectorAll("[data-rc-cell]")].map((cell) =>
+        cell.getAttribute("data-rc-step"),
+      );
+    expect(steps()).toEqual(["0", "0"]);
+    zeros.unmount();
+
+    heatmap({ domain: [5, 5] });
+    expect(steps().filter((step) => step !== "empty")).toEqual(["0", "0", "0"]);
+  });
+
+  test("o rotulo de linha comprido tem teto de largura e trunca, e a grade continua com a maior parte", () => {
+    const long = "Clínica São Lucas Serviços Médicos e Laboratoriais Ltda";
+    const { container } = heatmap({
+      data: [
+        { dia: long, hora: "8h", total: 1 },
+        { dia: long, hora: "9h", total: 2 },
+      ],
+    });
+    const grid = screen.getByRole("group", { name: "Emissões por dia e hora" });
+    expect(grid.style.gridTemplateColumns).toBe(
+      "fit-content(min(40%, 10rem)) repeat(2, minmax(0, 1fr))",
+    );
+    const label = [...container.querySelectorAll("[role=group] > span")].find(
+      (span) => span.textContent === long,
+    )!;
+    expect(label.className.split(" ")).toContain("truncate");
+  });
 });
 
 const BANDS: ChartGaugeBand[] = [
@@ -167,9 +203,57 @@ describe("ChartGauge", () => {
     ]);
   });
 
-  test("acima do maximo o ponteiro para na ponta, e a faixa e a ultima", () => {
-    withTheme(<ChartGauge value={140} bands={BANDS} />);
-    expect(screen.getByRole("img", { name: "100 de 100, Crítico" })).toBeDefined();
+  test("acima do maximo o numero e o real, e so o arco, o ponteiro e a faixa param na ponta", () => {
+    const { container } = withTheme(<ChartGauge value={140} bands={BANDS} />);
+    const gauge = screen.getByRole("img", { name: "140 de 100, Crítico" });
+    expect(gauge.getAttribute("data-rc-gauge-tone")).toBe("danger");
+    expect(container.querySelector("[data-rc-gauge-center]")!.textContent).toBe("140");
+  });
+
+  test("abaixo de zero o numero tambem e o real, e a faixa e a primeira", () => {
+    const { container } = withTheme(<ChartGauge value={-5} bands={BANDS} />);
+    expect(screen.getByRole("img", { name: "-5 de 100, Bom" })).toBeDefined();
+    expect(container.querySelector("[data-rc-gauge-center]")!.textContent).toBe("-5");
+  });
+
+  test("numero que nao e numero vira travessao, sem faixa e sem arco pintado", () => {
+    for (const value of [Number.NaN, Number.POSITIVE_INFINITY]) {
+      const { container, unmount } = withTheme(<ChartGauge value={value} bands={BANDS} />);
+      const gauge = screen.getByRole("img", { name: "— de 100" });
+      expect(gauge.getAttribute("data-rc-gauge-tone")).toBe("neutral");
+      expect(container.querySelector("[data-rc-gauge-center]")!.textContent).toBe("—");
+      expect(screen.queryByText("Crítico")).toBeNull();
+      expect(screen.queryByText("Bom")).toBeNull();
+      unmount();
+    }
+  });
+
+  test("com centerValue, o nome acessivel diz o mesmo texto que a tela mostra", () => {
+    withTheme(<ChartGauge value={1234.5} max={2000} format="currency" centerValue="R$ 1.234,50" />);
+    expect(screen.getByRole("img", { name: /^R\$ 1\.234,50 de R\$\s2\.000,00$/ })).toBeDefined();
+  });
+
+  test("o texto do meio tem a largura do furo do arco, e nao a do cartao", () => {
+    const { container } = withTheme(<ChartGauge value={72} bands={BANDS} />);
+    const hole = container.querySelector<HTMLElement>("[data-rc-gauge-hole]")!;
+    expect(hole.className.split(" ")).toContain("w-[52cqmin]");
+    expect(hole.parentElement!.className.split(" ")).toContain("[container-type:size]");
+  });
+
+  test("sweep de 360 desenha o anel inteiro, em dois arcos, e acima disso para em 360", () => {
+    for (const sweep of [360, 400]) {
+      const { container, unmount } = withTheme(<ChartGauge value={50} sweep={sweep} />);
+      const d = container.querySelector("[data-rc-gauge-value]")!.getAttribute("d")!;
+      const points = [...d.matchAll(/(-?\d+\.\d+) (-?\d+\.\d+)/g)].map((match) => [
+        Number(match[1]),
+        Number(match[2]),
+      ]);
+      expect(d.match(/A /g)).toHaveLength(2);
+      expect(points[0]![0]).toBeCloseTo(0, 3);
+      expect(points[0]![1]).toBeCloseTo(38, 3);
+      expect(points[1]![1]).toBeCloseTo(-38, 3);
+      unmount();
+    }
   });
 
   test("sem faixas e um arco neutro, sem ponteiro e sem descricao", () => {
@@ -235,6 +319,31 @@ describe("ChartFunnel", () => {
     expect(screen.queryByText("do início ao fim")).toBeNull();
   });
 
+  test("nome repetido nao repete chave, e nenhuma etapa some", () => {
+    const warn = spyOn(console, "error").mockImplementation(() => {});
+    withTheme(
+      <ChartFunnel
+        data={[
+          { etapa: "Retorno", total: 10 },
+          { etapa: "Retorno", total: 5 },
+        ]}
+        valueKey="total"
+        nameKey="etapa"
+        label="Funil repetido"
+      />,
+    );
+    const keys = warn.mock.calls.filter((call) => String(call[0]).includes("same key"));
+    warn.mockRestore();
+    expect(keys).toHaveLength(0);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(2);
+  });
+
+  test("palavra comprida sem espaco quebra dentro do nome, em vez de alargar a pagina", () => {
+    const word = "Supercalifragilisticexpialidociousnotafiscalsupercalifragilistic";
+    withTheme(<ChartFunnel data={[{ etapa: word, total: 1 }]} valueKey="total" nameKey="etapa" />);
+    expect(screen.getByText(word).className.split(" ")).toContain("wrap-anywhere");
+  });
+
   test("a conta das taxas", () => {
     expect(funnelRates([200, 50, 25])).toEqual({ fromPrevious: [null, 25, 50], overall: 12.5 });
     expect(funnelRates([10])).toEqual({ fromPrevious: [null], overall: null });
@@ -285,6 +394,37 @@ test("na grade estreita o rotulo de coluna aparece de tanto em tanto, em vez de 
     .map((label) => label.textContent);
 
   expect(shown).toEqual(["0h", "4h", "8h", "12h", "16h", "20h"]);
+});
+
+test("quantos rotulos de coluna cabem se mede pela area das celulas, e nao pela grade com a coluna de rotulo", () => {
+  measureAs(300, 200);
+  const realOffset = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
+  Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.hasAttribute("data-rc-heat-corner") ? 120 : 0;
+    },
+  });
+  try {
+    const hours = Array.from({ length: 24 }, (_, index) => `${index}h`);
+    const { container } = withTheme(
+      <ChartHeatmap
+        data={hours.map((hour) => ({ dia: "Clínica São Lucas", hora: hour, total: 1 }))}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Por hora"
+      />,
+    );
+    const shown = [...container.querySelectorAll('[role="group"] > span[aria-hidden="true"]')]
+      .slice(1, 25)
+      .filter((label) => !label.className.split(" ").includes("invisible"))
+      .map((label) => label.textContent);
+
+    expect(shown).toEqual(["0h", "6h", "12h", "18h"]);
+  } finally {
+    if (realOffset) Object.defineProperty(HTMLElement.prototype, "offsetWidth", realOffset);
+  }
 });
 
 describe("ChartTreemap", () => {
@@ -349,6 +489,26 @@ describe("ChartTreemap", () => {
     );
   });
 
+  test("nome repetido nao repete chave, na grade nem na lista escondida", () => {
+    measureAs(400, 200);
+    const warn = spyOn(console, "error").mockImplementation(() => {});
+    withTheme(
+      <ChartTreemap
+        data={[
+          { natureza: "Outros", total: 10 },
+          { natureza: "Outros", total: 5 },
+        ]}
+        valueKey="total"
+        nameKey="natureza"
+        label="Repetido"
+      />,
+    );
+    const keys = warn.mock.calls.filter((call) => String(call[0]).includes("same key"));
+    warn.mockRestore();
+    expect(keys).toHaveLength(0);
+    expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(2);
+  });
+
   test("o teclado percorre as categorias e o leitor de tela ouve cada uma", () => {
     withTheme(
       <ChartTreemap data={NATURES} valueKey="total" nameKey="natureza" label="Por natureza" />,
@@ -386,13 +546,32 @@ describe("a geometria", () => {
     expect(heatStep(0, 0, 100, 5)).toBe(0);
     expect(heatStep(100, 0, 100, 5)).toBe(4);
     expect(heatStep(50, 0, 100, 5)).toBe(2);
-    expect(heatStep(7, 7, 7, 5)).toBe(4);
+    expect(heatStep(7, 7, 7, 5)).toBe(0);
+    expect(heatStep(0, 0, 0, 5)).toBe(0);
   });
 
   test("o rotulo que nao cabe some inteiro, e nao vira reticencias", () => {
     expect(labelFit("Serviços", "600", 200, 60)).toBe("both");
-    expect(labelFit("Serviços", "600", 200, 30)).toBe("name");
+    expect(labelFit("Serviços", "600", 200, 44)).toBe("name");
     expect(labelFit("Serviços", "600", 40, 60)).toBe("none");
     expect(labelFit("Serviços", "600", 200, 12)).toBe("none");
+  });
+
+  test("o 'both' nunca corta: a estimativa cobre a fonte mono e o recuo de verdade", () => {
+    const MONO = 12 * 0.6;
+    const INSET = 2 * 2 + 2 * 8 + 2 * 2;
+    const LINE = 16;
+    for (const value of ["R$ 38.400,00", "R$ 1.234.567,89", "99,9%", "0"]) {
+      for (let width = 20; width <= 240; width += 1) {
+        for (const height of [30, 40, 50, 60, 80]) {
+          const fit = labelFit("Obras", value, width, height);
+          if (fit === "both") {
+            expect(width).toBeGreaterThanOrEqual(value.length * MONO + INSET);
+            expect(height).toBeGreaterThanOrEqual(2 * LINE + INSET);
+          }
+          if (fit !== "none") expect(height).toBeGreaterThanOrEqual(LINE + INSET);
+        }
+      }
+    }
   });
 });

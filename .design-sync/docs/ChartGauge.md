@@ -26,6 +26,22 @@ arco grosso de dentro vai de zero até o valor na cor da faixa em que ele caiu, 
 um ponteiro marca o lugar exato sobre o anel. Sem `bands`, o medidor é um arco
 neutro de acento, sem ponteiro.
 
+## Fora da escala
+
+O número escrito é sempre o real. Com `value={140}` e `max={100}`, o meio diz
+"140" e o leitor de tela ouve "140 de 100, Crítico": só o arco, o ponteiro e a
+faixa param na ponta, porque o desenho não tem para onde ir, mas a pessoa
+precisa saber o quanto passou. Abaixo de zero vale o mesmo, na outra ponta. Um
+`NaN` ou um infinito não é número nenhum: o meio mostra "—", sem faixa, sem
+ponteiro e sem arco pintado.
+
+Com `centerValue`, o nome acessível diz o mesmo texto que está na tela ("R$
+1.234.567,89 de 2.000.000"), e não o número cru. O texto do meio tem a largura
+do furo do arco, e a fonte encolhe até caber: um valor comprido fica menor, e
+nunca cobre o arco nem sai do cartão.
+
+O `sweep` vai de 0 a 360, e 360 fecha o anel.
+
 ## A cor nunca está sozinha
 
 O nome da faixa sai escrito embaixo do número (troque por `centerLabel` se
