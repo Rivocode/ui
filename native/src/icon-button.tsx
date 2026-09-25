@@ -30,7 +30,8 @@ export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLa
    * `{({ color, size }) => <Trash2 color={color} size={size} />}`.
    */
   children: ReactNode | ((glyph: { color: string; size: number }) => ReactNode);
-  variant?: "primary" | "secondary" | "ghost" | "destructive";
+  /** As variantes do `Button`, lidas das mesmas classes. */
+  variant?: keyof typeof BUTTON_CONTAINER;
   /**
    * O lado do quadrado: 32, 44 ou 48. O `sm` ganha `hitSlop` ate 44, porque o
    * alvo de toque nao encolhe com o desenho.

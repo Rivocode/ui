@@ -1489,8 +1489,8 @@ const PARITY: Record<string, Row> = {
       "**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; " +
       "o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem " +
       "crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, " +
-      "`ghost`, `destructive`), lidas das mesmas classes: `outline` e `shape` não atravessam, " +
-      "pelo mesmo motivo de lá.\n\n" +
+      "`ghost`, `outline`, `destructive`), lidas das mesmas classes: só `shape` não " +
+      "atravessa, pelo mesmo motivo de lá.\n\n" +
       "**Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. " +
       "Se o ícone não se lê sozinho, o botão pede texto: use `Button`.\n\n" +
       "O ícone entra como filho, e a forma que pinta na cor da variante é a função, porque a " +

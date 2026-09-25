@@ -270,11 +270,6 @@ export const SIGNATURES: Record<string, Signature> = {
         native: "accessibilityLabel",
         note: "o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele",
       },
-      {
-        web: "variant",
-        native: "variant",
-        note: "`outline` não porta, como no `Button` nativo",
-      },
       { web: "shape", native: null, note: "sem pílula: o raio é o do token, igual em todo botão" },
       {
         web: "tooltip",

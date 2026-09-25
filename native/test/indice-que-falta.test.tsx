@@ -9,7 +9,7 @@ const classesOf = (node: { props: { className?: string } }) =>
 
 describe("indice que falta nao derruba a peca", () => {
   test("o Badge com tom desconhecido veste o neutro, e nao nada", () => {
-    const screen = render(<Badge tone="inexistente">rascunho</Badge>);
+    const screen = render(<Badge tone={"inexistente" as never}>rascunho</Badge>);
     const [box] = byClass(screen, /rounded-pill/);
 
     expect(classesOf(box!)).toContain("bg-surface-raised");
@@ -17,7 +17,7 @@ describe("indice que falta nao derruba a peca", () => {
   });
 
   test("o Alert com tom desconhecido veste o info, e nao nada", () => {
-    const screen = render(<Alert tone="inexistente" title="Aviso" />);
+    const screen = render(<Alert tone={"inexistente" as never} title="Aviso" />);
     const [box] = byRole(screen, "alert");
 
     expect(classesOf(box!)).toContain("bg-info-subtle");
@@ -26,7 +26,7 @@ describe("indice que falta nao derruba a peca", () => {
 
   test("o spinner de variante desconhecida pinta o mesmo do secundario", () => {
     const unknown = render(
-      <Button loading variant="inexistente">
+      <Button loading variant={"inexistente" as never}>
         Emitindo
       </Button>,
     );

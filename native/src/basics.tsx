@@ -132,12 +132,12 @@ export function Avatar({ fallback, src, alt, size = "md", className }: AvatarPro
 
 const INFO_TONE = { box: "border-info bg-info-subtle", text: "text-info-text" };
 
-const ALERT_TONE: Record<string, { box: string; text: string }> = {
+const ALERT_TONE = {
   info: INFO_TONE,
   success: { box: "border-success bg-success-subtle", text: "text-success-text" },
   warning: { box: "border-warning bg-warning-subtle", text: "text-warning-text" },
   danger: { box: "border-danger bg-danger-subtle", text: "text-danger-text" },
-};
+} satisfies Record<string, { box: string; text: string }>;
 
 export type AlertProps = {
   tone?: keyof typeof ALERT_TONE;

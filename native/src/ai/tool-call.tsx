@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
 
-import { Badge } from "../badge";
+import { Badge, type BadgeProps } from "../badge";
 import { Spinner } from "../basics";
 import { Button } from "../button";
 import { cn } from "../cn";
@@ -10,7 +10,10 @@ import { Text } from "../text";
 
 export type { ToolCallStatus };
 
-const STATUS: Record<ToolCallStatus, { text: string; tone: string; mark: string }> = {
+const STATUS: Record<
+  ToolCallStatus,
+  { text: string; tone: NonNullable<BadgeProps["tone"]>; mark: string }
+> = {
   pending: { text: TOOL_CALL_STATUS_TEXT.pending, tone: "neutral", mark: "○" },
   running: { text: TOOL_CALL_STATUS_TEXT.running, tone: "info", mark: "" },
   done: { text: TOOL_CALL_STATUS_TEXT.done, tone: "success", mark: "✓" },

@@ -7,28 +7,33 @@ import { AnimatedPressable, usePressScale } from "./motion";
 import { useRivo } from "./provider";
 import { Text } from "./text";
 
-export const BUTTON_CONTAINER: Record<string, string> = {
+export const BUTTON_CONTAINER = {
   primary: "bg-accent active:bg-accent-active",
   secondary: "bg-surface border border-border-strong active:bg-surface-raised",
   ghost: "active:bg-accent-subtle",
+  outline: "border-2 border-border-strong active:bg-accent-subtle",
   destructive: "bg-danger active:opacity-90",
-};
+} satisfies Record<string, string>;
 
-const LABEL: Record<string, string> = {
+export type ButtonVariant = keyof typeof BUTTON_CONTAINER;
+
+const LABEL: Record<ButtonVariant, string> = {
   primary: "text-accent-fg",
   secondary: "text-fg",
   ghost: "text-fg-muted",
+  outline: "text-fg",
   destructive: "text-danger-fg",
 };
 
-export const BUTTON_INK: Record<string, keyof (typeof tokens.themes)["rivocode-dark"]> = {
+export const BUTTON_INK: Record<ButtonVariant, keyof (typeof tokens.themes)["rivocode-dark"]> = {
   primary: "accent-fg",
   secondary: "fg",
   ghost: "fg-muted",
+  outline: "fg",
   destructive: "danger-fg",
 };
 
-export function ButtonSpinner({ variant }: { variant: string }) {
+export function ButtonSpinner({ variant }: { variant: ButtonVariant }) {
   const { colors } = useRivo();
   const token = BUTTON_INK[variant] ?? "fg";
   return (
@@ -43,6 +48,10 @@ export function ButtonSpinner({ variant }: { variant: string }) {
 
 export type ButtonProps = Omit<PressableProps, "children" | "className"> & {
   children: ReactNode;
+  /**
+   * O desenho do botao, com os nomes do web. `outline` e so a borda grossa, sem
+   * fundo: a acao que fica ao lado da principal sem competir com ela.
+   */
   variant?: keyof typeof BUTTON_CONTAINER;
   size?: "sm" | "md" | "lg";
   /** Em espera: nao aceita toque e anuncia `busy`. O mesmo nome do web. */

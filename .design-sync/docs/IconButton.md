@@ -77,7 +77,7 @@ terceiro tamanho e resolve a espera sem alargar o quadrado.
 
 Traduz, com o nome obrigatório do mesmo jeito: lá ele é `accessibilityLabel`, que é o nome que o React Native já usa, e o tipo recusa o botão sem ele.
 
-**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `destructive`), lidas das mesmas classes: `outline` e `shape` não atravessam, pelo mesmo motivo de lá.
+**O alvo de toque nunca fica abaixo de 44pt.** `md` é o quadrado de 44 e `lg` o de 48; o `sm` desenha 32 e ganha `hitSlop` de 6 nos quatro lados, que devolve os 44 sem crescer o desenho. As variantes são as do `Button` nativo (`primary`, `secondary`, `ghost`, `outline`, `destructive`), lidas das mesmas classes: só `shape` não atravessa, pelo mesmo motivo de lá.
 
 **Não há `tooltip`.** A dica aparece ao pousar o ponteiro, e no toque não existe pousar. Se o ícone não se lê sozinho, o botão pede texto: use `Button`.
 

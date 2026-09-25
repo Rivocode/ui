@@ -79,7 +79,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**204 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**203 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -167,7 +167,6 @@ escritos em lugar nenhum.
 | `FormField` | `description` | `description` | `description` é `string` |
 | `Highlight` | `classNames` | `markClassName` | a classe de cada trecho achado vira prop própria; a de fora é o `className` do `Text` |
 | `IconButton` | `label` | `accessibilityLabel` | o nome obrigatório muda de nome, e continua obrigatório: o tipo recusa o botão sem ele |
-| `IconButton` | `variant` | `variant` | `outline` não porta, como no `Button` nativo |
 | `IconButton` | `shape` | — | sem pílula: o raio é o do token, igual em todo botão |
 | `IconButton` | `tooltip` | — | no toque não há pousar; ícone que não se lê sozinho pede `Button` com texto |
 | `IconButton` | `tooltipSide` | — | sai junto com o `tooltip` |

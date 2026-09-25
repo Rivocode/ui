@@ -6,14 +6,14 @@ import { Text } from "./text";
 
 const NEUTRAL_TONE = { box: "bg-surface-raised border border-border", label: "text-fg-muted" };
 
-const TONE: Record<string, { box: string; label: string }> = {
+const TONE = {
   neutral: NEUTRAL_TONE,
   accent: { box: "bg-accent-subtle", label: "text-accent-text" },
   success: { box: "bg-success-subtle", label: "text-success-text" },
   warning: { box: "bg-warning-subtle", label: "text-warning-text" },
   danger: { box: "bg-danger-subtle", label: "text-danger-text" },
   info: { box: "bg-info-subtle", label: "text-info-text" },
-};
+} satisfies Record<string, { box: string; label: string }>;
 
 export type BadgeProps = {
   children: ReactNode;
