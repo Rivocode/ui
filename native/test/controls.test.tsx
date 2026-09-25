@@ -123,6 +123,30 @@ describe("Checkbox", () => {
     expect(marks[0].props.className).toContain("border-surface-raised");
     expect(marks[0].props.className).not.toContain("border-accent-fg");
   });
+
+  test("indeterminate anuncia mixed e desenha o traco cheio, sem o visto", () => {
+    const screen = render(<Checkbox checked={false} indeterminate onCheckedChange={() => {}} />);
+    const [box] = byRole(screen, "checkbox");
+    expect(box.props.accessibilityState.checked).toBe("mixed");
+
+    expect(byClass(screen, /-rotate-45/).length).toBe(0);
+    const [filled] = byClass(screen, /rounded-sm/);
+    expect(filled!.props.className.split(" ")).toContain("bg-accent-text");
+    expect(filled!.props.className.split(" ")).not.toContain("bg-surface");
+    const dash = byClass(screen, /h-0\.5/);
+    expect(dash.length).toBe(1);
+    expect(dash[0]!.props.className.split(" ")).toContain("bg-surface-raised");
+  });
+
+  test("indeterminate vence o checked, e o toque marca tudo", () => {
+    const onCheckedChange = mock(() => {});
+    const screen = render(<Checkbox checked indeterminate onCheckedChange={onCheckedChange} />);
+    const [box] = byRole(screen, "checkbox");
+    expect(box.props.accessibilityState.checked).toBe("mixed");
+    expect(byClass(screen, /-rotate-45/).length).toBe(0);
+    act(() => box.props.onPress());
+    expect(onCheckedChange).toHaveBeenCalledWith(true);
+  });
 });
 
 describe("Switch", () => {

@@ -1114,6 +1114,12 @@
         "type": "number | Insets | null",
         "required": false,
         "note": "Area de toque alem do desenho."
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "required": false,
+        "note": "O terceiro estado, o da caixa mestra de uma lista meio marcada: desenha um traco no lugar do tique e anuncia `mixed`."
       }
     ]
   },

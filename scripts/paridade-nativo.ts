@@ -398,21 +398,24 @@ const PARITY: Record<string, Row> = {
   },
   Checkbox: {
     state: "traduz",
-    note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`; o tique aparece crescendo ao marcar",
+    note: "`checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked`; `indeterminate` como no web; o tique aparece crescendo ao marcar",
     page:
       "Traduz, com um porém que morde na primeira linha: no nativo o `Checkbox` é " +
-      "**sempre controlado**. `checked` e `onCheckedChange` são obrigatórios, não há " +
-      "`defaultChecked` e não há `indeterminate`: a caixa de selecionar-todas do web não " +
-      "tem terceiro estado lá. Copiar `<Checkbox defaultChecked>ISS retido</Checkbox>` do " +
-      "web não compila.",
+      "**sempre controlado**. `checked` e `onCheckedChange` são obrigatórios e não há " +
+      "`defaultChecked`. Copiar `<Checkbox defaultChecked>ISS retido</Checkbox>` do " +
+      "web não compila.\n\n" +
+      "**O terceiro estado atravessa.** `indeterminate` desenha um traço na caixa cheia e " +
+      'anuncia `mixed` ao leitor de tela; ele vence o `checked` no desenho, e o toque marca ' +
+      "tudo. A caixa de selecionar-todas se monta à mão, porque o `parent` do web não existe " +
+      "lá: `indeterminate` quando parte da lista está marcada, `checked` quando toda.",
   },
   CheckboxGroup: {
     state: "traduz",
     note: "`items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web",
     page:
       "Traduz com `items` na raiz e `value: string[]`, em vez de um `Checkbox` por filho, e " +
-      "sem o `allValues`/`parent` do web, porque a caixa mestra de estado misto não tem " +
-      "terceiro estado do lado de cá.\n\n" +
+      "sem o `allValues`/`parent` do web: a caixa mestra fica fora do grupo, e é um " +
+      "`Checkbox` com `indeterminate` quando parte da lista está marcada.\n\n" +
       "**O `label` é o `aria-label` do web com outro nome**, pelo mesmo motivo do " +
       "`RadioGroup`: a lista de caixas responde uma pergunta, e sem o nome do conjunto cada " +
       "caixa se apresenta sem dizer qual. Nomear liga junto o papel de lista, porque no React " +
@@ -1440,8 +1443,8 @@ const PARITY: Record<string, Row> = {
       "último) e volta um nível.\n\n" +
       "Duas consequências do empilhamento. **O galho tem dois alvos**: tocar no nome entra, e a " +
       'caixa ao lado marca o galho inteiro: com um alvo só não havia como marcar "Financeiro" ' +
-      "sem visitar as sete folhas de dentro. E **não há estado misto na caixa**, porque o " +
-      '`Checkbox` nativo não tem: o galho meio marcado aparece com a caixa vazia e um "2 de 7 ' +
+      "sem visitar as sete folhas de dentro. E **a caixa do galho não usa o estado misto**: " +
+      'o galho meio marcado aparece com a caixa vazia e um "2 de 7 ' +
       'escolhidos" embaixo do nome (texto, que se lê e se ouve, no lugar de um tracinho que só ' +
       "se vê).\n\n" +
       "Fora, por decisão: `filter` (buscar dentro de árvore achata os níveis, e lista achatada " +

@@ -117,7 +117,7 @@ escritos em lugar nenhum.
 | `ChartContainer` | `errorTitle` | `errorTitle` | `errorTitle`, `errorMessage` e `retryLabel` viram `string` |
 | `ChartDonut` | `centerValue` | `centerValue` | `centerValue` e `centerLabel` viram `string` |
 | `ChartRadial` | `color` | `color` | no web é qualquer cor de CSS; no nativo é papel de token (`chart-1`…`chart-8`), senão a peça fica surda ao tema |
-| `Checkbox` | `indeterminate` | — | não há terceiro estado, e `parent` sai junto: o pai de um grupo se desenha à mão |
+| `Checkbox` | `parent` | — | o pai de um grupo se monta à mão, com `indeterminate` e o estado dos filhos: o `CheckboxGroup` nativo não tem `allValues` |
 | `Checkbox` | — | `accessibilityLabel` | sem `children`, é ele que nomeia a caixa para o leitor de tela |
 | `Clipboard` | `variant` | `variant` | só `secondary` e `ghost`: o copiar não é ação destrutiva nem primária |
 | `Clipboard` | — | `toast` | o aviso falado vem junto e `toast={false}` desliga: rótulo trocado sob o dedo não é reanunciado |
@@ -423,7 +423,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `ChartHeatmap` | ✔ traduz | a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem dica, a leitura mora numa linha embaixo |
 | `ChartRadial` | ✔ traduz | atravessa quase inteiro, porque nunca teve dica; `color` é papel de token e o nome sai do que está escrito no meio, não só da porcentagem |
 | `ChartTreemap` | ✔ traduz | cada categoria é um botão com nome, valor e fatia; tocar acende o contorno e escreve a leitura embaixo, e a regra do rótulo que some é a mesma |
-| `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked` e sem `indeterminate`; o tique aparece crescendo ao marcar |
+| `Checkbox` | ✔ traduz | `checked` e `onCheckedChange` **obrigatórios**; sem `defaultChecked`; `indeterminate` como no web; o tique aparece crescendo ao marcar |
 | `CheckboxGroup` | ✔ traduz | `items` na raiz e `value: string[]`; `label` nomeia o conjunto, no lugar do `aria-label` do web |
 | `Clipboard` | ✔ traduz | vive em `@rivocode/ui-native/clipboard`; a confirmação é dupla: o botão troca de nome e um aviso fala, porque rótulo trocado debaixo do dedo não é reanunciado |
 | `Code` | ✔ traduz | o trecho quebra linha junto com a frase que o cerca, e o toque longo copia (`selectable`); a rolagem própria é do `CodeBlock`, que continua fora |

@@ -354,9 +354,9 @@ export const SIGNATURES: Record<string, Signature> = {
   Checkbox: {
     rows: [
       {
-        web: "indeterminate",
+        web: "parent",
         native: null,
-        note: "não há terceiro estado, e `parent` sai junto: o pai de um grupo se desenha à mão",
+        note: "o pai de um grupo se monta à mão, com `indeterminate` e o estado dos filhos: o `CheckboxGroup` nativo não tem `allValues`",
       },
       {
         web: null,
