@@ -20,6 +20,14 @@ export type ClipboardProps = Omit<ButtonProps, "children" | "onCopy" | "value"> 
   onCopy?: (value: string) => void;
 };
 
+const CHECK: Record<NonNullable<ButtonProps["variant"]>, string> = {
+  primary: "text-accent-fg",
+  secondary: "text-success-text",
+  ghost: "text-success-text",
+  outline: "text-success-text",
+  destructive: "text-danger-fg",
+};
+
 export function Clipboard({
   value,
   children,
@@ -54,7 +62,10 @@ export function Clipboard({
         <Check
           size={14}
           aria-hidden="true"
-          className="animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both] text-success-text"
+          className={cn(
+            "animate-[rc-fade_var(--rc-duration-base)_var(--rc-ease)_both]",
+            CHECK[variant ?? "secondary"],
+          )}
         />
       ) : (
         <Copy size={14} aria-hidden="true" />

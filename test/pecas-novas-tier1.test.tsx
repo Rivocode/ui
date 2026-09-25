@@ -45,6 +45,32 @@ test("o texto copiado volta ao normal sozinho", async () => {
   expect(screen.getByRole("button", { name: "Copiar" })).toBeDefined();
 });
 
+const CHECK_INK = [
+  ["primary", "text-accent-fg"],
+  ["secondary", "text-success-text"],
+  ["ghost", "text-success-text"],
+  ["outline", "text-success-text"],
+  ["destructive", "text-danger-fg"],
+] as const;
+
+for (const [variant, ink] of CHECK_INK) {
+  test(`o visto do Clipboard ${variant} sai em ${ink}`, async () => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async () => {} },
+    });
+
+    const { container } = withTheme(<Clipboard value="4813" variant={variant} />);
+    fireEvent.click(screen.getByRole("button", { name: "Copiar" }));
+    await screen.findByRole("button", { name: "Copiado" });
+
+    const icon = container.querySelector("svg")!;
+    const tokens = (icon.getAttribute("class") ?? "").split(" ");
+    expect(tokens).toContain(ink);
+    for (const [, other] of CHECK_INK) if (other !== ink) expect(tokens).not.toContain(other);
+  });
+}
+
 const NOW = new Date("2026-08-25T12:00:00Z");
 
 test("o tempo relativo escreve em portugues, com a data absoluta por tras", () => {

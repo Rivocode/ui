@@ -440,6 +440,8 @@ export const CSS_PAIRS = [
   ["--rc-accent-text", "--rc-surface-raised", MIN_TEXT],
   ["--rc-accent-text", "--rc-surface", MIN_TEXT],
   ["--rc-accent-fg", "--rc-accent", MIN_TEXT],
+  ["--rc-accent-fg", "--rc-accent-hover", MIN_TEXT],
+  ["--rc-accent-fg", "--rc-accent-active", MIN_TEXT],
   ["--rc-success-text", "--rc-bg", MIN_TEXT],
   ["--rc-warning-text", "--rc-bg", MIN_TEXT],
   ["--rc-danger-text", "--rc-bg", MIN_TEXT],
@@ -530,7 +532,9 @@ export const CSS_BOUNDARIES = [
   ["--rc-warning-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
   ["--rc-warning-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
   ["--rc-danger-text", ["--rc-skeleton", "--rc-bg"], MIN_NON_TEXTUAL],
-  ["--rc-danger-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL]
+  ["--rc-danger-text", ["--rc-skeleton", "--rc-surface"], MIN_NON_TEXTUAL],
+  ["--rc-success-text", ["--rc-accent-subtle", "--rc-bg"], MIN_NON_TEXTUAL],
+  ["--rc-success-text", ["--rc-accent-subtle", "--rc-surface"], MIN_NON_TEXTUAL]
 ];
 export const CSS_DISABLED_OVER = ["--rc-bg", "--rc-surface", "--rc-surface-raised"];
 export const CSS_CHECKED = "--rc-accent-text";

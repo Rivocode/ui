@@ -27,6 +27,12 @@ verbo não obriga a reescrever a confirmação junto.
 <Clipboard value="35240612345678000199" labels={{ copy: 'Copiar a chave' }} />
 ```
 
+O `variant` é o do `Button`. O visto da confirmação sai no verde de sucesso em
+`secondary`, `ghost` e `outline`; nos dois preenchidos, `primary` e
+`destructive`, ele sai na cor do rótulo, porque o verde medido sobre eles fica
+em 1,41:1 no `accent` do tema escuro e em 1,08:1 no `danger` do claro, contra
+os 3:1 que um ícone pede.
+
 ## Quando não usar
 
 Para o bloco de código inteiro, `CodeBlock copyable` já traz este botão no
