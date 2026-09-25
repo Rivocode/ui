@@ -99,6 +99,7 @@ const isIsoRange = (input: RangeInput | null | undefined) =>
 
 export function DateRangePicker(props: DateRangePickerDateProps): ReactElement;
 export function DateRangePicker(props: DateRangePickerIsoProps): ReactElement;
+export function DateRangePicker(props: DateRangePickerProps): ReactElement;
 export function DateRangePicker(props: DateRangePickerProps): ReactElement {
   const {
     value,

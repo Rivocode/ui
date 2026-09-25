@@ -75,6 +75,7 @@ type DatePickerRuntimeProps = DatePickerBase & {
 
 export function DatePicker(props: DatePickerDateProps): ReactElement;
 export function DatePicker(props: DatePickerIsoProps): ReactElement;
+export function DatePicker(props: DatePickerProps): ReactElement;
 export function DatePicker(props: DatePickerProps): ReactElement {
   const {
     value,

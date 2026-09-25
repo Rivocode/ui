@@ -3,9 +3,13 @@ import { fireEvent, render, screen, within } from "@testing-library/react";
 import { useState } from "react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
-import { Calendar } from "../src/components/calendar";
-import { DatePicker } from "../src/components/date-picker";
-import { DateRangePicker, type IsoDateRange } from "../src/components/date-range-picker";
+import { Calendar, type CalendarProps } from "../src/components/calendar";
+import { DatePicker, type DatePickerProps } from "../src/components/date-picker";
+import {
+  DateRangePicker,
+  type DateRangePickerProps,
+  type IsoDateRange,
+} from "../src/components/date-range-picker";
 import { dateFromIso, formatIsoDate, isoFromDate } from "../src/shared/date";
 
 const originalZone = process.env.TZ;
@@ -259,4 +263,30 @@ test("o min do intervalo desabilita os dias antes dele", () => {
   fireEvent.click(screen.getByText("12/09/2026 – 14/09/2026"));
   expect(day("9").disabled).toBe(true);
   expect(day("10").disabled).toBe(false);
+});
+
+function OwnDatePicker(props: DatePickerProps) {
+  return <DatePicker {...props} />;
+}
+
+function OwnRangePicker(props: DateRangePickerProps) {
+  return <DateRangePicker {...props} />;
+}
+
+function OwnCalendar(props: CalendarProps) {
+  return <Calendar {...props} />;
+}
+
+test("o componente de quem embrulha com o tipo de props exportado continua repassando tudo", () => {
+  let received: unknown;
+  render(
+    <RivoProvider scope="local">
+      <OwnDatePicker defaultValue="2026-09-25" onValueChange={(next) => (received = next)} />
+      <OwnRangePicker placeholder="Periodo" />
+      <OwnCalendar mode="single" month={new Date(2026, 8, 1)} />
+    </RivoProvider>,
+  );
+  fireEvent.change(field(), { target: { value: "01/10/2026" } });
+  expect(received).toBe("2026-10-01");
+  expect(screen.getByText("Periodo")).toBeTruthy();
 });

@@ -161,6 +161,7 @@ function withBounds(disabled: PropsBase["disabled"], lower?: Date, upper?: Date)
 export function Calendar(props: CalendarDateProps): ReactElement;
 export function Calendar(props: CalendarIsoProps): ReactElement;
 export function Calendar(props: CalendarSelectionProps): ReactElement;
+export function Calendar(props: CalendarProps): ReactElement;
 export function Calendar(props: CalendarProps): ReactElement {
   const {
     className,
