@@ -77,7 +77,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**222 divergências de assinatura em 91 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**214 divergências de assinatura em 89 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -144,7 +144,6 @@ escritos em lugar nenhum.
 | `DataTable` → `DataList` | `columns` | `renderItem` | não há coluna: `renderItem` desenha a linha inteira |
 | `DataTable` → `DataList` | `rowKey` | `keyExtractor` | mesmo papel, nome do React Native |
 | `DataTable` → `DataList` | `onRowClick` | `onRowPress` | mesmo papel, nome do toque |
-| `DataTable` → `DataList` | `value` | `selected` | a seleção é `selected` mais `onSelectedChange`, e não `value`/`onValueChange` |
 | `DataTable` → `DataList` | `pageSize` | — | lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto |
 | `DataTable` → `DataList` | — | `filterValue` | o `filter` só busca no que esta função devolve, porque não há coluna de onde tirar texto |
 | `DatePicker` | `value` | `value` | o valor é ISO `aaaa-mm-dd` em `string`, e não `Date`; a exibição continua `dd/mm/aaaa` |
@@ -180,7 +179,6 @@ escritos em lugar nenhum.
 | `ImageViewer` | `classNames` | `className` | um `className` só, na grade de miniaturas |
 | `Indicator` | `label` | `label` | `label` vira obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase |
 | `Indicator` | `classNames` | `badgeClassName` | uma classe só, a da pastilha: não há `classNames` no pacote nativo |
-| `Input` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText` |
 | `Input` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
 | `InputGroup` | — | `prefix` | `prefix`, `suffix` e `actions` viram props: sem `InputPrefix`, `InputSuffix` e `InputAction` |
 | `InputGroup` | — | `value` | a moldura desenha o próprio campo: `value` e `onValueChange` são dela, e não de um `Input` por dentro |
@@ -188,9 +186,7 @@ escritos em lugar nenhum.
 | `Item` | `interactive` | `onPress` | quem torna a linha tocável é o `onPress`, e não um booleano |
 | `Link` | `render` | `onPress` | o link do router entra por callback, `onPress={() => router.push("/notas")}`: não há âncora para trocar |
 | `Link` | `underline` | — | o sublinhado é fixo: sem ponteiro, não existe o `hover` |
-| `MaskedInput` | `mask` | `mask` | no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é molde literal, o dígito é `#` e letra ou dígito é `*`, e o único nome é `boleto` |
 | `MaskedInput` | `value` | `value` | no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo |
-| `MaskedInput` | `onValueChange` | `onValueChange` | no web chega `(masked, raw)`; no nativo chega só o limpo |
 | `Menu` | — | `actions` | os itens viram `actions`, no lugar de `MenuItem` por filho, e a folha sobe de baixo |
 | `Menu` | — | `title` | a folha tem cabeçalho obrigatório: sem ancoragem, é ele que diz do que o menu trata |
 | `Menu` | — | `children` | não há `MenuTrigger`: `children` é a área que abre no toque longo, e o botão de três pontinhos é seu |
@@ -223,7 +219,6 @@ escritos em lugar nenhum.
 | `Popconfirm` → `AlertDialog` | `tone` | — | o botão é sempre destrutivo, e o painel não cancela ao tocar fora |
 | `Popconfirm` → `AlertDialog` | `side` | — | `align`, `sideOffset` e `finalFocus` saem junto: o modal ocupa o meio da tela |
 | `PostalCodeField` | `value` | `value` | vira obrigatório e são só os dígitos; no web aceita o texto com máscara |
-| `PostalCodeField` | `onValueChange` | `onValueChange` | no web chega `(masked, digits)`; no nativo chegam só os dígitos |
 | `PostalCodeField` | `defaultValue` | — | não há estado interno: o campo é controlado |
 | `PostalCodeField` | `classNames` | `inputClassName` | `className` veste a raiz e `inputClassName` o campo; o giro e o aviso não se vestem |
 | `Progress` | `format` | — | sem formatador, e sem `showValue`: a barra mostra a porcentagem |
@@ -250,7 +245,6 @@ escritos em lugar nenhum.
 | `RivoProvider` | `theme` | `theme` | só `rivocode-dark`, `rivocode-light` e `system`: tema de cliente é decisão de BUILD |
 | `RivoProvider` | — | `fonts` | as fontes entram pelo provider, com `isFontLoaded` para segurar a tela até carregarem |
 | `RivoProvider` | `toastPosition` | — | o aviso sobe de baixo, e `scope` e `dir` saem junto |
-| `SearchInput` | — | `onValueChange` | no web a peça é um `<input>` e aceita `value`/`onChange` (ou nenhum dos dois); aqui `value` e `onValueChange` são obrigatórios |
 | `SearchInput` | `onClear` | — | o limpar é botão da própria peça, e ele chama `onValueChange("")` |
 | `SearchInput` | `shortcut` | — | não há teclado para desenhar o `Kbd` dentro do campo |
 | `Select` | `items` | `items` | `items` na raiz e obrigatória; sem `SelectTrigger`, `SelectContent` e `SelectItem` |
@@ -279,10 +273,8 @@ escritos em lugar nenhum.
 | `Switch` | `value` | — | não há formulário nativo para carregar valor: o estado é `checked` |
 | `Tabs` | — | `items` | `items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu |
 | `Tabs` | `value` | `value` | o valor é `string`, e não o genérico do web |
-| `TagsInput` | `labels` | `removeLabel` | uma função só, e não um objeto de rótulos |
 | `Text` | `render` | — | o elemento é sempre `Text`; o bloco é uma `View` em volta |
 | `Text` | — | `font` | escolhe o papel de fonte, que o web resolve por classe |
-| `Textarea` | `onValueChange` | — | o campo é um `TextInput`: `value` mais `onChangeText`, como o `Input` |
 | `TimeField` | — | `label` | `label` é obrigatório, e as setas viram dois botões de passo |
 | `TimePicker` | — | `label` | `label` é obrigatório, e a folha tem duas colunas: NÃO embute o `TimeField` |
 | `Timeline` | — | `items` | os eventos vêm por `items`, e não por `TimelineItem` filho |
@@ -455,7 +447,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Conversation` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida |
 | `CookieConsent` | ✕ não porta | app não tem cookie; o consentimento de rastreio no celular é o aviso da plataforma, o App Tracking Transparency no iOS |
 | `CurrencyInput` | ✔ traduz | os mesmos centavos, a mesma digitação da direita e a mesma leitura do colado; o campo é controlado |
-| `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
+| `DataTable` | ✔ vira `DataList` | `filter`, `selectable` e a seleção por `value`/`onValueChange` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
@@ -476,13 +468,13 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `IconButton` | ✔ traduz | `accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
-| `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque |
+| `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque; `onValueChange` recebe o texto, como no web, e o `onChangeText` do `TextInput` continua valendo |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
 | `Item` | ✔ traduz | `title`, `description`, `media` e `actions` como props; o corte com reticências é `numberOfLines`, que lá é prop e não classe |
 | `Kanban` | ✕ não porta | o quadro é idioma de mesa: a 390px cabe uma coluna, e levar o cartão a outra é um menu "Mover para", e não um arrasto |
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `Link` | ✔ traduz | `Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router |
-| `MaskedInput` | ✔ traduz | o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega |
+| `MaskedInput` | ✔ traduz | os mesmos moldes do web (`cpf`, `cnpj`, `moeda`, o `9` do molde escrito à mão); o valor chega limpo, e o texto com máscara vem no segundo argumento do `onValueChange` |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
@@ -535,7 +527,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta; a ficha nova entra crescendo e a que sai some por fade |
 | `Text` | ✔ traduz | o mesmo `Text` que as outras peças vestem, com `size`, `tone`, `weight`, `truncate` e `lineClamp`; sem eles, herda do `Text` de fora |
-| `Textarea` | ✔ traduz | `rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange` |
+| `Textarea` | ✔ traduz | `rows` é a altura inicial e o campo cresce; `onValueChange` recebe o texto, como no web e no `Input` |
 | `TimeField` | ✔ traduz | digita com mascara e teclado numerico; as setas viram dois botoes de passo, no molde do `NumberField` |
 | `TimePicker` | ✔ traduz | gatilho mais folha de baixo com duas colunas; NAO embute o TimeField, ao contrario do web |
 | `Timeline` | ✔ traduz | os eventos vêm por `items`, com `tone` e `pending` em cada um; `at` é texto pronto, e cada evento é uma parada só do leitor de tela, com a posição escrita no rótulo |

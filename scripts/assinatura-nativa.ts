@@ -517,11 +517,6 @@ export const SIGNATURES: Record<string, Signature> = {
       { web: "rowKey", native: "keyExtractor", note: "mesmo papel, nome do React Native" },
       { web: "onRowClick", native: "onRowPress", note: "mesmo papel, nome do toque" },
       {
-        web: "value",
-        native: "selected",
-        note: "a seleção é `selected` mais `onSelectedChange`, e não `value`/`onValueChange`",
-      },
-      {
         web: "pageSize",
         native: null,
         note: "lista de celular rola: sem página, e `virtual`, `rowHeight` e `maxHeight` saem junto",
@@ -722,11 +717,6 @@ export const SIGNATURES: Record<string, Signature> = {
   },
   Input: {
     rows: [
-      {
-        web: "onValueChange",
-        native: null,
-        note: "o campo é um `TextInput`: `value` mais `onChangeText`",
-      },
       { web: null, native: "font", note: "escolhe o papel de fonte, que o web resolve por classe" },
     ],
   },
@@ -785,19 +775,9 @@ export const SIGNATURES: Record<string, Signature> = {
   MaskedInput: {
     rows: [
       {
-        web: "mask",
-        native: "mask",
-        note: "no web é nome de molde (`cpf`, `cnpj`, `moeda`) ou molde com `9`; no nativo é molde literal, o dígito é `#` e letra ou dígito é `*`, e o único nome é `boleto`",
-      },
-      {
         web: "value",
         native: "value",
         note: "no web `value` é o texto COM máscara; no nativo é só dígito, e a máscara é do campo",
-      },
-      {
-        web: "onValueChange",
-        native: "onValueChange",
-        note: "no web chega `(masked, raw)`; no nativo chega só o limpo",
       },
     ],
   },
@@ -856,11 +836,6 @@ export const SIGNATURES: Record<string, Signature> = {
         web: "value",
         native: "value",
         note: "vira obrigatório e são só os dígitos; no web aceita o texto com máscara",
-      },
-      {
-        web: "onValueChange",
-        native: "onValueChange",
-        note: "no web chega `(masked, digits)`; no nativo chegam só os dígitos",
       },
       { web: "defaultValue", native: null, note: "não há estado interno: o campo é controlado" },
       {
@@ -1031,11 +1006,6 @@ export const SIGNATURES: Record<string, Signature> = {
   SearchInput: {
     rows: [
       {
-        web: null,
-        native: "onValueChange",
-        note: "no web a peça é um `<input>` e aceita `value`/`onChange` (ou nenhum dos dois); aqui `value` e `onValueChange` são obrigatórios",
-      },
-      {
         web: "onClear",
         native: null,
         note: 'o limpar é botão da própria peça, e ele chama `onValueChange("")`',
@@ -1201,20 +1171,6 @@ export const SIGNATURES: Record<string, Signature> = {
         note: "`items` na raiz, no lugar de `TabList`, `Tab` e `TabPanel`: é a caixinha segmentada, e o painel é seu",
       },
       { web: "value", native: "value", note: "o valor é `string`, e não o genérico do web" },
-    ],
-  },
-  TagsInput: {
-    rows: [
-      { web: "labels", native: "removeLabel", note: "uma função só, e não um objeto de rótulos" },
-    ],
-  },
-  Textarea: {
-    rows: [
-      {
-        web: "onValueChange",
-        native: null,
-        note: "o campo é um `TextInput`: `value` mais `onChangeText`, como o `Input`",
-      },
     ],
   },
   TimeField: {

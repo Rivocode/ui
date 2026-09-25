@@ -15,7 +15,9 @@ export type TagsInputProps = Omit<TextInputProps, "value" | "onChangeText" | "cl
   separators?: string[];
   /** Teto de fichas. Alcançado, o campo para de aceitar. */
   max?: number;
-  /** O que o leitor de tela ouve no botão de cada ficha. */
+  /** O que o leitor de tela ouve nos botoes da peca, como no web e no FilterChip. `remove` recebe a ficha. */
+  labels?: { remove?: (tag: string) => string };
+  /** @deprecated Use `labels.remove`. */
   removeLabel?: (tag: string) => string;
   invalid?: boolean;
   /** Veste a caixa toda. O campo de digitar é `inputClassName`. */
@@ -43,7 +45,8 @@ export function TagsInput({
   onValueChange,
   separators = [","],
   max,
-  removeLabel = (tag) => `Remover ${tag}`,
+  labels = {},
+  removeLabel,
   invalid,
   editable = true,
   onBlur,
@@ -58,6 +61,8 @@ export function TagsInput({
   const { colors } = useRivo();
   const motion = useMotion();
   const settled = useSettled();
+
+  const remove = labels.remove ?? removeLabel ?? ((tag: string) => `Remover ${tag}`);
 
   const full = max !== undefined && value.length >= max;
 
@@ -106,7 +111,7 @@ export function TagsInput({
           <Text className="text-sm text-fg">{tag}</Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={removeLabel(tag)}
+            accessibilityLabel={remove(tag)}
             accessibilityState={{ disabled: !editable }}
             disabled={!editable}
             onPress={() => onValueChange(value.filter((current) => current !== tag))}

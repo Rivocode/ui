@@ -23840,6 +23840,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Recebe o texto a cada tecla, como no `Input` e no SearchInput nativo."
+      },
+      {
         "name": "shortcut",
         "type": "string",
         "required": false,

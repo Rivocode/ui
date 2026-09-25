@@ -24,6 +24,24 @@ test("avisa quem digitou", () => {
   expect(text).toBe("clinica");
 });
 
+test("onValueChange entrega o texto, e o onChange continua chamado", () => {
+  let value = "";
+  let changed = "";
+  query({ onValueChange: (next) => (value = next), onChange: (event) => (changed = event.target.value) });
+  fireEvent.change(screen.getByRole("searchbox"), { target: { value: "clinica" } });
+  expect(value).toBe("clinica");
+  expect(changed).toBe("clinica");
+});
+
+test("sem onClear o esc limpa e avisa o onValueChange com texto vazio", () => {
+  let value = "algo";
+  query({ defaultValue: "algo", onValueChange: (next) => (value = next) });
+  const box = screen.getByRole("searchbox") as HTMLInputElement;
+  fireEvent.keyDown(box, { key: "Escape" });
+  expect(box.value).toBe("");
+  expect(value).toBe("");
+});
+
 test("o atalho aparece quando pedido, e escondido do leitor de tela", () => {
   const { container } = query({ shortcut: "mod+k" });
   const kbd = container.querySelector("kbd");

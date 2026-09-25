@@ -1384,9 +1384,9 @@
     "props": [
       {
         "name": "onValueChange",
-        "type": "(cents: number | null) => void",
+        "type": "((value: string) => void) & ((cents: number | null) => void)",
         "required": true,
-        "note": "Chamado a cada tecla com os centavos, ou `null` quando o campo esvazia."
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
       },
       {
         "name": "value",
@@ -1524,6 +1524,11 @@
         "required": false
       },
       {
+        "name": "onValueChange",
+        "type": "((keys: string[]) => void)",
+        "required": false
+      },
+      {
         "name": "retryLabel",
         "type": "string",
         "required": false,
@@ -1538,13 +1543,18 @@
       {
         "name": "selected",
         "type": "string[]",
-        "required": false,
-        "note": "Selecao controlada."
+        "required": false
       },
       {
         "name": "skeletonRows",
         "type": "number",
         "required": false
+      },
+      {
+        "name": "value",
+        "type": "string[]",
+        "required": false,
+        "note": "As chaves marcadas, quando quem usa controla a selecao, como no `DataTable` web."
       }
     ]
   },
@@ -2415,6 +2425,12 @@
         "required": false
       },
       {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
+      },
+      {
         "name": "ref",
         "type": "Ref<TextInput>",
         "required": false
@@ -2572,14 +2588,15 @@
     "props": [
       {
         "name": "mask",
-        "type": "\"boleto\" | (string & {})",
+        "type": "Mask",
         "required": true,
-        "note": "O molde: `#` onde entra digito, `*` onde entra letra ou digito, e o resto e pontuacao."
+        "note": "O molde, na mesma sintaxe do web: um nome pronto (`cpf`, `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) ou um molde escrito na mao, com `9` para digito, `A` para letra e `*` para os dois."
       },
       {
         "name": "onValueChange",
-        "type": "(clean: string) => void",
-        "required": true
+        "type": "(clean: string, masked: string) => void",
+        "required": true,
+        "note": "Chamado a cada tecla com o valor limpo e, no segundo argumento, o texto com mascara que o web entrega primeiro."
       },
       {
         "name": "value",
@@ -3098,9 +3115,9 @@
       },
       {
         "name": "onValueChange",
-        "type": "(digits: string) => void",
+        "type": "((value: string) => void) & ((digits: string, masked: string) => void)",
         "required": true,
-        "note": "Chamado a cada tecla, com os digitos."
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Input web."
       },
       {
         "name": "value",
@@ -4306,6 +4323,12 @@
         "required": false
       },
       {
+        "name": "labels",
+        "type": "{ remove?: ((tag: string) => string) | undefined; }",
+        "required": false,
+        "note": "O que o leitor de tela ouve nos botoes da peca, como no web e no FilterChip."
+      },
+      {
         "name": "max",
         "type": "number",
         "required": false,
@@ -4314,8 +4337,7 @@
       {
         "name": "removeLabel",
         "type": "((tag: string) => string)",
-        "required": false,
-        "note": "O que o leitor de tela ouve no botão de cada ficha."
+        "required": false
       },
       {
         "name": "separators",
@@ -4373,6 +4395,12 @@
         "name": "invalid",
         "type": "boolean",
         "required": false
+      },
+      {
+        "name": "onValueChange",
+        "type": "((value: string) => void)",
+        "required": false,
+        "note": "Recebe o texto a cada tecla, como o `onValueChange` do Textarea web."
       },
       {
         "name": "rows",

@@ -604,11 +604,21 @@ const PARITY: Record<string, Row> = {
   },
   Input: {
     state: "traduz",
-    note: "a borda acende no foco: não há `focus-visible` em tela de toque",
+    note: "a borda acende no foco: não há `focus-visible` em tela de toque; `onValueChange` recebe o texto, como no web, e o `onChangeText` do `TextInput` continua valendo",
   },
   MaskedInput: {
     state: "traduz",
-    note: "o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega",
+    note: "os mesmos moldes do web (`cpf`, `cnpj`, `moeda`, o `9` do molde escrito à mão); o valor chega limpo, e o texto com máscara vem no segundo argumento do `onValueChange`",
+    page:
+      "Traduz, com os mesmos moldes: os nomes prontos (`cpf`, `cnpj`, `cep`, `data`, `hora`, " +
+      "`placa`, `cartao`, `telefone`, `boleto` e `moeda`) e o molde escrito à mão, com `9` " +
+      "para dígito, `A` para letra e `*` para os dois, saem de um arquivo só, compartilhado " +
+      "pelos dois pacotes. O molde com `#`, a sintaxe antiga daqui, continua funcionando e " +
+      "está obsoleto: troque `#` por `9`.\n\n" +
+      "O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa " +
+      "alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o " +
+      "limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega " +
+      "primeiro. Com `moeda`, o limpo são os centavos, sem zero à esquerda.",
   },
   CurrencyInput: {
     state: "traduz",
@@ -630,7 +640,8 @@ const PARITY: Record<string, Row> = {
       "Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e com a " +
       "busca cancelada quando o CEP muda: a regra mora num arquivo só, compartilhado pelos " +
       "dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` " +
-      "recebem os dígitos, sem a pontuação.\n\n" +
+      "recebem os dígitos, sem a pontuação, e o `onValueChange` traz o CEP pontuado no " +
+      "segundo argumento.\n\n" +
       "O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo " +
       "anúncio do leitor de tela do sistema. O \"Tentar de novo\" da falha de rede é um " +
       "botão de verdade, com alvo de toque inteiro.",
@@ -883,20 +894,14 @@ const PARITY: Record<string, Row> = {
   },
   Textarea: {
     state: "traduz",
-    note: "`rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange`",
+    note: "`rows` é a altura inicial e o campo cresce; `onValueChange` recebe o texto, como no web e no `Input`",
     page:
       "Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web, que " +
       "também não tem variante de tamanho.\n\n" +
-      "**`onChangeText`, e não `onValueChange`, e isso é o par e não o desvio.** No catálogo " +
-      "nativo `onValueChange` é de quem é dono do valor: `Select`, `Combobox`, `Slider`, " +
-      "`Calendar`, `MaskedInput`, `SearchInput`, `InputGroup`, todas leem o texto cru e " +
-      "entregam outra coisa. `Input` e `Textarea` não entregam outra coisa: são o `TextInput` " +
-      "da plataforma com a borda da casa, e o `TextInput` chama `onChangeText` com a string.\n\n" +
-      "A regra é essa, e vale para as duas: **campo cru fala `onChangeText`; peça que " +
-      "transforma o valor fala `onValueChange`**. Dar `onValueChange` só ao `Textarea` " +
-      "quebraria o par com o `Input`, que é o que o `Field` alterna sem a tela mudar de " +
-      "contrato, e deixaria o `forText` (o quarto adaptador do `@rivocode/ui-native/form`, " +
-      "que existe exatamente para esses dois) certo para um e errado para o outro.",
+      "O texto chega por `onValueChange`, com o mesmo nome do web e do resto dos campos " +
+      "nativos. O `onChangeText` do `TextInput` continua valendo e é chamado junto, e é " +
+      "nele que o `forText` do `@rivocode/ui-native/form` se apoia, igual para o `Input` e " +
+      "para o `Textarea`.",
   },
 
   Autocomplete: {
@@ -913,7 +918,7 @@ const PARITY: Record<string, Row> = {
   DataTable: {
     state: "vira",
     native: "DataList",
-    note: "`filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho",
+    note: "`filter`, `selectable` e a seleção por `value`/`onValueChange` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho",
     page:
       "Vira `DataList`. Tabela não existe no celular: o que atravessa é a máquina de " +
       "estados (carregando, erro, vazio, dados) na mesma ordem, com o erro vencendo o " +
@@ -922,7 +927,8 @@ const PARITY: Record<string, Row> = {
       "`noResultsMessage`, todos `string` porque texto aqui mora dentro de um `Text`. Só o " +
       "padrão de `errorTitle` difere: aqui não há, porque o aviso da lista nasceu de uma linha " +
       "só, e essa linha é a `errorMessage`. Dos quatro opt-in " +
-      "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`) e **dois não " +
+      "daqui, dois portam com o mesmo nome de prop (`filter` e `selectable`, com a seleção " +
+      "em `value` e `onValueChange`; `selected` e `onSelectedChange` ficaram obsoletos) e **dois não " +
       "portam por desenho**: ordenação e `pageSize`. Cabeçalho clicável não existe sem " +
       'cabeçalho, e no celular ordenar é um `Menu` de "ordenar por" que a tela monta em ' +
       "cima da lista. No lugar das colunas, `renderItem`. E por isso o `filter` quer um " +
@@ -1296,7 +1302,8 @@ const PARITY: Record<string, Row> = {
       "teclado do sistema. É esse mesmo evento que faltava para o Backspace com o campo vazio " +
       "tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que " +
       "já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não " +
-      "entra duas vezes e sair do campo fecha o que estava meio escrito.",
+      "entra duas vezes e sair do campo fecha o que estava meio escrito. O nome do xis vem " +
+      "por `labels.remove`, como no web; o `removeLabel` antigo está obsoleto.",
   },
   TimeField: {
     state: "traduz",

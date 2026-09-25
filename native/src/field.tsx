@@ -36,15 +36,31 @@ export function Field({ label, children, description, error, className }: FieldP
   );
 }
 
-export type InputProps = TextInputProps & { invalid?: boolean };
+export type InputProps = TextInputProps & {
+  invalid?: boolean;
+  /** Recebe o texto a cada tecla, como o `onValueChange` do Input web. Convive com o `onChangeText`: os dois sao chamados. */
+  onValueChange?: (value: string) => void;
+};
 
-export function Input({ invalid, onFocus, onBlur, className, ...props }: InputProps) {
+export function Input({
+  invalid,
+  onFocus,
+  onBlur,
+  onChangeText,
+  onValueChange,
+  className,
+  ...props
+}: InputProps) {
   const [focused, setFocused] = useState(false);
   const { colors } = useRivo();
 
   return (
     <TextInput
       {...props}
+      onChangeText={(text) => {
+        onChangeText?.(text);
+        onValueChange?.(text);
+      }}
       onFocus={(event) => {
         setFocused(true);
         onFocus?.(event);

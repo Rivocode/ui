@@ -97,4 +97,6 @@ telefone à mão pergunta a ele primeiro e passa a resposta para o `applyPattern
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `MaskedInput` - o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz, com os mesmos moldes: os nomes prontos (`cpf`, `cnpj`, `cep`, `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto` e `moeda`) e o molde escrito à mão, com `9` para dígito, `A` para letra e `*` para os dois, saem de um arquivo só, compartilhado pelos dois pacotes. O molde com `#`, a sintaxe antiga daqui, continua funcionando e está obsoleto: troque `#` por `9`.
+
+O que muda é o `value`: aqui ele é o valor limpo, sem pontuação e com letra em caixa alta, porque a máscara é do campo e o dado não a carrega. O `onValueChange` entrega o limpo primeiro e o texto com máscara no segundo argumento, que é o que o web entrega primeiro. Com `moeda`, o limpo são os centavos, sem zero à esquerda.

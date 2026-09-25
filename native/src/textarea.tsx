@@ -9,6 +9,8 @@ export type TextareaProps = TextInputProps & {
   invalid?: boolean;
   /** Altura inicial em linhas; o campo cresce com o conteudo. */
   rows?: number;
+  /** Recebe o texto a cada tecla, como o `onValueChange` do Textarea web. Convive com o `onChangeText`: os dois sao chamados. */
+  onValueChange?: (value: string) => void;
 };
 
 export function Textarea({
@@ -16,6 +18,8 @@ export function Textarea({
   rows = 4,
   onFocus,
   onBlur,
+  onChangeText,
+  onValueChange,
   style,
   className,
   ...props
@@ -28,6 +32,10 @@ export function Textarea({
       multiline
       textAlignVertical="top"
       {...props}
+      onChangeText={(text) => {
+        onChangeText?.(text);
+        onValueChange?.(text);
+      }}
       onFocus={(event) => {
         setFocused(true);
         onFocus?.(event);

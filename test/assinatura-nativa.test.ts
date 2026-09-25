@@ -146,8 +146,8 @@ describe("a tabela publicada", () => {
 
   test("cobre os seis casos que custaram a tarde de quem portou a tela", () => {
     const cases: [string, string | null, string | null][] = [
-      ["SearchInput", null, "onValueChange"],
-      ["MaskedInput", "mask", "mask"],
+      ["SearchInput", "onClear", null],
+      ["MaskedInput", "value", "value"],
       ["Timeline", null, "items"],
       ["Sparkline", "variant", "variant"],
       ["Popconfirm", "onConfirm", "onAction"],

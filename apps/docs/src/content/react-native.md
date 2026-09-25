@@ -199,7 +199,7 @@ recusa o que conseguiu medir.
 | `Conversation` | ✔ traduz | vive em `@rivocode/ui-native/ai`; a lista vem por `items`, `renderItem` e `keyExtractor`, sobre uma `FlatList` invertida |
 | `CookieConsent` | ✕ não porta | app não tem cookie; o consentimento de rastreio no celular é o aviso da plataforma, o App Tracking Transparency no iOS |
 | `CurrencyInput` | ✔ traduz | os mesmos centavos, a mesma digitação da direita e a mesma leitura do colado; o campo é controlado |
-| `DataTable` | ✔ vira `DataList` | `filter` e `selectable` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
+| `DataTable` | ✔ vira `DataList` | `filter`, `selectable` e a seleção por `value`/`onValueChange` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO e exibe `dd/mm/aaaa` |
 | `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade; a peça ordena os toques, e o intervalo invertido deixou de existir |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
@@ -220,13 +220,13 @@ recusa o que conseguiu medir.
 | `IconButton` | ✔ traduz | `accessibilityLabel` obrigatório no lugar do `label`; o `sm` ganha `hitSlop` até 44pt de alvo; sem `tooltip`, porque no toque não há pousar |
 | `ImageViewer` | ✔ traduz | sobre `Modal` e `FlatList` com `pagingEnabled`; `index` controlado, pinça pelo `PanResponder` do core, sem peer novo |
 | `Indicator` | ✔ traduz | `label` é obrigatório: a pastilha é uma parada só do leitor de tela, e o que ela diz é a frase, nunca o número |
-| `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque |
+| `Input` | ✔ traduz | a borda acende no foco: não há `focus-visible` em tela de toque; `onValueChange` recebe o texto, como no web, e o `onChangeText` do `TextInput` continua valendo |
 | `InputGroup` | ✔ traduz | `prefix`, `suffix` e `actions` são props e a moldura desenha o próprio campo; sem `size` |
 | `Item` | ✔ traduz | `title`, `description`, `media` e `actions` como props; o corte com reticências é `numberOfLines`, que lá é prop e não classe |
 | `Kanban` | ✕ não porta | o quadro é idioma de mesa: a 390px cabe uma coluna, e levar o cartão a outra é um menu "Mover para", e não um arrasto |
 | `Kbd` | ✕ não porta | não há teclado para desenhar |
 | `Link` | ✔ traduz | `Text` com `accessibilityRole="link"`; o toque abre o `href` pelo `Linking`, e `onPress` é o lugar do `render` do web, para o router |
-| `MaskedInput` | ✔ traduz | o valor chega limpo, sem pontuação; a máscara é do campo, o dado não a carrega |
+| `MaskedInput` | ✔ traduz | os mesmos moldes do web (`cpf`, `cnpj`, `moeda`, o `9` do molde escrito à mão); o valor chega limpo, e o texto com máscara vem no segundo argumento do `onValueChange` |
 | `Menu` | ✔ traduz | folha de baixo com `actions`, nunca popup ancorado; `children` abre no toque longo |
 | `Menubar` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `Message` | ✔ traduz | vive em `@rivocode/ui-native/ai`; `onCopy` no lugar do `copyValue`, porque copiar precisa do `expo-clipboard`, que mora em outro caminho |
@@ -279,7 +279,7 @@ recusa o que conseguiu medir.
 | `Tabs` | ✔ traduz | só a caixinha segmentada, por `items`; seção de página é trabalho do router nativo; o fundo da ativa desliza entre as abas |
 | `TagsInput` | ✔ traduz | Enter e separador digitado fecham a ficha; o Backspace com o campo vazio não porta; a ficha nova entra crescendo e a que sai some por fade |
 | `Text` | ✔ traduz | o mesmo `Text` que as outras peças vestem, com `size`, `tone`, `weight`, `truncate` e `lineClamp`; sem eles, herda do `Text` de fora |
-| `Textarea` | ✔ traduz | `rows` e a altura inicial e o campo cresce; `onChangeText`, como o `Input`, e nao `onValueChange` |
+| `Textarea` | ✔ traduz | `rows` é a altura inicial e o campo cresce; `onValueChange` recebe o texto, como no web e no `Input` |
 | `TimeField` | ✔ traduz | digita com mascara e teclado numerico; as setas viram dois botoes de passo, no molde do `NumberField` |
 | `TimePicker` | ✔ traduz | gatilho mais folha de baixo com duas colunas; NAO embute o TimeField, ao contrario do web |
 | `Timeline` | ✔ traduz | os eventos vêm por `items`, com `tone` e `pending` em cada um; `at` é texto pronto, e cada evento é uma parada só do leitor de tela, com a posição escrita no rótulo |

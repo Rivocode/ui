@@ -423,7 +423,7 @@ function Painel({
             </Field>
             <Field label="CNPJ" description="A máscara é do campo; o valor vai limpo.">
               <MaskedInput
-                mask="##.###.###/####-##"
+                mask="99.999.999/9999-99"
                 value={cnpj}
                 onValueChange={setCnpj}
                 placeholder="00.000.000/0000-00"

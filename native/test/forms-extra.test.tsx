@@ -4,6 +4,7 @@ import { Text } from "react-native";
 import {
   CheckboxGroup,
   Fieldset,
+  Input,
   InputGroup,
   MaskedInput,
   NumberField,
@@ -12,6 +13,7 @@ import {
   RadioGroup,
   SearchInput,
   TagsInput,
+  Textarea,
 } from "../src";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
@@ -67,6 +69,21 @@ describe("CheckboxGroup", () => {
   });
 });
 
+describe("onValueChange nos campos de texto", () => {
+  test("o Input e o Textarea entregam o texto no onValueChange, e o onChangeText continua chamado", () => {
+    for (const Field of [Input, Textarea]) {
+      const onValueChange = mock((_value: string) => {});
+      const onChangeText = mock((_value: string) => {});
+      const screen = render(<Field value="" onValueChange={onValueChange} onChangeText={onChangeText} />);
+      const input = screen.root.findByType("TextInput" as never);
+
+      act(() => input.props.onChangeText("Pix"));
+      expect(onValueChange).toHaveBeenCalledWith("Pix");
+      expect(onChangeText).toHaveBeenCalledWith("Pix");
+    }
+  });
+});
+
 describe("MaskedInput", () => {
   test("mostra com pontuacao, entrega so digitos, e para na capacidade", () => {
     const onValueChange = mock(() => {});
@@ -82,7 +99,7 @@ describe("MaskedInput", () => {
     expect(input.props.value).toBe("12.345.678/0001-90");
 
     act(() => input.props.onChangeText("12.345.678/0001-901"));
-    expect(onValueChange).toHaveBeenCalledWith("12345678000190");
+    expect(onValueChange).toHaveBeenCalledWith("12345678000190", "12.345.678/0001-90");
   });
 
   test("com * no molde a letra entra em caixa alta, e o teclado deixa de ser numerico", () => {
@@ -101,7 +118,7 @@ describe("MaskedInput", () => {
     expect(input.props.autoCapitalize).toBe("characters");
 
     act(() => input.props.onChangeText("12.abc.345/01de-3x5"));
-    expect(onValueChange).toHaveBeenCalledWith("12ABC34501DE35");
+    expect(onValueChange).toHaveBeenCalledWith("12ABC34501DE35", "12.ABC.345/01DE-35");
   });
 
   test("so com # no molde o teclado continua numerico", () => {
@@ -129,7 +146,10 @@ describe("MaskedInput", () => {
     act(() =>
       input.props.onChangeText("84630000000-3 29990296202-4 00410136000-8 00200644114-79"),
     );
-    expect(onValueChange).toHaveBeenCalledWith("846300000003299902962024004101360008002006441147");
+    expect(onValueChange).toHaveBeenCalledWith(
+      "846300000003299902962024004101360008002006441147",
+      "84630000000-3 29990296202-4 00410136000-8 00200644114-7",
+    );
   });
 
   test("os 44 digitos do codigo de barras colados no molde boleto ficam sem a pontuacao da linha", () => {
@@ -141,7 +161,7 @@ describe("MaskedInput", () => {
     expect(input.props.value).toBe(barcode);
 
     act(() => input.props.onChangeText(` ${barcode}\n`));
-    expect(onValueChange).toHaveBeenCalledWith(barcode);
+    expect(onValueChange).toHaveBeenCalledWith(barcode, barcode);
 
     const line = render(
       <MaskedInput
@@ -153,6 +173,47 @@ describe("MaskedInput", () => {
     expect(line.root.findByType("TextInput" as never).props.value).toBe(
       "10492.00650 61000.100042 00997.263900 9 89810000021",
     );
+  });
+
+  test("aceita os nomes do web, e o 9 do molde escrito na mao e digito", () => {
+    const onValueChange = mock((_clean: string, _masked: string) => {});
+    const screen = render(<MaskedInput mask="cpf" value="12345678909" onValueChange={onValueChange} />);
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.value).toBe("123.456.789-09");
+    expect(input.props.keyboardType).toBe("number-pad");
+
+    act(() => input.props.onChangeText("123.456.789-0"));
+    expect(onValueChange).toHaveBeenLastCalledWith("1234567890", "123.456.789-0");
+
+    const phone = render(<MaskedInput mask="(99) 9999-9999" value="8332221111" onValueChange={() => {}} />);
+    expect(phone.root.findByType("TextInput" as never).props.value).toBe("(83) 3222-1111");
+  });
+
+  test("cnpj e placa abrem o teclado de letra, e a letra chega em caixa alta", () => {
+    const onValueChange = mock((_clean: string, _masked: string) => {});
+    const screen = render(<MaskedInput mask="placa" value="" onValueChange={onValueChange} />);
+    const input = screen.root.findByType("TextInput" as never);
+    expect(input.props.keyboardType).toBe("default");
+
+    act(() => input.props.onChangeText("abc1d23"));
+    expect(onValueChange).toHaveBeenLastCalledWith("ABC1D23", "ABC1D23");
+
+    const cnpj = render(<MaskedInput mask="cnpj" value="12ABC34501DE35" onValueChange={() => {}} />);
+    expect(cnpj.root.findByType("TextInput" as never).props.value).toBe("12.ABC.345/01DE-35");
+  });
+
+  test("telefone troca de molde na nona casa, e moeda entrega os centavos sem zero a esquerda", () => {
+    const phone = render(<MaskedInput mask="telefone" value="83999998888" onValueChange={() => {}} />);
+    expect(phone.root.findByType("TextInput" as never).props.value).toBe("(83) 99999-8888");
+
+    const onValueChange = mock((_clean: string, _masked: string) => {});
+    const money = render(<MaskedInput mask="moeda" value="5" onValueChange={onValueChange} />);
+    const input = money.root.findByType("TextInput" as never);
+    expect(input.props.value).toBe("0,05");
+    expect(input.props.keyboardType).toBe("number-pad");
+
+    act(() => input.props.onChangeText("0,051"));
+    expect(onValueChange).toHaveBeenLastCalledWith("51", "0,51");
   });
 });
 
@@ -304,6 +365,21 @@ describe("PasswordInput", () => {
 });
 
 describe("TagsInput", () => {
+  test("labels.remove da nome ao xis, como no web, e o removeLabel antigo continua valendo", () => {
+    const named = render(
+      <TagsInput value={["pix"]} onValueChange={() => {}} labels={{ remove: (tag) => `Tirar ${tag}` }} />,
+    );
+    expect(byLabel(named, "Tirar pix").length).toBe(1);
+
+    const legacy = render(
+      <TagsInput value={["pix"]} onValueChange={() => {}} removeLabel={(tag) => `Apagar ${tag}`} />,
+    );
+    expect(byLabel(legacy, "Apagar pix").length).toBe(1);
+
+    const fallback = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
+    expect(byLabel(fallback, "Remover pix").length).toBe(1);
+  });
+
   test("o separador digitado fecha a ficha, e a repetida nao entra duas vezes", () => {
     const onValueChange = mock(() => {});
     const screen = render(

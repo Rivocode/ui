@@ -43,7 +43,7 @@ function mount(props: Omit<PostalCodeFieldProps, "value" | "onValueChange">) {
 
 describe("PostalCodeField", () => {
   test("mostra a mascara, guarda so os digitos e abre o teclado numerico", async () => {
-    const onValueChange = mock((_digits: string) => {});
+    const onValueChange = mock((_digits: string, _masked: string) => {});
     const screen = render(
       <PostalCodeField value="58038000" onValueChange={onValueChange} lookup={async () => null} />,
     );
@@ -54,7 +54,7 @@ describe("PostalCodeField", () => {
     expect(input.props.textContentType).toBe("postalCode");
 
     act(() => input.props.onChangeText("58038-00"));
-    expect(onValueChange).toHaveBeenLastCalledWith("5803800");
+    expect(onValueChange).toHaveBeenLastCalledWith("5803800", "58038-00");
   });
 
   test("so busca ao completar os 8 digitos, e anuncia a espera e o achado", async () => {

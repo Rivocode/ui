@@ -77,4 +77,4 @@ nasce do que se digita e não há o que sugerir.
 
 ## No React Native
 
-Traduz, com um gesto a menos. O Enter fecha a ficha e o separador digitado também, mas ele é lido no texto, e não na tecla, porque o `onKeyPress` do Android não chega para o teclado do sistema. É esse mesmo evento que faltava para o Backspace com o campo vazio tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não entra duas vezes e sair do campo fecha o que estava meio escrito.
+Traduz, com um gesto a menos. O Enter fecha a ficha e o separador digitado também, mas ele é lido no texto, e não na tecla, porque o `onKeyPress` do Android não chega para o teclado do sistema. É esse mesmo evento que faltava para o Backspace com o campo vazio tirar a última ficha, e por isso ele não porta: no celular a ficha se tira pelo xis, que já precisava existir para o dedo. O resto é igual: a peça é controlada, a repetida não entra duas vezes e sair do campo fecha o que estava meio escrito. O nome do xis vem por `labels.remove`, como no web; o `removeLabel` antigo está obsoleto.

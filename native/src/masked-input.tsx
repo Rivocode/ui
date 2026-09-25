@@ -1,36 +1,37 @@
 import { Input, type InputProps } from "./field";
 import { boletoPatternFor } from "./shared/boleto";
+import { applyPattern, isNumericMask, maskText, unmask, type Mask } from "./shared/mask";
 
-export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText"> & {
+export type MaskedInputProps = Omit<InputProps, "value" | "onChangeText" | "onValueChange"> & {
   /**
-   * O molde: `#` onde entra digito, `*` onde entra letra ou digito, e o resto e
-   * pontuacao. O CNPJ alfanumerico leva `*` nas doze primeiras casas e `#` nos
-   * dois verificadores. Com `*` no molde o teclado deixa de ser so numerico.
-   * `boleto` e o unico nome: escolhe sozinho entre a linha de banco (47
-   * digitos) e a de convenio (48, quando o primeiro digito e 8), e deixa sem
-   * pontuacao os 44 do codigo de barras colado.
+   * O molde, na mesma sintaxe do web: um nome pronto (`cpf`, `cnpj`, `cep`,
+   * `data`, `hora`, `placa`, `cartao`, `telefone`, `boleto`, `moeda`) ou um
+   * molde escrito na mao, com `9` para digito, `A` para letra e `*` para os
+   * dois. Molde com `#` segue a sintaxe antiga do nativo (`#` digito, `*`
+   * letra ou digito, o resto literal) e esta obsoleto: troque `#` por `9`.
    */
-  mask: "boleto" | (string & {});
-  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. */
+  mask: Mask;
+  /** O valor LIMPO, sem pontuacao e com letra em caixa alta - a mascara e do campo, o dado nao a carrega. Em `moeda`, os centavos sem zero a esquerda. */
   value: string;
-  onValueChange: (clean: string) => void;
+  /** Chamado a cada tecla com o valor limpo e, no segundo argumento, o texto com mascara que o web entrega primeiro. */
+  onValueChange: (clean: string, masked: string) => void;
 };
 
-const fits = (slot: string, character: string) =>
+const legacyFits = (slot: string, character: string) =>
   slot === "#" ? /\d/.test(character) : /[A-Z0-9]/.test(character);
 
-const cleanFor = (mask: string, text: string) => {
+const legacyClean = (mask: string, text: string) => {
   const slots = [...mask].filter((slot) => slot === "#" || slot === "*");
   let out = "";
   for (const character of text.toUpperCase()) {
     const slot = slots[out.length];
     if (slot === undefined) break;
-    if (fits(slot, character)) out += character;
+    if (legacyFits(slot, character)) out += character;
   }
   return out;
 };
 
-const applyMask = (mask: string, clean: string) => {
+const legacyApply = (mask: string, clean: string) => {
   let out = "";
   let cursor = 0;
   for (const slot of mask) {
@@ -45,11 +46,31 @@ const applyMask = (mask: string, clean: string) => {
   return out;
 };
 
-const patternFor = (mask: string, text: string) =>
-  mask === "boleto" ? boletoPatternFor(text, "#") : mask;
+const isLegacy = (mask: string) => mask.includes("#");
+
+const cleanOf = (mask: Mask, masked: string) =>
+  mask === "moeda" ? masked.replace(/\D/g, "").replace(/^0+/, "") : unmask(masked).toUpperCase();
+
+const format = (mask: Mask, text: string) =>
+  mask === "boleto" ? applyPattern(text, boletoPatternFor(text)) : maskText(text, mask);
+
+const display = (mask: Mask, clean: string) =>
+  isLegacy(mask) ? legacyApply(mask, clean) : format(mask, clean);
+
+const readTyped = (mask: Mask, text: string) => {
+  if (isLegacy(mask)) {
+    const clean = legacyClean(mask, text);
+    return { clean, masked: legacyApply(mask, clean) };
+  }
+  const masked = format(mask, text.toUpperCase());
+  return { clean: cleanOf(mask, masked), masked };
+};
+
+const numericKeyboard = (mask: Mask) =>
+  isLegacy(mask) ? !mask.includes("*") : isNumericMask(mask);
 
 export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInputProps) {
-  const alphanumeric = mask.includes("*");
+  const alphanumeric = !numericKeyboard(mask);
 
   return (
     <Input
@@ -57,8 +78,11 @@ export function MaskedInput({ mask, value, onValueChange, ...props }: MaskedInpu
       keyboardType={alphanumeric ? "default" : "number-pad"}
       autoCapitalize={props.autoCapitalize ?? (alphanumeric ? "characters" : undefined)}
       autoCorrect={props.autoCorrect ?? (alphanumeric ? false : undefined)}
-      value={applyMask(patternFor(mask, value), value)}
-      onChangeText={(text) => onValueChange(cleanFor(patternFor(mask, text), text))}
+      value={display(mask, value)}
+      onChangeText={(text) => {
+        const { clean, masked } = readTyped(mask, text);
+        onValueChange(clean, masked);
+      }}
     />
   );
 }

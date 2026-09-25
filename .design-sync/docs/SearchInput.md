@@ -10,6 +10,17 @@ mão com `position: absolute`.
 Sai como `<input type="search">`, então o leitor de tela anuncia "busca" e o
 Esc limpa: o campo não controlado sozinho, o controlado pelo `onClear`.
 
+`onValueChange` entrega o texto a cada tecla, como no `Input` e no
+`SearchInput` do React Native, e sem `onClear` o Esc também o chama com `""`.
+Com ele, o campo controlado é `value` mais `onValueChange`, sem tirar o texto
+de dentro do evento. O `onChange` do DOM continua chamado junto.
+
+```tsx
+const [filter, setFilter] = useState("");
+
+<SearchInput aria-label="Buscar nota" value={filter} onValueChange={setFilter} />
+```
+
 `shortcut` mostra o atalho num `Kbd` dentro do campo (`"mod+k"` sai ⌘K no Mac
 e Ctrl K no resto). Só o desenho: registrar o atalho é trabalho de quem monta
 a tela, porque é ela que sabe o que mais escuta teclado.

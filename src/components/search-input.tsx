@@ -22,6 +22,8 @@ export type SearchInputProps = Omit<ComponentProps<"input">, "size" | "type"> & 
   shortcut?: string;
   /** Chamado no Esc. Sem ele, o Esc limpa so o campo nao controlado. */
   onClear?: () => void;
+  /** Recebe o texto a cada tecla, como no `Input` e no SearchInput nativo. Sem `onClear`, o Esc chama com `""`. Convive com o `onChange`. */
+  onValueChange?: (value: string) => void;
 };
 
 const SIZE = {
@@ -36,13 +38,19 @@ export function SearchInput({
   shortcut,
   onClear,
   onKeyDown,
+  onChange,
+  onValueChange,
   ...props
 }: SearchInputProps) {
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     onKeyDown?.(event);
     if (event.key !== "Escape" || event.defaultPrevented) return;
-    if (onClear) onClear();
-    else event.currentTarget.value = "";
+    if (onClear) {
+      onClear();
+      return;
+    }
+    event.currentTarget.value = "";
+    onValueChange?.("");
   }
 
   return (
@@ -56,6 +64,10 @@ export function SearchInput({
       <input
         type="search"
         {...props}
+        onChange={(event) => {
+          onChange?.(event);
+          onValueChange?.(event.target.value);
+        }}
         onKeyDown={handleKeyDown}
         className={cn(
           "w-full rounded-md border border-border-strong bg-surface",

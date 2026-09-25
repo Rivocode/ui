@@ -3,6 +3,7 @@
 import { useState, type ComponentProps } from "react";
 
 import { applyMask, unmask, type Mask } from "../lib/mask";
+import { isNumericMask } from "../shared/mask";
 import { Input } from "./field";
 
 export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value" | "defaultValue"> & {
@@ -32,10 +33,7 @@ export function MaskedInput({
   const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
   const text = controlled ? value : internal;
 
-  const digitsOnly =
-    mask === "moeda" ||
-    (/^[9\W]+$/.test(String(mask)) && !String(mask).includes("*")) ||
-    mask in NUMERIC_PATTERNS;
+  const digitsOnly = isNumericMask(mask);
 
   return (
     <Input
@@ -53,13 +51,3 @@ export function MaskedInput({
     />
   );
 }
-
-const NUMERIC_PATTERNS = {
-  cpf: true,
-  cep: true,
-  data: true,
-  hora: true,
-  cartao: true,
-  telefone: true,
-  boleto: true,
-} as const;

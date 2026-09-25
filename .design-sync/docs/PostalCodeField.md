@@ -110,6 +110,6 @@ O erro do schema (`z.string().length(8)`, por exemplo) continua saindo pelo
 
 ## No React Native
 
-Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e com a busca cancelada quando o CEP muda: a regra mora num arquivo só, compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` recebem os dígitos, sem a pontuação.
+Traduz, com a mesma `lookup`, o mesmo `onAddress` e os mesmos quatro finais, e com a busca cancelada quando o CEP muda: a regra mora num arquivo só, compartilhado pelos dois pacotes. O campo é controlado, como todo o nativo: `value` e `onValueChange` recebem os dígitos, sem a pontuação, e o `onValueChange` traz o CEP pontuado no segundo argumento.
 
 O giro fica no fim do campo, o aviso embaixo dele, e cada troca de estado sai pelo anúncio do leitor de tela do sistema. O "Tentar de novo" da falha de rede é um botão de verdade, com alvo de toque inteiro.

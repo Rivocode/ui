@@ -110,6 +110,21 @@ describe("DataList", () => {
     expect(onSelectedChange).toHaveBeenCalledWith(["2"]);
   });
 
+  test("value e onValueChange falam como o DataTable web, e o selected antigo continua valendo", () => {
+    const onValueChange = mock((_keys: string[]) => {});
+    const onSelectedChange = mock((_keys: string[]) => {});
+    const screen = render(
+      list({ selectable: true, value: ["1"], onValueChange, onSelectedChange }),
+    );
+    const boxes = byRole(screen, "checkbox");
+    expect(boxes[0].props.accessibilityState.checked).toBe(true);
+    expect(boxes[1].props.accessibilityState.checked).toBe(false);
+    act(() => boxes[1].props.onPress());
+    expect(onValueChange).toHaveBeenCalledWith(["1", "2"]);
+    expect(onSelectedChange).toHaveBeenCalledWith(["1", "2"]);
+    expect(byRole(screen, "checkbox")[1].props.accessibilityState.checked).toBe(false);
+  });
+
   test("sem selected a lista guarda a própria seleção", () => {
     const screen = render(list({ selectable: true }));
     expect(byRole(screen, "checkbox")[0].props.accessibilityState.checked).toBe(false);

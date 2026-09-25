@@ -42,8 +42,7 @@ export function WithTable() {
         placeholder="Buscar por cliente ou número…"
         aria-label="Buscar nota"
         value={filter}
-        onChange={(event) => setFilter(event.target.value)}
-        onClear={() => setFilter('')}
+        onValueChange={setFilter}
         className="max-w-64"
       />
       <DataTable data={NOTAS} columns={COLUNAS} rowKey={(nota) => nota.id} filter={filter} />

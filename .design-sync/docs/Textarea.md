@@ -14,6 +14,4 @@ a escala de controle criaria um `lg` que não quer dizer nada.
 
 Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web, que também não tem variante de tamanho.
 
-**`onChangeText`, e não `onValueChange`, e isso é o par e não o desvio.** No catálogo nativo `onValueChange` é de quem é dono do valor: `Select`, `Combobox`, `Slider`, `Calendar`, `MaskedInput`, `SearchInput`, `InputGroup`, todas leem o texto cru e entregam outra coisa. `Input` e `Textarea` não entregam outra coisa: são o `TextInput` da plataforma com a borda da casa, e o `TextInput` chama `onChangeText` com a string.
-
-A regra é essa, e vale para as duas: **campo cru fala `onChangeText`; peça que transforma o valor fala `onValueChange`**. Dar `onValueChange` só ao `Textarea` quebraria o par com o `Input`, que é o que o `Field` alterna sem a tela mudar de contrato, e deixaria o `forText` (o quarto adaptador do `@rivocode/ui-native/form`, que existe exatamente para esses dois) certo para um e errado para o outro.
+O texto chega por `onValueChange`, com o mesmo nome do web e do resto dos campos nativos. O `onChangeText` do `TextInput` continua valendo e é chamado junto, e é nele que o `forText` do `@rivocode/ui-native/form` se apoia, igual para o `Input` e para o `Textarea`.

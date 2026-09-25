@@ -25,8 +25,8 @@ export type PostalCodeFieldProps = Omit<
 > & {
   /** Os digitos, sem a pontuacao: a mascara e do campo, o dado nao a carrega. */
   value: string;
-  /** Chamado a cada tecla, com os digitos. */
-  onValueChange: (digits: string) => void;
+  /** Chamado a cada tecla com os digitos e, no segundo argumento, o CEP pontuado que o web entrega primeiro. */
+  onValueChange: (digits: string, masked: string) => void;
   /**
    * A busca do endereco, escrita por quem usa: recebe os 8 digitos e o
    * `signal`, e devolve o endereco ou `null` quando o CEP nao existe. Rejeitar
@@ -118,7 +118,7 @@ export function PostalCodeField({
           accessibilityState={{ busy: status === "searching", disabled: editable === false }}
           onChangeText={(text) => {
             const next = postalCodeDigits(text);
-            onValueChange(next);
+            onValueChange(next, formatPostalCode(next));
             if (next === digits) return;
             if (next.length === POSTAL_CODE_LENGTH) {
               run(next);
