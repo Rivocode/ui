@@ -324,6 +324,11 @@
         "required": true
       },
       {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
         "name": "loading",
         "type": "boolean",
         "required": false,
@@ -370,7 +375,13 @@
   },
   "Card": {
     "entry": "native/src/index.ts",
-    "props": []
+    "props": [
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      }
+    ]
   },
   "CardContent": {
     "entry": "native/src/index.ts",
@@ -1162,6 +1173,12 @@
         "name": "className",
         "type": "string",
         "required": false
+      },
+      {
+        "name": "selectable",
+        "type": "boolean",
+        "required": false,
+        "note": "O toque longo seleciona e o sistema oferece copiar."
       }
     ]
   },
@@ -2169,6 +2186,11 @@
         "note": "O lugar do titulo no esboco da tela, de 1 a 6."
       },
       {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
+      {
         "name": "size",
         "type": "HeadingSize",
         "required": false,
@@ -2255,6 +2277,11 @@
         "type": "((glyph: { color: string; size: number; }) => ReactNode) | ReactNode",
         "required": true,
         "note": "O icone."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
       },
       {
         "name": "loading",
@@ -2498,6 +2525,16 @@
   "Link": {
     "entry": "native/src/index.ts",
     "props": [
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false
+      },
       {
         "name": "external",
         "type": "boolean",
@@ -3620,6 +3657,11 @@
         "note": "Em pontos, quanto o campo em foco fica acima do teclado - ou acima do `footer`, quando ha um."
       },
       {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false
+      },
+      {
         "name": "className",
         "type": "string",
         "required": false,
@@ -3657,6 +3699,12 @@
         "name": "value",
         "type": "string",
         "required": true
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "required": false,
+        "note": "Veste a moldura (a caixa com lupa e limpar), nao o campo interno."
       }
     ]
   },

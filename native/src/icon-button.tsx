@@ -17,7 +17,7 @@ const HIDDEN = {
   importantForAccessibility: "no-hide-descendants",
 } as const;
 
-export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLabel"> & {
+export type IconButtonProps = Omit<PressableProps, "children" | "accessibilityLabel" | "className"> & {
   /**
    * O nome do botao, obrigatorio: e o que o leitor de tela anuncia, e o botao
    * nao tem outro texto. O mesmo papel do `label` do web. Diga a acao

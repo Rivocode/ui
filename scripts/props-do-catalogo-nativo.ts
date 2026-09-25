@@ -44,6 +44,8 @@ const RAIZ = process.cwd();
 const TARGET = "apps/docs/src/native-props.json";
 const PROJECT = "native/tsconfig.check.json";
 
+const isOwnSource = (path: string) => path.includes("/native/src/") && !path.includes("/node_modules/");
+
 /** Os sete indices do pacote. Os mesmos que a tabela de paridade mede. */
 const ENTRY_POINTS = [
   "native/src/index.ts",
@@ -100,6 +102,7 @@ export async function readNativeCatalog(): Promise<Record<string, NativePiece>> 
 
   const { checker, program } = project;
   const catalog: Record<string, NativePiece> = {};
+  const collisions: string[] = [];
 
   for (const entry of ENTRY_POINTS) {
     const file = await program.getSourceFile(`${RAIZ}/${entry}`);
@@ -128,8 +131,9 @@ export async function readNativeCatalog(): Promise<Record<string, NativePiece>> 
         // `TextInputProps`: sao centenas de props de plataforma que dizem o
         // mesmo em toda peca, e o recorte e o mesmo que o catalogo do web faz
         // com o `@types/react`.
-        const declaredIn = prop.declarations[0]?.path ?? "";
-        if (!declaredIn.includes("/native/src/")) continue;
+        const paths = prop.declarations.map((declaration) => String(declaration.path ?? ""));
+        if (!paths.some(isOwnSource)) continue;
+        if (paths.some((path) => !isOwnSource(path))) collisions.push(`${name}.${prop.name}`);
 
         const propType = await checker.getTypeOfSymbol(prop);
         const note = firstSentence(await prop.getDocumentationComment(checker));
@@ -155,6 +159,14 @@ export async function readNativeCatalog(): Promise<Record<string, NativePiece>> 
   }
 
   await api.close();
+
+  if (collisions.length) {
+    console.error(
+      `${collisions.length} prop(s) propria(s) colidem com uma prop herdada de mesmo nome, e o tipo publicado vira a intersecao dos dois. Tire a chave da base com Omit:`,
+    );
+    for (const collision of collisions) console.error(`  ${collision}`);
+    process.exit(1);
+  }
 
   return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
 }

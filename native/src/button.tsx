@@ -41,7 +41,7 @@ export function ButtonSpinner({ variant }: { variant: string }) {
   );
 }
 
-export type ButtonProps = Omit<PressableProps, "children"> & {
+export type ButtonProps = Omit<PressableProps, "children" | "className"> & {
   children: ReactNode;
   variant?: keyof typeof BUTTON_CONTAINER;
   size?: "sm" | "md" | "lg";

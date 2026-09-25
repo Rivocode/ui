@@ -17,7 +17,7 @@ const TONE: Record<LinkTone, string> = {
   inherit: "",
 };
 
-export type LinkProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "onPress"> & {
+export type LinkProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "onPress" | "children" | "className"> & {
   children: ReactNode;
   /**
    * O endereco que o toque abre pelo `Linking` do React Native: `https:`,

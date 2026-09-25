@@ -3,7 +3,7 @@ import { type TextProps } from "react-native";
 import { cn } from "./cn";
 import { Text } from "./text";
 
-export type CodeProps = Omit<TextProps, "children" | "className"> & {
+export type CodeProps = Omit<TextProps, "children" | "className" | "selectable"> & {
   /** O trecho, cru: `app.json`, `--frozen-lockfile`, `emitida_em`. */
   children: string;
   /**

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Text } from "./text";
 import { View, type ViewProps } from "react-native";
 
-export function Card({ children, className, ...props }: ViewProps & { className?: string }) {
+export function Card({ children, className, ...props }: Omit<ViewProps, "className"> & { className?: string }) {
   return (
     <View {...props} className={`rounded-lg border border-border bg-surface ${className ?? ""}`}>
       {children}

@@ -14,7 +14,7 @@ const GROW = { flexGrow: 1 };
 
 export type ScrollAreaProps = Omit<
   KeyboardAwareScrollViewProps,
-  "bottomOffset" | "className" | "contentContainerClassName" | "horizontal" | "ScrollViewComponent"
+  "bottomOffset" | "className" | "contentContainerClassName" | "horizontal" | "ScrollViewComponent" | "children"
 > & {
   children?: ReactNode;
   /**

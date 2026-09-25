@@ -16,7 +16,7 @@ const SIZE: Record<HeadingSize, string> = {
   "3xl": "text-3xl",
 };
 
-export type HeadingProps = Omit<NativeTextProps, "accessibilityRole" | "role"> & {
+export type HeadingProps = Omit<NativeTextProps, "accessibilityRole" | "role" | "className"> & {
   /**
    * O lugar do titulo no esboco da tela, de 1 a 6. O leitor de tela do
    * celular anuncia "cabecalho" sem nivel, entao aqui ele decide so o tamanho

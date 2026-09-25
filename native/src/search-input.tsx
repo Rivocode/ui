@@ -5,7 +5,7 @@ import { cn } from "./cn";
 import { useRivo } from "./provider";
 import { TextInput } from "./text";
 
-export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText"> & {
+export type SearchInputProps = Omit<TextInputProps, "value" | "onChangeText" | "className"> & {
   value: string;
   onValueChange: (value: string) => void;
   /** Veste a moldura (a caixa com lupa e limpar), nao o campo interno. */
