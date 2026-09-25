@@ -136,9 +136,9 @@ As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
 **Nome igual nao e API igual.** No nativo tudo e controlado (sem
 `defaultValue`) e a lista vem por `items`, nao por composicao. O que se
 reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
-reescreve. `check:assinatura` confere **225 divergencias de assinatura em 91
+reescreve. `check:assinatura` confere **222 divergencias de assinatura em 91
 pecas** contra os dois catalogos de props - o do nativo,
-`apps/docs/src/native-props.json` (117 pecas, 763 props), e artefato comitado,
+`apps/docs/src/native-props.json` (117 pecas, 772 props), e artefato comitado,
 porque gerar exige `examples/native` instalado; `check:props:nativo` o mantem
 em dia no job `nativo` da CI, ao lado do `check:native:types`.
 
@@ -152,14 +152,14 @@ nao tenha global nem import de plataforma, e 16 copias declaradas.
 sequencia, parando no primeiro que falhar. Bate com o `CLAUDE.md`. Em 25/09
 saiu verde.
 
-A suite: **2793 testes em 207 arquivos, 21799 `expect`**, 0 falhas. Do nativo
-sao 761 testes em 63 arquivos; do web, 2032 em 144. A home do site exibe o
+A suite: **2795 testes em 207 arquivos, 21810 `expect`**, 0 falhas. Do nativo
+sao 762 testes em 63 arquivos; do web, 2033 em 144. A home do site exibe o
 mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
 falha se divergir.
 
 | Guarda                  | O que ela diz em 25/09                                                                                       |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `check:props`           | 308 entradas (pecas e partes), 4368 props                                                                    |
+| `check:props`           | 308 entradas (pecas e partes), 4380 props; prop propria que colide com atributo herdado reprova              |
 | `check:colors`          | 188 arquivos sem cor literal fora de `src/tokens/`                                                           |
 | `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
 | `check:contrast`        | 138 pares por tema, nos dois temas, mais 14 de `scales.css`                                                  |
@@ -266,16 +266,6 @@ Nenhum destes tem codigo a escrever aqui.
 
 ### Divida de codigo, conferida contra a arvore
 
-- **`RichTextEditor` com `max={1}` diz "Limite de 1 caracteres atingido."**
-  (`src/editor/rich-text-editor.tsx`, o rotulo padrao `limit`). Menor.
-- **Oito props proprias somem da tabela publicada.** `Clipboard.value` (e e
-  obrigatoria), `AccordionItem.title`, `TreeSelect.defaultValue`,
-  `TimeField.name`, `Sidebar.title`, `TagsInput.max` e o `format` dos dois
-  eixos. A causa esta em `scripts/props-do-catalogo.ts`: prop descartada quando
-  `declarations[0]` cai em `@types/react`, e prop propria que colide com
-  atributo HTML homonimo tem a do React como primeira declaracao. Consertar
-  reescreve `component-props.json` e mexe nos carimbos `since`: commit proprio,
-  com o diff do JSON lido.
 - **`OUT_OF_SCOPE` do `check:skill` esta obsoleto.** O JSDoc dele condiciona a
   excecao a o nativo nao ter tabela de props, e ela existe
   (`native-props.json`). Os exemplos de `reference/native.md` sao o unico
@@ -329,7 +319,7 @@ Nenhum destes tem codigo a escrever aqui.
 ```sh
 cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
-bun run check                # 37 passos, termina nos 2793 testes
+bun run check                # 37 passos, termina nos 2795 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
 bun run fumaca:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
@@ -357,9 +347,9 @@ bun run check:pecas                                 # 134 pecas (222 - 88 partes
 grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
 grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 2793 testes em 207 arquivos
-bun test native/test                                # 743 em 62 arquivos
-bun run check:assinatura                            # 225 divergencias em 91 pecas
+bun run check:testes                                # 2795 testes em 207 arquivos
+bun test native/test                                # 762 em 63 arquivos
+bun run check:assinatura                            # 222 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
 bun run check:compartilhado                         # 38 espelhados, 16 copias
 bun run check:contrast | grep -cE '^ +ok'          # 290: 138 por tema mais 14 de scales.css
