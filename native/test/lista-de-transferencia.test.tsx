@@ -141,4 +141,26 @@ describe("TransferList", () => {
     expect(onValueChange).not.toHaveBeenCalled();
     expect(spoken.announced).toEqual([]);
   });
+
+  test("com cinco mil itens, mover todos nao varre a lista inteira por item", () => {
+    const many: TransferListItem[] = Array.from({ length: 5000 }, (_, index) => ({
+      value: `k${index}`,
+      label: `Cliente ${index}`,
+    }));
+    const onValueChange = mock((_: string[]) => {});
+    const screen = render(<Controlled items={many} searchable={false} onValueChange={onValueChange} />);
+    const real = Array.prototype.includes;
+    let scanned = 0;
+    Array.prototype.includes = function (this: unknown[], ...args: Parameters<typeof real>) {
+      if (this.length >= 1000) scanned += this.length;
+      return real.apply(this, args);
+    };
+    try {
+      pressButton(screen, "Mover todos para Escolhidos");
+    } finally {
+      Array.prototype.includes = real;
+    }
+    expect(onValueChange.mock.calls.at(-1)![0]).toHaveLength(5000);
+    expect(scanned).toBeLessThan(500_000);
+  });
 });

@@ -355,3 +355,41 @@ test("as contas puras dizem o plural certo e nao movem o que esta desabilitado",
   expect(transferMove(ITEMS, ["nat", "sp"], ["nat", "sp"], "available")).toEqual(["nat"]);
   expect(transferSides(ITEMS, ["sumiu", "jp"]).chosen.map((item) => item.value)).toEqual(["jp"]);
 });
+
+const MANY: TransferListItem[] = Array.from({ length: 5000 }, (_, index) => ({
+  value: `k${index}`,
+  label: `Cliente ${index}`,
+}));
+
+test("mover cinco mil itens de uma vez, ida e volta, nao cresce ao quadrado", () => {
+  const keys = MANY.map((item) => item.value);
+  const started = performance.now();
+  for (let turn = 0; turn < 10; turn++) {
+    const there = transferMove(MANY, [], keys, "chosen");
+    expect(there).toHaveLength(5000);
+    expect(transferMove(MANY, there, keys, "available")).toHaveLength(0);
+  }
+  expect(performance.now() - started).toBeLessThan(150);
+});
+
+test("com cinco mil itens, marcar tudo e mover tudo nao varre a lista de marcados por linha", () => {
+  render(<Controlled items={MANY} searchable={false} />);
+  const { available } = lists();
+  const real = Array.prototype.includes;
+  let scanned = 0;
+  Array.prototype.includes = function (this: unknown[], ...args: Parameters<typeof real>) {
+    if (this.length >= 1000) scanned += this.length;
+    return real.apply(this, args);
+  };
+  try {
+    fireEvent.keyDown(available, { key: "a", ctrlKey: true });
+    for (let turn = 0; turn < 5; turn++) {
+      fireEvent.click(within(available).getAllByRole("option")[turn * 7]!);
+    }
+    fireEvent.keyDown(available, { key: "Enter" });
+  } finally {
+    Array.prototype.includes = real;
+  }
+  expect(labelsOf(lists().chosen)).toHaveLength(4995);
+  expect(scanned).toBeLessThan(500_000);
+});

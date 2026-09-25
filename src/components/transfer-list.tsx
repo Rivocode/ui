@@ -152,6 +152,10 @@ export function TransferList({
     available: marked("available"),
     chosen: marked("chosen"),
   };
+  const selectedSet: Record<TransferSide, Set<string>> = {
+    available: new Set(selected.available),
+    chosen: new Set(selected.chosen),
+  };
 
   useLayoutEffect(() => {
     const waiting = pending.current;
@@ -190,7 +194,7 @@ export function TransferList({
   function toggle(side: TransferSide, index: number) {
     const item = shown[side][index];
     if (!item || item.disabled) return;
-    mark(side, [item.value], !selected[side].includes(item.value));
+    mark(side, [item.value], !selectedSet[side].has(item.value));
     setAnchor((current) => ({ ...current, [side]: item.value }));
   }
 
@@ -204,7 +208,8 @@ export function TransferList({
   }
 
   function move(from: TransferSide, keys: string[], trigger?: HTMLElement) {
-    const movable = items.filter((item) => !item.disabled && keys.includes(item.value));
+    const wanted = new Set(keys);
+    const movable = items.filter((item) => !item.disabled && wanted.has(item.value));
     if (disabled || movable.length === 0) return;
     const to = OTHER_SIDE[from];
     onValueChange(transferMove(items, value, keys, to));
@@ -334,7 +339,7 @@ export function TransferList({
             )}
           >
             {list.map((item, index) => {
-              const isSelected = selected[side].includes(item.value);
+              const isSelected = selectedSet[side].has(item.value);
               const off = disabled || item.disabled;
               return (
                 <li

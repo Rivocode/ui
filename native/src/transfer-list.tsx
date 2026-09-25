@@ -93,7 +93,8 @@ export function TransferList({
   };
 
   function move(from: TransferSide, keys: string[]) {
-    const total = items.filter((item) => !item.disabled && keys.includes(item.value)).length;
+    const wanted = new Set(keys);
+    const total = items.filter((item) => !item.disabled && wanted.has(item.value)).length;
     if (disabled || total === 0) return;
     const to = OTHER_SIDE[from];
     onValueChange(transferMove(items, value, keys, to));
@@ -111,6 +112,7 @@ export function TransferList({
   function section(side: TransferSide) {
     const list = shown(side);
     const marked = selected(side);
+    const markedSet = new Set(marked);
     const searching = query[side].trim().length > 0;
 
     return (
@@ -148,7 +150,7 @@ export function TransferList({
             </Text>
           ) : (
             list.map((item) => {
-              const checked = marked.includes(item.value);
+              const checked = markedSet.has(item.value);
               return (
                 <Checkbox
                   key={item.value}

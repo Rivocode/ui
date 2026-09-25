@@ -72,8 +72,9 @@ export function transferMove(
   moving: readonly string[],
   to: TransferSide,
 ): string[] {
+  const wanted = new Set(moving);
   const movable = new Set(
-    items.filter((item) => !item.disabled && moving.includes(item.value)).map((item) => item.value),
+    items.filter((item) => !item.disabled && wanted.has(item.value)).map((item) => item.value),
   );
   if (to === "available") return value.filter((key) => !movable.has(key));
   const current = new Set(value);
