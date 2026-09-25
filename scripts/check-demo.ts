@@ -72,14 +72,15 @@ function catalogPieces() {
  * vinte e cinco linhas sairam daqui de uma vez, entre pecas postas nas paginas
  * que ja existiam e as duas paginas novas, `demo/painel.tsx` e `demo/paleta.tsx`.
  * Se alguma voltar para ca, o motivo tem que dizer o que passou a impedir.
+ *
+ * Em 25/09/2026 sairam as duas de gesto: o `Autocomplete` entrou fechado em
+ * `demo/dados.tsx`, com texto fora da lista, e o `Editable` entrou em
+ * `demo/painel.tsx`, aberto por clique de script no tema escuro, como o
+ * `ContextMenu` ja fazia. Sobrou a unica que nao tem o que retratar sozinha.
  */
 const SEM_VITRINE: Record<string, string> = {
   ToastViewport:
     "Nao tem vitrine propria: o RivoProvider a monta, e nenhum aplicativo a escreve. O que se ve dela ja esta em demo/flutuantes.tsx, que dispara os avisos que caem dentro dela.",
-  Autocomplete:
-    "O painel e o mesmo do Combobox, que ja esta em demo/dados.tsx. O que ela tem de proprio - aceitar o que nao esta na lista - so aparece enquanto se digita.",
-  Editable:
-    "Gesto: o `editing` e estado interno, e `EditableProps` nao tem prop que o force - nem `editing`, nem `defaultEditing`, nem `open`. Parada ela e o paragrafo que ja esta na tela, e o campo que ela vira nao aparece. O caminho que sobra e o que o ContextMenu tomou em demo/flutuantes.tsx: a pagina dispara o gesto por script depois de montar. Quem for pagar esta divida faz isso, e nao inventa prop so para a vitrine.",
 };
 
 const pieces = catalogPieces();

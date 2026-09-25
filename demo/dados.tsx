@@ -25,6 +25,8 @@ import {
   SearchInput,
   TagsInput,
   Tree,
+  Autocomplete,
+  AutocompleteInput,
   Combobox,
   ComboboxContent,
   ComboboxInput,
@@ -38,6 +40,8 @@ import {
   type TreeNode,
   type RivoTheme,
 } from "../src/index";
+
+const CITIES = ["Joao Pessoa", "Campina Grande", "Cabedelo", "Bayeux", "Patos"];
 
 const CUSTOMERS = [
   { value: "clinica", label: "Clinica Sao Lucas" },
@@ -207,6 +211,21 @@ function Sample({ theme }: { theme: RivoTheme }) {
                 </ComboboxList>
               </ComboboxContent>
             </Combobox>
+          </Block>
+
+          <Block title="Texto livre com sugestao">
+            <Autocomplete items={CITIES} defaultValue="Joao Pessoa - Centro">
+              <AutocompleteInput aria-label="Cidade" placeholder="Cidade" />
+              <ComboboxContent emptyMessage="Nenhuma cidade com esse nome.">
+                <ComboboxList>
+                  {(city: string) => (
+                    <ComboboxItem key={city} value={city}>
+                      {city}
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxContent>
+            </Autocomplete>
           </Block>
 
           <Block title="Escolha em arvore">

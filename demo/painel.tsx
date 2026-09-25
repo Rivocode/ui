@@ -1,4 +1,5 @@
 import { Download, MoreHorizontal, Plus, Wallet } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { createRoot } from "react-dom/client";
 
 import {
@@ -15,6 +16,7 @@ import {
   Container,
   DescriptionItem,
   DescriptionList,
+  Editable,
   Grid,
   Kbd,
   Menu,
@@ -176,7 +178,23 @@ function Numbers() {
   );
 }
 
-function ListAndDetail() {
+function Note({ open }: { open: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => box.current?.querySelector("button")?.click(), 60);
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  return (
+    <div ref={box} className="min-w-0">
+      <Editable defaultValue="Entregar na recepcao" label="Observacao" />
+    </div>
+  );
+}
+
+function ListAndDetail({ editing }: { editing: boolean }) {
   return (
     <div className="h-80 w-full max-w-3xl">
       <Splitter
@@ -221,6 +239,9 @@ function ListAndDetail() {
               </DescriptionItem>
               <DescriptionItem label="Valor">
                 <span className="font-mono">{currencyShort(2480)}</span>
+              </DescriptionItem>
+              <DescriptionItem label="Observacao">
+                <Note open={editing} />
               </DescriptionItem>
             </DescriptionList>
           </div>
@@ -394,7 +415,7 @@ function Sample({ theme, density }: { theme: RivoTheme; density: RivoDensity }) 
         </Block>
 
         <Block title="Splitter e DescriptionList">
-          <ListAndDetail />
+          <ListAndDetail editing={theme === "rivocode-dark"} />
         </Block>
 
         <Block title="ResizablePanelGroup">
