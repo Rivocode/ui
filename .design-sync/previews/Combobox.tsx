@@ -114,3 +114,25 @@ export function Grouped() {
     </div>
   )
 }
+
+/** Nos três tamanhos */
+export function Sizes() {
+  return (
+    <div className="flex w-80 flex-col gap-3">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Combobox key={size} items={CLIENTES} size={size}>
+          <ComboboxInput aria-label={`Cliente, tamanho ${size}`} placeholder="Buscar cliente" />
+          <ComboboxContent emptyMessage="Nenhum cliente com esse nome.">
+            <ComboboxList>
+              {(item: (typeof CLIENTES)[number]) => (
+                <ComboboxItem key={item.value} value={item}>
+                  {item.label}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      ))}
+    </div>
+  )
+}

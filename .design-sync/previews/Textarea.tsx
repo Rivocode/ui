@@ -10,3 +10,17 @@ export function WithLabel() {
     </Field>
   )
 }
+
+/** Nos três tamanhos */
+export function Sizes() {
+  return (
+    <div className="flex w-80 flex-col gap-3">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Field key={size}>
+          <FieldLabel>Observação, tamanho {size}</FieldLabel>
+          <Textarea size={size} rows={2} placeholder="O que o cliente pediu" />
+        </Field>
+      ))}
+    </div>
+  )
+}

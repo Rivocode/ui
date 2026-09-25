@@ -203,7 +203,7 @@ recusa o que conseguiu medir.
 | `CurrencyInput` | ✔ traduz | os mesmos centavos, a mesma digitação da direita e a mesma leitura do colado; o campo é controlado |
 | `DataTable` | ✔ vira `DataList` | `filter`, `selectable` e a seleção por `value`/`onValueChange` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO `aaaa-mm-dd`, que o web também aceita, e exibe `dd/mm/aaaa` |
-| `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e o intervalo invertido deixou de existir |
+| `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e só o intervalo fechado sai, com `null` no Limpar, como no web |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
 | `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado |
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
@@ -235,7 +235,7 @@ recusa o que conseguiu medir.
 | `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
-| `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
+| `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque; `min` nasce em 0, e não sem piso como no web |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |

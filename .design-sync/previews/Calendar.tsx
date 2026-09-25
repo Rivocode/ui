@@ -23,3 +23,8 @@ export function DateRange() {
     />
   )
 }
+
+/** Sem estado próprio */
+export function Uncontrolled() {
+  return <Calendar defaultValue="2026-03-03" />
+}

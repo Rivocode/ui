@@ -6,6 +6,20 @@ import { createContext, use, useEffect, type ComponentProps, type Ref } from "re
 
 import { cn } from "../lib/cn";
 
+export type ControlSize = "sm" | "md" | "lg";
+
+export const controlSize: Record<ControlSize, string> = {
+  sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
+  md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
+  lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
+};
+
+const textareaSize: Record<ControlSize, string> = {
+  sm: "min-h-[calc(var(--rc-control-sm)*2)] py-1.5",
+  md: "min-h-[calc(var(--rc-control-md)*2)] py-2",
+  lg: "min-h-[calc(var(--rc-control-lg)*2)] py-2.5",
+};
+
 export const inputVariants = cva(
   cn(
     "w-full rounded-md border border-border-strong bg-surface text-fg",
@@ -19,11 +33,7 @@ export const inputVariants = cva(
   ),
   {
     variants: {
-      size: {
-        sm: "h-[var(--rc-control-sm)] px-[var(--rc-control-pad-sm)] text-sm",
-        md: "h-[var(--rc-control-md)] px-[var(--rc-control-pad-md)] text-base",
-        lg: "h-[var(--rc-control-lg)] px-[var(--rc-control-pad-lg)] text-md",
-      },
+      size: controlSize,
     },
     defaultVariants: { size: "md" },
   },
@@ -98,16 +108,22 @@ export function Input({ className, size, ...props }: InputProps) {
 export type TextareaProps = Omit<ComponentProps<typeof BaseField.Control>, "size"> & {
   /** Quantas linhas o campo mostra antes de rolar. */
   rows?: number;
+  /**
+   * O mesmo vocabulario do Input: muda o recuo lateral, o corpo do texto e a
+   * altura minima, que e a de dois campos do mesmo tamanho.
+   */
+  size?: ControlSize;
 };
 
-export function Textarea({ className, rows = 4, ...props }: TextareaProps) {
+export function Textarea({ className, rows = 4, size = "md", ...props }: TextareaProps) {
   return (
     <BaseField.Control
       {...props}
       render={<textarea rows={rows} />}
       className={cn(
-        inputVariants(),
-        "h-auto min-h-[calc(var(--rc-control-md)*2)] resize-y py-2 leading-[var(--rc-leading-normal)]",
+        inputVariants({ size }),
+        "h-auto resize-y leading-[var(--rc-leading-normal)]",
+        textareaSize[size],
         className,
       )}
     />

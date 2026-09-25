@@ -1,4 +1,4 @@
-import { DateRangePicker, type IsoDateRange } from '@rivocode/ui'
+import { DateRangePicker, type DateRange, type IsoDateRange } from '@rivocode/ui'
 import { useState } from 'react'
 
 /** Período */
@@ -10,4 +10,13 @@ export function Period() {
 /** Vazio */
 export function Empty() {
   return <DateRangePicker className="w-72" />
+}
+
+/** Em Date */
+export function WithDate() {
+  const [period, setPeriod] = useState<DateRange | null>({
+    from: new Date(2026, 2, 3),
+    to: new Date(2026, 2, 12),
+  })
+  return <DateRangePicker className="w-72" value={period ?? undefined} onValueChange={setPeriod} />
 }

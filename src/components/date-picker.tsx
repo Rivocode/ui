@@ -52,7 +52,9 @@ type DatePickerBase = Omit<
     /** Dias que nao podem ser escolhidos. Vai direto para o calendario. */
     disabledDays?: CalendarProps["disabled"];
     /**
-     * Sem rodape, o clique no dia ja vale e o painel fecha. Ligue quando a
+     * Rodape com Limpar e Aplicar. Desligado por padrao, ao contrario do
+     * `DateRangePicker`: data unica se escolhe num clique so, entao o clique no
+     * dia ja vale e o painel fecha, sem saida dupla a evitar. Ligue quando a
      * escolha dispara trabalho caro, como recarregar uma listagem.
      */
     confirm?: boolean;

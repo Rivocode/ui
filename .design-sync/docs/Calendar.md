@@ -33,6 +33,14 @@ const [vencimento, setVencimento] = useState<string | null>(null)
 />
 ```
 
+Sem estado próprio, `defaultValue` dá o dia inicial e o calendário guarda a
+escolha sozinho, nos mesmos dois formatos e respondendo no mesmo formato, como o
+`DatePicker`:
+
+```tsx
+<Calendar defaultValue="2026-09-25" onValueChange={(dia) => console.log(dia)} />
+```
+
 O texto é lido como dia do calendário, e não como instante: `"2026-09-25"` é
 25 de setembro em qualquer fuso. O `new Date("2026-09-25")` do JavaScript lê
 meia-noite em UTC, que em Brasília ainda é dia 24.

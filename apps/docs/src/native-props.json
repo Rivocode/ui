@@ -3213,7 +3213,8 @@
       {
         "name": "min",
         "type": "number",
-        "required": false
+        "required": false,
+        "note": "O piso, inclusive."
       },
       {
         "name": "step",

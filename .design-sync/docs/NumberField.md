@@ -24,4 +24,4 @@ chega num valor que o formulário rejeita depois.
 
 ## No React Native
 
-Traduz: o `@rivocode/ui-native` exporta `NumberField` - vira stepper (menos, valor, mais), que é o idioma do toque. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
+Traduz, e vira stepper: menos, valor, mais, que é o idioma do toque. **O `min` nasce em 0**, e no web ele nasce sem piso. Não é descuido: o teclado numérico do iPhone (`number-pad`) não tem sinal de menos, então o número negativo só chegaria pelo botão de menos, e um campo que desce abaixo de zero por toque e não deixa digitar o mesmo valor é pior do que um campo que para no zero. Para aceitar negativo, passe `min` explícito: o stepper desce até ele. O resto da API também muda (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.

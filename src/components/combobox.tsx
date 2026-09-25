@@ -15,7 +15,7 @@ import {
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
-import { inputVariants } from "./field";
+import { inputVariants, type ControlSize } from "./field";
 import { floatingGroupLabel, floatingPanel } from "./menu";
 
 type ComboboxLabelSource = {
@@ -25,6 +25,8 @@ type ComboboxLabelSource = {
 };
 
 const ComboboxLabels = createContext<ComboboxLabelSource | null>(null);
+
+const ComboboxSize = createContext<ControlSize>("md");
 
 export function missingComboboxLabelComplaint(key: string, label: string): string {
   return (
@@ -53,9 +55,21 @@ function comboboxComplaintOf(
   return missingComboboxLabelComplaint(key, label);
 }
 
-export function Combobox<Value, Multiple extends boolean | undefined = false>(
-  props: BaseCombobox.Root.Props<Value, Multiple>,
-) {
+export type ComboboxProps<
+  Value,
+  Multiple extends boolean | undefined = false,
+> = BaseCombobox.Root.Props<Value, Multiple> & {
+  /**
+   * Tamanho do campo, o mesmo vocabulario e a mesma altura do Input. Mora na
+   * raiz, e o `ComboboxInput` de dentro o veste.
+   */
+  size?: ControlSize;
+};
+
+export function Combobox<Value, Multiple extends boolean | undefined = false>({
+  size = "md",
+  ...props
+}: ComboboxProps<Value, Multiple>) {
   const { value, defaultValue, items, itemToStringLabel, inputValue, defaultInputValue } = props;
   const resolved = useRef(false);
 
@@ -72,7 +86,9 @@ export function Combobox<Value, Multiple extends boolean | undefined = false>(
 
   return (
     <ComboboxLabels value={source}>
-      <BaseCombobox.Root {...props} />
+      <ComboboxSize value={size}>
+        <BaseCombobox.Root {...props} />
+      </ComboboxSize>
     </ComboboxLabels>
   );
 }
@@ -94,11 +110,13 @@ export function ComboboxInput({
   clearable = true,
   ...props
 }: ComboboxInputProps) {
+  const size = use(ComboboxSize);
+
   return (
     <BaseCombobox.InputGroup
       className={cn("relative flex w-full items-center", className, classNames?.wrapper)}
     >
-      <BaseCombobox.Input {...props} className={cn(inputVariants(), "pr-16", classNames?.input)} />
+      <BaseCombobox.Input {...props} className={cn(inputVariants({ size }), "pr-16", classNames?.input)} />
 
       <span className="absolute right-1.5 flex items-center gap-0.5">
         {clearable && (

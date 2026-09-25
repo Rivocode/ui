@@ -147,7 +147,7 @@ diz a diferença entre as que se parecem, que é a parte que costuma faltar. O
 | Peça                            | Para que serve                                                             |
 | ------------------------------- | -------------------------------------------------------------------------- |
 | `Field`, `Input`                | campo com rótulo, ajuda e erro ligados por acessibilidade                  |
-| `Textarea`                      | várias linhas; altura em número de linhas, sem variante de tamanho         |
+| `Textarea`                      | várias linhas; altura em número de linhas, e o `size` do `Input`           |
 | `PasswordInput`                 | senha com o olho que revela; o par que todo projeto reconstrói             |
 | `SearchInput`                   | busca com a lupa no lugar, sem `position: absolute` montado à mão          |
 | `NumberField`                   | número com mais e menos, quando passo e limite são conhecidos e o valor exato importa |

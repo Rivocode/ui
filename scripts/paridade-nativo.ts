@@ -705,7 +705,15 @@ const PARITY: Record<string, Row> = {
   },
   NumberField: {
     state: "traduz",
-    note: "vira stepper (menos, valor, mais), que é o idioma do toque",
+    note: "vira stepper (menos, valor, mais), que é o idioma do toque; `min` nasce em 0, e não sem piso como no web",
+    page:
+      "Traduz, e vira stepper: menos, valor, mais, que é o idioma do toque. **O `min` nasce " +
+      "em 0**, e no web ele nasce sem piso. Não é descuido: o teclado numérico do iPhone " +
+      "(`number-pad`) não tem sinal de menos, então o número negativo só chegaria pelo " +
+      "botão de menos, e um campo que desce abaixo de zero por toque e não deixa digitar o " +
+      "mesmo valor é pior do que um campo que para no zero. Para aceitar negativo, passe " +
+      "`min` explícito: o stepper desce até ele. O resto da API também muda (no nativo tudo " +
+      "é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.",
   },
   OTPField: {
     state: "traduz",
@@ -929,8 +937,9 @@ const PARITY: Record<string, Row> = {
     state: "traduz",
     note: "`rows` é a altura inicial e o campo cresce; `onValueChange` recebe o texto, como no web e no `Input`",
     page:
-      "Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web, que " +
-      "também não tem variante de tamanho.\n\n" +
+      "Traduz: `rows` é a altura inicial e o campo cresce com o conteúdo, como no web. O " +
+      "`size` do web não atravessa: ele só casa o recuo, o corpo do texto e a altura mínima " +
+      "com o `Input` vizinho, e no nativo o `Input` também tem uma altura só.\n\n" +
       "O texto chega por `onValueChange`, com o mesmo nome do web e do resto dos campos " +
       "nativos. O `onChangeText` do `TextInput` continua valendo e é chamado junto, e é " +
       "nele que o `forText` do `@rivocode/ui-native/form` se apoia, igual para o `Input` e " +
@@ -1116,7 +1125,7 @@ const PARITY: Record<string, Row> = {
   },
   DateRangePicker: {
     state: "traduz",
-    note: "um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e o intervalo invertido deixou de existir",
+    note: "um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e só o intervalo fechado sai, com `null` no Limpar, como no web",
     page:
       "Traduz, com um desenho só: **um mês, numa folha de baixo, com a faixa pintada na " +
       "própria grade**. Os dois meses lado a lado do web não cabem (390px partidos ao meio " +
@@ -1127,12 +1136,12 @@ const PARITY: Record<string, Row> = {
       "peça ordena as duas pontas em vez de descartar o primeiro toque, e o `Aplicar` fica " +
       "desligado enquanto falta a segunda. Por isso o tipo mudou: o `DateRange` daqui tem " +
       "`from` e `to` **obrigatórios**, os dois como ISO `aaaa-mm-dd`, e o vazio é `null` - " +
-      "o mesmo `IsoDateRange` que o web aceita e devolve quando recebe o valor em texto. O " +
-      "intervalo pela metade, que no web com `Date` sai no `onValueChange` entre os dois cliques para o " +
-      "resumo do filtro acompanhar, não sai daqui: sob uma folha não há tela atrás para " +
-      "acompanhar nada: quem quiser acompanhar lê o resumo que a própria folha escreve " +
-      "acima do mês. Sem `confirm`: a folha sempre confirma, porque o toque fora dela é o " +
-      "gesto de desistir e não pode valer como aplicar.",
+      "o mesmo `IsoDateRange` que o web aceita e devolve quando recebe o valor em texto, e o " +
+      "mesmo contrato do web nos dois formatos: o `onValueChange` só recebe intervalo " +
+      "fechado, e `null` no Limpar. O intervalo pela metade não sai de nenhum dos dois " +
+      "pacotes: quem quiser acompanhar lê o resumo que a própria folha escreve acima do " +
+      "mês. Sem `confirm`: a folha sempre confirma, porque o toque fora dela é o gesto de " +
+      "desistir e não pode valer como aplicar.",
   },
   Editable: {
     state: "traduz",

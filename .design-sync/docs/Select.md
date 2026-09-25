@@ -15,6 +15,22 @@ valor cru em vez do rótulo, e essa é a armadilha mais fácil de cair aqui.
 
 Renderiza em portal, então exige o `RivoProvider`.
 
+`size` mora na raiz, com o vocabulário do `Input`: `sm`, `md` (padrão) e `lg`,
+com a mesma altura, o mesmo recuo e o mesmo corpo de texto. O `SelectTrigger`
+de dentro veste o tamanho sozinho, então um filtro com `Input size="sm"` e
+`Select size="sm"` lado a lado fica numa linha só.
+
+```tsx
+<Select items={STATUS} size="sm">
+  <SelectTrigger aria-label="Status">
+    <SelectValue placeholder="Todos" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="abertas">Abertas</SelectItem>
+  </SelectContent>
+</Select>
+```
+
 ## Quando não usar
 
 Quando a lista é grande demais para caber na cabeça de quem escolhe, ou quando

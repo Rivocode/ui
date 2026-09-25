@@ -35,7 +35,7 @@ const AGENDA: CalendarEvent[] = [
 
 function Sample({ theme }: { theme: RivoTheme }) {
   const [dueDate, setDueDate] = useState<Date | undefined>(new Date(2026, 2, 3));
-  const [periodo, setPeriodo] = useState<DateRange | undefined>({
+  const [periodo, setPeriodo] = useState<DateRange | null>({
     from: new Date(2026, 2, 3),
     to: new Date(2026, 2, 12),
   });
@@ -76,7 +76,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
 
         <div className="w-full max-w-72">
           <p className="mb-1.5 text-sm font-medium text-fg">Periodo do relatorio</p>
-          <DateRangePicker value={periodo} onValueChange={setPeriodo} />
+          <DateRangePicker value={periodo ?? undefined} onValueChange={setPeriodo} />
         </div>
       </div>
 
@@ -90,7 +90,7 @@ function Sample({ theme }: { theme: RivoTheme }) {
           <p className="mb-3 text-sm text-fg-muted">Calendario, intervalo</p>
           <Calendar
             mode="range"
-            selected={periodo}
+            selected={periodo ?? undefined}
             month={new Date(2026, 2, 1)}
             numberOfMonths={2}
           />

@@ -7,6 +7,11 @@ import { Text, TextInput } from "./text";
 export type NumberFieldProps = {
   value: number;
   onValueChange: (value: number) => void;
+  /**
+   * O piso, inclusive. Nasce em 0, e nao sem piso como no web: o teclado
+   * numerico do iPhone nao tem sinal de menos, entao o negativo so chegaria
+   * pelo botao de menos. Passe um `min` negativo para o stepper descer ate ele.
+   */
   min?: number;
   max?: number;
   step?: number;

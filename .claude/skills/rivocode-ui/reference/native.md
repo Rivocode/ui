@@ -115,7 +115,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**194 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**196 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -177,7 +177,9 @@ escritos em lugar nenhum.
 | `DatePicker` | `disabledDays` | — | dia bloqueado avulso não porta: a faixa é `min`/`max` |
 | `DatePicker` | `confirm` | — | a folha sempre confirma: escolher já fecha |
 | `DatePicker` | — | `label` | `label` é obrigatório, e o campo não vive dentro de um `Field` |
+| `DateRangePicker` | `value` | `value` | `value` e `onValueChange` são obrigatórios e só em ISO: o `IsoDateRange` do web, que aqui se chama `DateRange`; o contrato é o mesmo, intervalo fechado ou `null` |
 | `DateRangePicker` | `numberOfMonths` | — | um mês por folha, sempre |
+| `DateRangePicker` | `confirm` | — | a folha sempre confirma: o toque fora dela é desistir |
 | `DescriptionItem` | `label` | `label` | `label` é `string`, e o corpo continua sendo filho |
 | `Dialog` | — | `title` | `title` é prop obrigatória e `description` é prop: sem `DialogTitle` e sem `DialogTrigger` |
 | `Dialog` | `open` | `open` | `open` e `onOpenChange` são obrigatórios: quem abre é quem chama |
@@ -222,7 +224,7 @@ escritos em lugar nenhum.
 | `NotificationCenter` | `defaultFilter` | — | o filtro começa em `all`; `filter` com `onFilterChange` controla |
 | `NotificationCenter` | `align` | — | a lista é sempre uma folha de baixo, e não um painel ancorado ao sino |
 | `NotificationCenter` | `classNames` | `classNames` | sem `footer`: o “Carregar mais” fica direto na folha |
-| `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número |
+| `NumberField` | `value` | `value` | `value` é `number` e nunca `null`: o stepper sempre tem um número, e o `min` nasce em 0 porque o teclado numérico do iPhone não tem sinal de menos |
 | `NumberField` | `step` | `step` | sem `"any"`: o passo do stepper é um número |
 | `NumberField` | — | `label` | `label` é obrigatório: é ele que nomeia os dois botões de passo |
 | `OTPField` | `mask` | — | sem esconder o dígito, e sem `autoSubmit`, `normalizeValue` e `validationType` |
@@ -314,7 +316,7 @@ escritos em lugar nenhum.
 | `TreeSelect` | `searchable` | — | sem busca na folha |
 | `TreeSelect` | — | `label` | `label` é obrigatório, e o rodapé traz a contagem do rascunho e o `Aplicar` |
 
-Fora da tabela, uma perda que se repete: **15 peças perdem `size` no nativo** — `Badge`, `Clipboard`, `CurrencyInput`, `DatePicker`, `DateRangePicker`, `Input`, `InputGroup`, `MaskedInput`, `NumberField`, `PasswordInput`, `PostalCodeField`, `SearchInput`, `TimeField`, `TimePicker` e `TreeSelect`. Alvo de toque não encolhe, e `comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.
+Fora da tabela, uma perda que se repete: **18 peças perdem `size` no nativo** — `Badge`, `Clipboard`, `Combobox`, `CurrencyInput`, `DatePicker`, `DateRangePicker`, `Input`, `InputGroup`, `MaskedInput`, `NumberField`, `PasswordInput`, `PostalCodeField`, `SearchInput`, `Select`, `Textarea`, `TimeField`, `TimePicker` e `TreeSelect`. Alvo de toque não encolhe, e `comfortable` é a única altura. Esta lista é medida a cada geração, e não escrita à mão.
 
 ## O formulário entra por outro caminho
 
@@ -469,7 +471,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `CurrencyInput` | ✔ traduz | os mesmos centavos, a mesma digitação da direita e a mesma leitura do colado; o campo é controlado |
 | `DataTable` | ✔ vira `DataList` | `filter`, `selectable` e a seleção por `value`/`onValueChange` portam com o mesmo nome; ordenar e `pageSize` ficam de fora por desenho |
 | `DatePicker` | ✔ traduz | abre a folha com o mês; guarda ISO `aaaa-mm-dd`, que o web também aceita, e exibe `dd/mm/aaaa` |
-| `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e o intervalo invertido deixou de existir |
+| `DateRangePicker` | ✔ traduz | um mês numa folha, com as duas pontas na mesma grade e em ISO `aaaa-mm-dd`, que o web também aceita; a peça ordena os toques, e só o intervalo fechado sai, com `null` no Limpar, como no web |
 | `DescriptionList` | ✔ traduz | as bordas entram por `Children`: a utility de divisória do Tailwind não existe no RN |
 | `Dialog` | ✔ traduz | `open`, `onOpenChange` e `title` como props; sem `DialogTrigger`. Abre em fade, e sem transição quando o sistema pede para reduzir movimento; o cartão sobe para o espaço acima do teclado |
 | `Editable` | ✔ traduz | quem abre é o toque **longo**, o retorno do teclado confirma e há um `Cancelar` visível: sair do campo não salva, ao contrário do web |
@@ -501,7 +503,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Meter` | ✔ traduz | `format` como no web, e o texto pronto em `valueLabel` quando a medida já vem escrita; a barra anda até o valor novo |
 | `NavigationMenu` | ✕ não porta | idioma de mesa; navegação nativa é tab bar e drawer do router |
 | `NotificationCenter` | ✔ traduz | a lista abre numa `Sheet`; `open` é controlado, o sino entra por `icon`, e a linha chama `onItemPress` no lugar do `href` |
-| `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque |
+| `NumberField` | ✔ traduz | vira stepper (menos, valor, mais), que é o idioma do toque; `min` nasce em 0, e não sem piso como no web |
 | `OTPField` | ✔ traduz | caixas visíveis, um campo escondido: teclado, autofill de SMS e leitor veem um só; o dígito aparece crescendo; `label` nomeia o campo |
 | `PageHeader` | ✔ traduz | `title`, `description`, `badge` e `actions` como props; `classNames` com as cinco partes do web |
 | `Pagination` | ✕ não porta | lista de celular rola; escolher o número da página é gesto de mesa |

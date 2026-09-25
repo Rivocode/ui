@@ -514,7 +514,15 @@ export const SIGNATURES: Record<string, Signature> = {
     ],
   },
   DateRangePicker: {
-    rows: [{ web: "numberOfMonths", native: null, note: "um mês por folha, sempre" }],
+    rows: [
+      {
+        web: "value",
+        native: "value",
+        note: "`value` e `onValueChange` são obrigatórios e só em ISO: o `IsoDateRange` do web, que aqui se chama `DateRange`; o contrato é o mesmo, intervalo fechado ou `null`",
+      },
+      { web: "numberOfMonths", native: null, note: "um mês por folha, sempre" },
+      { web: "confirm", native: null, note: "a folha sempre confirma: o toque fora dela é desistir" },
+    ],
   },
   DescriptionItem: {
     rows: [
@@ -831,7 +839,7 @@ export const SIGNATURES: Record<string, Signature> = {
       {
         web: "value",
         native: "value",
-        note: "`value` é `number` e nunca `null`: o stepper sempre tem um número",
+        note: "`value` é `number` e nunca `null`: o stepper sempre tem um número, e o `min` nasce em 0 porque o teclado numérico do iPhone não tem sinal de menos",
       },
       { web: "step", native: "step", note: 'sem `"any"`: o passo do stepper é um número' },
       {

@@ -149,6 +149,7 @@ export {
   SelectTrigger,
   SelectValue,
   type SelectContentProps,
+  type SelectProps,
 } from "./components/select";
 export {
   Popover,
@@ -530,6 +531,7 @@ export {
   ComboboxValue,
   type ComboboxContentProps,
   type ComboboxInputProps,
+  type ComboboxProps,
 } from "./components/combobox";
 export { Tree, leavesOf, type TreeNode, type TreeProps } from "./components/tree";
 export { TreeSelect, type TreeSelectProps } from "./components/tree-select";

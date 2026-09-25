@@ -13,6 +13,7 @@ import {
 } from "../lib/item-label";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
+import { controlSize, type ControlSize } from "./field";
 import { floatingGroupLabel, floatingPanel } from "./menu";
 
 type SelectLabelSource = {
@@ -22,6 +23,19 @@ type SelectLabelSource = {
 };
 
 const SelectLabels = createContext<SelectLabelSource | null>(null);
+
+const SelectSize = createContext<ControlSize>("md");
+
+export type SelectProps<Value, Multiple extends boolean | undefined = false> = BaseSelect.Root.Props<
+  Value,
+  Multiple
+> & {
+  /**
+   * Tamanho do gatilho, o mesmo vocabulario e a mesma altura do Input. Mora na
+   * raiz, e o `SelectTrigger` de dentro o veste.
+   */
+  size?: ControlSize;
+};
 
 export function missingSelectItemsComplaint(key: string, label: string): string {
   return (
@@ -50,9 +64,10 @@ function selectComplaintOf(
   return missingSelectItemsComplaint(key, label);
 }
 
-export function Select<Value, Multiple extends boolean | undefined = false>(
-  props: BaseSelect.Root.Props<Value, Multiple>,
-) {
+export function Select<Value, Multiple extends boolean | undefined = false>({
+  size = "md",
+  ...props
+}: SelectProps<Value, Multiple>) {
   const { value, defaultValue, items, itemToStringLabel } = props;
   const resolved = useRef(false);
 
@@ -67,7 +82,9 @@ export function Select<Value, Multiple extends boolean | undefined = false>(
 
   return (
     <SelectLabels value={source}>
-      <BaseSelect.Root {...props} />
+      <SelectSize value={size}>
+        <BaseSelect.Root {...props} />
+      </SelectSize>
     </SelectLabels>
   );
 }
@@ -85,13 +102,16 @@ export function SelectTrigger({
   children,
   ...props
 }: ComponentProps<typeof BaseSelect.Trigger>) {
+  const size = use(SelectSize);
+
   return (
     <BaseSelect.Trigger
       {...props}
       className={cn(
-        "flex h-[var(--rc-control-md)] min-w-40 items-center justify-between gap-2",
-        "rounded-md border border-border-strong bg-surface px-[var(--rc-control-pad-md)]",
-        "font-sans text-base text-fg select-none",
+        "flex min-w-40 items-center justify-between gap-2",
+        "rounded-md border border-border-strong bg-surface",
+        controlSize[size],
+        "font-sans text-fg select-none",
         "transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
         "outline-none hover:bg-surface-raised",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

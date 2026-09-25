@@ -3883,6 +3883,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "defaultValue",
+        "type": "Date | string",
+        "required": false,
+        "note": "O dia inicial, quando o calendario controla o proprio estado."
+      },
+      {
         "name": "dir",
         "type": "string",
         "required": false,
@@ -9390,6 +9396,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "size",
+        "type": "ControlSize",
+        "required": false,
+        "note": "Tamanho do campo, o mesmo vocabulario e a mesma altura do Input."
+      },
+      {
         "name": "value",
         "type": "ComboboxValueType<Value, Multiple> | null",
         "required": false,
@@ -9936,7 +9948,7 @@
       },
       {
         "name": "size",
-        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "type": "ControlSize | null",
         "required": false
       },
       {
@@ -10113,7 +10125,7 @@
         "name": "confirm",
         "type": "boolean",
         "required": false,
-        "note": "Sem rodape, o clique no dia ja vale e o painel fecha.",
+        "note": "Rodape com Limpar e Aplicar.",
         "since": "0.5.0"
       },
       {
@@ -10193,7 +10205,7 @@
         "name": "confirm",
         "type": "boolean",
         "required": false,
-        "note": "Rodape com Aplicar.",
+        "note": "Rodape com Limpar e Aplicar.",
         "since": "0.5.0"
       },
       {
@@ -10238,9 +10250,9 @@
       },
       {
         "name": "onValueChange",
-        "type": "((range: DateRange | undefined) => void) | ((range: IsoDateRange | null) => void)",
+        "type": "((range: DateRange | null) => void) | ((range: IsoDateRange | null) => void)",
         "required": false,
-        "note": "Chamado quando o intervalo muda.",
+        "note": "Chamado com o intervalo fechado nas duas pontas, ou com `null` quando a escolha esvazia.",
         "since": "0.4.0"
       },
       {
@@ -11571,7 +11583,7 @@
       },
       {
         "name": "size",
-        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "type": "ControlSize | null",
         "required": false,
         "since": "0.4.0"
       }
@@ -13253,7 +13265,7 @@
       },
       {
         "name": "size",
-        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "type": "ControlSize | null",
         "required": false,
         "since": "0.4.0"
       },
@@ -19089,7 +19101,7 @@
       },
       {
         "name": "size",
-        "type": "\"lg\" | \"md\" | \"sm\" | null",
+        "type": "ControlSize | null",
         "required": false
       },
       {
@@ -24018,6 +24030,12 @@
         "since": "0.4.0"
       },
       {
+        "name": "size",
+        "type": "ControlSize",
+        "required": false,
+        "note": "Tamanho do gatilho, o mesmo vocabulario e a mesma altura do Input."
+      },
+      {
         "name": "value",
         "type": "SelectValueType<Value, Multiple> | null",
         "required": false,
@@ -25739,6 +25757,12 @@
         "required": false,
         "note": "Quantas linhas o campo mostra antes de rolar.",
         "since": "0.4.0"
+      },
+      {
+        "name": "size",
+        "type": "ControlSize",
+        "required": false,
+        "note": "O mesmo vocabulario do Input: muda o recuo lateral, o corpo do texto e a altura minima, que e a de dois campos do mesmo tamanho."
       }
     ]
   },

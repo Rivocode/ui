@@ -11,7 +11,7 @@ import {
   type PropsRangeRequired,
 } from "react-day-picker";
 import { ptBR } from "react-day-picker/locale";
-import type { ComponentProps, ReactElement } from "react";
+import { useState, type ComponentProps, type ReactElement } from "react";
 
 import { cn } from "../lib/cn";
 import { useMobile } from "../lib/screen";
@@ -54,7 +54,7 @@ type Unselected = Pick<
   "mode" | "required"
 >;
 
-type NoValue = { value?: undefined; onValueChange?: undefined };
+type NoValue = { value?: undefined; defaultValue?: undefined; onValueChange?: undefined };
 
 type DateValue = Unselected & {
   /**
@@ -63,16 +63,22 @@ type DateValue = Unselected & {
    */
   value?: Date;
   /**
+   * O dia inicial, quando o calendario controla o proprio estado. `Date` ou
+   * `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
+   */
+  defaultValue?: Date;
+  /**
    * Chamado com o dia tocado, no mesmo formato do `value`. Tocar de novo no
    * dia escolhido nao desmarca.
    */
   onValueChange?: (value: Date) => void;
 };
 
-type IsoValue = Unselected & {
-  value: string | null;
-  onValueChange?: (value: string) => void;
-};
+type IsoValue = Unselected &
+  (
+    | { value: string | null; defaultValue?: undefined; onValueChange?: (value: string) => void }
+    | { value?: undefined; defaultValue: string; onValueChange?: (value: string) => void }
+  );
 
 type Selection<P extends PropsMulti | PropsMultiRequired | PropsRange | PropsRangeRequired> = Omit<
   P,
@@ -106,6 +112,7 @@ type CalendarRuntimeProps = CalendarBase & {
   selected?: unknown;
   onSelect?: unknown;
   value?: DateInput | null;
+  defaultValue?: DateInput;
   onValueChange?: (value: never) => void;
   min?: Date | string | number;
   max?: Date | string | number;
@@ -150,6 +157,7 @@ export function Calendar(props: CalendarProps): ReactElement {
     animate = true,
     disabled,
     value,
+    defaultValue,
     onValueChange,
     min,
     max,
@@ -164,9 +172,11 @@ export function Calendar(props: CalendarProps): ReactElement {
     ...(typeof max === "number" ? { max } : {}),
   };
 
-  const valued = value !== undefined || onValueChange !== undefined;
-  const iso = typeof value === "string" || value === null;
-  const chosen = toDate(value);
+  const valued = value !== undefined || defaultValue !== undefined || onValueChange !== undefined;
+  const iso = typeof value === "string" || value === null || typeof defaultValue === "string";
+  const controlled = value !== undefined;
+  const [internalDay, setInternalDay] = useState<Date | undefined>(() => toDate(defaultValue));
+  const chosen = controlled ? toDate(value) : internalDay;
   const emit = onValueChange as ((next: DateInput) => void) | undefined;
 
   const selection = valued
@@ -175,7 +185,10 @@ export function Calendar(props: CalendarProps): ReactElement {
         required: true as const,
         selected: chosen,
         defaultMonth: rest.defaultMonth ?? chosen ?? lower,
-        onSelect: (day: Date) => emit?.(iso ? isoFromDate(day) : day),
+        onSelect: (day: Date) => {
+          if (!controlled) setInternalDay(day);
+          emit?.(iso ? isoFromDate(day) : day);
+        },
       }
     : counts;
 

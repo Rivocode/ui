@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import type { DateRange } from "react-day-picker";
+import type { DateRange as DayPickerRange } from "react-day-picker";
 
 import { useState, type ComponentProps, type ReactElement } from "react";
 
@@ -14,7 +14,12 @@ import { CalendarPanel } from "./calendar-panel";
 import type { CalendarPassthrough } from "./date-picker";
 import { inputVariants } from "./field";
 
-export type { DateRange };
+export type DateRange = {
+  /** O primeiro dia. */
+  from: Date;
+  /** O ultimo dia. Igual ao `from` num periodo de um dia so. */
+  to: Date;
+};
 
 export type IsoDateRange = {
   /** O primeiro dia, em `aaaa-mm-dd`. */
@@ -25,18 +30,18 @@ export type IsoDateRange = {
 
 type DateRangePickerDateValue = {
   /**
-   * O intervalo escolhido, quando quem usa controla o estado. Aceita pontas em
-   * `Date` ou em `aaaa-mm-dd`, e o `onValueChange` responde no mesmo formato.
+   * O intervalo escolhido, quando quem usa controla o estado. Com `Date`, o
+   * vazio e `undefined`, porque `null` no `value` escolhe o formato em texto:
+   * guarde `DateRange | null` e passe `value={periodo ?? undefined}`.
    */
   value?: DateRange;
   /** O intervalo inicial, quando o componente controla o proprio estado. */
   defaultValue?: DateRange;
   /**
-   * Chamado quando o intervalo muda. Com `Date`, vem incompleto entre o
-   * primeiro e o segundo clique e `undefined` no Limpar; com `aaaa-mm-dd`, so
-   * vem fechado, e `null` no Limpar.
+   * Chamado com o intervalo fechado nas duas pontas, ou com `null` quando a
+   * escolha esvazia. O intervalo pela metade fica no calendario e nunca sai.
    */
-  onValueChange?: (range: DateRange | undefined) => void;
+  onValueChange?: (range: DateRange | null) => void;
 };
 
 type DateRangePickerIsoValue =
@@ -66,9 +71,12 @@ type DateRangePickerBase = Omit<ComponentProps<"button">, "value" | "defaultValu
     /** Dias que nao podem ser escolhidos. */
     disabledDays?: CalendarProps["disabled"];
     /**
-     * Rodape com Aplicar. Ligado por padrao: filtro de periodo quase sempre
-     * recarrega listagem, e sem confirmar ele recarregaria duas vezes, uma no
-     * primeiro clique e outra no segundo.
+     * Rodape com Limpar e Aplicar. Ligado por padrao, ao contrario do
+     * `DatePicker`, porque periodo pede dois cliques: o primeiro ja fecha um
+     * periodo de um dia e o segundo estica ate o fim, entao sem confirmar o
+     * `onValueChange` sai duas vezes e um filtro recarrega a listagem duas
+     * vezes. Desligado, nao ha Limpar: clicar de novo no periodo de um dia e o
+     * que esvazia.
      */
     confirm?: boolean;
   };
@@ -87,7 +95,7 @@ type DateRangePickerRuntimeProps = DateRangePickerBase & {
   onValueChange?: (range: never) => void;
 };
 
-function toRange(input: RangeInput | null | undefined): DateRange | undefined {
+function toRange(input: RangeInput | null | undefined): DayPickerRange | undefined {
   if (!input) return undefined;
   const from = toDate(input.from);
   if (!from) return undefined;
@@ -96,6 +104,9 @@ function toRange(input: RangeInput | null | undefined): DateRange | undefined {
 
 const isIsoRange = (input: RangeInput | null | undefined) =>
   input === null || typeof input?.from === "string";
+
+const isClosed = (range: DayPickerRange | undefined): range is DateRange =>
+  range?.from !== undefined && range.to !== undefined;
 
 export function DateRangePicker(props: DateRangePickerDateProps): ReactElement;
 export function DateRangePicker(props: DateRangePickerIsoProps): ReactElement;
@@ -120,32 +131,32 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
   } = props as DateRangePickerRuntimeProps;
   const iso = isIsoRange(value) || isIsoRange(defaultValue);
   const controlled = value !== undefined;
-  const [internalRange, setInternalRange] = useState<DateRange | undefined>(() =>
+  const [internalRange, setInternalRange] = useState<DayPickerRange | undefined>(() =>
     toRange(defaultValue),
   );
+  const [seenValue, setSeenValue] = useState(value);
+  if (seenValue !== value) {
+    setSeenValue(value);
+    if (value === undefined) setInternalRange(undefined);
+  }
   const range = controlled ? toRange(value) : internalRange;
-  const emit = onValueChange as
-    | ((next: IsoDateRange | DateRange | null | undefined) => void)
-    | undefined;
+  const emit = onValueChange as ((next: IsoDateRange | DateRange | null) => void) | undefined;
 
   const [isOpen, setAberto] = useState(false);
-  const [draft, setRascunho] = useState<DateRange | undefined>(range);
-  const pending = iso && draft?.from !== undefined && draft.to === undefined;
-  const picked = isOpen && (confirm || pending) ? draft : range;
+  const [draft, setRascunho] = useState<DayPickerRange | undefined>(range);
+  const picked = isOpen ? draft : range;
 
   const label = describe(range) ?? placeholder;
   const empty = describe(range) === undefined;
 
-  function change(next: DateRange | undefined) {
-    if (!controlled) setInternalRange(next);
-    setRascunho(next);
-    if (!iso) {
-      emit?.(next);
+  function change(next: DateRange | null) {
+    setInternalRange(next ?? undefined);
+    setRascunho(next ?? undefined);
+    if (next === null) {
+      emit?.(null);
       return;
     }
-    emit?.(
-      next?.from && next.to ? { from: isoFromDate(next.from), to: isoFromDate(next.to) } : null,
-    );
+    emit?.(iso ? { from: isoFromDate(next.from), to: isoFromDate(next.to) } : next);
   }
 
   const trigger = (
@@ -184,7 +195,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
               variant="ghost"
               size="sm"
               onClick={() => {
-                change(undefined);
+                change(null);
                 setAberto(false);
               }}
             >
@@ -192,9 +203,9 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
             </Button>
             <Button
               size="sm"
-              disabled={!draft?.from || !draft.to}
+              disabled={!isClosed(draft)}
               onClick={() => {
-                change(draft);
+                if (isClosed(draft)) change(draft);
                 setAberto(false);
               }}
             >
@@ -215,11 +226,10 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
         min={min}
         max={max}
         onSelect={(next) => {
-          if (confirm || (iso && next?.from && !next.to)) {
-            setRascunho(next);
-            return;
-          }
-          change(next);
+          setRascunho(next);
+          if (confirm) return;
+          if (next === undefined) change(null);
+          else if (isClosed(next)) change(next);
         }}
         autoFocus
       />
@@ -227,9 +237,9 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
   );
 }
 
-function describe(range: DateRange | undefined): string | undefined {
+function describe(range: DayPickerRange | undefined): string | undefined {
   if (!range?.from) return undefined;
   const start = formatDate(range.from);
-  if (!range.to) return `${start} \u2013 ...`;
-  return `${start} \u2013 ${formatDate(range.to)}`;
+  if (!range.to) return `${start} – ...`;
+  return `${start} – ${formatDate(range.to)}`;
 }

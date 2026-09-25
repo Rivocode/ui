@@ -37,7 +37,7 @@ import {
   Separator,
   Tree,
   useToast,
-  type DateRange,
+  type IsoDateRange,
   type TreeNode,
 } from '@rivocode/ui'
 import { currencyShort } from '@rivocode/ui/chart'
@@ -252,7 +252,7 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   const toast = useToast()
   const [segment, setSegment] = useState<string[]>(LEAVES)
   const [picked, setPicked] = useState<string | null>(null)
-  const [range, setRange] = useState<DateRange | undefined>()
+  const [range, setRange] = useState<IsoDateRange | null>(null)
   const [view, setView] = useState<'list' | 'grid'>('list')
   // Controlada e já aberta: uma árvore que abre fechada esconde justamente o
   // que a coluna existe para mostrar.
@@ -272,7 +272,7 @@ export function Customers({ onOpenInvoices }: { onOpenInvoices: () => void }) {
   const clear = () => {
     setSegment(LEAVES)
     setPicked(null)
-    setRange(undefined)
+    setRange(null)
   }
 
   return (

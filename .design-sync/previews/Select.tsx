@@ -113,3 +113,23 @@ export function Grouped() {
     </div>
   )
 }
+
+/** Nos três tamanhos */
+export function Sizes() {
+  return (
+    <div className="flex flex-col items-start gap-3">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Select key={size} items={PERIODOS} defaultValue="30" size={size}>
+          <SelectTrigger aria-label={`Período, tamanho ${size}`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PERIODOS.map(o => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ))}
+    </div>
+  )
+}

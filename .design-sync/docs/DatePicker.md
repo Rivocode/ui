@@ -12,8 +12,11 @@ Digitar vem primeiro de propósito. Quem preenche formulário o dia inteiro digi
 Texto pela metade não vira data, e ao sair do campo o que não virou data volta
 para a última valida. `31/02` não vira 3 de marco.
 
-Com `confirm`, o clique no dia vira rascunho e só o Aplicar escreve o valor. No
-celular o painel vira folha de baixo, pelo `CalendarPanel`.
+Com `confirm`, o clique no dia vira rascunho e só o Aplicar escreve o valor. Ele
+nasce desligado aqui e ligado no `DateRangePicker`, e a diferença é de propósito:
+data única se escolhe num clique só, e período pede dois, o que faria um filtro
+sem rodapé recarregar duas vezes. No celular o painel vira folha de baixo, pelo
+`CalendarPanel`.
 
 ## Valor
 

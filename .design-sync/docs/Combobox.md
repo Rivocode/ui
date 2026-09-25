@@ -17,6 +17,16 @@ Com `multiple`, a escolha vira fichas dentro do próprio campo: `ComboboxChips`
 em volta, `ComboboxValue` para saber o que está escolhido e um `ComboboxChip`
 por escolha.
 
+`size` mora na raiz, com o vocabulário do `Input`: `sm`, `md` (padrão) e `lg`,
+com a mesma altura, o mesmo recuo e o mesmo corpo de texto. O `ComboboxInput`
+de dentro veste o tamanho sozinho.
+
+```tsx
+<Combobox items={CLIENTES} size="sm">
+  <ComboboxInput aria-label="Cliente" placeholder="Buscar cliente" />
+</Combobox>
+```
+
 ## Quando não usar
 
 Com cinco opções fixas, use `Select`: ele custa menos, não pede digitação e não
