@@ -53,12 +53,13 @@ export function Sparkline({
     color ?? (trend === "auto" ? (rose ? "success-text" : "danger-text") : "accent-text");
   const stroke = colors[role];
 
-  const access = label
-    ? ({ accessibilityRole: "image", accessibilityLabel: label } as const)
-    : ({
-        accessibilityElementsHidden: true,
-        importantForAccessibility: "no-hide-descendants",
-      } as const);
+  const access =
+    label && data.length > 0
+      ? ({ accessible: true, accessibilityRole: "image", accessibilityLabel: label } as const)
+      : ({
+          accessibilityElementsHidden: true,
+          importantForAccessibility: "no-hide-descendants",
+        } as const);
 
   if (variant === "bar") {
     const floor = Math.min(0, ...data);

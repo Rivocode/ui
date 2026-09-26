@@ -328,6 +328,11 @@ describe("Progress", () => {
     expect(bar.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 100 });
     expect(bar.props.accessibilityLabel).toBe("Meta do mês");
   });
+
+  test("sem showValue a barra ainda e um elemento so, para o leitor nao pula-la", () => {
+    const screen = render(<Progress value={40} label="Envio" />);
+    expect(byRole(screen, "progressbar")[0]!.props.accessible).toBe(true);
+  });
 });
 
 describe("Meter", () => {

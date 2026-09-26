@@ -90,6 +90,7 @@ export function Progress({
   if (!showValue) {
     return (
       <View
+        accessible
         accessibilityRole="progressbar"
         accessibilityLabel={label}
         accessibilityValue={range}

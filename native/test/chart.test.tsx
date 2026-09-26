@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { ReactTestInstance, ReactTestRenderer } from "react-test-renderer";
 
 import { tokens } from "../tokens";
+import { RivoProvider } from "../src";
 import { Sparkline } from "../src/sparkline";
 import { Stat } from "../src/stat";
 import { Tracker } from "../src/tracker";
@@ -57,6 +58,22 @@ describe("Sparkline", () => {
     const [labelled] = byLabel(spoken, "Vendas subindo");
     expect(labelled.props.accessibilityRole).toBe("image");
     expect(labelled.props.accessibilityElementsHidden).toBeUndefined();
+  });
+
+  test("com rotulo e um elemento so para o leitor, e sem dado nao anuncia desenho vazio", () => {
+    for (const variant of ["line", "bar"] as const) {
+      const spoken = render(<Sparkline variant={variant} data={[1, 2, 3]} label="Vendas" />);
+      expect(byLabel(spoken, "Vendas")[0]!.props.accessible).toBe(true);
+
+      const empty = render(<Sparkline variant={variant} data={[]} label="Vendas" />);
+      expect(byLabel(empty, "Vendas")).toHaveLength(0);
+      expect(
+        empty.root.findAll(
+          (node) =>
+            typeof node.type === "string" && node.props?.accessibilityElementsHidden === true,
+        ).length,
+      ).toBe(1);
+    }
   });
 
   test("trend auto pinta de sucesso na subida e de perigo na queda", () => {
@@ -223,6 +240,31 @@ describe("Tracker", () => {
     const [marca] = byClass(screen, /w-0\.5/);
     // Terceiro de tres numa faixa de 300: meio do ultimo terco, menos o fio.
     expect(marca.props.style.left).toBe(2 * 100 + 50 - 1);
+  });
+
+  test("as celulas e a agulha nao pegam o toque, para o locationX ser da faixa", () => {
+    const screen = render(<Tracker data={DATA} label="Emissões" />);
+    const [faixa] = byRole(screen, "adjustable");
+    act(() => faixa!.props.onLayout({ nativeEvent: { layout: { width: 300, height: 44 } } }));
+    const inside = byRole(screen, "adjustable")[0]!.findAll(
+      (node) => typeof node.type === "string" && node !== byRole(screen, "adjustable")[0],
+    );
+    expect(inside.length).toBeGreaterThanOrEqual(4);
+    for (const node of inside) expect(node.props.pointerEvents).toBe("none");
+  });
+
+  test("dado que chega depois da montagem abre no periodo mais recente", () => {
+    const screen = render(<Tracker data={[]} label="Emissões" />);
+    act(() =>
+      screen.update(
+        <RivoProvider>
+          <Tracker data={DATA} label="Emissões" />
+        </RivoProvider>,
+      ),
+    );
+    expect(byRole(screen, "adjustable")[0]!.props.accessibilityValue.text).toBe(
+      "3 de 3: 12/08 · 1 falha",
+    );
   });
 
   test("sem dado nao desenha faixa nenhuma", () => {

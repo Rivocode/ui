@@ -57,8 +57,8 @@ export function Tracker({ data, label, className, classNames, labels: labelsProp
   const countRef = useRef(data.length);
   countRef.current = data.length;
 
-  const [index, setIndex] = useState(data.length - 1);
-  const at = Math.min(Math.max(index, 0), Math.max(data.length - 1, 0));
+  const [index, setIndex] = useState<number | null>(null);
+  const at = Math.min(Math.max(index ?? data.length - 1, 0), Math.max(data.length - 1, 0));
   const point = data[at];
 
   const moveTo = (x: number) => {
@@ -105,6 +105,7 @@ export function Tracker({ data, label, className, classNames, labels: labelsProp
         {data.map((entry, position) => (
           <View
             key={position}
+            pointerEvents="none"
             className={cn(
               "h-7 min-w-0 flex-1 rounded-sm",
               TONE[entry.tone ?? "neutral"],
@@ -115,6 +116,7 @@ export function Tracker({ data, label, className, classNames, labels: labelsProp
 
         {width > 0 && (
           <View
+            pointerEvents="none"
             className="absolute h-9 w-0.5 rounded-pill bg-fg"
             style={{ left: Math.max(0, at * step + step / 2 - 1) }}
           />
