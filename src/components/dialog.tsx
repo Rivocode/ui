@@ -4,14 +4,9 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { passDragKeys } from "../lib/drag-keys";
 import { InertBackground } from "../lib/inert-background";
-import {
-  layerLevel,
-  layerStyle,
-  LayerProvider,
-  useLayerChain,
-  useParentLayer,
-} from "../lib/layer";
+import { layerLevel, layerStyle, LayerProvider, useLayerChain, useParentLayer } from "../lib/layer";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -53,6 +48,10 @@ export function DialogContent({
       />
       <BaseDialog.Popup
         {...props}
+        onKeyDown={(event) => {
+          passDragKeys(event);
+          props.onKeyDown?.(event);
+        }}
         data-rc-layer={level}
         style={layerStyle("dialog", parent, 2, style)}
         className={cn(

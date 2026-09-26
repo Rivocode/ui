@@ -521,6 +521,48 @@ describe("o cartao arrastado do Kanban", () => {
     cleanup();
   });
 
+  for (const [name, wrap] of [
+    [
+      "Sheet",
+      (node: ReactNode) => (
+        <Sheet defaultOpen>
+          <SheetContent>
+            <SheetTitle>Quadro</SheetTitle>
+            {node}
+          </SheetContent>
+        </Sheet>
+      ),
+    ],
+    [
+      "Dialog",
+      (node: ReactNode) => (
+        <Dialog defaultOpen>
+          <DialogContent>
+            <DialogTitle>Quadro</DialogTitle>
+            {node}
+          </DialogContent>
+        </Dialog>
+      ),
+    ],
+  ] as const) {
+    test(`dentro de um ${name}, a seta do arrasto chega ao documento, onde o sensor escuta`, async () => {
+      mount(wrap(<Board />));
+      await settle();
+      await pick();
+
+      const reached: string[] = [];
+      const listen = (event: KeyboardEvent) => reached.push(event.key);
+      document.addEventListener("keydown", listen);
+      const active = document.activeElement as HTMLElement;
+      fireEvent.keyDown(active, { key: "ArrowRight", code: "ArrowRight" });
+      document.removeEventListener("keydown", listen);
+
+      expect(active.getAttribute("aria-pressed")).toBe("true");
+      expect(reached).toContain("ArrowRight");
+      cleanup();
+    });
+  }
+
   test("fora de camada, fica no degrau do dropdown", async () => {
     mount(<Board />);
     await settle();

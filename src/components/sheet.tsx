@@ -4,14 +4,9 @@ import { Drawer as BaseDrawer } from "@base-ui/react/drawer";
 import { createContext, use, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { passDragKeys } from "../lib/drag-keys";
 import { InertBackground } from "../lib/inert-background";
-import {
-  layerLevel,
-  layerStyle,
-  LayerProvider,
-  useLayerChain,
-  useParentLayer,
-} from "../lib/layer";
+import { layerLevel, layerStyle, LayerProvider, useLayerChain, useParentLayer } from "../lib/layer";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -108,6 +103,10 @@ export function SheetContent({ className, children, classNames, ...props }: Shee
       >
         <BaseDrawer.Popup
           {...props}
+          onKeyDown={(event) => {
+            passDragKeys(event);
+            props.onKeyDown?.(event);
+          }}
           className={cn(
             "overflow-y-auto overscroll-contain border-border bg-surface shadow-3",
             "p-[var(--rc-pad-panel)]",
