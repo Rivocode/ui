@@ -5,6 +5,13 @@ import { createContext, use, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { InertBackground } from "../lib/inert-background";
+import {
+  layerLevel,
+  layerStyle,
+  LayerProvider,
+  useLayerChain,
+  useParentLayer,
+} from "../lib/layer";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -72,10 +79,14 @@ export type SheetContentProps = ComponentProps<typeof BaseDrawer.Popup> & {
 export function SheetContent({ className, children, classNames, ...props }: SheetContentProps) {
   const { portalContainer } = useRivoContext();
   const side = use(SideContext);
+  const parent = useParentLayer();
+  const chain = useLayerChain();
+  const level = layerLevel("dialog", parent, 2);
 
   return (
     <BaseDrawer.Portal container={portalContainer ?? undefined}>
       <BaseDrawer.Backdrop
+        style={layerStyle("overlay", parent)}
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "opacity-[calc(1-var(--drawer-swipe-progress))]",
@@ -87,6 +98,8 @@ export function SheetContent({ className, children, classNames, ...props }: Shee
       />
 
       <BaseDrawer.Viewport
+        data-rc-layer={level}
+        style={layerStyle("dialog", parent, 2)}
         className={cn(
           "fixed inset-x-0 top-0 z-[var(--rc-z-dialog)] flex h-dvh",
           VIEWPORT_SIDE[side],
@@ -105,11 +118,13 @@ export function SheetContent({ className, children, classNames, ...props }: Shee
             className,
           )}
         >
-          <BaseDrawer.Content className="h-full">{children}</BaseDrawer.Content>
+          <BaseDrawer.Content className="h-full">
+            <LayerProvider level={level}>{children}</LayerProvider>
+          </BaseDrawer.Content>
         </BaseDrawer.Popup>
       </BaseDrawer.Viewport>
 
-      <InertBackground container={portalContainer} />
+      <InertBackground container={portalContainer} below={chain} />
     </BaseDrawer.Portal>
   );
 }

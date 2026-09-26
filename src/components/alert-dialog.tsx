@@ -5,6 +5,13 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { InertBackground } from "../lib/inert-background";
+import {
+  layerLevel,
+  layerStyle,
+  LayerProvider,
+  useLayerChain,
+  useParentLayer,
+} from "../lib/layer";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -25,13 +32,18 @@ export function AlertDialogContent({
   className,
   children,
   classNames,
+  style,
   ...props
 }: AlertDialogContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const chain = useLayerChain();
+  const level = layerLevel("dialog", parent, 2);
 
   return (
     <BaseAlertDialog.Portal container={portalContainer ?? undefined}>
       <BaseAlertDialog.Backdrop
+        style={layerStyle("overlay", parent)}
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "transition-opacity duration-[var(--rc-duration-base)] ease-rc",
@@ -41,6 +53,8 @@ export function AlertDialogContent({
       />
       <BaseAlertDialog.Popup
         {...props}
+        data-rc-layer={level}
+        style={layerStyle("dialog", parent, 2, style)}
         className={cn(
           "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(28rem,calc(100vw-2rem))]",
           "-translate-x-1/2 -translate-y-1/2",
@@ -56,10 +70,10 @@ export function AlertDialogContent({
           className,
         )}
       >
-        {children}
+        <LayerProvider level={level}>{children}</LayerProvider>
       </BaseAlertDialog.Popup>
 
-      <InertBackground container={portalContainer} />
+      <InertBackground container={portalContainer} below={chain} />
     </BaseAlertDialog.Portal>
   );
 }

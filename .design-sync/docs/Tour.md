@@ -38,6 +38,10 @@ A máscara pinta a tela com o `overlay` do tema, o mesmo papel do fundo do
 alguns pixels de folga. O recorte acompanha o alvo quando a página rola, quando
 a janela muda de tamanho e quando o próprio alvo cresce.
 
+O alvo pode morar dentro de um `Dialog`, de uma `Sheet` ou de um `Popover`: a
+máscara sobe acima da camada onde ele está, e o balão acima da máscara. O resto
+do diálogo apaga e para de receber clique, como o resto da página.
+
 Por padrão a máscara engole todo clique, inclusive o do alvo: o tour explica, e
 a tela espera. Com `interactive`, o recorte vira passagem e o alvo responde ao
 clique enquanto o resto continua bloqueado. Serve ao passo que ensina fazendo

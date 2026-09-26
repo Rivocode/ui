@@ -4,6 +4,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 import { floatingPanel } from "./menu";
@@ -34,6 +35,8 @@ export function PopoverContent({
   ...props
 }: PopoverContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("popover", parent);
 
   return (
     <BasePopover.Portal container={portalContainer ?? undefined}>
@@ -42,6 +45,8 @@ export function PopoverContent({
         side={side}
         align={align}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("popover", parent)}
         className="z-[var(--rc-z-popover)] outline-none"
       >
         <BasePopover.Popup
@@ -52,7 +57,7 @@ export function PopoverContent({
             className,
           )}
         >
-          {children}
+          <LayerProvider level={level}>{children}</LayerProvider>
         </BasePopover.Popup>
       </BasePopover.Positioner>
     </BasePopover.Portal>

@@ -43,12 +43,12 @@ export const BUDGET: Record<string, Budget> = {
     why: "Subiu em 24/09/2026 de 10,7 para 19,7 KB com os quatro graficos sem Recharts da 0.18.0: ChartTreemap 4,1 KB (o layout squarified), ChartHeatmap 4,0, ChartGauge 2,3 e ChartFunnel 1,9. Antes, 10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
   },
   "./ai": {
-    limit: 12_300,
-    why: "10,9 KB: as pecas de conversa com modelo. Subcaminho sem peer, separado pelo peso: quem nao tem tela de IA nao paga os 10 KB.",
+    limit: 13_700,
+    why: "Subiu em 26/09/2026 de 11,7 para 12,1 KB com o contexto de camada (src/lib/layer.tsx), que as pecas flutuantes de que o subcaminho depende passaram a ler para abrir acima de quem as abriu - um Select dentro de um Dialog abria escondido atras dele. Antes, 10,9 KB: as pecas de conversa com modelo. Subcaminho sem peer, separado pelo peso: quem nao tem tela de IA nao paga os 10 KB.",
   },
   "./dnd": {
-    limit: 10_300,
-    why: "9,1 KB: o arrastar e soltar sobre o dnd-kit, que e peer opcional e fica fora da conta.",
+    limit: 11_400,
+    why: "Subiu em 26/09/2026 de 9,7 para 10,1 KB com o contexto de camada (src/lib/layer.tsx): o cartao arrastado do Kanban le o degrau de quem o contem e passa por cima do Dialog ou da Sheet onde o quadro mora. Antes, 9,1 KB: o arrastar e soltar sobre o dnd-kit, que e peer opcional e fica fora da conta.",
   },
   "./editor": {
     limit: 19_900,

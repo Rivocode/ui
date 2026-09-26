@@ -4,6 +4,7 @@ import { Select as BaseSelect } from "@base-ui/react/select";
 import { createContext, use, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import {
   isChosen,
   keyOnScreen,
@@ -142,6 +143,8 @@ export function SelectContent({
   ...props
 }: SelectContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("dropdown", parent);
   const positioned = side !== undefined || align !== undefined || sideOffset !== undefined;
 
   return (
@@ -152,6 +155,8 @@ export function SelectContent({
         align={align}
         alignItemWithTrigger={positioned ? false : undefined}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("dropdown", parent)}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >
         <BaseSelect.Popup
@@ -159,7 +164,7 @@ export function SelectContent({
           className={cn(floatingPanel, "min-w-[var(--anchor-width)]", className)}
         >
           <BaseSelect.List className="max-h-[var(--available-height)] overflow-y-auto">
-            {children}
+            <LayerProvider level={level}>{children}</LayerProvider>
           </BaseSelect.List>
         </BaseSelect.Popup>
       </BaseSelect.Positioner>
