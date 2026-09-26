@@ -125,6 +125,19 @@ describe("Clipboard", () => {
     expect(textOf(screen)).toContain("Copiado");
   });
 
+  test("o children e o texto do botao enquanto nao copiou, e o copied entra depois", async () => {
+    reset();
+    const screen = render(<Clipboard value={CHAVE}>Copiar a chave de acesso</Clipboard>);
+
+    expect(textOf(screen)).toContain("Copiar a chave de acesso");
+    const [button] = byLabel(screen, "Copiar a chave de acesso");
+    expect(button).toBeDefined();
+
+    await press(button!);
+    expect(byLabel(screen, "Copiado")).toHaveLength(1);
+    expect(textOf(screen)).not.toContain("Copiar a chave de acesso");
+  });
+
   test("so de icone o alvo e quadrado e cheio, sem depender de hitSlop", () => {
     reset();
     const icon = render(<Clipboard value={CHAVE} />);
