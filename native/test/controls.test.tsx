@@ -184,11 +184,26 @@ describe("Switch", () => {
   });
 });
 
+const touchHeight = (node: { props: Record<string, unknown> }) => {
+  const token = String(node.props.className)
+    .split(" ")
+    .find((part) => /^h-\d+(\.\d+)?$/.test(part));
+  const slop = node.props.hitSlop as { top?: number; bottom?: number } | undefined;
+  return Number(token!.slice(2)) * 4 + (slop?.top ?? 0) + (slop?.bottom ?? 0);
+};
+
 describe("Tabs", () => {
   const items = [
     { label: "Mês", value: "mes" },
     { label: "Ano", value: "ano" },
   ];
+
+  test("cada aba alcanca os 44pt de toque sem engordar a fileira", () => {
+    const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
+    const tabs = byRole(screen, "tab");
+    expect(tabs.length).toBe(2);
+    for (const tab of tabs) expect(touchHeight(tab)).toBeGreaterThanOrEqual(44);
+  });
 
   test("cada aba tem papel de tab e a ativa anuncia selected", () => {
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);

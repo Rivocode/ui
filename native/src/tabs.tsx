@@ -17,6 +17,8 @@ export type TabsProps = {
 
 type Frame = { x: number; width: number };
 
+const TAB_SLOP = { top: 4, bottom: 4, left: 0, right: 0 } as const;
+
 export function Tabs({ items, value, onValueChange, className }: TabsProps) {
   const motion = useMotion();
   const [frames, setFrames] = useState<Record<string, Frame>>({});
@@ -58,6 +60,7 @@ export function Tabs({ items, value, onValueChange, className }: TabsProps) {
             key={item.value}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
+            hitSlop={TAB_SLOP}
             onPress={() => onValueChange(item.value)}
             onLayout={(event) => {
               const { x: left, width: size } = event.nativeEvent.layout;

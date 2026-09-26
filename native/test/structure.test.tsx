@@ -20,6 +20,14 @@ import {
 } from "../src";
 import { act, byClass, byRole, byType, render, textOf } from "./helpers";
 
+const touchHeight = (node: { props: Record<string, unknown> }) => {
+  const token = String(node.props.className)
+    .split(" ")
+    .find((part) => /^h-\d+(\.\d+)?$/.test(part));
+  const slop = node.props.hitSlop as { top?: number; bottom?: number } | undefined;
+  return Number(token!.slice(2)) * 4 + (slop?.top ?? 0) + (slop?.bottom ?? 0);
+};
+
 describe("Toggle e ToggleGroup", () => {
   test("o toggle anuncia apertado e alterna", () => {
     const onPressedChange = mock(() => {});
@@ -32,6 +40,27 @@ describe("Toggle e ToggleGroup", () => {
     expect(toggle.props.accessibilityState.selected).toBe(true);
     act(() => toggle.props.onPress());
     expect(onPressedChange).toHaveBeenCalledWith(false);
+  });
+
+  test("o toggle alcanca os 44pt de toque, sozinho e no grupo", () => {
+    const alone = render(
+      <Toggle pressed={false} onPressedChange={() => {}}>
+        Negrito
+      </Toggle>,
+    );
+    const group = render(
+      <ToggleGroup
+        items={[
+          { label: "Paga", value: "paga" },
+          { label: "Vencida", value: "vencida" },
+        ]}
+        value={[]}
+        onValueChange={() => {}}
+      />,
+    );
+    const toggles = [...byRole(alone, "togglebutton"), ...byRole(group, "togglebutton")];
+    expect(toggles.length).toBeGreaterThanOrEqual(3);
+    for (const toggle of toggles) expect(touchHeight(toggle)).toBeGreaterThanOrEqual(44);
   });
 
   test("no grupo, o padrao desaperta o anterior; multiple acumula", () => {
