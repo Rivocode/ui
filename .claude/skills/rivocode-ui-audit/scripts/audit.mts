@@ -449,8 +449,8 @@ export const RULES: Rule[] = [
     severity: "moderado",
     kind: "julgamento",
     scope: "arquivo",
-    title: "Tarefa longa que perde o que foi digitado",
-    fix: "O rascunho volta preenchido depois de erro, de recarregar e de fechar sem querer: `useLocalStorage` enquanto a pessoa digita, limpo no sucesso do envio.",
+    title: "Tarefa que perde o que foi digitado",
+    fix: "Um formulário só por baixo dos passos, e o erro de envio que mantém os campos. Guardar rascunho no navegador é decisão do projeto, e nunca com dado sensível.",
     source: "reference/fluxo.md, O wizard bem feito",
   },
   {

@@ -147,7 +147,7 @@ O script não as acha: elas entram pelo JSON, e pesam igual às mecânicas.
 | `destrutivo-sem-protecao` | sério | excluir de vez, cancelar nota, emitir: ação sem volta que dispara no clique, sem `AlertDialog` e sem desfazer | reference/fluxo.md, Confirmar, desfazer, ou nada |
 | `wizard-sem-dependencia` | moderado | `Steps` quebrando um cadastro que é só comprido, sem etapa que dependa da anterior | reference/fluxo.md, Wizard ou formulário único |
 | `confirmacao-em-reversivel` | moderado | `AlertDialog` ou `Popconfirm` para arquivar, remover da lista ou excluir rascunho, o que dava para desfazer no aviso | reference/fluxo.md, Confirmar, desfazer, ou nada |
-| `rascunho-que-some` | moderado | wizard ou formulário longo que perde o que foi digitado ao recarregar, ao errar o envio ou ao fechar | reference/fluxo.md, O wizard bem feito |
+| `rascunho-que-some` | moderado | wizard que esvazia os campos ao voltar um passo, ou envio com erro que limpa o formulário. Rascunho guardado entre visitas não é cobrado: é decisão do projeto | reference/fluxo.md, O wizard bem feito |
 | `sucesso-silencioso` | menor | ação que termina sem nada na tela dizer que terminou | reference/fluxo.md, O que deixa o produto esperto |
 
 Achado de julgamento aponta arquivo e linha que o script auditou; o de projeto

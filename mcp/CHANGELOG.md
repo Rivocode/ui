@@ -11,8 +11,9 @@ ferramentas continuam as mesmas.
   leva ao `Fieldset`, e não a um wizard; "busca global" leva ao `Command`.
 - `audit_screen` ganha `passo-sem-nome` e `dado-sem-mascara`, e cinco regras de
   julgamento de fluxo que o agente pode registrar.
-- A skill ganha a checagem de wizard ou formulário único e o wizard com
-  rascunho, servidos pelos mesmos arquivos.
+- A skill ganha a checagem de wizard ou formulário único e o wizard bem feito,
+  e diz que guardar rascunho no navegador é decisão do projeto, nunca com dado
+  sensível.
 
 ## 0.7.0
 

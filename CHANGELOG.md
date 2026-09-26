@@ -13,8 +13,8 @@ Conserto, e a skill que viaja no pacote mais esperta em fluxo.
   confirmacao nao existia na tela. Sem `actionProps`, nada muda.
 - A skill decide wizard ou formulario unico por quatro perguntas, e nao por
   quantidade de campo; ensina o wizard com um formulario so por baixo dos
-  passos, validacao por passo, rascunho que sobrevive a recarregar e revisao
-  no fim; e ganha a tabela do que deixa o produto esperto: preencher sozinho,
+  passos, validacao por passo e revisao no fim, e diz que guardar rascunho no
+  navegador e decisao do projeto, nunca com dado sensivel; e ganha a tabela do que deixa o produto esperto: preencher sozinho,
   lembrar, padrao certo, agir no lugar, desfazer, atalho, raro recolhido e
   sucesso visivel.
 - A tabela de escolha da skill ganha os padroes de UX: excluir com desfazer,

@@ -75,8 +75,14 @@ esclarecimento), é o `Questionnaire`, e não o `Steps`.
 - **Voltar nunca perde nada**, e os passos já feitos são clicáveis no `Steps`
   pelo `onStepChange`. Pular para a frente não: o passo seguinte depende do
   anterior.
-- **O rascunho sobrevive a recarregar a página.** Wizard é tarefa longa, e a
-  aba fecha no meio. Guarde os valores com `useLocalStorage` e limpe no envio.
+- **Voltar um passo e errar o envio nunca perdem nada**: o formulário fica na
+  memória enquanto a tela está aberta.
+- **Rascunho entre visitas é decisão do projeto, e não da biblioteca.** Guardar
+  no navegador para sobreviver a recarregar a página expõe o que foi digitado:
+  o `localStorage` fica na máquina, sem criptografia, e qualquer script da
+  página o lê. Se o produto quiser, guarde só o que não for sensível (nunca
+  senha, cartão, documento, dado de saúde ou financeiro), com
+  `useLocalStorage`, e limpe no sucesso do envio. Na dúvida, não guarde.
 - **A última etapa é revisão**, com cada parte resumida e um "Alterar" que volta
   ao passo dela. O botão final diz o efeito: "Emitir nota", e não "Concluir".
 - **Sem confirmação em cima da revisão.** A revisão já é a confirmação.
@@ -91,14 +97,8 @@ const STEPS = [
 ]
 const FIELDS = [['document', 'name'], ['service', 'amount'], []] as const
 
-const [draft, setDraft, clearDraft] = useLocalStorage({ key: 'nova-nota', defaultValue: EMPTY })
-const form = useZodForm(schema, { defaultValues: draft })
+const form = useZodForm(schema, { defaultValues: EMPTY })
 const wizard = useWizard(STEPS)
-
-useEffect(() => {
-  const watching = form.watch((values) => setDraft(values as typeof EMPTY))
-  return () => watching.unsubscribe()
-}, [form, setDraft])
 
 <Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
 <WizardFooter>
@@ -113,8 +113,8 @@ useEffect(() => {
 </WizardFooter>
 ```
 
-O `clearDraft()` vai no sucesso do envio, e não no clique: se o envio falhar, o
-rascunho continua lá.
+O formulário é um só para os três passos, então voltar da Revisão ao Cliente
+encontra tudo como estava.
 
 ## Confirmar, desfazer, ou nada
 
@@ -148,8 +148,8 @@ que vai acontecer, o diálogo em cima dela é ruído.
 ## O que fazer quando dá errado
 
 - **Preserve o que a pessoa digitou.** Erro que devolve o formulário vazio custa
-  o trabalho inteiro de novo, e é o motivo mais comum de abandono. O rascunho
-  volta preenchido, sempre.
+  o trabalho inteiro de novo, e é o motivo mais comum de abandono. O que foi
+  digitado continua nos campos, sempre.
 - **O erro aparece perto da causa.** Erro de campo no campo; erro da operação no
   topo do formulário ou num `Alert`; erro de carregamento no lugar do conteúdo
   que não veio.
@@ -217,6 +217,6 @@ trabalho que o sistema podia ter feito.
 - Sucesso silencioso: a ação terminou e nada na tela diz que terminou.
 - Wizard para um cadastro que é só comprido, sem nenhuma etapa que dependa da
   anterior.
-- Rascunho que some ao recarregar a página no meio de uma tarefa longa.
+- Voltar um passo do wizard e encontrar os campos vazios.
 - Confirmação para excluir o que dava para desfazer.
 - Campo que o sistema já sabia preencher, deixado em branco para a pessoa.
