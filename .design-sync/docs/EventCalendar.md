@@ -115,14 +115,17 @@ três reuniões ou uma.
 
 São dois casos, e eles vão para lugares diferentes da tela:
 
-1. **Dia inteiro e multi-dia** (`allDay`, ou duração maior que a janela de horas
-   visível) vão para a **faixa de dia inteiro**, acima da grade, como barras que
+1. **Dia inteiro e multi-dia** (`allDay`, ou duração de 24 horas ou mais) vão
+   para a **faixa de dia inteiro**, acima da grade, como barras que
    atravessam colunas. A faixa empilha em lanes (ordena por começo e, empatado,
    por duração decrescente, e põe cada barra na primeira lane livre), tem teto
    de `maxLanes`, e o resto vira `+N`.
 2. **A noite que cruza a meia-noite** (22h às 9h) é partida em dois segmentos e
    **não** sobe para a faixa, porque a hora dela é informação: 22h é tarde da
-   noite, e a faixa de cima diria só "quarta e quinta".
+   noite, e a faixa de cima diria só "quarta e quinta". Vale também para o
+   plantão das 19h às 9h, que tem mais horas do que a janela de
+   `dayStart`/`dayEnd` mostra: ele continua com hora na grade e na agenda, e
+   nunca é anunciado como "dia inteiro" — isso só o `allDay` diz.
 
 Onde o evento se parte depende do fuso do navegador. O mesmo compromisso visto
 de outro fuso pode não cruzar a meia-noite, e então não se parte. É consequência
@@ -185,7 +188,9 @@ inteira.
 Os nomes de mês e de dia da semana e a hora saem do `locale`, uma tag BCP 47
 (`"en-US"`, `"es"`), e o padrão é `"pt-BR"`. As palavras fixas em volta saem de
 `labels`: os botões da barra, o nome das vistas, o que o leitor de tela ouve em
-cada compromisso e a contagem. Passe só as chaves que mudam.
+cada compromisso e a contagem. Passe só as chaves que mudam. O seletor "Ir para
+a data" segue o mesmo `locale` nos nomes de mês e de dia, e começa a semana no
+mesmo `weekStartsOn` da grade.
 
 ```tsx
 <EventCalendar

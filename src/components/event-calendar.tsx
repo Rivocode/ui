@@ -2,6 +2,7 @@
 
 import { useDirection } from "@base-ui/react/direction-provider";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { enUS } from "react-day-picker/locale";
 import {
   createContext,
   use,
@@ -24,7 +25,7 @@ import {
   minutesOfDay,
   packBars,
   segmentBox,
-  spansFullWindow,
+  spansFullDay,
   splitEvents,
   startOfDay,
   toBars,
@@ -490,8 +491,10 @@ export type EventCalendarProps = Omit<
 
   onEventSelect?: (event: CalendarEvent) => void;
   /**
-   * Clique no vazio da grade, arredondado em meia hora. Nao dispara na agenda,
-   * que nao tem geometria de tempo onde clicar.
+   * Clique no vazio da grade: devolve a meia hora que contem o ponto clicado, em
+   * hora de parede, inclusive no dia do horario de verao. Nao dispara na agenda,
+   * que nao tem geometria de tempo onde clicar, nem no clique de dentro do
+   * painel do "+N mais".
    */
   onSlotSelect?: (range: EventCalendarRange) => void;
   /**
@@ -654,11 +657,9 @@ export function EventCalendar({
     });
   }, [events, loading, startMs, endMs]);
 
-  const windowMinutes = Math.max(dayEnd - dayStart, 1) * 60;
-
   const model = useMemo(() => {
-    const banded = shown.filter((event) => spansFullWindow(event, windowMinutes));
-    const timed = shown.filter((event) => !spansFullWindow(event, windowMinutes));
+    const banded = shown.filter((event) => spansFullDay(event));
+    const timed = shown.filter((event) => !spansFullDay(event));
 
     if (view === "month") {
       const weeks: {
@@ -728,7 +729,7 @@ export function EventCalendar({
       bandSize: bandAll.length,
       columns,
     };
-  }, [shown, days, view, maxColumns, maxLanes, windowMinutes]);
+  }, [shown, days, view, maxColumns, maxLanes]);
 
   const entries = useMemo<FocusEntry[]>(() => {
     const list: FocusEntry[] = [];
@@ -890,8 +891,9 @@ export function EventCalendar({
 
   function pickSlot(day: Date, minutes: number) {
     if (!onSlotSelect) return;
-    const snapped = Math.round(minutes / SLOT_MINUTES) * SLOT_MINUTES;
-    const start = new Date(startOfDay(day).getTime() + snapped * 60000);
+    const snapped = Math.floor(minutes / SLOT_MINUTES) * SLOT_MINUTES;
+    const start = startOfDay(day);
+    start.setHours(0, snapped, 0, 0);
     onSlotSelect({ start, end: new Date(start.getTime() + SLOT_MINUTES * 60000) });
   }
 
@@ -916,7 +918,7 @@ export function EventCalendar({
             segment={segment}
             shape="row"
             view={view}
-            allDay={segment.event.allDay === true || spansFullWindow(segment.event, windowMinutes)}
+            allDay={segment.event.allDay === true}
             position={index + 1}
             total={items.length}
             active={activeKey === segment.key}
@@ -1081,7 +1083,10 @@ export function EventCalendar({
                     data-rc-day={dayIndex}
                     aria-current={isSameDay(day, today) ? "date" : undefined}
                     aria-label={words.dayGroup(day, isSameDay(day, today), all)}
-                    onClick={() => pickDay(day)}
+                    onClick={(pointer) => {
+                      if (!pointer.currentTarget.contains(pointer.target as Node)) return;
+                      pickDay(day);
+                    }}
                     className={cn(
                       "relative min-w-0 flex-1 border-s border-border first:border-s-0",
                       "flex min-h-20 flex-col gap-0.5 p-1 sm:min-h-26",
@@ -1256,6 +1261,7 @@ export function EventCalendar({
               aria-current={isSameDay(column.day, today) ? "date" : undefined}
               aria-label={words.dayGroup(column.day, isSameDay(column.day, today), column.count)}
               onClick={(pointer) => {
+                if (!pointer.currentTarget.contains(pointer.target as Node)) return;
                 const box = pointer.currentTarget.getBoundingClientRect();
                 pickSlot(
                   column.day,
@@ -1416,6 +1422,16 @@ export function EventCalendar({
               onValueChange={(picked) => {
                 changeDate(picked);
                 setPickerOpen(false);
+              }}
+              weekStartsOn={weekStartsOn}
+              {...(locale.toLowerCase().startsWith("pt") ? {} : { locale: enUS })}
+              formatters={{
+                formatCaption: (month) =>
+                  capitalize(month.toLocaleDateString(locale, { month: "long", year: "numeric" })),
+                formatMonthDropdown: (month) =>
+                  capitalize(month.toLocaleDateString(locale, { month: "long" })),
+                formatWeekdayName: (day) =>
+                  day.toLocaleDateString(locale, { weekday: "narrow" }).toUpperCase(),
               }}
               autoFocus
             />
