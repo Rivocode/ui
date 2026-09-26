@@ -41,6 +41,7 @@ export const inputVariants = cva(
 
 const FieldRootPresence = createContext(false);
 const FieldRootName = createContext<string | undefined>(undefined);
+const FieldRootDisabled = createContext(false);
 
 export function useInsideField() {
   return use(FieldRootPresence);
@@ -48,6 +49,10 @@ export function useInsideField() {
 
 export function useFieldName() {
   return use(FieldRootName);
+}
+
+export function useFieldDisabled() {
+  return use(FieldRootDisabled);
 }
 
 export function UnnamedInput({ name: _name, ...props }: ComponentProps<"input">) {
@@ -93,7 +98,9 @@ export function Field({ className, ...props }: FieldProps) {
   return (
     <FieldRootPresence value={true}>
       <FieldRootName value={props.name}>
-        <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />
+        <FieldRootDisabled value={props.disabled === true}>
+          <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />
+        </FieldRootDisabled>
       </FieldRootName>
     </FieldRootPresence>
   );

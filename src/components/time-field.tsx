@@ -14,7 +14,7 @@ import {
 import { cn } from "../lib/cn";
 import { useMobile } from "../lib/screen";
 import { applyTimeMask, formatTime, parseTime, stepTime, timeWindow } from "../shared/time";
-import { Input, UnnamedInput, useFieldName } from "./field";
+import { Input, UnnamedInput, useFieldDisabled, useFieldName } from "./field";
 
 export { applyTimeMask, formatTime, parseTime, stepTime, timeWindow };
 
@@ -101,6 +101,7 @@ export function TimeField({
   const [labelled, setLabelled] = useState<string>();
 
   const fieldName = useFieldName();
+  const fieldDisabled = useFieldDisabled();
   const isMobile = useMobile();
   const elsewhere = useContext(TouchStepElsewhere);
   const steppers = isMobile && !elsewhere;
@@ -221,7 +222,12 @@ export function TimeField({
 
   const submitName = name ?? fieldName;
   const hidden = submitName ? (
-    <input type="hidden" name={submitName} value={formatTime(chosen)} disabled={disabled} />
+    <input
+      type="hidden"
+      name={submitName}
+      value={formatTime(chosen)}
+      disabled={disabled || fieldDisabled}
+    />
   ) : null;
 
   const announcement = (

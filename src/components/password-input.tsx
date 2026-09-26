@@ -5,7 +5,7 @@ import { useState, type ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-import { Input, type InputProps } from "./field";
+import { Input, useFieldDisabled, type InputProps } from "./field";
 import { InputAction, InputGroup } from "./input-group";
 
 export type PasswordInputProps = Omit<InputProps, "type"> & {
@@ -27,6 +27,7 @@ export function PasswordInput({
   const { show = "Mostrar senha", hide = "Esconder senha" } = labels;
 
   const [visible, setVisible] = useState(false);
+  const fieldDisabled = useFieldDisabled();
 
   return (
     <InputGroup size={size} className={classNames?.wrapper}>
@@ -41,7 +42,7 @@ export function PasswordInput({
         }}
       />
       <InputAction
-        disabled={props.disabled}
+        disabled={props.disabled || fieldDisabled}
         aria-label={visible ? hide : show}
         onClick={() => setVisible((current) => !current)}
         className={cn("border-l-0", classNames?.action)}

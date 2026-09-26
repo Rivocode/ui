@@ -10,7 +10,7 @@ import {
   readCurrencyInput,
   readPastedCurrency,
 } from "../shared/currency";
-import { Input, UnnamedInput, useFieldName, type InputProps } from "./field";
+import { Input, UnnamedInput, useFieldDisabled, useFieldName, type InputProps } from "./field";
 
 export type CurrencyInputProps = Omit<
   InputProps,
@@ -88,8 +88,12 @@ export function CurrencyInput({
   const cents = controlled ? value : internal;
 
   const fieldName = useFieldName();
+  const fieldDisabled = useFieldDisabled();
   const submitName = name ?? fieldName;
-  const [sign, setSign] = useState<{ minus: boolean; at: number | null }>({ minus: false, at: null });
+  const [sign, setSign] = useState<{ minus: boolean; at: number | null }>({
+    minus: false,
+    at: null,
+  });
   const minus = sign.minus && sign.at === cents;
   const shown = cents === null ? (minus && allowNegative ? "-" : "") : formatCents(cents);
 
@@ -174,7 +178,14 @@ export function CurrencyInput({
         )}
       />
 
-      {submitName ? <input type="hidden" name={submitName} value={cents ?? ""} disabled={disabled} /> : null}
+      {submitName ? (
+        <input
+          type="hidden"
+          name={submitName}
+          value={cents ?? ""}
+          disabled={disabled || fieldDisabled}
+        />
+      ) : null}
     </div>
   );
 }

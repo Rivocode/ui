@@ -14,7 +14,7 @@ import {
 import { useArrivals } from "../lib/arrivals";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-import { inputVariants, UnnamedInput, useFieldName } from "./field";
+import { inputVariants, UnnamedInput, useFieldDisabled, useFieldName } from "./field";
 
 export type TagsInputProps = Omit<
   ComponentProps<"input">,
@@ -59,6 +59,7 @@ export function TagsInput({
   const tags = controlled ? value : internal;
   const full = max !== undefined && tags.length >= max;
   const fieldName = useFieldName();
+  const fieldDisabled = useFieldDisabled();
   const submitName = name ?? fieldName;
 
   const remove = labels.remove ?? ((tag: string) => `Remover ${tag}`);
@@ -201,7 +202,13 @@ export function TagsInput({
 
       {submitName
         ? tags.map((tag) => (
-            <input key={tag} type="hidden" name={submitName} value={tag} disabled={disabled} />
+            <input
+              key={tag}
+              type="hidden"
+              name={submitName}
+              value={tag}
+              disabled={disabled || fieldDisabled}
+            />
           ))
         : null}
     </div>
