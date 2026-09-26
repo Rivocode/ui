@@ -49,6 +49,11 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     summary: 'O link do Router com o desenho da casa, e a consulta do Query nos quatro finais.',
   },
   {
+    slug: 'arquitetura',
+    title: 'Arquitetura recomendada',
+    summary: 'O roteiro para um projeto novo: pastas por funcionalidade, a casca, os dados e o agente, no Vite ou no Next.',
+  },
+  {
     slug: 'documentos-brasileiros',
     title: 'Documentos brasileiros',
     summary: 'CPF, CNPJ, CNH, título, PIS, RENAVAM, placa e boleto: a conta de cada um.',

@@ -15,6 +15,7 @@ Leia o arquivo que o trabalho pedir, e só ele.
 
 | Trabalho | Arquivo |
 |---|---|
+| Começar um projeto novo: pastas, casca, dados, agente | <https://ds.rivocode.com.br/arquitetura.md> |
 | Montar uma tela do zero, do pedido até a tela conferida | [reference/method.md](reference/method.md) |
 | Decidir o fluxo: uma tela ou várias, confirmar ou desfazer, erro | [reference/fluxo.md](reference/fluxo.md) |
 | Escrever o texto: rótulo, botão, mensagem de erro, vazio | [reference/texto.md](reference/texto.md) |
