@@ -308,6 +308,7 @@ export function SidebarInput({ className, label = "Buscar", ...props }: SidebarI
         className={cn(
           "h-[var(--rc-control-md)] w-full rounded-md border border-border-strong bg-bg",
           "pr-2.5 pl-8 font-sans text-sm text-fg placeholder:text-fg-subtle",
+          "[&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
           className,
         )}

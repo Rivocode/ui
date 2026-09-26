@@ -35,7 +35,7 @@ export function PasswordInput({
         {...props}
         type={visible ? "text" : "password"}
         size={size}
-        className={cn(classNames?.input, className)}
+        className={cn("[&::-ms-clear]:hidden [&::-ms-reveal]:hidden", classNames?.input, className)}
         onBlur={(event) => {
           setVisible(false);
           onBlur?.(event);
