@@ -1,5 +1,12 @@
 # Mudancas
 
+## 1.1.5
+
+- `Select`: a lista rola dentro da caixa quando a caixa tem altura maxima. A
+  caixa virou uma coluna, e a lista de dentro encolhe ate caber; antes, a
+  altura ficava na caixa e os itens vazavam para fora dela. Era o que se via na
+  lista de ano do `Calendar` da 1.1.4.
+
 ## 1.1.4
 
 Tira o que o navegador ainda desenhava por conta propria dentro das pecas.
