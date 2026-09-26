@@ -29,14 +29,19 @@ comportamento muda de um jeito que se ve, a linha diz.
 - O `AlertDialog` aberto de dentro de um `Popover` cobre o popover e o deixa
   inerte; o `Tour` com alvo dentro de um `Dialog` bloqueia o resto do dialogo;
   o cartao arrastado do `Kanban` sai em portal e fica visivel, sobre o
-  original, mesmo dentro de uma `Sheet` ou de um `Dialog`.
+  original, mesmo dentro de uma `Sheet` ou de um `Dialog`, e as setas do
+  arrasto por teclado chegam ao `Kanban` e ao `SortableList` dentro dessas
+  camadas (o popup as parava, e o cartao nao andava). Muda o que se exige: o
+  `Kanban` passa a pedir o `RivoProvider` em volta, como as pecas que abrem
+  camada ja pediam.
 
 ### Formulario
 
 - `MaskedInput`: o Backspace apaga o telefone ate o fim (travava em `(11) `), e
   o cursor fica onde se digitou no meio; Backspace e Delete sobre um literal
-  apagam o digito vizinho. Muda o que se ve: o literal so aparece
-  junto com o digito seguinte - "11" no telefone mostra `(11`, e nao `(11) `.
+  apagam o digito vizinho (com Alt, Ctrl ou Cmd, fica com o navegador). Muda o
+  que se ve: o literal so aparece junto com o digito seguinte - "11" no
+  telefone mostra `(11`, e nao `(11) `.
 - `DatePicker` e `Calendar` controlados voltam ao vazio quando o valor de fora
   volta a `undefined` (voltavam a primeira data escolhida, e o formulario a
   enviava); a data digitada respeita `disabledDays`.
