@@ -37,6 +37,11 @@ vivo pese 1,4 vez mais), então ele não parece clicável. `primary` e
 `danger` já nascem com borda transparente de 1px, para o tamanho não
 pular ao desabilitar. `ghost` continua sem contorno: vivo, ele nunca teve.
 
+**Link desabilitado.** Com `render={<a href="..." />}` e `disabled` ou
+`loading`, o link perde o `href`, ganha `aria-disabled="true"`, para de receber
+o ponteiro e não chama o `onClick`: `<a>` não tem `disabled` nativo, e sem isso
+ele continuaria navegando.
+
 ## No React Native
 
 Traduz: o `@rivocode/ui-native` exporta `Button` - contrato controlado; `hitSlop` no `sm`, porque 32px de alvo não se toca sem ajuda. Afunda de leve no toque, e não afunda quando o sistema pede para reduzir movimento. A API não é a mesma do web (no nativo tudo é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.
