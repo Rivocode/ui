@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, useParentLayer } from "../lib/layer";
 import { useRivoContext } from "../provider/rivo-provider";
 import { Kbd } from "./kbd";
 
@@ -84,9 +85,11 @@ export function Command({
   shortcut = "k",
   title = "Paleta de comandos",
   className,
+  style,
   ...rest
 }: CommandProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
 
@@ -185,6 +188,7 @@ export function Command({
     <BaseDialog.Root open={open} onOpenChange={onOpenChange}>
       <BaseDialog.Portal container={portalContainer ?? undefined}>
         <BaseDialog.Backdrop
+          style={layerStyle("overlay", parent)}
           className={cn(
             "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
             "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
@@ -193,6 +197,8 @@ export function Command({
         />
         <BaseDialog.Popup
           {...rest}
+          data-rc-layer={layerLevel("dialog", parent, 2)}
+          style={layerStyle("dialog", parent, 2, style)}
           className={cn(
             "fixed left-1/2 z-[var(--rc-z-dialog)] w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2",
             "top-[12vh]",

@@ -20,6 +20,7 @@ import { useReducedMotion } from "../hooks/environment";
 import { cn } from "../lib/cn";
 import { focusIsLost } from "../lib/focus";
 import { isTypingTarget } from "../lib/hotkey";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { FLOATING_SIDE_OFFSET } from "../lib/positioning";
 import { useMobile } from "../lib/screen";
 import type { Slots } from "../lib/slots";
@@ -60,6 +61,17 @@ export type TourStep = {
 };
 
 type Box = { top: number; left: number; width: number; height: number };
+
+function joinLayers(...levels: (string | null)[]): string | null {
+  const present = levels.filter((level): level is string => level !== null);
+  if (present.length === 0) return null;
+  if (present.length === 1) return present[0]!;
+  return `max(${present.join(", ")})`;
+}
+
+function layerOf(element: Element | null): string | null {
+  return element?.closest("[data-rc-layer]")?.getAttribute("data-rc-layer") ?? null;
+}
 
 export type TourProps = {
   /** Os passos, na ordem. Cada um destaca um alvo e explica o que ele faz. */
@@ -179,12 +191,14 @@ function TourMask({
   box,
   interactive,
   container,
+  layer,
   className,
   spotlightClassName,
 }: {
   box: Box | null;
   interactive: boolean;
   container: HTMLElement | null;
+  layer: string | null;
   className?: string;
   spotlightClassName?: string;
 }) {
@@ -211,6 +225,7 @@ function TourMask({
     <div
       aria-hidden="true"
       data-tour-mask=""
+      style={layerStyle("overlay", layer)}
       className={cn(
         "pointer-events-none fixed inset-0 z-[var(--rc-z-overlay)] overflow-hidden",
         !hole && "bg-overlay",
@@ -276,6 +291,9 @@ export function Tour({
   const active = steps[current];
   const isLast = current === total - 1;
   const box = useTrackedBox(open ? element : null);
+  const outer = useParentLayer();
+  const layer = joinLayers(outer, layerOf(element));
+  const level = layerLevel("popover", layer, 2);
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -434,6 +452,7 @@ export function Tour({
           box={box}
           interactive={interactive}
           container={portalContainer}
+          layer={layer}
           className={classNames?.mask}
           spotlightClassName={classNames?.spotlight}
         />
@@ -447,6 +466,8 @@ export function Tour({
             sideOffset={isMobile ? 0 : FLOATING_SIDE_OFFSET + TOUR_SPOTLIGHT_PADDING}
             collisionPadding={isMobile ? 0 : 8}
             positionMethod={isMobile ? "fixed" : "absolute"}
+            data-rc-layer={level}
+            style={layerStyle("popover", layer, 2)}
             className="z-[var(--rc-z-popover)] outline-none"
           >
             <BasePopover.Popup
@@ -497,7 +518,11 @@ export function Tour({
                   {active.description}
                 </div>
               )}
-              {active?.action && <div className="mt-3">{active.action}</div>}
+              {active?.action && (
+                <div className="mt-3">
+                  <LayerProvider level={level}>{active.action}</LayerProvider>
+                </div>
+              )}
               <div role="status" aria-live="polite" className="sr-only">
                 {announcement}
               </div>

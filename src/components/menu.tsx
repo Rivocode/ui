@@ -6,6 +6,7 @@ import { Check, ChevronRight } from "lucide-react";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
@@ -41,6 +42,8 @@ export function MenuContent({
   ...props
 }: MenuContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("dropdown", parent);
 
   return (
     <BaseMenu.Portal container={portalContainer ?? undefined}>
@@ -49,10 +52,12 @@ export function MenuContent({
         side={side}
         align={align}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("dropdown", parent)}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >
         <BaseMenu.Popup {...props} className={cn(floatingPanel, className)}>
-          {children}
+          <LayerProvider level={level}>{children}</LayerProvider>
         </BaseMenu.Popup>
       </BaseMenu.Positioner>
     </BaseMenu.Portal>

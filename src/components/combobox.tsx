@@ -5,6 +5,7 @@ import { Check, ChevronDown, X } from "lucide-react";
 import { createContext, use, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import {
   isChosen,
   keyOnScreen,
@@ -183,6 +184,8 @@ export function ComboboxContent({
   ...props
 }: ComboboxContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("dropdown", parent);
 
   return (
     <BaseCombobox.Portal container={portalContainer ?? undefined}>
@@ -191,6 +194,8 @@ export function ComboboxContent({
         side={side}
         align={align}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("dropdown", parent)}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >
         <BaseCombobox.Popup
@@ -204,7 +209,7 @@ export function ComboboxContent({
           <BaseCombobox.Empty>
             <div className="px-2.5 py-6 text-center text-sm text-fg-subtle">{emptyMessage}</div>
           </BaseCombobox.Empty>
-          {children}
+          <LayerProvider level={level}>{children}</LayerProvider>
         </BaseCombobox.Popup>
       </BaseCombobox.Positioner>
     </BaseCombobox.Portal>

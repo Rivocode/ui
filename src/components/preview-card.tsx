@@ -4,6 +4,7 @@ import { PreviewCard as BasePreviewCard } from "@base-ui/react/preview-card";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const PreviewCard = BasePreviewCard.Root;
@@ -15,12 +16,16 @@ export function PreviewCardContent({
   ...props
 }: ComponentProps<typeof BasePreviewCard.Popup>) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("popover", parent);
 
   return (
     <BasePreviewCard.Portal container={portalContainer ?? undefined}>
       <BasePreviewCard.Positioner
         sideOffset={8}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("popover", parent)}
         className="z-[var(--rc-z-popover)] outline-none"
       >
         <BasePreviewCard.Popup
@@ -36,7 +41,7 @@ export function PreviewCardContent({
             className,
           )}
         >
-          {children}
+          <LayerProvider level={level}>{children}</LayerProvider>
         </BasePreviewCard.Popup>
       </BasePreviewCard.Positioner>
     </BasePreviewCard.Portal>

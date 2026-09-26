@@ -209,7 +209,9 @@ o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 - `z-index` numérico. Sempre `z-[var(--rc-z-…)]`. São oito degraus, e os que a
   sua tela escreve são os das pontas: `--rc-z-sticky` para cabeçalho, coluna
   congelada e barra que gruda ao rolar, `--rc-z-base` para voltar ao plano do
-  conteúdo. Os seis do meio são das peças, que já sobem sozinhas.
+  conteúdo. Os seis do meio são das peças, que já sobem sozinhas - e o que
+  abre de dentro de uma camada (o `Select` no `Dialog`, o `AlertDialog` no
+  `Popover`) sobe acima dela, desde que seja montado dentro do conteúdo dela.
 - Altura cravada em controle. Sempre `var(--rc-control-…)`.
 - Montar `TooltipProvider`, `ToastViewport` ou container de portal à mão. O
   Provider já fez.

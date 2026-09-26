@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { FLOATING_SIDE_OFFSET, type FloatingPositionProps } from "../lib/positioning";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -75,6 +76,8 @@ export function TooltipContent({
   ...props
 }: TooltipContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const level = layerLevel("tooltip", parent);
   const description = use(DescriptionContext);
   const fallbackId = useId();
 
@@ -85,6 +88,8 @@ export function TooltipContent({
         side={side}
         align={align}
         collisionPadding={8}
+        data-rc-layer={level}
+        style={layerStyle("tooltip", parent)}
         className="z-[var(--rc-z-tooltip)] outline-none"
       >
         <BaseTooltip.Popup
@@ -102,7 +107,7 @@ export function TooltipContent({
             className,
           )}
         >
-          {children}
+          <LayerProvider level={level}>{children}</LayerProvider>
         </BaseTooltip.Popup>
       </BaseTooltip.Positioner>
     </BaseTooltip.Portal>

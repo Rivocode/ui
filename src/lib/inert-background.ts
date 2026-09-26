@@ -2,15 +2,35 @@
 
 import { useEffect } from "react";
 
-export function InertBackground({ container }: { container: HTMLElement | null }) {
+export function InertBackground({
+  container,
+  below = [],
+}: {
+  container: HTMLElement | null;
+  below?: readonly string[];
+}) {
+  const key = below.join("\n");
+
   useEffect(() => {
     if (!container) return;
 
-    const body = container.ownerDocument.body;
+    const portal = container;
+    const body = portal.ownerDocument.body;
     const marked = new Set<Element>();
 
     function sweep() {
-      for (const child of Array.from(body.children)) {
+      const lower = key ? key.split("\n") : [];
+      const opener = (child: Element) =>
+        [child, ...Array.from(child.querySelectorAll("[data-rc-layer]"))].some((node) =>
+          lower.includes(node.getAttribute("data-rc-layer") ?? ""),
+        );
+      const candidates = new Set([
+        ...Array.from(body.children),
+        ...Array.from(portal.children).filter(opener),
+        ...marked,
+      ]);
+
+      for (const child of candidates) {
         if (child === container) continue;
 
         if (child.getAttribute("aria-hidden") !== "true") {
@@ -37,7 +57,7 @@ export function InertBackground({ container }: { container: HTMLElement | null }
       watcher.disconnect();
       for (const child of marked) child.removeAttribute("inert");
     };
-  }, [container]);
+  }, [container, key]);
 
   return null;
 }

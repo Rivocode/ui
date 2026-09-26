@@ -5,6 +5,13 @@ import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { InertBackground } from "../lib/inert-background";
+import {
+  layerLevel,
+  layerStyle,
+  LayerProvider,
+  useLayerChain,
+  useParentLayer,
+} from "../lib/layer";
 import type { Slots } from "../lib/slots";
 import { useRivoContext } from "../provider/rivo-provider";
 
@@ -21,12 +28,22 @@ export type DialogContentProps = ComponentProps<typeof BaseDialog.Popup> & {
   classNames?: Slots<"backdrop">;
 };
 
-export function DialogContent({ className, children, classNames, ...props }: DialogContentProps) {
+export function DialogContent({
+  className,
+  children,
+  classNames,
+  style,
+  ...props
+}: DialogContentProps) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
+  const chain = useLayerChain();
+  const level = layerLevel("dialog", parent, 2);
 
   return (
     <BaseDialog.Portal container={portalContainer ?? undefined}>
       <BaseDialog.Backdrop
+        style={layerStyle("overlay", parent)}
         className={cn(
           "fixed inset-0 z-[var(--rc-z-overlay)] bg-overlay",
           "transition-opacity duration-[var(--rc-duration-base)] ease-[var(--rc-ease)]",
@@ -36,6 +53,8 @@ export function DialogContent({ className, children, classNames, ...props }: Dia
       />
       <BaseDialog.Popup
         {...props}
+        data-rc-layer={level}
+        style={layerStyle("dialog", parent, 2, style)}
         className={cn(
           "fixed top-1/2 left-1/2 z-[var(--rc-z-dialog)] w-[min(32rem,calc(100vw-2rem))]",
           "-translate-x-1/2 -translate-y-1/2",
@@ -51,10 +70,10 @@ export function DialogContent({ className, children, classNames, ...props }: Dia
           className,
         )}
       >
-        {children}
+        <LayerProvider level={level}>{children}</LayerProvider>
       </BaseDialog.Popup>
 
-      <InertBackground container={portalContainer} />
+      <InertBackground container={portalContainer} below={chain} />
     </BaseDialog.Portal>
   );
 }

@@ -29,6 +29,7 @@ import {
 
 import { Badge } from "../components/badge";
 import { cn } from "../lib/cn";
+import { layerLevel, useParentLayer } from "../lib/layer";
 import { useMediaQuery } from "../lib/screen";
 import type { Slots } from "../lib/slots";
 import { moveItem } from "../shared/sortable";
@@ -159,6 +160,7 @@ export function Kanban<Item>({
   const labels = { ...KANBAN_LABELS, ...written };
   const reduced = useMediaQuery(REDUCED_MOTION);
   const [drag, setDrag] = useState<Drag | null>(null);
+  const overlayLevel = layerLevel("dropdown", useParentLayer());
   const { say, announcements } = useAnnouncer();
   const spoken = useRef("");
   const [motion, setMotion] = useState<TokenMotion | null>(null);
@@ -358,7 +360,7 @@ export function Kanban<Item>({
               }
             : null
         }
-        style={{ zIndex: "var(--rc-z-dropdown)" }}
+        style={{ zIndex: overlayLevel }}
         transition={(event) =>
           motion && event && "key" in event
             ? ["transform", `${motion.duration}ms`, motion.easing].join(" ")

@@ -62,6 +62,18 @@ conteudo, e `--rc-z-sticky` para **cabecalho, coluna congelada e barra de acao
 que gruda ao rolar**. Cabecalho grudado com `--rc-z-dropdown` fica na frente do
 menu que ele mesmo abre; e o erro que a falta desta linha ja produziu.
 
+**O que abre de dentro de uma camada fica acima dela.** Um `Select` dentro de
+um `Dialog`, um `AlertDialog` aberto por um botao dentro de um `Popover`, um
+`Menu` dentro de uma `Sheet`: cada peca que abre camada le o degrau de quem a
+abriu e fica um acima dele - `max(<o proprio degrau>, <o de quem abriu> + 1)`,
+sempre em cima dos `--rc-z-*`. Fora de qualquer camada, cada uma fica no
+proprio degrau, como antes. A regra anda pela arvore do React: o flutuante tem
+que ser montado DENTRO do conteudo da camada (`DialogContent`,
+`PopoverContent`, `SheetContent`...), e nao ao lado dela. O `Tour` le tambem o
+DOM: com o alvo dentro de um `Dialog`, a mascara sobe acima do dialogo e o
+resto dele fica apagado e sem clique. `Toast` e `Tooltip` continuam por cima
+de tudo.
+
 **As pecas entram na montagem, e a moldura nao.** O que chega entra - o
 grafico se desenha, a barra de progresso enche do zero, o `Alert` e o
 `EmptyState` sobem 4px esmaecendo, o corpo do `DataTable` esmaece ao sair do

@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import type { ComponentProps } from "react";
 
 import { cn } from "../lib/cn";
+import { layerLevel, layerStyle, LayerProvider, useParentLayer } from "../lib/layer";
 import { useRivoContext } from "../provider/rivo-provider";
 
 export const NavigationMenu = BaseNavigationMenu.Root;
@@ -70,19 +71,29 @@ export function NavigationMenuLink({
 
 export function NavigationMenuContent({
   className,
+  children,
   ...props
 }: ComponentProps<typeof BaseNavigationMenu.Content>) {
-  return <BaseNavigationMenu.Content {...props} className={cn("w-64 p-2", className)} />;
+  const level = layerLevel("dropdown", useParentLayer());
+
+  return (
+    <BaseNavigationMenu.Content {...props} className={cn("w-64 p-2", className)}>
+      <LayerProvider level={level}>{children}</LayerProvider>
+    </BaseNavigationMenu.Content>
+  );
 }
 
 export function NavigationMenuViewport({ className }: { className?: string }) {
   const { portalContainer } = useRivoContext();
+  const parent = useParentLayer();
 
   return (
     <BaseNavigationMenu.Portal container={portalContainer ?? undefined}>
       <BaseNavigationMenu.Positioner
         sideOffset={6}
         collisionPadding={8}
+        data-rc-layer={layerLevel("dropdown", parent)}
+        style={layerStyle("dropdown", parent)}
         className="z-[var(--rc-z-dropdown)] outline-none"
       >
         <BaseNavigationMenu.Popup
