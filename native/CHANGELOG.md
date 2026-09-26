@@ -1,5 +1,62 @@
 # Mudancas
 
+## 1.1.0
+
+Versao menor, junto com a 1.1.0 do `@rivocode/ui`, e na maior parte conserto:
+a mesma revisao de todas as pecas, com cada defeito reproduzido em teste. Nada
+foi tirado nem renomeado. Parte do que esta aqui so um aparelho confirma de
+ponta a ponta - o gesto, o colar do iOS e o que o VoiceOver le -, e isso esta
+dito na linha.
+
+### Novo
+
+- `useToast` ganha o contrato do web: `add` devolve o id, `type` pinta com os
+  tons do `Alert`, `timeout: 0` fica ate fechar, e chegam `close`, `update` e
+  `promise`. Continua sem xis na tela.
+- `ChartDonut`, `ChartFunnel`, `ChartTreemap` e `ChartHeatmap` ganham `empty`,
+  no formato do `ChartContainer`, mostrado com lista vazia ou soma zero; a
+  rosca desenha sempre o anel de fundo.
+
+### Formulario
+
+- `Field` da nome ao campo de dentro: o leitor anunciava "campo de texto" sem
+  dizer qual. `NumberField` e `TimeField` tambem nomeiam o campo do meio.
+- `Slider`: o arrasto usa o `max` e o callback de agora (usava os da
+  montagem, e o formulario gravava por cima com o estado velho); o toque no
+  polegar nao faz o valor pular (aparelho); desabilitado nao muda pelo leitor
+  de tela; o passo decimal arredonda as casas do `step`.
+- `NumberField` aplica o `min` na saida do campo, e nao a cada tecla; aceita
+  virgula decimal.
+- `forText` traduz o `disabled` para `editable`: o campo desabilitado pelo
+  react-hook-form continuava editavel.
+- `Select` com lista rasa rola.
+- `OTPField` e `PostalCodeField` aceitam o colado com espaco, hifen ou ponto
+  (o `maxLength` cortava antes da limpeza; aparelho). A moldura do `OTPField` e
+  do `TagsInput` deixa o VoiceOver alcancar o que tem dentro (aparelho).
+- `MaskedInput`: o Backspace apaga o telefone ate o fim, pela mesma correcao
+  do web. O literal so aparece junto com o digito seguinte.
+- `Editable` desabilitado nao abre pela acao do leitor; `TimeField` segue o
+  reset feito por fora durante a digitacao; `Tree` nao mexe nas folhas
+  desabilitadas pelo galho; `ColorPicker` avisa a cor em seis digitos
+  minusculos; alvos do `Calendar`, do `SearchInput` e do `TagsInput` chegam a
+  44pt.
+
+### O resto
+
+- `ImageViewer` guarda o carregamento por foto: a vizinha que carregava depois
+  devolvia o giro para cima da foto aberta e travava o zoom.
+- `FilterBar`: o "Limpar" mantem os filtros `removable: false` e conta so os
+  que saem.
+- `Tracker` le o toque da faixa (aparelho) e abre no periodo mais recente
+  quando o dado chega depois.
+- `ChartDonut` mostra o negativo como veio e deixa o miolo sempre visivel.
+- `Progress` e `Sparkline` com rotulo viram elemento que o leitor le; o nome do
+  `Carousel` e anunciado; `Tabs` e `Toggle` chegam a 44pt pelo `hitSlop`.
+- `RelativeTime` escreve travessao para data invalida e arredonda como o web;
+  `Stat` com delta zero sai neutro; `ToolCall` abre o painel quando o status
+  muda para erro ou aprovacao; `Clipboard` mostra o `children` ate copiar;
+  `useWizard` anda um passo so com dois toques durante a checagem.
+
 ## 1.0.0
 
 A primeira versao em que o contrato vale como promessa, junto com a 1.0.0 do

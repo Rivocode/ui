@@ -1,5 +1,109 @@
 # Mudancas
 
+## 1.1.0
+
+A primeira versao menor da 1.x e, na maior parte, conserto. Uma revisao de
+todas as pecas, com cada defeito reproduzido em teste ou no Chrome antes de ser
+chamado de defeito, achou perto de oitenta; os do web estao aqui, cada um com
+teste que fica vermelho se ele voltar. Nada foi tirado nem renomeado. Onde o
+comportamento muda de um jeito que se ve, a linha diz.
+
+### Novo
+
+- `ChartDonut`, `ChartFunnel`, `ChartTreemap` e `ChartHeatmap` ganham `empty`,
+  no formato do `ChartContainer`, mostrado com lista vazia ou soma zero.
+- `ChartContainer` com lista vazia e sem `empty` avisa "Sem dados no periodo"
+  em vez de desenhar eixos sobre o nada; o texto troca por `labels.noData`.
+- `SidebarProvider` ganha `openMobile` e `onOpenMobileChange`: a folha do
+  celular tem estado proprio.
+- `Timeline` ganha `labels`, com o "pendente" e a palavra de cada tom ditos em
+  texto ao leitor de tela.
+- `FileUpload` ganha `labels.tooMany`.
+
+### Camadas
+
+- O que abre de dentro de uma camada fica acima dela. `Select`, `Combobox`,
+  `Autocomplete`, `Menu`, `ContextMenu`, `Menubar` e `NavigationMenu` abriam
+  escondidos atras de `Dialog`, `AlertDialog`, `Sheet`, `Command` e `Popover`.
+  Fora de camada nenhuma, nada muda de valor.
+- O `AlertDialog` aberto de dentro de um `Popover` cobre o popover e o deixa
+  inerte; o `Tour` com alvo dentro de um `Dialog` bloqueia o resto do dialogo;
+  o cartao arrastado do `Kanban` passa por cima da `Sheet` em que esta.
+
+### Formulario
+
+- `MaskedInput`: o Backspace apaga o telefone ate o fim (travava em `(11) `), e
+  o cursor fica onde se digitou no meio. Muda o que se ve: o literal so aparece
+  junto com o digito seguinte - "11" no telefone mostra `(11`, e nao `(11) `.
+- `DatePicker` e `Calendar` controlados voltam ao vazio quando o valor de fora
+  volta a `undefined` (voltavam a primeira data escolhida, e o formulario a
+  enviava); a data digitada respeita `disabledDays`.
+- `CurrencyInput` e `TimeField` mandam ao formulario so o valor, e nao o texto
+  pontuado, inclusive pelo `name` do `<Field>`; o `TimeField` desabilitado nao
+  envia; o "-" do `CurrencyInput` sai quando o valor e zerado por fora.
+- `forValue` repassa a `ref`: o react-hook-form foca o campo de dinheiro ou de
+  hora que voltou com erro.
+- `TagsInput`: no teto continua focado e tirando ficha pelo Backspace; colar
+  com virgula vira uma ficha por item; o formulario recebe as fichas, e nao o
+  rascunho.
+- `SearchInput` controlado: o Esc limpa pelo `onChange`, e o estado do app
+  acompanha a tela.
+- `PostalCodeField` aceita o CEP colado com ponto; o olho do `PasswordInput`
+  desabilitado nao revela a senha; o `Editable` devolve o foco depois de Enter
+  e Esc.
+- `Tree` e `TreeSelect`: o teclado deixa de escolher no desabilitado, o pai
+  deixa de mexer nas folhas desabilitadas, a busca ignora acento, e Home, End e
+  o Tab voltam a ultima linha focada.
+- `ColorPicker`: a amostra avisa a cor em seis digitos minusculos.
+- `FileUpload` sem `multiple` manda o excedente para o `onReject`, com motivo.
+
+### Dados, tabelas e graficos
+
+- `FilterBar`: o "Limpar" mantem os filtros `removable: false` (apagava o
+  escopo de filial ou tenant) e conta so os que saem; o foco pousa na barra.
+- `DataTable`: a pagina fica dentro do que existe quando `data` encolhe; a
+  selecao nao controlada perde as linhas que sairam; texto ordena em portugues
+  (acento deixa de ir para depois do Z) e vazio fica sempre no fim.
+- `EventCalendar`: o clique no painel "+N mais" nao cria compromisso; o
+  intervalo devolvido e o clicado, em hora de parede (o horario de verao
+  deslocava uma hora); so e "Dia inteiro" o que e dia inteiro; o seletor de
+  data segue `locale` e `weekStartsOn`.
+- `ChartDonut`: o miolo fica sempre visivel, e a dica abre fora do buraco; o
+  anel de fundo e sempre desenhado; a cor segue a ordem do `config`.
+- `ChartContainer`: chave com espaco ou ponto deixa de pintar a serie de preto.
+- `ChartRadial` diz o valor real acima do maximo e travessao para `NaN`;
+  `compact`, `compactWords` e `currencyShort` sobem de grandeza ("1M", e nao
+  "1.000K") e seguem o sinal do `currency`; a `Sparkline` de um ponto sai
+  neutra; o `ChartTreemap` espelha no RTL.
+- `RelativeTime` com data invalida escreve travessao em vez de derrubar a
+  arvore; `Stat` com `delta={0}` sai neutro; `DescriptionList`, `PageHeader` e
+  `Accordion` quebram texto longo em vez de estourar a largura no celular.
+
+### Acoes, avisos e navegacao
+
+- Todo botao interno de peca declara `type="button"`: "Tentar de novo",
+  "Limpar selecao" e os botoes do `CookieConsent` e da `NotificationCenter`
+  enviavam o formulario em volta.
+- `RivoProvider` com `theme="system"` e o `Kbd` hidratam igual ao servidor.
+- `Button` com `render` desabilitado ou carregando deixa de navegar e se
+  anuncia desabilitado.
+- `Clipboard` mostra o `children` ate copiar e chama o `onClick` de quem usa.
+- `Progress` e `Meter` com `format` escrevem o valor da faixa, e nunca `NaN`.
+- `ToastViewport`: o aviso alem do limite sai de vista em vez de ficar visivel
+  e inerte.
+- `Sidebar` e `Command`: Ctrl/Cmd+B e Ctrl/Cmd+K nao disparam em campo nem no
+  `RichTextEditor`; o atalho casa maiuscula; o Enter da composicao do IME nao
+  executa comando.
+- `SidebarProvider` controlado deixa de abrir a folha do celular por cima da
+  tela; quem abria a folha pelo `open` passa ao `openMobile`. `Sidebar` e
+  `Steps` levam classe e atributos aos dois modos.
+- `Breadcrumb`: mostra a primeira e as `max - 1` ultimas, sem repetir migalha.
+  Muda o que se ve: com o padrao `max={4}` e cinco migalhas, a trilha sai
+  "A … C D E".
+- `Pagination` prende a pagina na faixa e trava as setas sem pagina para ir.
+- `ToolCall` abre o painel quando o status muda para erro ou aprovacao;
+  `useWizard` anda um passo so com dois toques durante a checagem assincrona.
+
 ## 1.0.0
 
 A primeira versao em que o contrato vale como promessa. A API fica congelada:
