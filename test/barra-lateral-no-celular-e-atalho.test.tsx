@@ -211,3 +211,10 @@ test("o data-testid do Steps fica num bloco so, e o getByTestId acha um elemento
   expect(screen.getAllByTestId("etapas")).toHaveLength(1);
   expect(screen.getAllByRole("group", { name: "Etapas" }).length).toBeGreaterThan(0);
 });
+
+test("o titulo do passo tem a linha da altura do circulo, e fica no meio dele sem descricao", () => {
+  render(<Steps steps={[{ id: "a", title: "O que é" }]} step={0} />);
+  const title = screen.getAllByText("O que é").find((node) => node.getAttribute("title") === "O que é")!;
+
+  expect(title.className.split(" ")).toContain("leading-6");
+});

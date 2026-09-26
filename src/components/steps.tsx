@@ -119,7 +119,7 @@ export function Steps({
                   <span
                     title={step.title}
                     className={cn(
-                      "truncate font-sans text-sm",
+                      "truncate font-sans text-sm leading-6",
                       isCurrent ? "font-rc-medium text-fg" : "text-fg-muted",
                     )}
                   >
