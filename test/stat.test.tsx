@@ -61,6 +61,19 @@ test("delta zero em pastilha tambem sai neutro, e com invert continua neutro", (
   expect(pill.className.split(" ")).not.toContain("text-danger-text");
 });
 
+test("delta que arredonda para zero na tela tambem sai neutro, nos dois sinais", () => {
+  for (const delta of [0.0001, -0.0001]) {
+    const view = stat({ delta, deltaLabel: "sobre julho" });
+    const line = screen.getByText(/0% sobre julho/);
+
+    expect(line.querySelector("svg")).toBeNull();
+    expect(line.className.split(" ")).toContain("text-fg-muted");
+    expect(view.container.textContent).not.toContain("alta de");
+    expect(view.container.textContent).not.toContain("queda de");
+    view.unmount();
+  }
+});
+
 test("sem delta nao ha linha de variacao", () => {
   const { container } = stat();
   expect(container.querySelector(".text-success-text")).toBeNull();

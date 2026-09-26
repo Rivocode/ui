@@ -97,10 +97,10 @@ export function Stat({
   ...rest
 }: StatProps) {
   const text = { ...LABELS, ...labels };
-  const flat = delta === 0;
+  const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
+  const flat = delta === 0 || (delta !== undefined && writeDelta(Math.abs(delta)) === writeDelta(0));
   const rose = (delta ?? 0) > 0;
   const good = invert ? !rose : rose;
-  const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
 
   return (
     <Card {...rest} className={className}>
