@@ -1,5 +1,7 @@
+"use client";
+
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentPropsWithoutRef } from "react";
+import { useSyncExternalStore, type ComponentPropsWithoutRef } from "react";
 
 import { cn } from "../lib/cn";
 
@@ -104,20 +106,34 @@ const ARROWS = ["up", "down", "left", "right"] as const;
 const isArrow = (token: string): token is (typeof ARROWS)[number] =>
   (ARROWS as readonly string[]).includes(token);
 
-const NO_MAC =
-  typeof navigator !== "undefined" &&
-  /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+function detectMac() {
+  return (
+    typeof navigator !== "undefined" &&
+    /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)
+  );
+}
 
-export function keyName(key: string) {
+const subscribeNothing = () => () => {};
+const onServer = () => false;
+
+function useMac() {
+  return useSyncExternalStore(subscribeNothing, detectMac, onServer);
+}
+
+function nameOn(key: string, mac: boolean) {
   const token = key.toLowerCase();
-  const table = NO_MAC ? MAC : OTHERS;
+  const table = mac ? MAC : OTHERS;
   return table[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 
-function spokenName(key: string, labels: KbdLabels) {
+export function keyName(key: string) {
+  return nameOn(key, detectMac());
+}
+
+function spokenName(key: string, labels: KbdLabels, mac: boolean) {
   const token = key.toLowerCase();
   if (isArrow(token)) return labels[token];
-  const platform = NO_MAC ? SPOKEN_MAC : SPOKEN_OTHERS;
+  const platform = mac ? SPOKEN_MAC : SPOKEN_OTHERS;
   return platform[token] ?? SPOKEN[token] ?? (key.length === 1 ? key.toUpperCase() : key);
 }
 
@@ -137,6 +153,7 @@ export type KbdProps = ComponentPropsWithoutRef<"kbd"> &
   };
 
 export function Kbd({ className, size, keys, labels: labelsProp, children, ...props }: KbdProps) {
+  const mac = useMac();
   if (keys) {
     const labels = { ...LABELS, ...labelsProp };
     const parts = keys.split("+").map((part) => part.trim());
@@ -144,7 +161,7 @@ export function Kbd({ className, size, keys, labels: labelsProp, children, ...pr
     return (
       <span
         role="img"
-        aria-label={parts.map((part) => spokenName(part, labels)).join(` ${labels.plus} `)}
+        aria-label={parts.map((part) => spokenName(part, labels, mac)).join(` ${labels.plus} `)}
         className="inline-flex items-center gap-1"
       >
         {parts.map((part, index) => (
@@ -154,7 +171,7 @@ export function Kbd({ className, size, keys, labels: labelsProp, children, ...pr
             aria-hidden="true"
             className={cn(kbdVariants({ size }), className)}
           >
-            {keyName(part)}
+            {nameOn(part, mac)}
           </kbd>
         ))}
       </span>

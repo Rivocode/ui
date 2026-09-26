@@ -15,6 +15,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -85,11 +86,22 @@ export type RivoProviderProps = {
   className?: string;
 };
 
+const LIGHT_QUERY = "(prefers-color-scheme: light)";
+
 function resolveSystemTheme(): RivoTheme {
   if (typeof window === "undefined" || !window.matchMedia) return "rivocode-dark";
-  return window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "rivocode-light"
-    : "rivocode-dark";
+  return window.matchMedia(LIGHT_QUERY).matches ? "rivocode-light" : "rivocode-dark";
+}
+
+function serverSystemTheme(): RivoTheme {
+  return "rivocode-dark";
+}
+
+function subscribeSystemTheme(onChange: () => void) {
+  if (typeof window === "undefined" || !window.matchMedia) return () => {};
+  const query = window.matchMedia(LIGHT_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
 }
 
 export function RivoProvider({
@@ -102,17 +114,12 @@ export function RivoProvider({
   toastLabels,
   className,
 }: RivoProviderProps) {
-  const [systemTheme, setSystemTheme] = useState<RivoTheme>(resolveSystemTheme);
+  const systemTheme = useSyncExternalStore(
+    subscribeSystemTheme,
+    resolveSystemTheme,
+    serverSystemTheme,
+  );
   const resolved: RivoResolvedTheme = theme === "system" ? systemTheme : theme;
-
-  useEffect(() => {
-    if (theme !== "system" || typeof window === "undefined") return;
-    const query = window.matchMedia("(prefers-color-scheme: light)");
-    const update = () => setSystemTheme(query.matches ? "rivocode-light" : "rivocode-dark");
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, [theme]);
 
   const probe = useRef<HTMLSpanElement>(null);
 
