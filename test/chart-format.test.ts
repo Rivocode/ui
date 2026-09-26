@@ -95,3 +95,25 @@ test("o instante com hora continua sendo lido no fuso local", () => {
   expect(monthShort("2026-04-01T02:00:00Z")).toBe("mar");
   expect(dayMonth(new Date(2026, 7, 5))).toBe("05/08");
 });
+
+test("o arredondamento que chega a mil sobe de grandeza, em vez de escrever 1.000K", () => {
+  const plain = (text: string) => text.replace(/ /g, " ");
+
+  expect(compact(999_950)).toBe("1M");
+  expect(plain(compactWords(999_999))).toBe("1 mi");
+  expect(compact(999_999_999)).toBe("1B");
+  expect(compact(999.6)).toBe("1K");
+  expect(compact(999.4)).toBe("999");
+  expect(compact(1_500)).toBe("1,5K");
+});
+
+test("o dinheiro curto segue o sinal do currency, e o zero arredondado nao tem sinal", () => {
+  const plain = (text: string) => text.replace(/ /g, " ");
+
+  expect(plain(currencyShort(-1_500))).toBe("-R$ 1,5K");
+  expect(plain(currencyShortWords(-2_500_000))).toBe("-R$ 2,5 mi");
+  expect(plain(currency(-1_500))).toStartWith("-R$");
+  expect(compact(-0.4)).toBe("0");
+  expect(plain(currencyShort(-0.4))).toBe("R$ 0");
+  expect(compact(-12)).toBe("-12");
+});

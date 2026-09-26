@@ -24,17 +24,34 @@ const SUFFIXES = {
 
 function abbreviate(value: number, shape: keyof typeof SUFFIXES) {
   const { billion, million, thousand, tight } = SUFFIXES[shape];
+  const tiers = [
+    { at: 1_000_000_000, suffix: billion },
+    { at: 1_000_000, suffix: million },
+    { at: 1_000, suffix: thousand },
+  ];
   const size = Math.abs(value);
+  const sign = value < 0 ? -1 : 1;
   const space = tight ? "" : NBSP;
 
-  const write = (divided: number, suffix: string) =>
-    `${numberFormat({ maximumFractionDigits: 1 }).format(divided)}${space}${suffix}`;
+  let tier = tiers.findIndex((candidate) => size >= candidate.at);
+  if (tier === -1) {
+    const whole = Math.round(size);
+    if (whole < 1_000) return numberFormat({ maximumFractionDigits: 0 }).format(whole === 0 ? 0 : sign * whole);
+    tier = tiers.length - 1;
+  }
 
-  if (size >= 1_000_000_000) return write(value / 1_000_000_000, billion);
-  if (size >= 1_000_000) return write(value / 1_000_000, million);
-  if (size >= 1_000) return write(value / 1_000, thousand);
+  const scaled = (index: number) => Math.round((size / tiers[index]!.at) * 10) / 10;
+  let amount = scaled(tier);
+  while (amount >= 1_000 && tier > 0) {
+    tier -= 1;
+    amount = scaled(tier);
+  }
 
-  return numberFormat({ maximumFractionDigits: 0 }).format(value);
+  return `${numberFormat({ maximumFractionDigits: 1 }).format(sign * amount)}${space}${tiers[tier]!.suffix}`;
+}
+
+function signedMoney(written: string) {
+  return written.startsWith("-") ? `-R$${NBSP}${written.slice(1)}` : `R$${NBSP}${written}`;
 }
 
 export function compact(value: number) {
@@ -46,11 +63,11 @@ export function compactWords(value: number) {
 }
 
 export function currencyShort(value: number) {
-  return `R$${NBSP}${compact(value)}`;
+  return signedMoney(compact(value));
 }
 
 export function currencyShortWords(value: number) {
-  return `R$${NBSP}${compactWords(value)}`;
+  return signedMoney(compactWords(value));
 }
 
 export function integer(value: number) {
