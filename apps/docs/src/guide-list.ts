@@ -44,6 +44,11 @@ export const GUIDE_LIST: Array<{ slug: string; title: string; summary: string }>
     summary: 'Abrir e fechar, esperar a digitação, lembrar entre visitas: os hooks que toda tela reescreve.',
   },
   {
+    slug: 'tanstack',
+    title: 'Com TanStack',
+    summary: 'O link do Router com o desenho da casa, e a consulta do Query nos quatro finais.',
+  },
+  {
     slug: 'documentos-brasileiros',
     title: 'Documentos brasileiros',
     summary: 'CPF, CNPJ, CNH, título, PIS, RENAVAM, placa e boleto: a conta de cada um.',
