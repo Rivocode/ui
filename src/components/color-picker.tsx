@@ -136,7 +136,8 @@ export function ColorPicker({
     onValueChange?.(color);
   }
 
-  function choose(color: string) {
+  function choose(raw: string) {
+    const color = normalizeColor(raw) ?? raw;
     setText(color);
     change(color);
   }

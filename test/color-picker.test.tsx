@@ -49,6 +49,15 @@ test("clicar numa amostra avisa a cor em hexadecimal", () => {
   expect(seen).toEqual(["#6aa9ff"]);
 });
 
+test("amostra escrita em maiuscula ou com tres digitos avisa seis digitos em minuscula", () => {
+  const seen: string[] = [];
+  picker({ swatches: ["#0055FF", "#FFF"], onValueChange: (color) => seen.push(color) });
+
+  fireEvent.click(screen.getByRole("radio", { name: /#0055FF/i }));
+  fireEvent.click(screen.getByRole("radio", { name: /#FFF/i }));
+  expect(seen).toEqual(["#0055ff", "#ffffff"]);
+});
+
 test("a seta anda pela grade e escolhe a amostra que recebeu o foco", () => {
   const seen: string[] = [];
   picker({ value: "#d4f34a", onValueChange: (color) => seen.push(color) });
