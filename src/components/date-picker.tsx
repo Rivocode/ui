@@ -2,6 +2,7 @@
 
 import { CalendarDays } from "lucide-react";
 import { useState, type ComponentProps, type ReactElement } from "react";
+import { dateMatchModifiers } from "react-day-picker";
 
 import { cn } from "../lib/cn";
 import { formatDate, parseDate, applyDateMask, toDate, type DateInput } from "../lib/date";
@@ -49,7 +50,7 @@ type DatePickerBase = Omit<
      * calendario e para o que se digita.
      */
     max?: Date | string;
-    /** Dias que nao podem ser escolhidos. Vai direto para o calendario. */
+    /** Dias que nao podem ser escolhidos, nem no calendario nem digitados no campo. */
     disabledDays?: CalendarProps["disabled"];
     /**
      * Rodape com Limpar e Aplicar. Desligado por padrao, ao contrario do
@@ -120,6 +121,11 @@ export function DatePicker(props: DatePickerProps): ReactElement {
   const iso = typeof value === "string" || value === null || typeof defaultValue === "string";
   const controlled = value !== undefined;
   const [internalDate, setInternalDate] = useState<Date | undefined>(() => toDate(defaultValue));
+  const [seenValue, setSeenValue] = useState(value);
+  if (seenValue !== value) {
+    setSeenValue(value);
+    if (value === undefined) setInternalDate(undefined);
+  }
   const date = controlled ? toDate(value) : internalDate;
   const emit = onValueChange as ((next: DateInput | undefined) => void) | undefined;
 
@@ -127,7 +133,8 @@ export function DatePicker(props: DatePickerProps): ReactElement {
   const upper = toDate(max);
   const allowed = (day: Date) =>
     (!lower || isoFromDate(day) >= isoFromDate(lower)) &&
-    (!upper || isoFromDate(day) <= isoFromDate(upper));
+    (!upper || isoFromDate(day) <= isoFromDate(upper)) &&
+    (disabledDays === undefined || !dateMatchModifiers(day, disabledDays));
 
   const [text, setText] = useState(() => formatDate(date));
   const [rawText, setRawText] = useState(false);

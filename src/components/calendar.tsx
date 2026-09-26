@@ -176,6 +176,11 @@ export function Calendar(props: CalendarProps): ReactElement {
   const iso = typeof value === "string" || value === null || typeof defaultValue === "string";
   const controlled = value !== undefined;
   const [internalDay, setInternalDay] = useState<Date | undefined>(() => toDate(defaultValue));
+  const [seenValue, setSeenValue] = useState(value);
+  if (seenValue !== value) {
+    setSeenValue(value);
+    if (value === undefined) setInternalDay(undefined);
+  }
   const chosen = controlled ? toDate(value) : internalDay;
   const emit = onValueChange as ((next: DateInput) => void) | undefined;
 

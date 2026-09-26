@@ -92,6 +92,69 @@ test("com name, o formulario nativo recebe aaaa-mm-dd", () => {
   expect((escondido as HTMLInputElement).value).toBe("2026-03-03");
 });
 
+test("controlado a partir do vazio, voltar ao vazio por fora limpa o campo, e nao ressuscita a primeira data", () => {
+  function Controlled() {
+    const [data, setData] = useState<Date | undefined>();
+    return (
+      <RivoProvider scope="local">
+        <DatePicker name="vencimento" value={data} onValueChange={setData} />
+        <button onClick={() => setData(undefined)}>Zerar</button>
+      </RivoProvider>
+    );
+  }
+  const { container } = render(<Controlled />);
+
+  fireEvent.change(field(), { target: { value: "10/03/2026" } });
+  fireEvent.blur(field());
+  fireEvent.change(field(), { target: { value: "20/03/2026" } });
+  fireEvent.blur(field());
+  expect(field().value).toBe("20/03/2026");
+
+  fireEvent.click(screen.getByText("Zerar"));
+  expect(field().value).toBe("");
+  const escondido = container.querySelector('input[type="hidden"][name="vencimento"]') as HTMLInputElement;
+  expect(escondido.value).toBe("");
+});
+
+test("data digitada num dia desabilitado nao vale, como nao vale no calendario", () => {
+  const avisos: (Date | undefined)[] = [];
+  render(
+    <RivoProvider scope="local">
+      <DatePicker disabledDays={{ dayOfWeek: [0] }} onValueChange={(d) => avisos.push(d)} />
+    </RivoProvider>,
+  );
+
+  fireEvent.change(field(), { target: { value: "15/03/2026" } });
+  expect(avisos).toHaveLength(0);
+
+  fireEvent.change(field(), { target: { value: "16/03/2026" } });
+  expect(avisos).toHaveLength(1);
+  expect(avisos[0]?.getDate()).toBe(16);
+});
+
+test("o calendario controlado a partir do vazio tambem volta ao vazio por fora", () => {
+  function Controlled() {
+    const [dia, setDia] = useState<Date | undefined>();
+    return (
+      <RivoProvider scope="local">
+        <Calendar value={dia} onValueChange={setDia} defaultMonth={new Date(2026, 2, 1)} />
+        <button onClick={() => setDia(undefined)}>Zerar</button>
+      </RivoProvider>
+    );
+  }
+  render(<Controlled />);
+  const day = (text: string) => screen.getAllByRole("button").find((node) => node.textContent === text)!;
+  const selected = () =>
+    [...document.querySelectorAll('[role="gridcell"][aria-selected="true"]')].map((node) => node.textContent);
+
+  fireEvent.click(day("10"));
+  fireEvent.click(day("20"));
+  expect(selected()).toEqual(["20"]);
+
+  fireEvent.click(screen.getByText("Zerar"));
+  expect(selected()).toEqual([]);
+});
+
 test("o calendario abre pelo botao do campo", () => {
   render(
     <RivoProvider scope="local">

@@ -48,7 +48,7 @@ nunca passa o texto por ele.
 fora e para a navegação no mês de cada ponta, e para o que se digita: data fora
 da janela não chega ao `onValueChange`, e ao sair do campo o texto volta para a
 última data válida. `disabledDays` fica para o dia bloqueado avulso, como
-feriado.
+feriado, e vale do mesmo jeito para o que se digita.
 
 ## Data e texto
 

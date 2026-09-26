@@ -10180,7 +10180,7 @@
         "name": "disabledDays",
         "type": "Matcher[] | Matcher",
         "required": false,
-        "note": "Dias que nao podem ser escolhidos.",
+        "note": "Dias que nao podem ser escolhidos, nem no calendario nem digitados no campo.",
         "since": "0.4.0"
       },
       {
