@@ -1,7 +1,11 @@
 # Mudancas
 
-## 1.1.5
+## 1.2.0
 
+- `SidebarMenuItem` ganha `render`, para o link do router: com o TanStack
+  Router, o React Router ou o Next, o item navega sem recarregar a pagina e
+  continua com o desenho, o `aria-current` do `active` e o fechar da folha no
+  celular. Sem ele, o item continua um `<a href>`.
 - `Select`: a lista rola dentro da caixa quando a caixa tem altura maxima. A
   caixa virou uma coluna, e a lista de dentro encolhe ate caber; antes, a
   altura ficava na caixa e os itens vazavam para fora dela. Era o que se via na
