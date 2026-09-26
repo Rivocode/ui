@@ -42,19 +42,26 @@ props da peça continuam valendo ao lado das do Router:
 O `preload="intent"` começa a carregar a rota quando o ponteiro passa por
 cima do link, antes do clique. Tire-o se a rota for cara de carregar.
 
-### Botão e item de menu que navegam
+### Botão, item de menu e barra lateral que navegam
 
-O `Button` e o `MenuLinkItem` recebem o link do Router pelo `render`. A tag
-continua sendo de link, e o desenho é o da peça:
+O `Button`, o `MenuLinkItem` e o `SidebarMenuItem` recebem o link do Router
+pelo `render`. A tag continua sendo de link, e o desenho é o da peça:
 
 ```tsx
 import { Link as RouterLink } from '@tanstack/react-router'
-import { Button, MenuLinkItem } from '@rivocode/ui'
+import { Button, MenuLinkItem, SidebarMenuItem } from '@rivocode/ui'
 
 <Button render={<RouterLink to="/notas/nova" />}>Nova nota</Button>
 
 <MenuLinkItem render={<RouterLink to="/notas" />}>Notas</MenuLinkItem>
+
+<SidebarMenuItem render={<RouterLink to="/notas" />} active>
+  Notas fiscais
+</SidebarMenuItem>
 ```
+
+Sem o `render`, o item da barra lateral é um `<a href>` comum, e cada clique
+recarrega a página inteira.
 
 O `Link` do Router e o da biblioteca têm o mesmo nome, e por isso um deles é
 renomeado na importação.

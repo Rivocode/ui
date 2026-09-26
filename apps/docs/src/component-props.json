@@ -24684,6 +24684,12 @@
         "type": "ReactNode",
         "required": false,
         "since": "0.4.0"
+      },
+      {
+        "name": "render",
+        "type": "ReactElement<unknown, string | JSXElementConstructor<any>>",
+        "required": false,
+        "note": "Troca a ancora pelo link do router, mantendo o desenho da linha: `render={<RouterLink to=\"/notas\" />}`."
       }
     ]
   },

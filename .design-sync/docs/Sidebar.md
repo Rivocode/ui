@@ -76,6 +76,24 @@ quatro porque são quatro papéis:
 Vale a pena saber disso ao procurar a prop: o nome segue o papel, e não a peça.
 
 
+## Com o link do router
+
+O `SidebarMenuItem` é um `<a href>` por padrão. Num app com router, o clique
+recarregaria a página inteira: passe o link do router pelo `render`, e o item
+continua com o desenho, o `aria-current` do `active` e o fechar da folha no
+celular.
+
+```tsx
+import { NavLink } from 'react-router'
+
+<SidebarMenuItem render={<NavLink to="/notas" />} active icon={<FileText size={16} />}>
+  Notas fiscais
+</SidebarMenuItem>
+```
+
+O `Link` do TanStack Router entra do mesmo jeito, e no Next é o `Link` de
+`next/link`: `render={<Link href="/notas" />}`.
+
 ## O celular já vem resolvido
 
 Nada disso precisa ser ligado na mão. Abaixo de 640px a barra vira folha, e a

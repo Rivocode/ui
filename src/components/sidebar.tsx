@@ -2,6 +2,7 @@
 
 import { ChevronRight, PanelLeft, Search } from "lucide-react";
 import {
+  cloneElement,
   createContext,
   use,
   useCallback,
@@ -10,6 +11,7 @@ import {
   useState,
   type ComponentProps,
   type ReactNode,
+  type ReactElement,
 } from "react";
 
 import { cn } from "../lib/cn";
@@ -355,6 +357,12 @@ const rowClass = cn(
 );
 
 export type SidebarMenuItemProps = ComponentProps<"a"> & {
+  /**
+   * Troca a ancora pelo link do router, mantendo o desenho da linha:
+   * `render={<RouterLink to="/notas" />}`. Sem isso o item e um `<a href>`, e
+   * cada clique recarrega a pagina inteira num app com router.
+   */
+  render?: ReactElement;
   icon?: ReactNode;
   /** Marca a pagina em que se esta, no aria tambem. */
   active?: boolean;
@@ -369,6 +377,7 @@ export function SidebarMenuItem({
   badge,
   children,
   onClick,
+  render,
   ...props
 }: SidebarMenuItemProps) {
   const { collapsed, isMobile, close } = useSidebar();
@@ -381,10 +390,13 @@ export function SidebarMenuItem({
     if (isMobile) close();
   }
 
+  const anchor = (extra: Record<string, unknown>) =>
+    render ? cloneElement(render, { ...props, ...extra }) : <a {...props} {...extra} />;
+
   if (inFlyout) {
     return (
       <MenuItem
-        render={<a {...props} onClick={handleClick} aria-current={active ? "page" : undefined} />}
+        render={anchor({ onClick: handleClick, "aria-current": active ? "page" : undefined })}
         className={active ? "text-fg" : undefined}
       >
         {icon && <span className="flex shrink-0 items-center">{icon}</span>}
@@ -396,20 +408,20 @@ export function SidebarMenuItem({
 
   const label = typeof children === "string" ? children : undefined;
 
-  const row = (
-    <a
-      aria-label={collapsed ? label : undefined}
-      {...props}
-      onClick={handleClick}
-      aria-current={active ? "page" : undefined}
-      className={cn(rowClass, collapsed && "justify-center px-0", className)}
-    >
-      {icon && <span className="flex shrink-0 items-center">{icon}</span>}
-      {!collapsed && <span className="min-w-0 flex-1 truncate">{children}</span>}
-      {collapsed && !label && <span className="sr-only">{children}</span>}
-      {!collapsed && badge}
-    </a>
-  );
+  const row = anchor({
+    "aria-label": props["aria-label"] ?? (collapsed ? label : undefined),
+    onClick: handleClick,
+    "aria-current": active ? "page" : undefined,
+    className: cn(rowClass, collapsed && "justify-center px-0", className),
+    children: (
+      <>
+        {icon && <span className="flex shrink-0 items-center">{icon}</span>}
+        {!collapsed && <span className="min-w-0 flex-1 truncate">{children}</span>}
+        {collapsed && !label && <span className="sr-only">{children}</span>}
+        {!collapsed && badge}
+      </>
+    ),
+  });
 
   const cell = collapsed ? (
     <Tooltip>

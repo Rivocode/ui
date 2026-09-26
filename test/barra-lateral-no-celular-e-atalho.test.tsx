@@ -1,7 +1,13 @@
 import { afterEach, expect, mock, test } from "bun:test";
 import { act, fireEvent, render, screen } from "@testing-library/react";
 
-import { Sidebar, SidebarProvider, SidebarTrigger } from "../src/components/sidebar";
+import {
+  Sidebar,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from "../src/components/sidebar";
 import { Steps } from "../src/components/steps";
 import { RivoProvider } from "../src/provider/rivo-provider";
 
@@ -214,7 +220,37 @@ test("o data-testid do Steps fica num bloco so, e o getByTestId acha um elemento
 
 test("o titulo do passo tem a linha da altura do circulo, e fica no meio dele sem descricao", () => {
   render(<Steps steps={[{ id: "a", title: "O que é" }]} step={0} />);
-  const title = screen.getAllByText("O que é").find((node) => node.getAttribute("title") === "O que é")!;
+  const title = screen
+    .getAllByText("O que é")
+    .find((node) => node.getAttribute("title") === "O que é")!;
 
   expect(title.className.split(" ")).toContain("leading-6");
+});
+
+test("o item da barra lateral aceita o link do router pelo render, com o desenho e o aria-current da casa", () => {
+  let clicked = 0;
+  render(
+    <SidebarProvider>
+      <SidebarMenu>
+        <SidebarMenuItem
+          active
+          render={<a href="/notas" data-router="sim" />}
+          onClick={(event) => {
+            event.preventDefault();
+            clicked += 1;
+          }}
+        >
+          Notas fiscais
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarProvider>,
+  );
+  const link = screen.getByRole("link", { name: "Notas fiscais" });
+
+  expect(link.getAttribute("data-router")).toBe("sim");
+  expect(link.getAttribute("href")).toBe("/notas");
+  expect(link.getAttribute("aria-current")).toBe("page");
+  expect(link.className.split(" ")).toContain("rounded-md");
+  fireEvent.click(link);
+  expect(clicked).toBe(1);
 });
