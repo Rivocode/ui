@@ -8,11 +8,12 @@ O campo de busca com a lupa no lugar: o arranjo que toda listagem montava na
 mão com `position: absolute`.
 
 Sai como `<input type="search">`, então o leitor de tela anuncia "busca" e o
-Esc limpa: o campo não controlado sozinho, o controlado pelo `onClear`.
+Esc limpa. Sem `onClear`, o Esc passa pelo mesmo caminho da digitação: o
+`onChange` e o `onValueChange` recebem o texto vazio, e o campo controlado
+limpa quando o estado de quem usa aceita. Com `onClear`, limpar é com ele.
 
 `onValueChange` entrega o texto a cada tecla, como no `Input` e no
-`SearchInput` do React Native, e sem `onClear` o Esc também o chama com `""`.
-Com ele, o campo controlado é `value` mais `onValueChange`, sem tirar o texto
+`SearchInput` do React Native. Com ele, o campo controlado é `value` mais `onValueChange`, sem tirar o texto
 de dentro do evento. O `onChange` do DOM continua chamado junto.
 
 ```tsx

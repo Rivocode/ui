@@ -20,7 +20,7 @@ export type SearchInputProps = Omit<ComponentProps<"input">, "size" | "type"> & 
    * tela, porque e ela que sabe o que mais escuta teclado.
    */
   shortcut?: string;
-  /** Chamado no Esc. Sem ele, o Esc limpa so o campo nao controlado. */
+  /** Chamado no Esc. Sem ele, o Esc limpa o campo pelo proprio `onChange`, e o campo controlado limpa quando quem usa aceita o texto vazio. */
   onClear?: () => void;
   /** Recebe o texto a cada tecla, como no `Input` e no SearchInput nativo. Sem `onClear`, o Esc chama com `""`. Convive com o `onChange`. */
   onValueChange?: (value: string) => void;
@@ -49,8 +49,14 @@ export function SearchInput({
       onClear();
       return;
     }
-    event.currentTarget.value = "";
-    onValueChange?.("");
+    const input = event.currentTarget;
+    if (input.value === "") {
+      onValueChange?.("");
+      return;
+    }
+    const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    setValue?.call(input, "");
+    input.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
   return (
