@@ -1,5 +1,21 @@
 # Mudancas
 
+## 1.1.4
+
+Tira o que o navegador ainda desenhava por conta propria dentro das pecas.
+
+- `Calendar`, e com ele `DatePicker`, `DateRangePicker` e `EventCalendar`: o
+  mes e o ano do cabecalho abrem o `Select` da casa, abaixo do gatilho e com o
+  ano escolhido a vista, em vez da lista nativa do sistema. A barra das setas
+  deixa de cobrir o gatilho do ano: so as duas setas recebem clique. Muda o que
+  se exige: o `Calendar` passa a pedir o `RivoProvider` em volta.
+- O preenchimento automatico do navegador deixa de pintar o campo de azul ou
+  amarelo: dentro do tema, o texto e o fundo seguem os papeis `fg` e
+  `surface`. O anel de foco continua por cima.
+- `PasswordInput` no Edge deixa de mostrar o olho do navegador ao lado do olho
+  da peca, e o campo de busca da `Sidebar` deixa de mostrar o xis nativo, como
+  o `SearchInput` ja fazia.
+
 ## 1.1.3
 
 - A barra de rolagem de qualquer caixa dentro do tema sai fina, arredondada e
