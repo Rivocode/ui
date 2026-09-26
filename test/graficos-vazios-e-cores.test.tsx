@@ -368,3 +368,38 @@ test("a pizza com miolo escrito mantem a largura do texto, e nao zero", () => {
   expect(width).not.toContain("0cqmin");
   expect(width).toBe("52%");
 });
+
+test("a grade de calor com todas as celulas em zero ou sem numero mostra o empty", () => {
+  const rows = [
+    [
+      { dia: "Seg", hora: "9h", total: 0 },
+      { dia: "Ter", hora: "9h", total: 0 },
+    ],
+    [{ dia: "Seg", hora: "9h", total: null }],
+  ];
+  for (const data of rows) {
+    const view = withTheme(
+      <ChartHeatmap
+        data={data as { dia: string; hora: string; total: number | null }[]}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Emissao por hora"
+        empty={EMPTY}
+      />,
+    );
+    expect(screen.getByText("Nada neste mês")).toBeDefined();
+    view.unmount();
+  }
+  withTheme(
+    <ChartHeatmap
+      data={[{ dia: "Seg", hora: "9h", total: 3 }]}
+      rowKey="dia"
+      columnKey="hora"
+      valueKey="total"
+      label="Emissao por hora"
+      empty={EMPTY}
+    />,
+  );
+  expect(screen.queryByText("Nada neste mês")).toBeNull();
+});

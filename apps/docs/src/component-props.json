@@ -4939,7 +4939,7 @@
         "name": "empty",
         "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
         "required": false,
-        "note": "O que aparece no lugar do desenho quando a lista vem vazia."
+        "note": "O que aparece no lugar do desenho quando nao ha o que pintar: lista vazia, nenhuma celula com numero, ou todas em zero."
       },
       {
         "name": "format",

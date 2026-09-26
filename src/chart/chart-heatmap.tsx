@@ -72,7 +72,8 @@ export type ChartHeatmapProps<Cell> = Omit<ComponentProps<"div">, "children" | "
   /** Classe por parte: `grid`, `cell`, `legend`. */
   classNames?: Slots<"grid" | "cell" | "legend">;
   /**
-   * O que aparece no lugar do desenho quando a lista vem vazia. O mesmo formato do
+   * O que aparece no lugar do desenho quando nao ha o que pintar: lista vazia,
+   * nenhuma celula com numero, ou todas em zero. O mesmo formato do
    * `ChartContainer` e do `DataTable`.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
@@ -232,7 +233,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
     setDismissed(false);
   }
 
-  if (data.length === 0 && empty) {
+  if (empty && present.every((value) => value === 0)) {
     return (
       <div {...props} className={cn("w-full", className)}>
         <EmptyState
