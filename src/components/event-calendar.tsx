@@ -894,7 +894,9 @@ export function EventCalendar({
     const snapped = Math.floor(minutes / SLOT_MINUTES) * SLOT_MINUTES;
     const start = startOfDay(day);
     start.setHours(0, snapped, 0, 0);
-    onSlotSelect({ start, end: new Date(start.getTime() + SLOT_MINUTES * 60000) });
+    const end = startOfDay(day);
+    end.setHours(0, snapped + SLOT_MINUTES, 0, 0);
+    onSlotSelect({ start, end: end > start ? end : new Date(start.getTime() + SLOT_MINUTES * 60000) });
   }
 
   function pickDay(day: Date) {

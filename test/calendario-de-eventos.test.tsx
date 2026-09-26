@@ -405,6 +405,27 @@ test("no dia do horario de verao o clique das 10h devolve 10h de parede", () => 
   });
 });
 
+test("na hora repetida do fim do horario de verao o intervalo termina depois de comecar, na hora de parede", () => {
+  inZone("America/New_York", () => {
+    const slot = mock();
+    const { container } = calendar({
+      defaultDate: new Date(2026, 10, 1),
+      defaultView: "day",
+      events: [],
+      onSlotSelect: slot,
+      dayStart: 0,
+      hourHeight: 48,
+    });
+
+    fireEvent.click(container.querySelector("[data-rc-day='0']")!, { clientY: 1.5 * 48 });
+
+    const range = slot.mock.calls[0]![0];
+    expect(range.end.getTime()).toBeGreaterThan(range.start.getTime());
+    const wall = (date: Date) => date.getHours() * 60 + date.getMinutes();
+    expect(wall(range.end)).toBeGreaterThan(wall(range.start));
+  });
+});
+
 test("o clique das 10h58 devolve o intervalo clicado, 10h30 as 11h", () => {
   const slot = mock();
   const { container } = calendar({ onSlotSelect: slot, dayStart: 8, hourHeight: 48 });
