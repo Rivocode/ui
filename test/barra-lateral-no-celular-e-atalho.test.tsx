@@ -194,3 +194,20 @@ test("os passos com className de display continuam escondendo a forma que nao ca
   expect(tokens(container.querySelector("ol")!)).toContain("hidden");
   expect(tokens(container.firstElementChild!)).toContain("sm:hidden");
 });
+
+test("o data-testid do Steps fica num bloco so, e o getByTestId acha um elemento", () => {
+  render(
+    <Steps
+      data-testid="etapas"
+      aria-label="Etapas"
+      steps={[
+        { id: "a", title: "Dados" },
+        { id: "b", title: "Revisao" },
+      ]}
+      step={0}
+    />,
+  );
+
+  expect(screen.getAllByTestId("etapas")).toHaveLength(1);
+  expect(screen.getAllByRole("group", { name: "Etapas" }).length).toBeGreaterThan(0);
+});

@@ -47,11 +47,14 @@ export function Steps({
   const step = steps[current];
   const { position } = { ...STEPS_LABELS, ...labels };
   const compact = props["aria-label"] || props["aria-labelledby"] ? { role: "group" } : {};
+  const { "data-testid": _testId, ...phoneProps } = props as ComponentProps<"div"> & {
+    "data-testid"?: string;
+  };
 
   return (
     <>
       <div
-        {...(props as ComponentProps<"div">)}
+        {...phoneProps}
         {...compact}
         className={cn("flex flex-col gap-2", className, "sm:hidden")}
       >

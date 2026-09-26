@@ -12,8 +12,9 @@ quanto falta.
 
 As duas formas estão sempre na página, e o CSS mostra uma de cada vez. O
 `className`, o `aria-label` e os demais atributos valem para as duas, e a linha
-do celular vira `group` quando recebe nome. O `id` e o `ref` ficam só na lista
-da mesa, porque um `id` não pode aparecer duas vezes na página; referência por
+do celular vira `group` quando recebe nome. O `id`, o `ref` e o `data-testid`
+ficam só na lista da mesa, porque identidade não pode aparecer duas vezes na
+página; referência por
 `aria-describedby` continua lendo a lista mesmo escondida.
 
 Só da para voltar, nunca pular para frente. Passo adiante costuma depender do
