@@ -114,7 +114,7 @@ documentacao da arvore em que foi construido.
 
 ## O gate
 
-`bun run check` roda TRINTA E SETE passos em sequencia e para no primeiro que
+`bun run check` roda TRINTA E OITO passos em sequencia e para no primeiro que
 falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
 literal, alfa sobre cor, contraste do web, contraste do mapa nativo, espelho do contraste,
 temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
@@ -122,7 +122,7 @@ grupos de classe, fronteira do chart, fronteira do CLI, tamanho do pacote,
 skill, lista da skill, tokens nativos, gerador de tema nativo, codigo
 compartilhado, paridade, assinatura nativa, contagem de pecas, vitrine,
 retratos declarados, receita de instalacao, script fora do gate, piso de
-varredura, contagem de testes, e por fim `bun test`.
+varredura, contagem de testes, MCP em dia, e por fim `bun test`.
 
 O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
 `package.json`, o gate cresceu e esta pagina nao acompanhou.
@@ -253,6 +253,12 @@ o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
   sementes, e a guarda fica vermelha **no commit que adiciona um papel novo**,
   nos dois sentidos. E para a pergunta "deriva de que?" custar cinco minutos em
   vez de uma versao.
+- `check:mcp` - a secao do topo de `mcp/CHANGELOG.md` diz de que versao do
+  `@rivocode/ui` e do `@rivocode/ui-native` o MCP leva a documentacao, e os
+  numeros tem que ser os de agora. Nasceu porque a biblioteca saiu em quatro
+  versoes seguidas sem MCP novo, e quem usava o MCP ficou com a documentacao
+  velha sem nada acusar. Todo release de um dos dois pacotes abre uma secao
+  nova no MCP, com a versao dele subida junto.
 - `check:retratos` - secao declarada em `SECTIONS` tem que ter marcador na
   vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
   milissegundos e sem navegador, porque o retrato em si vive fora do gate.
