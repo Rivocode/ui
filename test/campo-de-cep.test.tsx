@@ -75,6 +75,18 @@ test("so busca ao completar os 8 digitos, e uma vez so", async () => {
   expect(lookup).toHaveBeenCalledTimes(1);
 });
 
+test("o CEP colado com ponto nao e cortado pelo navegador, e a busca roda", async () => {
+  const lookup = mock(async (_postalCode: string) => null);
+  const { input } = field({ lookup });
+
+  expect(input.hasAttribute("maxlength")).toBe(false);
+
+  await act(async () => type(input, "01.310-100"));
+  expect(input.value).toBe("01310-100");
+  expect(lookup).toHaveBeenCalledTimes(1);
+  expect(lookup.mock.calls[0]![0]).toBe("01310100");
+});
+
 test("enquanto busca: giro no sufixo, aria-busy e o anuncio de espera", async () => {
   const pending = deferred<PostalAddress | null>();
   const { input, root, status } = field({ lookup: () => pending.promise });

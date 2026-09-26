@@ -36,6 +36,16 @@ test("o campo de senha nao guarda o texto revelado ao perder o foco", () => {
   expect(field.type).toBe("password");
 });
 
+test("a senha desabilitada nao se revela: o olho desabilita junto", () => {
+  withTheme(<PasswordInput aria-label="Senha" defaultValue="segredo" disabled />);
+  const field = screen.getByLabelText("Senha") as HTMLInputElement;
+  const eye = screen.getByRole("button", { name: "Mostrar senha" }) as HTMLButtonElement;
+
+  expect(eye.disabled).toBe(true);
+  fireEvent.click(eye);
+  expect(field.type).toBe("password");
+});
+
 test("a faixa conta o que aconteceu, um quadrado por periodo", () => {
   const { container } = withTheme(
     <Tracker
