@@ -249,6 +249,8 @@ export function FilterBar({
 
   const canRemove = Boolean(onRemove ?? onFiltersChange);
   const canClear = Boolean(onClear ?? onFiltersChange);
+  const locked = filters.filter((filter) => filter.removable === false);
+  const clearable = total - locked.length;
   const line = total === 0 && reserve;
 
   return (
@@ -319,7 +321,7 @@ export function FilterBar({
         {line ? empty : ""}
       </Text>
 
-      {total >= clearFrom && canClear && (
+      {clearable > 0 && clearable >= clearFrom && canClear && (
         <Button
           variant="ghost"
           size="sm"
@@ -327,10 +329,10 @@ export function FilterBar({
           className={classNames?.clear}
           onPress={() => {
             onClear?.();
-            onFiltersChange?.([]);
+            onFiltersChange?.(locked);
           }}
         >
-          {clear(total)}
+          {clear(clearable)}
         </Button>
       )}
     </View>
