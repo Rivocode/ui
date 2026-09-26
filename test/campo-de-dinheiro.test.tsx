@@ -380,3 +380,46 @@ test("o que chega de uma vez sem colar, com texto que nao e valor, deixa o valor
     minus: false,
   });
 });
+
+test("dentro de Field com name, o formulario nativo recebe so os centavos, e nunca o texto pontuado", () => {
+  const { container } = render(
+    <form>
+      <Field name="preco">
+        <FieldLabel>Preço</FieldLabel>
+        <CurrencyInput name="preco" defaultValue={123456} />
+      </Field>
+      <Field name="frete">
+        <FieldLabel>Frete</FieldLabel>
+        <CurrencyInput defaultValue={990} />
+      </Field>
+    </form>,
+  );
+  const data = new FormData(container.querySelector("form")!);
+  expect(data.getAll("preco")).toEqual(["123456"]);
+  expect(data.getAll("frete")).toEqual(["990"]);
+  expect((screen.getByLabelText("Preço") as HTMLInputElement).hasAttribute("name")).toBe(false);
+});
+
+test("com allowNegative, o sinal digitado nao sobra quando o valor e zerado por fora", () => {
+  function Controlled() {
+    const [cents, setCents] = useState<number | null>(null);
+    return (
+      <RivoProvider scope="local">
+        <CurrencyInput aria-label="Valor" allowNegative value={cents} onValueChange={setCents} />
+        <button onClick={() => setCents(null)}>Limpar</button>
+      </RivoProvider>
+    );
+  }
+  render(<Controlled />);
+  const input = screen.getByLabelText("Valor") as HTMLInputElement;
+
+  typeKey(input, "-");
+  typeKey(input, "5");
+  expect(input.value).toBe("-0,05");
+
+  fireEvent.click(screen.getByText("Limpar"));
+  expect(input.value).toBe("");
+
+  typeKey(input, "7");
+  expect(input.value).toBe("0,07");
+});

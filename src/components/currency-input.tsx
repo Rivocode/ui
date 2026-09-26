@@ -10,7 +10,7 @@ import {
   readCurrencyInput,
   readPastedCurrency,
 } from "../shared/currency";
-import { Input, type InputProps } from "./field";
+import { Input, UnnamedInput, useFieldName, type InputProps } from "./field";
 
 export type CurrencyInputProps = Omit<
   InputProps,
@@ -44,7 +44,7 @@ export type CurrencyInputProps = Omit<
    * numerico, que no iPhone nao tem o sinal.
    */
   allowNegative?: boolean;
-  /** Some no formulario nativo com os centavos, e nunca com o texto pontuado. */
+  /** Some no formulario nativo com os centavos, e nunca com o texto pontuado. Dentro de `<Field name>`, sem ele, vale o nome do Field. */
   name?: string;
   /** Classe por parte: `input` e `prefix` (o "R$"). `className` veste a raiz. */
   classNames?: Slots<"input" | "prefix">;
@@ -87,7 +87,10 @@ export function CurrencyInput({
   const [internal, setInternal] = useState<number | null>(defaultValue);
   const cents = controlled ? value : internal;
 
-  const [minus, setMinus] = useState(false);
+  const fieldName = useFieldName();
+  const submitName = name ?? fieldName;
+  const [sign, setSign] = useState<{ minus: boolean; at: number | null }>({ minus: false, at: null });
+  const minus = sign.minus && sign.at === cents;
   const shown = cents === null ? (minus && allowNegative ? "-" : "") : formatCents(cents);
 
   const input = useRef<HTMLInputElement | null>(null);
@@ -136,6 +139,7 @@ export function CurrencyInput({
       <Input
         autoComplete="off"
         {...props}
+        render={<UnnamedInput />}
         ref={attach}
         size={size}
         disabled={disabled}
@@ -148,7 +152,7 @@ export function CurrencyInput({
         onChange={(event) => {
           const reading = readCurrencyInput(event.target.value, shown, allowNegative);
 
-          setMinus(reading.minus);
+          setSign({ minus: reading.minus, at: reading.cents });
           commit(reading.cents);
           onChange?.(event);
         }}
@@ -160,7 +164,7 @@ export function CurrencyInput({
           const pasted = readPastedCurrency(event.clipboardData.getData("text"), allowNegative);
           if (pasted === null) return;
 
-          setMinus(false);
+          setSign({ minus: false, at: pasted });
           commit(pasted);
         }}
         className={cn(
@@ -170,7 +174,7 @@ export function CurrencyInput({
         )}
       />
 
-      {name ? <input type="hidden" name={name} value={cents ?? ""} disabled={disabled} /> : null}
+      {submitName ? <input type="hidden" name={submitName} value={cents ?? ""} disabled={disabled} /> : null}
     </div>
   );
 }

@@ -14,7 +14,7 @@ import {
 import { cn } from "../lib/cn";
 import { useMobile } from "../lib/screen";
 import { applyTimeMask, formatTime, parseTime, stepTime, timeWindow } from "../shared/time";
-import { Input } from "./field";
+import { Input, UnnamedInput, useFieldName } from "./field";
 
 export { applyTimeMask, formatTime, parseTime, stepTime, timeWindow };
 
@@ -66,7 +66,7 @@ export type TimeFieldProps = Omit<
   min?: string;
   /** Ultima hora da janela, em `"HH:MM"`. Depois dela o campo se marca invalido. */
   max?: string;
-  /** Some no formulario nativo com a hora inteira, e nunca com o texto pela metade. */
+  /** Some no formulario nativo com a hora inteira, e nunca com o texto pela metade. Dentro de `<Field name>`, sem ele, vale o nome do Field. Desabilitado, fica fora. */
   name?: string;
 };
 
@@ -100,6 +100,7 @@ export function TimeField({
   const input = useRef<HTMLInputElement>(null);
   const [labelled, setLabelled] = useState<string>();
 
+  const fieldName = useFieldName();
   const isMobile = useMobile();
   const elsewhere = useContext(TouchStepElsewhere);
   const steppers = isMobile && !elsewhere;
@@ -153,6 +154,7 @@ export function TimeField({
   const control = (
     <Input
       {...props}
+      render={<UnnamedInput />}
       ref={(node: HTMLInputElement | null) => {
         input.current = node;
         if (typeof ref === "function") ref(node);
@@ -217,7 +219,10 @@ export function TimeField({
     </button>
   );
 
-  const hidden = name ? <input type="hidden" name={name} value={formatTime(chosen)} /> : null;
+  const submitName = name ?? fieldName;
+  const hidden = submitName ? (
+    <input type="hidden" name={submitName} value={formatTime(chosen)} disabled={disabled} />
+  ) : null;
 
   const announcement = (
     <div role="status" aria-live="polite" className="sr-only">

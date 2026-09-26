@@ -40,9 +40,18 @@ export const inputVariants = cva(
 );
 
 const FieldRootPresence = createContext(false);
+const FieldRootName = createContext<string | undefined>(undefined);
 
 export function useInsideField() {
   return use(FieldRootPresence);
+}
+
+export function useFieldName() {
+  return use(FieldRootName);
+}
+
+export function UnnamedInput({ name: _name, ...props }: ComponentProps<"input">) {
+  return <input {...props} />;
 }
 
 export function missingFieldRootComplaint(part: string): string {
@@ -83,7 +92,9 @@ export type FieldProps = ComponentProps<typeof BaseField.Root>;
 export function Field({ className, ...props }: FieldProps) {
   return (
     <FieldRootPresence value={true}>
-      <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />
+      <FieldRootName value={props.name}>
+        <BaseField.Root {...props} className={cn("flex flex-col gap-1.5", className)} />
+      </FieldRootName>
     </FieldRootPresence>
   );
 }
