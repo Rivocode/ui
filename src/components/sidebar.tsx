@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { hitsModShortcut } from "../lib/hotkey";
 import { useMobile } from "../lib/screen";
 import { Menu, MenuContent, MenuGroup, MenuItem, MenuTrigger } from "./menu";
 import { Sheet, SheetContent, SheetTitle } from "./sheet";
@@ -56,9 +57,24 @@ const ListContext = createContext(false);
 export type SidebarProviderProps = ComponentProps<"div"> & {
   /** Comeca aberta na mesa. No celular ela sempre comeca fechada. */
   defaultOpen?: boolean;
+  /**
+   * Aberta na mesa, controlado. No celular ele nao abre a folha: a folha tem
+   * estado proprio, e o `openMobile` e quem a controla.
+   */
   open?: boolean;
+  /** Chamado quando a barra abre ou fecha na mesa. Fechar a folha no celular nao chama. */
   onOpenChange?: (open: boolean) => void;
-  /** Atalho de teclado que abre e fecha. `null` desliga. */
+  /**
+   * A folha do celular, controlada. Sem ele, ela nasce fechada e se controla
+   * sozinha, sem tocar no `open` da mesa.
+   */
+  openMobile?: boolean;
+  /** Chamado quando a folha do celular abre ou fecha. */
+  onOpenMobileChange?: (open: boolean) => void;
+  /**
+   * Atalho de teclado que abre e fecha, com Ctrl ou Cmd. Nao dispara dentro de
+   * campo de texto nem de editor, e ignora maiuscula. `null` desliga.
+   */
   shortcut?: string | null;
 };
 
@@ -66,26 +82,31 @@ export function SidebarProvider({
   defaultOpen = true,
   open,
   onOpenChange,
+  openMobile,
+  onOpenMobileChange,
   shortcut = "b",
   className,
   children,
   ...props
 }: SidebarProviderProps) {
   const isMobile = useMobile();
-  const controlled = open !== undefined;
-  const [deskOpen, setDeskOpen] = useState(defaultOpen);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const isOpen = controlled ? open : isMobile ? sheetOpen : deskOpen;
+  const [deskState, setDeskOpen] = useState(defaultOpen);
+  const [sheetState, setSheetOpen] = useState(false);
+  const deskOpen = open ?? deskState;
+  const sheetOpen = openMobile ?? sheetState;
+  const isOpen = isMobile ? sheetOpen : deskOpen;
 
   const change = useCallback(
     (next: boolean) => {
-      if (!controlled) {
-        if (isMobile) setSheetOpen(next);
-        else setDeskOpen(next);
+      if (isMobile) {
+        setSheetOpen(next);
+        onOpenMobileChange?.(next);
+      } else {
+        setDeskOpen(next);
+        onOpenChange?.(next);
       }
-      onOpenChange?.(next);
     },
-    [controlled, isMobile, onOpenChange],
+    [isMobile, onOpenChange, onOpenMobileChange],
   );
 
   const toggle = useCallback(() => change(!isOpen), [isOpen, change]);
@@ -93,7 +114,7 @@ export function SidebarProvider({
   useEffect(() => {
     if (!shortcut) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key.toLowerCase() === shortcut && (event.metaKey || event.ctrlKey)) {
+      if (hitsModShortcut(event, shortcut!)) {
         event.preventDefault();
         toggle();
       }
@@ -138,6 +159,7 @@ export function Sidebar({
   children,
   title = "Navegação",
   side = "left",
+  ref,
   ...props
 }: SidebarProps) {
   const { open, collapsed, isMobile, close } = useSidebar();
@@ -145,9 +167,11 @@ export function Sidebar({
   if (isMobile) {
     return (
       <Sheet side={side} open={open} onOpenChange={(next) => !next && close()}>
-        <SheetContent className="w-[17rem] p-3">
+        <SheetContent className={cn("w-[17rem] p-3", className)}>
           <SheetTitle className="sr-only">{title}</SheetTitle>
-          <div className="flex h-full flex-col gap-2">{children}</div>
+          <div {...(props as ComponentProps<"div">)} className="flex h-full flex-col gap-2">
+            {children}
+          </div>
         </SheetContent>
       </Sheet>
     );
@@ -156,6 +180,7 @@ export function Sidebar({
   return (
     <aside
       {...props}
+      ref={ref}
       data-collapsed={collapsed || undefined}
       data-side={side}
       className={cn(

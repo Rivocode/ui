@@ -10,6 +10,12 @@ No celular vira uma linha de texto com barra de progresso: quatro bolinhas com
 rótulo em 390px viram quatro palavras cortadas, e o que importa ali e saber
 quanto falta.
 
+As duas formas estão sempre na página, e o CSS mostra uma de cada vez. O
+`className`, o `aria-label` e os demais atributos valem para as duas, e a linha
+do celular vira `group` quando recebe nome. O `id` e o `ref` ficam só na lista
+da mesa, porque um `id` não pode aparecer duas vezes na página; referência por
+`aria-describedby` continua lendo a lista mesmo escondida.
+
 Só da para voltar, nunca pular para frente. Passo adiante costuma depender do
 que o anterior validou, e um clique que atravessa isso leva a pessoa a uma tela
 que ela não sabe preencher. Por isso o `onStepChange` só é chamado com um passo

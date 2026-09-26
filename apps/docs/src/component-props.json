@@ -504,18 +504,32 @@
       {
         "name": "onOpenChange",
         "type": "((open: boolean) => void)",
-        "required": false
+        "required": false,
+        "note": "Chamado quando a barra abre ou fecha na mesa."
+      },
+      {
+        "name": "onOpenMobileChange",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Chamado quando a folha do celular abre ou fecha."
       },
       {
         "name": "open",
         "type": "boolean",
-        "required": false
+        "required": false,
+        "note": "Aberta na mesa, controlado."
+      },
+      {
+        "name": "openMobile",
+        "type": "boolean",
+        "required": false,
+        "note": "A folha do celular, controlada."
       },
       {
         "name": "shortcut",
         "type": "string | null",
         "required": false,
-        "note": "Atalho de teclado que abre e fecha."
+        "note": "Atalho de teclado que abre e fecha, com Ctrl ou Cmd."
       },
       {
         "name": "sidebar",
@@ -24709,19 +24723,33 @@
         "name": "onOpenChange",
         "type": "((open: boolean) => void)",
         "required": false,
+        "note": "Chamado quando a barra abre ou fecha na mesa.",
         "since": "0.4.0"
+      },
+      {
+        "name": "onOpenMobileChange",
+        "type": "((open: boolean) => void)",
+        "required": false,
+        "note": "Chamado quando a folha do celular abre ou fecha."
       },
       {
         "name": "open",
         "type": "boolean",
         "required": false,
+        "note": "Aberta na mesa, controlado.",
         "since": "0.4.0"
+      },
+      {
+        "name": "openMobile",
+        "type": "boolean",
+        "required": false,
+        "note": "A folha do celular, controlada."
       },
       {
         "name": "shortcut",
         "type": "string | null",
         "required": false,
-        "note": "Atalho de teclado que abre e fecha.",
+        "note": "Atalho de teclado que abre e fecha, com Ctrl ou Cmd.",
         "since": "0.4.0"
       }
     ]

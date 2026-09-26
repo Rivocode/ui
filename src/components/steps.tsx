@@ -37,14 +37,24 @@ export function Steps({
   step: current,
   onStepChange,
   labels,
+  id,
+  start,
+  reversed,
+  type,
+  ref,
   ...props
 }: StepsProps) {
   const step = steps[current];
   const { position } = { ...STEPS_LABELS, ...labels };
+  const compact = props["aria-label"] || props["aria-labelledby"] ? { role: "group" } : {};
 
   return (
     <>
-      <div className="flex flex-col gap-2 sm:hidden">
+      <div
+        {...(props as ComponentProps<"div">)}
+        {...compact}
+        className={cn("flex flex-col gap-2", className, "sm:hidden")}
+      >
         <p className="font-sans text-sm text-fg-muted">{position(current + 1, steps.length)}</p>
         <p className="font-display font-rc-display text-lg tracking-tight text-fg">{step?.title}</p>
         <div className="h-1 w-full overflow-hidden rounded-pill bg-skeleton">
@@ -55,7 +65,15 @@ export function Steps({
         </div>
       </div>
 
-      <ol {...props} className={cn("hidden items-start gap-2 sm:flex", className)}>
+      <ol
+        {...props}
+        ref={ref}
+        id={id}
+        start={start}
+        reversed={reversed}
+        type={type}
+        className={cn("items-start gap-2", className, "hidden sm:flex")}
+      >
         {steps.map((step, index) => {
           const isDone = index < current;
           const isCurrent = index === current;
