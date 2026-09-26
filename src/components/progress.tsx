@@ -39,13 +39,24 @@ export function Progress({
   ...props
 }: ProgressProps) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
+  const min = props.min ?? 0;
+  const max = props.max ?? 100;
+  const value =
+    typeof props.value === "number" && Number.isFinite(props.value) ? props.value : null;
+  const shown =
+    write &&
+    ((current: number | null) =>
+      current === null || !Number.isFinite(current)
+        ? ""
+        : write(Math.min(max, Math.max(min, current))));
 
   return (
     <BaseProgress.Root
       {...props}
+      value={value}
       getAriaValueText={
         props.getAriaValueText ??
-        (write && props.value !== null ? (_, value) => (value === null ? "" : write(value)) : undefined)
+        (shown && value !== null ? (_, current) => shown(current) : undefined)
       }
       format={numberFormat}
       className={cn("flex flex-col gap-2", className)}
@@ -61,7 +72,7 @@ export function Progress({
             <BaseProgress.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
             >
-              {write ? (_, value) => (value === null ? "" : write(value)) : null}
+              {shown ? (_, current) => shown(current) : null}
             </BaseProgress.Value>
           )}
         </div>

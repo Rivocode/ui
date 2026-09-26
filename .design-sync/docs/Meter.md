@@ -12,7 +12,8 @@ Medida de quanto de uma capacidade esta em uso: espaço, cota, limite.
 
 `showValue` mostra o valor ao lado do rótulo, e `format` diz como ele é escrito:
 o nome de um formatador da casa (`percent`, `currencyShort`, `compact`) ou uma
-função sua. Sem rótulo visível, passe `aria-label`.
+função sua. Ele recebe o valor limitado a `min` e `max`, o mesmo que a barra
+desenha. Sem rótulo visível, passe `aria-label`.
 
 ## Movimento
 
