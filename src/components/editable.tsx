@@ -43,9 +43,15 @@ export function Editable({
   const text = controlled ? value : internal;
   const [draft, setDraft] = useState(text);
   const field = useRef<HTMLInputElement>(null);
+  const reading = useRef<HTMLButtonElement>(null);
+  const returnFocus = useRef(false);
 
   useEffect(() => {
-    if (!editing) return;
+    if (!editing) {
+      if (returnFocus.current) reading.current?.focus();
+      returnFocus.current = false;
+      return;
+    }
     field.current?.focus();
     field.current?.select();
   }, [editing]);
@@ -69,6 +75,7 @@ export function Editable({
     return (
       <div key="reading" {...props} className={cn("flex min-w-0", swap, className)}>
         <button
+          ref={reading}
           type="button"
           disabled={disabled}
           onClick={open}
@@ -100,10 +107,12 @@ export function Editable({
         onKeyDown={(event) => {
           if (event.key === "Enter") {
             event.preventDefault();
+            returnFocus.current = true;
             commit();
           }
           if (event.key === "Escape") {
             event.preventDefault();
+            returnFocus.current = true;
             setDraft(text);
             setEditing(false);
           }

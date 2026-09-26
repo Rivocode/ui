@@ -222,3 +222,32 @@ test("o Escape desfaz, e nao salva pela metade", () => {
   expect(saved).toBe("sem mudanca");
   expect(screen.getByRole("button", { name: /Clínica São Lucas/ })).toBeDefined();
 });
+
+test("sair do campo pelo Enter ou pelo Escape devolve o foco ao texto, e nao ao corpo da pagina", () => {
+  withTheme(<Editable defaultValue="Clínica São Lucas" label="Cliente" />);
+
+  fireEvent.click(screen.getByRole("button", { name: /Clínica São Lucas/ }));
+  const field = screen.getByLabelText("Cliente");
+  fireEvent.change(field, { target: { value: "Clínica Aurora" } });
+  fireEvent.keyDown(field, { key: "Enter" });
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: /Clínica Aurora/ }));
+
+  fireEvent.click(screen.getByRole("button", { name: /Clínica Aurora/ }));
+  fireEvent.keyDown(screen.getByLabelText("Cliente"), { key: "Escape" });
+  expect(document.activeElement).toBe(screen.getByRole("button", { name: /Clínica Aurora/ }));
+});
+
+test("sair do campo pelo clique fora nao puxa o foco de volta ao texto", () => {
+  withTheme(
+    <>
+      <Editable defaultValue="Clínica São Lucas" label="Cliente" />
+      <button type="button">Outro</button>
+    </>,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: /Clínica São Lucas/ }));
+  const other = screen.getByRole("button", { name: "Outro" });
+  other.focus();
+  fireEvent.blur(screen.getByLabelText("Cliente"));
+  expect(document.activeElement).toBe(other);
+});
