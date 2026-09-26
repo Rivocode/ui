@@ -26,7 +26,9 @@ dito na linha.
   polegar nao faz o valor pular (aparelho); desabilitado nao muda pelo leitor
   de tela; o passo decimal arredonda as casas do `step`.
 - `NumberField` aplica o `min` na saida do campo, e nao a cada tecla; aceita
-  virgula decimal.
+  virgula decimal; mostra o valor que chega de fora no meio da digitacao; o
+  mais e o menos partem do digitado; com `min` negativo aceita o sinal de menos
+  e troca para um teclado que o tem.
 - `forText` traduz o `disabled` para `editable`: o campo desabilitado pelo
   react-hook-form continuava editavel.
 - `Select` com lista rasa rola.
@@ -38,8 +40,9 @@ dito na linha.
 - `Editable` desabilitado nao abre pela acao do leitor; `TimeField` segue o
   reset feito por fora durante a digitacao; `Tree` nao mexe nas folhas
   desabilitadas pelo galho; `ColorPicker` avisa a cor em seis digitos
-  minusculos; alvos do `Calendar`, do `SearchInput` e do `TagsInput` chegam a
-  44pt.
+  minusculos; o dia do `Calendar` e o xis do `SearchInput` chegam a 44pt. O xis
+  do `TagsInput` fica com a folga que cabe na ficha, acima dos 24 do WCAG, mas
+  abaixo dos 44 da Apple: a ficha tem 28pt, e o toque nunca passa do pai.
 
 ### O resto
 
@@ -51,7 +54,10 @@ dito na linha.
   quando o dado chega depois.
 - `ChartDonut` mostra o negativo como veio e deixa o miolo sempre visivel.
 - `Progress` e `Sparkline` com rotulo viram elemento que o leitor le; o nome do
-  `Carousel` e anunciado; `Tabs` e `Toggle` chegam a 44pt pelo `hitSlop`.
+  `Carousel` e anunciado, numa caixa de 1pt que o VoiceOver le. A aba do `Tabs`
+  passa a 40pt e, com a folga que cabe dentro da fileira, chega a 44pt; o
+  `Toggle` passa a 44pt de altura. Muda o que se ve: a fileira de abas cresce
+  4pt, e o toggle, 4pt.
 - `RelativeTime` escreve travessao para data invalida e arredonda como o web;
   `Stat` com delta zero sai neutro; `ToolCall` abre o painel quando o status
   muda para erro ou aprovacao; `Clipboard` mostra o `children` ate copiar;

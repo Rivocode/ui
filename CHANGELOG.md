@@ -28,19 +28,23 @@ comportamento muda de um jeito que se ve, a linha diz.
   Fora de camada nenhuma, nada muda de valor.
 - O `AlertDialog` aberto de dentro de um `Popover` cobre o popover e o deixa
   inerte; o `Tour` com alvo dentro de um `Dialog` bloqueia o resto do dialogo;
-  o cartao arrastado do `Kanban` passa por cima da `Sheet` em que esta.
+  o cartao arrastado do `Kanban` sai em portal e fica visivel, sobre o
+  original, mesmo dentro de uma `Sheet` ou de um `Dialog`.
 
 ### Formulario
 
 - `MaskedInput`: o Backspace apaga o telefone ate o fim (travava em `(11) `), e
-  o cursor fica onde se digitou no meio. Muda o que se ve: o literal so aparece
+  o cursor fica onde se digitou no meio; Backspace e Delete sobre um literal
+  apagam o digito vizinho. Muda o que se ve: o literal so aparece
   junto com o digito seguinte - "11" no telefone mostra `(11`, e nao `(11) `.
 - `DatePicker` e `Calendar` controlados voltam ao vazio quando o valor de fora
   volta a `undefined` (voltavam a primeira data escolhida, e o formulario a
   enviava); a data digitada respeita `disabledDays`.
 - `CurrencyInput` e `TimeField` mandam ao formulario so o valor, e nao o texto
   pontuado, inclusive pelo `name` do `<Field>`; o `TimeField` desabilitado nao
-  envia; o "-" do `CurrencyInput` sai quando o valor e zerado por fora.
+  envia; o `<Field disabled>` tira do envio o valor escondido deles e do
+  `TagsInput`, e trava o olho do `PasswordInput`; o "-" sozinho do
+  `CurrencyInput` sai quando o valor e zerado por fora ou o campo perde o foco.
 - `forValue` repassa a `ref`: o react-hook-form foca o campo de dinheiro ou de
   hora que voltou com erro.
 - `TagsInput`: no teto continua focado e tirando ficha pelo Backspace; colar
@@ -66,17 +70,20 @@ comportamento muda de um jeito que se ve, a linha diz.
   (acento deixa de ir para depois do Z) e vazio fica sempre no fim.
 - `EventCalendar`: o clique no painel "+N mais" nao cria compromisso; o
   intervalo devolvido e o clicado, em hora de parede (o horario de verao
-  deslocava uma hora); so e "Dia inteiro" o que e dia inteiro; o seletor de
+  deslocava uma hora, e na hora repetida do fim dele o fim saia antes do
+  comeco); so e "Dia inteiro" o que e dia inteiro; o seletor de
   data segue `locale` e `weekStartsOn`.
-- `ChartDonut`: o miolo fica sempre visivel, e a dica abre fora do buraco; o
-  anel de fundo e sempre desenhado; a cor segue a ordem do `config`.
+- `ChartDonut`: o miolo fica sempre visivel, e a dica abre fora do buraco e
+  inteira dentro da moldura, mesmo num cartao estreito; a pizza
+  (`thickness={1}`) mantem a largura do miolo; o anel de fundo e sempre
+  desenhado; a cor segue a ordem do `config`.
 - `ChartContainer`: chave com espaco ou ponto deixa de pintar a serie de preto.
 - `ChartRadial` diz o valor real acima do maximo e travessao para `NaN`;
   `compact`, `compactWords` e `currencyShort` sobem de grandeza ("1M", e nao
-  "1.000K") e seguem o sinal do `currency`; a `Sparkline` de um ponto sai
+  "1.000K"), ganham a faixa do trilhao ("1T") e seguem o sinal do `currency`; a `Sparkline` de um ponto sai
   neutra; o `ChartTreemap` espelha no RTL.
 - `RelativeTime` com data invalida escreve travessao em vez de derrubar a
-  arvore; `Stat` com `delta={0}` sai neutro; `DescriptionList`, `PageHeader` e
+  arvore; `Stat` com delta que sai 0% na tela fica neutro; `DescriptionList`, `PageHeader` e
   `Accordion` quebram texto longo em vez de estourar a largura no celular.
 
 ### Acoes, avisos e navegacao
@@ -96,10 +103,12 @@ comportamento muda de um jeito que se ve, a linha diz.
   executa comando.
 - `SidebarProvider` controlado deixa de abrir a folha do celular por cima da
   tela; quem abria a folha pelo `open` passa ao `openMobile`. `Sidebar` e
-  `Steps` levam classe e atributos aos dois modos.
+  `Steps` levam classe e atributos aos dois modos; o `id`, o `ref` e o
+  `data-testid` do `Steps` ficam so na lista da mesa.
 - `Breadcrumb`: mostra a primeira e as `max - 1` ultimas, sem repetir migalha.
   Muda o que se ve: com o padrao `max={4}` e cinco migalhas, a trilha sai
-  "A … C D E".
+  "A … C D E". No celular, ela guarda a pagina atual e a migalha anterior de
+  verdade, com o link de volta.
 - `Pagination` prende a pagina na faixa e trava as setas sem pagina para ir.
 - `ToolCall` abre o painel quando o status muda para erro ou aprovacao;
   `useWizard` anda um passo so com dois toques durante a checagem assincrona.
