@@ -393,6 +393,33 @@ describe("ToolCall", () => {
     act(() => trigger!.props.onPress());
     expect(textOf(screen)).toContain("3 notas");
   });
+
+  test("o painel abre quando o estado muda para erro ou aprovacao, se ninguem controla", () => {
+    for (const [status, shown] of [
+      ["error", "tempo esgotado"],
+      ["approval", '"valor": 1200'],
+    ] as const) {
+      const call = (now: "running" | typeof status) => (
+        <ToolCall
+          name="emitir_nota"
+          status={now}
+          input={{ valor: 1200 }}
+          error={now === "error" ? "tempo esgotado" : undefined}
+        />
+      );
+      const screen = render(call("running"));
+      expect(textOf(screen)).not.toContain(shown);
+      act(() => screen.update(<RivoProvider>{call(status)}</RivoProvider>));
+      expect(textOf(screen)).toContain(shown);
+    }
+
+    const held = (now: "running" | "error") => (
+      <ToolCall name="emitir_nota" status={now} error="tempo esgotado" open={false} />
+    );
+    const controlled = render(held("running"));
+    act(() => controlled.update(<RivoProvider>{held("error")}</RivoProvider>));
+    expect(textOf(controlled)).not.toContain("tempo esgotado");
+  });
 });
 
 describe("AILabel", () => {
