@@ -122,7 +122,8 @@ export function ColorPicker({
     setText(value);
   }
 
-  function choose(color: string) {
+  function choose(swatch: string) {
+    const color = normalizeColor(swatch) ?? swatch;
     setText(color);
     setSeenValue(color);
     onValueChange(color);

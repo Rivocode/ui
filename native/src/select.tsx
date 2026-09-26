@@ -1,4 +1,4 @@
-import { Pressable, SectionList, View } from "react-native";
+import { Pressable, ScrollView, SectionList, View } from "react-native";
 
 import { Button } from "./button";
 import { cn } from "./cn";
@@ -147,7 +147,9 @@ export function Select(props: SelectProps) {
               stickySectionHeadersEnabled={false}
             />
           ) : (
-            items.map(option)
+            <ScrollView className="shrink" contentContainerClassName="gap-1">
+              {items.map(option)}
+            </ScrollView>
           )}
 
           {props.multiple && (

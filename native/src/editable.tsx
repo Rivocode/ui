@@ -76,9 +76,10 @@ export function Editable({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`${label}: ${value || labels.empty}`}
-          accessibilityHint={labels.hint}
-          accessibilityActions={[{ name: "longpress", label: labels.edit }]}
+          accessibilityHint={disabled ? undefined : labels.hint}
+          accessibilityActions={disabled ? [] : [{ name: "longpress", label: labels.edit }]}
           onAccessibilityAction={(event: AccessibilityActionEvent) => {
+            if (disabled) return;
             if (event.nativeEvent.actionName === "longpress") open();
           }}
           accessibilityState={{ disabled }}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
@@ -34,6 +35,26 @@ export type NumberFieldLabels = {
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
+const decimalsOf = (n: number) => {
+  const [, fraction = ""] = String(n).split(".");
+  return fraction.length;
+};
+
+const written = (value: number) => String(value).replace(".", ",");
+
+const cleanTyped = (text: string) => {
+  const kept = text.replace(/[^\d.,]/g, "");
+  const cut = kept.search(/[.,]/);
+  if (cut === -1) return kept;
+  return `${kept.slice(0, cut + 1)}${kept.slice(cut + 1).replace(/[.,]/g, "")}`;
+};
+
+const readTyped = (text: string): number | undefined => {
+  if (!/\d/.test(text)) return undefined;
+  const parsed = Number(text.replace(",", "."));
+  return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 export function NumberField({
   value,
   onValueChange,
@@ -46,7 +67,13 @@ export function NumberField({
   labels,
 }: NumberFieldProps) {
   const { colors } = useRivo();
-  const nudge = (delta: number) => onValueChange(clamp(value + delta, min, max));
+  const [text, setText] = useState("");
+  const [typing, setTyping] = useState(false);
+  const places = Math.max(decimalsOf(step), decimalsOf(min));
+  const nudge = (delta: number) => {
+    setTyping(false);
+    onValueChange(clamp(Number((value + delta).toFixed(places)), min, max));
+  };
 
   const stepper = (delta: number, sign: string, stepLabel: string, blocked: boolean) => (
     <Pressable
@@ -77,11 +104,25 @@ export function NumberField({
         value <= min,
       )}
       <TextInput
-        keyboardType="number-pad"
-        value={String(value)}
-        onChangeText={(text) => {
-          const digits = text.replace(/\D/g, "");
-          if (digits !== "") onValueChange(clamp(Number(digits), min, max));
+        accessibilityLabel={label}
+        keyboardType={Number.isInteger(step) ? "number-pad" : "decimal-pad"}
+        value={typing ? text : written(value)}
+        onChangeText={(typed) => {
+          const cleaned = cleanTyped(typed);
+          const parsed = readTyped(cleaned);
+          setTyping(true);
+          if (parsed !== undefined && parsed > max) {
+            setText(written(max));
+            onValueChange(max);
+            return;
+          }
+          setText(cleaned);
+          if (parsed !== undefined && parsed >= min) onValueChange(parsed);
+        }}
+        onBlur={() => {
+          const parsed = typing ? readTyped(text) : undefined;
+          setTyping(false);
+          if (parsed !== undefined && parsed < min) onValueChange(min);
         }}
         editable={!disabled}
         placeholderTextColor={colors["fg-subtle"]}

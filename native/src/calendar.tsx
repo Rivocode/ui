@@ -227,6 +227,7 @@ export function MonthView({
                   disabled: blocked,
                 }}
                 disabled={blocked}
+                hitSlop={2}
                 onPress={() => onDayPress(iso)}
                 className={cn(
                   "size-10 items-center justify-center rounded-pill",

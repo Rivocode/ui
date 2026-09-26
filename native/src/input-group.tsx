@@ -63,6 +63,7 @@ export function InputGroup({
   onBlur,
   onSubmitEditing,
   accessibilityHint,
+  accessibilityLabel,
   className,
   classNames,
   ...props
@@ -86,6 +87,7 @@ export function InputGroup({
 
       <TextInput
         {...props}
+        accessibilityLabel={accessibilityLabel ?? field.label}
         accessibilityHint={accessibilityHint ?? field.error}
         value={value}
         onChangeText={(text) => {

@@ -73,6 +73,12 @@ export function leavesOf(node: TreeNode): string[] {
   return node.children.flatMap(leavesOf);
 }
 
+function openLeavesOf(node: TreeNode): string[] {
+  if (node.disabled) return [];
+  if (!node.children?.length) return [node.id];
+  return node.children.flatMap(openLeavesOf);
+}
+
 function trailOf(items: TreeNode[], ids: string[]): TreeNode[] {
   const trail: TreeNode[] = [];
   let level = items;
@@ -124,17 +130,17 @@ export function Tree({
   }
 
   function toggle(node: TreeNode) {
-    const leaves = leavesOf(node);
-
     if (!multiple) {
       if (node.children?.length) return;
       onValueChange(value.includes(node.id) ? [] : [node.id]);
       return;
     }
 
-    const all = leaves.every((leaf) => value.includes(leaf));
-    const rest = value.filter((id) => !leaves.includes(id));
-    onValueChange(all ? rest : [...rest, ...leaves]);
+    const open = openLeavesOf(node);
+    if (open.length === 0) return;
+    const all = open.every((leaf) => value.includes(leaf));
+    const rest = value.filter((id) => !open.includes(id));
+    onValueChange(all ? rest : [...rest, ...open]);
   }
 
   return (
