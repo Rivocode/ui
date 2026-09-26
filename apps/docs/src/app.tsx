@@ -203,17 +203,24 @@ function Nav({
         {(() => {
           const link = linkTo({ kind: 'catalog' }, navigate)
           return (
-            <a
-              href={link.href}
-              onClick={(event) => {
-                link.onClick(event)
-                onNavigate?.()
-              }}
-              aria-current={route.kind === 'catalog' ? 'page' : undefined}
-              className={`${rowClass(route.kind === 'catalog')} mb-4 block border-l border-border`}
-            >
-              Todas as peças, numa tela
-            </a>
+            <div className="mb-6">
+              <h2 className={headingClass}>Catálogo</h2>
+              <ul className="border-l border-border">
+                <li>
+                  <a
+                    href={link.href}
+                    onClick={(event) => {
+                      link.onClick(event)
+                      onNavigate?.()
+                    }}
+                    aria-current={route.kind === 'catalog' ? 'page' : undefined}
+                    className={rowClass(route.kind === 'catalog')}
+                  >
+                    Todas as peças, numa tela
+                  </a>
+                </li>
+              </ul>
+            </div>
           )
         })()}
 

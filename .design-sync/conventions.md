@@ -682,9 +682,7 @@ versionamento semântico à risca, cada um no seu número:
 - **Prop nova e peça nova são versão menor.**
 - **Correção é versão de correção.**
 
-Quem vem da 0.x tem a tabela de cada troca, peça por peça, em
-<https://ds.rivocode.com.br/migrar-para-1-0.md>. Prop marcada `@deprecated`
-não se usa em código novo: o `.md` da peça diz o nome que fica.
+Prop marcada `@deprecated` não se usa em código novo: o `.md` da peça diz o nome que fica.
 
 ### Os nomes do estado
 

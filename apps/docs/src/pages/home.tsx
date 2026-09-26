@@ -329,12 +329,6 @@ export function Home({ navigate }: { navigate: (route: Route) => void }) {
           <span className="font-mono text-xs text-fg-subtle">
             Base UI · Tailwind 4 · React 19 · React Native
           </span>
-          <a
-            {...linkTo({ kind: 'guide', slug: 'migrar-para-1-0' }, navigate)}
-            className="inline-flex min-h-6 items-center text-xs text-accent-text underline decoration-border underline-offset-4 transition-colors hover:decoration-accent"
-          >
-            Vindo da 0.x? Migrar para a 1.0
-          </a>
         </div>
 
         <h1 className="animate-rise mt-5 max-w-4xl font-display text-4xl leading-[1.05] tracking-display text-fg sm:text-6xl">

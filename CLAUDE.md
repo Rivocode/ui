@@ -381,8 +381,8 @@ Tres tags, tres workflows, e o prefixo e o que separa:
 renomear prop, peca ou export, trocar padrao ou formato de callback) so em
 versao maior; o que vai sair ganha `@deprecated` com o caminho novo e fica pelo
 menos uma versao menor antes de sair na maior seguinte; prop nova e peca nova
-sao menor; correcao e patch. A tabela da 0.x para a 1.0 mora em
-`apps/docs/src/content/migrar-para-1-0.md` e no agent `migracao`.
+sao menor; correcao e patch. A tabela da 0.x para a 1.0 mora no agent
+`migracao`.
 
 Os pacotes andam em velocidades diferentes de proposito. A tag tem que bater
 com a versao do `package.json` correspondente, e o workflow confere isso -

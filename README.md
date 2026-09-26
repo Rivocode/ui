@@ -659,8 +659,7 @@ export default defineConfig({
 Da 1.0 em diante, semver à risca: quebra só em versão maior; o que vai sair
 passa pelo menos uma versão menor marcado com `@deprecated` no tipo, com o
 caminho novo, e só sai na versão maior seguinte; prop nova e peça nova são
-versão menor; correção é versão de correção. Quem vem da 0.x tem a tabela de
-cada troca em <https://ds.rivocode.com.br/migrar-para-1-0>.
+versão menor; correção é versão de correção.
 
 ## Notas
 

@@ -17,9 +17,7 @@ que alguém faça o trabalho de achar os pontos de chamada. Esse alguém é voc�
    `package.json` do projeto (`@rivocode/ui`, `@rivocode/ui-native`) e a de
    destino. Da 0.x para a 1.x, a tabela está abaixo e é completa. Para
    qualquer outro salto, leia o `CHANGELOG.md` do pacote em `node_modules` e
-   liste as quebras entre as duas versões; a página
-   `https://ds.rivocode.com.br/migrar-para-1-0.md` é a mesma tabela em
-   markdown cru.
+   liste as quebras entre as duas versões.
 
 2. **Suba a versão e rode o `tsc` antes de tocar em código.** A lista de erros
    é o mapa: quase toda linha da tabela é renomeação que o tipo acusa. Guarde a
