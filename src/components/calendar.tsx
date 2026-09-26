@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import {
   DayPicker,
+  type DropdownProps,
   type Matcher,
   type PropsBase,
   type PropsMulti,
@@ -11,12 +12,13 @@ import {
   type PropsRangeRequired,
 } from "react-day-picker";
 import { ptBR } from "react-day-picker/locale";
-import { useState, type ComponentProps, type ReactElement } from "react";
+import { useState, type ChangeEvent, type ComponentProps, type ReactElement } from "react";
 
 import { cn } from "../lib/cn";
 import { useMobile } from "../lib/screen";
 import { toDate, type DateInput } from "../lib/date";
 import { isoFromDate } from "../shared/date";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
 type CalendarBase = Omit<
   PropsBase,
@@ -142,6 +144,47 @@ function withBounds(disabled: PropsBase["disabled"], lower?: Date, upper?: Date)
   return [...(Array.isArray(disabled) ? disabled : [disabled]), ...bounds];
 }
 
+function CalendarDropdown({
+  options = [],
+  value,
+  onChange,
+  disabled,
+  "aria-label": label,
+}: DropdownProps) {
+  const items = options.map((option) => ({ value: String(option.value), label: option.label }));
+
+  return (
+    <Select
+      items={items}
+      value={String(value)}
+      size="sm"
+      disabled={disabled}
+      onValueChange={(next) =>
+        onChange?.({ target: { value: next } } as unknown as ChangeEvent<HTMLSelectElement>)
+      }
+    >
+      <SelectTrigger
+        aria-label={label}
+        className="min-w-0 gap-1 border-transparent bg-transparent px-2 text-sm font-rc-medium capitalize hover:bg-accent-subtle"
+      >
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent side="bottom" align="center" className="max-h-72">
+        {options.map((option) => (
+          <SelectItem
+            key={option.value}
+            value={String(option.value)}
+            disabled={option.disabled}
+            className="text-sm capitalize"
+          >
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 export function Calendar(props: CalendarDateProps): ReactElement;
 export function Calendar(props: CalendarIsoProps): ReactElement;
 export function Calendar(props: CalendarSelectionProps): ReactElement;
@@ -221,16 +264,16 @@ export function Calendar(props: CalendarProps): ReactElement {
         months: "flex flex-col gap-4 sm:flex-row",
         month: "flex flex-col gap-3",
 
-        nav: "absolute inset-x-0 top-0 flex h-8 items-center justify-between",
+        nav: "pointer-events-none absolute inset-x-0 top-0 flex h-8 items-center justify-between",
         button_previous: cn(
-          "inline-flex size-8 items-center justify-center rounded-md",
+          "pointer-events-auto inline-flex size-8 items-center justify-center rounded-md",
           "text-fg-muted transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
           "hover:bg-accent-subtle hover:text-fg",
           "aria-disabled:pointer-events-none aria-disabled:text-fg-disabled",
           "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         ),
         button_next: cn(
-          "inline-flex size-8 items-center justify-center rounded-md",
+          "pointer-events-auto inline-flex size-8 items-center justify-center rounded-md",
           "text-fg-muted transition-colors duration-[var(--rc-duration-fast)] ease-[var(--rc-ease)]",
           "hover:bg-accent-subtle hover:text-fg",
           "aria-disabled:pointer-events-none aria-disabled:text-fg-disabled",
@@ -298,6 +341,7 @@ export function Calendar(props: CalendarProps): ReactElement {
         ...classNames,
       }}
       components={{
+        Dropdown: CalendarDropdown,
         Chevron: ({ orientation = "right", size: _size, disabled: _disabled, ...chevron }) => {
           const Chevron = CHEVRONS[orientation];
           return <Chevron {...chevron} size={16} aria-hidden="true" />;

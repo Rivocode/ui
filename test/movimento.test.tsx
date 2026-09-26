@@ -191,9 +191,11 @@ test("toda transicao nomeia uma curva da casa, e nao herda a do Tailwind", async
 
 const contract = await Bun.file("src/tokens/contract.css").text();
 const TOKEN_TIMED = new Set(
-  [...contract.matchAll(/--(animate-[\w-]+):\s*[\w-]+ var\(--rc-duration-(?:fast|base|slow|sheet)\)/g)].map(
-    (hit) => hit[1]!,
-  ),
+  [
+    ...contract.matchAll(
+      /--(animate-[\w-]+):\s*[\w-]+ var\(--rc-duration-(?:fast|base|slow|sheet)\)/g,
+    ),
+  ].map((hit) => hit[1]!),
 );
 
 test("toda animacao para ou zera quando a pessoa pede menos movimento", async () => {
@@ -212,7 +214,9 @@ test("toda animacao para ou zera quando a pessoa pede menos movimento", async ()
   for (const file of files) {
     const code = await Bun.file(file).text();
     const blocks = classBlocks(code);
-    for (const hit of code.matchAll(/(?<![\w-])((?:[^\s"'`:]+:)*)animate-(?!none(?![\w-]))[^\s"'`]+/g)) {
+    for (const hit of code.matchAll(
+      /(?<![\w-])((?:[^\s"'`:]+:)*)animate-(?!none(?![\w-]))[^\s"'`]+/g,
+    )) {
       const prefix = hit[1]!;
       if (prefix.includes("motion-reduce:")) continue;
       seen += 1;
@@ -231,8 +235,12 @@ test("toda animacao para ou zera quando a pessoa pede menos movimento", async ()
         continue;
       }
 
-      const block = blocks.find(({ text, at }) => hit.index! >= at && hit.index! < at + text.length);
-      const calm = block ? tokensOf(block.text).includes(`motion-reduce:${prefix}animate-none`) : false;
+      const block = blocks.find(
+        ({ text, at }) => hit.index! >= at && hit.index! < at + text.length,
+      );
+      const calm = block
+        ? tokensOf(block.text).includes(`motion-reduce:${prefix}animate-none`)
+        : false;
       if (!calm) loose.push(`${where} (sem motion-reduce:${prefix}animate-none)`);
     }
   }
@@ -445,7 +453,11 @@ test("a confirmacao da copia aparece esmaecendo, pelo keyframe e pela duracao do
 });
 
 test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => {
-  const { container } = render(<Calendar defaultMonth={new Date(2026, 0, 1)} />);
+  const { container } = render(
+    <RivoProvider scope="local">
+      <Calendar defaultMonth={new Date(2026, 0, 1)} />
+    </RivoProvider>,
+  );
 
   fireEvent.click(screen.getByRole("button", { name: "Ir para o próximo mês" }));
 
@@ -458,7 +470,9 @@ test("o mes novo do calendario entra pelo lado para onde a pessoa andou", () => 
 
 test("a classe de animacao que o react-day-picker tira com classList.remove e um nome so", () => {
   const source = readFileSync(join(import.meta.dir, "../src/components/calendar.tsx"), "utf8");
-  const keys = [...source.matchAll(/(?:weeks|caption)_(?:before|after)_(?:enter|exit):\s*("[^"]*"|[^,\n]+),/g)];
+  const keys = [
+    ...source.matchAll(/(?:weeks|caption)_(?:before|after)_(?:enter|exit):\s*("[^"]*"|[^,\n]+),/g),
+  ];
   expect(keys.length).toBe(8);
   for (const [, value] of keys) {
     expect(value!.startsWith('"')).toBe(true);

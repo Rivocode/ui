@@ -1,11 +1,12 @@
 import { expect, spyOn, test } from "bun:test";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { Children, isValidElement, useState, type ReactNode } from "react";
 import { Line, LineChart } from "recharts";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { ChartContainer } from "../src/chart/chart";
 import { Sparkline } from "../src/chart/sparkline";
+import { Calendar } from "../src/components/calendar";
 import { DataTable, type Column } from "../src/components/data-table";
 import { DateRangePicker } from "../src/components/date-range-picker";
 import { EmptyState } from "../src/components/empty-state";
@@ -281,9 +282,28 @@ test("o filtro de periodo consegue limitar aos exercicios abertos", () => {
   );
   fireEvent.click(screen.getByText("03/03/2026 – 10/03/2026"));
 
-  const year = screen.getByLabelText("Escolha o ano") as HTMLSelectElement;
-  expect(year.options.length).toBe(1);
-  expect(year.options[0]!.textContent).toContain("2026");
+  const year = screen.getByLabelText("Escolha o ano");
+  expect(year.textContent).toContain("2026");
+  act(() => {
+    fireEvent.click(year);
+  });
+  const years = screen.getAllByRole("option");
+  expect(years.length).toBe(1);
+  expect(years[0]!.textContent).toContain("2026");
+  expect(document.querySelectorAll("select")).toHaveLength(0);
 
   expect(document.querySelectorAll('[data-outside="true"]').length).toBeGreaterThan(0);
+});
+
+test("a barra das setas do calendario deixa o clique chegar ao mes e ao ano, e so as setas o recebem", () => {
+  withTheme(<Calendar defaultMonth={new Date(2026, 2, 1)} />);
+  const previous = screen.getByRole("button", { name: "Ir para o mês anterior" });
+  const nav = previous.parentElement!;
+
+  expect(nav.className.split(" ")).toContain("pointer-events-none");
+  expect(previous.className.split(" ")).toContain("pointer-events-auto");
+  expect(
+    screen.getByRole("button", { name: "Ir para o próximo mês" }).className.split(" "),
+  ).toContain("pointer-events-auto");
+  expect(screen.getByLabelText("Escolha o mês").getAttribute("role")).toBe("combobox");
 });
