@@ -7,7 +7,10 @@ import { assignRefs } from "../lib/refs";
 import { isNumericMask } from "../shared/mask";
 import { Input } from "./field";
 
-export type MaskedInputProps = Omit<ComponentProps<typeof Input>, "onValueChange" | "value" | "defaultValue"> & {
+export type MaskedInputProps = Omit<
+  ComponentProps<typeof Input>,
+  "onValueChange" | "value" | "defaultValue"
+> & {
   /** Nome de molde pronto, molde escrito na mao, ou `moeda`. */
   mask: Mask;
   /** O texto ja com mascara, quando quem usa controla o estado. */
@@ -51,12 +54,43 @@ function caretBeforeDataFromEnd(text: string, count: number): number {
   return 0;
 }
 
+function removeDataAcrossLiteral(input: HTMLInputElement, key: string): boolean {
+  const start = input.selectionStart;
+  if (start === null || start !== input.selectionEnd) return false;
+  const text = input.value;
+  let index = -1;
+  if (key === "Backspace" && start > 0 && !isData(text[start - 1]!)) {
+    for (let at = start - 1; at >= 0; at -= 1) {
+      if (isData(text[at]!)) {
+        index = at;
+        break;
+      }
+    }
+  } else if (key === "Delete" && start < text.length && !isData(text[start]!)) {
+    for (let at = start; at < text.length; at += 1) {
+      if (isData(text[at]!)) {
+        index = at;
+        break;
+      }
+    }
+  }
+  if (index < 0) return false;
+
+  const next = text.slice(0, index) + text.slice(index + 1);
+  const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+  setter?.call(input, next);
+  input.setSelectionRange(index, index);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  return true;
+}
+
 export function MaskedInput({
   mask,
   value,
   defaultValue = "",
   onValueChange,
   onChange,
+  onKeyDown,
   inputMode,
   ref,
   ...props
@@ -85,12 +119,19 @@ export function MaskedInput({
       ref={setRefs}
       value={text}
       inputMode={inputMode ?? (digitsOnly ? "numeric" : undefined)}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (event.defaultPrevented || mask === "moeda") return;
+        if (event.key !== "Backspace" && event.key !== "Delete") return;
+        if (removeDataAcrossLiteral(event.currentTarget, event.key)) event.preventDefault();
+      }}
       onChange={(event) => {
         const raw = event.target.value;
         const masked = applyMask(raw, mask);
         const caret = event.target.selectionStart ?? raw.length;
         const before = raw.slice(0, caret);
-        if (mask === "moeda") pendingCaret.current = caretBeforeDataFromEnd(masked, countData(raw.slice(caret)));
+        if (mask === "moeda")
+          pendingCaret.current = caretBeforeDataFromEnd(masked, countData(raw.slice(caret)));
         else if (masked.startsWith(before)) pendingCaret.current = caret;
         else pendingCaret.current = caretAfterData(masked, countData(before));
 
