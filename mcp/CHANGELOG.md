@@ -1,5 +1,25 @@
 # Mudanças
 
+## 0.7.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.1.0 e
+`@rivocode/ui-native` 1.1.0, com os consertos da revisão de todas as peças. As
+oito ferramentas continuam as mesmas.
+
+- `recommend_component` passa a acertar o campo de dado brasileiro: a tabela
+  de escolha ganha CPF, CNPJ, CPF ou CNPJ no mesmo campo, telefone, CEP que
+  preenche o endereço, data, hora, cartão, placa, boleto, código de
+  verificação, e-mail, chave Pix e quantidade, cada um com a peça, a máscara,
+  o validador e o que se guarda. Antes, "campo de CPF do cliente" recomendava
+  o `ColorPicker`.
+- A skill ganha a seção "O campo sai do dado", e a referência do React Native
+  diz que a mesma tabela vale lá.
+- `get_guide` perde o guia `migrar-para-1-0`, que nenhum projeto usava, e
+  ganha `tanstack`, que liga o TanStack Router e o TanStack Query às peças.
+- A tabela de props do web vai de 4407 para 4417 props, e a do nativo de 866
+  para 870: são o `empty` dos gráficos, o `openMobile` e o `onOpenMobileChange`
+  do `SidebarProvider` e o `labels` da `Timeline`.
+
 ## 0.6.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.0.0 e
