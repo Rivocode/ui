@@ -117,8 +117,9 @@ nome do QR para o leitor de tela.
 
 - **Para um QR Code que não é Pix**, como o link de consulta da nota, use
   `QRCode`: ele desenha o código sem conferir CRC nem mostrar valor.
-- **Para a chave Pix solta**, que a pessoa digita no próprio banco, use `Code`
-  com um `Clipboard` ao lado. A chave não é o copia e cola, e um QR dela não
+- **Para mostrar a chave Pix solta**, que quem paga copia para o próprio banco,
+  use `Code` com um `Clipboard` ao lado. O campo em que alguém escreve a chave
+  é um `Input`, conferido por `isValidPixKey`. A chave não é o copia e cola, e um QR dela não
   leva valor nem txid.
 
 ## No React Native

@@ -54,6 +54,20 @@ exemplos que rodam e a tabela de props.
 | Nota em estrelas, ou a média que os outros deram | `Rating` | `radiogroup` com uma opção por estrela e setas; `readOnly` vira uma imagem só, "4,3 de 5". Número exato é `NumberField`, faixa contínua é `Slider` |
 | Assinatura na tela: aceite, recebimento, vistoria | `SignaturePad` | Dedo, caneta ou mouse, com o nome digitado em cursiva para quem não desenha; exporta SVG e PNG com tinta escura nos dois temas. "Li e aceito" sem rubrica é `Checkbox` |
 | Valor em dinheiro | `CurrencyInput` | Entra e sai em centavos inteiros, digita da direita e lê o colado; quantidade com passo é `NumberField` |
+| CPF | `MaskedInput` | `mask="cpf"`, e o número se confere com `isValidCpf` no schema, ao sair do campo. Guarde o cru, o segundo argumento do `onValueChange`: só os 11 dígitos |
+| CNPJ, inclusive o alfanumérico | `MaskedInput` | `mask="cnpj"` aceita letra nas doze primeiras casas e põe em maiúscula; confere com `isValidCnpj`. Guarde o cru |
+| CPF ou CNPJ no mesmo campo | `ToggleGroup` e `MaskedInput` | Nenhum molde alterna sozinho entre os dois: a pessoa escolhe "Pessoa física" ou "Pessoa jurídica" antes, e o `mask` troca junto com o validador |
+| Telefone, fixo ou celular | `MaskedInput` | `mask="telefone"` troca sozinho entre fixo e celular pela quantidade de dígitos, 10 ou 11; `autoComplete="tel-national"`. Guarde os dígitos, e a chave Pix pede `+55` na frente |
+| CEP que preenche o endereço | `PostalCodeField` | Máscara e busca: completa os 8 dígitos, chama o seu `lookup` e entrega `onAddress`. CEP solto, sem endereço, é `MaskedInput` com `mask="cep"` |
+| Data: vencimento, nascimento, agendamento | `DatePicker` | Digita ou escolhe no calendário, com `min`, `max` e `disabledDays`; nascimento leva `max` em hoje. `mask="data"` num campo de texto perde o calendário e a validação da data |
+| Hora do dia | `TimeField` | Entra e sai como `HH:mm`, com `min`, `max` e `step`; `mask="hora"` não confere se a hora existe |
+| Número do cartão | `MaskedInput` | `mask="cartao"` e `autoComplete="cc-number"`. A biblioteca não confere o cartão: quem aprova é o adquirente |
+| Placa de veículo, antiga ou Mercosul | `MaskedInput` | `mask="placa"`; a forma se confere com `isValidPlate` |
+| Linha digitável de boleto | `MaskedInput` | `mask="boleto"` troca sozinho para a de convênio quando começa com 8; `isValidBoletoLine` confere e `parseBoleto` lê valor e vencimento |
+| Código de verificação que chega por SMS, de uso único | `OTPField` | Uma casa por dígito, cola o código inteiro e `autoComplete="one-time-code"` deixa o celular preencher sozinho |
+| E-mail do cliente, de contato ou de login | `Input` | `type="email"` e `autoComplete="email"`, sem máscara; o formato se confere no schema com `z.string().email()` |
+| Campo de formulário para a chave Pix: a pessoa digita ou cadastra a chave para receber ou transferir | `Input` | Sem máscara, porque a chave Pix pode ser CPF, CNPJ, e-mail, celular ou aleatória; `isValidPixKey` confere depois de tirar a pontuação. Mostrar a chave para alguém copiar é `Code` com `Clipboard`; cobrar com QR e copia e cola é `PixCode` |
+| Quantidade, parcelas, porcentagem | `NumberField` | Número com passo e teclado numérico; dinheiro nunca entra aqui, é `CurrencyInput` |
 | Senha, com o olho que revela | `PasswordInput` | O botão diz a ação e não o estado; sair do campo esconde de novo |
 | Marcadores que a pessoa escreve | `TagsInput` | Enter fecha, Backspace tira a última, repetida não entra |
 | Ocorrência por período, em faixa | `Tracker` | Responde "piorou ontem?"; cabe no rodapé de um `Stat` |

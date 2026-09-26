@@ -160,6 +160,17 @@ const INTENTS: [intent: string, expected: string][] = [
   ["aviso da página inteira de manutenção", "Banner"],
   ["senha com o olho que revela", "PasswordInput"],
   ["anexar arquivo arrastando", "FileUpload"],
+  ["campo de CPF do cliente", "MaskedInput"],
+  ["CPF ou CNPJ no mesmo campo", "MaskedInput"],
+  ["telefone celular do contato", "MaskedInput"],
+  ["CEP que preenche o endereco", "PostalCodeField"],
+  ["data de nascimento", "DatePicker"],
+  ["codigo do SMS de verificacao", "OTPField"],
+  ["campo de chave pix", "Input"],
+  ["placa do carro", "MaskedInput"],
+  ["numero do cartao de credito", "MaskedInput"],
+  ["e-mail do cliente", "Input"],
+  ["valor da nota em reais", "CurrencyInput"],
 ];
 
 test("recommend_component poe a peca da tabela de escolha em primeiro", async () => {

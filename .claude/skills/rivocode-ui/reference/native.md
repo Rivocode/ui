@@ -583,6 +583,19 @@ marcada como `○ na fila` **já portou**, que é o caso silencioso: a doc
 continua mandando usar o substituto depois que a peça de verdade chegou.
 Portou peça nova no native? Rode o script e comite o que ele reescrever.
 
+### O campo sai do dado, como no web
+
+A tabela de [components.md](components.md) vale aqui com os mesmos nomes:
+`MaskedInput` com `mask="cpf"`, `"cnpj"`, `"telefone"`, `"placa"`, `"cartao"`
+e `"boleto"`, `PostalCodeField`, `OTPField`, `CurrencyInput`, `DatePicker`,
+`TimeField` e `NumberField` existem no `@rivocode/ui-native`, e os validadores
+(`isValidCpf`, `isValidCnpj`, `isValidPlate`, `isValidPixKey`) são o mesmo
+arquivo dos dois lados. O teclado já vem da peça: o `MaskedInput` abre o
+numérico quando o molde só tem dígito, e o `OTPField` e o `PostalCodeField`
+já pedem o preenchimento do sistema (`sms-otp`, `postal-code`). No
+`MaskedInput` de telefone e de cartão, passe o `autoComplete` do React Native:
+`tel` e `cc-number`.
+
 ## O teclado já vem tratado
 
 O `react-native-keyboard-controller` é peer obrigatório, e o `KeyboardProvider`

@@ -203,6 +203,26 @@ a pessoa confirma antes de emitir e o comprovante depois.
 Nunca digite o valor já abreviado como texto. Escrever `R$ 12,4K` na mão mostra
 o resultado e esconde o mecanismo, e quebra na primeira mudança de dado.
 
+## O campo sai do dado
+
+Antes de escrever um `Input`, pergunte que dado ele recebe. CPF, CNPJ,
+telefone, CEP, placa, boleto e cartão têm máscara pronta no `MaskedInput`;
+data é `DatePicker`, hora é `TimeField`, dinheiro é `CurrencyInput`, código de
+verificação é `OTPField` e CEP que preenche endereço é `PostalCodeField`. A
+tabela inteira, com o validador e o que se guarda de cada um, está em
+[reference/components.md](reference/components.md).
+
+Três regras valem para todos:
+
+- **A máscara pontua; quem diz se o número existe é o validador**:
+  `isValidCpf`, `isValidCnpj`, `isValidPlate`, `isValidBoletoLine`, no schema,
+  conferidos ao sair do campo e não a cada tecla.
+- **Guarde o cru, não o que a tela mostra.** O `onValueChange` do
+  `MaskedInput` entrega os dois, e o servidor entende o segundo; dinheiro vai
+  em centavos inteiros.
+- **`autoComplete` e `inputMode` certos** deixam o celular preencher e abrir o
+  teclado de números: `tel-national`, `email`, `cc-number`, `one-time-code`.
+
 ## O que nunca fazer
 
 - Cor literal em `className` ou em `style`. Sempre token.
