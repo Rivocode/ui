@@ -1011,7 +1011,7 @@ const PARITY: Record<string, Row> = {
       "`timeout: 0` deixa o aviso até o `close(id)`, e `update` e `promise` reescrevem o aviso " +
       "que está na tela. Aqui o `title` e a `description` são `string`, porque o aviso é lido " +
       "em voz alta, e não há xis: o aviso não recebe toque, então o que fica sai pelo `close`. " +
-      "Sem `timeout`, ele sai em 4 segundos, e não nos 5 do web. O aviso sobe e desce com as " +
+      "Sem `timeout`, ele sai em 4 segundos, e não nos 5 do web. O `actionProps` do web, que põe o desfazer dentro do aviso, não existe aqui pelo mesmo motivo do xis: o aviso não recebe toque, e o desfazer no celular mora na própria tela. O aviso sobe e desce com as " +
       "durações do web, e aparece parado quando o sistema pede para reduzir movimento",
   },
 

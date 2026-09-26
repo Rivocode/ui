@@ -130,6 +130,15 @@ function List({
       <BaseToast.Content className="flex min-w-0 flex-col gap-1">
         <BaseToast.Title className="text-base font-rc-medium" />
         <BaseToast.Description className="text-sm text-fg-muted" />
+        <BaseToast.Action
+          type="button"
+          className={cn(
+            "relative mt-1 w-fit rounded-sm text-sm font-rc-medium text-fg outline-none",
+            "underline decoration-border underline-offset-4 after:absolute after:-inset-1.5",
+            "transition-colors duration-[var(--rc-duration-fast)] ease-rc-effects",
+            "hover:decoration-fg focus-visible:ring-2 focus-visible:ring-ring",
+          )}
+        />
       </BaseToast.Content>
       <BaseToast.Close
         aria-label={dismiss}
