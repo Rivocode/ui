@@ -14,7 +14,8 @@ export type Crumb = {
 export type BreadcrumbProps = Omit<ComponentProps<"nav">, "children"> & {
   items: Crumb[];
   /**
-   * Quantas migalhas cabem antes de o meio virar reticencia.
+   * Quantas migalhas cabem antes de o meio virar reticencia: dobrada, a trilha
+   * mostra a primeira e as `max - 1` ultimas, e nunca menos que a ultima.
    *
    * `max` e como o resto do catalogo chama o teto de uma lista - `Indicator`,
    * `AvatarGroup` e `TagsInput` ja o chamavam assim, e so a trilha divergia.
@@ -32,9 +33,10 @@ export type BreadcrumbLabels = {
 };
 
 export function Breadcrumb({ className, items, max = 4, labels, ...props }: BreadcrumbProps) {
-  const folded = items.length > max;
+  const tail = Math.max(1, Math.floor(max) - 1);
+  const folded = items.length - 1 - tail >= 1;
   const visiveis: (Crumb | "reticencia")[] = folded
-    ? [items[0]!, "reticencia", ...items.slice(-2)]
+    ? [items[0]!, "reticencia", ...items.slice(-tail)]
     : items;
 
   return (

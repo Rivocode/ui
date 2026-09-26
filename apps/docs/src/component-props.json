@@ -3777,7 +3777,7 @@
         "name": "max",
         "type": "number",
         "required": false,
-        "note": "Quantas migalhas cabem antes de o meio virar reticencia."
+        "note": "Quantas migalhas cabem antes de o meio virar reticencia: dobrada, a trilha mostra a primeira e as `max - 1` ultimas, e nunca menos que a ultima."
       }
     ]
   },

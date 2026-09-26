@@ -8,7 +8,10 @@ import { cn } from "../lib/cn";
 export type PaginationProps = Omit<ComponentProps<"nav">, "onChange"> & {
   /** A pagina atual, contando de 1. */
   page: number;
-  /** Quantas paginas existem. */
+  /**
+   * Quantas paginas existem. Abaixo de 1 conta como 1, e o `page` fora da
+   * faixa aparece preso a ela, com as setas travadas na ponta.
+   */
   pageCount: number;
   /**
    * Chamado com a pagina nova, contando de 1, pelas setas e pelos numeros. A
@@ -52,7 +55,9 @@ export function Pagination({
   ...props
 }: PaginationProps) {
   const labels = { ...LABELS, ...labelsProp };
-  const pages = buildPages(page, pageCount, siblings);
+  const total = Number.isFinite(pageCount) ? Math.max(1, Math.floor(pageCount)) : 1;
+  const current = Number.isFinite(page) ? Math.min(total, Math.max(1, Math.floor(page))) : 1;
+  const pages = buildPages(current, total, siblings);
 
   return (
     <nav
@@ -63,11 +68,15 @@ export function Pagination({
         className,
       )}
     >
-      <Step label={labels.previous} disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
+      <Step
+        label={labels.previous}
+        disabled={current <= 1}
+        onClick={() => onPageChange(current - 1)}
+      >
         <ChevronLeft size={16} aria-hidden="true" />
       </Step>
 
-      <span className="text-sm text-fg-muted sm:hidden">{labels.position(page, pageCount)}</span>
+      <span className="text-sm text-fg-muted sm:hidden">{labels.position(current, total)}</span>
 
       <ol className="hidden items-center gap-1 sm:flex">
         {pages.map((number, index) =>
@@ -80,7 +89,7 @@ export function Pagination({
               <button
                 type="button"
                 aria-label={labels.page(number)}
-                aria-current={number === page ? "page" : undefined}
+                aria-current={number === current ? "page" : undefined}
                 onClick={() => onPageChange(number)}
                 className={cn(
                   "h-[var(--rc-control-sm)] min-w-[var(--rc-control-sm)] rounded-md px-2",
@@ -99,7 +108,11 @@ export function Pagination({
         )}
       </ol>
 
-      <Step label={labels.next} disabled={page >= pageCount} onClick={() => onPageChange(page + 1)}>
+      <Step
+        label={labels.next}
+        disabled={current >= total}
+        onClick={() => onPageChange(current + 1)}
+      >
         <ChevronRight size={16} aria-hidden="true" />
       </Step>
     </nav>
