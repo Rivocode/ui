@@ -8,6 +8,7 @@ import { TREEMAP_TINT, labelFit, squarify } from "../shared/chart-layout";
 import { Text } from "../text";
 import { PALETTE, type ChartConfig } from "./chart";
 import { resolveFormat, type Format } from "../shared/format";
+import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 export type ChartTreemapProps<Item> = {
   /** As categorias. Valor zero ou negativo não ganha área. */
@@ -29,6 +30,11 @@ export type ChartTreemapProps<Item> = {
    * valor escritos dentro dele).
    */
   classNames?: Slots<"cell" | "label">;
+  /**
+   * O que aparece no lugar do desenho quando a lista chega vazia ou a soma da
+   * zero. O mesmo formato do `empty` do `ChartContainer`.
+   */
+  empty?: ChartEmptyContent;
 };
 
 function valueOf(raw: unknown): number {
@@ -50,6 +56,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
   format,
   className,
   classNames,
+  empty,
 }: ChartTreemapProps<Item>) {
   const { colors: theme } = useRivo();
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -67,6 +74,14 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
     theme[config?.[nameOf(item)]?.color ?? PALETTE[index % PALETTE.length]!];
   const describe = (index: number) =>
     `${textOf(data[index]!)}: ${say(values[index]!)} (${share(values[index]!, total)})`;
+
+  if (empty && total <= 0) {
+    return (
+      <View className={cn("w-full", className)}>
+        <ChartEmpty empty={empty} className="h-64" />
+      </View>
+    );
+  }
 
   return (
     <View className={cn("w-full gap-2", className)}>

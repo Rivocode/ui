@@ -108,4 +108,4 @@ Uma mudança de tipo: `color` é papel de token (`chart-3`).
 
 Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura.
 
-As partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`.
+As partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`. Com `empty` (o formato do `ChartContainer`), a grade sem número ou toda em zero dá lugar ao estado vazio; sem ele, a grade em zero continua pintando o degrau mais ralo.

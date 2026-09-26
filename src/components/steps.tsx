@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useCallback, useState, type ComponentProps, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ComponentProps, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { STEPS_LABELS, type StepsLabels } from "../shared/steps";
@@ -159,10 +159,19 @@ export type WizardState = {
 
 export function useWizard(steps: Step[], initial = 0): WizardState {
   const [step, setStep] = useState(initial);
+  const validating = useRef(false);
 
   const next = useCallback(
     async (validate?: () => boolean | Promise<boolean>) => {
-      if (validate && !(await validate())) return false;
+      if (validating.current) return false;
+      if (validate) {
+        validating.current = true;
+        try {
+          if (!(await validate())) return false;
+        } finally {
+          validating.current = false;
+        }
+      }
       setStep((current) => Math.min(current + 1, steps.length - 1));
       return true;
     },

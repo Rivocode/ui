@@ -8,6 +8,7 @@ import { useRivo } from "../provider";
 import { HEAT_ALPHAS, axisOrder, cellNumber, heatStep } from "../shared/chart-layout";
 import { Text } from "../text";
 import { resolveFormat, type Format } from "../shared/format";
+import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 const LABEL_COLUMN = { maxWidth: "40%" } as const;
 
@@ -52,6 +53,12 @@ export type ChartHeatmapProps<Cell> = {
    * celula) e `legend` (a regua de cor).
    */
   classNames?: Slots<"grid" | "cell" | "legend">;
+  /**
+   * O que aparece no lugar da grade quando nao ha celula com numero ou todas
+   * dao zero. O mesmo formato do `empty` do `ChartContainer`. Sem ele, a grade
+   * toda em zero continua pintando o degrau mais ralo.
+   */
+  empty?: ChartEmptyContent;
 };
 
 export type ChartHeatmapLabels = {
@@ -75,6 +82,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   labels,
   className,
   classNames,
+  empty,
 }: ChartHeatmapProps<Cell>) {
   const emptyLabel = labels?.empty ?? "Sem dado";
   const { colors: theme } = useRivo();
@@ -140,6 +148,14 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
         moveTo(event.nativeEvent.locationX, event.nativeEvent.locationY),
     }),
   ).current;
+
+  if (empty && present.every((value) => value === 0)) {
+    return (
+      <View className={cn("w-full", className)}>
+        <ChartEmpty empty={empty} className="min-h-48" />
+      </View>
+    );
+  }
 
   if (total === 0) return null;
 

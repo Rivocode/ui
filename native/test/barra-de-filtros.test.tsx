@@ -253,6 +253,24 @@ describe("FilterBar", () => {
     expect(rest).toHaveBeenCalledWith([]);
   });
 
+  test("o limpar guarda os filtros travados e conta so os que saem", () => {
+    const locked: AppliedFilter = {
+      id: "empresa",
+      label: "Empresa",
+      value: "Filial",
+      removable: false,
+    };
+    const rest = mock((_: AppliedFilter[]) => {});
+    const screen = render(<FilterBar filters={[locked, ...APPLIED]} onFiltersChange={rest} />);
+
+    expect(textOf2(clearButton(screen)!)).toBe("Limpar 2 filtros");
+    act(() => clearButton(screen)!.props.onPress());
+    expect(rest).toHaveBeenCalledWith([locked]);
+
+    const alone = render(<FilterBar filters={[locked, APPLIED[0]!]} onFiltersChange={() => {}} />);
+    expect(clearButton(alone)).toBeUndefined();
+  });
+
   test("sem quem escute, não há limpar nem xis: botão que não faz nada é mentira", () => {
     const screen = render(<FilterBar filters={APPLIED} />);
 

@@ -37,8 +37,11 @@ export function Stat({
   deltaFormat = "percent",
   className,
 }: StatProps) {
-  const rose = (delta ?? 0) >= 0;
+  const rose = (delta ?? 0) > 0;
+  const flat = delta === 0;
   const good = invert ? !rose : rose;
+  const tone = flat ? "text-fg-muted" : good ? "text-success-text" : "text-danger-text";
+  const arrow = flat ? "" : rose ? "↗ " : "↘ ";
   const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
 
   return (
@@ -51,8 +54,9 @@ export function Stat({
         </Text>
 
         {delta !== undefined && (
-          <Text className={`text-xs ${good ? "text-success-text" : "text-danger-text"}`}>
-            {rose ? "↗" : "↘"} {writeDelta(Math.abs(delta))}{deltaLabel ? ` ${deltaLabel}` : ""}
+          <Text className={`text-xs ${tone}`}>
+            {arrow}
+            {writeDelta(Math.abs(delta))}{deltaLabel ? ` ${deltaLabel}` : ""}
           </Text>
         )}
 

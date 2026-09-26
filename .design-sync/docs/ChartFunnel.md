@@ -70,4 +70,4 @@ Uma mudança de tipo, a mesma da rosca: `color` é papel de token (`chart-2`) e 
 
 As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.
 
-As partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`.
+As partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`. Com `empty` (o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar das barras.

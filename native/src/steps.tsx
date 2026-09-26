@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { View } from "react-native";
 
 import { cn } from "./cn";
@@ -81,10 +81,19 @@ export type WizardState = {
 
 export function useWizard(steps: Step[], initial = 0): WizardState {
   const [step, setStep] = useState(initial);
+  const validating = useRef(false);
 
   const next = useCallback(
     async (validate?: () => boolean | Promise<boolean>) => {
-      if (validate && !(await validate())) return false;
+      if (validating.current) return false;
+      if (validate) {
+        validating.current = true;
+        try {
+          if (!(await validate())) return false;
+        } finally {
+          validating.current = false;
+        }
+      }
       setStep((previous) => Math.min(previous + 1, steps.length - 1));
       return true;
     },

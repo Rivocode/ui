@@ -2,7 +2,7 @@ import { describe, expect, mock, test } from "bun:test";
 
 import * as web from "../../src/shared/format";
 import { Meter, Progress, Slider, Stat, currencyShort, formatters, percent } from "../src";
-import { byRole, render, textOf } from "./helpers";
+import { byClass, byRole, render, textOf } from "./helpers";
 
 describe("o vocabulario de formatacao e o mesmo do web", () => {
   test("a raiz exporta os mesmos formatadores, com a mesma saida", () => {
@@ -125,5 +125,18 @@ describe("Stat", () => {
 
     expect(textOf(screen)).toContain("↘ R$ 2,5K");
     expect(textOf(screen)).not.toContain("%");
+  });
+
+  test("delta zero e neutro: sem seta e sem o verde de alta, mesmo invertido", () => {
+    for (const invert of [false, true]) {
+      const screen = render(<Stat label="Faturado" value="R$ 246,7K" delta={0} invert={invert} />);
+      expect(textOf(screen)).toContain("0%");
+      expect(textOf(screen)).not.toMatch(/[↗↘]/);
+      const [line] = byClass(screen, /\btext-xs\b/);
+      const tokens = String(line!.props.className).split(" ");
+      expect(tokens).toContain("text-fg-muted");
+      expect(tokens).not.toContain("text-success-text");
+      expect(tokens).not.toContain("text-danger-text");
+    }
   });
 });

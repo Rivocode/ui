@@ -8,6 +8,7 @@ import { useRivo } from "../provider";
 import { funnelRates } from "../shared/chart-layout";
 import { Text } from "../text";
 import { resolveFormat, type Format } from "../shared/format";
+import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 export type ChartFunnelProps<Stage> = {
   /** As etapas, na ordem em que a pessoa atravessa: a primeira é a boca do funil. */
@@ -45,6 +46,11 @@ export type ChartFunnelProps<Stage> = {
    * `rate` (a linha da taxa entre duas etapas).
    */
   classNames?: Slots<"stage" | "bar" | "rate">;
+  /**
+   * O que aparece no lugar do desenho quando a lista chega vazia ou a soma da
+   * zero. O mesmo formato do `empty` do `ChartContainer`.
+   */
+  empty?: ChartEmptyContent;
 };
 
 function valueOf(raw: unknown): number {
@@ -73,6 +79,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   labels,
   className,
   classNames,
+  empty,
 }: ChartFunnelProps<Stage>) {
   const rateLabel = labels?.rate ?? "da etapa anterior";
   const overallLabel = labels?.overall ?? "do início ao fim";
@@ -83,6 +90,14 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   const values = data.map((stage) => valueOf(stage[valueKey]));
   const widest = Math.max(0, ...values);
   const rates = funnelRates(values);
+
+  if (empty && widest <= 0) {
+    return (
+      <View className={cn("w-full", className)}>
+        <ChartEmpty empty={empty} className="min-h-48" />
+      </View>
+    );
+  }
 
   return (
     <View className={cn("w-full gap-3", className)}>

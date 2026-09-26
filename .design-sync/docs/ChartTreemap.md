@@ -72,4 +72,4 @@ Uma mudança de tipo: o `config.color` é papel de token, como em toda a famíli
 
 **O que muda é como se lê uma categoria.** Aqui são poucas (acima de uma dúzia o treemap para de informar), e poucas categorias viram poucas paradas: cada retângulo é um botão com nome, valor e fatia, a decisão da legenda da rosca e não a do `Tracker`. Tocar acende o contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem um nem outro existe. O título do cartão faz esse papel.
 
-As partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele.
+As partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele. Com `empty` (o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar dos blocos.

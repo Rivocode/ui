@@ -117,6 +117,18 @@ test("enquanto carrega, o giro diz o que espera e o zoom nao liga; se falha, diz
   expect(byRole(broken, "alert")[0]!.props.children).toBe("Não foi possível carregar a imagem.");
 });
 
+test("a vizinha que termina de carregar depois nao devolve o giro para cima da foto aberta", () => {
+  const screen = render(<Controlled start={0} />);
+  load(screen, 0);
+  load(screen, 1);
+  expect(byLabel(screen, "Carregando a imagem")).toHaveLength(0);
+  expect(byLabel(screen, "Aumentar o zoom")[0]!.props.accessibilityState.disabled).toBe(false);
+
+  act(() => big(screen, 2).props.onError());
+  expect(byRole(screen, "alert")).toHaveLength(0);
+  expect(byLabel(screen, "Carregando a imagem")).toHaveLength(0);
+});
+
 test("mais e menos mexem no zoom, e o menos trava no tamanho que cabe", () => {
   const screen = render(<Controlled start={0} />);
   load(screen, 0);

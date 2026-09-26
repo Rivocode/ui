@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 import { RivoProvider } from "../src/provider/rivo-provider";
 import { DataTable, type Column } from "../src/components/data-table";
@@ -110,6 +110,34 @@ test("checagem que reprova segura o passo", () => {
   render(<Wizard />);
   fireEvent.click(screen.getByText("Avancar travado"));
   expect(screen.getByText("Agora: Dados")).toBeDefined();
+});
+
+test("dois cliques em avancar durante a checagem assincrona andam um passo so", async () => {
+  let release!: (ok: boolean) => void;
+  let calls = 0;
+  const validate = () => {
+    calls += 1;
+    return new Promise<boolean>((resolve) => {
+      release = resolve;
+    });
+  };
+  function Hurried() {
+    const wizard = useWizard(PASSOS);
+    return (
+      <>
+        <p>Agora: {wizard.current?.title}</p>
+        <button onClick={() => void wizard.next(validate)}>Avancar validando</button>
+      </>
+    );
+  }
+  render(<Hurried />);
+  fireEvent.click(screen.getByText("Avancar validando"));
+  fireEvent.click(screen.getByText("Avancar validando"));
+  expect(calls).toBe(1);
+  await act(async () => {
+    release(true);
+  });
+  expect(screen.getByText("Agora: Itens")).toBeDefined();
 });
 
 test("a regua marca o passo atual e so deixa voltar", () => {

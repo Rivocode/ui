@@ -46,7 +46,18 @@ const layout = (screen: ReturnType<typeof render>, width: number) => {
 
 test("a fileira leva o nome do label e desenha um slide por item", () => {
   const { screen } = carousel();
-  expect(byLabel(screen, "Planos")).toHaveLength(1);
+  const [name] = byType(screen, "Text").filter((node) => node.props.children === "Planos");
+  expect(name).toBeDefined();
+  let above = name!.parent;
+  while (above) {
+    if (typeof above.type === "string") {
+      expect(above.props.accessible).not.toBe(true);
+      expect(above.props.accessibilityElementsHidden).not.toBe(true);
+      expect(above.props.importantForAccessibility).not.toBe("no-hide-descendants");
+    }
+    above = above.parent;
+  }
+  expect(byLabel(screen, "Planos").every((node) => node.props.accessible === true)).toBe(true);
   expect(textOf(screen)).toContain("Profissional");
   expect(byType(screen, "FlatList")[0]!.props.horizontal).toBe(true);
 });

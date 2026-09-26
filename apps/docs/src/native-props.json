@@ -821,6 +821,12 @@
         "required": false
       },
       {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar da rosca quando nao ha fatia ou a soma da zero."
+      },
+      {
         "name": "format",
         "type": "Format",
         "required": false,
@@ -895,6 +901,12 @@
         "type": "\"accent\" | \"accent-active\" | \"accent-fg\" | \"accent-hover\" | \"accent-subtle\" | \"accent-text\" | \"bg\" | \"border\" | \"border-disabled\" | \"border-strong\" | \"chart-1\" | \"chart-2\" | ... 33 more ...",
         "required": false,
         "note": "A cor das barras, como papel de token."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar do desenho quando a lista chega vazia ou a soma da zero."
       },
       {
         "name": "format",
@@ -1054,6 +1066,12 @@
         "note": "O intervalo da escala, `[menor, maior]`."
       },
       {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar da grade quando nao ha celula com numero ou todas dao zero."
+      },
+      {
         "name": "format",
         "type": "Format",
         "required": false,
@@ -1210,6 +1228,12 @@
         "note": "Nome legível e papel de cor por categoria, o mesmo formato da rosca daqui."
       },
       {
+        "name": "empty",
+        "type": "{ title: string; description: string; action?: ReactNode; icon?: ((glyph: { color: string; size: number; }) => ReactNode) | ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar do desenho quando a lista chega vazia ou a soma da zero."
+      },
+      {
         "name": "format",
         "type": "Format",
         "required": false,
@@ -1322,7 +1346,7 @@
         "name": "children",
         "type": "string",
         "required": false,
-        "note": "Liga o texto ao lado do ícone."
+        "note": "O texto ao lado do ícone enquanto não copiou, e o nome falado junto com ele."
       },
       {
         "name": "className",

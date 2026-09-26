@@ -299,7 +299,9 @@ describe("ChartDonut", () => {
     // Um comando `A` que comeca e termina no mesmo ponto nao desenha nada: a
     // rosca sumiria justamente no caso mais simples.
     expect(paths(screen)).toHaveLength(0);
-    expect(byType(screen, "Circle")).toHaveLength(1);
+    expect(
+      byType(screen, "Circle").filter((node) => node.props.stroke !== dark.border),
+    ).toHaveLength(1);
   });
 
   test("o valor do meio cabe no furo: uma linha, largura presa e fonte que encolhe", () => {
@@ -320,7 +322,7 @@ describe("ChartDonut", () => {
     }
   });
 
-  test("o toque na legenda acende a fatia e manda o valor para o meio", () => {
+  test("o toque na legenda acende a fatia, e o miolo escrito fica no meio", () => {
     const screen = render(
       <ChartDonut
         data={SLICES}
@@ -337,10 +339,9 @@ describe("ChartDonut", () => {
     const [first] = byRole(screen, "button");
     act(() => first!.props.onPress());
 
-    // O meio passa a dizer a fatia lida - e o total sai de cena, como no web
-    // ele sai enquanto a dica ocupa o mesmo lugar.
-    expect(textOf(screen)).toContain("servico");
-    expect(textOf(screen)).not.toContain("no mês");
+    expect(textOf(screen)).toContain("no mês");
+    const middle = byType(screen, "Text").find((node) => node.props.adjustsFontSizeToFit === true);
+    expect(middle!.props.children).toBe("100");
 
     // A fatia acesa fica opaca e a outra recua; nenhuma some, senao a rosca
     // perde a proporcao que ela existe para mostrar.
@@ -348,9 +349,82 @@ describe("ChartDonut", () => {
     expect(lit!.props.strokeOpacity).toBe(1);
     expect(dimmed!.props.strokeOpacity).toBeLessThan(1);
 
-    // Tocar de novo devolve o total: a leitura e um estado, nao um caminho sem volta.
     act(() => byRole(screen, "button")[0]!.props.onPress());
-    expect(textOf(screen)).toContain("no mês");
+    expect(byType(screen, "Path").every((node) => node.props.strokeOpacity === 1)).toBe(true);
+  });
+
+  test("sem miolo escrito, o meio vazio mostra a fatia lida", () => {
+    const screen = render(
+      <ChartDonut
+        data={SLICES}
+        valueKey="total"
+        nameKey="natureza"
+        format={(value) => `R$ ${value}`}
+      />,
+    );
+    const middle = () =>
+      byType(screen, "Text").filter((node) => node.props.adjustsFontSizeToFit === true);
+    expect(middle()).toHaveLength(0);
+
+    act(() => byRole(screen, "button")[0]!.props.onPress());
+    expect(middle()[0]!.props.children).toBe("R$ 60");
+  });
+
+  test("valor negativo aparece como veio na legenda e no leitor; so o arco usa o piso", () => {
+    const screen = render(
+      <ChartDonut
+        data={[...SLICES, { natureza: "estorno", total: -15 }]}
+        valueKey="total"
+        nameKey="natureza"
+      />,
+    );
+    const rows = byRole(screen, "button").map(
+      (row: ReactTestInstance) => row.props.accessibilityLabel,
+    );
+    expect(rows).toContain("estorno: -15");
+    expect(textOf(screen)).toContain("-15");
+    expect(paths(screen)).toHaveLength(2);
+
+    const unlabelled = render(
+      <ChartDonut
+        data={[...SLICES, { natureza: "estorno", total: -15 }]}
+        valueKey="total"
+        nameKey="natureza"
+        legend={false}
+      />,
+    );
+    expect(byRole(unlabelled, "image")[0]!.props.accessibilityLabel).toContain("estorno -15");
+  });
+
+  test("o anel de fundo fica sempre desenhado, com o token de borda", () => {
+    for (const data of [SLICES, [], [{ natureza: "servico", total: 0 }]]) {
+      const screen = render(<ChartDonut data={data} valueKey="total" nameKey="natureza" />);
+      const ring = byType(screen, "Circle").filter((node) => node.props.stroke === dark.border);
+      expect(ring).toHaveLength(1);
+    }
+  });
+
+  test("sem fatia, com legend false, o desenho nao anuncia uma rosca vazia", () => {
+    const screen = render(
+      <ChartDonut data={[]} valueKey="total" nameKey="natureza" legend={false} />,
+    );
+    expect(byRole(screen, "image")).toHaveLength(0);
+    expect(textOf(screen)).not.toContain("Rosca");
+  });
+
+  test("empty aparece no lugar da rosca com lista vazia ou soma zero", () => {
+    const empty = { title: "Nada faturado", description: "Nenhuma nota no período." };
+    for (const data of [[], [{ natureza: "servico", total: 0 }]]) {
+      const screen = render(
+        <ChartDonut data={data} valueKey="total" nameKey="natureza" empty={empty} />,
+      );
+      expect(textOf(screen)).toContain("Nada faturado");
+      expect(byType(screen, "Svg")).toHaveLength(0);
+    }
+    const full = render(
+      <ChartDonut data={SLICES} valueKey="total" nameKey="natureza" empty={empty} />,
+    );
+    expect(textOf(full)).not.toContain("Nada faturado");
   });
 
   test("com legenda o desenho cala, e cada fatia vira uma parada com nome e valor", () => {

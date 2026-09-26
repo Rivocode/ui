@@ -13,6 +13,8 @@ export type ToggleProps = {
   className?: string;
 };
 
+const TOGGLE_SLOP = { top: 2, bottom: 2, left: 0, right: 0 } as const;
+
 export function Toggle({ pressed, onPressedChange, children, disabled, className }: ToggleProps) {
   const press = usePressScale({});
   return (
@@ -21,6 +23,7 @@ export function Toggle({ pressed, onPressedChange, children, disabled, className
       accessibilityRole="togglebutton"
       accessibilityState={{ selected: pressed, disabled }}
       disabled={disabled}
+      hitSlop={TOGGLE_SLOP}
       onPress={() => onPressedChange(!pressed)}
       className={cn(
         "h-10 flex-row items-center justify-center rounded-md border px-3.5",

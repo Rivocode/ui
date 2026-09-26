@@ -328,6 +328,11 @@ describe("Progress", () => {
     expect(bar.props.accessibilityValue).toEqual({ min: 0, max: 100, now: 100 });
     expect(bar.props.accessibilityLabel).toBe("Meta do mês");
   });
+
+  test("sem showValue a barra ainda e um elemento so, para o leitor nao pula-la", () => {
+    const screen = render(<Progress value={40} label="Envio" />);
+    expect(byRole(screen, "progressbar")[0]!.props.accessible).toBe(true);
+  });
 });
 
 describe("Meter", () => {
@@ -482,6 +487,17 @@ describe("RelativeTime", () => {
     expect(texto(<RelativeTime value={antes(120_000).getTime()} now={AGORA} />)).toBe(
       "há 2 minutos",
     );
+  });
+
+  test("arredonda com sinal, como o web: 90 minutos atras sao ha 1 hora, e a frente em 2", () => {
+    expect(texto(<RelativeTime value={antes(90 * 60_000)} now={AGORA} />)).toBe("há 1 hora");
+    const depois = new Date(AGORA.getTime() + 90 * 60_000);
+    expect(texto(<RelativeTime value={depois} now={AGORA} />)).toBe("em 2 horas");
+  });
+
+  test("data invalida vira travessao, sem numero inventado e sem relogio", () => {
+    expect(texto(<RelativeTime value="não é data" now={AGORA} />)).toBe("—");
+    expect(describeRelative(new Date(Number.NaN), AGORA)).toEqual({ text: "—", step: null });
   });
 
   test("cutoff troca o relativo pela data, no formato do formatDate", () => {

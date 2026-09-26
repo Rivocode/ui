@@ -10,6 +10,7 @@ import { resolveFormat, type Format } from "../shared/format";
 import { Text } from "../text";
 import { arcPath } from "./arc";
 import { PALETTE, type ChartConfig } from "./chart";
+import { ChartEmpty, type ChartEmptyContent } from "./empty";
 
 const OUTER = 44;
 const CENTER_WIDTH = { width: "52%" } as const;
@@ -62,6 +63,12 @@ export type ChartDonutProps<Slice> = {
    * `hint` e a dica de cada linha da legenda. Passe so os que mudam.
    */
   labels?: Partial<ChartDonutLabels>;
+  /**
+   * O que aparece no lugar da rosca quando nao ha fatia ou a soma da zero. O
+   * mesmo formato do `empty` do `ChartContainer`. Sem ele, fica o anel de
+   * fundo, vazio e calado para o leitor de tela.
+   */
+  empty?: ChartEmptyContent;
 };
 
 export type ChartDonutLabels = {
@@ -71,7 +78,7 @@ export type ChartDonutLabels = {
 
 const LABELS: ChartDonutLabels = {
   name: (slices) => `Rosca: ${slices.join(", ")}`,
-  hint: "Acende esta fatia e mostra o valor dela no meio",
+  hint: "Acende esta fatia no desenho",
 };
 
 export function ChartDonut<Slice extends Record<string, unknown>>({
@@ -87,6 +94,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   className,
   label,
   labels: labelsProp,
+  empty,
 }: ChartDonutProps<Slice>) {
   const labels = { ...LABELS, ...labelsProp };
   const { colors: theme } = useRivo();
@@ -105,11 +113,13 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const resolved = resolveFormat(format) as ((value: number) => string) | undefined;
   const write = (value: number) => (resolved ? resolved(value) : String(value));
 
-  const values = data.map((slice) => Math.max(0, Number(slice[valueKey]) || 0));
-  const total = values.reduce((sum, value) => sum + value, 0);
+  const values = data.map((slice) => Number(slice[valueKey]) || 0);
+  const sizes = values.map((value) => Math.max(0, value));
+  const total = sizes.reduce((sum, value) => sum + value, 0);
+  const blank = data.length === 0 || total <= 0;
 
   let walked = 0;
-  const wedges = values.map((value) => {
+  const wedges = sizes.map((value) => {
     const span = total > 0 ? (value / total) * 360 : 0;
     const from = walked;
     walked += span;
@@ -123,10 +133,12 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   const readValue = reading !== null ? values[reading]! : 0;
 
   const name =
-    label ??
-    (legend
+    data.length === 0
       ? undefined
-      : labels.name(data.map((slice, index) => `${textOf(slice)} ${write(values[index]!)}`)));
+      : (label ??
+        (legend
+          ? undefined
+          : labels.name(data.map((slice, index) => `${textOf(slice)} ${write(values[index]!)}`))));
 
   const spoken = name
     ? ({ accessible: true, accessibilityRole: "image", accessibilityLabel: name } as const)
@@ -135,10 +147,21 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
         importantForAccessibility: "no-hide-descendants",
       } as const);
 
+  const miolo = Boolean(centerValue || centerLabel);
+
+  if (blank && empty) {
+    return (
+      <View className={cn("w-full", className)}>
+        <ChartEmpty empty={empty} className="min-h-48" />
+      </View>
+    );
+  }
+
   return (
     <View className={cn("w-full", className)}>
       <View className="h-48 w-full" {...spoken}>
         <Svg width="100%" height="100%" viewBox="-50 -50 100 100">
+          <Circle r={middle} fill="none" stroke={theme.border} strokeWidth={band} />
           {drawn.length === 0 ? null : sole >= 0 ? (
             <Circle r={middle} fill="none" stroke={colorOf(data[sole]!, sole)} strokeWidth={band} />
           ) : (
@@ -163,7 +186,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
           )}
         </Svg>
 
-        {(centerValue || centerLabel || read) && (
+        {(miolo || read) && (
           <View
             className="absolute inset-0 items-center justify-center"
             accessibilityElementsHidden
@@ -177,15 +200,15 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
               style={CENTER_WIDTH}
               className="text-center text-lg font-rc-display text-fg"
             >
-              {read ? write(readValue) : centerValue}
+              {miolo ? centerValue : write(readValue)}
             </Text>
-            {(read || centerLabel) && (
+            {(miolo ? Boolean(centerLabel) : Boolean(read)) && (
               <Text
                 numberOfLines={1}
                 style={CENTER_WIDTH}
                 className="mt-0.5 text-center text-xs text-fg-subtle"
               >
-                {read ? textOf(read) : centerLabel}
+                {miolo ? centerLabel : textOf(read!)}
               </Text>
             )}
           </View>

@@ -39,9 +39,9 @@ export type ClipboardProps = {
   /** O que vai para a área de transferência. */
   value: string;
   /**
-   * Liga o texto ao lado do ícone. Como no web, o conteúdo é ignorado: o que
-   * aparece é `labels.copy` e depois `labels.copied`, senão o botão diria uma
-   * coisa e anunciaria outra.
+   * O texto ao lado do ícone enquanto não copiou, e o nome falado junto com
+   * ele. Depois de copiar, `labels.copied` entra no lugar dos dois, e o botão
+   * nunca diz uma coisa e anuncia outra.
    */
   children?: string;
   /** Quanto tempo a confirmação fica no botão, em ms. */
@@ -103,7 +103,7 @@ export function Clipboard({
     timer.current = setTimeout(() => setCopied(false), timeout);
   }
 
-  const spoken = copied ? copiedLabel : copyLabel;
+  const spoken = copied ? copiedLabel : (children ?? copyLabel);
 
   return (
     <Pressable

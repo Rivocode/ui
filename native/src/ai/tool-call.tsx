@@ -88,6 +88,11 @@ export function ToolCall({
 }: ToolCallProps) {
   const state = STATUS[status] ?? STATUS.pending;
   const [own, setOwn] = useState(defaultOpen ?? (status === "approval" || status === "error"));
+  const [seen, setSeen] = useState(status);
+  if (seen !== status) {
+    setSeen(status);
+    if (open === undefined && (status === "approval" || status === "error")) setOwn(true);
+  }
   const expanded = open ?? own;
   const hasBody = input !== undefined || output !== undefined || Boolean(error);
   const asking = status === "approval" && (onApprove || onReject);

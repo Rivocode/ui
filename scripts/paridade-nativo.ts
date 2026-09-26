@@ -265,8 +265,9 @@ const PARITY: Record<string, Row> = {
   ChartDonut: {
     state: "traduz",
     note:
-      "a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva " +
-      "nome e valor ao meio; `format` aceita nome de formatador ou função, como no web, e as pontas saem retas",
+      "a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia, e o " +
+      "miolo escrito continua no meio; `format` aceita nome de formatador ou função, como no web, " +
+      "as pontas saem retas, e `empty` ocupa o lugar da rosca sem dado",
     page:
       "Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, " +
       "`config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o " +
@@ -275,8 +276,14 @@ const PARITY: Record<string, Row> = {
       "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica " +
       "diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não " +
       "existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende " +
-      "a fatia dela e manda nome e valor para o meio, no lugar exato onde o web põe a dica; tocar " +
-      "de novo devolve o total.\n\n" +
+      "a fatia dela, e a própria linha já diz nome e valor. O miolo escrito (`centerValue` e " +
+      "`centerLabel`) fica sempre visível, a mesma decisão do web; só quando não há miolo o meio " +
+      "vazio mostra a fatia lida. Tocar de novo apaga a leitura.\n\n" +
+      "O número de cada linha é o que chegou, negativo inclusive: só o arco usa o piso de zero, " +
+      "porque fatia não tem tamanho negativo. O anel de fundo fica sempre desenhado, no token de " +
+      "borda, e sem fatia nenhuma o desenho não anuncia nada ao leitor de tela. Com `empty` " +
+      "(`{ title, description, action?, icon? }`, o formato do `ChartContainer`), lista vazia ou " +
+      "soma zero mostram o estado vazio no lugar da rosca.\n\n" +
       "A fatia não é o alvo, e a razão é aritmética: um anel de 190px tem cerca de 600px de " +
       "contorno para dividir entre até seis fatias, e a de 2% fica com doze (a mesma conta " +
       "que tirou a dica por quadrado do `Tracker`). A linha da legenda tem 44px e a largura da tela.\n\n" +
@@ -336,7 +343,9 @@ const PARITY: Record<string, Row> = {
       "papel.\n\n" +
       "As barras crescem do zero ao aparecer e andam até a largura nova quando os dados mudam, " +
       'pelo Reanimated e com os tokens de movimento; com "reduzir movimento", nascem no lugar.' +
-      "\n\nAs partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`.",
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `stage`, `bar` e `rate`. Com `empty` " +
+      "(o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar " +
+      "das barras.",
   },
   ChartGauge: {
     state: "traduz",
@@ -378,7 +387,9 @@ const PARITY: Record<string, Row> = {
       "um obstáculo, e o valor de cada uma vai inteiro no `accessibilityValue`.\n\n" +
       "Os rótulos de coluna aparecem no máximo seis, e não pela largura medida como no web: a " +
       "tela do celular é estreita sempre, e o rótulo que não aparece continua sendo dito na leitura." +
-      "\n\nAs partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`.",
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `grid`, a parada que recebe o arrasto, `cell` e `legend`. " +
+      "Com `empty` (o formato do `ChartContainer`), a grade sem número ou toda em zero dá lugar " +
+      "ao estado vazio; sem ele, a grade em zero continua pintando o degrau mais ralo.",
   },
   ChartTreemap: {
     state: "traduz",
@@ -399,7 +410,9 @@ const PARITY: Record<string, Row> = {
       "contorno e escreve a leitura embaixo, no lugar da dica do web; tocar de novo apaga. Por " +
       "isso não há `label`: o web o usa para nomear o grupo e a lista escondida, e no celular nem " +
       "um nem outro existe. O título do cartão faz esse papel." +
-      "\n\nAs partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele.",
+      "\n\nAs partes vestem pelo mesmo `classNames` do web: `cell`, o bloco de cada categoria, e `label`, o nome e o valor dentro dele. " +
+      "Com `empty` (o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado " +
+      "vazio no lugar dos blocos.",
   },
   Checkbox: {
     state: "traduz",
@@ -990,7 +1003,14 @@ const PARITY: Record<string, Row> = {
   ToastViewport: {
     state: "vira",
     native: "useToast",
-    note: "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento",
+    note:
+      "não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo, com as quatro " +
+      "funções: `add` devolve o `id`, `type` escolhe o tom no vocabulário do `Alert`, " +
+      "`timeout: 0` deixa o aviso até o `close(id)`, e `update` e `promise` reescrevem o aviso " +
+      "que está na tela. Aqui o `title` e a `description` são `string`, porque o aviso é lido " +
+      "em voz alta, e não há xis: o aviso não recebe toque, então o que fica sai pelo `close`. " +
+      "Sem `timeout`, ele sai em 4 segundos, e não nos 5 do web. O aviso sobe e desce com as " +
+      "durações do web, e aparece parado quando o sistema pede para reduzir movimento",
   },
 
   QRCode: {
