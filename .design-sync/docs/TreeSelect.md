@@ -36,7 +36,8 @@ para o pai, e `espaço` marca. Em `dir="rtl"` as duas horizontais trocam de
 papel, pela razão que está na página do `Tree`.
 
 A árvore é **uma parada de tabulação só**: o `Tab` passa pela busca e para na
-primeira linha, e daí em diante são as setas. Não é o `Tab` que percorre as
+linha que teve foco por último, a primeira quando nenhuma teve, e daí em diante
+são as setas, com `Home` e `End` nas pontas. Não é o `Tab` que percorre as
 linhas.
 
 ## No React Native

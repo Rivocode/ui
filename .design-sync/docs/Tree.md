@@ -7,11 +7,15 @@ category: Formulário
 A arvore sozinha, sem campo nem painel. Serve para navegador de pastas e para
 escolha em tela cheia.
 
-Pai com parte das filhas marcadas fica no estado misto. A busca guarda o caminho
-até quem casou, senao o resultado aparece solto e ninguém sabe de onde veio.
+Pai com parte das filhas marcadas fica no estado misto. Marcar o pai marca só
+as filhas habilitadas, e desmarcar também não mexe nas desabilitadas. A busca
+guarda o caminho até quem casou, senão o resultado aparece solto e ninguém sabe
+de onde veio, e ignora acento e caixa: `sao` acha São Paulo.
 
-As setas do teclado andam pelas linhas que estao na tela, e não pela arvore
-inteira: a navegação segue o que o olho ve.
+As setas do teclado andam pelas linhas que estão na tela, e não pela árvore
+inteira: a navegação segue o que o olho vê. `Home` e `End` levam à primeira e
+à última linha, e o `Tab` volta para a última linha que teve foco. Linha
+desabilitada não se escolhe, nem pelo clique nem pelo Enter ou pelo espaço.
 
 ## A escolha
 
