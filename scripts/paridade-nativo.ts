@@ -497,7 +497,7 @@ const PARITY: Record<string, Row> = {
   },
   Field: {
     state: "traduz",
-    note: "`label`, `description` e `error` como props; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o `validate` recebe o texto dos campos de digitar (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`) e o valor dos que abrem folha (`Autocomplete`, `Select`, `Combobox`, `DatePicker`), e o erro é anunciado, acende a borda deles e vira a dica; nos de folha, fechar a folha é a saída do campo, e o `Concluir` e a tecla de envio são o envio. O texto que chega depois entra por fade",
+    note: "`label`, `description` e `error` como props, e o `label` nomeia o campo de digitar que está dentro; `validate`, `validationMode` e `validationDebounceTime` com o nome, a assinatura e o momento do web, e o `error` explícito vence o `validate`; o `validate` recebe o texto dos campos de digitar (`Input`, `Textarea`, `MaskedInput`, `InputGroup`, `PasswordInput`) e o valor dos que abrem folha (`Autocomplete`, `Select`, `Combobox`, `DatePicker`), e o erro é anunciado, acende a borda deles e vira a dica; nos de folha, fechar a folha é a saída do campo, e o `Concluir` e a tecla de envio são o envio. O texto que chega depois entra por fade",
   },
   FilterBar: {
     state: "traduz",
@@ -712,7 +712,11 @@ const PARITY: Record<string, Row> = {
       "(`number-pad`) não tem sinal de menos, então o número negativo só chegaria pelo " +
       "botão de menos, e um campo que desce abaixo de zero por toque e não deixa digitar o " +
       "mesmo valor é pior do que um campo que para no zero. Para aceitar negativo, passe " +
-      "`min` explícito: o stepper desce até ele. O resto da API também muda (no nativo tudo " +
+      "`min` explícito: o stepper desce até ele.\n\n" +
+      "Digitando, o `max` vale a cada tecla e o `min` só na saída do campo: com `min={10}`, " +
+      "digitar 25 passa pelo 2 sem virar 10. Com `step` fracionário o teclado vira " +
+      "`decimal-pad`, vírgula e ponto valem como separador, como no web, e o passo sai com " +
+      "as casas dele: 0,2 mais 0,1 dá 0,3. O resto da API também muda (no nativo tudo " +
       "é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.",
   },
   OTPField: {
@@ -1216,10 +1220,12 @@ const PARITY: Record<string, Row> = {
       "fora, numa barra fixa no rodapé da tela.\n\n" +
       "**E muda a ponte com o controle.** No web o `Field` da Base UI liga rótulo, ajuda e " +
       "erro a qualquer controle que esteja dentro, pelo contexto; aqui o contexto é mais " +
-      "estreito: o `Field` nativo leva ao `Input` e ao `Textarea` só o erro, como dica, e a " +
-      "validação do `validate`, mas o rótulo não chega ao controle. Por isso o campo que o `FormField` entrega leva duas coisas a " +
-      "mais, `accessibilityLabel` e `invalid`, e os adaptadores as põem no controle: sem " +
-      "isso, um `TextInput` sob um rótulo fica **sem nome nenhum** para o leitor de tela. O " +
+      "estreito: o `Field` nativo leva aos campos de digitar (`Input`, `Textarea`, " +
+      "`InputGroup`, `MaskedInput`) o rótulo, como `accessibilityLabel` quando quem chama " +
+      "não passou outro, o erro, como dica, e a validação do `validate`. O campo que o " +
+      "`FormField` entrega leva mesmo assim duas coisas a mais, `accessibilityLabel` e " +
+      "`invalid`, e os adaptadores as põem no controle: as peças que se nomeiam por `label` " +
+      "não leem o contexto, e sem isso ficariam **sem nome nenhum** para o leitor de tela. O " +
       "`label` do `FormField` é obrigatório aqui pela mesma razão.\n\n" +
       "O adaptador entrega o rótulo no nome que a peça lê. As peças nativas se nomeiam por " +
       "`label`, e o `forValue`, o `forChecked` e o `forDate` o entregam assim; o `forText` o " +
@@ -1232,7 +1238,8 @@ const PARITY: Record<string, Row> = {
       "`forText`, para `Input` e `Textarea`, porque o `TextInput` chama `onChangeText` com a " +
       "string crua e não com um evento: espalhar o campo nele guardaria no formulário um " +
       "objeto de evento que não existe. Ele leva o `ref` junto, e aí o `form.setFocus()` " +
-      "funciona de verdade: `TextInput` tem `focus()`.",
+      "funciona de verdade: `TextInput` tem `focus()`. E traduz o `disabled` do campo para " +
+      "`editable={false}`, porque o `TextInput` não lê `disabled`.",
   },
   NotificationCenter: {
     state: "traduz",

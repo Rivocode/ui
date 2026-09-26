@@ -68,7 +68,7 @@ export function SearchInput({
           accessibilityRole="button"
           accessibilityLabel={labels?.clear ?? "Limpar a busca"}
           onPress={() => onValueChange("")}
-          hitSlop={8}
+          hitSlop={14}
           className="size-4 items-center justify-center"
         >
           <View className="absolute h-[1.5px] w-3.5 rotate-45 rounded-pill bg-fg-subtle" />

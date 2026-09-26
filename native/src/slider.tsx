@@ -49,9 +49,15 @@ const LABELS: SliderLabels = { increment: "Aumentar", decrement: "Diminuir" };
 
 const plain = new Intl.NumberFormat("pt-BR");
 
+const decimalsOf = (n: number) => {
+  const [, fraction = ""] = String(n).split(".");
+  return fraction.length;
+};
+
 const snap = (raw: number, min: number, max: number, step: number) => {
   const stepped = Math.round((raw - min) / step) * step + min;
-  return Math.min(max, Math.max(min, stepped));
+  const places = Math.max(decimalsOf(step), decimalsOf(min));
+  return Math.min(max, Math.max(min, Number(stepped.toFixed(places))));
 };
 
 export function Slider({
@@ -75,16 +81,21 @@ export function Slider({
   const widthRef = useRef(0);
   const fraction = max > min ? (value - min) / (max - min) : 0;
 
+  const latest = useRef({ min, max, step, disabled, onValueChange });
+  latest.current = { min, max, step, disabled, onValueChange };
+
   const moveTo = (x: number) => {
-    if (widthRef.current <= 0) return;
-    const raw = min + (x / widthRef.current) * (max - min);
-    onValueChange(snap(raw, min, max, step));
+    const now = latest.current;
+    if (now.disabled || widthRef.current <= 0) return;
+    const raw = now.min + (x / widthRef.current) * (now.max - now.min);
+    now.onValueChange(snap(raw, now.min, now.max, now.step));
   };
 
   const pan = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
+      onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: (event) => moveTo(event.nativeEvent.locationX),
       onPanResponderMove: (event) => moveTo(event.nativeEvent.locationX),
     }),
@@ -100,11 +111,17 @@ export function Slider({
         now: value,
         ...(written === undefined ? {} : { text: written }),
       }}
-      accessibilityActions={[
-        { name: "increment", label: labels.increment },
-        { name: "decrement", label: labels.decrement },
-      ]}
+      accessibilityState={{ disabled: disabled === true }}
+      accessibilityActions={
+        disabled
+          ? []
+          : [
+              { name: "increment", label: labels.increment },
+              { name: "decrement", label: labels.decrement },
+            ]
+      }
       onAccessibilityAction={(event) => {
+        if (disabled) return;
         const delta = event.nativeEvent.actionName === "increment" ? step : -step;
         onValueChange(snap(value + delta, min, max, step));
       }}
@@ -120,13 +137,16 @@ export function Slider({
       )}
       {...(disabled ? {} : pan.panHandlers)}
     >
-      <View className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", classNames?.track)}>
+      <View
+        pointerEvents="none"
+        className={cn("h-1.5 overflow-hidden rounded-pill bg-skeleton", classNames?.track)}>
         <View
           className={cn("h-full rounded-pill bg-accent-text", classNames?.indicator)}
           style={{ width: fraction * width }}
         />
       </View>
       <View
+        pointerEvents="none"
         className={cn(
           "absolute size-5 rounded-pill border border-border-strong bg-fg",
           classNames?.thumb,

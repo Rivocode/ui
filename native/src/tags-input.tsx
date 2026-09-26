@@ -92,6 +92,7 @@ export function TagsInput({
 
   return (
     <Pressable
+      accessible={false}
       accessibilityRole="none"
       onPress={() => input.current?.focus()}
       className={cn(
@@ -120,7 +121,7 @@ export function TagsInput({
             accessibilityState={{ disabled: !editable }}
             disabled={!editable}
             onPress={() => onValueChange(value.filter((current) => current !== tag))}
-            hitSlop={8}
+            hitSlop={14}
             className={cn("size-4 items-center justify-center", classNames?.remove)}
           >
             <View className="absolute h-[1.5px] w-2.5 rotate-45 rounded-pill bg-fg-subtle" />

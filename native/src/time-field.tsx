@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { cn } from "./cn";
@@ -54,6 +54,17 @@ export function TimeField({
   const [text, setText] = useState(value);
   const [typing, setTyping] = useState(false);
   const [focused, setFocused] = useState(false);
+  const emitted = useRef(value);
+  const [seen, setSeen] = useState(value);
+  if (value !== seen) {
+    setSeen(value);
+    if (value !== emitted.current) setTyping(false);
+  }
+
+  const emit = (next: string) => {
+    emitted.current = next;
+    onValueChange(next);
+  };
 
   const bounds = timeWindow(min, max);
   const chosen = parseTime(value);
@@ -66,7 +77,7 @@ export function TimeField({
 
   const walk = (direction: 1 | -1) => {
     setTyping(false);
-    onValueChange(formatTime(stepTime(parseTime(shown), direction, step, bounds)));
+    emit(formatTime(stepTime(parseTime(shown), direction, step, bounds)));
   };
 
   const stepper = (direction: 1 | -1, sign: string, stepLabel: string) => (
@@ -94,6 +105,7 @@ export function TimeField({
     >
       {stepper(-1, "−", `Diminuir ${label}`)}
       <TextInput
+        accessibilityLabel={label}
         keyboardType="number-pad"
         maxLength={5}
         editable={!disabled}
@@ -107,8 +119,8 @@ export function TimeField({
           setTyping(true);
 
           const minutes = parseTime(masked);
-          if (minutes !== undefined) onValueChange(formatTime(minutes));
-          else if (masked === "") onValueChange("");
+          if (minutes !== undefined) emit(formatTime(minutes));
+          else if (masked === "") emit("");
         }}
         onFocus={() => setFocused(true)}
         onBlur={() => {

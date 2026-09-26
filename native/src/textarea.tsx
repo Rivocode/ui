@@ -22,6 +22,7 @@ export function Textarea({
   onChangeText,
   onValueChange,
   accessibilityHint,
+  accessibilityLabel,
   style,
   className,
   ...props
@@ -36,6 +37,7 @@ export function Textarea({
       multiline
       textAlignVertical="top"
       {...props}
+      accessibilityLabel={accessibilityLabel ?? field.label}
       accessibilityHint={accessibilityHint ?? field.error}
       onChangeText={(text) => {
         field.change(text);

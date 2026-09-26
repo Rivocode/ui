@@ -116,7 +116,6 @@ export function PostalCodeField({
           {...props}
           editable={editable}
           keyboardType="number-pad"
-          maxLength={9}
           value={formatPostalCode(value)}
           invalid={notFound || invalid}
           accessibilityState={{ busy: status === "searching", disabled: editable === false }}

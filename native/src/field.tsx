@@ -40,6 +40,7 @@ export type FieldProps = {
 };
 
 type FieldControlLink = {
+  label: string;
   error: string | undefined;
   change: (value: unknown) => void;
   blur: (value: unknown) => void;
@@ -136,6 +137,7 @@ export function Field({
   useAnnounce(shown, { liveRegion: true });
 
   const link: FieldControlLink = {
+    label,
     error: shown,
     change: validation.change,
     blur: validation.blur,
@@ -178,6 +180,7 @@ export function useFieldControl(value: TextInputProps["value"]) {
   const current = () => value ?? typed.current ?? "";
 
   return {
+    label: field?.label,
     error: field?.error,
     change(text: string) {
       typed.current = text;
@@ -268,6 +271,7 @@ export function Input({
   onValueChange,
   onSubmitEditing,
   accessibilityHint,
+  accessibilityLabel,
   className,
   ...props
 }: InputProps) {
@@ -279,6 +283,7 @@ export function Input({
   return (
     <TextInput
       {...props}
+      accessibilityLabel={accessibilityLabel ?? field.label}
       accessibilityHint={accessibilityHint ?? field.error}
       onChangeText={(text) => {
         field.change(text);

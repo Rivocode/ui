@@ -26,6 +26,8 @@ export type TextProps = Identity & Spoken & {
   onChangeText: (text: string) => void;
   /** A borda vermelha do `Input` e do `Textarea`. */
   invalid: boolean;
+  /** O `disabled` do `FormField` na lingua do `TextInput`, que nao le `disabled`. */
+  editable?: boolean;
 };
 
 export type ValueProps<Value = unknown> = Identity & Named & Spoken & {
@@ -48,6 +50,7 @@ export function forText<V extends FieldValues, N extends FieldPath<V>>(row: Row<
   return {
     name,
     disabled,
+    ...(disabled ? { editable: false } : {}),
     accessibilityLabel,
     invalid,
     ref,

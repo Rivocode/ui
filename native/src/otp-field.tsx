@@ -40,6 +40,7 @@ export function OTPField({
 
   return (
     <Pressable
+      accessible={false}
       accessibilityRole="none"
       onPress={() => input.current?.focus()}
       className={cn("flex-row justify-between gap-2", className)}
@@ -72,7 +73,6 @@ export function OTPField({
         keyboardType="number-pad"
         autoComplete="sms-otp"
         textContentType="oneTimeCode"
-        maxLength={length}
         style={{ position: "absolute", opacity: 0, height: 1, width: 1 }}
       />
     </Pressable>

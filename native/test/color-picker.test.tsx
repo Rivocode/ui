@@ -79,11 +79,13 @@ describe("ColorPicker", () => {
   test("tocar uma amostra devolve o hexadecimal normalizado", () => {
     const onValueChange = mock(() => {});
     const screen = render(
-      <ColorPicker value="" onValueChange={onValueChange} swatches={["#D4F34A"]} />,
+      <ColorPicker value="" onValueChange={onValueChange} swatches={["#D4F34A", "#AbC"]} />,
     );
 
     act(() => byLabel(screen, "Cor #D4F34A")[0]!.props.onPress());
-    expect(onValueChange).toHaveBeenCalledWith("#D4F34A");
+    expect(onValueChange).toHaveBeenLastCalledWith("#d4f34a");
+    act(() => byLabel(screen, "Cor #AbC")[0]!.props.onPress());
+    expect(onValueChange).toHaveBeenLastCalledWith("#aabbcc");
   });
 
   test("o alvo mede 44 e o desenho colorido mede 32, por dentro dele", () => {
