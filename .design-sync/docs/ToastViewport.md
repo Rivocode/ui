@@ -96,4 +96,4 @@ Erro de formulário também não é aviso: ele pertence ao campo que errou, via
 
 ## No React Native
 
-No React Native esta peça é `useToast` - não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento. A [tabela de paridade](/react-native) tem o resto do catálogo.
+No React Native esta peça é `useToast` - não se monta nada: o `RivoProvider` já traz a fiação, e o hook é o mesmo, com as quatro funções: `add` devolve o `id`, `type` escolhe o tom no vocabulário do `Alert`, `timeout: 0` deixa o aviso até o `close(id)`, e `update` e `promise` reescrevem o aviso que está na tela. Aqui o `title` e a `description` são `string`, porque o aviso é lido em voz alta, e não há xis: o aviso não recebe toque, então o que fica sai pelo `close`. Sem `timeout`, ele sai em 4 segundos, e não nos 5 do web. O aviso sobe e desce com as durações do web, e aparece parado quando o sistema pede para reduzir movimento. A [tabela de paridade](/react-native) tem o resto do catálogo.

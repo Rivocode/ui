@@ -54,7 +54,13 @@ export { Checkbox, type CheckboxProps } from "./checkbox";
 export { Switch, type SwitchProps } from "./switch";
 export { Sheet, type SheetLabels, type SheetProps } from "./sheet";
 export { ScrollArea, type ScrollAreaProps } from "./scroll-area";
-export { useToast } from "./toast";
+export {
+  useToast,
+  type ToastApi,
+  type ToastOptions,
+  type ToastPromiseStates,
+  type ToastUpdate,
+} from "./toast";
 export { DataList, type DataListLabels, type DataListProps } from "./data-list";
 export { QueryBoundary, type QueryBoundaryLabels, type QueryBoundaryProps } from "./query-boundary";
 export { Tracker, type TrackerLabels, type TrackerPoint, type TrackerProps } from "./tracker";
