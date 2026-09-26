@@ -118,8 +118,8 @@ export function ImageViewer({
   const [view, setView] = useState<ZoomView>(ZOOM_REST);
   const viewRef = useRef(view);
   viewRef.current = view;
-  const [settled, setSettled] = useState<{ src: string; state: "ready" | "error" } | null>(null);
-  const status = image && settled?.src === image.src ? settled.state : "loading";
+  const [settled, setSettled] = useState<Record<string, "ready" | "error">>({});
+  const status = (image && settled[image.src]) || "loading";
   const lastTap = useRef(0);
 
   const clamp = (next: ZoomView) => clampZoom(next, maxZoom, size.width, size.height);
@@ -338,8 +338,8 @@ export function ImageViewer({
                         accessibilityLabel={item.alt}
                         source={{ uri: item.src }}
                         resizeMode="contain"
-                        onLoad={() => setSettled({ src: item.src, state: "ready" })}
-                        onError={() => setSettled({ src: item.src, state: "error" })}
+                        onLoad={() => setSettled((all) => ({ ...all, [item.src]: "ready" }))}
+                        onError={() => setSettled((all) => ({ ...all, [item.src]: "error" }))}
                         className={classNames?.image}
                         style={{
                           width: size.width || undefined,
