@@ -73,7 +73,9 @@ export function RelativeTime({ value, cutoff, now, ...props }: RelativeTimeProps
   const [tick, setTick] = useState(0);
 
   const current = now ?? new Date();
-  const { text, unit } = valid ? describe(date, current, cutoff) : { text: "—", unit: "now" as const };
+  const { text, unit } = valid
+    ? describe(date, current, cutoff)
+    : { text: "—", unit: "now" as const };
 
   useEffect(() => {
     if (now || !valid) return;

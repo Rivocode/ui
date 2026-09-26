@@ -56,7 +56,18 @@ O mapa entra esmaecendo, e quando os dados mudam cada retângulo anda até a
 posição e o tamanho novos em `--rc-duration-slow`. Com "reduzir movimento", a
 troca é seca.
 
-## Quando não usar
+## Sem dado
+
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia ou a soma dá zero. Sem ele, o mapa fica com a moldura vazia, e a lista do leitor de tela continua dizendo cada categoria.
+
+## Direita para a esquerda
+
+No `rtl` as caixas se espelham: a maior categoria abre à direita, e a seta que
+anda para a frente (a da esquerda) vai para a caixa que está à esquerda na tela.
+Antes o desenho ficava na ordem do `ltr` e a seta andava ao contrário do olho.
+
 
 Até seis categorias, o `ChartDonut` responde a mesma pergunta com um total no
 meio e uma legenda que nunca some. Quando o número exato importa mais que a

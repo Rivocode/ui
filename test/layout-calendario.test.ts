@@ -26,7 +26,6 @@ function event(id: string, from: number, to: number, minutes: [number, number] =
   return { id, start: at(from, minutes[0]), end: at(to, minutes[1]) };
 }
 
-
 test("conjunto transitivo divide a largura entre os tres, e nao entre os pares", () => {
   const events = [event("a", 9, 10), event("b", 9, 10, [30, 30]), event("c", 10, 11, [15, 0])];
 

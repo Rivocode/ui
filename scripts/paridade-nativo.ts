@@ -272,10 +272,10 @@ const PARITY: Record<string, Row> = {
       "`config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o " +
       "nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. " +
       "Uma mudança de tipo: o miolo é `string` e não `ReactNode`.\n\n" +
-      "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica " +
-      "diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não " +
+      "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel e a dica, " +
+      "aberta fora do buraco, diz nome e valor, com o total parado no meio. No toque não " +
       "existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende " +
-      "a fatia dela e manda nome e valor para o meio, no lugar exato onde o web põe a dica; tocar " +
+      "a fatia dela e manda nome e valor para o meio, no lugar do total; tocar " +
       "de novo devolve o total.\n\n" +
       "A fatia não é o alvo, e a razão é aritmética: um anel de 190px tem cerca de 600px de " +
       "contorno para dividir entre até seis fatias, e a de 2% fica com doze (a mesma conta " +

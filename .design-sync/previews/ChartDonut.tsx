@@ -74,3 +74,38 @@ export function ThinRing() {
     </div>
   )
 }
+
+/** Mês sem nota, com o vazio que explica */
+export function EmptyMonth() {
+  return (
+    <div className="w-80">
+      <ChartDonut
+        data={[] as typeof BY_KIND}
+        valueKey="total"
+        nameKey="kind"
+        config={NATURE}
+        empty={{
+          title: 'Nenhuma nota em agosto',
+          description: 'A rosca aparece assim que a primeira nota for emitida.',
+        }}
+      />
+    </div>
+  )
+}
+
+/** Tudo zerado, sem empty: o anel de fundo com o miolo */
+export function AllZero() {
+  return (
+    <div className="w-64">
+      <ChartDonut
+        data={BY_KIND.map((row) => ({ ...row, total: 0 }))}
+        valueKey="total"
+        nameKey="kind"
+        config={NATURE}
+        format={currencyShort}
+        centerValue={compact(0)}
+        centerLabel="no mês"
+      />
+    </div>
+  )
+}

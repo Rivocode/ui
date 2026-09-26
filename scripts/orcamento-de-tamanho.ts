@@ -39,8 +39,8 @@ export const BUDGET: Record<string, Budget> = {
     why: "2,3 KB: a ponte com o react-hook-form e o zod, que sao peers opcionais e nao entram na conta. O subcaminho e pequeno de proposito - quem nao usa formulario nao paga nem isto.",
   },
   "./chart": {
-    limit: 21_700,
-    why: "Subiu em 24/09/2026 de 10,7 para 19,7 KB com os quatro graficos sem Recharts da 0.18.0: ChartTreemap 4,1 KB (o layout squarified), ChartHeatmap 4,0, ChartGauge 2,3 e ChartFunnel 1,9. Antes, 10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
+    limit: 24_400,
+    why: "Subiu em 26/09/2026 de 21,2 para 21,7 KB medidos (limite com folga de 10%) com o vazio dos graficos e a dica da rosca fora do buraco: o `empty` com EmptyState na rosca, no funil, no mapa e na grade de calor, o aviso de sem dados do ChartContainer, o anel de fundo e o posicionamento da dica da rosca, e o nome seguro da variavel de cor da serie. Subiu em 24/09/2026 de 10,7 para 19,7 KB com os quatro graficos sem Recharts da 0.18.0: ChartTreemap 4,1 KB (o layout squarified), ChartHeatmap 4,0, ChartGauge 2,3 e ChartFunnel 1,9. Antes, 10,7 KB: o vestir da Recharts, que e peer opcional e fica fora. O peso da Recharts e o motivo de este codigo morar num subcaminho e nao no indice da raiz (`check:chart`).",
   },
   "./ai": {
     limit: 12_300,

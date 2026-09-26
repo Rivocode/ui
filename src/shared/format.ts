@@ -36,7 +36,8 @@ function abbreviate(value: number, shape: keyof typeof SUFFIXES) {
   let tier = tiers.findIndex((candidate) => size >= candidate.at);
   if (tier === -1) {
     const whole = Math.round(size);
-    if (whole < 1_000) return numberFormat({ maximumFractionDigits: 0 }).format(whole === 0 ? 0 : sign * whole);
+    if (whole < 1_000)
+      return numberFormat({ maximumFractionDigits: 0 }).format(whole === 0 ? 0 : sign * whole);
     tier = tiers.length - 1;
   }
 

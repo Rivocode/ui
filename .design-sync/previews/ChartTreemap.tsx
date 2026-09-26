@@ -68,3 +68,21 @@ export function SmallTiles() {
     </div>
   )
 }
+
+/** Soma zero, com o vazio */
+export function EmptyTreemap() {
+  return (
+    <div className="w-full max-w-lg">
+      <ChartTreemap
+        data={BY_SERVICE.map((row) => ({ ...row, total: 0 }))}
+        valueKey="total"
+        nameKey="code"
+        label="Faturamento por serviço"
+        empty={{
+          title: 'Nenhum serviço faturado no mês',
+          description: 'O mapa aparece quando a primeira nota for emitida.',
+        }}
+      />
+    </div>
+  )
+}

@@ -51,3 +51,21 @@ export function AlignedToStart() {
     </div>
   )
 }
+
+/** Sem etapa nenhuma */
+export function EmptyFunnel() {
+  return (
+    <div className="w-full max-w-md">
+      <ChartFunnel
+        data={[] as typeof ONBOARDING}
+        valueKey="total"
+        nameKey="stage"
+        label="Funil de adesão"
+        empty={{
+          title: 'Ninguém entrou no funil ainda',
+          description: 'As etapas aparecem quando a primeira visita for registrada.',
+        }}
+      />
+    </div>
+  )
+}

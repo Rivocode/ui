@@ -73,3 +73,22 @@ export function ZeroIsNotEmpty() {
     </div>
   )
 }
+
+/** Sem nenhuma emissão */
+export function EmptyHeatmap() {
+  return (
+    <div className="w-full max-w-lg">
+      <ChartHeatmap
+        data={[] as { day: string; hour: string; total: number }[]}
+        rowKey="day"
+        columnKey="hour"
+        valueKey="total"
+        label="Emissões por dia e hora"
+        empty={{
+          title: 'Nenhuma emissão na semana',
+          description: 'A grade aparece quando a primeira nota for emitida.',
+        }}
+      />
+    </div>
+  )
+}

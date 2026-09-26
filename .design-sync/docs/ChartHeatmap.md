@@ -86,7 +86,12 @@ pergunta é o número exato de cada cruzamento, e não o padrão, a peça certa 
 A grade entra esmaecendo, e quando os dados mudam cada célula troca de degrau
 em `--rc-duration-slow`. Com "reduzir movimento", a troca é seca.
 
-## Quando não usar
+## Sem dado
+
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia. Sem ele, a grade desenha só as linhas e colunas que `rows` e `columns` declararem, todas tracejadas.
+
 
 Uma linha só, um estado por período, é o `Tracker`: ele mostra se cada dia foi
 bom ou ruim, e não quanto. Uma série só ao longo do tempo é `LineChart` dentro

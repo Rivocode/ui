@@ -1,6 +1,8 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
+
+import { EmptyState } from "../components/empty-state";
 
 import { cn } from "../lib/cn";
 import { percent, resolveFormat, type Format } from "../shared/format";
@@ -42,6 +44,11 @@ export type ChartFunnelProps<Stage> = Omit<ComponentProps<"div">, "children" | "
   labels?: Partial<ChartFunnelLabels>;
   /** Classe por parte: `stage`, `bar`, `rate`. */
   classNames?: Slots<"stage" | "bar" | "rate">;
+  /**
+   * O que aparece no lugar do desenho quando a lista vem vazia ou todas as etapas somam zero. O mesmo formato do
+   * `ChartContainer` e do `DataTable`.
+   */
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };
 
 function valueOf(raw: unknown): number {
@@ -67,6 +74,7 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   labels,
   classNames,
   className,
+  empty,
   ...props
 }: ChartFunnelProps<Stage>) {
   const rateLabel = labels?.rate ?? "da etapa anterior";
@@ -77,6 +85,19 @@ export function ChartFunnel<Stage extends Record<string, unknown>>({
   const values = data.map((stage) => valueOf(stage[valueKey]));
   const widest = Math.max(0, ...values);
   const rates = funnelRates(values);
+
+  if (widest === 0 && empty) {
+    return (
+      <div {...props} className={cn("w-full", className)}>
+        <EmptyState
+          title={empty.title}
+          description={empty.description}
+          icon={empty.icon}
+          action={empty.action}
+        />
+      </div>
+    );
+  }
 
   return (
     <div {...props} className={cn("flex w-full flex-col gap-3", className)}>

@@ -334,3 +334,19 @@ export function AsScatter() {
     </div>
   )
 }
+
+/** Vazio sem empty: o aviso curto */
+export function EmptyWithoutProp() {
+  return (
+    <div className="w-full max-w-lg">
+      <ChartContainer config={UMA} className="h-56">
+        <LineChart data={[]}>
+          <CartesianGrid vertical={false} />
+          <ChartXAxis dataKey="mes" />
+          <ChartYAxis format="integer" width={40} />
+          <Line dataKey="emitidas" isAnimationActive={false} />
+        </LineChart>
+      </ChartContainer>
+    </div>
+  )
+}
