@@ -11,6 +11,8 @@ Query. Subir o arquivo (fetch, progresso real, nova tentativa) é do app, que
 sabe o endpoint e a autenticação. A peça valida `accept` e `maxSize` na
 entrada, entrega os aceitos em `onSelect` e os recusados em `onReject`, cada
 recusa com o motivo pronto para um toast: "maior que 5 MB", "tipo não aceito".
+Sem `multiple`, soltar vários entrega o primeiro, e os outros chegam em
+`onReject` com "só um arquivo por vez", em vez de sumirem calados.
 
 A lista é apresentação do estado que o app informar: `progress` de 0 a 100
 vira barra anunciada como `progressbar`; `error` vence o progresso, mostra o

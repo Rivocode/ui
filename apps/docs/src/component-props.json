@@ -10987,7 +10987,7 @@
         "name": "labels",
         "type": "Partial<FileUploadLabels>",
         "required": false,
-        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais."
+        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais, e `tooMany` e o do arquivo que sobra quando `multiple` esta desligado e chegam varios."
       },
       {
         "name": "maxSize",
@@ -11000,6 +11000,7 @@
         "name": "multiple",
         "type": "boolean",
         "required": false,
+        "note": "Sem ele, entra o primeiro arquivo e os outros viram recusa, com o motivo `tooMany`.",
         "since": "0.4.0"
       },
       {
