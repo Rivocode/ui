@@ -423,3 +423,14 @@ test("com allowNegative, o sinal digitado nao sobra quando o valor e zerado por 
   typeKey(input, "7");
   expect(input.value).toBe("0,07");
 });
+
+test("o sinal de menos sozinho some quando o campo perde o foco, mesmo sem o valor mudar por fora", () => {
+  render(<CurrencyInput aria-label="Ajuste" allowNegative value={null} onValueChange={() => {}} />);
+  const input = screen.getByLabelText("Ajuste") as HTMLInputElement;
+
+  fireEvent.change(input, { target: { value: "-" } });
+  expect(input.value).toBe("-");
+
+  fireEvent.blur(input);
+  expect(input.value).toBe("");
+});

@@ -160,6 +160,10 @@ export function CurrencyInput({
           commit(reading.cents);
           onChange?.(event);
         }}
+        onBlur={(event) => {
+          if (cents === null && sign.minus) setSign({ minus: false, at: null });
+          props.onBlur?.(event);
+        }}
         onPaste={(event) => {
           onPaste?.(event);
           if (event.defaultPrevented) return;
