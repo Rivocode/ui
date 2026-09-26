@@ -121,7 +121,10 @@ export function Carousel<Item>({
   useAnnounce(navigable && !indicators ? slide : null, { liveRegion: true, fromSilence: false });
 
   return (
-    <View accessibilityLabel={label} className={cn("gap-3", className)}>
+    <View className={cn("gap-3", className)}>
+      <View className="absolute h-0 w-0 overflow-hidden">
+        <Text numberOfLines={1}>{label}</Text>
+      </View>
       <View onLayout={measure} className={classNames?.viewport}>
         <FlatList
           ref={listRef}
