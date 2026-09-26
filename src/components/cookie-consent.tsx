@@ -270,19 +270,20 @@ export function CookieConsent({
           )}
         >
           <div className="flex flex-col gap-2 sm:flex-row-reverse">
-            <Button variant="secondary" onClick={() => decide("acceptAll")}>
+            <Button type="button" variant="secondary" onClick={() => decide("acceptAll")}>
               {said.acceptAll}
             </Button>
-            <Button variant="secondary" onClick={() => decide("rejectOptional")}>
+            <Button type="button" variant="secondary" onClick={() => decide("rejectOptional")}>
               {said.rejectOptional}
             </Button>
           </div>
           {customizing && (
-            <Button variant="secondary" onClick={() => decide("save")}>
+            <Button type="button" variant="secondary" onClick={() => decide("save")}>
               {said.save}
             </Button>
           )}
           <Button
+            type="button"
             variant="ghost"
             aria-expanded={customizing}
             aria-controls={customizing ? listId : undefined}

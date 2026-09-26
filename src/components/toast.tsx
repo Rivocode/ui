@@ -103,7 +103,9 @@ function List({
     closing.current = null;
     if (!focusIsLost(document.activeElement)) return;
 
-    const neighbor = viewport.current?.querySelector<HTMLElement>("[data-rc-toast-close]");
+    const neighbor = viewport.current?.querySelector<HTMLElement>(
+      ":not([data-limited]) > [data-rc-toast-close]",
+    );
     const back = cameFrom.current;
     if (neighbor) neighbor.focus();
     else if (back instanceof HTMLElement && !focusIsLost(back)) back.focus();
@@ -121,6 +123,7 @@ function List({
         "transition-[opacity,translate] duration-[var(--rc-duration-base)]",
         "ease-[var(--rc-ease)]",
         "data-[starting-style]:opacity-0 data-[ending-style]:opacity-0",
+        "data-[limited]:hidden",
         ENTER[position],
       )}
     >

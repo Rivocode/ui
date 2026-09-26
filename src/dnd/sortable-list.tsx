@@ -264,6 +264,7 @@ function SortableRow({
     >
       {handle && (
         <IconButton
+          type="button"
           {...handleProps}
           label={labels.handle(label)}
           variant="ghost"

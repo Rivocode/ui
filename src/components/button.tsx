@@ -1,6 +1,12 @@
 import { useRender } from "@base-ui/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentPropsWithoutRef, ReactElement, Ref } from "react";
+import {
+  cloneElement,
+  type ComponentPropsWithoutRef,
+  type MouseEvent,
+  type ReactElement,
+  type Ref,
+} from "react";
 
 import { cn } from "../lib/cn";
 
@@ -20,7 +26,8 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "border border-transparent bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
+        primary:
+          "border border-transparent bg-accent text-accent-fg hover:bg-accent-hover active:bg-accent-active",
         secondary: "border border-border-strong bg-surface text-fg hover:bg-surface-raised",
         ghost: "text-fg-muted hover:bg-accent-subtle hover:text-fg",
         outline: cn(
@@ -52,11 +59,21 @@ export type ButtonProps = ComponentPropsWithoutRef<"button"> &
      * Troca o elemento renderizado mantendo a aparencia. Use para link:
      * `<Button render={<a href="..." />}>`. Sem isto, todo link que parece
      * botao vira uma string de classe copiada, que e o problema que este
-     * componente existe para resolver.
+     * componente existe para resolver. Com `disabled` ou `loading`, o link
+     * perde o `href`, ganha `aria-disabled` e deixa de navegar e de chamar o
+     * `onClick`.
      */
     render?: ReactElement;
     ref?: Ref<HTMLButtonElement>;
   };
+
+const INERT_RENDER = cn(
+  "pointer-events-none cursor-default",
+  "not-data-loading:border-border-disabled not-data-loading:bg-surface-raised",
+  "not-data-loading:text-fg-disabled not-data-loading:shadow-none",
+);
+
+const blockClick = (event: MouseEvent) => event.preventDefault();
 
 export function Button({
   className,
@@ -67,8 +84,10 @@ export function Button({
   disabled,
   children,
   render,
+  onClick,
   ...props
 }: ButtonProps) {
+  const inert = Boolean(render) && Boolean(disabled || loading);
   const content = (
     <>
       {loading && (
@@ -86,13 +105,27 @@ export function Button({
   );
 
   return useRender({
-    render: render ?? <button />,
+    render: render ? (
+      inert ? (
+        cloneElement(render as ReactElement<Record<string, unknown>>, {
+          href: undefined,
+          onClick: undefined,
+        })
+      ) : (
+        render
+      )
+    ) : (
+      <button />
+    ),
     props: {
       ...props,
       ...(render ? {} : { disabled: disabled || loading }),
+      ...(inert
+        ? { "aria-disabled": true, "data-disabled": "", onClick: blockClick }
+        : { onClick }),
       "data-loading": loading || undefined,
       "aria-busy": loading || undefined,
-      className: cn(buttonVariants({ variant, size, shape }), className),
+      className: cn(buttonVariants({ variant, size, shape }), inert && INERT_RENDER, className),
       children: content,
     },
   });

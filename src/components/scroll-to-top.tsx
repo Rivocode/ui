@@ -86,6 +86,7 @@ export function ScrollToTop({
   return (
     <Affix {...props} className={className}>
       <IconButton
+        type="button"
         label={label}
         tooltip={tooltip}
         size={size}

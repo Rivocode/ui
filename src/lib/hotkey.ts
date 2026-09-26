@@ -84,7 +84,11 @@ function physicalKey(code: string, key: string): string | undefined {
 }
 
 export function matchesHotkey(hotkey: Hotkey, event: KeyLike): boolean {
-  if (event.altKey !== hotkey.alt || event.ctrlKey !== hotkey.ctrl || event.metaKey !== hotkey.meta) {
+  if (
+    event.altKey !== hotkey.alt ||
+    event.ctrlKey !== hotkey.ctrl ||
+    event.metaKey !== hotkey.meta
+  ) {
     return false;
   }
   const key = event.key ?? "";
@@ -111,4 +115,15 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   if (target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return true;
   if (target instanceof HTMLInputElement) return !NOT_TYPED.has(target.type);
   return target.getAttribute("role") === "textbox";
+}
+
+export function hitsModShortcut(
+  event: KeyboardEvent,
+  shortcut: string,
+  allowTyping = false,
+): boolean {
+  if (event.defaultPrevented || event.isComposing) return false;
+  if (!(event.metaKey || event.ctrlKey)) return false;
+  if ((event.key ?? "").toLowerCase() !== shortcut.toLowerCase()) return false;
+  return allowTyping || !isTypingTarget(event.target);
 }

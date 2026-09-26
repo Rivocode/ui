@@ -2,7 +2,7 @@
 
 import { Collapsible as BaseCollapsible } from "@base-ui/react/collapsible";
 import { CheckCircle2, ChevronDown, CircleX, Clock, Hand, LoaderCircle } from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 import { Badge, type BadgeProps } from "../components/badge";
 import { Button } from "../components/button";
@@ -60,7 +60,8 @@ export type ToolCallProps = Omit<ComponentPropsWithoutRef<"div">, "title"> & {
   labels?: Partial<Record<ToolCallStatus | "approve" | "reject" | "input" | "output", string>>;
   /**
    * Comeca aberto. Sem ele, abre sozinho so em `approval` e em `error`, os dois
-   * estados em que a pessoa precisa ler a entrada ou o erro.
+   * estados em que a pessoa precisa ler a entrada ou o erro. Sem `open`, o
+   * painel tambem abre quando `status` muda para um desses dois.
    */
   defaultOpen?: boolean;
   /** Aberto, controlado. */
@@ -87,6 +88,13 @@ export function ToolCall({
   ...props
 }: ToolCallProps) {
   const state = STATUS[status] ?? STATUS.pending;
+  const demands = status === "approval" || status === "error";
+  const [innerOpen, setInnerOpen] = useState(defaultOpen ?? demands);
+  const [seenStatus, setSeenStatus] = useState(status);
+  if (status !== seenStatus) {
+    setSeenStatus(status);
+    if (demands) setInnerOpen(true);
+  }
   const statusText = labels[status] ?? state.text;
   const asking = status === "approval" && (onApprove || onReject);
   const hasBody = input !== undefined || output !== undefined || Boolean(error);
@@ -130,9 +138,11 @@ export function ToolCall({
     >
       {hasBody ? (
         <BaseCollapsible.Root
-          defaultOpen={defaultOpen ?? (status === "approval" || status === "error")}
-          open={open}
-          onOpenChange={onOpenChange ? (next) => onOpenChange(next) : undefined}
+          open={open ?? innerOpen}
+          onOpenChange={(next) => {
+            if (open === undefined) setInnerOpen(next);
+            onOpenChange?.(next);
+          }}
         >
           <BaseCollapsible.Trigger
             className={cn(

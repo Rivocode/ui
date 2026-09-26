@@ -46,6 +46,11 @@ só, que troca de texto e de tom conforme a promessa resolve; a alternativa,
 `add` na saída e outro `add` na volta, deixa o "enviando" na tela ao lado do
 "enviado".
 
+Cabem três avisos na tela ao mesmo tempo. O quarto entra e o mais antigo sai de
+vista até um dos outros fechar, e aí volta, com o xis funcionando: um aviso com
+`timeout: 0` continua esperando a pessoa fechar, em vez de ficar visível e sem
+resposta ao clique.
+
 O objeto que o gancho devolve tem identidade estável entre renderizações, então
 ele pode entrar na lista de dependências de um efeito sem laço. O gerenciador
 da Base UI por baixo não tem essa garantia, e absorver isso é trabalho da

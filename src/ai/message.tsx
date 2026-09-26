@@ -169,6 +169,7 @@ export function Message({
             )}
             {onRetry && (
               <IconButton
+                type="button"
                 label={labels.retry ?? "Tentar de novo"}
                 variant="ghost"
                 size="sm"

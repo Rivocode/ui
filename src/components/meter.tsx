@@ -34,11 +34,21 @@ export function Meter({
   ...props
 }: MeterProps) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
+  const min = props.min ?? 0;
+  const max = props.max ?? 100;
+  const shown =
+    write &&
+    ((current: number | null) =>
+      current === null || !Number.isFinite(current)
+        ? ""
+        : write(Math.min(max, Math.max(min, current))));
 
   return (
     <BaseMeter.Root
       {...props}
-      getAriaValueText={props.getAriaValueText ?? (write ? (_, value) => write(value) : undefined)}
+      getAriaValueText={
+        props.getAriaValueText ?? (shown ? (_, current) => shown(current) : undefined)
+      }
       format={numberFormat}
       className={cn("flex flex-col gap-2", className)}
     >
@@ -53,7 +63,7 @@ export function Meter({
             <BaseMeter.Value
               className={cn("font-mono text-xs text-fg-subtle tabular-nums", classNames?.value)}
             >
-              {write ? (_, value) => (value === null ? "" : write(value)) : null}
+              {shown ? (_, current) => shown(current) : null}
             </BaseMeter.Value>
           )}
         </div>

@@ -13,7 +13,9 @@ coluna de ícones, com o nome de cada item virando dica ao passar o mouse. No
 celular, fora da tela, e a barra vira a folha da lateral.
 
 O atalho é Ctrl+B, ou Cmd+B no Mac, o mesmo do editor. Quem trabalha o dia
-inteiro numa tela de operação abre e fecha isso dezenas de vezes.
+inteiro numa tela de operação abre e fecha isso dezenas de vezes. Dentro de um
+campo de texto ou do `RichTextEditor` ele não dispara, porque ali o Ctrl+B é
+negrito; e `shortcut` ignora maiúscula, então `"B"` e `"b"` são o mesmo atalho.
 
 ## Encolhida, nada some
 
@@ -81,6 +83,16 @@ folha começa **fechada**: `defaultOpen` fala da coluna do desktop, onde aberta
 é o estado útil e a página continua inteira ao lado. No celular a mesma barra
 cobre tudo, e abrir sozinha ao carregar tapa justamente a tela que a pessoa
 veio ver.
+
+O mesmo vale para o controlado. `open` e `onOpenChange` são o estado da mesa, e
+no celular não abrem a folha nem são chamados por ela: guardar `open` aberto
+num cookie não cobre a tela do celular ao carregar, e fechar a folha não grava
+fechado no estado da mesa. A folha tem estado próprio, e quem precisa
+controlá-la usa `openMobile` e `onOpenMobileChange`.
+
+No celular, o `className` da `Sidebar` vai para a folha, e os outros atributos
+(`role`, `data-*`, `aria-*`) para o bloco dentro dela, sem apagar o papel de
+diálogo da folha.
 
 Escolher um item também fecha a folha, que ali é a hora de sair da frente. Na
 mesa ela não cobre nada, então continua aberta. `SidebarRail` some no celular,

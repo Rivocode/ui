@@ -10,7 +10,8 @@ Sem `value` ela vira indeterminada; nesse caso prefira o `Spinner`, que ocupa
 menos e não promete um fim que ninguém sabe medir.
 
 `format` escreve o número do `showValue`: o nome de um formatador da casa, ou
-uma função sua.
+uma função sua. Ele recebe o valor limitado a `min` e `max`, o mesmo que a
+barra desenha, e não é chamado quando a barra está indeterminada.
 
 ## Movimento
 

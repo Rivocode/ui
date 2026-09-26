@@ -1376,6 +1376,7 @@ export function EventCalendar({
           className={cn("flex flex-wrap items-center gap-2", classNames?.toolbar)}
         >
           <IconButton
+            type="button"
             ref={toolbar}
             variant="secondary"
             size="sm"
@@ -1384,10 +1385,21 @@ export function EventCalendar({
           >
             {rtl ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </IconButton>
-          <IconButton variant="secondary" size="sm" label={words.next} onClick={() => shift(1)}>
+          <IconButton
+            type="button"
+            variant="secondary"
+            size="sm"
+            label={words.next}
+            onClick={() => shift(1)}
+          >
             {rtl ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
           </IconButton>
-          <Button variant="secondary" size="sm" onClick={() => changeDate(new Date())}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => changeDate(new Date())}
+          >
             {words.today}
           </Button>
 
@@ -1451,7 +1463,13 @@ export function EventCalendar({
             <AlertTitle>{errorTitle}</AlertTitle>
             <AlertDescription>{errorMessage}</AlertDescription>
             {onRetry && (
-              <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="mt-3 w-fit"
+                onClick={onRetry}
+              >
                 {retryLabel}
               </Button>
             )}

@@ -334,7 +334,8 @@ export function TransferList({
             onKeyDown={(event) => handleKeyDown(side, event)}
             className={cn(
               "group/list flex h-60 flex-col gap-0.5 overflow-y-auto p-1 outline-none",
-              list.length === 0 && "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              list.length === 0 &&
+                "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
               classNames?.list,
             )}
           >
@@ -390,7 +391,9 @@ export function TransferList({
                 classNames?.empty,
               )}
             >
-              {searching ? (labels.noResults ?? TRANSFER_NO_RESULTS) : (labels.empty ?? TRANSFER_EMPTY)}
+              {searching
+                ? (labels.noResults ?? TRANSFER_NO_RESULTS)
+                : (labels.empty ?? TRANSFER_EMPTY)}
             </p>
           )}
         </div>
@@ -398,13 +401,9 @@ export function TransferList({
     );
   }
 
-  const button = (
-    from: TransferSide,
-    keys: string[],
-    label: string,
-    icon: ReactNode,
-  ) => (
+  const button = (from: TransferSide, keys: string[], label: string, icon: ReactNode) => (
     <IconButton
+      type="button"
       size="sm"
       variant="secondary"
       label={label}
@@ -433,7 +432,12 @@ export function TransferList({
           classNames?.actions,
         )}
       >
-        {button("available", selected.available, moveSelectedLabel(titles.chosen), <ChevronRight />)}
+        {button(
+          "available",
+          selected.available,
+          moveSelectedLabel(titles.chosen),
+          <ChevronRight />,
+        )}
         {button("available", movable("available"), moveAllLabel(titles.chosen), <ChevronsRight />)}
         {button("chosen", selected.chosen, moveSelectedLabel(titles.available), <ChevronLeft />)}
         {button("chosen", movable("chosen"), moveAllLabel(titles.available), <ChevronsLeft />)}

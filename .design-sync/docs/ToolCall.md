@@ -48,6 +48,10 @@ Nome e título longos quebram em até duas linhas, em vez de cortar numa linha
 só; o nome inteiro da ferramenta fica no `title`, para quem pousa o ponteiro.
 
 `defaultOpen` troca o ponto de partida, e `open` com `onOpenChange` controla.
+Sem `open`, o painel abre sozinho também quando o `status` **muda** para
+`error` ou `approval`: a chamada que nasce `running` e falha no meio do caminho
+mostra o erro sem esperar um toque. Fechado à mão, ele só abre de novo na
+próxima troca de estado.
 
 ## Aprovar antes de rodar
 

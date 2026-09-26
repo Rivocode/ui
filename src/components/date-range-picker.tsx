@@ -212,6 +212,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
         confirm && (
           <div className="flex items-center justify-between gap-3">
             <Button
+              type="button"
               variant="ghost"
               size="sm"
               onClick={() => {
@@ -222,6 +223,7 @@ export function DateRangePicker(props: DateRangePickerProps): ReactElement {
               {labels.clear}
             </Button>
             <Button
+              type="button"
               size="sm"
               disabled={!isClosed(draft)}
               onClick={() => {

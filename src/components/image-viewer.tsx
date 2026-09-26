@@ -387,6 +387,7 @@ export function ImageViewer({
             </p>
             <div className="ml-auto flex items-center gap-2">
               <IconButton
+                type="button"
                 size="sm"
                 variant="secondary"
                 ref={zoomOutRef}
@@ -398,6 +399,7 @@ export function ImageViewer({
                 <ZoomOut />
               </IconButton>
               <IconButton
+                type="button"
                 size="sm"
                 variant="secondary"
                 ref={zoomInRef}
@@ -410,7 +412,13 @@ export function ImageViewer({
               </IconButton>
               <DialogClose
                 render={
-                  <IconButton size="sm" variant="secondary" label={text.close} className={CONTROL}>
+                  <IconButton
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    label={text.close}
+                    className={CONTROL}
+                  >
                     <X />
                   </IconButton>
                 }
@@ -473,6 +481,7 @@ export function ImageViewer({
             {total > 1 && (
               <>
                 <IconButton
+                  type="button"
                   ref={previousRef}
                   variant="secondary"
                   label={text.previous}
@@ -483,6 +492,7 @@ export function ImageViewer({
                   <ChevronLeft />
                 </IconButton>
                 <IconButton
+                  type="button"
                   ref={nextRef}
                   variant="secondary"
                   label={text.next}

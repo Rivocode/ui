@@ -6,7 +6,9 @@ category: Navegação
 
 O caminho até onde a pessoa esta.
 
-Encolhe sozinho: passando de `max`, o meio vira reticencia. No celular
+Encolhe sozinho: passando de `max`, o meio vira reticencia, e ficam a primeira
+migalha e as `max - 1` últimas (nunca menos que a última). A reticência só
+aparece quando esconde ao menos uma migalha. No celular
 sobram as duas ultimas migalhas, porque caminho comprido rola para fora da tela e
 ninguém le o começo.
 

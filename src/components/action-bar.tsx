@@ -22,8 +22,7 @@ import { Button } from "./button";
 
 const POSITION = {
   sticky: "sticky bottom-4",
-  fixed:
-    "pointer-events-none fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] px-4",
+  fixed: "pointer-events-none fixed inset-x-0 bottom-[max(1rem,env(safe-area-inset-bottom))] px-4",
 } as const;
 
 export type ActionBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
@@ -171,6 +170,7 @@ export function ActionBar({
 
           {onClear && (
             <Button
+              type="button"
               size="sm"
               variant="ghost"
               onClick={onClear}

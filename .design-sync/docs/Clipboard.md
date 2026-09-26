@@ -37,6 +37,10 @@ Sem `children`, o botão é um `IconButton`, e o nome acessível é o de `labels
 que muda para o de confirmado depois de copiar. `size` escolhe o lado do
 quadrado entre `sm` (o padrão), `md` e `lg`; com texto, escolhe a altura.
 
+Com `children`, o texto do botão é o `children` enquanto não copiou, e vira
+`labels.copied` na confirmação. O `onClick` de quem usa é chamado no clique,
+antes de copiar, e não substitui a cópia.
+
 ## Quando não usar
 
 Para o bloco de código inteiro, `CodeBlock copyable` já traz este botão no

@@ -87,7 +87,13 @@ export function PixCode({
   const shownName = receiver ?? parsed?.name;
   const money = shownAmount !== undefined ? formatBrl(shownAmount) : null;
   const qrLabel = text.code(money ?? undefined, shownName);
-  const heard = loading ? text.loading : expired && !broken ? text.expired : waited && !broken ? text.ready : "";
+  const heard = loading
+    ? text.loading
+    : expired && !broken
+      ? text.expired
+      : waited && !broken
+        ? text.ready
+        : "";
 
   return (
     <div
@@ -117,18 +123,13 @@ export function PixCode({
         >
           <p className="text-sm text-fg">{text.expired}</p>
           {onRenew ? (
-            <Button size="sm" variant="secondary" onClick={onRenew}>
+            <Button type="button" size="sm" variant="secondary" onClick={onRenew}>
               {text.renew}
             </Button>
           ) : null}
         </div>
       ) : (
-        <QRCode
-          value={code}
-          label={qrLabel}
-          size={size}
-          className={classNames?.code}
-        />
+        <QRCode value={code} label={qrLabel} size={size} className={classNames?.code} />
       )}
 
       {money || shownName || loading ? (

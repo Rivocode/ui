@@ -1236,6 +1236,7 @@ export function Gantt<Task extends GanttTask = GanttTask>({
         >
           {!loading && todayVisible && (
             <Button
+              type="button"
               variant="secondary"
               size="sm"
               onClick={() => {
@@ -1281,7 +1282,13 @@ export function Gantt<Task extends GanttTask = GanttTask>({
           <AlertTitle>{errorTitle}</AlertTitle>
           <AlertDescription>{errorMessage}</AlertDescription>
           {onRetry && (
-            <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="mt-3 w-fit"
+              onClick={onRetry}
+            >
               {retryLabel}
             </Button>
           )}

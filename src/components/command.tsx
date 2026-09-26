@@ -14,6 +14,7 @@ import {
 
 import { cn } from "../lib/cn";
 import { layerLevel, layerStyle, useParentLayer } from "../lib/layer";
+import { hitsModShortcut } from "../lib/hotkey";
 import { useRivoContext } from "../provider/rivo-provider";
 import { Kbd } from "./kbd";
 
@@ -52,7 +53,8 @@ export type CommandProps = Omit<ComponentProps<"div">, "title" | "children"> & {
   /** Texto de quando a busca nao acha nada. */
   emptyMessage?: string;
   /**
-   * Atalho que abre, combinado com Ctrl ou Cmd. `null` desliga, para quem
+   * Atalho que abre, combinado com Ctrl ou Cmd. Ignora maiuscula e nao
+   * dispara dentro de campo de texto nem de editor. `null` desliga, para quem
    * prefere registrar o atalho na propria aplicacao.
    */
   shortcut?: string | null;
@@ -104,10 +106,12 @@ export function Command({
   useEffect(() => {
     if (!shortcut) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key.toLowerCase() === shortcut && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        onOpenChange(!open);
-      }
+      const target = event.target;
+      const own =
+        open && target instanceof Element && target.closest("[data-rc-command]") !== null;
+      if (!hitsModShortcut(event, shortcut!, own)) return;
+      event.preventDefault();
+      onOpenChange(!open);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -159,6 +163,7 @@ export function Command({
   }
 
   function onFieldKeyDown(event: React.KeyboardEvent) {
+    if (event.nativeEvent.isComposing) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
       setActive((current) => (reachable.length ? (current + 1) % reachable.length : 0));
@@ -199,6 +204,7 @@ export function Command({
           {...rest}
           data-rc-layer={layerLevel("dialog", parent, 2)}
           style={layerStyle("dialog", parent, 2, style)}
+          data-rc-command=""
           className={cn(
             "fixed left-1/2 z-[var(--rc-z-dialog)] w-[min(36rem,calc(100vw-2rem))] -translate-x-1/2",
             "top-[12vh]",

@@ -271,7 +271,13 @@ export function ChartContainer({
               {errorMessage ?? "Tente de novo em alguns minutos."}
             </AlertDescription>
             {onRetry && (
-              <Button size="sm" variant="secondary" onClick={onRetry} className="mt-3">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={onRetry}
+                className="mt-3"
+              >
                 {retryLabel}
               </Button>
             )}

@@ -255,6 +255,7 @@ export function FileUploadItem({
       </div>
 
       <IconButton
+        type="button"
         size="sm"
         variant="ghost"
         label={labels?.remove ? labels.remove(name) : `Remover ${name}`}
