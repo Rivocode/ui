@@ -80,3 +80,27 @@ test("a pagina antes do comeco aparece presa na primeira", () => {
   fireEvent.click(next);
   expect(onPageChange).toHaveBeenCalledWith(2);
 });
+
+function phoneTrail(items: Crumb[], max?: number) {
+  const { container, unmount } = render(<Breadcrumb items={items} max={max} />);
+  const kept = [...container.querySelectorAll("ol > li")].filter(
+    (item) => !item.className.split(" ").includes("max-sm:hidden"),
+  );
+  const shown = kept
+    .filter((item) => !item.hasAttribute("aria-hidden"))
+    .map((item) => item.textContent);
+  const links = kept.filter((item) => item.querySelector("a")).length;
+  unmount();
+  return { shown: shown.join(" "), links };
+}
+
+test("no celular a trilha guarda a pagina atual e um link de volta, mesmo com a reticencia no meio", () => {
+  for (const max of [0, 1, 2, 3, 4]) {
+    const { shown, links } = phoneTrail(CRUMBS, max);
+    expect(shown.endsWith("E")).toBe(true);
+    expect(shown).not.toContain("...");
+    expect(links).toBe(1);
+  }
+  expect(phoneTrail(CRUMBS, 2).shown).toBe("A E");
+  expect(phoneTrail(CRUMBS, 4).shown).toBe("D E");
+});

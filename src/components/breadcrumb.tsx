@@ -39,6 +39,9 @@ export function Breadcrumb({ className, items, max = 4, labels, ...props }: Brea
     ? [items[0]!, "reticencia", ...items.slice(-tail)]
     : items;
 
+  const beforeLast = visiveis.length - 2;
+  const parentOnPhone = visiveis[beforeLast] === "reticencia" ? beforeLast - 1 : beforeLast;
+
   return (
     <nav
       {...props}
@@ -50,7 +53,7 @@ export function Breadcrumb({ className, items, max = 4, labels, ...props }: Brea
           const isLast = index === visiveis.length - 1;
           const fullLabel =
             crumb !== "reticencia" && typeof crumb.label === "string" ? crumb.label : undefined;
-          const wideOnly = index < visiveis.length - 2;
+          const wideOnly = index !== visiveis.length - 1 && index !== parentOnPhone;
           const separatorWideOnly = index < visiveis.length - 1;
 
           return (
