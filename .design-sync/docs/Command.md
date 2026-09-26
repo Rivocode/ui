@@ -39,7 +39,14 @@ digitar e não serve de rótulo.
 ## O atalho
 
 `Ctrl+K`, ou `Cmd+K` no Mac, registrado por ela mesma. Passe `shortcut={null}`
-para registrar na sua aplicação, ou outra letra para trocar.
+para registrar na sua aplicação, ou outra letra para trocar; maiúscula e
+minúscula são a mesma tecla.
+
+O atalho não dispara dentro de um campo de texto nem do `RichTextEditor`, onde o
+Ctrl+K é link, nem quando outra peça já tratou a tecla. A exceção é o próprio
+campo da paleta aberta: ali o mesmo atalho a fecha. Enquanto um método de
+entrada compõe (japonês, chinês, acentos pelo IME), o Enter confirma a
+composição e não executa o comando.
 
 ## A lista é dado, não filho
 
