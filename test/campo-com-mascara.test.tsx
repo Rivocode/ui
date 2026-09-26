@@ -114,3 +114,26 @@ test("o delete logo antes de um literal apaga o digito seguinte a ele", () => {
 
   expect(changes.at(-1)).toBe("1235678901");
 });
+
+test("backspace com alt, ctrl ou cmd sobre um literal fica com o navegador, que apaga a palavra", () => {
+  for (const modifier of ["altKey", "ctrlKey", "metaKey"] as const) {
+    const changes: string[] = [];
+    const view = render(
+      <MaskedInput
+        aria-label="Telefone"
+        mask="telefone"
+        defaultValue="11987654321"
+        onValueChange={(_, raw) => changes.push(raw)}
+      />,
+    );
+    const input = screen.getByLabelText("Telefone") as HTMLInputElement;
+    input.focus();
+    const afterHyphen = input.value.indexOf("-") + 1;
+    input.setSelectionRange(afterHyphen, afterHyphen);
+
+    fireEvent.keyDown(input, { key: "Backspace", [modifier]: true });
+
+    expect(changes).toEqual([]);
+    view.unmount();
+  }
+});

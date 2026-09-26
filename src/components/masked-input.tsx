@@ -122,6 +122,7 @@ export function MaskedInput({
       onKeyDown={(event) => {
         onKeyDown?.(event);
         if (event.defaultPrevented || mask === "moeda") return;
+        if (event.altKey || event.ctrlKey || event.metaKey) return;
         if (event.key !== "Backspace" && event.key !== "Delete") return;
         if (removeDataAcrossLiteral(event.currentTarget, event.key)) event.preventDefault();
       }}
