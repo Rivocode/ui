@@ -27,7 +27,8 @@ export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   config?: ChartConfig;
   /**
    * O numero grande no meio. Fica sempre a vista: a dica da fatia abre fora do
-   * buraco, ao lado da rosca quando cabe e acima dela quando nao cabe.
+   * buraco e dentro do quadro do desenho, ao lado da rosca quando cabe e, quando
+   * nao cabe, no topo ou no rodape do quadro, sobre o anel.
    *
    * Sem ele, o miolo fica vazio.
    */
@@ -92,19 +93,38 @@ export function donutTipPlace(
   height: number,
   tipWidth: number,
   tipHeight: number,
+  hole = 0.88 * (1 - 0.34),
 ): { left: number; top: number } {
-  const radius = (Math.min(width, height) / 2) * 0.88;
+  const half = Math.min(width, height) / 2;
+  const radius = half * 0.88;
+  const keepOff = Math.max(half * hole, half * 0.3);
   const middleX = width / 2;
   const middleY = height / 2;
-  const top = Math.min(Math.max(middleY - tipHeight / 2, 0), Math.max(height - tipHeight, 0));
+  const clampLeft = (left: number) => Math.min(Math.max(left, 0), Math.max(width - tipWidth, 0));
+  const clampTop = (top: number) => Math.min(Math.max(top, 0), Math.max(height - tipHeight, 0));
+  const top = clampTop(middleY - tipHeight / 2);
 
   if (width - (middleX + radius + GAP) >= tipWidth) return { left: middleX + radius + GAP, top };
   if (middleX - radius - GAP >= tipWidth) return { left: middleX - radius - GAP - tipWidth, top };
 
-  return {
-    left: Math.min(Math.max(middleX - tipWidth / 2, 0), Math.max(width - tipWidth, 0)),
-    top: middleY - radius - GAP - tipHeight,
+  const distance = ({ left, top }: { left: number; top: number }) => {
+    const dx = Math.max(left - middleX, 0, middleX - (left + tipWidth));
+    const dy = Math.max(top - middleY, 0, middleY - (top + tipHeight));
+    return Math.hypot(dx, dy);
   };
+  const inside = [
+    { left: clampLeft(middleX - tipWidth / 2), top: 0 },
+    { left: clampLeft(middleX - tipWidth / 2), top: clampTop(height - tipHeight) },
+    { left: 0, top: 0 },
+    { left: clampLeft(width - tipWidth), top: 0 },
+    { left: 0, top: clampTop(height - tipHeight) },
+    { left: clampLeft(width - tipWidth), top: clampTop(height - tipHeight) },
+  ];
+
+  return (
+    inside.find((place) => distance(place) >= keepOff) ??
+    inside.reduce((best, place) => (distance(place) > distance(best) ? place : best))
+  );
 }
 
 function amountOf(raw: unknown): number {
@@ -175,9 +195,10 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
         frame.current.clientHeight,
         tip.current.offsetWidth,
         tip.current.offsetHeight,
+        hole / 100,
       ),
     );
-  }, [reading]);
+  }, [reading, hole]);
 
   const readSlice = reading === null ? undefined : data[reading];
   const tipPayload = readSlice
@@ -204,7 +225,9 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
     );
   }
 
-  const middle: CSSProperties = { maxWidth: `min(52%, ${hole * 0.8}cqmin)` };
+  const middle: CSSProperties = {
+    maxWidth: hole >= 40 ? `min(52%, ${hole * 0.8}cqmin)` : "52%",
+  };
 
   return (
     <div {...rest} className={cn("w-full", className)}>

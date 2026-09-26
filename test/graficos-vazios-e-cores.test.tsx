@@ -146,46 +146,125 @@ test("a sparkline de um ponto so nao tem tendencia, e sai neutra", () => {
   expect(strokeOf(Sparkline({ data: [5, 3], trend: "auto" }))).toBe("var(--rc-danger)");
 });
 
-test("a dica da rosca nunca cai sobre o buraco, em nenhum tamanho", () => {
+test("a dica da rosca fica inteira dentro da moldura e fora do buraco, em qualquer tamanho", () => {
   const sizes = [
     [160, 192],
     [240, 192],
+    [256, 192],
+    [320, 192],
     [358, 192],
     [390, 192],
+    [500, 192],
     [640, 192],
     [1200, 192],
   ] as const;
   const tips = [
-    [120, 52],
+    [120, 38],
+    [162, 38],
     [180, 60],
-    [260, 76],
   ] as const;
+  const holes = [0.88 * (1 - 0.34), 0.88 * (1 - 0.5), 0.88 * (1 - 0.2)];
   let checked = 0;
 
   for (const [width, height] of sizes) {
     for (const [tipWidth, tipHeight] of tips) {
-      const { left, top } = donutTipPlace(width, height, tipWidth, tipHeight);
-      const hole = ((Math.min(width, height) / 2) * 0.88 * (1 - 0.34)) / 1;
-      const middleX = width / 2;
-      const middleY = height / 2;
-      const apart =
-        left + tipWidth <= middleX - hole ||
-        left >= middleX + hole ||
-        top + tipHeight <= middleY - hole ||
-        top >= middleY + hole;
-      expect(apart).toBe(true);
-      expect(left).toBeGreaterThanOrEqual(0);
-      expect(left + tipWidth).toBeLessThanOrEqual(Math.max(width, tipWidth));
-      checked += 1;
+      for (const hole of holes) {
+        const { left, top } = donutTipPlace(width, height, tipWidth, tipHeight, hole);
+        const inner = (Math.min(width, height) / 2) * hole;
+        const middleX = width / 2;
+        const middleY = height / 2;
+        const dx = Math.max(left - middleX, 0, middleX - (left + tipWidth));
+        const dy = Math.max(top - middleY, 0, middleY - (top + tipHeight));
+
+        expect(top).toBeGreaterThanOrEqual(0);
+        expect(top + tipHeight).toBeLessThanOrEqual(height);
+        expect(left).toBeGreaterThanOrEqual(0);
+        expect(left + tipWidth).toBeLessThanOrEqual(Math.max(width, tipWidth));
+        expect(Math.hypot(dx, dy)).toBeGreaterThanOrEqual(Math.min(inner, middleY - tipHeight));
+        expect(Math.hypot(dx, dy)).toBeGreaterThanOrEqual(24);
+        checked += 1;
+      }
     }
   }
-  expect(checked).toBe(sizes.length * tips.length);
+  expect(checked).toBe(sizes.length * tips.length * holes.length);
 });
 
-test("o miolo da rosca nao tem mais o apagar da leitura", async () => {
-  const code = await Bun.file("src/chart/chart-donut.tsx").text();
-  expect(code).not.toContain('"opacity-0"');
-});
+function withSize<T>(width: number, height: number, run: () => Promise<T>) {
+  const keys = ["clientWidth", "offsetWidth", "clientHeight", "offsetHeight"] as const;
+  const saved = keys.map((key) => Object.getOwnPropertyDescriptor(HTMLElement.prototype, key));
+  const savedRect = HTMLElement.prototype.getBoundingClientRect;
+  const rect = { width, height, top: 0, left: 0, right: width, bottom: height, x: 0, y: 0 };
+  HTMLElement.prototype.getBoundingClientRect = () => ({ ...rect, toJSON: () => rect }) as DOMRect;
+  for (const key of keys) {
+    const value = key.endsWith("Width") ? width : height;
+    Object.defineProperty(HTMLElement.prototype, key, { configurable: true, get: () => value });
+  }
+  return run().finally(() => {
+    HTMLElement.prototype.getBoundingClientRect = savedRect;
+    keys.forEach((key, index) => {
+      const descriptor = saved[index];
+      if (descriptor) Object.defineProperty(HTMLElement.prototype, key, descriptor);
+      else delete (HTMLElement.prototype as unknown as Record<string, unknown>)[key];
+    });
+  });
+}
+
+const HIDING = ["opacity-0", "invisible", "hidden", "sr-only"];
+
+test("o miolo da rosca continua visivel enquanto a dica le uma fatia", () =>
+  withSize(320, 192, async () => {
+    const { container } = withTheme(
+      <ChartDonut
+        data={[
+          { natureza: "servico", total: 1 },
+          { natureza: "produto", total: 2 },
+        ]}
+        valueKey="total"
+        nameKey="natureza"
+        centerValue="R$ 3"
+        centerLabel="no mes"
+      />,
+    );
+    await Bun.sleep(30);
+    const sectors = container.querySelectorAll(".recharts-pie-sector");
+    expect(sectors.length).toBeGreaterThan(1);
+    fireEvent.mouseOver(sectors[sectors.length - 1]!);
+    await Bun.sleep(20);
+
+    expect(container.querySelector("[data-rc-donut-tip]")).not.toBeNull();
+    let node: Element | null = screen.getByText("R$ 3");
+    let steps = 0;
+    while (node && node !== container) {
+      const tokens = (node.getAttribute("class") ?? "").split(" ");
+      for (const hiding of HIDING) expect(tokens).not.toContain(hiding);
+      const style = (node as HTMLElement).style;
+      expect(style.opacity === "0" || style.visibility === "hidden").toBe(false);
+      node = node.parentElement;
+      steps += 1;
+    }
+    expect(steps).toBeGreaterThan(1);
+  }));
+
+test("o anel de fundo da rosca e desenhado com dados, zerada e vazia sem empty", () =>
+  withSize(320, 192, async () => {
+    const cases = [
+      [
+        { natureza: "servico", total: 1 },
+        { natureza: "produto", total: 2 },
+      ],
+      [{ natureza: "servico", total: 0 }],
+      [],
+    ];
+    for (const data of cases) {
+      const view = withTheme(<ChartDonut data={data} valueKey="total" nameKey="natureza" />);
+      await Bun.sleep(30);
+      const fills = [...view.container.querySelectorAll("path")].map((path) =>
+        path.getAttribute("fill"),
+      );
+      expect(fills).toContain("var(--rc-border)");
+      view.unmount();
+    }
+  }));
 
 test("a rosca vazia ou zerada mostra o empty, e sem ele o anel com o miolo", () => {
   const first = withTheme(
@@ -273,4 +352,19 @@ test("a moldura sem empty e com lista vazia avisa, em vez de eixos sobre o nada"
     </ChartContainer>,
   );
   expect(screen.getByText("No data")).toBeDefined();
+});
+
+test("a pizza com miolo escrito mantem a largura do texto, e nao zero", () => {
+  withTheme(
+    <ChartDonut
+      data={[{ natureza: "servico", total: 1 }]}
+      valueKey="total"
+      nameKey="natureza"
+      thickness={1}
+      centerValue="R$ 1"
+    />,
+  );
+  const width = screen.getByText("R$ 1").style.maxWidth;
+  expect(width).not.toContain("0cqmin");
+  expect(width).toBe("52%");
 });
