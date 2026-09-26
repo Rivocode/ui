@@ -207,6 +207,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
           confirm && (
             <div className="flex items-center justify-between gap-3">
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => {
@@ -217,6 +218,7 @@ export function DatePicker(props: DatePickerProps): ReactElement {
                 {labels.clear}
               </Button>
               <Button
+                type="button"
                 size="sm"
                 disabled={!draft}
                 onClick={() => {

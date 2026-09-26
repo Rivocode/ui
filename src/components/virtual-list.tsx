@@ -175,7 +175,13 @@ export function VirtualList<Item>({
         <AlertTitle>{errorTitle}</AlertTitle>
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
-          <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="mt-3 w-fit"
+            onClick={onRetry}
+          >
             {labels?.retry ?? "Tentar de novo"}
           </Button>
         )}

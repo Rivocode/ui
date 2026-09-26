@@ -117,7 +117,13 @@ export function QueryBoundary<Data>({
         <AlertTitle>{errorTitle}</AlertTitle>
         <AlertDescription>{errorMessage}</AlertDescription>
         {onRetry && (
-          <Button variant="secondary" size="sm" className="mt-3 w-fit" onClick={onRetry}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="mt-3 w-fit"
+            onClick={onRetry}
+          >
             {retryLabel}
           </Button>
         )}

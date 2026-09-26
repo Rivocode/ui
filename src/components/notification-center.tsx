@@ -204,6 +204,7 @@ export function NotificationCenter({
 
   const trigger = (
     <IconButton
+      type="button"
       label={triggerLabel}
       variant="ghost"
       className={cn("relative", classNames?.trigger)}
@@ -309,6 +310,7 @@ export function NotificationCenter({
 
             {!item.read && onMarkRead && (
               <IconButton
+                type="button"
                 label={text.markRead}
                 variant="ghost"
                 size="sm"
@@ -350,6 +352,7 @@ export function NotificationCenter({
               </p>
               {onMarkAllRead && (
                 <Button
+                  type="button"
                   ref={markAllRef}
                   variant="ghost"
                   size="sm"
@@ -395,6 +398,7 @@ export function NotificationCenter({
           {hasMore && onLoadMore && !isLoading && (
             <div className={cn("border-t border-border p-2", classNames?.footer)}>
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 loading={isLoadingMore}

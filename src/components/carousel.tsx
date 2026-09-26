@@ -364,6 +364,7 @@ export function Carousel({
         <div className={cn("flex items-center justify-center gap-2", classNames?.footer)}>
           {interval > 0 && (
             <IconButton
+              type="button"
               size="sm"
               variant="ghost"
               label={playing ? text.pause : text.play}
@@ -376,6 +377,7 @@ export function Carousel({
 
           {controls && (
             <IconButton
+              type="button"
               ref={previousRef}
               size="sm"
               variant="secondary"
@@ -425,6 +427,7 @@ export function Carousel({
 
           {controls && (
             <IconButton
+              type="button"
               ref={nextRef}
               size="sm"
               variant="secondary"
