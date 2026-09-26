@@ -57,7 +57,11 @@ test("a fileira leva o nome do label e desenha um slide por item", () => {
     }
     above = above.parent;
   }
-  expect(byLabel(screen, "Planos").every((node) => node.props.accessible === true)).toBe(true);
+  let box = name!.parent;
+  while (box && typeof box.type !== "string") box = box.parent;
+  const tokens = String(box?.props.className).split(" ");
+  expect(tokens).not.toContain("h-0");
+  expect(tokens).not.toContain("w-0");
   expect(textOf(screen)).toContain("Profissional");
   expect(byType(screen, "FlatList")[0]!.props.horizontal).toBe(true);
 });

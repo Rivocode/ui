@@ -122,7 +122,7 @@ export function Carousel<Item>({
 
   return (
     <View className={cn("gap-3", className)}>
-      <View className="absolute h-0 w-0 overflow-hidden">
+      <View className="absolute h-px w-px overflow-hidden">
         <Text numberOfLines={1}>{label}</Text>
       </View>
       <View onLayout={measure} className={classNames?.viewport}>
