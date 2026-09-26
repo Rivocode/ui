@@ -158,7 +158,8 @@ export type DataTableProps<Row> = {
   selectable?: boolean;
   /**
    * As chaves marcadas, quando quem usa controla a selecao. Sem ela, a tabela
-   * guarda a propria.
+   * guarda a propria e poda sozinha a linha que sai de `data`; controlada, a
+   * poda e de quem controla, junto com a exclusao.
    */
   value?: string[];
   /** As chaves marcadas de saida, quando a tabela controla a propria selecao. */
