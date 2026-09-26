@@ -182,6 +182,66 @@ describe("NumberField", () => {
     act(() => byLabel(screen, "Aumentar Taxa")[0]!.props.onPress());
     expect(onValueChange).toHaveBeenLastCalledWith(0.3);
   });
+
+  test("o valor de fora aparece no meio da digitacao, sem esperar a saida", () => {
+    let change = (_: (n: number) => number) => {};
+    function Harness() {
+      const [value, setValue] = useState(5);
+      change = (next) => setValue(next);
+      return <NumberField value={value} onValueChange={setValue} label="Parcelas" />;
+    }
+    const screen = render(<Harness />);
+
+    act(() => input(screen).props.onChangeText("7"));
+    expect(input(screen).props.value).toBe("7");
+    act(() => change(() => 0));
+    expect(input(screen).props.value).toBe("0");
+
+    act(() => input(screen).props.onChangeText("7"));
+    act(() => change((n) => n + 1));
+    expect(input(screen).props.value).toBe("8");
+  });
+
+  test("o passo soma a partir do digitado, sem arredondar ao passo", () => {
+    const record = mock((_: number) => {});
+    const screen = render(<Controlled step={0.5} record={record} />);
+
+    act(() => input(screen).props.onChangeText("2,37"));
+    act(() => byLabel(screen, "Aumentar Parcelas")[0]!.props.onPress());
+    expect(record).toHaveBeenLastCalledWith(2.87);
+    expect(input(screen).props.value).toBe("2,87");
+  });
+
+  test("o passo parte do digitado abaixo do min, e nao do valor anterior", () => {
+    const record = mock((_: number) => {});
+    const screen = render(<Controlled min={10} max={100} record={record} />);
+
+    act(() => input(screen).props.onChangeText("40"));
+    act(() => input(screen).props.onChangeText("4"));
+    act(() => byLabel(screen, "Diminuir Parcelas")[0]!.props.onPress());
+    expect(record).toHaveBeenLastCalledWith(10);
+  });
+
+  test("com min negativo aceita o sinal de menos e troca de teclado", () => {
+    const record = mock((_: number) => {});
+    const screen = render(<Controlled min={-50} record={record} />);
+
+    expect(["number-pad", "decimal-pad"]).not.toContain(input(screen).props.keyboardType);
+    act(() => input(screen).props.onChangeText("-"));
+    expect(input(screen).props.value).toBe("-");
+    act(() => input(screen).props.onChangeText("-12"));
+    expect(record).toHaveBeenLastCalledWith(-12);
+    expect(input(screen).props.value).toBe("-12");
+  });
+
+  test("sem min negativo o sinal de menos sai do texto", () => {
+    const record = mock((_: number) => {});
+    const screen = render(<Controlled record={record} />);
+
+    expect(input(screen).props.keyboardType).toBe("number-pad");
+    act(() => input(screen).props.onChangeText("-3"));
+    expect(record).toHaveBeenLastCalledWith(3);
+  });
 });
 
 describe("TimeField", () => {

@@ -725,11 +725,13 @@ const PARITY: Record<string, Row> = {
       "(`number-pad`) não tem sinal de menos, então o número negativo só chegaria pelo " +
       "botão de menos, e um campo que desce abaixo de zero por toque e não deixa digitar o " +
       "mesmo valor é pior do que um campo que para no zero. Para aceitar negativo, passe " +
-      "`min` explícito: o stepper desce até ele.\n\n" +
+      "`min` negativo: o stepper desce até ele, o campo aceita o sinal de menos digitado e " +
+      "troca para um teclado que tem o sinal.\n\n" +
       "Digitando, o `max` vale a cada tecla e o `min` só na saída do campo: com `min={10}`, " +
       "digitar 25 passa pelo 2 sem virar 10. Com `step` fracionário o teclado vira " +
       "`decimal-pad`, vírgula e ponto valem como separador, como no web, e o passo sai com " +
-      "as casas dele: 0,2 mais 0,1 dá 0,3. O resto da API também muda (no nativo tudo " +
+      "as casas dele: 0,2 mais 0,1 dá 0,3. O mais e o menos partem do que está digitado, " +
+      "e um valor que chega de fora no meio da digitação aparece na hora. O resto da API também muda (no nativo tudo " +
       "é controlado), e a [tabela de paridade](/react-native) diz o que muda peça a peça.",
   },
   OTPField: {

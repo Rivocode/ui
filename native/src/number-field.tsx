@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { useRef, useState } from "react";
+import { Platform, Pressable, View } from "react-native";
 
 import { cn } from "./cn";
 import { useRivo } from "./provider";
@@ -9,9 +9,9 @@ export type NumberFieldProps = {
   value: number;
   onValueChange: (value: number) => void;
   /**
-   * O piso, inclusive. Nasce em 0, e nao sem piso como no web: o teclado
-   * numerico do iPhone nao tem sinal de menos, entao o negativo so chegaria
-   * pelo botao de menos. Passe um `min` negativo para o stepper descer ate ele.
+   * O piso, inclusive. Nasce em 0, e nao sem piso como no web. Com `min`
+   * negativo o campo aceita o sinal de menos digitado e troca para um teclado
+   * que tem o sinal, e o stepper desce ate ele.
    */
   min?: number;
   max?: number;
@@ -42,11 +42,12 @@ const decimalsOf = (n: number) => {
 
 const written = (value: number) => String(value).replace(".", ",");
 
-const cleanTyped = (text: string) => {
+const cleanTyped = (text: string, negative: boolean) => {
+  const sign = negative && text.trimStart().startsWith("-") ? "-" : "";
   const kept = text.replace(/[^\d.,]/g, "");
   const cut = kept.search(/[.,]/);
-  if (cut === -1) return kept;
-  return `${kept.slice(0, cut + 1)}${kept.slice(cut + 1).replace(/[.,]/g, "")}`;
+  if (cut === -1) return `${sign}${kept}`;
+  return `${sign}${kept.slice(0, cut + 1)}${kept.slice(cut + 1).replace(/[.,]/g, "")}`;
 };
 
 const readTyped = (text: string): number | undefined => {
@@ -69,10 +70,32 @@ export function NumberField({
   const { colors } = useRivo();
   const [text, setText] = useState("");
   const [typing, setTyping] = useState(false);
-  const places = Math.max(decimalsOf(step), decimalsOf(min));
+  const emitted = useRef(value);
+  const [seen, setSeen] = useState(value);
+  if (value !== seen) {
+    setSeen(value);
+    if (value !== emitted.current) setTyping(false);
+  }
+
+  const emit = (next: number) => {
+    emitted.current = next;
+    onValueChange(next);
+  };
+
+  const negative = min < 0;
+  const keyboardType = negative
+    ? Platform.OS === "ios"
+      ? "numbers-and-punctuation"
+      : "numeric"
+    : Number.isInteger(step)
+      ? "number-pad"
+      : "decimal-pad";
+
   const nudge = (delta: number) => {
+    const base = (typing ? readTyped(text) : undefined) ?? value;
+    const places = Math.max(decimalsOf(step), decimalsOf(min), decimalsOf(base));
     setTyping(false);
-    onValueChange(clamp(Number((value + delta).toFixed(places)), min, max));
+    emit(clamp(Number((base + delta).toFixed(places)), min, max));
   };
 
   const stepper = (delta: number, sign: string, stepLabel: string, blocked: boolean) => (
@@ -105,24 +128,24 @@ export function NumberField({
       )}
       <TextInput
         accessibilityLabel={label}
-        keyboardType={Number.isInteger(step) ? "number-pad" : "decimal-pad"}
+        keyboardType={keyboardType}
         value={typing ? text : written(value)}
         onChangeText={(typed) => {
-          const cleaned = cleanTyped(typed);
+          const cleaned = cleanTyped(typed, negative);
           const parsed = readTyped(cleaned);
           setTyping(true);
           if (parsed !== undefined && parsed > max) {
             setText(written(max));
-            onValueChange(max);
+            emit(max);
             return;
           }
           setText(cleaned);
-          if (parsed !== undefined && parsed >= min) onValueChange(parsed);
+          if (parsed !== undefined && parsed >= min) emit(parsed);
         }}
         onBlur={() => {
           const parsed = typing ? readTyped(text) : undefined;
           setTyping(false);
-          if (parsed !== undefined && parsed < min) onValueChange(min);
+          if (parsed !== undefined && parsed < min) emit(min);
         }}
         editable={!disabled}
         placeholderTextColor={colors["fg-subtle"]}
