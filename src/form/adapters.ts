@@ -17,6 +17,7 @@ export type DateProps = Identity & {
 };
 
 export type ValueProps<Value = unknown> = Identity & {
+  ref: RefCallBack;
   value: Value;
   onValueChange: (value: Value) => void;
 };
@@ -42,7 +43,7 @@ export function forDate<V extends FieldValues, N extends FieldPath<V>>(
 export function forValue<V extends FieldValues, N extends FieldPath<V>>(
   field: Field<V, N>,
 ): ValueProps<Field<V, N>["value"]> {
-  const { onChange, ref: _ref, onBlur: _onBlur, name, ...rest } = field;
+  const { onChange, onBlur: _onBlur, name, ...rest } = field;
   return {
     ...rest,
     name,

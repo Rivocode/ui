@@ -87,8 +87,8 @@ const form = useZodForm(schema, { defaultValues: { amount: null } })
 </FormField>
 ```
 
-O `forValue` não repassa o `onBlur`; passe à mão quando o schema valida ao
-sair do campo. No formulário nativo do HTML, sem React Hook Form, o `name`
+O `forValue` repassa a `ref`, e o envio com erro põe o foco no campo, mas
+não repassa o `onBlur`; passe à mão quando o schema valida ao sair do campo. No formulário nativo do HTML, sem React Hook Form, o `name`
 põe os centavos num campo escondido: o que chega ao servidor é `123456`, e não
 `1.234,56`.
 
