@@ -1,5 +1,11 @@
 # Mudancas
 
+## 1.1.2
+
+- `Steps`: o titulo do passo fica no meio do circulo do numero, com ou sem
+  `description`. A linha do titulo tinha 20px contra os 24 do circulo, e o
+  texto subia 2px; com `description`, ela desce 4px junto.
+
 ## 1.1.1
 
 Conserto, e a skill que viaja no pacote mais esperta em fluxo.
