@@ -21,6 +21,7 @@ import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
 import { chartName } from "../shared/chart-layout";
 import { SETTLED } from "../shared/settled";
+import { seriesVar } from "./series-var";
 import { useTokenMotion, withMotion, type ChartMotion } from "./use-chart-motion";
 
 export type ChartConfig = Record<
@@ -57,7 +58,8 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
   /**
    * O que aparece quando a consulta volta sem nenhum ponto. O mesmo formato do
    * `DataTable`, `action` inclusive - ela e a saida que o `EmptyState`
-   * considera fortemente recomendada, e faltava so aqui.
+   * considera fortemente recomendada, e faltava so aqui. Sem ele, a lista vazia
+   * mostra o aviso curto de `labels.noData`, e nao eixos sobre o nada.
    */
   empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
   /**
@@ -85,7 +87,8 @@ export type ChartContainerProps = Omit<ComponentProps<"div">, "children"> & {
    * resolvem os quatro finais.
    * `loading` e `loaded` sao o que o leitor de tela ouve quando a consulta
    * sai e quando ela volta. `name` monta o nome do grafico sem `label`, a
-   * partir dos rotulos das series do `config`.
+   * partir dos rotulos das series do `config`. `noData` e o aviso de quando a
+   * lista volta vazia e nao ha `empty`, "Sem dados no periodo" sem ele.
    */
   labels?: Partial<ChartContainerLabels>;
 };
@@ -136,7 +139,7 @@ function repaint(
 
       if (vacant.length > 0) {
         if (written.dataKey in config) {
-          for (const role of vacant) patch[role] = `var(--color-${written.dataKey})`;
+          for (const role of vacant) patch[role] = `var(${seriesVar(written.dataKey)})`;
         } else {
           unknown.add(written.dataKey);
         }
@@ -193,6 +196,7 @@ export type ChartContainerLabels = {
   loading: string;
   loaded: string;
   name: (series: string[]) => string;
+  noData: string;
 };
 
 export function ChartContainer({
@@ -216,12 +220,13 @@ export function ChartContainer({
   const colors = Object.entries(config)
     .map(([key, series], index) => {
       const color = series.color ?? PALETTE[index % PALETTE.length];
-      return `--color-${key}: ${color};`;
+      return `${seriesVar(key)}: ${color};`;
     })
     .join("\n  ");
 
   const points = data ?? dataOfChild(children);
-  const showsEmpty = empty !== undefined && points !== undefined && points.length === 0;
+  const nothing = points !== undefined && points.length === 0;
+  const showsEmpty = empty !== undefined && nothing;
   const motion = useTokenMotion(`[data-rc-chart="${id}"]`);
   const painted = seriesColors(children, config, motion);
 
@@ -299,6 +304,12 @@ export function ChartContainer({
             icon={empty.icon}
             action={empty.action}
           />
+        </StateFrame>
+      ) : nothing ? (
+        <StateFrame>
+          <p data-rc-chart-no-data="" className="text-sm text-fg-muted">
+            {labels?.noData ?? "Sem dados no período"}
+          </p>
         </StateFrame>
       ) : (
         <ResponsiveContainer width="100%" height="100%">

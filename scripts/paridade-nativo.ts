@@ -273,8 +273,8 @@ const PARITY: Record<string, Row> = {
       "`config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o " +
       "nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. " +
       "Uma mudança de tipo: o miolo é `string` e não `ReactNode`.\n\n" +
-      "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica " +
-      "diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não " +
+      "**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel e a dica, " +
+      "aberta fora do buraco, diz nome e valor, com o total parado no meio. No toque não " +
       "existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende " +
       "a fatia dela, e a própria linha já diz nome e valor. O miolo escrito (`centerValue` e " +
       "`centerLabel`) fica sempre visível, a mesma decisão do web; só quando não há miolo o meio " +

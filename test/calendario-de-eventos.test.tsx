@@ -371,3 +371,109 @@ test("na grade o vazio fica por cima, porque a grade tambem e onde se clica", ()
 afterEach(() => {
   document.body.innerHTML = "";
 });
+
+function inZone<T>(zone: string, run: () => T): T {
+  const previous = process.env.TZ;
+  process.env.TZ = zone;
+  try {
+    return run();
+  } finally {
+    process.env.TZ = previous;
+  }
+}
+
+test("no dia do horario de verao o clique das 10h devolve 10h de parede", () => {
+  inZone("America/New_York", () => {
+    const slot = mock();
+    const { container } = calendar({
+      defaultDate: new Date(2026, 2, 8),
+      defaultView: "day",
+      events: [],
+      onSlotSelect: slot,
+      dayStart: 8,
+      hourHeight: 48,
+    });
+
+    fireEvent.click(container.querySelector("[data-rc-day='0']")!, { clientY: 2 * 48 });
+
+    const range = slot.mock.calls[0]![0];
+    expect(range.start.getDate()).toBe(8);
+    expect(range.start.getHours()).toBe(10);
+    expect(range.start.getMinutes()).toBe(0);
+    expect(range.end.getHours()).toBe(10);
+    expect(range.end.getMinutes()).toBe(30);
+  });
+});
+
+test("o clique das 10h58 devolve o intervalo clicado, 10h30 as 11h", () => {
+  const slot = mock();
+  const { container } = calendar({ onSlotSelect: slot, dayStart: 8, hourHeight: 48 });
+
+  fireEvent.click(container.querySelector("[data-rc-day='1']")!, {
+    clientY: (2 + 58 / 60) * 48,
+  });
+
+  const range = slot.mock.calls[0]![0];
+  expect(range.start.getHours()).toBe(10);
+  expect(range.start.getMinutes()).toBe(30);
+  expect(range.end.getHours()).toBe(11);
+  expect(range.end.getMinutes()).toBe(0);
+});
+
+test("clicar dentro do painel do mais nao escolhe o dia que fica embaixo", async () => {
+  const many: CalendarEvent[] = Array.from({ length: 5 }, (_, index) => ({
+    id: String(index),
+    title: `Nota ${index + 1}`,
+    start: at(9 + index),
+    end: at(10 + index),
+  }));
+  const slot = mock();
+  calendar({ defaultView: "month", events: many, maxLanes: 3, onSlotSelect: slot });
+
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: /Mais 2 em/ }));
+  });
+  const panel = screen.getByRole("dialog");
+  fireEvent.click(panel);
+  fireEvent.click(panel.firstElementChild ?? panel);
+
+  expect(slot).not.toHaveBeenCalled();
+});
+
+test("o plantao das 19h as 9h, maior que a janela de horas, continua com hora e fora da faixa", () => {
+  const { container } = calendar({
+    events: [{ id: "plantao", title: "Plantão", start: at(19), end: at(9, 0, 18) }],
+  });
+
+  expect(screen.queryByRole("group", { name: "Dia inteiro" })?.textContent ?? "").not.toContain(
+    "Plantão",
+  );
+  const drawn = items(container).filter((node) =>
+    node.getAttribute("aria-label")?.includes("Plantão"),
+  );
+  expect(drawn).toHaveLength(2);
+  for (const node of drawn) expect(node.getAttribute("aria-label")).not.toContain("Dia inteiro");
+});
+
+test("na agenda o plantao das 19h as 9h diz a hora, e nao dia inteiro", () => {
+  calendar({
+    defaultView: "agenda",
+    events: [{ id: "plantao", title: "Plantão", start: at(19), end: at(9, 0, 18) }],
+  });
+
+  expect(screen.queryAllByText("Dia inteiro")).toHaveLength(0);
+  expect(screen.getAllByText(/19:00/).length).toBeGreaterThan(0);
+});
+
+test("o seletor de data fala o locale da agenda e comeca a semana no weekStartsOn", async () => {
+  calendar({ defaultView: "month", locale: "en-US", weekStartsOn: 1 });
+
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: /March 2026/ }));
+  });
+
+  const panel = screen.getByRole("dialog");
+  const headers = [...panel.querySelectorAll("th")].map((cell) => cell.textContent);
+  expect(headers.length).toBeGreaterThanOrEqual(7);
+  expect(headers.slice(0, 7)).toEqual(["M", "T", "W", "T", "F", "S", "S"]);
+});

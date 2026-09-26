@@ -48,20 +48,18 @@ export function PageHeader({
     <header {...props} className={cn("flex flex-col gap-3", className)}>
       {breadcrumb}
 
-      <div
-        className={cn("flex flex-wrap items-start justify-between gap-3", classNames?.row)}
-      >
+      <div className={cn("flex flex-wrap items-start justify-between gap-3", classNames?.row)}>
         <div className={cn("min-w-0", classNames?.heading)}>
           <Title
             className={cn(
-              "font-display font-rc-display text-2xl leading-[var(--rc-leading-tight)] tracking-display text-fg",
+              "font-display font-rc-display text-2xl leading-[var(--rc-leading-tight)] tracking-display wrap-anywhere text-fg",
               classNames?.title,
             )}
           >
             {title}
           </Title>
           {description && (
-            <p className={cn("mt-1 text-sm text-fg-muted", classNames?.description)}>
+            <p className={cn("mt-1 text-sm wrap-anywhere text-fg-muted", classNames?.description)}>
               {description}
             </p>
           )}

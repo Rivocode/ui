@@ -53,7 +53,12 @@ As barras crescem do centro (ou da esquerda, no `start`) na primeira vez, e
 andam até a largura nova quando os dados mudam, em `--rc-duration-slow`. Com
 "reduzir movimento", nascem no lugar.
 
-## Quando não usar
+## Sem dado
+
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia ou todas as etapas somam zero. Sem ele, o funil desenha as etapas com barra de largura zero.
+
 
 Quando as etapas não são um subconjunto uma da outra (canais de aquisição,
 naturezas de nota), não há conversão para calcular, e o que existe é

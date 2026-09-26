@@ -80,6 +80,19 @@ nunca via o estado que tinha pedido: o gráfico desenhava eixos sobre o nada, se
 erro nenhum. Onde a moldura ainda não acha ponto para contar, ela avisa no
 console em desenvolvimento em vez de calar.
 
+**Sem `empty`, a lista vazia mostra um aviso curto**, "Sem dados no período",
+no lugar dos eixos sobre o nada. O texto troca por `labels.noData`. O `empty`
+continua sendo o caminho certo quando a tela sabe dizer o porquê e a saída.
+
+**A chave do `config` vira o nome da variável**, `var(--color-<chave>)`, quando
+ela é feita de letra, número, `-` e `_`. Chave com espaço, ponto ou barra
+("Receita total", "v1.2") não é nome de variável de CSS válido: antes a
+declaração inteira era descartada pelo navegador e a série saía preta, sem
+aviso. Agora a moldura troca o que não serve por `_` e acrescenta um sufixo
+curto que separa "a b" de "a.b"; ela, a legenda e a dica usam o mesmo nome, e
+nada muda para quem pinta pela moldura. Para escrever `var(--color-...)` à mão,
+prefira chave simples.
+
 As peças da Recharts que a biblioteca veste saem pelo mesmo import:
 `LineChart`, `Line`, `BarChart`, `Bar`, `AreaChart`, `Area`, `PieChart`, `Pie`,
 `Cell`, `XAxis`, `YAxis`, `CartesianGrid` e `ReferenceLine`.

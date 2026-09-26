@@ -22,7 +22,8 @@ desta tela".
 `trend="auto"` pinta de verde ou vermelho conforme suba ou desça do primeiro ao
 último ponto. **Use só quando subir for bom.** Em custo, inadimplência ou nota
 vencida, subir é ruim, e a peça não tem como saber disso: inverta os números
-antes de passar, ou fixe a cor pela prop `color`.
+antes de passar, ou fixe a cor pela prop `color`. Com menos de dois pontos não
+há tendência, e ela sai na cor neutra do acento.
 
 A prop não se chama `tone` de propósito: esse é o nome que o catálogo inteiro
 usa para a escala semântica de cor, `success`, `danger`, `warning`, `info`, no

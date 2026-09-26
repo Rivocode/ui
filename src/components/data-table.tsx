@@ -19,7 +19,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowUp, ChevronsUpDown } from "lucide-react";
-import { useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 
 import { cn } from "../lib/cn";
 import { LoadingAnnouncement } from "../lib/loading-announcement";
@@ -212,6 +212,21 @@ const accentFreeFilter = constructFilterFn({
 
 const NO_PAGINATION = Number.MAX_SAFE_INTEGER;
 
+const collator = new Intl.Collator("pt-BR", { numeric: true, sensitivity: "base" });
+
+function blank(raw: unknown): unknown {
+  if (raw === null || raw === undefined) return undefined;
+  if (typeof raw === "number" && Number.isNaN(raw)) return undefined;
+  if (raw instanceof Date && Number.isNaN(raw.getTime())) return undefined;
+  return raw;
+}
+
+function compareValues(a: unknown, b: unknown): number {
+  if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  return collator.compare(String(a), String(b));
+}
+
 const keysOf = (selection: RowSelectionState) =>
   Object.keys(selection).filter((key) => selection[key]);
 
@@ -265,6 +280,26 @@ export function DataTable<Row>({
     Object.fromEntries((defaultValue ?? []).map((key) => [key, true])),
   );
 
+  const [seenData, setSeenData] = useState(data);
+  const [pruned, setPruned] = useState<string[] | null>(null);
+  if (data !== seenData) {
+    setSeenData(data);
+    if (data && !value) {
+      const present = new Set(data.map((row, index) => rowKey(row, index)));
+      const kept = keysOf(internalSelection).filter((key) => present.has(key));
+      if (kept.length !== keysOf(internalSelection).length) {
+        setInternalSelection(Object.fromEntries(kept.map((key) => [key, true])));
+        setPruned(kept);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (pruned === null) return;
+    setPruned(null);
+    onValueChange?.(pruned);
+  }, [pruned, onValueChange]);
+
   const selection: RowSelectionState = useMemo(
     () => (value ? Object.fromEntries(value.map((key) => [key, true])) : internalSelection),
     [value, internalSelection],
@@ -276,8 +311,14 @@ export function DataTable<Row>({
     () =>
       columns.map((column) => ({
         id: column.key,
-        accessorFn: (row: EngineRow) => (column.value ? column.value(row as Row) : row[column.key]),
+        accessorFn: (row: EngineRow) =>
+          blank(column.value ? column.value(row as Row) : row[column.key]),
         enableSorting: column.sortable ?? false,
+        sortUndefined: "last" as const,
+        sortFn: (
+          rowA: { getValue: (id: string) => unknown },
+          rowB: { getValue: (id: string) => unknown },
+        ) => compareValues(rowA.getValue(column.key), rowB.getValue(column.key)),
         enableGlobalFilter: true,
       })),
     [columns],
@@ -379,6 +420,8 @@ export function DataTable<Row>({
   }
 
   const filteredTotal = table.getFilteredRowModel().rows.length;
+  const lastPage = pageSize ? Math.max(0, Math.ceil(filteredTotal / pageSize) - 1) : 0;
+  if (!loading && pageIndex > lastPage) setPageIndex(lastPage);
   const columnCount = columns.length + (selectable ? 1 : 0);
 
   const first = pageIndex * (pageSize ?? NO_PAGINATION) + 1;

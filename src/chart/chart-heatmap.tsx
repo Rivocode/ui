@@ -9,8 +9,10 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   type PointerEvent,
+  type ReactNode,
 } from "react";
 
+import { EmptyState } from "../components/empty-state";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip";
 import { cn } from "../lib/cn";
 import { resolveFormat, type Format } from "../shared/format";
@@ -69,6 +71,11 @@ export type ChartHeatmapProps<Cell> = Omit<ComponentProps<"div">, "children" | "
   labels?: Partial<ChartHeatmapLabels>;
   /** Classe por parte: `grid`, `cell`, `legend`. */
   classNames?: Slots<"grid" | "cell" | "legend">;
+  /**
+   * O que aparece no lugar do desenho quando a lista vem vazia. O mesmo formato do
+   * `ChartContainer` e do `DataTable`.
+   */
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };
 
 type Reading = { row: number; column: number };
@@ -102,6 +109,7 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
   labels,
   classNames,
   className,
+  empty,
   ...props
 }: ChartHeatmapProps<Cell>) {
   const emptyLabel = labels?.empty ?? "Sem dado";
@@ -222,6 +230,19 @@ export function ChartHeatmap<Cell extends Record<string, unknown>>({
     setHovered(null);
     setFocused(next);
     setDismissed(false);
+  }
+
+  if (data.length === 0 && empty) {
+    return (
+      <div {...props} className={cn("w-full", className)}>
+        <EmptyState
+          title={empty.title}
+          description={empty.description}
+          icon={empty.icon}
+          action={empty.action}
+        />
+      </div>
+    );
   }
 
   const fitting = cellsWidth > 0 ? Math.max(1, Math.floor(cellsWidth / LABEL_WIDTH)) : 12;

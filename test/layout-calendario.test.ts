@@ -7,7 +7,7 @@ import {
   monthDays,
   packBars,
   segmentBox,
-  spansFullWindow,
+  spansFullDay,
   splitEvents,
   startOfWeek,
   toBars,
@@ -25,8 +25,6 @@ function at(hour: number, minute = 0, day = DAY): Date {
 function event(id: string, from: number, to: number, minutes: [number, number] = [0, 0]): Event {
   return { id, start: at(from, minutes[0]), end: at(to, minutes[1]) };
 }
-
-const WINDOW = 13 * 60;
 
 test("conjunto transitivo divide a largura entre os tres, e nao entre os pares", () => {
   const events = [event("a", 9, 10), event("b", 9, 10, [30, 30]), event("c", 10, 11, [15, 0])];
@@ -93,11 +91,19 @@ test("a noite que cruza a meia-noite nao sobe para a faixa de dia inteiro", () =
   const night: Event = { id: "plantao", start: at(22), end: at(9, 0, addDays(DAY, 1)) };
   const trip: Event = { id: "viagem", start: at(0), end: at(0, 0, addDays(DAY, 3)) };
 
-  expect(spansFullWindow(night, WINDOW)).toBe(false);
-  expect(spansFullWindow(trip, WINDOW)).toBe(true);
-  expect(spansFullWindow({ id: "feriado", start: at(9), end: at(10), allDay: true }, WINDOW)).toBe(
-    true,
-  );
+  expect(spansFullDay(night)).toBe(false);
+  expect(spansFullDay(trip)).toBe(true);
+  expect(spansFullDay({ id: "feriado", start: at(9), end: at(10), allDay: true })).toBe(true);
+});
+
+test("o plantao de 14 horas, maior que a janela visivel, continua sendo evento com hora", () => {
+  const shift: Event = { id: "plantao", start: at(19), end: at(9, 0, addDays(DAY, 1)) };
+  const almost: Event = { id: "quase", start: at(8), end: at(7, 59, addDays(DAY, 1)) };
+  const whole: Event = { id: "inteiro", start: at(8), end: at(8, 0, addDays(DAY, 1)) };
+
+  expect(spansFullDay(shift)).toBe(false);
+  expect(spansFullDay(almost)).toBe(false);
+  expect(spansFullDay(whole)).toBe(true);
 });
 
 test("tres barras que nao cabem em duas faixas deixam a terceira contada por dia", () => {

@@ -9,8 +9,10 @@ import {
   type CSSProperties,
   type KeyboardEvent,
   type PointerEvent,
+  type ReactNode,
 } from "react";
 
+import { EmptyState } from "../components/empty-state";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../components/tooltip";
 import { cn } from "../lib/cn";
 import { percent, resolveFormat, type Format } from "../shared/format";
@@ -36,6 +38,11 @@ export type ChartTreemapProps<Item> = Omit<ComponentProps<"div">, "children"> & 
   label: string;
   /** Classe por parte: `cell`, `label`. */
   classNames?: Slots<"cell" | "label">;
+  /**
+   * O que aparece no lugar do desenho quando a lista vem vazia ou a soma e zero. O mesmo formato do
+   * `ChartContainer` e do `DataTable`.
+   */
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };
 
 const TINT = "bg-[color-mix(in_srgb,var(--rc-tile)_30%,transparent)]";
@@ -54,6 +61,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
   label,
   classNames,
   className,
+  empty,
   ...props
 }: ChartTreemapProps<Item>) {
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
@@ -109,7 +117,7 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
   const open = reading !== null && !dismissed;
 
   const placeOf = (box: TreemapBox) => ({
-    left: `${(box.x / width) * 100}%`,
+    left: `${((rtl ? width - box.x - box.width : box.x) / width) * 100}%`,
     top: `${(box.y / height) * 100}%`,
     width: `${(box.width / width) * 100}%`,
     height: `${(box.height / height) * 100}%`,
@@ -149,6 +157,19 @@ export function ChartTreemap<Item extends Record<string, unknown>>({
     setHovered(null);
     setFocused(order[next]!);
     setDismissed(false);
+  }
+
+  if (total === 0 && empty) {
+    return (
+      <div {...props} className={cn("w-full", className)}>
+        <EmptyState
+          title={empty.title}
+          description={empty.description}
+          icon={empty.icon}
+          action={empty.action}
+        />
+      </div>
+    );
   }
 
   return (

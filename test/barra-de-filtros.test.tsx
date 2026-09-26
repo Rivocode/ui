@@ -768,3 +768,43 @@ test("o aria-label de quem chama vence o label, e troca os DOIS nomes de uma vez
     expect(list.getAttribute("aria-label")).toContain("Fila de cobranca");
   }
 });
+
+test("o limpar mantem o filtro travado e conta so os que tira", () => {
+  const onFiltersChange = mock((_next: AppliedFilter[]) => {});
+  render(
+    <FilterBar
+      filters={[{ id: "branch", label: "Filial", value: "Centro", removable: false }, ...APPLIED]}
+      onFiltersChange={onFiltersChange}
+    />,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "Limpar 2 filtros" }));
+
+  expect(onFiltersChange).toHaveBeenCalledTimes(1);
+  expect(onFiltersChange.mock.calls[0]![0].map((filter) => filter.id)).toEqual(["branch"]);
+});
+
+test("o limpar nao aparece quando so o travado passaria da regua", () => {
+  render(
+    <FilterBar
+      filters={[{ id: "branch", label: "Filial", value: "Centro", removable: false }, APPLIED[0]!]}
+      onFiltersChange={() => {}}
+    />,
+  );
+
+  expect(screen.queryByRole("button", { name: /Limpar/ })).toBeNull();
+});
+
+test("depois do limpar o foco pousa na raiz role=group", () => {
+  render(<Controlada inicial={APPLIED} />);
+
+  const clear = screen.getByRole("button", { name: "Limpar 2 filtros" });
+  clear.focus();
+  act(() => {
+    fireEvent.click(clear);
+  });
+
+  const group = screen.getByRole("group", { name: "Filtros aplicados" });
+  expect(document.activeElement).toBe(group);
+  expect(group.getAttribute("tabindex")).toBe("-1");
+});

@@ -28,7 +28,7 @@ export function AccordionItem({ className, title, children, ...props }: Accordio
             "focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
           )}
         >
-          {title}
+          <span className="min-w-0 wrap-anywhere">{title}</span>
           <ChevronDown
             size={16}
             aria-hidden="true"

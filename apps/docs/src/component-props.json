@@ -4687,7 +4687,7 @@
         "name": "centerValue",
         "type": "ReactNode",
         "required": false,
-        "note": "O numero grande no meio, que apaga enquanto o ponteiro le uma fatia.",
+        "note": "O numero grande no meio.",
         "since": "0.4.0"
       },
       {
@@ -4695,6 +4695,12 @@
         "type": "ChartConfig",
         "required": false,
         "since": "0.4.0"
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar da rosca quando a lista vem vazia ou soma zero."
       },
       {
         "name": "format",
@@ -4769,6 +4775,12 @@
         "type": "string",
         "required": false,
         "note": "A cor das barras."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar do desenho quando a lista vem vazia ou todas as etapas somam zero."
       },
       {
         "name": "format",
@@ -4922,6 +4934,12 @@
         "type": "readonly [number, number]",
         "required": false,
         "note": "O intervalo da escala, `[menor, maior]`."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar do desenho quando a lista vem vazia."
       },
       {
         "name": "format",
@@ -6427,6 +6445,12 @@
         "type": "ChartConfig",
         "required": false,
         "note": "Nome legivel e cor por categoria, o mesmo formato da rosca."
+      },
+      {
+        "name": "empty",
+        "type": "{ title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode; }",
+        "required": false,
+        "note": "O que aparece no lugar do desenho quando a lista vem vazia ou a soma e zero."
       },
       {
         "name": "format",
@@ -10785,7 +10809,7 @@
         "name": "onSlotSelect",
         "type": "((range: EventCalendarRange) => void)",
         "required": false,
-        "note": "Clique no vazio da grade, arredondado em meia hora."
+        "note": "Clique no vazio da grade: devolve a meia hora que contem o ponto clicado, em hora de parede, inclusive no dia do horario de verao."
       },
       {
         "name": "onViewChange",
@@ -11106,7 +11130,7 @@
         "name": "clearFrom",
         "type": "number",
         "required": false,
-        "note": "A partir de quantos filtros o \"limpar\" aparece."
+        "note": "A partir de quantos filtros removiveis o \"limpar\" aparece; o travado nao conta nem sai."
       },
       {
         "name": "disabled",
@@ -26003,6 +26027,12 @@
         "required": false,
         "note": "Classe por parte: `marker`, `title`, `meta`, `content`.",
         "since": "0.5.0"
+      },
+      {
+        "name": "labels",
+        "type": "Partial<TimelineItemLabels>",
+        "required": false,
+        "note": "O que o leitor de tela ouve antes do titulo, porque o marcador diz `pending` e `tone` so pela cor: `pending` e uma palavra por `tone` (o `neutral` nao diz nada por padrao)."
       },
       {
         "name": "pending",

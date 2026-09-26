@@ -1,10 +1,18 @@
 "use client";
 
-import { useState, type ComponentProps, type ReactNode } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ComponentProps,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-import { ChartTooltipContent } from "./chart-tooltip";
+import { ChartTooltipContent, type ChartTooltipContentProps } from "./chart-tooltip";
 
+import { EmptyState } from "../components/empty-state";
 import { cn } from "../lib/cn";
 import { PALETTE, type ChartConfig } from "./chart";
 import { resolveFormat, type Format } from "../shared/format";
@@ -18,14 +26,13 @@ export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
   nameKey: keyof Slice & string;
   config?: ChartConfig;
   /**
-   * O numero grande no meio, que apaga enquanto o ponteiro le uma fatia.
+   * O numero grande no meio. Fica sempre a vista: a dica da fatia abre fora do
+   * buraco, ao lado da rosca quando cabe e acima dela quando nao cabe.
    *
-   * Sem ele, o miolo fica vazio. Ele volta quando o ponteiro sai:
-   * a dica ja mostra o numero daquela fatia, e os dois juntos deixariam dois
-   * numeros na tela sem dizer qual e qual.
+   * Sem ele, o miolo fica vazio.
    */
   centerValue?: ReactNode;
-  /** A linha pequena embaixo do numero. Apaga junto com ele durante a leitura. */
+  /** A linha pequena embaixo do numero. Fica a vista junto com ele. */
   centerLabel?: ReactNode;
   /**
    * Espessura do anel, em fracao do raio. `1` fecha e vira pizza. Anel mais
@@ -62,6 +69,12 @@ export type ChartDonutProps<Slice> = Omit<ComponentProps<"div">, "children"> & {
    * mudam.
    */
   labels?: Partial<ChartDonutLabels>;
+  /**
+   * O que aparece no lugar da rosca quando a lista vem vazia ou soma zero. O
+   * mesmo formato do `ChartContainer` e do `DataTable`. Sem ele, a rosca vazia
+   * e o anel de fundo com o miolo.
+   */
+  empty?: { title: ReactNode; description: ReactNode; action?: ReactNode; icon?: ReactNode };
 };
 
 export type ChartDonutLabels = {
@@ -71,6 +84,33 @@ export type ChartDonutLabels = {
 const LABELS: ChartDonutLabels = {
   name: (slices) => `Rosca de ${slices.join(", ")}`,
 };
+
+const GAP = 8;
+
+export function donutTipPlace(
+  width: number,
+  height: number,
+  tipWidth: number,
+  tipHeight: number,
+): { left: number; top: number } {
+  const radius = (Math.min(width, height) / 2) * 0.88;
+  const middleX = width / 2;
+  const middleY = height / 2;
+  const top = Math.min(Math.max(middleY - tipHeight / 2, 0), Math.max(height - tipHeight, 0));
+
+  if (width - (middleX + radius + GAP) >= tipWidth) return { left: middleX + radius + GAP, top };
+  if (middleX - radius - GAP >= tipWidth) return { left: middleX - radius - GAP - tipWidth, top };
+
+  return {
+    left: Math.min(Math.max(middleX - tipWidth / 2, 0), Math.max(width - tipWidth, 0)),
+    top: middleY - radius - GAP - tipHeight,
+  };
+}
+
+function amountOf(raw: unknown): number {
+  const number = Number(raw);
+  return Number.isFinite(number) ? number : 0;
+}
 
 export function ChartDonut<Slice extends Record<string, unknown>>({
   data,
@@ -85,28 +125,90 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
   className,
   label,
   labels: labelsProp,
+  empty,
   ...rest
 }: ChartDonutProps<Slice>) {
   const labels = { ...LABELS, ...labelsProp };
   const write = resolveFormat(format) as ((value: number) => string) | undefined;
 
-  const [reading, setReading] = useState(false);
+  const [reading, setReading] = useState<number | null>(null);
+  const [place, setPlace] = useState<{ left: number; top: number } | null>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const tip = useRef<HTMLDivElement>(null);
   const motion = useTokenMotion(null);
 
+  const hole = Math.round(88 * (1 - thickness));
   const outer = "88%";
-  const internal = `${Math.round(88 * (1 - thickness))}%`;
+  const internal = `${hole}%`;
 
-  const colorOf = (slice: Slice, index: number) =>
-    config?.[String(slice[nameKey])]?.color ?? PALETTE[index % PALETTE.length];
+  const total = data.reduce((sum, slice) => sum + Math.max(0, amountOf(slice[valueKey])), 0);
+  const blank = data.length === 0 || total === 0;
+
+  const declared = Object.keys(config ?? {});
+  const undeclared = data
+    .map((slice) => String(slice[nameKey]))
+    .filter((name, index, all) => !declared.includes(name) && all.indexOf(name) === index);
+
+  const colorOf = (slice: Slice) => {
+    const name = String(slice[nameKey]);
+    const written = config?.[name]?.color;
+    if (written) return written;
+    const position = declared.includes(name)
+      ? declared.indexOf(name)
+      : declared.length + undeclared.indexOf(name);
+    return PALETTE[position % PALETTE.length];
+  };
 
   const sliceNames = () =>
     data.map((slice) => config?.[String(slice[nameKey])]?.label ?? String(slice[nameKey]));
 
   const name = label ?? (legend ? undefined : labels.name(sliceNames()));
 
+  useLayoutEffect(() => {
+    if (reading === null || !frame.current || !tip.current) {
+      setPlace(null);
+      return;
+    }
+    setPlace(
+      donutTipPlace(
+        frame.current.clientWidth,
+        frame.current.clientHeight,
+        tip.current.offsetWidth,
+        tip.current.offsetHeight,
+      ),
+    );
+  }, [reading]);
+
+  const readSlice = reading === null ? undefined : data[reading];
+  const tipPayload = readSlice
+    ? ([
+        {
+          name: String(readSlice[nameKey]),
+          dataKey: String(readSlice[nameKey]),
+          value: amountOf(readSlice[valueKey]),
+          color: colorOf(readSlice),
+        },
+      ] as unknown as ChartTooltipContentProps["payload"])
+    : undefined;
+
+  if (blank && empty) {
+    return (
+      <div {...rest} className={cn("w-full", className)}>
+        <EmptyState
+          title={empty.title}
+          description={empty.description}
+          icon={empty.icon}
+          action={empty.action}
+        />
+      </div>
+    );
+  }
+
+  const middle: CSSProperties = { maxWidth: `min(52%, ${hole * 0.8}cqmin)` };
+
   return (
     <div {...rest} className={cn("w-full", className)}>
-      <div className="relative h-48 w-full">
+      <div ref={frame} className="relative h-48 w-full [container-type:size]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart
             tabIndex={-1}
@@ -115,58 +217,77 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
             aria-hidden={name ? undefined : true}
           >
             <Pie
-              data={data}
-              dataKey={valueKey}
-              nameKey={nameKey}
+              data={[{ track: 1 }]}
+              dataKey="track"
               innerRadius={internal}
               outerRadius={outer}
-              paddingAngle={2}
-              cornerRadius={4}
-              rootTabIndex={-1}
-              {...motion}
-              onMouseEnter={() => setReading(true)}
-              onMouseLeave={() => setReading(false)}
+              fill="var(--rc-border)"
               stroke="none"
-            >
-              {data.map((slice, index) => {
-                const name = String(slice[nameKey]);
-
-                return <Cell key={name} fill={colorOf(slice, index)} />;
-              })}
-            </Pie>
-
-            <Tooltip
-              cursor={false}
-              content={<ChartTooltipContent config={config} formatValue={write} />}
+              {...motion}
+              rootTabIndex={-1}
+              tooltipType="none"
+              legendType="none"
+              className="pointer-events-none"
             />
+            {!blank && (
+              <Pie
+                data={data}
+                dataKey={valueKey}
+                nameKey={nameKey}
+                innerRadius={internal}
+                outerRadius={outer}
+                paddingAngle={2}
+                cornerRadius={4}
+                rootTabIndex={-1}
+                {...motion}
+                onMouseEnter={(_, index) => setReading(index)}
+                onMouseLeave={() => setReading(null)}
+                stroke="none"
+              >
+                {data.map((slice) => (
+                  <Cell key={String(slice[nameKey])} fill={colorOf(slice)} />
+                ))}
+              </Pie>
+            )}
           </PieChart>
         </ResponsiveContainer>
 
         {(centerValue || centerLabel) && (
           <div
-            className={cn(
-              "pointer-events-none absolute inset-0 flex flex-col items-center justify-center",
-              "transition-opacity duration-[var(--rc-duration-fast)] ease-rc",
-              reading && "opacity-0",
-            )}
+            data-rc-donut-center=""
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
           >
             {centerValue && (
-              <span className="max-w-[52%] text-center font-display font-rc-display text-xl leading-tight text-balance text-fg">
+              <span
+                style={middle}
+                className="text-center font-display font-rc-display text-xl leading-tight text-balance text-fg"
+              >
                 {centerValue}
               </span>
             )}
             {centerLabel && (
-              <span className="mt-0.5 max-w-[52%] truncate text-xs text-fg-subtle">
+              <span style={middle} className="mt-0.5 truncate text-xs text-fg-subtle">
                 {centerLabel}
               </span>
             )}
+          </div>
+        )}
+
+        {tipPayload && (
+          <div
+            ref={tip}
+            data-rc-donut-tip=""
+            style={place ?? { left: 0, top: 0, visibility: "hidden" }}
+            className="pointer-events-none absolute z-[var(--rc-z-tooltip)] w-max max-w-full"
+          >
+            <ChartTooltipContent active payload={tipPayload} config={config} formatValue={write} />
           </div>
         )}
       </div>
 
       {legend && (
         <ul className="mt-3 space-y-1.5">
-          {data.map((slice, index) => {
+          {data.map((slice) => {
             const name = String(slice[nameKey]);
             const value = Number(slice[valueKey]);
 
@@ -175,7 +296,7 @@ export function ChartDonut<Slice extends Record<string, unknown>>({
                 <span
                   aria-hidden="true"
                   className="size-2 shrink-0 rounded-sm"
-                  style={{ background: colorOf(slice, index) }}
+                  style={{ background: colorOf(slice) }}
                 />
                 <span className="min-w-0 flex-1 truncate text-fg-muted">
                   {config?.[name]?.label ?? name}

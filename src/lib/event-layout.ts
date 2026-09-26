@@ -141,9 +141,9 @@ export function touchesDay(event: CalendarEventLike, day: Date): boolean {
   return start < to && (end > from || (end === start && start >= from));
 }
 
-export function spansFullWindow(event: CalendarEventLike, windowMinutes: number): boolean {
+export function spansFullDay(event: CalendarEventLike): boolean {
   if (event.allDay) return true;
-  return event.end.getTime() - event.start.getTime() >= windowMinutes * 60000;
+  return event.end.getTime() - event.start.getTime() >= MINUTES_IN_DAY * 60000;
 }
 
 export function splitEvents<Item extends CalendarEventLike>(

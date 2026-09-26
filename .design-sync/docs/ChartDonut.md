@@ -29,15 +29,16 @@ buraco, e é ali que o total precisa caber. Em `1` ela fecha e vira pizza.
 O número do meio fica preso à largura do buraco. Total comprido escapando por
 cima do anel é o defeito clássico dessa peça.
 
-**O miolo apaga enquanto o ponteiro lê uma fatia, e isso é de propósito.** A
-dica que aparece já traz o número daquela fatia; manter o total no centro ao
-mesmo tempo deixaria dois números na tela sem dizer qual é qual, e o de baixo
-do dedo é o que a pessoa foi buscar. O centro volta sozinho quando o ponteiro
-sai — não há prop para desligar, e nada se perde, porque o total está a um
-movimento de distância.
+**O miolo fica sempre à vista, e a dica abre fora do buraco.** Ela não segue o
+ponteiro: vai para o lado da rosca quando a largura sobra (à direita, e à
+esquerda se só ali couber) e para cima do anel quando não sobra, como num
+cartão de celular. Assim a dica diz o número da fatia, o miolo continua dizendo
+o total, e um nunca cobre o outro. Medido no Chrome a 390px e a 900px: o
+retângulo da dica não cruza o do miolo, e o miolo segue com opacidade 1 durante
+a leitura.
 
-Se você precisa dos dois ao mesmo tempo na tela, o lugar do total é fora da
-peça: um `Stat` ao lado, ou o título do cartão.
+Até aqui o miolo apagava enquanto o ponteiro lia uma fatia, porque a dica da
+Recharts caía em cima dele; o total sumia justo quando a pessoa comparava.
 
 O anel não é parada de tabulação. Com legenda, quem lê a rosca pelo leitor de
 tela lê a lista da legenda, e o desenho fica escondido; sem legenda, o desenho
@@ -55,10 +56,23 @@ Com "reduzir movimento", a rosca nasce pronta e a troca é seca.
 ## As cores
 
 Sem `config`, cada fatia pega uma cor da paleta do tema, na ordem. Com `config`,
-vale a `color` que você escreveu ali.
+vale a `color` que você escreveu ali; e a fatia declarada sem `color` pega a da
+paleta **na ordem do `config`**, e não na ordem em que ela chega no `data`. É o
+que deixa a cor de "Serviço" parada quando a consulta devolve as naturezas em
+outra ordem no mês seguinte. Fatia que o `config` não conhece vem depois das
+declaradas, na ordem do `data`.
 
 O que não funciona é `var(--color-<nome>)`: essas variáveis são escritas pelo
 `ChartContainer`, e a rosca desenha sozinha, fora dele.
+
+## Sem dado
+
+`empty` é o mesmo objeto do `ChartContainer` e do `DataTable`: `title`,
+`description` obrigatória, `action` e `icon` opcionais. Ele aparece no lugar do
+desenho quando a lista vem vazia ou todas as fatias somam zero. Sem ele, a rosca desenha só o **anel de fundo**, na cor da borda do tema, com o miolo por cima: o total zero continua dito, e o cartão não fica com um buraco branco no lugar do gráfico.
+
+O anel de fundo existe sempre, também com dado: é ele que aparece nas frestas
+entre as fatias.
 
 ## Quando não usar
 
@@ -70,7 +84,7 @@ deitada lê melhor, e ainda cabe o rótulo por extenso.
 
 Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. Uma mudança de tipo: o miolo é `string` e não `ReactNode`.
 
-**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende a fatia dela, e a própria linha já diz nome e valor. O miolo escrito (`centerValue` e `centerLabel`) fica sempre visível, a mesma decisão do web; só quando não há miolo o meio vazio mostra a fatia lida. Tocar de novo apaga a leitura.
+**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel e a dica, aberta fora do buraco, diz nome e valor, com o total parado no meio. No toque não existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende a fatia dela, e a própria linha já diz nome e valor. O miolo escrito (`centerValue` e `centerLabel`) fica sempre visível, a mesma decisão do web; só quando não há miolo o meio vazio mostra a fatia lida. Tocar de novo apaga a leitura.
 
 O número de cada linha é o que chegou, negativo inclusive: só o arco usa o piso de zero, porque fatia não tem tamanho negativo. O anel de fundo fica sempre desenhado, no token de borda, e sem fatia nenhuma o desenho não anuncia nada ao leitor de tela. Com `empty` (`{ title, description, action?, icon? }`, o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar da rosca.
 

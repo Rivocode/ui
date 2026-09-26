@@ -30,7 +30,7 @@ const absolute = new Intl.DateTimeFormat(LOCALE, { dateStyle: "short" });
 const full = new Intl.DateTimeFormat(LOCALE, { dateStyle: "long", timeStyle: "short" });
 
 export type RelativeTimeProps = Omit<ComponentProps<"time">, "dateTime" | "title" | "children"> & {
-  /** O instante que se descreve. */
+  /** O instante que se descreve. Data invalida sai como "—", sem `dateTime`, sem `title` e sem relogio. */
   value: Date | string | number;
   /**
    * A partir de qual unidade parar de contar e mostrar a data. "ha 412 dias"
@@ -69,17 +69,22 @@ function describe(value: Date, now: Date, cutoff: RelativeUnit | undefined) {
 
 export function RelativeTime({ value, cutoff, now, ...props }: RelativeTimeProps) {
   const date = value instanceof Date ? value : new Date(value);
+  const valid = !Number.isNaN(date.getTime());
   const [tick, setTick] = useState(0);
 
   const current = now ?? new Date();
-  const { text, unit } = describe(date, current, cutoff);
+  const { text, unit } = valid
+    ? describe(date, current, cutoff)
+    : { text: "—", unit: "now" as const };
 
   useEffect(() => {
-    if (now) return;
+    if (now || !valid) return;
 
     const timer = setTimeout(() => setTick((value) => value + 1), REFRESH[unit]);
     return () => clearTimeout(timer);
-  }, [now, unit, tick]);
+  }, [now, unit, tick, valid]);
+
+  if (!valid) return <time {...props}>{text}</time>;
 
   return (
     <time {...props} dateTime={date.toISOString()} title={full.format(date)}>

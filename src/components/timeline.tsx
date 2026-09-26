@@ -36,7 +36,19 @@ export type TimelineItemProps = Omit<ComponentProps<"li">, "title"> &
     by?: ReactNode;
     /** Classe por parte: `marker`, `title`, `meta`, `content`. */
     classNames?: Slots<"marker" | "title" | "meta" | "content">;
+    /** O que o leitor de tela ouve antes do titulo, porque o marcador diz `pending` e `tone` so pela cor: `pending` e uma palavra por `tone` (o `neutral` nao diz nada por padrao). Passe so as que mudam; texto vazio cala. */
+    labels?: Partial<TimelineItemLabels>;
   };
+
+export type TimelineItemLabels = {
+  pending: string;
+  tone: Partial<Record<NonNullable<VariantProps<typeof markerVariants>["tone"]>, string>>;
+};
+
+const LABELS: TimelineItemLabels = {
+  pending: "Pendente",
+  tone: { accent: "Destaque", success: "Sucesso", warning: "Atenção", danger: "Erro" },
+};
 
 export function TimelineItem({
   className,
@@ -47,14 +59,20 @@ export function TimelineItem({
   pending,
   children,
   classNames,
+  labels,
   ...props
 }: TimelineItemProps) {
+  const spoken = [
+    pending ? (labels?.pending ?? LABELS.pending) : "",
+    tone ? ({ ...LABELS.tone, ...labels?.tone }[tone] ?? "") : "",
+  ].filter(Boolean);
+
   return (
     <li
       {...props}
       className={cn(
         "relative flex animate-enter gap-3 pb-5 last:pb-0",
-        "before:absolute before:top-4 before:bottom-0 before:left-[0.3125rem] before:w-px",
+        "before:absolute before:top-4 before:bottom-0 before:start-[0.3125rem] before:w-px",
         "before:bg-border last:before:hidden",
         className,
       )}
@@ -73,6 +91,7 @@ export function TimelineItem({
               classNames?.title,
             )}
           >
+            {spoken.length > 0 && <span className="sr-only">{`${spoken.join(", ")}: `}</span>}
             {title}
           </p>
           {(at || by) && (
