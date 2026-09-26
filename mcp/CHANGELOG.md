@@ -1,5 +1,19 @@
 # Mudanças
 
+## 0.8.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.1.1. As oito
+ferramentas continuam as mesmas.
+
+- `recommend_component` acerta os pedidos de UX, e não só de peça: "excluir um
+  item da lista" leva ao aviso com desfazer, e não ao `Select`; "editar um
+  campo direto na tabela" leva ao `Editable`; "cadastro com muitos campos"
+  leva ao `Fieldset`, e não a um wizard; "busca global" leva ao `Command`.
+- `audit_screen` ganha `passo-sem-nome` e `dado-sem-mascara`, e cinco regras de
+  julgamento de fluxo que o agente pode registrar.
+- A skill ganha a checagem de wizard ou formulário único e o wizard com
+  rascunho, servidos pelos mesmos arquivos.
+
 ## 0.7.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.1.0 e

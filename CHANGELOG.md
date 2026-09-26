@@ -1,5 +1,30 @@
 # Mudancas
 
+## 1.1.1
+
+Conserto, e a skill que viaja no pacote mais esperta em fluxo.
+
+- `Steps` na mesa: o passo tem a largura do conteudo e o traco estica ate o
+  proximo. Antes cada passo ocupava uma fatia igual, o nome ficava a esquerda
+  de um vazio e o traco curto grudava no numero seguinte; o nome longo era
+  cortado com espaco sobrando.
+- `ToastViewport` desenha o botao do `actionProps`. O tipo do `add` ja o
+  aceitava e a peca o ignorava: o "Desfazer" que a skill recomenda no lugar da
+  confirmacao nao existia na tela. Sem `actionProps`, nada muda.
+- A skill decide wizard ou formulario unico por quatro perguntas, e nao por
+  quantidade de campo; ensina o wizard com um formulario so por baixo dos
+  passos, validacao por passo, rascunho que sobrevive a recarregar e revisao
+  no fim; e ganha a tabela do que deixa o produto esperto: preencher sozinho,
+  lembrar, padrao certo, agir no lugar, desfazer, atalho, raro recolhido e
+  sucesso visivel.
+- A tabela de escolha da skill ganha os padroes de UX: excluir com desfazer,
+  editar no lugar, opcoes avancadas, cadastro comprido, busca global, rascunho,
+  tela vazia e detalhe numa folha.
+- A skill de auditoria acusa passo chamado "Passo 2" e campo de CPF, CNPJ,
+  telefone, CEP ou placa num `Input` comum, e ganha cinco regras de julgamento
+  de fluxo: wizard sem dependencia, confirmacao para o reversivel, destrutivo
+  sem protecao, rascunho que some e sucesso silencioso.
+
 ## 1.1.0
 
 A primeira versao menor da 1.x e, na maior parte, conserto. Uma revisao de
