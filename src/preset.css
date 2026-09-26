@@ -14,3 +14,33 @@ button:not(:disabled),
 [role="button"]:not([aria-disabled="true"]) {
   cursor: pointer;
 }
+
+@layer base {
+  [data-rc-theme],
+  [data-rc-theme] * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rc-border-strong) transparent;
+  }
+
+  @supports not (scrollbar-color: auto) {
+    [data-rc-theme] ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    [data-rc-theme] ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    [data-rc-theme] ::-webkit-scrollbar-thumb {
+      border: 2px solid transparent;
+      border-radius: 9999px;
+      background-color: var(--rc-border-strong);
+      background-clip: content-box;
+    }
+
+    [data-rc-theme] ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--rc-fg-subtle);
+    }
+  }
+}

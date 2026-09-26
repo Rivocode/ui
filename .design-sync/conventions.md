@@ -26,6 +26,11 @@ import { RivoProvider, Button } from '@rivocode/ui'
 O Provider ja carrega por dentro o provedor de dica, a fiacao de aviso e um
 container de portal que leva o tema junto. Nao monte nenhum deles a mao.
 
+Dentro do tema, a barra de rolagem de qualquer caixa sai fina e na cor da
+borda (`--rc-border-strong`), clara ou escura com o tema. A regra mora na
+camada `base`, entao uma classe sua vence: `[scrollbar-width:none]` esconde a
+barra, como as abas e o carrossel ja fazem.
+
 ### O vocabulario, que e o do Tailwind v4
 
 Escreva layout com as mesmas classes que os componentes usam. **Nunca escreva
