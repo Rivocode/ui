@@ -515,7 +515,9 @@ describe("o cartao arrastado do Kanban", () => {
     );
     await settle();
 
-    expect(levelOf(await pick())).toBeGreaterThan(levelOf(outer()));
+    const card = await pick();
+    expect(levelOf(card)).toBeGreaterThan(levelOf(outer()));
+    expect(outer()!.contains(card)).toBe(false);
     cleanup();
   });
 

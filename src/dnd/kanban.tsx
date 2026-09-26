@@ -26,10 +26,12 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 
 import { Badge } from "../components/badge";
 import { cn } from "../lib/cn";
 import { layerLevel, useParentLayer } from "../lib/layer";
+import { useRivoContext } from "../provider/rivo-provider";
 import { useMediaQuery } from "../lib/screen";
 import type { Slots } from "../lib/slots";
 import { moveItem } from "../shared/sortable";
@@ -161,6 +163,7 @@ export function Kanban<Item>({
   const reduced = useMediaQuery(REDUCED_MOTION);
   const [drag, setDrag] = useState<Drag | null>(null);
   const overlayLevel = layerLevel("dropdown", useParentLayer());
+  const { portalContainer } = useRivoContext();
   const { say, announcements } = useAnnouncer();
   const spoken = useRef("");
   const [motion, setMotion] = useState<TokenMotion | null>(null);
@@ -312,6 +315,39 @@ export function Kanban<Item>({
   const target = drag ? columnOf(drag.key, drag.board) : undefined;
   const moving = drag ? items.get(drag.key) : undefined;
 
+  const overlay = (
+    <DragOverlay
+      dropAnimation={
+        motion
+          ? {
+              ...motion,
+              sideEffects: defaultDropAnimationSideEffects({
+                styles: { active: { opacity: "0" } },
+              }),
+            }
+          : null
+      }
+      style={{ zIndex: overlayLevel }}
+      transition={(event) =>
+        motion && event && "key" in event
+          ? ["transform", `${motion.duration}ms`, motion.easing].join(" ")
+          : undefined
+      }
+    >
+      {moving !== undefined ? (
+        <div
+          className={cn(
+            "cursor-grabbing rounded-md border border-border-strong bg-surface-raised p-3",
+            "text-sm text-fg shadow-3",
+            classNames?.card,
+          )}
+        >
+          {renderCard(moving, { isDragging: true })}
+        </div>
+      ) : null}
+    </DragOverlay>
+  );
+
   return (
     <DndContext
       sensors={sensors}
@@ -349,36 +385,7 @@ export function Kanban<Item>({
           />
         ))}
       </div>
-      <DragOverlay
-        dropAnimation={
-          motion
-            ? {
-                ...motion,
-                sideEffects: defaultDropAnimationSideEffects({
-                  styles: { active: { opacity: "0" } },
-                }),
-              }
-            : null
-        }
-        style={{ zIndex: overlayLevel }}
-        transition={(event) =>
-          motion && event && "key" in event
-            ? ["transform", `${motion.duration}ms`, motion.easing].join(" ")
-            : undefined
-        }
-      >
-        {moving !== undefined ? (
-          <div
-            className={cn(
-              "cursor-grabbing rounded-md border border-border-strong bg-surface-raised p-3",
-              "text-sm text-fg shadow-3",
-              classNames?.card,
-            )}
-          >
-            {renderCard(moving, { isDragging: true })}
-          </div>
-        ) : null}
-      </DragOverlay>
+      {portalContainer ? createPortal(overlay, portalContainer) : overlay}
     </DndContext>
   );
 }
