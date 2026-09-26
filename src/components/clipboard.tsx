@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Copy } from "lucide-react";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 import { useClipboard } from "../hooks/clipboard";
 import { cn } from "../lib/cn";
@@ -14,13 +14,19 @@ export type ClipboardProps = Omit<
 > & {
   /** O que vai para a area de transferencia. */
   value: string;
-  /** Texto ao lado do icone. Sem ele, o botao e so o icone, desenhado pelo `IconButton`. */
+  /**
+   * Texto ao lado do icone, trocado por `labels.copied` na confirmacao. Sem
+   * ele, o botao e so o icone, desenhado pelo `IconButton`.
+   */
   children?: ReactNode;
   /** A altura do botao, lida de `--rc-control-*`. Sem texto, e o lado do quadrado. */
   size?: "sm" | "md" | "lg";
   /** Quanto tempo a confirmacao fica na tela, em ms. */
   timeout?: number;
-  /** O que o leitor de tela chama o botao antes e depois de copiar. */
+  /**
+   * O que o leitor de tela chama o botao antes e depois de copiar. Com
+   * `children`, o nome antes de copiar e o proprio texto, e so `copied` vale.
+   */
   labels?: { copy?: string; copied?: string };
   /** Recusado pelo tipo: o nome do botao vem de `labels.copy` e `labels.copied`. */
   "aria-label"?: never;
@@ -44,6 +50,7 @@ export function Clipboard({
   timeout = 2000,
   labels = {},
   onCopy,
+  onClick,
   variant = "secondary",
   size,
   className,
@@ -54,7 +61,8 @@ export function Clipboard({
   const clipboard = useClipboard({ timeout });
   const { copied } = clipboard;
 
-  async function copy() {
+  async function copy(event: MouseEvent<HTMLButtonElement>) {
+    onClick?.(event);
     if (await clipboard.copy(value)) onCopy?.(value);
   }
 
@@ -97,7 +105,7 @@ export function Clipboard({
       className={cn("gap-1.5", className)}
     >
       {icon}
-      {copied ? copiedLabel : copyLabel}
+      {copied ? copiedLabel : children}
     </Button>
   );
 }
