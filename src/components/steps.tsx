@@ -83,14 +83,20 @@ export function Steps({
           const canGoBack = Boolean(onStepChange) && isDone;
 
           return (
-            <li key={step.id} className="flex min-w-0 flex-1 items-start gap-3">
+            <li
+              key={step.id}
+              className={cn(
+                "flex min-w-0 items-start gap-3",
+                index < steps.length - 1 ? "flex-1" : "shrink",
+              )}
+            >
               <button
                 type="button"
                 disabled={!canGoBack}
                 onClick={canGoBack ? () => onStepChange!(index) : undefined}
                 aria-current={isCurrent ? "step" : undefined}
                 className={cn(
-                  "flex min-w-0 flex-1 items-start gap-3 rounded-md p-1 text-left",
+                  "flex min-w-0 items-start gap-3 rounded-md p-1 text-left",
                   "outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   canGoBack && "cursor-pointer hover:bg-accent-subtle",
                 )}
@@ -131,7 +137,7 @@ export function Steps({
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "mt-4 h-px w-8 shrink-0",
+                    "mt-4 h-px min-w-4 flex-1",
                     "transition-colors duration-[var(--rc-duration-base)] ease-rc",
                     isDone ? "bg-accent-text" : "bg-border",
                   )}
