@@ -14,6 +14,11 @@ vezes, porque marcar duas vezes a mesma coisa nunca é o que se quis. Sair do
 campo também fecha o que estava escrito: texto digitado e não fechado some ao
 enviar o formulário, e ninguém entende por quê.
 
+Colar uma lista separada pelos `separators`, ou por quebra de linha, vira uma
+ficha para cada item. Com `max`, o campo para de aceitar ficha nova no teto,
+mas continua focado: o Backspace ainda tira a última. Com `name`, o formulário
+nativo recebe cada ficha com esse nome, e nunca o texto pela metade.
+
 Guarda a própria lista quando recebe só `defaultValue`, e obedece à de fora
 quando recebe `value`, o mesmo par das outras peças de formulário. Num
 formulário que envia, controle: quem guarda a lista é o app, porque é ele que a

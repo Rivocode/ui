@@ -39,6 +39,7 @@ export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children
   hint?: ReactNode;
   /** Como no seletor nativo: `.xml,application/pdf`, `image/*`. */
   accept?: string;
+  /** Sem ele, entra o primeiro arquivo e os outros viram recusa, com o motivo `tooMany`. */
   multiple?: boolean;
   /** Em bytes. Arquivo maior não entra: vira recusa com o motivo. */
   maxSize?: number;
@@ -51,7 +52,8 @@ export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children
   /**
    * Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora
    * do `accept`, e `tooLarge` recebe o limite ja escrito ("5 MB") e devolve o
-   * do arquivo grande demais. Passe so os que mudam.
+   * do arquivo grande demais, e `tooMany` e o do arquivo que sobra quando
+   * `multiple` esta desligado e chegam varios. Passe so os que mudam.
    */
   labels?: Partial<FileUploadLabels>;
 };
@@ -59,6 +61,7 @@ export type FileUploadProps = Omit<ComponentProps<"div">, "onSelect" | "children
 export type FileUploadLabels = {
   invalidType: string;
   tooLarge: (limit: string) => string;
+  tooMany?: string;
 };
 
 export function FileUpload({
@@ -99,6 +102,9 @@ export function FileUpload({
     }
 
     const kept = multiple ? accepted : accepted.slice(0, 1);
+    for (const file of accepted.slice(kept.length)) {
+      rejected.push({ file, reason: labels?.tooMany ?? "só um arquivo por vez" });
+    }
     if (kept.length > 0) onSelect?.(kept);
     if (rejected.length > 0) onReject?.(rejected);
   }

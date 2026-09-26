@@ -10194,7 +10194,7 @@
         "name": "disabledDays",
         "type": "Matcher[] | Matcher",
         "required": false,
-        "note": "Dias que nao podem ser escolhidos.",
+        "note": "Dias que nao podem ser escolhidos, nem no calendario nem digitados no campo.",
         "since": "0.4.0"
       },
       {
@@ -11001,7 +11001,7 @@
         "name": "labels",
         "type": "Partial<FileUploadLabels>",
         "required": false,
-        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais."
+        "note": "Os motivos de recusa, para trocar o idioma: `invalidType` e o do tipo fora do `accept`, e `tooLarge` recebe o limite ja escrito (\"5 MB\") e devolve o do arquivo grande demais, e `tooMany` e o do arquivo que sobra quando `multiple` esta desligado e chegam varios."
       },
       {
         "name": "maxSize",
@@ -11014,6 +11014,7 @@
         "name": "multiple",
         "type": "boolean",
         "required": false,
+        "note": "Sem ele, entra o primeiro arquivo e os outros viram recusa, com o motivo `tooMany`.",
         "since": "0.4.0"
       },
       {
@@ -25795,6 +25796,12 @@
         "required": false,
         "note": "Teto de fichas.",
         "since": "0.5.0"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Cada ficha vai ao formulario nativo como um campo com este nome, e o texto pela metade nao vai."
       },
       {
         "name": "onValueChange",

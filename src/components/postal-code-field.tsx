@@ -129,7 +129,6 @@ export function PostalCodeField({
           disabled={disabled}
           type="text"
           inputMode="numeric"
-          maxLength={9}
           value={text}
           aria-invalid={notFound || undefined}
           aria-busy={status === "searching" || undefined}

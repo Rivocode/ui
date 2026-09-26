@@ -48,6 +48,31 @@ test("soltar na area tambem entrega", () => {
   expect(recebidos.map((file) => file.name)).toEqual(["nota.xml"]);
 });
 
+test("sem multiple, soltar varios entrega o primeiro e recusa os outros com motivo", () => {
+  let recebidos: File[] = [];
+  let recusas: { file: File; reason: string }[] = [];
+  dropzone({ onSelect: (files) => (recebidos = files), onReject: (list) => (recusas = list) });
+
+  const area = screen.getByRole("button", { name: /arraste o xml/i });
+  fireEvent.drop(area, {
+    dataTransfer: { files: [file("a.xml", 10), file("b.xml", 10), file("c.xml", 10)] },
+  });
+
+  expect(recebidos.map((item) => item.name)).toEqual(["a.xml"]);
+  expect(recusas.map((item) => item.file.name)).toEqual(["b.xml", "c.xml"]);
+  expect(recusas.map((item) => item.reason)).toEqual(["só um arquivo por vez", "só um arquivo por vez"]);
+});
+
+test("o motivo do arquivo que sobra troca pelo labels", () => {
+  let recusas: { file: File; reason: string }[] = [];
+  dropzone({ onReject: (list) => (recusas = list), labels: { tooMany: "one file only" } });
+
+  fireEvent.drop(screen.getByRole("button", { name: /arraste o xml/i }), {
+    dataTransfer: { files: [file("a.xml", 10), file("b.xml", 10)] },
+  });
+  expect(recusas.map((item) => item.reason)).toEqual(["one file only"]);
+});
+
 test("arrastar por cima acende, sair apaga", () => {
   dropzone();
   const area = screen.getByRole("button", { name: /arraste o xml/i });

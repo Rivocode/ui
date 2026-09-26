@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
 
 import { SearchInput } from "../src/components/search-input";
 import { RivoProvider } from "../src/provider/rivo-provider";
@@ -63,6 +64,36 @@ test("esc limpa o campo quando controlado de fora", () => {
   });
   fireEvent.keyDown(screen.getByRole("searchbox"), { key: "Escape" });
   expect(text).toBe("");
+});
+
+test("controlado so com onChange, o esc limpa o estado de quem usa, e nao so a tela", () => {
+  function Controlled() {
+    const [text, setText] = useState("clinica");
+    return (
+      <RivoProvider scope="local">
+        <SearchInput aria-label="Buscar nota" value={text} onChange={(event) => setText(event.target.value)} />
+        <output>{`[${text}]`}</output>
+      </RivoProvider>
+    );
+  }
+  render(<Controlled />);
+  const box = screen.getByRole("searchbox") as HTMLInputElement;
+
+  fireEvent.keyDown(box, { key: "Escape" });
+  expect(screen.getByText("[]")).toBeDefined();
+  expect(box.value).toBe("");
+});
+
+test("controlado que recusa a troca, o esc nao deixa a tela diferente do estado", () => {
+  render(
+    <RivoProvider scope="local">
+      <SearchInput aria-label="Buscar nota" value="fixo" onChange={() => {}} />
+    </RivoProvider>,
+  );
+  const box = screen.getByRole("searchbox") as HTMLInputElement;
+
+  fireEvent.keyDown(box, { key: "Escape" });
+  expect(box.value).toBe("fixo");
 });
 
 test("acompanha os tres tamanhos, para alinhar com as irmas da barra de filtro", () => {

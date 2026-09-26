@@ -44,6 +44,14 @@ test("apagar devolve o campo pela metade, sem travar", () => {
   expect(applyMask("", "cpf")).toBe("");
 });
 
+test("apagar o espaco do telefone nao devolve o fecha-parentese com espaco", () => {
+  expect(applyMask("(11)", "telefone")).toBe("(11)");
+  expect(applyMask("(11", "telefone")).toBe("(11");
+  expect(applyPattern("(11)", "(99) 9999")).toBe("(11)");
+  expect(applyPattern("11", "(99) 9999")).toBe("(11");
+  expect(applyPattern("115", "(99) 9999")).toBe("(11) 5");
+});
+
 test("molde escrito na mao tambem vale", () => {
   expect(applyPattern("123456", "99-99-99")).toBe("12-34-56");
 });

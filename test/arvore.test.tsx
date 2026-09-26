@@ -141,6 +141,117 @@ test("espaco escolhe pelo teclado", () => {
   expect(screen.getByText("Escolhidos: contas-pagar")).toBeDefined();
 });
 
+const WITH_LOCKED: TreeNode[] = [
+  {
+    id: "financeiro",
+    label: "Financeiro",
+    children: [
+      { id: "contas-pagar", label: "Contas a pagar" },
+      { id: "contas-receber", label: "Contas a receber", disabled: true },
+      { id: "caixa", label: "Caixa", disabled: true },
+    ],
+  },
+  { id: "arquivo", label: "Arquivo", disabled: true },
+];
+
+function LockedTree({ multiple = true, initial = [] as string[] }) {
+  const [ids, setIds] = useState<string[]>(initial);
+  return (
+    <RivoProvider scope="local">
+      <Tree items={WITH_LOCKED} value={ids} onValueChange={setIds} multiple={multiple} open={["financeiro"]} />
+      <p>Escolhidos: {ids.join(",") || "nenhum"}</p>
+    </RivoProvider>
+  );
+}
+
+test("Enter e espaco num no desabilitado nao escolhem, como o clique nao escolhe", () => {
+  render(<LockedTree multiple={false} />);
+  const locked = screen.getByText("Contas a receber").closest("[role=treeitem]") as HTMLElement;
+  locked.focus();
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "Enter" });
+  expect(screen.getByText("Escolhidos: nenhum")).toBeDefined();
+  fireEvent.keyDown(screen.getByRole("tree"), { key: " " });
+  expect(screen.getByText("Escolhidos: nenhum")).toBeDefined();
+});
+
+test("marcar e desmarcar o pai nao mexe nas folhas desabilitadas", () => {
+  render(<LockedTree initial={["caixa"]} />);
+
+  fireEvent.click(screen.getByText("Financeiro"));
+  expect(screen.getByText("Escolhidos: caixa,contas-pagar")).toBeDefined();
+
+  fireEvent.click(screen.getByText("Financeiro"));
+  expect(screen.getByText("Escolhidos: caixa")).toBeDefined();
+});
+
+test("a busca ignora acento e caixa, dos dois lados", () => {
+  render(<ControlledTree filter="operação" />);
+  expect(screen.getByText("Operacao")).toBeDefined();
+  expect(screen.queryByText("Financeiro")).toBeNull();
+});
+
+test("a busca do TreeSelect acha o rotulo com acento digitando sem acento", () => {
+  const ACCENTED: TreeNode[] = [
+    { id: "sp", label: "São Paulo" },
+    { id: "rj", label: "Rio de Janeiro" },
+  ];
+  render(
+    <RivoProvider scope="local">
+      <TreeSelect items={ACCENTED} placeholder="Escolha a cidade" />
+    </RivoProvider>,
+  );
+  fireEvent.click(screen.getByText("Escolha a cidade"));
+  fireEvent.change(screen.getByLabelText("Buscar na árvore"), { target: { value: "sao" } });
+
+  expect(screen.getByText("São Paulo")).toBeDefined();
+  expect(screen.queryByText("Rio de Janeiro")).toBeNull();
+});
+
+test("Home e End levam a primeira e a ultima linha da tela", () => {
+  render(<ControlledTree />);
+  const rows = screen.getAllByRole("treeitem");
+  rows[2]!.focus();
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "End" });
+  expect(document.activeElement).toBe(rows[rows.length - 1]!);
+
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "Home" });
+  expect(document.activeElement).toBe(rows[0]!);
+});
+
+test("a linha que entra pelo Tab e a ultima que teve foco, e so ela", () => {
+  render(<ControlledTree />);
+  const rows = screen.getAllByRole("treeitem");
+  const tabbable = () => rows.filter((row) => row.tabIndex === 0);
+
+  expect(tabbable()).toEqual([rows[0]!]);
+
+  rows[0]!.focus();
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowDown" });
+  fireEvent.keyDown(screen.getByRole("tree"), { key: "ArrowDown" });
+  expect(document.activeElement).toBe(rows[2]!);
+  expect(tabbable()).toEqual([rows[2]!]);
+});
+
+test("o galho fechado devolve o Tab para uma linha que esta na tela", () => {
+  function Closing() {
+    const [open, setOpen] = useState<string[]>(["financeiro"]);
+    return (
+      <RivoProvider scope="local">
+        <Tree items={TREE} open={open} onOpenChange={setOpen} />
+        <button onClick={() => setOpen([])}>Fechar tudo</button>
+      </RivoProvider>
+    );
+  }
+  render(<Closing />);
+  (screen.getByText("Contas a pagar").closest("[role=treeitem]") as HTMLElement).focus();
+
+  fireEvent.click(screen.getByText("Fechar tudo"));
+  const rows = screen.getAllByRole("treeitem");
+  expect(rows.filter((row) => row.tabIndex === 0)).toEqual([rows[0]!]);
+});
+
 test("o gatilho mostra os nomes enquanto eles cabem", () => {
   render(
     <RivoProvider scope="local">

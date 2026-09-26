@@ -41,6 +41,7 @@ export function PasswordInput({
         }}
       />
       <InputAction
+        disabled={props.disabled}
         aria-label={visible ? hide : show}
         onClick={() => setVisible((current) => !current)}
         className={cn("border-l-0", classNames?.action)}

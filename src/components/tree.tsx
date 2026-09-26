@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { cn } from "../lib/cn";
+import { matchesSearch } from "../shared/highlight";
 import { Checkbox } from "./checkbox";
 
 export type TreeNode = {
@@ -70,6 +71,7 @@ export function Tree({
   className,
   labels: labelsProp,
   onKeyDown: onKeyDownProp,
+  onFocus: onFocusProp,
   ...rest
 }: TreeProps) {
   const labels = { ...LABELS, ...labelsProp };
@@ -87,9 +89,12 @@ export function Tree({
     onValueChange?.(ids);
   }
 
-  const visible = useMemo(() => filterTree(items, filter.trim().toLowerCase()), [items, filter]);
+  const visible = useMemo(() => filterTree(items, filter.trim()), [items, filter]);
 
   const searching = filter.trim().length > 0;
+  const shownIds = shownRows(visible, searching ? null : openIds);
+  const [activeId, setActiveId] = useState<string | undefined>(undefined);
+  const tabbable = activeId !== undefined && shownIds.includes(activeId) ? activeId : shownIds[0];
 
   function toggleOpen(id: string) {
     const next = openIds.includes(id) ? openIds.filter((x) => x !== id) : [...openIds, id];
@@ -98,7 +103,7 @@ export function Tree({
   }
 
   function toggleSelect(node: TreeNode) {
-    const leaves = leavesOf(node);
+    if (node.disabled) return;
 
     if (!multiple) {
       if (node.children?.length) return;
@@ -106,6 +111,8 @@ export function Tree({
       return;
     }
 
+    const leaves = enabledLeavesOf(node);
+    if (leaves.length === 0) return;
     const allChecked = leaves.every((leaf) => picked.includes(leaf));
     const withoutLeaves = picked.filter((id) => !leaves.includes(id));
     change(allChecked ? withoutLeaves : [...withoutLeaves, ...leaves]);
@@ -130,6 +137,9 @@ export function Tree({
       event.preventDefault();
       const next = rows[index + (event.key === "ArrowDown" ? 1 : -1)];
       next?.focus();
+    } else if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      (event.key === "Home" ? rows[0] : rows[rows.length - 1])?.focus();
     } else if (event.key === into && node?.children?.length) {
       event.preventDefault();
       if (!openIds.includes(id)) toggleOpen(id);
@@ -154,14 +164,19 @@ export function Tree({
       role="tree"
       aria-multiselectable={multiple || undefined}
       onKeyDown={onKeyDown}
+      onFocus={(event) => {
+        onFocusProp?.(event);
+        const id = (event.target as HTMLElement).dataset.id;
+        if (id !== undefined && (event.target as HTMLElement).getAttribute("role") === "treeitem") setActiveId(id);
+      }}
       className={cn("flex flex-col", className)}
     >
-      {visible.map((node, index) => (
+      {visible.map((node) => (
         <Branch
           key={node.id}
           node={node}
           level={0}
-          isFirst={index === 0}
+          tabbable={tabbable}
           openIds={searching ? null : openIds}
           picked={picked}
           multiple={multiple}
@@ -177,7 +192,7 @@ export function Tree({
 function Branch({
   node,
   level,
-  isFirst,
+  tabbable,
   openIds,
   picked,
   multiple,
@@ -187,7 +202,7 @@ function Branch({
 }: {
   node: TreeNode;
   level: number;
-  isFirst: boolean;
+  tabbable: string | undefined;
   /** `null` quer dizer tudo aberto, que e o estado da busca. */
   openIds: string[] | null;
   picked: string[];
@@ -212,7 +227,7 @@ function Branch({
         aria-expanded={hasChildren ? isOpen : undefined}
         aria-selected={full}
         aria-disabled={node.disabled || undefined}
-        tabIndex={isFirst && level === 0 ? 0 : -1}
+        tabIndex={node.id === tabbable ? 0 : -1}
         onClick={() => !node.disabled && onToggleSelect(node)}
         style={{ paddingInlineStart: `${level * 1.25 + 0.25}rem` }}
         className={cn(
@@ -274,7 +289,7 @@ function Branch({
               key={child.id}
               node={child}
               level={level + 1}
-              isFirst={false}
+              tabbable={tabbable}
               openIds={openIds}
               picked={picked}
               multiple={multiple}
@@ -294,8 +309,23 @@ export function leavesOf(node: TreeNode): string[] {
   return node.children.flatMap(leavesOf);
 }
 
+function enabledLeavesOf(node: TreeNode): string[] {
+  if (node.disabled) return [];
+  if (!node.children?.length) return [node.id];
+  return node.children.flatMap(enabledLeavesOf);
+}
+
+function shownRows(items: TreeNode[], openIds: string[] | null): string[] {
+  return items.flatMap((node) => [
+    node.id,
+    ...(node.children?.length && (openIds === null || openIds.includes(node.id))
+      ? shownRows(node.children, openIds)
+      : []),
+  ]);
+}
+
 function text(node: TreeNode): string {
-  return (node.search ?? (typeof node.label === "string" ? node.label : "")).toLowerCase();
+  return node.search ?? (typeof node.label === "string" ? node.label : "");
 }
 
 function filterTree(items: TreeNode[], query: string): TreeNode[] {
@@ -303,7 +333,7 @@ function filterTree(items: TreeNode[], query: string): TreeNode[] {
 
   return items.flatMap((node) => {
     const children = node.children ? filterTree(node.children, query) : [];
-    if (text(node).includes(query)) return [node];
+    if (matchesSearch(text(node), query)) return [node];
     if (children.length) return [{ ...node, children: children }];
     return [];
   });

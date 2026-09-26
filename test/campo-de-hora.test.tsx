@@ -704,3 +704,32 @@ test("digitar nao anuncia nada: quem digita ja ouve o proprio teclado", () => {
 
   expect(container.querySelector('[role="status"]')!.textContent).toBe("");
 });
+
+test("dentro de Field com name, o formulario nativo recebe so a hora inteira, e nunca o texto da tela", () => {
+  const { container } = withTheme(
+    <form>
+      <Field name="entrada">
+        <FieldLabel>Entrada</FieldLabel>
+        <TimeField name="entrada" defaultValue="08:30" />
+      </Field>
+      <Field name="saida">
+        <FieldLabel>Saída</FieldLabel>
+        <TimeField defaultValue="18:00" />
+      </Field>
+    </form>,
+  );
+  const data = new FormData(container.querySelector("form")!);
+  expect(data.getAll("entrada")).toEqual(["08:30"]);
+  expect(data.getAll("saida")).toEqual(["18:00"]);
+  expect(screen.getByLabelText("Entrada").hasAttribute("name")).toBe(false);
+});
+
+test("desabilitado, o campo de hora fica fora do formulario nativo", () => {
+  const { container } = withTheme(
+    <form>
+      <TimeField aria-label="Entrada" name="entrada" defaultValue="08:30" disabled />
+    </form>,
+  );
+  const data = new FormData(container.querySelector("form")!);
+  expect(data.has("entrada")).toBe(false);
+});
