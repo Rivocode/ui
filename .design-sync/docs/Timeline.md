@@ -19,6 +19,12 @@ as outras não, e é essa linha que a pessoa procura quando abre a trilha.
 faz a linha prometer que ele já ocorreu, que é o erro que uma trilha de
 auditoria não pode cometer.
 
+Como cor e marcador vazado não chegam a quem ouve, o título leva antes dele um
+texto só para o leitor de tela: "Pendente", e uma palavra por tom ("Sucesso",
+"Atenção", "Erro", "Destaque"; o `neutral` não diz nada). O que cada tom quer
+dizer é do produto, então `labels` troca a palavra: `labels={{ tone: { danger:
+"Cancelada" } }}`, e texto vazio cala.
+
 ## Movimento
 
 Cada `TimelineItem` entra esmaecendo e subindo 4px (`animate-enter`, `--rc-duration-base`), sem escalonar: na montagem a trilha inteira entra de uma vez, e depois só o evento novo entra. Com "reduzir movimento", aparece parada.

@@ -498,6 +498,7 @@ export {
   TimelineItem,
   type TimelineProps,
   type TimelineItemProps,
+  type TimelineItemLabels,
 } from "./components/timeline";
 export { Code, CodeBlock, type CodeProps, type CodeBlockProps } from "./components/code";
 export {

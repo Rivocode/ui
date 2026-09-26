@@ -25,6 +25,10 @@ atualizar: quem fixou o agora não quer relógio.
 `cutoff` decide quando o relativo deixa de ajudar. "há 412 dias" não diz nada;
 a data diz.
 
+Data inválida (`new Date("ontem")`, `NaN`) sai como "—", sem `datetime`, sem
+`title` e sem relógio. A linha da tabela com a data quebrada continua de pé, e
+não derruba a tela inteira com o `RangeError` do `toISOString`.
+
 ## Quando não usar
 
 Quando a data exata é o dado: vencimento, competência, data de emissão. Ali o
