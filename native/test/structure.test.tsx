@@ -301,6 +301,31 @@ describe("useWizard", () => {
     expect(get().step).toBe(1);
   });
 
+  test("dois toques em proximo durante a checagem assincrona andam um passo so", async () => {
+    const { get } = mount();
+    let release!: (ok: boolean) => void;
+    const validate = mock(
+      () =>
+        new Promise<boolean>((resolve) => {
+          release = resolve;
+        }),
+    );
+
+    let first!: Promise<boolean>;
+    let second!: Promise<boolean>;
+    await act(async () => {
+      first = get().next(validate);
+      second = get().next(validate);
+    });
+    expect(validate).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      release(true);
+      await first;
+    });
+    expect(await second).toBe(false);
+    expect(get().step).toBe(1);
+  });
+
   test("goTo aceita o indice do router, e o prende dentro da lista", () => {
     const { get } = mount();
 
