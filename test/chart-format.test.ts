@@ -117,3 +117,10 @@ test("o dinheiro curto segue o sinal do currency, e o zero arredondado nao tem s
   expect(plain(currencyShort(-0.4))).toBe("R$ 0");
   expect(compact(-12)).toBe("-12");
 });
+
+test("trilhao ganha faixa propria, e o bilhao que arredonda a mil sobe para ela", () => {
+  expect(compact(1e12)).toBe("1T");
+  expect(compact(999_950_000_000)).toBe("1T");
+  expect(compactWords(2.5e12)).toBe("2,5 tri");
+  expect(currencyShort(-1e12)).toBe("-R$ 1T");
+});

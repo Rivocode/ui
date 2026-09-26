@@ -18,13 +18,14 @@ export function currency(value: number) {
 }
 
 const SUFFIXES = {
-  symbol: { billion: "B", million: "M", thousand: "K", tight: true },
-  word: { billion: "bi", million: "mi", thousand: "mil", tight: false },
+  symbol: { trillion: "T", billion: "B", million: "M", thousand: "K", tight: true },
+  word: { trillion: "tri", billion: "bi", million: "mi", thousand: "mil", tight: false },
 } as const;
 
 function abbreviate(value: number, shape: keyof typeof SUFFIXES) {
-  const { billion, million, thousand, tight } = SUFFIXES[shape];
+  const { trillion, billion, million, thousand, tight } = SUFFIXES[shape];
   const tiers = [
+    { at: 1_000_000_000_000, suffix: trillion },
     { at: 1_000_000_000, suffix: billion },
     { at: 1_000_000, suffix: million },
     { at: 1_000, suffix: thousand },
