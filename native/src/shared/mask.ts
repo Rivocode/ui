@@ -30,15 +30,20 @@ export function applyPattern(text: string, pattern: string): string {
   let position = 0;
 
   for (const character of text) {
-    while (position < pattern.length && !MARKS.has(pattern[position]!)) {
-      output += pattern[position];
-      position += 1;
-    }
-    if (position >= pattern.length) break;
+    let next = position;
+    while (next < pattern.length && !MARKS.has(pattern[next]!)) next += 1;
+    if (next >= pattern.length) break;
 
-    if (matches(character, pattern[position]!)) {
-      output += pattern[position] === "A" ? character.toUpperCase() : character;
+    if (next > position && character === pattern[position]) {
+      output += character;
       position += 1;
+      continue;
+    }
+
+    if (matches(character, pattern[next]!)) {
+      output += pattern.slice(position, next);
+      output += pattern[next] === "A" ? character.toUpperCase() : character;
+      position = next + 1;
     }
   }
 
