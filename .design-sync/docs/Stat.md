@@ -11,6 +11,8 @@ O valor chega formatado porque formatar é decisão de domínio: dinheiro sai
 abreviado do `currencyShort`, contagem sai crua, percentual traz o sinal.
 
 `delta` é a variação, com `deltaLabel` dizendo contra o quê ("sobre julho").
+`delta={0}` sai neutro: sem seta, na cor do texto secundário, e sem "alta de"
+para o leitor de tela, porque não mudar não é subir.
 Quando subir é ruim (vencidas, custo, inadimplência), passe
 `invert`: a seta continua apontando para onde o número foi, o que inverte é o
 julgamento da cor. A direção também é falada para leitor de tela, não só

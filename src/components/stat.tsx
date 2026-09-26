@@ -14,7 +14,7 @@ export type StatProps = Omit<ComponentPropsWithoutRef<"div">, "children"> & {
   /** O numero, ja formatado: `currencyShort(246_700)`. */
   value: ReactNode;
   /**
-   * A variacao. Positivo sobe, negativo desce.
+   * A variacao. Positivo sobe, negativo desce, e zero sai neutro: sem seta e em `text-fg-muted`.
    *
    * A unidade e do `deltaFormat`, e nao do numero: sem ele o padrao continua
    * sendo porcentagem.
@@ -97,7 +97,8 @@ export function Stat({
   ...rest
 }: StatProps) {
   const text = { ...LABELS, ...labels };
-  const rose = (delta ?? 0) >= 0;
+  const flat = delta === 0;
+  const rose = (delta ?? 0) > 0;
   const good = invert ? !rose : rose;
   const writeDelta = resolveFormat(deltaFormat) as (value: number) => string;
 
@@ -151,21 +152,25 @@ export function Stat({
               deltaVariant === "pill"
                 ? cn(
                     "rounded-pill px-1.5 py-0.5 font-rc-medium",
-                    good
-                      ? "bg-success-subtle text-success-text"
-                      : "bg-danger-subtle text-danger-text",
+                    flat
+                      ? "bg-surface-raised text-fg-muted"
+                      : good
+                        ? "bg-success-subtle text-success-text"
+                        : "bg-danger-subtle text-danger-text",
                   )
-                : good
-                  ? "text-success-text"
-                  : "text-danger-text",
+                : flat
+                  ? "text-fg-muted"
+                  : good
+                    ? "text-success-text"
+                    : "text-danger-text",
             )}
           >
-            {rose ? (
+            {flat ? null : rose ? (
               <ArrowUpRight size={13} aria-hidden="true" />
             ) : (
               <ArrowDownRight size={13} aria-hidden="true" />
             )}
-            <span className="sr-only">{rose ? "alta de" : "queda de"} </span>
+            {!flat && <span className="sr-only">{rose ? "alta de" : "queda de"} </span>}
             {writeDelta(Math.abs(delta))}
             {deltaLabel ? ` ${deltaLabel}` : ""}
           </p>

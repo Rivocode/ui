@@ -42,6 +42,25 @@ test("a direcao e falada, nao so pintada", () => {
   expect(screen.getByText(/queda de/)).toBeDefined();
 });
 
+test("delta zero sai neutro: sem seta, sem cor de julgamento e sem alta de", () => {
+  const { container } = stat({ delta: 0, deltaLabel: "sobre julho" });
+  const line = screen.getByText(/0% sobre julho/);
+
+  expect(line.querySelector("svg")).toBeNull();
+  expect(line.className.split(" ")).toContain("text-fg-muted");
+  expect(line.className.split(" ")).not.toContain("text-success-text");
+  expect(container.textContent).not.toContain("alta de");
+  expect(container.textContent).not.toContain("queda de");
+});
+
+test("delta zero em pastilha tambem sai neutro, e com invert continua neutro", () => {
+  stat({ delta: 0, deltaVariant: "pill", invert: true });
+  const pill = screen.getByText(/0%/);
+
+  expect(pill.className.split(" ")).toContain("text-fg-muted");
+  expect(pill.className.split(" ")).not.toContain("text-danger-text");
+});
+
 test("sem delta nao ha linha de variacao", () => {
   const { container } = stat();
   expect(container.querySelector(".text-success-text")).toBeNull();

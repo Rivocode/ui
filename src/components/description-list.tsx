@@ -19,8 +19,8 @@ export type DescriptionItemProps = Omit<ComponentProps<"div">, "children"> & {
 export function DescriptionItem({ label, children, className, ...props }: DescriptionItemProps) {
   return (
     <div {...props} className={cn("flex items-center justify-between gap-4 py-2.5", className)}>
-      <dt className="shrink-0 text-sm text-fg-muted">{label}</dt>
-      <dd className="min-w-0 text-right text-sm text-fg">{children}</dd>
+      <dt className="max-w-1/2 shrink-0 text-sm wrap-anywhere text-fg-muted">{label}</dt>
+      <dd className="min-w-0 text-right text-sm wrap-anywhere text-fg">{children}</dd>
     </div>
   );
 }

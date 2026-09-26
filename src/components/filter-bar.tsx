@@ -128,7 +128,7 @@ export type FilterBarProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
   label?: string;
   /** Guarda a altura da linha quando nao ha filtro nenhum, para a tela nao pular quando o primeiro entra. `false` some com a linha e mantem so o aviso. */
   reserve?: boolean;
-  /** A partir de quantos filtros o "limpar" aparece. Com `1` ele fica sempre, e com `Infinity` nunca. */
+  /** A partir de quantos filtros removiveis o "limpar" aparece; o travado nao conta nem sai. Com `1` ele fica sempre, e com `Infinity` nunca. */
   clearFrom?: number;
   /** A altura das fichas. */
   size?: "sm" | "md";
@@ -163,6 +163,8 @@ export function FilterBar({
   ...props
 }: FilterBarProps) {
   const total = filters.length;
+  const locked = filters.filter((filter) => filter.removable === false);
+  const clearable = total - locked.length;
   const status = labels.status ?? applied;
   const clear = labels.clear ?? ((count: number) => `Limpar ${counted(count)}`);
   const scroll = labels.scroll ?? ((name: string) => `${name}: role para ver todos`);
@@ -172,7 +174,7 @@ export function FilterBar({
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const clearRef = useRef<HTMLButtonElement>(null);
-  const leaving = useRef<{ id: string; index: number } | null>(null);
+  const leaving = useRef<{ id: string; index: number } | "all" | null>(null);
   const rtl = useDirection() === "rtl";
   const [more, setMore] = useState({ before: false, after: false });
   const arrived = useArrivals(filters.map((filter) => filter.id));
@@ -207,7 +209,20 @@ export function FilterBar({
   useEffect(() => {
     const gone = leaving.current;
     leaving.current = null;
-    if (!gone || filters.some((filter) => filter.id === gone.id)) return;
+    if (!gone) return;
+
+    if (gone === "all") {
+      const root = rootRef.current;
+      if (!root) return;
+      if (!root.hasAttribute("tabindex")) {
+        root.setAttribute("tabindex", "-1");
+        root.addEventListener("blur", () => root.removeAttribute("tabindex"), { once: true });
+      }
+      root.focus();
+      return;
+    }
+
+    if (filters.some((filter) => filter.id === gone.id)) return;
 
     const crosses = [...(listRef.current?.querySelectorAll("li") ?? [])].map((item) =>
       item.querySelector("button"),
@@ -302,7 +317,7 @@ export function FilterBar({
         </ul>
       )}
 
-      {total >= clearFrom && canClear && (
+      {clearable > 0 && clearable >= clearFrom && canClear && (
         <Button
           ref={clearRef}
           type="button"
@@ -310,12 +325,14 @@ export function FilterBar({
           size="sm"
           disabled={disabled}
           onClick={() => {
+            const focused = document.activeElement;
+            leaving.current = focused && rootRef.current?.contains(focused) ? "all" : null;
             onClear?.();
-            onFiltersChange?.([]);
+            onFiltersChange?.(locked);
           }}
           className={cn("shrink-0", classNames?.clear)}
         >
-          {clear(total)}
+          {clear(clearable)}
         </Button>
       )}
 

@@ -25,8 +25,9 @@ const [filters, setFilters] = useState<AppliedFilter[]>([
 `onFiltersChange` recebe **o que sobrou**, no xis e no limpar. É o mesmo par
 do `onValueChange` do `TagsInput`, e sozinho ele já basta. `onRemove` existe
 ao lado dele para quem precisa saber *qual* filtro saiu, e recebe o objeto
-inteiro; `onClear` dispara antes do `onFiltersChange([])`, para a telemetria
-que conta "quantas vezes alguém desiste de tudo".
+inteiro; `onClear` dispara antes do `onFiltersChange`, para a telemetria
+que conta "quantas vezes alguém desiste de tudo". O limpar entrega a lista só
+com os filtros travados, e não a lista vazia (veja "Filtro que o app trava").
 
 Cada filtro é `{ id, label, value }`. O `id` é a chave estável: é por ele que
 a peça remove, e não por índice. O `label` é o campo (`Cliente`) e o `value` é
@@ -180,6 +181,13 @@ antes do toque. Para outra régua, `clearFrom={1}` deixa o botão sempre, e
 porque explica o resultado, e sair dele não é escolha de quem lê. Hoje esse
 filtro costuma ser simplesmente omitido, e aí a lista mente sobre o próprio
 recorte.
+
+O limpar **não leva o travado junto**: `onFiltersChange` recebe só os filtros
+com `removable: false`, e a contagem do botão conta só os que ele tira. Com a
+filial travada e dois filtros escolhidos, o botão diz "Limpar 2 filtros", e a
+régua do `clearFrom` também mede só os removíveis. Depois do limpar o foco
+pousa na raiz `role="group"`, com o mesmo `tabindex="-1"` de emergência do
+pouso depois do xis.
 
 ## Enquanto a consulta refaz
 

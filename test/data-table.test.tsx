@@ -419,3 +419,105 @@ test("virtualizada, filtrar continua valendo e a contagem acompanha", () => {
   expect(container.querySelector("table")!.getAttribute("aria-rowcount")).toBe("2");
   expect(bodyRows(container)[0]!.querySelector("td")!.textContent).toBe("9007");
 });
+
+function withProvider(node: React.ReactNode) {
+  return <RivoProvider scope="local">{node}</RivoProvider>;
+}
+
+test("quando data encolhe abaixo da pagina aberta, a tabela volta para a ultima que existe", () => {
+  const props = { columns: COLUMNS, rowKey: (nota: Invoice) => nota.id, pageSize: 2 };
+  const { container, rerender } = render(withProvider(<DataTable data={INVOICES} {...props} />));
+
+  fireEvent.click(screen.getByRole("button", { name: /próxima página/i }));
+  fireEvent.click(screen.getByRole("button", { name: /próxima página/i }));
+  expect(firstColumn(container)).toEqual(["4817"]);
+
+  rerender(withProvider(<DataTable data={INVOICES.slice(0, 3)} {...props} />));
+  expect(firstColumn(container)).toEqual(["4815"]);
+  expect(screen.getByText(/3–3 de 3/)).toBeDefined();
+});
+
+test("a selecao nao controlada poda a chave da linha que saiu de data", () => {
+  const vistas: string[][] = [];
+  const props = {
+    columns: COLUMNS,
+    rowKey: (nota: Invoice) => nota.id,
+    selectable: true,
+    onValueChange: (keys: string[]) => vistas.push(keys),
+  };
+  const { rerender } = render(withProvider(<DataTable data={INVOICES} {...props} />));
+
+  fireEvent.click(within(screen.getByText("Padaria Aurora").closest("tr")!).getByRole("checkbox"));
+  fireEvent.click(within(screen.getByText("Otica Central").closest("tr")!).getByRole("checkbox"));
+  expect(vistas.at(-1)).toEqual(["3", "4"]);
+
+  act(() => {
+    rerender(
+      withProvider(<DataTable data={INVOICES.filter((nota) => nota.id !== "3")} {...props} />),
+    );
+  });
+  expect(vistas.at(-1)).toEqual(["4"]);
+
+  fireEvent.click(within(screen.getByText("Acougue do Ze").closest("tr")!).getByRole("checkbox"));
+  expect(vistas.at(-1)).toEqual(["4", "5"]);
+});
+
+type Person = { id: string; name: string; score: number | null | undefined };
+
+const PEOPLE: Person[] = [
+  { id: "1", name: "Zuleica", score: 3 },
+  { id: "2", name: "Álvaro", score: null },
+  { id: "3", name: "Érica", score: -2 },
+  { id: "4", name: "bruno", score: undefined },
+  { id: "5", name: "Item 10", score: 0 },
+  { id: "6", name: "Item 9", score: 8 },
+];
+
+const PEOPLE_COLUMNS: Column<Person>[] = [
+  { key: "name", header: "Nome", sortable: true },
+  { key: "score", header: "Pontos", sortable: true },
+];
+
+function people() {
+  return render(
+    withProvider(<DataTable data={PEOPLE} columns={PEOPLE_COLUMNS} rowKey={(item) => item.id} />),
+  );
+}
+
+test("a ordem de texto segue o portugues: acento junto da letra, caixa ignorada, numero pelo valor", () => {
+  const { container } = people();
+  fireEvent.click(screen.getByRole("button", { name: /nome/i }));
+  expect(firstColumn(container)).toEqual([
+    "Álvaro",
+    "bruno",
+    "Érica",
+    "Item 9",
+    "Item 10",
+    "Zuleica",
+  ]);
+});
+
+test("vazio fica no fim nos dois sentidos, e nao conta como zero", () => {
+  const { container } = people();
+  const header = screen.getByRole("button", { name: /pontos/i });
+
+  fireEvent.click(header);
+  expect(firstColumn(container)).toEqual([
+    "Érica",
+    "Item 10",
+    "Zuleica",
+    "Item 9",
+    "Álvaro",
+    "bruno",
+  ]);
+
+  fireEvent.click(header);
+  expect(firstColumn(container)).toEqual([
+    "Item 9",
+    "Zuleica",
+    "Item 10",
+    "Érica",
+    "Álvaro",
+    "bruno",
+  ]);
+});
