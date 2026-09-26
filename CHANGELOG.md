@@ -1,5 +1,12 @@
 # Mudancas
 
+## 1.1.3
+
+- A barra de rolagem de qualquer caixa dentro do tema sai fina, arredondada e
+  na cor da borda, em vez da barra cinza do sistema, e troca junto com o tema.
+  A regra mora na camada `base` do CSS: a classe de quem usa vence, e as abas e
+  o carrossel continuam sem barra.
+
 ## 1.1.2
 
 - `Steps`: o titulo do passo fica no meio do circulo do numero, com ou sem
