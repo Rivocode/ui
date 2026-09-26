@@ -402,3 +402,80 @@ test("ChartDonut e ChartGauge: a dica da legenda e o nome montado saem de labels
   );
   expect(byLabel(gauge, "72 of 100, ok. ok from 0 to 100")).toHaveLength(1);
 });
+
+describe("estado vazio dos graficos", () => {
+  const empty = { title: "Nada no período", description: "Nenhum dado chegou para esta tela." };
+
+  test("ChartFunnel mostra o empty com lista vazia ou soma zero", () => {
+    for (const data of [
+      [],
+      [
+        { etapa: "Visita", total: 0 },
+        { etapa: "Compra", total: 0 },
+      ],
+    ]) {
+      const screen = render(
+        <ChartFunnel data={data} valueKey="total" nameKey="etapa" empty={empty} />,
+      );
+      expect(textOf(screen)).toContain("Nada no período");
+      expect(textOf(screen)).not.toContain("Visita");
+    }
+    const full = render(
+      <ChartFunnel
+        data={[{ etapa: "Visita", total: 10 }]}
+        valueKey="total"
+        nameKey="etapa"
+        empty={empty}
+      />,
+    );
+    expect(textOf(full)).not.toContain("Nada no período");
+  });
+
+  test("ChartTreemap mostra o empty com lista vazia ou soma zero", () => {
+    for (const data of [[], [{ nome: "A", total: 0 }]]) {
+      const screen = render(
+        <ChartTreemap data={data} valueKey="total" nameKey="nome" empty={empty} />,
+      );
+      expect(textOf(screen)).toContain("Nada no período");
+      expect(byRole(screen, "button")).toHaveLength(0);
+    }
+    const full = render(
+      <ChartTreemap
+        data={[{ nome: "A", total: 3 }]}
+        valueKey="total"
+        nameKey="nome"
+        empty={empty}
+      />,
+    );
+    expect(textOf(full)).not.toContain("Nada no período");
+  });
+
+  test("ChartHeatmap mostra o empty com lista vazia ou grade toda em zero", () => {
+    for (const data of [[], [{ dia: "Seg", hora: "8h", total: 0 }]]) {
+      const screen = render(
+        <ChartHeatmap
+          data={data}
+          rowKey="dia"
+          columnKey="hora"
+          valueKey="total"
+          label="Emissões"
+          empty={empty}
+        />,
+      );
+      expect(textOf(screen)).toContain("Nada no período");
+      expect(byRole(screen, "adjustable")).toHaveLength(0);
+    }
+    const full = render(
+      <ChartHeatmap
+        data={EMISSIONS}
+        rowKey="dia"
+        columnKey="hora"
+        valueKey="total"
+        label="Emissões"
+        empty={empty}
+      />,
+    );
+    expect(textOf(full)).not.toContain("Nada no período");
+    expect(byRole(full, "adjustable")).toHaveLength(1);
+  });
+});

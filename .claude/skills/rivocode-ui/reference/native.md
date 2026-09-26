@@ -449,7 +449,7 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 | `Card` | ✔ traduz | com `CardHeader`, `CardTitle`, `CardDescription` e `CardContent` (sem `CardFooter`) |
 | `Carousel` | ✔ traduz | sobre `FlatList` horizontal com `pagingEnabled`; a lista vem por `items` e `renderItem`, o `index` é controlado, e não há `autoplay` |
 | `ChartContainer` | ✔ traduz | vive em `@rivocode/ui-native/chart`; os quatro finais atravessam com os mesmos nomes, e o desenho entra por função: não há Recharts, nem contentor que meça, nem `var(--color-série)` |
-| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia e leva nome e valor ao meio; `format` aceita nome de formatador ou função, como no web, e as pontas saem retas |
+| `ChartDonut` | ✔ traduz | a legenda é o controle: sem dica para abrir no toque, tocar a linha acende a fatia, e o miolo escrito continua no meio; `format` aceita nome de formatador ou função, como no web, as pontas saem retas, e `empty` ocupa o lugar da rosca sem dado |
 | `ChartFunnel` | ✔ traduz | mesmas props, com `color` como papel de token; cada etapa é uma parada com nome, número e taxa na mesma frase |
 | `ChartGauge` | ✔ traduz | atravessa quase inteiro, como o `ChartRadial`; a régua das faixas entra no nome acessível, porque não há descrição separada no toque |
 | `ChartHeatmap` | ✔ traduz | a grade vira uma parada `adjustable` só, como o `Tracker`, e o dedo escolhe a célula; sem dica, a leitura mora numa linha embaixo |

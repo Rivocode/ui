@@ -70,7 +70,9 @@ deitada lê melhor, e ainda cabe o rótulo por extenso.
 
 Traduz, em `@rivocode/ui-native/chart`, com as mesmas props: `valueKey`, `nameKey`, `config`, `thickness`, `legend`, `centerValue`, `centerLabel` e `format`, que aceita o nome de um formatador da casa (`currencyShort`, `percent`) ou uma função, como no web. Uma mudança de tipo: o miolo é `string` e não `ReactNode`.
 
-**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende a fatia dela e manda nome e valor para o meio, no lugar exato onde o web põe a dica; tocar de novo devolve o total.
+**O que muda de verdade é como se lê uma fatia.** No web o ponteiro pousa no anel, a dica diz nome e valor, e o total sai de cena para os dois números não se empilharem. No toque não existe pousar, e o gesto equivalente mora na **legenda**, não na fatia: tocar a linha acende a fatia dela, e a própria linha já diz nome e valor. O miolo escrito (`centerValue` e `centerLabel`) fica sempre visível, a mesma decisão do web; só quando não há miolo o meio vazio mostra a fatia lida. Tocar de novo apaga a leitura.
+
+O número de cada linha é o que chegou, negativo inclusive: só o arco usa o piso de zero, porque fatia não tem tamanho negativo. O anel de fundo fica sempre desenhado, no token de borda, e sem fatia nenhuma o desenho não anuncia nada ao leitor de tela. Com `empty` (`{ title, description, action?, icon? }`, o formato do `ChartContainer`), lista vazia ou soma zero mostram o estado vazio no lugar da rosca.
 
 A fatia não é o alvo, e a razão é aritmética: um anel de 190px tem cerca de 600px de contorno para dividir entre até seis fatias, e a de 2% fica com doze (a mesma conta que tirou a dica por quadrado do `Tracker`). A linha da legenda tem 44px e a largura da tela.
 
