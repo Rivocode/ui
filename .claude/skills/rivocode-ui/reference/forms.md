@@ -72,7 +72,7 @@ nome diz o **formato**, e não a peça, porque cada um serve a família inteira:
 
 | Adaptador | Serve |
 |---|---|
-| `forValue` | Tudo que tem `value` e `onValueChange`: `Select`, `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider`, `OTPField`, `Combobox`, `TreeSelect`, e o `DateRangePicker` com o período em texto (`IsoDateRange \| null`) |
+| `forValue` | Tudo que tem `value` e `onValueChange`: `MaskedInput`, `Select`, `RadioGroup`, `ToggleGroup`, `NumberField`, `Slider`, `OTPField`, `Combobox`, `TreeSelect`, e o `DateRangePicker` com o período em texto (`IsoDateRange \| null`) |
 | `forChecked` | Tudo que tem `checked` e `onCheckedChange`: `Checkbox` e `Switch` |
 | `forDate` | O `DatePicker`, cujo valor é `Date` |
 

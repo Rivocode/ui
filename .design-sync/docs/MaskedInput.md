@@ -76,6 +76,21 @@ const schema = z.object({
 Valide ao sair do campo, e não a cada tecla: o documento pela metade é sempre
 inválido, e acusar quem ainda está digitando é ruído.
 
+## No formulário
+
+Com o `@rivocode/ui/form`, o campo entra pelo `forValue`, que liga o
+`onValueChange` ao react-hook-form: o formulário guarda o texto já mascarado, e
+o schema confere com o validador, que aceita o texto com pontuação.
+
+```tsx
+<FormField name="document" label="CNPJ do cliente">
+  {(field) => <MaskedInput {...forValue(field)} mask="cnpj" />}
+</FormField>
+```
+
+O valor que chega por `value` sempre aparece com a máscara, mesmo cru: um
+`"11222333000181"` vindo do servidor aparece `11.222.333/0001-81`.
+
 ## As máscaras fora do campo
 
 A mesma lógica sai como função, para o texto que a tela **mostra** e nunca

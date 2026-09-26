@@ -137,3 +137,9 @@ test("backspace com alt, ctrl ou cmd sobre um literal fica com o navegador, que 
     view.unmount();
   }
 });
+
+test("o valor controlado aparece com a mascara, mesmo quando chega cru", () => {
+  render(<MaskedInput aria-label="CNPJ" mask="cnpj" value="11222333000181" onValueChange={() => {}} />);
+
+  expect((screen.getByLabelText("CNPJ") as HTMLInputElement).value).toBe("11.222.333/0001-81");
+});

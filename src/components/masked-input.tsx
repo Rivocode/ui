@@ -97,7 +97,7 @@ export function MaskedInput({
 }: MaskedInputProps) {
   const controlled = value !== undefined;
   const [internal, setInternal] = useState(() => applyMask(defaultValue, mask));
-  const text = controlled ? value : internal;
+  const text = controlled ? applyMask(value, mask) : internal;
   const inputRef = useRef<HTMLInputElement | null>(null);
   const pendingCaret = useRef<number | null>(null);
   const setRefs = useMemo(() => assignRefs(inputRef, ref), [ref]);

@@ -6,6 +6,10 @@
   Router, o React Router ou o Next, o item navega sem recarregar a pagina e
   continua com o desenho, o `aria-current` do `active` e o fechar da folha no
   celular. Sem ele, o item continua um `<a href>`.
+- `MaskedInput` controlado mostra o valor com a mascara mesmo quando ele chega
+  cru, como o nativo ja fazia: `{...field}` do react-hook-form deixava o CNPJ
+  sem pontuacao na tela. A pagina da peca e a skill ensinam o `forValue`, que
+  guarda o texto mascarado.
 - `Select`: a lista rola dentro da caixa quando a caixa tem altura maxima. A
   caixa virou uma coluna, e a lista de dentro encolhe ate caber; antes, a
   altura ficava na caixa e os itens vazavam para fora dela. Era o que se via na
