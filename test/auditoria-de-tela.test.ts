@@ -288,10 +288,21 @@ const CASES: [rule: string, bad: string, good: string][] = [
     '<Input type="number" name="price" aria-label="Preço" />',
     '<CurrencyInput aria-label="Preço" />',
   ],
+  [
+    "dado-sem-mascara",
+    "<Field><FieldLabel>CPF do titular</FieldLabel><Input /></Field>",
+    '<Field><FieldLabel>CPF do titular</FieldLabel><MaskedInput mask="cpf" /></Field>',
+  ],
+  ["dado-sem-mascara", '<Input aria-label="Telefone" />', '<Input aria-label="Telefone" readOnly />'],
+  [
+    "passo-sem-nome",
+    '<Steps steps={[{ id: "a", title: "Passo 1" }]} step={0} />',
+    '<Steps steps={[{ id: "a", title: "Cliente" }]} step={0} />',
+  ],
 ];
 
 const IMPORTS =
-  'import { Button, CurrencyInput, DataTable, Dialog, Field, FieldLabel, IconButton, Input, Slider, Stat, Switch, currencyShort } from "@rivocode/ui";\n';
+  'import { Button, CurrencyInput, DataTable, Dialog, Field, FieldLabel, IconButton, Input, MaskedInput, Slider, Stat, Steps, Switch, currencyShort } from "@rivocode/ui";\n';
 
 test("cada regra morde a tela errada e solta a tela consertada", () => {
   expect(CASES.length).toBeGreaterThan(20);

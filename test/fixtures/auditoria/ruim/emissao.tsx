@@ -8,6 +8,8 @@ import { Button as SubmitButton } from "@rivocode/ui/form";
 import { Card } from "@rivocode/ui/dist/card";
 import { Trash } from "lucide-react";
 
+export const STEPS = [{ id: "dados", title: "Passo 1" }, { id: "fim", title: "Passo 2" }];
+
 const PAYLOAD = "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Fulano de Tal6008BRASILIA62070503***63041D3D";
 
 type Row = { id: string };

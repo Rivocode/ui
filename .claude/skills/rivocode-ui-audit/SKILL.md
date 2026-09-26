@@ -126,6 +126,8 @@ onde. Peso: crítico 10, sério 5, moderado 3, menor 1.
 | `consulta-sem-finais` | moderado | `DataTable`, `ChartContainer` ou `DataList` de consulta (tem `isLoading`, `isError`, `onRetry`, ou o arquivo busca dado) sem um dos finais | SKILL.md, quatro finais |
 | `texto-sem-acento` | moderado | texto de tela com palavra do dicionário da casa sem acento, e `-cao`/`-coes` | texto.md |
 | `texto-em-ingles` | moderado | texto de tela com palavra de interface em inglês (`Save`, `Cancel`, `Loading`, `the`…) | SKILL.md; texto.md |
+| `passo-sem-nome` | moderado | `"Passo 2"`, `"Etapa 3"` ou `"Step 1"` escrito como texto, o nome de passo que não diz a decisão | fluxo.md, Uma tela ou várias |
+| `dado-sem-mascara` | moderado | `Input` comum num campo de CPF, CNPJ, telefone, celular, CEP ou placa, lido pelo `name`, `id`, `aria-label`, `placeholder`, `autoComplete` ou pelo `FieldLabel` do `Field` em volta; campo `readOnly` ou `disabled` passa, porque ninguém digita nele | SKILL.md, O campo sai do dado |
 | `movimento-literal` | menor | `duration-300`, `ease-[cubic-bezier(…)]` | convencoes.md, Movimento |
 | `recharts-direto` | menor | `recharts` importada no web | convencoes.md, `/chart` |
 
@@ -142,6 +144,11 @@ O script não as acha: elas entram pelo JSON, e pesam igual às mecânicas.
 | `texto-generico` | moderado | "Confirmar", "OK", "Algo deu errado", "Nenhum resultado" sem porta, o par "Cancelar" e "Cancelar nota" | reference/texto.md |
 | `finais-da-consulta` | moderado | consulta que só desenha o caminho feliz fora do `DataTable` e do `ChartContainer` | reference/components.md |
 | `titulos-fora-de-ordem` | moderado | `h1` que pula para `h3`, dois `h1` na página | reference/a11y.md |
+| `destrutivo-sem-protecao` | sério | excluir de vez, cancelar nota, emitir: ação sem volta que dispara no clique, sem `AlertDialog` e sem desfazer | reference/fluxo.md, Confirmar, desfazer, ou nada |
+| `wizard-sem-dependencia` | moderado | `Steps` quebrando um cadastro que é só comprido, sem etapa que dependa da anterior | reference/fluxo.md, Wizard ou formulário único |
+| `confirmacao-em-reversivel` | moderado | `AlertDialog` ou `Popconfirm` para arquivar, remover da lista ou excluir rascunho, o que dava para desfazer no aviso | reference/fluxo.md, Confirmar, desfazer, ou nada |
+| `rascunho-que-some` | moderado | wizard ou formulário longo que perde o que foi digitado ao recarregar, ao errar o envio ou ao fechar | reference/fluxo.md, O wizard bem feito |
+| `sucesso-silencioso` | menor | ação que termina sem nada na tela dizer que terminou | reference/fluxo.md, O que deixa o produto esperto |
 
 Achado de julgamento aponta arquivo e linha que o script auditou; o de projeto
 aponta o arquivo que você quiser. Regra que não existe e arquivo fora da

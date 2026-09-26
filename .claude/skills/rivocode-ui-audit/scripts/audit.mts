@@ -400,6 +400,69 @@ export const RULES: Rule[] = [
     source: "reference/a11y.md, Ordem de títulos",
   },
   {
+    id: "passo-sem-nome",
+    severity: "moderado",
+    kind: "mecanica",
+    scope: "arquivo",
+    title: "Passo de wizard chamado pelo número",
+    fix: 'Nome de substantivo que diz a decisão do passo: "Cliente", "Serviço", "Revisão". Passo que só se chama "Passo 2" é rolagem, e o conteúdo cabe num formulário só.',
+    source: "reference/fluxo.md, Uma tela ou várias",
+  },
+  {
+    id: "dado-sem-mascara",
+    severity: "moderado",
+    kind: "mecanica",
+    scope: "arquivo",
+    title: "Campo de documento, telefone ou CEP num Input comum",
+    fix: '`MaskedInput` com `mask="cpf"`, `"cnpj"`, `"telefone"` ou `"placa"`, e `PostalCodeField` para CEP. A máscara pontua, põe o teclado numérico, e o `onValueChange` entrega o cru.',
+    source: "SKILL.md, O campo sai do dado; reference/components.md",
+  },
+  {
+    id: "wizard-sem-dependencia",
+    severity: "moderado",
+    kind: "julgamento",
+    scope: "arquivo",
+    title: "Wizard para o que é só comprido",
+    fix: "Um formulário só, em seções com `Fieldset`, e o raro num `Collapsible`. Passos só quando uma etapa depende da anterior.",
+    source: "reference/fluxo.md, Wizard ou formulário único: a checagem",
+  },
+  {
+    id: "confirmacao-em-reversivel",
+    severity: "moderado",
+    kind: "julgamento",
+    scope: "arquivo",
+    title: "Confirmação para o que dava para desfazer",
+    fix: 'Faça na hora e ofereça "Desfazer" no aviso, com `actionProps` do `useToast`. `AlertDialog` fica para o que não tem volta.',
+    source: "reference/fluxo.md, Confirmar, desfazer, ou nada",
+  },
+  {
+    id: "destrutivo-sem-protecao",
+    severity: "serio",
+    kind: "julgamento",
+    scope: "arquivo",
+    title: "Ação sem volta sem confirmação nem desfazer",
+    fix: "`AlertDialog` que nomeia o objeto e diz o efeito, ou, se der para reverter, desfazer no aviso.",
+    source: "reference/fluxo.md, Confirmar, desfazer, ou nada",
+  },
+  {
+    id: "rascunho-que-some",
+    severity: "moderado",
+    kind: "julgamento",
+    scope: "arquivo",
+    title: "Tarefa longa que perde o que foi digitado",
+    fix: "O rascunho volta preenchido depois de erro, de recarregar e de fechar sem querer: `useLocalStorage` enquanto a pessoa digita, limpo no sucesso do envio.",
+    source: "reference/fluxo.md, O wizard bem feito",
+  },
+  {
+    id: "sucesso-silencioso",
+    severity: "menor",
+    kind: "julgamento",
+    scope: "arquivo",
+    title: "Ação que termina sem dizer que terminou",
+    fix: 'Aviso com o que aconteceu e o próximo passo: "Nota 4816 emitida. Ver PDF".',
+    source: "reference/fluxo.md, O que deixa o produto esperto",
+  },
+  {
     id: "provider-ausente",
     severity: "critico",
     kind: "julgamento",
@@ -1933,6 +1996,37 @@ function checkCode(ctx: Context) {
         mentions.index,
         "CPF ou CNPJ conferido sem o dígito verificador",
       );
+  }
+
+  for (const literal of parsed.literals) {
+    if (/^\s*(?:passo|etapa|step)\s*\d+\s*$/i.test(literal.value))
+      add("passo-sem-nome", literal.start, `\`${literal.value}\` como nome de passo`);
+  }
+
+  const DATA_FIELD = /\b(?:cpf|cnpj|telefone|celular|whatsapp|cep|placa)\b/i;
+  for (const node of parsed.elements) {
+    if (ctx.house(node) !== "Input") continue;
+    const locked = ["readOnly", "disabled"].some((name) => {
+      const attribute = ctx.attr(node, name);
+      return attribute && (attribute.kind === "bare" || attribute.value.trim() !== "false");
+    });
+    if (locked) continue;
+    const own = ["name", "id", "aria-label", "placeholder", "autoComplete"]
+      .map((name) => ctx.attr(node, name))
+      .filter((attribute) => attribute && attribute.kind === "string")
+      .map((attribute) => attribute!.value)
+      .join(" ");
+    const field = ctx.ancestors(node).find((ancestor) => ctx.house(ancestor) === "Field");
+    const label = field
+      ? ctx
+          .descendants(field)
+          .filter((inner) => ctx.house(inner) === "FieldLabel")
+          .flatMap((inner) => inner.children)
+          .map((child) => (child.kind === "text" ? child.value : ""))
+          .join(" ")
+      : "";
+    const hit = DATA_FIELD.exec(`${own} ${label}`);
+    if (hit) add("dado-sem-mascara", node.start, `campo de ${hit[0]} num \`Input\` comum`);
   }
 
   for (const entry of imports) {
