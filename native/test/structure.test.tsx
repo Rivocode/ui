@@ -20,12 +20,14 @@ import {
 } from "../src";
 import { act, byClass, byRole, byType, render, textOf } from "./helpers";
 
-const touchHeight = (node: { props: Record<string, unknown> }) => {
+const touchHeight = (node: { props: Record<string, unknown> }, room: number) => {
   const token = String(node.props.className)
     .split(" ")
     .find((part) => /^h-\d+(\.\d+)?$/.test(part));
   const slop = node.props.hitSlop as { top?: number; bottom?: number } | undefined;
-  return Number(token!.slice(2)) * 4 + (slop?.top ?? 0) + (slop?.bottom ?? 0);
+  const top = Math.min(slop?.top ?? 0, room);
+  const bottom = Math.min(slop?.bottom ?? 0, room);
+  return Number(token!.slice(2)) * 4 + top + bottom;
 };
 
 describe("Toggle e ToggleGroup", () => {
@@ -60,7 +62,7 @@ describe("Toggle e ToggleGroup", () => {
     );
     const toggles = [...byRole(alone, "togglebutton"), ...byRole(group, "togglebutton")];
     expect(toggles.length).toBeGreaterThanOrEqual(3);
-    for (const toggle of toggles) expect(touchHeight(toggle)).toBeGreaterThanOrEqual(44);
+    for (const toggle of toggles) expect(touchHeight(toggle, 0)).toBeGreaterThanOrEqual(44);
   });
 
   test("no grupo, o padrao desaperta o anterior; multiple acumula", () => {

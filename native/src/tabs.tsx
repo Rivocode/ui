@@ -17,7 +17,7 @@ export type TabsProps = {
 
 type Frame = { x: number; width: number };
 
-const TAB_SLOP = { top: 4, bottom: 4, left: 0, right: 0 } as const;
+const TAB_SLOP = { top: 2, bottom: 2, left: 0, right: 0 } as const;
 
 export function Tabs({ items, value, onValueChange, className }: TabsProps) {
   const motion = useMotion();
@@ -70,7 +70,7 @@ export function Tabs({ items, value, onValueChange, className }: TabsProps) {
                   : { ...current, [item.value]: { x: left, width: size } },
               );
             }}
-            className={`h-9 flex-1 items-center justify-center rounded-sm ${
+            className={`h-10 flex-1 items-center justify-center rounded-sm ${
               active && !target ? "bg-surface-raised" : ""
             }`}
           >

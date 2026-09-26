@@ -42,6 +42,16 @@ const at = (x: number) => ({ nativeEvent: { locationX: x, locationY: 0 } });
 
 const input = (screen: ReturnType<typeof render>) => byType(screen, "TextInput")[0]!;
 
+const hostParent = (node: { parent: unknown }) => {
+  let current = node.parent as {
+    type: unknown;
+    parent: unknown;
+    props: Record<string, unknown>;
+  } | null;
+  while (current && typeof current.type !== "string") current = current.parent as typeof current;
+  return current;
+};
+
 describe("Slider", () => {
   test("o arrasto usa o max e o callback de agora, e nao os da montagem", () => {
     const first = mock((_: number) => {});
@@ -123,7 +133,12 @@ describe("Field leva o rotulo ao controle", () => {
 });
 
 describe("NumberField", () => {
-  function Controlled(props: { min?: number; max?: number; step?: number; record: (n: number) => void }) {
+  function Controlled(props: {
+    min?: number;
+    max?: number;
+    step?: number;
+    record: (n: number) => void;
+  }) {
     const [value, setValue] = useState(props.min ?? 0);
     return (
       <NumberField
@@ -350,9 +365,7 @@ describe("a moldura tocavel nao esconde os filhos do leitor de tela", () => {
 
 describe("Editable", () => {
   test("desabilitado nao oferece nem atende a acao de editar", () => {
-    const screen = render(
-      <Editable value="Ana" onValueChange={() => {}} label="Nome" disabled />,
-    );
+    const screen = render(<Editable value="Ana" onValueChange={() => {}} label="Nome" disabled />);
     const [preview] = byLabel(screen, "Nome: Ana");
 
     expect(preview!.props.accessibilityActions).toEqual([]);
@@ -378,13 +391,30 @@ describe("alvos de 44", () => {
     expect(reach(day!)).toBeGreaterThanOrEqual(44);
   });
 
-  test("o xis do SearchInput e o do TagsInput", () => {
+  test("o xis do SearchInput cabe inteiro na altura do campo", () => {
     const search = render(<SearchInput value="clinica" onValueChange={() => {}} />);
-    const tags = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
+    const [clear] = byLabel(search, "Limpar a busca");
 
-    expect(reach(byLabel(search, "Limpar a busca")[0]!)).toBeGreaterThanOrEqual(44);
+    expect(reach(clear!)).toBeGreaterThanOrEqual(44);
+    expect(String(hostParent(clear!)?.props.className).split(" ")).toContain("h-12");
+  });
+
+  test("o xis do TagsInput fica com a folga que cabe na ficha, acima dos 24 do WCAG", () => {
+    const tags = render(<TagsInput value={["pix"]} onValueChange={() => {}} />);
     const [remove] = byClass(tags, /size-4/).filter((node) => node.type === "Pressable");
-    expect(reach(remove!)).toBeGreaterThanOrEqual(44);
+    const slop = remove!.props.hitSlop as {
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+    };
+    const chip = String(hostParent(remove!)?.props.className).split(" ");
+
+    expect(chip).toContain("py-1");
+    expect(slop.top).toBeLessThanOrEqual(4);
+    expect(slop.bottom).toBeLessThanOrEqual(4);
+    expect(16 + slop.top + slop.bottom).toBeGreaterThanOrEqual(24);
+    expect(16 + slop.left + slop.right).toBeGreaterThanOrEqual(24);
   });
 });
 

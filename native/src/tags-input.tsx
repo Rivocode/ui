@@ -121,7 +121,7 @@ export function TagsInput({
             accessibilityState={{ disabled: !editable }}
             disabled={!editable}
             onPress={() => onValueChange(value.filter((current) => current !== tag))}
-            hitSlop={14}
+            hitSlop={{ top: 4, bottom: 4, left: 6, right: 6 }}
             className={cn("size-4 items-center justify-center", classNames?.remove)}
           >
             <View className="absolute h-[1.5px] w-2.5 rotate-45 rounded-pill bg-fg-subtle" />

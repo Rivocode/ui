@@ -5,6 +5,16 @@ import { Badge, Button, Checkbox, Select, Switch, Tabs } from "../src";
 import { tokens } from "../tokens";
 import { act, byClass, byLabel, byRole, render, textOf } from "./helpers";
 
+const hostParent = (node: { parent: unknown }) => {
+  let current = node.parent as {
+    type: unknown;
+    parent: unknown;
+    props: Record<string, unknown>;
+  } | null;
+  while (current && typeof current.type !== "string") current = current.parent as typeof current;
+  return current;
+};
+
 describe("Button", () => {
   test("é um botão para o leitor de tela e dispara o onPress", () => {
     const onPress = mock(() => {});
@@ -184,12 +194,14 @@ describe("Switch", () => {
   });
 });
 
-const touchHeight = (node: { props: Record<string, unknown> }) => {
+const touchHeight = (node: { props: Record<string, unknown> }, room: number) => {
   const token = String(node.props.className)
     .split(" ")
     .find((part) => /^h-\d+(\.\d+)?$/.test(part));
   const slop = node.props.hitSlop as { top?: number; bottom?: number } | undefined;
-  return Number(token!.slice(2)) * 4 + (slop?.top ?? 0) + (slop?.bottom ?? 0);
+  const top = Math.min(slop?.top ?? 0, room);
+  const bottom = Math.min(slop?.bottom ?? 0, room);
+  return Number(token!.slice(2)) * 4 + top + bottom;
 };
 
 describe("Tabs", () => {
@@ -198,11 +210,13 @@ describe("Tabs", () => {
     { label: "Ano", value: "ano" },
   ];
 
-  test("cada aba alcanca os 44pt de toque sem engordar a fileira", () => {
+  test("cada aba alcanca os 44pt de toque com a folga que cabe dentro da fileira", () => {
     const screen = render(<Tabs items={items} value="mes" onValueChange={() => {}} />);
     const tabs = byRole(screen, "tab");
     expect(tabs.length).toBe(2);
-    for (const tab of tabs) expect(touchHeight(tab)).toBeGreaterThanOrEqual(44);
+    const row = String(hostParent(tabs[0]!)?.props.className).split(" ");
+    const room = row.includes("p-0.5") ? 2 : row.includes("p-1") ? 4 : 0;
+    for (const tab of tabs) expect(touchHeight(tab, room)).toBeGreaterThanOrEqual(44);
   });
 
   test("cada aba tem papel de tab e a ativa anuncia selected", () => {
