@@ -25769,6 +25769,12 @@
         "since": "0.5.0"
       },
       {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "note": "Cada ficha vai ao formulario nativo como um campo com este nome, e o texto pela metade nao vai."
+      },
+      {
         "name": "onValueChange",
         "type": "((value: string[]) => void)",
         "required": false,

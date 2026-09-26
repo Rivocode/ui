@@ -275,3 +275,59 @@ test("a ficha repetida nao entra duas vezes", () => {
 
   expect(current).toEqual(["nf-e"]);
 });
+
+test("no teto de fichas o campo continua focado, e o Backspace ainda tira a ultima", () => {
+  withTheme(<TagsInput aria-label="Marcadores" defaultValue={["nf-e"]} max={2} />);
+  const field = screen.getByLabelText("Marcadores") as HTMLInputElement;
+  field.focus();
+
+  fireEvent.change(field, { target: { value: "urgente" } });
+  fireEvent.keyDown(field, { key: "Enter" });
+  expect(screen.getByText("urgente")).toBeDefined();
+  expect(field.disabled).toBe(false);
+  expect(field.readOnly).toBe(true);
+  expect(document.activeElement).toBe(field);
+
+  fireEvent.keyDown(field, { key: "Backspace" });
+  expect(screen.queryByText("urgente")).toBeNull();
+  expect(field.readOnly).toBe(false);
+});
+
+test("colar uma lista separada por virgula vira uma ficha para cada item, sem passar do teto", () => {
+  let current: string[] = [];
+  withTheme(
+    <TagsInput
+      aria-label="Marcadores"
+      defaultValue={["a"]}
+      max={3}
+      onValueChange={(next) => {
+        current = next;
+      }}
+    />,
+  );
+  const field = screen.getByLabelText("Marcadores") as HTMLInputElement;
+
+  fireEvent.paste(field, { clipboardData: { getData: () => "a, b, c, d" } });
+  expect(current).toEqual(["a", "b", "c"]);
+  expect(field.value).toBe("");
+});
+
+test("colar texto sem separador segue o caminho comum do campo", () => {
+  withTheme(<TagsInput aria-label="Marcadores" />);
+  const field = screen.getByLabelText("Marcadores");
+
+  const event = fireEvent.paste(field, { clipboardData: { getData: () => "urgente" } });
+  expect(event).toBe(true);
+});
+
+test("com name, o formulario nativo recebe as fichas, e nao o rascunho", () => {
+  const { container } = withTheme(
+    <form>
+      <TagsInput aria-label="Marcadores" name="marcadores" defaultValue={["nf-e", "urgente"]} />
+    </form>,
+  );
+  fireEvent.change(screen.getByLabelText("Marcadores"), { target: { value: "meio" } });
+
+  const data = new FormData(container.querySelector("form")!);
+  expect(data.getAll("marcadores")).toEqual(["nf-e", "urgente"]);
+});

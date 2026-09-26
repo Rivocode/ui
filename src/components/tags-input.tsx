@@ -2,16 +2,23 @@
 
 import { Field as BaseField } from "@base-ui/react/field";
 import { X } from "lucide-react";
-import { useLayoutEffect, useRef, useState, type ComponentProps, type KeyboardEvent } from "react";
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ClipboardEvent,
+  type ComponentProps,
+  type KeyboardEvent,
+} from "react";
 
 import { useArrivals } from "../lib/arrivals";
 import { cn } from "../lib/cn";
 import type { Slots } from "../lib/slots";
-import { inputVariants } from "./field";
+import { inputVariants, UnnamedInput, useFieldName } from "./field";
 
 export type TagsInputProps = Omit<
   ComponentProps<"input">,
-  "value" | "defaultValue" | "onChange" | "max"
+  "value" | "defaultValue" | "onChange" | "max" | "name"
 > & {
   /** As fichas de agora, quando quem usa guarda a lista. */
   value?: string[];
@@ -21,8 +28,10 @@ export type TagsInputProps = Omit<
   onValueChange?: (value: string[]) => void;
   /** O que fecha uma ficha alem do Enter. Virgula por padrao. */
   separators?: string[];
-  /** Teto de fichas. Alcancado, o campo para de aceitar. */
+  /** Teto de fichas. Alcancado, o campo para de aceitar, mas continua focado e o Backspace ainda tira a ultima. */
   max?: number;
+  /** Cada ficha vai ao formulario nativo como um campo com este nome, e o texto pela metade nao vai. */
+  name?: string;
   /** O que o leitor de tela ouve nos botoes da peca. `remove` recebe a ficha. */
   labels?: { remove?: (tag: string) => string };
   /** Classe por parte: `field`, `tag`, `remove`, `input`. */
@@ -40,6 +49,8 @@ export function TagsInput({
   classNames,
   disabled,
   onKeyDown,
+  onPaste,
+  name,
   ...props
 }: TagsInputProps) {
   const [draft, setDraft] = useState("");
@@ -47,6 +58,8 @@ export function TagsInput({
   const [internal, setInternal] = useState<string[]>(defaultValue);
   const tags = controlled ? value : internal;
   const full = max !== undefined && tags.length >= max;
+  const fieldName = useFieldName();
+  const submitName = name ?? fieldName;
 
   const remove = labels.remove ?? ((tag: string) => `Remover ${tag}`);
 
@@ -72,14 +85,34 @@ export function TagsInput({
     onValueChange?.(next);
   }
 
-  function add(raw: string) {
-    const tag = raw.trim();
-    if (!tag || full || tags.includes(tag)) {
-      setDraft("");
-      return;
+  function add(...raw: string[]) {
+    const next = [...tags];
+    for (const piece of raw) {
+      const tag = piece.trim();
+      if (!tag || next.includes(tag)) continue;
+      if (max !== undefined && next.length >= max) break;
+      next.push(tag);
     }
-    change([...tags, tag]);
     setDraft("");
+    if (next.length !== tags.length) change(next);
+  }
+
+  function handlePaste(event: ClipboardEvent<HTMLInputElement>) {
+    onPaste?.(event);
+    if (event.defaultPrevented) return;
+
+    const pasted = event.clipboardData.getData("text");
+    const breaks = [...separators, "\n", "\r", "\t"];
+    if (!breaks.some((mark) => pasted.includes(mark))) return;
+
+    event.preventDefault();
+    const input = event.currentTarget;
+    const start = input.selectionStart ?? draft.length;
+    const end = input.selectionEnd ?? draft.length;
+    const text = draft.slice(0, start) + pasted + draft.slice(end);
+    let pieces = [text];
+    for (const mark of breaks) pieces = pieces.flatMap((piece) => piece.split(mark));
+    add(...pieces);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -148,11 +181,13 @@ export function TagsInput({
       <BaseField.Control
         {...props}
         ref={field}
-        render={<input />}
+        render={<UnnamedInput />}
         value={draft}
-        disabled={disabled || full}
+        disabled={disabled}
+        readOnly={full || props.readOnly}
         onChange={(event) => setDraft(event.target.value)}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         onBlur={(event) => {
           add(draft);
           props.onBlur?.(event);
@@ -163,6 +198,12 @@ export function TagsInput({
           classNames?.input,
         )}
       />
+
+      {submitName
+        ? tags.map((tag) => (
+            <input key={tag} type="hidden" name={submitName} value={tag} disabled={disabled} />
+          ))
+        : null}
     </div>
   );
 }
