@@ -307,3 +307,17 @@ test("a barra das setas do calendario deixa o clique chegar ao mes e ao ano, e s
   ).toContain("pointer-events-auto");
   expect(screen.getByLabelText("Escolha o mês").getAttribute("role")).toBe("combobox");
 });
+
+test("a caixa do select e uma coluna, e a lista de dentro encolhe e rola quando a caixa tem altura maxima", () => {
+  withTheme(<Calendar defaultMonth={new Date(2026, 2, 1)} />);
+  act(() => {
+    fireEvent.click(screen.getByLabelText("Escolha o ano"));
+  });
+  const list = screen.getByRole("listbox");
+  const box = list.parentElement!;
+
+  expect(list.className.split(" ")).toContain("min-h-0");
+  expect(list.className.split(" ")).toContain("overflow-y-auto");
+  expect(box.className.split(" ")).toContain("flex-col");
+  expect(box.className.split(" ")).toContain("max-h-72");
+});

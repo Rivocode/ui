@@ -161,9 +161,13 @@ export function SelectContent({
       >
         <BaseSelect.Popup
           {...props}
-          className={cn(floatingPanel, "min-w-[var(--anchor-width)]", className)}
+          className={cn(
+            floatingPanel,
+            "flex max-h-[var(--available-height)] min-w-[var(--anchor-width)] flex-col",
+            className,
+          )}
         >
-          <BaseSelect.List className="max-h-[var(--available-height)] overflow-y-auto">
+          <BaseSelect.List className="min-h-0 overflow-y-auto">
             <LayerProvider level={level}>{children}</LayerProvider>
           </BaseSelect.List>
         </BaseSelect.Popup>
