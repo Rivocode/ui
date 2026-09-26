@@ -1,5 +1,21 @@
 # Mudanças
 
+## 0.9.0
+
+A documentação empacotada passa a ser a de `@rivocode/ui` 1.2.0 e
+`@rivocode/ui-native` 1.1.0. As oito ferramentas continuam as mesmas.
+
+- `get_component` acha a parte que não tem página própria pelo nome da peça que
+  a compõe: `SidebarMenuItem`, `SidebarHeader` e `SidebarContent` devolvem a
+  página da `Sidebar`, com o aviso de que são parte dela. Antes, o MCP dizia
+  que a peça não existia.
+- `get_guide` ganha `arquitetura`, o roteiro de um projeto novo no Vite ou no
+  Next: pastas por funcionalidade, a casca, os dados e o agente.
+- A página da `Sidebar` ensina o `render` do `SidebarMenuItem` para o link do
+  router, e a do `MaskedInput` ensina o `forValue` no formulário.
+- As páginas trazem o calendário com o `Select` da casa no mês e no ano, a
+  barra de rolagem do tema e o preenchimento automático na cor do tema.
+
 ## 0.8.0
 
 A documentação empacotada passa a ser a de `@rivocode/ui` 1.1.1. As oito

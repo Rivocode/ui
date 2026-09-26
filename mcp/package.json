@@ -1,6 +1,6 @@
 {
   "name": "@rivocode/ui-mcp",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Servidor MCP do design system da RivoCode: as peças, as props, os tokens e a paridade com o React Native, servidos por stdio a partir da documentação que viaja dentro do pacote.",
   "keywords": [
     "design-system",
