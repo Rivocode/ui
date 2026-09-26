@@ -171,6 +171,17 @@ const INTENTS: [intent: string, expected: string][] = [
   ["numero do cartao de credito", "MaskedInput"],
   ["e-mail do cliente", "Input"],
   ["valor da nota em reais", "CurrencyInput"],
+  ["cadastro de cliente com muitos campos", "Fieldset"],
+  ["formulario longo em etapas", "Steps"],
+  ["excluir um item da lista", "ToastViewport"],
+  ["desfazer a exclusao", "ToastViewport"],
+  ["excluir de vez a nota sem volta", "AlertDialog"],
+  ["editar um campo direto na tabela", "Editable"],
+  ["mostrar opcoes avancadas so quando pedir", "Collapsible"],
+  ["salvar rascunho do formulario", "Form"],
+  ["busca global para achar qualquer tela do app", "Command"],
+  ["tela vazia na primeira vez", "EmptyState"],
+  ["abrir o detalhe do item por cima da tela sem sair dela", "Sheet"],
 ];
 
 test("recommend_component poe a peca da tabela de escolha em primeiro", async () => {

@@ -11,10 +11,13 @@ nenhuma para o que apaga.
 ## Conteúdo
 
 - Uma tela ou várias
+- Wizard ou formulário único: a checagem
+- O wizard bem feito
 - Confirmar, desfazer, ou nada
 - O que fazer quando dá errado
 - Os quatro finais, e o que cada um decide
 - Quando a tela some por baixo da pessoa
+- O que deixa o produto esperto
 - Erros de fluxo que aparecem sempre
 
 ## Uma tela ou várias
@@ -39,6 +42,79 @@ passo, era uma rolagem.
 
 **A última etapa é sempre revisão**, com o que foi decidido e um caminho de
 volta para cada parte. É onde a pessoa confere antes do que não tem volta.
+
+## Wizard ou formulário único: a checagem
+
+Wizard não é o padrão. O padrão é **um formulário só**, em seções com
+`Fieldset` e título, que deixa a pessoa ver o tamanho da tarefa, voltar a
+qualquer campo sem navegar e enviar quando quiser. Responda as quatro perguntas
+antes de quebrar em passos; wizard só se pelo menos uma for "sim".
+
+1. **Uma resposta muda o que se pergunta depois?** Pessoa física ou jurídica
+   troca os campos; o tipo de serviço decide as alíquotas.
+2. **A pessoa precisa sair para buscar um dado no meio?** O código do serviço
+   na prefeitura, o comprovante no e-mail.
+3. **Uma etapa tem custo próprio ao ser confirmada?** Consultar o CNPJ na
+   Receita, reservar o horário, gerar o QR.
+4. **A tarefa é longa e rara, e a pessoa se perde sem mapa?** Abrir a empresa
+   no sistema pela primeira vez, configurar a emissão.
+
+Tudo "não" é formulário único, mesmo com trinta campos. Campo que poucos usam
+vai para um `Collapsible` ("Mais opções"), e não para um passo a mais. Perguntas
+uma por vez, com ramificação pela resposta (triagem, pesquisa, o agente pedindo
+esclarecimento), é o `Questionnaire`, e não o `Steps`.
+
+## O wizard bem feito
+
+- **Um formulário só por baixo dos passos.** Um `useZodForm` com os campos de
+  todas as etapas, e cada passo mostra a parte dele. Formulário por passo perde
+  o que foi digitado ao voltar.
+- **Valida o passo antes de avançar, e só ele.** `next(() => form.trigger([...]))`
+  do `useWizard` cobra os campos daquele passo; o "Próximo" fica travado
+  enquanto a checagem assíncrona roda, e dois toques andam um passo só.
+- **Voltar nunca perde nada**, e os passos já feitos são clicáveis no `Steps`
+  pelo `onStepChange`. Pular para a frente não: o passo seguinte depende do
+  anterior.
+- **O rascunho sobrevive a recarregar a página.** Wizard é tarefa longa, e a
+  aba fecha no meio. Guarde os valores com `useLocalStorage` e limpe no envio.
+- **A última etapa é revisão**, com cada parte resumida e um "Alterar" que volta
+  ao passo dela. O botão final diz o efeito: "Emitir nota", e não "Concluir".
+- **Sem confirmação em cima da revisão.** A revisão já é a confirmação.
+- **No celular o `Steps` vira "2 de 4" com o nome do passo**, e o
+  `WizardFooter` gruda embaixo, com Voltar e o avanço sempre no mesmo lugar.
+
+```tsx
+const STEPS = [
+  { id: 'cliente', title: 'Cliente' },
+  { id: 'servico', title: 'Serviço' },
+  { id: 'revisao', title: 'Revisão' },
+]
+const FIELDS = [['document', 'name'], ['service', 'amount'], []] as const
+
+const [draft, setDraft, clearDraft] = useLocalStorage({ key: 'nova-nota', defaultValue: EMPTY })
+const form = useZodForm(schema, { defaultValues: draft })
+const wizard = useWizard(STEPS)
+
+useEffect(() => {
+  const watching = form.watch((values) => setDraft(values as typeof EMPTY))
+  return () => watching.unsubscribe()
+}, [form, setDraft])
+
+<Steps steps={STEPS} step={wizard.step} onStepChange={wizard.goTo} />
+<WizardFooter>
+  {!wizard.isFirst && <Button variant="secondary" onClick={wizard.back}>Voltar</Button>}
+  {wizard.isLast ? (
+    <Button type="submit">Emitir nota</Button>
+  ) : (
+    <Button onClick={() => wizard.next(() => form.trigger([...FIELDS[wizard.step]]))}>
+      Continuar
+    </Button>
+  )}
+</WizardFooter>
+```
+
+O `clearDraft()` vai no sucesso do envio, e não no clique: se o envio falhar, o
+rascunho continua lá.
 
 ## Confirmar, desfazer, ou nada
 
@@ -110,6 +186,25 @@ aparece no pior dia.
   recomeça do topo da página. As peças da casa já fazem isso; layout escrito à
   mão não.
 
+## O que deixa o produto esperto
+
+O que separa uma tela correta de uma tela boa de usar é o trabalho que ela
+poupa. Antes de entregar, passe por estas oito perguntas.
+
+| Pergunta | O que fazer | Peça |
+|---|---|---|
+| Dá para preencher sozinho? | CEP que traz o endereço, o valor que vem do serviço escolhido, a data de hoje no vencimento | `PostalCodeField`, `defaultValues` |
+| Dá para lembrar? | Filtro, coluna, visão e aba que a pessoa escolheu voltam na próxima visita | `useLocalStorage` |
+| O padrão é o mais comum? | O campo já vem com o que 80% escolhe; a exceção é que troca | `defaultValue` |
+| Dá para agir sem abrir outra tela? | Editar no lugar, agir em lote, ver o detalhe numa folha | `Editable`, `ActionBar`, `Sheet` |
+| Dá para desfazer em vez de confirmar? | Faz na hora e oferece a volta no aviso | `useToast` com `actionProps` |
+| Quem usa todo dia tem atalho? | Busca global e as ações mais usadas pelo teclado, com o atalho visível | `Command`, `useHotkeys`, `Kbd` |
+| O que é raro está fora do caminho? | Opções avançadas recolhidas, e não misturadas com as de todo dia | `Collapsible` |
+| A pessoa sabe que terminou? | Sucesso visível, com o que aconteceu e o próximo passo: "Nota 4816 emitida. Ver PDF" | `useToast`, `Alert` |
+
+Uma tela que responde "não" a quase todas funciona, mas cobra da pessoa o
+trabalho que o sistema podia ter feito.
+
 ## Erros de fluxo que aparecem sempre
 
 - Confirmação em ação reversível, e nenhuma na que apaga.
@@ -120,3 +215,8 @@ aparece no pior dia.
 - Duas confirmações para a mesma ação, uma na revisão e outra no diálogo.
 - Etapa chamada "Passo 2", que não é uma decisão e sim uma rolagem.
 - Sucesso silencioso: a ação terminou e nada na tela diz que terminou.
+- Wizard para um cadastro que é só comprido, sem nenhuma etapa que dependa da
+  anterior.
+- Rascunho que some ao recarregar a página no meio de uma tarefa longa.
+- Confirmação para excluir o que dava para desfazer.
+- Campo que o sistema já sabia preencher, deixado em branco para a pessoa.

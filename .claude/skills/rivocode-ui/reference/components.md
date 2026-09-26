@@ -104,6 +104,17 @@ exemplos que rodam e a tabela de props.
 | A conversa com um assistente | `Conversation` + `Message` | Gruda no fim enquanto o texto chega e solta quando a pessoa rola; a `Timeline` olha para trás |
 | Chamada de ferramenta, com aprovação | `ToolCall` | Estado com ícone e texto, e aprovar ou recusar fora do painel; o `Accordion` organiza texto, não acontecimento |
 | Marcar conteúdo gerado por IA fora da conversa | `AILabel` | O leitor ouve por extenso e a explicação abre no toque; estado de registro continua `Badge` |
+| Excluir, arquivar ou remover um item da lista quando dá para voltar atrás | `ToastViewport` | Faz na hora e o `useToast` oferece "Desfazer" pelo `actionProps`, com `timeout` maior que o padrão. Confirmar antes cobra de todo mundo para proteger o engano de poucos |
+| Desfazer a exclusão, o arquivamento ou a última ação | `ToastViewport` | O desfazer mora no aviso que confirma a ação: `actionProps` com `children: "Desfazer"` e o `onClick` que restaura e fecha o aviso |
+| Excluir de vez, cancelar nota, emitir: o que não tem volta | `AlertDialog` | Só aqui a confirmação se paga; o título nomeia o objeto e o botão diz o efeito. Item pequeno e local é `Popconfirm` |
+| Editar um campo direto na tabela, na lista ou no detalhe, sem abrir formulário | `Editable` | Clica, edita, Enter salva e Esc desfaz; a linha inteira com vários campos é `Sheet` ao lado da lista |
+| Mostrar opções avançadas só quando a pessoa pedir | `Collapsible` | Esconde o que poucos usam sem tirar do formulário; várias seções que se abrem uma de cada vez são `Accordion` |
+| Cadastro com muitos campos que não dependem uns dos outros | `Fieldset` | Um formulário só, em seções com título, e não wizard: quebrar em passos só esconde o tamanho. Passos só quando uma etapa depende da anterior |
+| Fluxo em etapas em que a escolha de uma muda a seguinte, com revisão no fim | `Steps` | `useWizard` valida cada passo antes de avançar e `WizardFooter` segura voltar e seguir; a última etapa é sempre revisão |
+| Salvar o rascunho do formulário e recuperar ao voltar | `Form` | O rascunho volta preenchido depois de erro, de recarregar a página ou de fechar sem querer: guarde os valores com `useLocalStorage` enquanto a pessoa digita e limpe no envio |
+| Busca global: achar qualquer tela, cliente ou nota de qualquer lugar do app | `Command` | Ctrl+K de qualquer lugar, com `keywords` para os sinônimos; o campo que filtra só a lista da tela é `SearchInput` |
+| Tela vazia na primeira vez, sem nada cadastrado ainda | `EmptyState` | Diz o que vai aparecer ali e oferece criar o primeiro; vazio por filtro oferece limpar o filtro, e não criar |
+| Abrir o detalhe de um item por cima da tela, sem sair dela e sem perder o contexto de trás | `Sheet` | Folha lateral mantém o contexto; lista e detalhe sempre lado a lado é `Splitter`, `Dialog` é para uma decisão curta, e página nova é para tarefa que ocupa a tela |
 
 ## Toda consulta tem quatro finais
 

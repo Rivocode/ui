@@ -78,9 +78,14 @@ async function domAttributes(): Promise<Set<string>> {
   const names = new Set<string>();
 
   // `AllHTMLAttributes` traz todo atributo de HTML; `SVGAttributes` traz
-  // `fill`, `stroke` e companhia, que os graficos usam; as duas ja estendem
-  // `AriaAttributes` e `DOMAttributes`, de onde vem os `onClick` da vida.
-  for (const wanted of ["AllHTMLAttributes", "SVGAttributes"]) {
+  // `fill`, `stroke` e companhia, que os graficos usam. As duas ESTENDEM
+  // `DOMAttributes`, mas esta leitura so ve os membros proprios de cada
+  // interface, e nao os herdados: sem ler `DOMAttributes` tambem, o `onClick`
+  // num `<Button>` da skill era acusado como prop inventada. O comentario
+  // antigo dizia que a heranca bastava, e nenhum exemplo tinha testado isso
+  // ate o primeiro botao com `onClick` entrar. O `aria-*` sai pela regra de
+  // prefixo, e por isso `AriaAttributes` nao entra na lista.
+  for (const wanted of ["AllHTMLAttributes", "SVGAttributes", "DOMAttributes"]) {
     const start = source.indexOf(`interface ${wanted}<T>`);
     if (start === -1) {
       throw new Error(
