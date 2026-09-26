@@ -404,3 +404,26 @@ test("audit_screen le os manifestos do mais perto ao da raiz, e chega a mesma no
   expect(answer.text).toContain("**Nota: 100/100.** Segue a casa.");
   expect(answer.text).not.toContain("**peer-faltando**");
 });
+
+test("get_component acha a parte sem pagina propria pelo nome da peca que a compoe", async () => {
+  for (const [part, owner] of [
+    ["SidebarMenuItem", "Sidebar"],
+    ["SidebarHeader", "Sidebar"],
+    ["SidebarContent", "Sidebar"],
+  ] as const) {
+    const answer = await call("get_component", { name: part });
+    expect(answer.isError).toBe(false);
+    expect(answer.text).toContain(`\`${part}\` é parte de \`${owner}\``);
+  }
+
+  const page = await call("get_component", { name: "SidebarMenuItem" });
+  expect(page.text).toContain("render={<NavLink");
+
+  const direct = await call("get_component", { name: "Sidebar" });
+  expect(direct.text).not.toContain("é parte de");
+});
+
+test("get_component continua recusando o nome que nao e de peca nenhuma", async () => {
+  const answer = await call("get_component", { name: "Sidebarzinha" });
+  expect(answer.isError).toBe(true);
+});

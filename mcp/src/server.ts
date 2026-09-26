@@ -103,7 +103,15 @@ export function createServer(content: Content, options: ServerOptions): McpServe
   for (const entry of content.components) lookup.set(compact(entry.slug), entry.name);
 
   function resolveName(query: string): string | undefined {
-    return lookup.get(compact(query));
+    return lookup.get(compact(query)) ?? prefixOwner(query);
+  }
+
+  function prefixOwner(query: string): string | undefined {
+    const wanted = query.trim();
+    if (!/^[A-Z][A-Za-z0-9]+$/.test(wanted)) return undefined;
+    return [...byName.keys()]
+      .filter((name) => wanted.startsWith(name) && /^[A-Z]/.test(wanted.slice(name.length)))
+      .sort((a, b) => b.length - a.length)[0];
   }
 
   function catalogName(name: string): string | undefined {
@@ -242,10 +250,12 @@ export function createServer(content: Content, options: ServerOptions): McpServe
       const entry = found ? ownerOf(found) : undefined;
       if (!found || !entry) return fail(`Não há peça "${name}" no catálogo. ${suggest(name)}`);
 
+      const asked = name.trim();
+      const shown = found === entry.name && asked !== entry.name && compact(asked) !== compact(entry.slug) ? asked : found;
       const note =
-        found === entry.name
+        shown === entry.name
           ? ""
-          : `> \`${found}\` é parte de \`${entry.name}\` e só existe dentro dela. A página abaixo documenta as duas.\n\n`;
+          : `> \`${shown}\` é parte de \`${entry.name}\` e só existe dentro dela. A página abaixo documenta as duas.\n\n`;
 
       return reply(`${note}${pageOf(entry)}\n\n---\n\n${provenance}`);
     },
