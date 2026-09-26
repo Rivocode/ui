@@ -54,6 +54,10 @@ export function describeRelative(
   cutoff?: RelativeUnit,
   labels: RelativeTimeLabels = LABELS,
 ) {
+  if (Number.isNaN(value.getTime()) || Number.isNaN(now.getTime())) {
+    return { text: "—", step: null };
+  }
+
   const seconds = Math.round((value.getTime() - now.getTime()) / 1000);
   const size = Math.abs(seconds);
   const past = seconds <= 0;
@@ -69,7 +73,7 @@ export function describeRelative(
       return { text: formatDate(isoLocal(value)), step: past ? null : REFRESH.year };
     }
 
-    const amount = Math.round(size / range.seconds);
+    const amount = Math.abs(Math.round(seconds / range.seconds));
     return {
       text: past ? labels.past(amount, range.unit) : labels.future(amount, range.unit),
       step: REFRESH[range.unit],

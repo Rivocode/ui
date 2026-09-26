@@ -489,6 +489,17 @@ describe("RelativeTime", () => {
     );
   });
 
+  test("arredonda com sinal, como o web: 90 minutos atras sao ha 1 hora, e a frente em 2", () => {
+    expect(texto(<RelativeTime value={antes(90 * 60_000)} now={AGORA} />)).toBe("há 1 hora");
+    const depois = new Date(AGORA.getTime() + 90 * 60_000);
+    expect(texto(<RelativeTime value={depois} now={AGORA} />)).toBe("em 2 horas");
+  });
+
+  test("data invalida vira travessao, sem numero inventado e sem relogio", () => {
+    expect(texto(<RelativeTime value="não é data" now={AGORA} />)).toBe("—");
+    expect(describeRelative(new Date(Number.NaN), AGORA)).toEqual({ text: "—", step: null });
+  });
+
   test("cutoff troca o relativo pela data, no formato do formatDate", () => {
     const velho = new Date("2026-01-05T09:00:00");
     expect(texto(<RelativeTime value={velho} cutoff="month" now={AGORA} />)).toBe("05/01/2026");
