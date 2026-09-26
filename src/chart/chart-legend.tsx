@@ -5,6 +5,7 @@ import { Legend, type LegendPayload } from "recharts";
 
 import { cn } from "../lib/cn";
 import type { ChartConfig } from "./chart";
+import { seriesVar } from "./series-var";
 
 export const ChartLegend = Legend;
 
@@ -53,7 +54,7 @@ export function ChartLegendContent({
                 "size-2 shrink-0 rounded-sm transition-opacity duration-[var(--rc-duration-fast)] ease-rc",
                 escondida && "opacity-30",
               )}
-              style={{ background: series.color ?? `var(--color-${key})` }}
+              style={{ background: series.color ?? `var(${seriesVar(key)})` }}
             />
             <span className={cn(escondida && "line-through opacity-60")}>{String(name)}</span>
           </>

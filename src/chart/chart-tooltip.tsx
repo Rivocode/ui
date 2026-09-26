@@ -5,6 +5,7 @@ import { Tooltip, type TooltipContentProps } from "recharts";
 
 import { cn } from "../lib/cn";
 import type { ChartConfig } from "./chart";
+import { seriesVar } from "./series-var";
 
 export const ChartTooltip = Tooltip;
 
@@ -53,7 +54,7 @@ export function ChartTooltipContent({
                 <span
                   aria-hidden="true"
                   className="size-2 shrink-0 rounded-sm"
-                  style={{ background: entry.color ?? `var(--color-${key})` }}
+                  style={{ background: entry.color ?? `var(${seriesVar(key)})` }}
                 />
               )}
               <span className="flex-1 text-fg-muted">{name}</span>

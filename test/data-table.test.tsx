@@ -425,7 +425,7 @@ function withProvider(node: React.ReactNode) {
 }
 
 test("quando data encolhe abaixo da pagina aberta, a tabela volta para a ultima que existe", () => {
-  const props = { columns: COLUMNS, rowKey: (nota: Invoice) => nota.id, pageSize: 2 };
+  const props = { columns: COLUMNS, rowKey: (invoice: Invoice) => invoice.id, pageSize: 2 };
   const { container, rerender } = render(withProvider(<DataTable data={INVOICES} {...props} />));
 
   fireEvent.click(screen.getByRole("button", { name: /próxima página/i }));
@@ -441,7 +441,7 @@ test("a selecao nao controlada poda a chave da linha que saiu de data", () => {
   const vistas: string[][] = [];
   const props = {
     columns: COLUMNS,
-    rowKey: (nota: Invoice) => nota.id,
+    rowKey: (invoice: Invoice) => invoice.id,
     selectable: true,
     onValueChange: (keys: string[]) => vistas.push(keys),
   };
@@ -453,7 +453,7 @@ test("a selecao nao controlada poda a chave da linha que saiu de data", () => {
 
   act(() => {
     rerender(
-      withProvider(<DataTable data={INVOICES.filter((nota) => nota.id !== "3")} {...props} />),
+      withProvider(<DataTable data={INVOICES.filter((invoice) => invoice.id !== "3")} {...props} />),
     );
   });
   expect(vistas.at(-1)).toEqual(["4"]);

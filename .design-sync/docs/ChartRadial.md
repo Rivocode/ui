@@ -10,6 +10,10 @@ O arco de uma medida só: meta batida, uso de cota, taxa de conversão.
 <ChartRadial value={82} centerLabel="da meta do mês" />
 ```
 
+O arco para no fim quando o valor passa do `max`, mas o texto diz o valor
+real: 140 de 100 sai "140%", e não "100%". Valor que não é número (`NaN`,
+infinito) ou `max` zero ou negativo sai "—", como no `ChartGauge`.
+
 ## Contra o Meter
 
 Escolha pelo espaço, não pelo gosto. A barra do `Meter` cabe numa linha de

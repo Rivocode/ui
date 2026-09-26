@@ -4,10 +4,11 @@ import type { ComponentProps, ReactNode } from "react";
 import { PolarAngleAxis, RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 
 import { cn } from "../lib/cn";
+import { percent } from "../shared/format";
 import { useTokenMotion } from "./use-chart-motion";
 
 export type ChartRadialProps = Omit<ComponentProps<"div">, "color" | "children"> & {
-  /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta. */
+  /** De 0 a `max`. Acima disso o arco para no fim, e nao da a volta, mas o texto diz o valor real. `NaN`, infinito ou `max` sem tamanho viram "—". */
   value: number;
   max?: number;
   /** A cor do arco. Sem ela, o acento do tema. */
@@ -45,8 +46,10 @@ export function ChartRadial({
   ...rest
 }: ChartRadialProps) {
   const motion = useTokenMotion(null);
-  const clamped = Math.max(0, Math.min(value, max));
-  const percentage = Math.round((clamped / max) * 100);
+  const known = Number.isFinite(value) && Number.isFinite(max) && max > 0;
+  const clamped = known ? Math.max(0, Math.min(value, max)) : 0;
+  const percentage = known ? Math.round((clamped / max) * 100) : 0;
+  const written = known ? percent((value / max) * 100) : "—";
 
   const start = 90 + sweep / 2;
   const end = start - sweep;
@@ -55,7 +58,7 @@ export function ChartRadial({
     <div
       className={cn("relative h-44 w-full", className)}
       role="img"
-      aria-label={label ?? `${percentage}%`}
+      aria-label={label ?? written}
       {...rest}
     >
       {variant === "segmented" ? (
@@ -72,7 +75,12 @@ export function ChartRadial({
             tabIndex={-1}
             aria-hidden="true"
           >
-            <PolarAngleAxis type="number" domain={[0, max]} angleAxisId={0} tick={false} />
+            <PolarAngleAxis
+              type="number"
+              domain={[0, known ? max : 1]}
+              angleAxisId={0}
+              tick={false}
+            />
             <RadialBar
               dataKey="value"
               angleAxisId={0}
@@ -87,7 +95,7 @@ export function ChartRadial({
 
       <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
         <span className="max-w-[62%] text-center font-display font-rc-display text-2xl leading-tight text-balance text-fg">
-          {centerValue ?? `${percentage}%`}
+          {centerValue ?? written}
         </span>
         {centerLabel && (
           <span className="mt-0.5 max-w-[70%] text-center text-xs text-fg-subtle">
@@ -125,7 +133,9 @@ function SegmentedArc({
             key={index}
             data-rc-tick={on ? "on" : "off"}
             className={on ? "animate-appear" : undefined}
-            style={on ? { animationDelay: `calc(var(--rc-duration-slow) * ${index / lit})` } : undefined}
+            style={
+              on ? { animationDelay: `calc(var(--rc-duration-slow) * ${index / lit})` } : undefined
+            }
             x1={0}
             y1={-46}
             x2={0}

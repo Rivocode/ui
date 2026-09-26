@@ -47,8 +47,14 @@ export function Sparkline({
 }: SparklineProps) {
   const points = data.map((value, index) => ({ i: index, v: value }));
 
-  const rising = data.length > 1 && data[data.length - 1] >= data[0];
-  const autoColor = rising ? "var(--rc-success)" : "var(--rc-danger)";
+  const first = data[0];
+  const last = data[data.length - 1];
+  const autoColor =
+    data.length < 2 || first === undefined || last === undefined
+      ? "var(--rc-accent)"
+      : last >= first
+        ? "var(--rc-success)"
+        : "var(--rc-danger)";
   const stroke = color ?? (trend === "auto" ? autoColor : "var(--rc-accent)");
 
   const shared = {
