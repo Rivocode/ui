@@ -87,7 +87,7 @@ dados antes e não marca `sortable`. Está documentado no `.md` da peça.
 ## Testes
 
 Os invariantes velhos (erro vence carregando; vazio só depois da consulta;
-guard do clique na linha) já vivem em `test/onda-c.test.tsx` e continuam
+guard do clique na linha) já vivem em `test/wave-c.test.tsx` e continuam
 valendo sem edição, prova do zero breaking change. Os novos, em TDD:
 
 1. clicar no header ordena asc, de novo desc, de novo volta à ordem original;

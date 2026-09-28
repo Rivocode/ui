@@ -16,7 +16,7 @@ import { slugify } from './slug'
  * `/llms.txt`, `/llms-full.txt`, o `.md` de cada peca e de cada guia, as
  * convencoes e a skill. Tudo sai de uma funcao so, `agentFiles`, e as tres
  * pontas leem dela: o `generateBundle` do build, o middleware do `vite dev` e
- * o teste `test/markdown-para-agents.test.ts`.
+ * o teste `test/markdown-for-agents.test.ts`.
  *
  * Mora aqui, e nao dentro do `vite.config.ts`, para o teste poder chamar a
  * mesma funcao que o build chama sem construir o site antes. Teste que le
@@ -114,7 +114,7 @@ function readPreviews() {
 
 /**
  * As props de cada peca, por nome, lidas do arquivo que a extracao escreve. Ele
- * sai do compilador em `scripts/props-do-catalogo.ts`, e o `check:props` falha
+ * sai do compilador em `scripts/catalog-props.ts`, e o `check:props` falha
  * quando o comitado diverge da fonte.
  */
 export type Piece = { forwardsRoot: boolean; props: Prop[] }

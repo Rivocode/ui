@@ -6,7 +6,7 @@ import type { PixCodeLabels } from "../src/chart";
 
 import { buildPixPayload, isValidPixKey, parsePixPayload, RivoProvider } from "../src";
 import { act, byLabel, byRole, byType, render, textOf } from "./helpers";
-import { readQr, type Shape } from "../../test/leitor-de-qr";
+import { readQr, type Shape } from "../../test/qr-reader";
 
 mock.module("react-native-svg", () => {
   const host = (name: string) => (props: Record<string, unknown>) => createElement(name, props);

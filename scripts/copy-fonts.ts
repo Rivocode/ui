@@ -1,4 +1,4 @@
-import { scanAtLeast } from "./varredura";
+import { scanAtLeast } from "./scan";
 import { dirname, join } from "node:path";
 
 const FONT_FOLDERS = ["node_modules/@fontsource*/**/files/*", "node_modules/.bun/**/files/*"];

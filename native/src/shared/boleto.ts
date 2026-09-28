@@ -1,4 +1,4 @@
-/* Gerado de src/shared/boleto.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/boleto.ts por bun run gen:shared. Nao editar. */
 
 export type BoletoKind = "bank" | "collection";
 

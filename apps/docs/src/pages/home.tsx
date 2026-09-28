@@ -38,7 +38,7 @@ const Showcase = lazy(() => import('@/components/showcase').then((mod) => ({ def
  * caro demais pelo que se ganha.
  *
  * Então ele fica versionado aqui, e quem o mantém honesto é `bun run
- * check:testes`, que recalcula em segundos e falha dizendo qual número
+ * check:tests`, que recalcula em segundos e falha dizendo qual número
  * regravar. Sem essa guarda o dígito envelhece calado, como envelheceu duas
  * vezes: parado em 292, e depois em 348 enquanto a suíte chegava a 552.
  *

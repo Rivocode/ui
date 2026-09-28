@@ -152,7 +152,7 @@
  * trilho, e no dia seguinte cobria tres pecas: chave, caixa e radio, os tres
  * consertados com o mesmo troco de papel. Medido antes de renomear, o custo
  * eram DOIS arquivos escritos a mao - a fonte `src/lib/contrast.ts` e a linha
- * de contagem de `check-contrast-nativo.ts`, o unico lugar fora dela que
+ * de contagem de `check-contrast-native.ts`, o unico lugar fora dela que
  * importava a constante - mais o espelho `native/scripts/contrast.mjs`, que e
  * gerado e nao se conta. Nenhum README, nenhuma pagina do site e nenhuma
  * referencia da skill cita esses nomes: o que a doc manda importar de
@@ -323,7 +323,7 @@
  * devolve o branco do espaco. As de `display-p3`, `a98-rgb` e `rec2020` tem que
  * dar o D65, e a de `prophoto-rgb` o D50 - a errada dava `0,879` onde o D65 tem
  * `1,089`. A tabela de 26 cores com o pixel do navegador ficou congelada em
- * `test/contraste-do-consumidor.test.ts`.
+ * `test/consumer-contrast.test.ts`.
  *
  * ## Gamut: a conta mede o pixel que a tela mostra, e diz que cortou
  *
@@ -441,7 +441,7 @@
  * 30% (`CHART_TINT`), composta sobre a pagina ou o cartao. Nenhuma tabela
  * sabia medir isso: `CSS_COMPOSED_PAIRS` pede um token que JA carrega alfa, e
  * `--rc-chart-N` e opaco - o alfa e da peca. A linha leva o alfa junto, e o
- * numero tem que ser o mesmo que a peca pinta: `test/graficos-novos.test.tsx`
+ * numero tem que ser o mesmo que a peca pinta: `test/new-charts.test.tsx`
  * confere `CHART_TINT` contra o `TREEMAP_TINT` de `src/shared/chart-layout.ts`,
  * porque o arquivo daqui viaja no `dist/cli.js` e no espelho nativo e nao pode
  * importar a peca. Medido no dia: o pior e 6,77:1, `chart-1` no escuro, sobre o
@@ -486,7 +486,7 @@ import {
   checkThemeCss,
   readTokens,
 } from "../src/lib/contrast";
-import { countAtLeast, scanAtLeast } from "./varredura";
+import { countAtLeast, scanAtLeast } from "./scan";
 
 const palette = await Bun.file("src/tokens/palette.css").text();
 const files = await scanAtLeast("src/tokens/themes/*.css", 2);

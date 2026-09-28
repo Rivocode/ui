@@ -1,4 +1,4 @@
-/* Gerado de src/shared/qr.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/qr.ts por bun run gen:shared. Nao editar. */
 
 export type QrLevel = "L" | "M" | "Q" | "H";
 

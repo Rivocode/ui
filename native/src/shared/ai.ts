@@ -1,4 +1,4 @@
-/* Gerado de src/shared/ai.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/ai.ts por bun run gen:shared. Nao editar. */
 
 export type MessageRole = "user" | "assistant" | "system";
 

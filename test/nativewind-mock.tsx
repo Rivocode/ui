@@ -1,6 +1,6 @@
 import { createElement, useEffect, useState, type ReactNode } from "react";
 
-import { declaredColor } from "../native/test/css-compilado";
+import { declaredColor } from "../native/test/compiled-css";
 
 type Scheme = "light" | "dark" | null;
 

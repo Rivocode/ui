@@ -103,7 +103,7 @@ describe("Code", () => {
 
     expect(textOf(screen)).toContain("app.json");
     expect(piece.props.className).toContain("bg-surface-raised");
-    // A letra do codigo entra por style, e nao por classe - `fonte-mono.test.tsx`
+    // A letra do codigo entra por style, e nao por classe - `mono-font.test.tsx`
     // conta por que.
     expect([piece.props.style].flat(3)[0]).toHaveProperty("fontFamily");
     expect(piece.props.selectable).toBe(true);

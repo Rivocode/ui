@@ -1,4 +1,4 @@
-/* Gerado de src/shared/transfer.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/transfer.ts por bun run gen:shared. Nao editar. */
 
 export type TransferListItem = {
   /** O identificador que entra e sai do `value`. Unico na lista inteira. */

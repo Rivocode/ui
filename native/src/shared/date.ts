@@ -1,4 +1,4 @@
-/* Gerado de src/shared/date.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/date.ts por bun run gen:shared. Nao editar. */
 
 export function toIsoDate(year: number, month: number, day: number): string {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;

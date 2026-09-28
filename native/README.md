@@ -161,7 +161,7 @@ São sete, e cada um por um motivo que morde:
    um app que ligue essas flags não trombe na rigidez da nossa biblioteca.
 
 O `examples/native` do repositório roda essa mesma receita, e
-`bun run check:receita` fica vermelho no dia em que as duas se separarem.
+`bun run check:recipe` fica vermelho no dia em que as duas se separarem.
 
 ### O CSS pré-compilado
 
@@ -414,7 +414,7 @@ npx expo install expo-document-picker     # só quem anexa
 `FileUpload` dividiriam bem uma porta chamada `/expo`, e a conta de quem
 instala diz que não: quem põe um botão de copiar ao lado da chave de acesso de
 uma NF-e não anexa arquivo nenhum, e um índice comum cobraria dele o seletor
-de documentos. `scripts/check-fronteira-do-chart.ts`, na raiz do repositório,
+de documentos. `scripts/check-chart-boundary.ts`, na raiz do repositório,
 guarda as quatro fronteiras: nada alcançável pelo índice da raiz pode
 importar de dentro delas.
 

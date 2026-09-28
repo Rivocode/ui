@@ -1,522 +1,564 @@
-# Como se programa aqui
+# How we program here
 
-As regras da casa, para humano e para agente. Sem acento, como o resto da
-documentacao interna; o texto que sai para o cliente e acentuado.
+The house rules, for humans and for agents. Everything internal is written in
+English: code, comments, tests, scripts, docs, skills, commits. The one thing
+that stays in Portuguese is the text a component puts on the SCREEN - labels,
+announcements, empty states - because it reaches the end user of a Brazilian
+app, and that text keeps its accents.
 
-Isto e a REGRA. O estado do repositorio - o que existe, o que falta, os numeros
-- mora em `docs/ESTADO.md`. O contrato para quem CONSOME a biblioteca mora em
-`.design-sync/conventions.md` e em `.claude/skills/rivocode-ui/SKILL.md`.
+This file is the RULE. The state of the repository - what exists, what is
+missing, the numbers - lives in `docs/ESTADO.md`. The contract for whoever
+CONSUMES the library lives in `.design-sync/conventions.md` and in
+`.claude/skills/rivocode-ui/SKILL.md`.
 
-## Comentario
+## Comments
 
-**A regra:** fica SOMENTE o JSDoc preso a uma prop publica. Todo o resto sai.
+**The rule:** ONLY the JSDoc attached to a public prop stays. Everything else
+goes.
 
-Prop publica e membro de um `type` ou `interface` de props exportada - o bloco
-cujo proximo token e um nome seguido de `:`. Esse texto nao e comentario, e
-DADO: `bun run gen:props` o extrai para o campo `note` de
-`apps/docs/src/component-props.json`, que e a tabela de props publicada em
-`ds.rivocode.com.br`. Apaga-lo apaga documentacao do site, e nenhum teste
-acusa - a guarda e `bun run check:props`, que fica vermelho se o JSON divergir.
+A public prop is a member of an exported props `type` or `interface` - the
+block whose next token is a name followed by `:`. That text is not a comment,
+it is DATA: `bun run gen:props` extracts it into the `note` field of
+`apps/docs/src/component-props.json`, which is the props table published at
+`ds.rivocode.com.br`. Deleting it deletes site documentation, and no test
+notices - the guard is `bun run check:props`, which goes red when the JSON
+diverges.
 
 ```ts
 export type ButtonProps = {
-  /** O tamanho do alvo de toque. Combina com a densidade do provider. */
+  /** The size of the touch target. Combines with the provider density. */
   size?: "sm" | "md";
 };
 ```
 
-Sai todo o resto, sem excecao: JSDoc acima de `export function`, `export
-const`, `type` e `interface`; cabecalho `/* ---- */` de topo de arquivo; toda
-linha `//`; todo `{/* */}` dentro de JSX; todo `/* */` nos `.css`. **Inclusive
-comentario que conta incidente, armadilha ou custo.** Essa parte doi e e a
-decisao: o porque de uma escolha mora no `git log`, nos dois CHANGELOGs e em
-`docs/ESTADO.md`, e nao espalhado pelo codigo.
+Everything else goes, no exceptions: JSDoc above `export function`, `export
+const`, `type` and `interface`; `/* ---- */` file headers; every `//` line;
+every `{/* */}` inside JSX; every `/* */` in `.css` files. **Including comments
+that tell an incident, a trap or a cost.** That part hurts and it is the
+decision: the reason behind a choice lives in `git log`, in the CHANGELOGs and
+in `docs/ESTADO.md`, not scattered through the code.
 
-Preserve o que NAO e prosa: `@deprecated`, `@internal`, `eslint-disable`,
-`oxlint-disable`, `@ts-expect-error`, `@ts-ignore`. Sao diretivas, e mudam
-compilacao ou lint. Se uma delas estiver dentro de um bloco que sai, mantenha
-so a tag num bloco minimo.
+Keep what is NOT prose: `@deprecated`, `@internal`, `eslint-disable`,
+`oxlint-disable`, `@ts-expect-error`, `@ts-ignore`. They are directives, and
+they change compilation or lint. If one of them sits inside a block that goes,
+keep only the tag in a minimal block.
 
-Duas excecoes, e as duas sao funcionais:
+Three exceptions, all of them functional:
 
-- **`.design-sync/previews/*`**. O `/** */` acima de cada `export function` la
-  NAO e comentario, e o TITULO da historia: `apps/docs/src/example-source.ts`
-  le esse bloco para montar o site. Apagar quebra a pagina. Nao se toca.
-- **`scripts/check-*.ts`**. Cada um abre com o JSDoc do incidente que o fez
-  existir. Sem ele, a proxima pessoa remove a guarda por parecer paranoia, e o
-  incidente volta. A pasta segue a regra antiga: comentario fica quando explica
-  uma decisao ou uma armadilha que o codigo nao mostra.
-- **`apps/docs/`**. E aplicacao, e nao biblioteca: nao exporta prop nenhuma,
-  entao a regra de cima nao teria o que preservar - aplica-la ali e remocao
-  total, sem o criterio que a justifica. Segue a regra antiga.
+- **`.design-sync/previews/*`**. The `/** */` above each `export function`
+  there is NOT a comment, it is the story TITLE: `apps/docs/src/example-source.ts`
+  reads that block to build the site. Deleting it breaks the page. Do not touch.
+- **`scripts/check-*.ts`**. Each one opens with the JSDoc of the incident that
+  made it exist. Without it, the next person removes the guard because it looks
+  like paranoia, and the incident comes back. The folder follows the old rule:
+  a comment stays when it explains a decision or a trap the code does not show.
+- **`apps/docs/`**. It is an application, not a library: it exports no prop,
+  so the rule above would have nothing to preserve - applying it there would be
+  total removal, without the criterion that justifies it. It follows the old
+  rule.
 
-Regras de forma que continuam valendo:
+Form rules that still apply:
 
-- JSDoc em portugues, **sem acento**. O texto que vai para a tela ou para a doc
-  publicada leva acento (`test/acentos.test.ts` cobra, nos DOIS pacotes).
-- JSDoc de prop diz o que o TIPO nao diz: unidade, o que muda na tela, com o
-  que se combina. Nunca a assinatura.
-- `bun run check:comentarios` continua guardando o IDIOMA, e nao a presenca:
-  acusa comentario em ingles por classe fechada (`the`, `this`, `which`,
-  `because`), duas no mesmo comentario e o corte. A lista `DEBT` dele esta
-  vazia, e o acordo e que ela so encolhe.
+- JSDoc in English. The text that goes to the screen stays in Portuguese WITH
+  accents (`test/accents.test.ts` enforces it, in BOTH packages).
+- A prop's JSDoc says what the TYPE does not: unit, what changes on screen,
+  what it combines with. Never the signature.
+- `bun run check:comments` guards the LANGUAGE, not the presence: it flags
+  a Portuguese comment by closed class (`que`, `nao`, `para`, `quando`), two in
+  the same comment being the cut. Its `DEBT` list is empty, and the agreement
+  is that it only shrinks.
 
-Historico: ate 26/08/2026 a regra era "fica quando explica uma decisao ou uma
-armadilha que o codigo nao mostra". Ela foi trocada pela de cima por decisao do
-dono, e o corte removeu milhares de linhas. Se voce esta lendo um arquivo com
-comentario de prosa fora das duas excecoes, ele e anterior a essa data ou
-escapou - e para sair, nao para ser imitado.
+History: until 26/08/2026 the rule was "a comment stays when it explains a
+decision or a trap the code does not show". It was replaced by the one above
+by the owner's decision, and the cut removed thousands of lines. Until
+28/09/2026 everything internal was written in Portuguese; it was moved to
+English, also by the owner's decision, and the screen text stayed in
+Portuguese. If you are reading a file with prose comments outside the
+exceptions, or internal prose in Portuguese, it predates those dates or it
+escaped - it is to be removed or translated, not imitated.
 
-## Idioma do codigo
+## Code language
 
-Identificador em ingles, sempre - inclusive nome de parametro de prop publica,
-que vaza para o `.d.ts` e para a tabela de props do site. `bun run check:nomes`
-falha por lista de palavras conhecidas e por sufixo (`-acao`, `-mento`,
-`-dade`, `-agem`, `-encia`, `-ivel`).
+Identifiers in English, always - including the parameter name of a public
+prop, which leaks into the `.d.ts` and into the site's props table.
+`bun run check:names` fails by a list of known words and by suffix (`-acao`,
+`-mento`, `-dade`, `-agem`, `-encia`, `-ivel`).
 
-## Onde mora o que
+## Where things live
 
-| Pasta | O que e |
+| Folder | What it is |
 |---|---|
-| `src/` | o pacote web `@rivocode/ui` |
-| `src/chart/`, `src/form/` | subcaminhos com peer OPCIONAL; a Recharts nao pode vazar para `src/index.ts` (`check:chart`) |
-| `src/ai/`, `native/src/ai/` | subcaminho SEM peer, pelo peso: as pecas de conversa com modelo nao entram no indice da raiz (`check:chart` guarda os dois) |
-| `src/dnd/`, `native/src/dnd/` | arrastar e soltar: no web com peer OPCIONAL (`@dnd-kit/core` e `@dnd-kit/sortable`), no nativo SEM peer, com o gesto do `PanResponder` do core (`check:chart` guarda os dois) |
-| `src/editor/` | subcaminho com peer OPCIONAL (o Tiptap 3); `@tiptap/*` nao pode vazar para `src/index.ts` (`check:chart`). O `RichTextView` mora aqui e nao importa o Tiptap |
-| `src/tokens/` | o UNICO lugar onde pode existir cor literal (`check:colors`) |
-| `native/src/` | o pacote `@rivocode/ui-native`, publicado como FONTE |
-| `mcp/` | o pacote `@rivocode/ui-mcp`, servidor MCP por stdio; workspace da raiz |
-| `.design-sync/docs/` | uma pagina por peca e por parte |
-| `.design-sync/previews/` | o exemplo executavel de cada peca |
-| `apps/docs/` | o site `ds.rivocode.com.br` |
-| `test/`, `native/test/` | a suite; nome de arquivo em portugues |
-| `demo/` | onde se olha a peca nos dois temas e nas duas densidades |
+| `src/` | the web package `@rivocode/ui` |
+| `src/chart/`, `src/form/` | subpaths with an OPTIONAL peer; Recharts cannot leak into `src/index.ts` (`check:chart`) |
+| `src/ai/`, `native/src/ai/` | subpath WITHOUT a peer, because of weight: the model-conversation pieces do not enter the root index (`check:chart` guards both) |
+| `src/dnd/`, `native/src/dnd/` | drag and drop: on the web with an OPTIONAL peer (`@dnd-kit/core` and `@dnd-kit/sortable`), on native WITHOUT a peer, using the core `PanResponder` gesture (`check:chart` guards both) |
+| `src/editor/` | subpath with an OPTIONAL peer (Tiptap 3); `@tiptap/*` cannot leak into `src/index.ts` (`check:chart`). `RichTextView` lives here and does not import Tiptap |
+| `src/tokens/` | the ONLY place where a literal color may exist (`check:colors`) |
+| `native/src/` | the `@rivocode/ui-native` package, published as SOURCE |
+| `mcp/` | the `@rivocode/ui-mcp` package, an MCP server over stdio; a root workspace |
+| `.design-sync/docs/` | one page per piece and per part |
+| `.design-sync/previews/` | the runnable example of each piece |
+| `apps/docs/` | the `ds.rivocode.com.br` site |
+| `test/`, `native/test/` | the suite |
+| `demo/` | where you look at a piece in both themes and both densities |
 
-**Gerados. Nao editar a mao:** `native/theme.css`, `native/tokens.ts`,
+**Generated. Do not edit by hand:** `native/theme.css`, `native/tokens.ts`,
 `native/tokens.json` (`bun run gen:native`), `apps/docs/src/component-props.json`
 (`bun run gen:props`), `apps/docs/src/native-props.json`
-(`bun run gen:props:nativo`), `examples/native/generated.css`
-(`bun run build:css` do app). Todos carregam cabecalho dizendo isso, e o `check`
-falha se o comitado divergir da fonte.
+(`bun run gen:props:native`), `examples/native/generated.css`
+(`bun run build:css` in the app). All of them carry a header saying so, and
+`check` fails if the committed file diverges from its source.
 
-**Nao rode `bun install` dentro de `native/`.** Ela nao e workspace: o comando
-cria um segundo React e derruba dezenas de testes com "Invalid hook call". A CI
-nunca ve, porque so instala na raiz. `check:instalacao` e a guarda.
+**Do not run `bun install` inside `native/`.** It is not a workspace: the
+command creates a second React and takes down dozens of tests with "Invalid
+hook call". CI never sees it, because it only installs at the root.
+`check:install` is the guard.
 
-**O `mcp/` e workspace, e o `native/` nao.** O servidor MCP nao tem React, entao
-nao ha segunda copia a temer, e o `bun install` da raiz traz o SDK dele para o
-`test/servidor-mcp.test.ts`. O conteudo que ele serve NAO e fonte: e o
-`mcp/dist/content.json`, escrito no build por `scripts/conteudo-do-mcp.ts` a
-partir do mesmo `agentFiles()` do site, das tabelas de props, de paridade e de
-assinatura, da tabela de escolha da skill e dos tokens em DTCG. Documentacao
-nova sai no proximo release do `@rivocode/ui-mcp`, e nao antes: o pacote leva a
-documentacao da arvore em que foi construido.
+**`mcp/` is a workspace, and `native/` is not.** The MCP server has no React,
+so there is no second copy to fear, and the root `bun install` brings its SDK
+for `test/mcp-server.test.ts`. The content it serves is NOT source: it is
+`mcp/dist/content.json`, written at build time by `scripts/mcp-content.ts`
+from the same `agentFiles()` as the site, the props, parity and signature
+tables, the skill's choice table and the tokens in DTCG. New documentation
+ships in the next `@rivocode/ui-mcp` release, not before: the package carries
+the documentation of the tree it was built from.
 
-## O gate
+## The gate
 
-`bun run check` roda TRINTA E OITO passos em sequencia e para no primeiro que
-falhar: instalacao, lint, tipos, previews, props, nomes, comentarios, cor
-literal, alfa sobre cor, contraste do web, contraste do mapa nativo, espelho do contraste,
-temas, contrato, doc, exemplo da doc, cobertura do README, classe sem regra,
-grupos de classe, fronteira do chart, fronteira do CLI, tamanho do pacote,
-skill, lista da skill, tokens nativos, gerador de tema nativo, codigo
-compartilhado, paridade, assinatura nativa, contagem de pecas, vitrine,
-retratos declarados, receita de instalacao, script fora do gate, piso de
-varredura, contagem de testes, MCP em dia, e por fim `bun test`.
+`bun run check` runs THIRTY-EIGHT steps in sequence and stops at the first one
+that fails: installation, lint, types, previews, props, names, comments,
+literal color, alpha over color, web contrast, native map contrast, contrast
+mirror, themes, contract, doc, doc example, README coverage, class without a
+rule, class groups, chart boundary, CLI boundary, package size, skill, skill
+list, native tokens, native theme generator, shared code, parity, native
+signature, piece count, showcase, declared portraits, install recipe, script
+outside the gate, scan floor, test count, MCP up to date, and finally
+`bun test`.
 
-O numero acima nao e enfeite: quando ele nao bate com o `scripts.check` do
-`package.json`, o gate cresceu e esta pagina nao acompanhou.
+The number above is not decoration: when it does not match `scripts.check` in
+`package.json`, the gate grew and this page did not follow.
 
-Cada `scripts/check-*.ts` abre com o JSDoc do incidente que o fez existir - leia
-o de cima antes de mexer no que ele guarda. As guardas que mais surpreendem:
+Each `scripts/check-*.ts` opens with the JSDoc of the incident that made it
+exist - read the one on top before touching what it guards. The guards that
+surprise the most:
 
-- `check:opacidade` - `opacity-<n>` em `src/` tem que estar em `DECLARADAS`, com
-  motivo, e a linha que declara um par de cor tem a conta MEDIDA nos dois temas
-  com o alfa aplicado. Nasceu porque o `check:contrast` mede o par PLENO e nao
-  ve alfa: o xis do `Alert` pintava `opacity-70` sobre `{tom}-subtle` e media
-  2,77 no success e 2,66 no warning, contra os 3 da 1.4.11, e o
-  `hover:opacity-90` do Button destrutivo media 4,45 contra os 4,5 de AA. Cinco
-  outras pecas desabilitavam por `opacity-60` em vez de `text-fg-disabled`. O
-  repositorio ja sabia disso e a regra tinha virado teste de TRES pecas
-  (`test/contrato-das-irmas.test.tsx`), enquanto as outras sete nunca foram
-  olhadas. So o web: em `native/src` o desabilitado E `opacity-50` na camada
-  inteira, decisao escrita em `WITHOUT_PAIR`. A lista so encolhe.
-- `check:doc` - peca sem pagina e pagina sem peca, nos dois sentidos.
-- `check:exemplos` - nome citado em bloco `tsx` de `.design-sync/docs/` tem que
-  existir nos pacotes. Nasceu porque a pagina do `ChartContainer` ensinava a
-  chamar um `useAreaGradient('faturado')` que nunca existiu - a funcao real e
-  `areaGradient(id, name)` -, e o paragrafo logo abaixo do bloco explicava o
-  `id` que o proprio bloco esquecia. O corpo das paginas e o que a pessoa
-  copia, e era a unica parte do material que nao passava por compilador nenhum:
-  o `check:previews` compila os previews, e o `check:skill` cobre a SKILL. Na
-  arvore inteira era o UNICO nome inventado em 177 paginas. A lista `FOREIGN`
-  so nomeia hook de biblioteca de terceiro, e nao abriga excecao nossa.
-- `check:readme` - toda peca do catalogo tem que ser citada no `README.md`, ou
-  ter linha em `OUT_OF_README` com o motivo, e a frase que abre o catalogo tem
-  que continuar dizendo que a tabela NAO e o indice. Nasceu porque o digito
-  estava certo e a lista embaixo dele nao: o `check:pecas` guardava o "90
-  pecas.", e das 90 o arquivo inteiro citava 49. A lista so encolhe.
-- `check:contrato` - o que `src/chart/index.ts`, `src/form/index.ts`,
-  `src/ai/index.ts`, `src/dnd/index.ts`, `src/editor/index.ts` e os subcaminhos do nativo
-  exportam tem que estar citado em `conventions.md` E na skill.
-- `check:skill` - prop citada em exemplo da skill tem que existir na peca.
-- `check:lista-skill` - todo arquivo de `.claude/skills/rivocode-ui/reference/`
-  tem que estar no indice do `SKILL.md` E no laco `curl` de
-  `apps/docs/src/content/skill.md`. Nasceu porque o laco listava sete nomes e a
-  pasta tinha oito: quem instalava pelo site ficava sem a referencia de React
-  Native, e o `curl` saia zerado. Zero excecao, e sem lista de excecao.
-- `check:paridade` - `scripts/paridade-nativo.ts` e a fonte unica da tabela de
-  paridade, e ela escreve tambem a secao "No React Native" de cada pagina.
-- `check:assinatura` - o `check:paridade` responde "existe no nativo?"; esta
-  responde "como se escreve a chamada la". Ela confere cada linha da tabela de
-  assinatura contra os dois catalogos de props, e cobra COBERTURA da unica
-  familia que se deriva sozinha: variante que existe de um lado so. O lado
-  nativo vem de `apps/docs/src/native-props.json`, artefato comitado porque
-  gerar exige `examples/native` instalado - o `check:props:nativo` que o mantem
-  em dia roda no job `nativo` da CI, ao lado do `check:native:types`.
-- `check:testes` - a contagem que a home exibe.
-- `check:demo` - toda peca tem que aparecer em `demo/*.tsx`, ou ter linha em
-  `SEM_VITRINE` com o motivo. Nasceu porque sete pecas foram publicadas no npm
-  sem ninguem ter olhado para nenhuma delas: passaram em 1072 testes, e o passo
-  do processo que manda olhar nos dois temas e nas duas densidades foi pulado
-  sem nada acusar. Medindo depois, 28 das 90 estavam fora da vitrine. A lista
-  so encolhe.
-- `check:receita` - o que o `npx rivocode-ui-native-init` escreve tem que
-  dizer o mesmo que o `examples/native`, que e a fonte porque e o unico dos
-  dois que roda. Nasceu porque um agente montou um app do zero com o pacote
-  publicado e nao chegou ao fim lendo a doc: o `native/README.md` listava
-  QUATRO arquivos de setup e escondia os dois mais caros de diagnosticar. Ela
-  compara FATO, e nao texto - a lista ordenada de diretivas do `global.css`, os
-  plugins do PostCSS, o embrulho do metro, o `userInterfaceStyle`, o
-  `browserslist` -, porque o caminho relativo do monorepo e diferente de
-  proposito. O `babel.config.js` e o unico fato pela AUSENCIA, e ele foi
-  medido: escrever um com `presets: ["babel-preset-expo"]` derruba um app do
-  Expo 57 inteiro, porque nesse SDK o preset nao resolve da raiz.
-- `check:scripts` - todo `scripts/*.ts` tem que ser alcancavel a partir do
-  `check`, ou ter linha em `OUT` dizendo o que o impede. Nasceu porque o
-  `regressao-visual.ts` viveu fora do gate e ficou vermelho em silencio: tres
-  assinaturas de retrato divergiam do comitado e ninguem sabia, porque ninguem
-  rodava. A lista `OUT` so encolhe.
-- `check:piso` - varredura que pode devolver lista vazia e deixar a
-  verificacao em cima dela verde. Em `scripts/`, `new Glob(` so em
-  `scripts/varredura.ts`: quem varre chama `scanAtLeast(padrao, piso)`, que
-  cobra o piso na MESMA chamada - nao da para pedir os arquivos sem dizer
-  quantos se espera. Em `test/` e `native/test/`, todo `new Glob(` ou
-  `readdirSync(` dentro de um bloco `test(...)` precisa de um piso no mesmo
-  bloco. Nasceu porque quebrar cada padrao de proposito, num dia so, deixou
-  onze guardas de `scripts/` verdes lendo ZERO arquivo - entre elas o
-  `check:contrast`, que anunciou "Contraste ok em todos os temas" sem ter
-  aberto um tema - e seis blocos de teste passando com a lista vazia. Uma area
-  estava escrita e nunca fora lida: o `check:comentarios` declarava
-  `.design-sync/previews/*.tsx` e o Glob do bun pula pasta oculta sem `dot`.
-  A lista `OUT` so encolhe.
-- `check:classes` - classe usada em `src/**` ou `native/src/**` que o Tailwind
-  daquele pacote nao sabe compilar. Nasceu porque o polegar do `Slider` nativo
-  pintava `shadow-1` e `shadow` nao existe no CSS nativo: a classe nunca gerou
-  um byte, o `tsc` passava, o build passava, e o polegar ficou sem sombra desde
-  que nasceu. Ela pergunta ao proprio compilador, e nao a uma lista - entao
-  variante, valor arbitrario e modificador de opacidade passam pelo caminho do
-  build. Sem lista de excecao, e o acordo e que continue sem.
-- `check:cli` - `src/lib/contrast.ts`, `src/lib/theme-check.ts` e
-  `src/tokens/theme-roles.ts` sao ferramenta de mesa: eles viajam em
-  `dist/cli.js` e **nao** podem virar alcancaveis de `src/index.ts`, senao a
-  conta de contraste entra no bundle de quem so usa as pecas. Ela le o GRAFO de
-  imports a partir das tres entradas e imprime a cadeia, porque proibir a pasta
-  deixa o caminho indireto aberto. Confere tambem o sentido inverso, para nao
-  virar decoracao, e que a frase-marca de cada arquivo ainda existe na fonte -
-  essa ultima assercao faltava, e a guarda ficou verde por vacuidade quando um
-  rename levou a frase embora. No artefato ela le o que `dist/index.js` e os
-  subcaminhos ALCANCAM, e nao o `dist/index.js` sozinho: desde o `unbundle` ele
-  e so reexportacao, e procurar a frase nele passaria sem ler peca nenhuma.
-- `check:tamanho` - o gzip de cada entrada do `exports` (a raiz, os cinco
-  subcaminhos e a `styles.css`) e do `Button` importado sozinho, contra
-  `scripts/orcamento-de-tamanho.ts`, onde cada limite tem o motivo escrito.
-  Nasceu porque `import { Button } from "@rivocode/ui"` levava 129 KB em gzip
-  de 307 KB possiveis: o `tsdown` juntava as pecas num `index.js` so, e o
-  `"sideEffects": ["*.css"]` do package.json - que ja dizia a coisa certa - so
-  descarta ARQUIVO inteiro. Com `unbundle` o mesmo `Button` custa 12,3 KB, e as
-  duas metades sao necessarias: sem o `sideEffects` ele volta a 144 KB. Ela
-  constroi numa pasta propria em vez de ler o `dist/`, porque o gate roda antes
-  do build e o `dist/` que estiver ali e de outro codigo; custa menos de um
-  segundo. Tem teto e piso: acima do limite reprova, e abaixo de 80% dele
-  tambem - o limite desce no commit que encolheu. Subir e decisao: no mesmo
-  commit que cresceu, o `limit` vira o numero que a guarda sugere e o `why`
-  diz o que entrou.
-- `check:native:contrast` - `native/scripts/contrast.mjs` e espelho GERADO de
-  `src/lib/contrast.ts`, porque o pacote nativo publica FONTE e nao alcanca o
-  `src/` do web. Ela confere o texto E que o espelho MEDE: importa os dois e
-  compara linha por linha no tema da casa. Texto pega o arquivo editado a mao;
-  a medida pega o arquivo que virou inerte. A comparacao ignora espaco em
-  branco, porque os workflows usam `bun-version: latest` e formatacao nova do
-  transpilador deixaria a CI vermelha sem ninguem tocar no repo.
-- `check:tema:nativo` - o `rivocode-ui-native-theme` deriva 37 papeis de 8
-  sementes, e a guarda fica vermelha **no commit que adiciona um papel novo**,
-  nos dois sentidos. E para a pergunta "deriva de que?" custar cinco minutos em
-  vez de uma versao.
-- `check:mcp` - a secao do topo de `mcp/CHANGELOG.md` diz de que versao do
-  `@rivocode/ui` e do `@rivocode/ui-native` o MCP leva a documentacao, e os
-  numeros tem que ser os de agora. Nasceu porque a biblioteca saiu em quatro
-  versoes seguidas sem MCP novo, e quem usava o MCP ficou com a documentacao
-  velha sem nada acusar. Todo release de um dos dois pacotes abre uma secao
-  nova no MCP, com a versao dele subida junto.
-- `check:retratos` - secao declarada em `SECTIONS` tem que ter marcador na
-  vitrine e assinatura comitada, e assinatura orfa tem que sair. Roda em
-  milissegundos e sem navegador, porque o retrato em si vive fora do gate.
+- `check:opacity` - `opacity-<n>` in `src/` has to be in `DECLARADAS`, with
+  a reason, and the line that declares a color pair has the ratio MEASURED in
+  both themes with the alpha applied. It was born because `check:contrast`
+  measures the FULL pair and does not see alpha: the `Alert` close button
+  painted `opacity-70` over `{tone}-subtle` and measured 2.77 on success and
+  2.66 on warning, against the 3 of 1.4.11, and the destructive Button's
+  `hover:opacity-90` measured 4.45 against the 4.5 of AA. Five other pieces
+  disabled with `opacity-60` instead of `text-fg-disabled`. The repository
+  already knew, and the rule had become a test of THREE pieces
+  (`test/sibling-contract.test.tsx`), while the other seven were never
+  looked at. Web only: in `native/src` disabled IS `opacity-50` on the whole
+  layer, a decision written in `WITHOUT_PAIR`. The list only shrinks.
+- `check:doc` - a piece without a page and a page without a piece, both ways.
+- `check:examples` - a name cited in a `tsx` block of `.design-sync/docs/` has
+  to exist in the packages. It was born because the `ChartContainer` page
+  taught calling a `useAreaGradient('faturado')` that never existed - the real
+  function is `areaGradient(id, name)` -, and the paragraph right below the
+  block explained the `id` the block itself forgot. The body of the pages is
+  what people copy, and it was the only part of the material that went through
+  no compiler: `check:previews` compiles the previews, and `check:skill` covers
+  the SKILL. In the whole tree it was the ONLY invented name across 177 pages.
+  The `FOREIGN` list only names third-party library hooks, and holds no
+  exception of ours.
+- `check:readme` - every piece in the catalog has to be cited in `README.md`,
+  or have a line in `OUT_OF_README` with the reason, and the sentence that
+  opens the catalog has to keep saying the table is NOT the index. It was born
+  because the digit was right and the list below it was not: `check:pieces`
+  guarded the "90 pieces.", and of the 90 the whole file cited 49. The list
+  only shrinks.
+- `check:contract` - what `src/chart/index.ts`, `src/form/index.ts`,
+  `src/ai/index.ts`, `src/dnd/index.ts`, `src/editor/index.ts` and the native
+  subpaths export has to be cited in `conventions.md` AND in the skill.
+- `check:skill` - a prop cited in a skill example has to exist on the piece.
+- `check:skill-list` - every file in `.claude/skills/rivocode-ui/reference/`
+  has to be in the `SKILL.md` index AND in the `curl` loop of
+  `apps/docs/src/content/skill.md`. It was born because the loop listed seven
+  names and the folder had eight: whoever installed from the site went without
+  the React Native reference, and the `curl` exited zero. Zero exceptions, and
+  no exception list.
+- `check:parity` - `scripts/native-parity.ts` is the single source of the
+  parity table, and it also writes the "In React Native" section of each page.
+- `check:signature` - `check:parity` answers "does it exist on native?";
+  this one answers "how is the call written there". It checks each line of the
+  signature table against both props catalogs, and demands COVERAGE of the
+  only family that derives itself: a variant that exists on one side only. The
+  native side comes from `apps/docs/src/native-props.json`, an artifact
+  committed because generating it requires `examples/native` installed - the
+  `check:props:native` that keeps it current runs in the `nativo` CI job, next
+  to `check:native:types`.
+- `check:tests` - the count the home page shows.
+- `check:demo` - every piece has to appear in `demo/*.tsx`, or have a line in
+  `SEM_VITRINE` with the reason. It was born because seven pieces were
+  published to npm without anyone having looked at any of them: they passed
+  1072 tests, and the process step that says to look in both themes and both
+  densities was skipped with nothing flagging it. Measured afterwards, 28 of
+  the 90 were outside the showcase. The list only shrinks.
+- `check:recipe` - what `npx rivocode-ui-native-init` writes has to say the
+  same as `examples/native`, which is the source because it is the only one of
+  the two that runs. It was born because an agent built an app from scratch
+  with the published package and did not get to the end reading the doc: the
+  `native/README.md` listed FOUR setup files and hid the two most expensive to
+  diagnose. It compares FACT, not text - the ordered list of `global.css`
+  directives, the PostCSS plugins, the metro wrapper, `userInterfaceStyle`,
+  `browserslist` -, because the monorepo relative path is different on
+  purpose. `babel.config.js` is the only fact by ABSENCE, and it was measured:
+  writing one with `presets: ["babel-preset-expo"]` takes down a whole Expo 57
+  app, because in that SDK the preset does not resolve from the root.
+- `check:scripts` - every `scripts/*.ts` has to be reachable from `check`, or
+  have a line in `OUT` saying what prevents it. It was born because
+  `visual-regression.ts` lived outside the gate and went red silently: three
+  portrait signatures diverged from the committed ones and nobody knew,
+  because nobody ran it. The `OUT` list only shrinks.
+- `check:floor` - a scan that can return an empty list and leave the check on
+  top of it green. In `scripts/`, `new Glob(` only in `scripts/scan.ts`:
+  whoever scans calls `scanAtLeast(pattern, floor)`, which demands the floor
+  in the SAME call - you cannot ask for the files without saying how many you
+  expect. In `test/` and `native/test/`, every `new Glob(` or `readdirSync(`
+  inside a `test(...)` block needs a floor in the same block. It was born
+  because breaking each pattern on purpose, in a single day, left eleven
+  guards in `scripts/` green reading ZERO files - among them `check:contrast`,
+  which announced "Contrast ok in every theme" without having opened a theme
+  - and six test blocks passing with the empty list. One area was written and
+  never read: `check:comments` declared `.design-sync/previews/*.tsx` and
+  bun's Glob skips hidden folders without `dot`. The `OUT` list only shrinks.
+- `check:classes` - a class used in `src/**` or `native/src/**` that the
+  Tailwind of that package cannot compile. It was born because the native
+  `Slider` thumb painted `shadow-1` and `shadow` does not exist in the native
+  CSS: the class never generated a byte, `tsc` passed, the build passed, and
+  the thumb had no shadow since birth. It asks the compiler itself, not a
+  list - so variants, arbitrary values and opacity modifiers go through the
+  build path. No exception list, and the agreement is to keep it that way.
+- `check:cli` - `src/lib/contrast.ts`, `src/lib/theme-check.ts` and
+  `src/tokens/theme-roles.ts` are desk tooling: they travel in `dist/cli.js`
+  and **cannot** become reachable from `src/index.ts`, otherwise the contrast
+  math enters the bundle of whoever only uses the pieces. It reads the import
+  GRAPH from the three entries and prints the chain, because banning the
+  folder leaves the indirect path open. It also checks the reverse direction,
+  so it does not become decoration, and that each file's marker sentence still
+  exists in the source - that last assertion was missing, and the guard went
+  green by vacuity when a rename took the sentence away. In the artifact it
+  reads what `dist/index.js` and the subpaths REACH, not `dist/index.js`
+  alone: since `unbundle` it is only re-exports, and looking for the sentence
+  in it would pass without reading a single piece.
+- `check:size` - the gzip of each `exports` entry (the root, the five
+  subpaths and `styles.css`) and of `Button` imported alone, against
+  `scripts/size-budget.ts`, where each limit has its reason written.
+  It was born because `import { Button } from "@rivocode/ui"` pulled 129 KB
+  gzipped out of 307 KB possible: `tsdown` merged the pieces into a single
+  `index.js`, and the package.json `"sideEffects": ["*.css"]` - which already
+  said the right thing - only discards a WHOLE file. With `unbundle` the same
+  `Button` costs 12.3 KB, and both halves are needed: without `sideEffects`
+  it goes back to 144 KB. It builds into its own folder instead of reading
+  `dist/`, because the gate runs before the build and whatever `dist/` is
+  there is from other code; it costs under a second. It has a ceiling and a
+  floor: above the limit fails, and below 80% of it fails too - the limit goes
+  down in the commit that shrank. Going up is a decision: in the same commit
+  that grew, `limit` becomes the number the guard suggests and `why` says what
+  came in.
+- `check:native:contrast` - `native/scripts/contrast.mjs` is a GENERATED
+  mirror of `src/lib/contrast.ts`, because the native package publishes SOURCE
+  and cannot reach the web `src/`. It checks the text AND that the mirror
+  MEASURES: it imports both and compares line by line in the house theme. Text
+  catches the hand-edited file; the measurement catches the file that went
+  inert. The comparison ignores whitespace, because the workflows use
+  `bun-version: latest` and new transpiler formatting would turn CI red
+  without anyone touching the repo.
+- `check:theme:native` - `rivocode-ui-native-theme` derives 37 roles from 8
+  seeds, and the guard goes red **in the commit that adds a new role**, both
+  ways. It is so the question "derived from what?" costs five minutes instead
+  of a version.
+- `check:mcp` - the top section of `mcp/CHANGELOG.md` says which version of
+  `@rivocode/ui` and of `@rivocode/ui-native` the MCP carries the
+  documentation of, and the numbers have to be the current ones. It was born
+  because the library shipped four versions in a row without a new MCP, and
+  whoever used the MCP was left with the old documentation with nothing
+  flagging it. Every release of either package opens a new section in the MCP,
+  with its version bumped along.
+- `check:portraits` - a section declared in `SECTIONS` has to have a marker in
+  the showcase and a committed signature, and an orphan signature has to go.
+  It runs in milliseconds and without a browser, because the portrait itself
+  lives outside the gate.
 
-`bun run a11y` fica FORA do gate, como o `shot` e o `visual`, porque precisa do
-Chrome: monta a vitrine e mede cada pagina com o axe-core (as regras de layout
-de vitrine que ele ignora estao em `IGNORED_RULES`, cada uma com o motivo, e o
-no de biblioteca que ele ignora sem desligar a regra esta em `IGNORED_NODES`), o
-foco que sobrevive a acao (`FOCUS_TARGETS`), o alvo de 24px e o reflow a 320px,
-e sai com codigo 1 quando acha. O alvo mede a area que recebe o clique - o
-`::after` absoluto em inset negativo conta, confirmado por `elementFromPoint`,
-entao pseudo recortado por `overflow` nao conta - e so escapa pela excecao de
-frase o link ou botao de texto que divide a linha com o texto em volta. Antes da
-vitrine, a sonda roda em `TARGET_CALIBRATION`, casos dos dois lados, e para
-tudo se um deles mudar de lado. O Chrome vem de `RC_CHROME`, com o do macOS de
-padrao, e `RC_CHROME_FLAGS` acrescenta bandeiras.
+`bun run a11y` stays OUTSIDE the gate, like `shot` and `visual`, because it
+needs Chrome: it mounts the showcase and measures each page with axe-core (the
+showcase layout rules it ignores are in `IGNORED_RULES`, each with its reason,
+and the library node it ignores without turning the rule off is in
+`IGNORED_NODES`), the focus that survives the action (`FOCUS_TARGETS`), the
+24px target and reflow at 320px, and exits with code 1 when it finds
+something. The target measures the area that receives the click - an absolute
+`::after` with negative inset counts, confirmed by `elementFromPoint`, so a
+pseudo clipped by `overflow` does not count - and only the text link or button
+that shares the line with the surrounding text escapes through the sentence
+exception. Before the showcase, the probe runs on `TARGET_CALIBRATION`, cases
+on both sides, and stops everything if one of them switches sides. Chrome
+comes from `RC_CHROME`, with the macOS one as default, and `RC_CHROME_FLAGS`
+adds flags.
 
-Os tres rodam na CI pela **bancada** (`.github/workflows/bancada.yml`), em PR e
-em push na `main`, e ela e DIFERENCIAL: mede a base e a cabeca no mesmo runner,
-com os scripts da cabeca, e `scripts/comparacao-da-bancada.ts` julga. A
-referencia absoluta nao serve la - no ubuntu, a arvore da main sem mudanca
-nenhuma sai com 23 dos 50 retratos diferentes do comitado do macOS, as doze
-molduras de secao entre eles, e o `a11y` acusa hoje o que as pecas ja tem.
-Reprova problema de acessibilidade que a base nao tinha, e retrato que mudou sem
-a entrada dele em `demo/assinaturas.json` mudar junto - aceitar continua sendo
-`bun run shot && bun run visual --aceitar` na maquina, e a etiqueta
-`retrato-aceito` no PR e a valvula para diferenca que so existe no linux. Mede
-com piso: menos de 15 paginas auditadas ou 30 retratos comparados reprova. E
-workflow proprio, e nao job do `ci.yml`, porque o `tag.yml` escuta o `ci`.
+The three run in CI through the **bench** (`.github/workflows/bancada.yml`),
+on PR and on push to `main`, and it is DIFFERENTIAL: it measures the base and
+the head on the same runner, with the head's scripts, and
+`scripts/bench-comparison.ts` judges. The absolute reference does not
+work there - on ubuntu, the main tree with no change at all comes out with 23
+of the 50 portraits different from the ones committed on macOS, the twelve
+section frames among them, and `a11y` flags today what the pieces already
+have. It fails an accessibility problem the base did not have, and a portrait
+that changed without its entry in `demo/assinaturas.json` changing along -
+accepting is still `bun run shot && bun run visual --aceitar` on the machine,
+and the `retrato-aceito` label on the PR is the valve for a difference that
+only exists on linux. It measures with a floor: fewer than 15 audited pages
+or 30 compared portraits fails. It is its own workflow, not a job of
+`ci.yml`, because `tag.yml` listens to `ci`.
 
-`bun run build` depois, porque ha quebra que so aparece ao empacotar. Ele
-constroi tambem o `mcp/dist`, e `bun run fumaca:mcp` sobe esse servidor com
-`node` pelo stdio e confere as oito ferramentas - a CI roda os dois, nessa
-ordem.
+`bun run build` afterwards, because some breakage only shows up when
+packaging. It also builds `mcp/dist`, and `bun run smoke:mcp` starts that
+server with `node` over stdio and checks the eight tools - CI runs both, in
+that order.
 
-## Assercao que passa sem medir
+## Assertions that pass without measuring
 
-Guarda verde nao e guarda que mediu: e guarda que nao reclamou. Em 27/08/2026
-foram encontradas quatro verificacoes cujo sucesso nao dependia do que elas
-diziam guardar, e a varredura da arvore inteira achou mais dezenove da mesma
-familia. Duas regras sairam disso, e uma delas nao tem guarda.
+A green guard is not a guard that measured: it is a guard that did not
+complain. On 27/08/2026 four checks were found whose success did not depend on
+what they claimed to guard, and a sweep of the whole tree found nineteen more
+of the same family. Two rules came out of it, and one of them has no guard.
 
-**Varredura declara quanto espera achar.** Tem guarda: `check:piso`, descrita
-acima. Em `scripts/`, use `scanAtLeast` de `scripts/varredura.ts`; em teste,
-`expect(arquivos.length).toBeGreaterThan(n)` antes do laco. O piso e folgado, e
-nao a contagem de hoje.
+**A scan declares how much it expects to find.** It has a guard: `check:floor`,
+described above. In `scripts/`, use `scanAtLeast` from `scripts/scan.ts`;
+in a test, `expect(files.length).toBeGreaterThan(n)` before the loop. The
+floor is loose, not today's count.
 
-**Classe se compara por TOKEN, e nao por pedaco de string.** Nao tem guarda, e
-a decisao foi medida: `bg-accent` e prefixo de `bg-accent-text`, e
-`expect(className).toContain("bg-accent")` passa com os dois - com o defeito E
-com o conserto. Foram dezesseis assercoes assim, provadas uma a uma trocando o
-token na peca e vendo o teste continuar verde: o Button primario pintando
-`bg-accent-text`, o Card nascendo `raised`, o Alert virando `flex-col-reverse`,
-o campo nativo em foco vestindo `border-accent-text`. A forma que mede e
-`expect(className.split(" ")).toContain("bg-accent")`, mais um
-`not.toContain` do valor errado quando ele existe.
+**A class is compared by TOKEN, not by substring.** It has no guard, and the
+decision was measured: `bg-accent` is a prefix of `bg-accent-text`, and
+`expect(className).toContain("bg-accent")` passes with both - with the defect
+AND with the fix. There were sixteen assertions like that, proven one by one
+by swapping the token in the piece and seeing the test stay green: the primary
+Button painting `bg-accent-text`, the Card born `raised`, the Alert turning
+`flex-col-reverse`, the focused native field wearing `border-accent-text`. The
+form that measures is `expect(className.split(" ")).toContain("bg-accent")`,
+plus a `not.toContain` of the wrong value when there is one.
 
-Por que sem guarda: o detector de prefixo levantou 50 candidatos e 16 eram
-defeito. Os outros 34 eram `toContain` de trecho de MENSAGEM - "altura",
-"isEmpty", "março" - onde prefixo nao quer dizer nada. Guarda que erra em dois
-tercos das vezes e desligada na segunda semana, e ai o um terco que ela
-acertava para de ser visto. Fica a regra escrita, e a proxima varredura mede de
-novo.
+Why no guard: the prefix detector raised 50 candidates and 16 were defects.
+The other 34 were `toContain` of a MESSAGE fragment - "altura", "isEmpty",
+"março" - where a prefix means nothing. A guard that is wrong two thirds of
+the time gets turned off in the second week, and then the one third it got
+right stops being seen. The rule stays written, and the next sweep measures
+again.
 
-Quando desconfiar de uma assercao, **quebre de proposito o que ela deveria
-pegar**. Suspeito que morde nao e defeito. As formas que mais enganaram aqui:
-literal procurado num artefato DERIVADO sem ninguem cobrar o literal na fonte
-(`check:cli`), dois artefatos gerados da MESMA fonte comparados entre si
-(`check:paridade`) e laco de assercao que passa com zero voltas.
+When you distrust an assertion, **break on purpose what it should catch**. A
+suspect that bites is not a defect. The forms that fooled us the most here: a
+literal searched in a DERIVED artifact without anyone demanding the literal in
+the source (`check:cli`), two artifacts generated from the SAME source
+compared to each other (`check:parity`) and an assertion loop that passes
+with zero iterations.
 
-## Peca nova
+## New piece
 
-Sao NOVE artefatos e a peca nao existe sem os nove. Use o agent `peca-nova`
-(`.claude/agents/peca-nova.md`), que tem a ordem e o motivo de cada etapa.
-Resumo: wrapper sem cor literal e sem `z-index` numerico, `classNames` por
-parte, preview, pagina com a secao "quando nao usar" nomeando a peca vizinha,
-teste, `gen:props`, pares de contraste novos.
+There are NINE artifacts and the piece does not exist without all nine. Use
+the `peca-nova` agent (`.claude/agents/peca-nova.md`), which has the order and
+the reason for each step. Summary: a wrapper with no literal color and no
+numeric `z-index`, `classNames` per part, preview, a page with the "when not
+to use" section naming the neighbor piece, test, `gen:props`, new contrast
+pairs.
 
-**O nono artefato e o lado nativo, e ele nao e opcional.** Peca web nova nasce
-nos dois pacotes no mesmo dia. Nao e regra de simetria: e o que impede a fila
-do nativo de existir. Ela chegou a zero em 26/08/2026 e voltou a encher no
-mesmo dia, quando sete pecas entraram no web de uma vez - cada uma parecendo
-atraso temporario, e temporario e como uma fila de vinte comeca.
+**The ninth artifact is the native side, and it is not optional.** A new web
+piece is born in both packages on the same day. It is not a symmetry rule: it
+is what keeps the native queue from existing. It reached zero on 26/08/2026
+and filled up again the same day, when seven pieces entered the web at once -
+each one looking like a temporary delay, and temporary is how a queue of
+twenty starts.
 
-Tres respostas sao validas, e todas tem que estar ESCRITAS em
-`scripts/paridade-nativo.ts` na hora:
+Three answers are valid, and all of them have to be WRITTEN in
+`scripts/native-parity.ts` at the time:
 
-- **`traduz` / `vira`** - a peca nasceu nos dois lados. E o caso padrao.
-- **`nao`** - idioma de mesa que nao tem sentido no toque, ou coisa que a
-  plataforma ja da de fabrica. Decisao, e nao atraso; o motivo vai na linha.
-- **`fila`** - so quando a peca depende de DECISAO DE GESTO que ainda nao foi
-  tomada, e nunca por falta de tempo. Ela exige entrada em `FILA_DECLARADA`
-  com o motivo, e `bun run check:paridade` recusa fila sem declaracao.
+- **`traduz` / `vira`** - the piece was born on both sides. The default case.
+- **`nao`** - a desk idiom that makes no sense on touch, or something the
+  platform already gives out of the box. A decision, not a delay; the reason
+  goes on the line.
+- **`fila`** - only when the piece depends on a GESTURE DECISION not yet made,
+  and never for lack of time. It requires an entry in `FILA_DECLARADA` with
+  the reason, and `bun run check:parity` refuses a queue without a
+  declaration.
 
-A lista `FILA_DECLARADA` **so encolhe**, como o `DEBT` das outras guardas:
-entrada que nao acusa mais e erro, e a guarda manda apagar a linha.
+The `FILA_DECLARADA` list **only shrinks**, like the `DEBT` of the other
+guards: an entry that no longer flags is an error, and the guard says to
+delete the line.
 
-## Dependencias
+## Dependencies
 
-Quem propoe atualizacao e o Dependabot (`.github/dependabot.yml`), toda
-segunda: um PR agrupado de menor e correcao para a raiz, outro para
-`examples/native`, e um PR por major. Quem aprova e o `ci.yml`, que roda o gate
-inteiro no PR - merge sem ele verde e o que nao se faz. PR de dependencia nao
-bumpa versao, entao nao publica pacote; publica so o site, como todo push na
-`main`.
+Dependabot proposes updates (`.github/dependabot.yml`), every Monday: one
+grouped PR of minor and patch for the root, another for `examples/native`,
+and one PR per major. `ci.yml` approves, running the whole gate on the PR -
+merging without it green is what we do not do. A dependency PR does not bump a
+version, so it does not publish a package; it only publishes the site, like
+every push to `main`.
 
-`native/` fica fora de proposito, pelo mesmo motivo do `bun install` acima. Em
-`examples/native` so entra correcao de React, React Native, `react-native-*` e
-`expo*`: quem fixa essas versoes e o SDK do Expo, e troca de SDK e
-`npx expo install --fix`, feita por uma pessoa.
+`native/` is left out on purpose, for the same reason as the `bun install`
+above. In `examples/native` only patches of React, React Native,
+`react-native-*` and `expo*` go in: the Expo SDK pins those versions, and an
+SDK change is `npx expo install --fix`, done by a person.
 
-## Commit e release
+## Commit and release
 
-Mensagem: `tipo: frase em minuscula, sem acento, em prosa, dizendo o efeito`.
-O sujeito e o codigo, nao voce - "o applyMask decide o molde do telefone",
-"as guardas passam a pegar o que elas prometiam pegar". Tipos em uso: `feat`,
-`fix`, `refactor`, `docs`, `ci`, `chore`.
+Message: `type: lowercase sentence, in English, in prose, stating the effect`.
+The subject is the code, not you - "applyMask decides the phone mask", "the
+guards start catching what they promised to catch". Types in use: `feat`,
+`fix`, `refactor`, `docs`, `ci`, `chore`. Commits before 28/09/2026 are in
+Portuguese, and they stay that way.
 
-Tres tags, tres workflows, e o prefixo e o que separa:
+Three tags, three workflows, and the prefix is what separates them:
 
-- `v*` publica `@rivocode/ui` (versao em `package.json`).
-- `native-v*` publica `@rivocode/ui-native` (versao em `native/package.json`).
-- `mcp-v*` publica `@rivocode/ui-mcp` (versao em `mcp/package.json`).
+- `v*` publishes `@rivocode/ui` (version in `package.json`).
+- `native-v*` publishes `@rivocode/ui-native` (version in `native/package.json`).
+- `mcp-v*` publishes `@rivocode/ui-mcp` (version in `mcp/package.json`).
 
-**Da 1.0 em diante, semver a risca**, nos tres pacotes: quebra (tirar ou
-renomear prop, peca ou export, trocar padrao ou formato de callback) so em
-versao maior; o que vai sair ganha `@deprecated` com o caminho novo e fica pelo
-menos uma versao menor antes de sair na maior seguinte; prop nova e peca nova
-sao menor; correcao e patch. A tabela da 0.x para a 1.0 mora no agent
-`migracao`.
+**From 1.0 on, strict semver**, in all three packages: a break (removing or
+renaming a prop, piece or export, changing a default or a callback shape) only
+in a major version; what is going away gets `@deprecated` with the new path
+and stays at least one minor version before leaving in the next major; a new
+prop and a new piece are minor; a fix is a patch. The 0.x to 1.0 table lives
+in the `migracao` agent.
 
-Os pacotes andam em velocidades diferentes de proposito. A tag tem que bater
-com a versao do `package.json` correspondente, e o workflow confere isso -
-junto com o segredo e com a existencia da versao no registro - ANTES de gastar
-o `check` inteiro.
+The packages move at different speeds on purpose. The tag has to match the
+version in the corresponding `package.json`, and the workflow checks that -
+along with the secret and whether the version exists in the registry - BEFORE
+spending the whole `check`.
 
-### O que cada empurrao publica
+CHANGELOG sections published before 28/09/2026 are in Portuguese and stay
+that way: they are record. New sections are written in English.
 
-**Push na `main` publica o SITE, e pode publicar PACOTE.** A primeira metade e
-a mais facil de esquecer, porque nada no comando avisa: `git push origin main`
-dispara o `docs.yml` e `ds.rivocode.com.br` muda. A segunda metade e nova, de
-28/08/2026: ate ali npm so saia por tag, e a tag era acao de uma pessoa. Agora o
-`tag.yml` cria a tag sozinho quando a versao de um manifesto muda. Merge de
-trabalho pela metade continua nao publicando nada, mas quem segura isso passou a
-ser uma guarda, e nao o dedo humano no `git tag`.
+### What each push publishes
 
-| Gatilho | Workflow | Publica |
+**A push to `main` publishes the SITE, and may publish a PACKAGE.** The first
+half is the easiest to forget, because nothing in the command warns you:
+`git push origin main` triggers `docs.yml` and `ds.rivocode.com.br` changes.
+The second half is new, from 28/08/2026: until then npm only shipped by tag,
+and the tag was a person's action. Now `tag.yml` creates the tag by itself
+when a manifest version changes. Merging half-done work still publishes
+nothing, but what holds that back is now a guard, not a human finger on
+`git tag`.
+
+| Trigger | Workflow | Publishes |
 |---|---|---|
-| push na `main` | `ci.yml` + `docs.yml` | o site |
-| `ci` verde na `main` | `tag.yml` | a tag, e chama o release |
-| tag `v*` | `release.yml` | `@rivocode/ui` no npm |
-| tag `native-v*` | `release-native.yml` | `@rivocode/ui-native` no npm |
-| tag `mcp-v*` | `release-mcp.yml` | `@rivocode/ui-mcp` no npm |
+| push to `main` | `ci.yml` + `docs.yml` | the site |
+| `ci` green on `main` | `tag.yml` | the tag, and calls the release |
+| tag `v*` | `release.yml` | `@rivocode/ui` on npm |
+| tag `native-v*` | `release-native.yml` | `@rivocode/ui-native` on npm |
+| tag `mcp-v*` | `release-mcp.yml` | `@rivocode/ui-mcp` on npm |
 
-### A tag nasce sozinha, e o que continua humano
+### The tag is born by itself, and what stays human
 
-O gatilho e o `workflow_run` do `ci`, tipo `completed`, na `main`, e o job so
-segue com `conclusion == "success"`: nenhuma tag nasce antes de o gate inteiro
-ter passado sobre aquele commit. Nao e `on: push` de proposito - o push correria
-em paralelo com o `ci` e tagearia codigo que o gate ainda vai reprovar, e
-publicacao no npm nao se desfaz. Pelo mesmo motivo o checkout e do
-`workflow_run.head_sha`, e nao do topo da `main` de agora: a tag aponta para o
-commit que foi medido.
+The trigger is the `workflow_run` of `ci`, type `completed`, on `main`, and
+the job only proceeds with `conclusion == "success"`: no tag is born before
+the whole gate has passed on that commit. It is not `on: push` on purpose -
+the push would run in parallel with `ci` and tag code the gate is still going
+to fail, and an npm publish cannot be undone. For the same reason the checkout
+is of `workflow_run.head_sha`, not of the current tip of `main`: the tag
+points to the commit that was measured.
 
-Para cada pacote, separadamente - os tres andam em velocidades diferentes, e o
-prefixo e o que os separa -, a tag so nasce se as QUATRO passarem:
+For each package, separately - the three move at different speeds, and the
+prefix is what separates them -, the tag is only born if all FOUR pass:
 
-1. **A tag ainda nao existe**, aqui e no `origin`. Sem isso, todo push na `main`
-   tentaria recriar a ultima.
-2. **A versao ainda nao esta no npm**, medido com
-   `npm view <pacote> versions --json`. Publicacao nao se desfaz, e foi assim
-   que tres tentativas seguidas tomaram `403` por republicar o MESMO numero.
-3. **O CHANGELOG daquele pacote abre com `## <versao>`**, igual a do manifesto e
-   no TOPO. Esta e a guarda que preserva o merge de trabalho pela metade: bump
-   que entra sem CHANGELOG fechado NAO publica. A ordem da casa sempre foi
-   "feche o CHANGELOG antes da tag"; a diferenca e que agora ela e cobrada por
-   maquina.
-4. **O ASSUNTO do commit da cabeca nao tem `[no-release]`.** E a valvula de
-   escape para bumpar sem publicar. Ela vale para os tres pacotes de uma vez,
-   porque a mensagem e uma so. So a primeira linha e lida, e isso foi aprendido
-   caro: o proprio commit que criou esta automacao explicava a valvula no
-   corpo, escreveu a marca no meio da prosa, e foi barrado por ela - a
-   automacao vetou a si mesma na estreia. E a mesma forma do scanner do
-   Tailwind que gera classe a partir de nome escrito em comentario.
+1. **The tag does not exist yet**, here and on `origin`. Without this, every
+   push to `main` would try to recreate the last one.
+2. **The version is not on npm yet**, measured with
+   `npm view <package> versions --json`. Publishing cannot be undone, and
+   that is how three attempts in a row got a `403` for republishing the SAME
+   number.
+3. **That package's CHANGELOG opens with `## <version>`**, equal to the
+   manifest's and at the TOP. This is the guard that protects merging
+   half-done work: a bump that goes in without a closed CHANGELOG does NOT
+   publish. The house order was always "close the CHANGELOG before the tag";
+   the difference is that now it is enforced by machine.
+4. **The SUBJECT of the head commit has no `[no-release]`.** It is the escape
+   valve to bump without publishing. It applies to all three packages at once,
+   because the message is one. Only the first line is read, and that was
+   learned the hard way: the very commit that created this automation
+   explained the valve in its body, wrote the marker in the middle of the
+   prose, and was blocked by it - the automation vetoed itself on its debut.
+   It is the same shape as the Tailwind scanner generating a class from a
+   name written in a comment.
 
-A decisao mora numa funcao pura - `decideRelease`, em
-`scripts/decisao-de-release.ts` - que recebe a versao, as tags que existem, as
-versoes do registro, o texto do CHANGELOG e a mensagem do commit, e devolve o
-veredito com o motivo. `test/decisao-de-release.test.ts` cobre os quatro motivos
-de barrar e o caminho feliz, nos tres pacotes. Guarda de publicacao escrita em
-`if` de shell dentro do `.yml` nao teria como ser provada, e esta e a unica do
-repositorio que decide se um numero de versao queima.
+The decision lives in a pure function - `decideRelease`, in
+`scripts/release-decision.ts` - that receives the version, the existing
+tags, the registry versions, the CHANGELOG text and the commit message, and
+returns the verdict with the reason. `test/release-decision.test.ts` covers
+the four reasons to block and the happy path, in all three packages. A publish
+guard written as a shell `if` inside the `.yml` could not be proven, and this
+is the only one in the repository that decides whether a version number burns.
 
-**Guarda que barra nao deixa a CI vermelha.** Ela escreve no resumo da execucao
-o que foi feito ou por que nao foi, para cada pacote, inclusive quando nao havia
-nada a fazer - e segue. Vermelho em todo push que nao e release e desligado na
-segunda semana, e ai o release que a guarda protegia deixa de ser protegido. O
-que PARA a corrida e outra coisa: a guarda que nao consegue MEDIR. `npm view`
-que falha por qualquer motivo que nao seja o 404 de pacote inexistente, `git`
-que nao alcanca o `origin` - ali o script morre com codigo 1, porque guarda sem
-medida que responde "pode publicar" cria a tag por falta de resposta.
+**A guard that blocks does not turn CI red.** It writes in the run summary
+what was done or why it was not, for each package, even when there was
+nothing to do - and moves on. Red on every push that is not a release gets
+turned off in the second week, and then the release the guard protected stops
+being protected. What STOPS the run is something else: the guard that cannot
+MEASURE. An `npm view` that fails for any reason other than the 404 of a
+nonexistent package, a `git` that cannot reach `origin` - there the script
+dies with code 1, because a guard without a measurement that answers "go
+ahead" creates the tag for lack of an answer.
 
-**Duas coisas continuam sendo decisao de uma pessoa, e nenhuma maquina toma
-nenhuma delas: o numero da versao e o fechamento do CHANGELOG.** E so isso que
-se faz num dia de release - bump no manifesto certo, secao nova no CHANGELOG
-daquele pacote, commit, merge na `main`. O resto e consequencia.
+**Two things remain a person's decision, and no machine makes either of them:
+the version number and closing the CHANGELOG.** That is all you do on a
+release day - bump the right manifest, a new section in that package's
+CHANGELOG, commit, merge to `main`. The rest is consequence.
 
-**Publicacao nao se desfaz, e o npm nao deixa sobrescrever.** Versao publicada
-com defeito nao se conserta republicando: conserta-se com versao nova. E a razao
-de as quatro guardas existirem, e ela nao mudou por a tag ter virado automatica
-- mudou so quem paga por esquecer.
+**Publishing cannot be undone, and npm does not allow overwriting.** A version
+published with a defect is not fixed by republishing: it is fixed with a new
+version. That is why the four guards exist, and it did not change because the
+tag became automatic - only who pays for forgetting changed.
 
-**Tag empurrada com o `GITHUB_TOKEN` nao dispara `on: push: tags`.** O GitHub
-bloqueia para evitar recursao, e por isso o `tag.yml` nao para na tag: ele chama
-o release por `workflow_dispatch` passando o campo `tag`, que os tres releases
-aceitam - e `workflow_dispatch` e uma das excecoes escritas nessa mesma regra. E
-por isso o job pede `actions: write` alem de `contents: write`. Sem essa chamada
-a tag existiria e a versao nunca subiria, que e o pior dos dois estados.
+**A tag pushed with `GITHUB_TOKEN` does not trigger `on: push: tags`.** GitHub
+blocks it to avoid recursion, and that is why `tag.yml` does not stop at the
+tag: it calls the release through `workflow_dispatch` passing the `tag`
+field, which all three releases accept - and `workflow_dispatch` is one of the
+exceptions written into that same rule. That is why the job asks for
+`actions: write` besides `contents: write`. Without that call the tag would
+exist and the version would never go up, the worst of both states.
 
-Tres ensaios, e nenhum deles gasta versao:
+Three dry runs, and none of them spends a version:
 
-- `gh workflow run tag` roda a decisao inteira, com as quatro guardas medidas de
-  verdade, e nao cria tag nenhuma - a caixa vem marcada.
+- `gh workflow run tag` runs the whole decision, with the four guards truly
+  measured, and creates no tag - the box comes checked.
 - `gh workflow run release --field ensaio=true`,
-  `gh workflow run release-native --field ensaio=true` e
-  `gh workflow run release-mcp --field ensaio=true` atravessam o caminho da
-  publicacao ate o passo antes do `npm publish`. O do nativo nasceu porque a
-  primeira publicacao de verdade falhou com `ENEEDAUTH`, alguem publicou a mao,
-  e as tres tentativas seguintes tomaram `403`.
+  `gh workflow run release-native --field ensaio=true` and
+  `gh workflow run release-mcp --field ensaio=true` go through the publishing
+  path up to the step before `npm publish`. The native one was born because
+  the first real publish failed with `ENEEDAUTH`, someone published by hand,
+  and the three following attempts got `403`.
 
-**Pacote que ainda nao existe no registro.** Na primeira publicacao do
-`@rivocode/ui-mcp`, `npm view` responde `E404` - para o pacote inteiro, e nao so
-para a versao. As duas guardas tratam isso como "pode publicar": o
-`decideRelease` recebe lista vazia de versoes (o `publishedVersions` le o
-`E404` do JSON e devolve `[]`), e o `release-mcp.yml` transforma o erro em
-string vazia. No `decideRelease`, qualquer outra falha do `npm view` continua
-parando a corrida.
+**A package that does not exist in the registry yet.** On the first publish
+of `@rivocode/ui-mcp`, `npm view` answers `E404` - for the whole package, not
+only for the version. Both guards treat that as "go ahead": `decideRelease`
+receives an empty version list (`publishedVersions` reads the `E404` from the
+JSON and returns `[]`), and `release-mcp.yml` turns the error into an empty
+string. In `decideRelease`, any other `npm view` failure still stops the run.
 
-**O repositorio esta publico**, e os tres workflows publicam com
-`--provenance` e `id-token: write`. Os dois andam JUNTOS: um sem o outro nao
-publica, e o `--dry-run` do npm nao exercita nenhum dos dois - ha um
-`if (!dryRun)` antes da geracao da assinatura. Por isso cada workflow tem um
-passo que falha cedo se o token OIDC nao estiver la. Esta escrito nos tres, no
-lugar onde alguem tentaria "consertar". O `@rivocode/ui-mcp` nasceu com o
-repositorio ja publico, e sai assinado desde a primeira versao.
+**The repository is public**, and the three workflows publish with
+`--provenance` and `id-token: write`. The two go TOGETHER: one without the
+other does not publish, and npm's `--dry-run` exercises neither - there is an
+`if (!dryRun)` before the signature is generated. That is why each workflow
+has a step that fails early if the OIDC token is not there. It is written in
+all three, in the place where someone would try to "fix" it. `@rivocode/ui-mcp`
+was born with the repository already public, and has shipped signed since its
+first version.
 
-Ate `v0.8.0` e `native-v0.3.1` o repositorio era privado e o npm recusava a
-assinatura com 422: essas versoes ficaram sem procedencia e assim continuam -
-publicacao no npm nao se desfaz. Da `v0.9.0` e da `native-v0.4.0` em diante o
-tarball sai assinado, e o endpoint de attestations do registro responde.
+Up to `v0.8.0` and `native-v0.3.1` the repository was private and npm refused
+the signature with 422: those versions were left without provenance and stay
+that way - publishing on npm cannot be undone. From `v0.9.0` and
+`native-v0.4.0` on the tarball ships signed, and the registry's attestations
+endpoint answers.
 
-**Publicacao confiavel, sem token.** Desde 25/09/2026 os tres workflows
-autenticam no npm pelo mesmo OIDC da procedencia: cada pacote tem, no
-npmjs.com, um publicador confiavel apontando para `Rivocode/ui` e para o
-arquivo do workflow dele, e nao ha `NPM_TOKEN` nem `registry-url` - sem
-`registry-url` o setup-node nao escreve `.npmrc`, e nao sobra token vazio para
-o npm ler. Exige npm 11.5.1 ou mais novo, e por isso o passo "Conferir o npm da
-publicacao confiavel" atualiza o npm e falha cedo se a versao nao chegar la.
-Renomear um desses tres arquivos quebra a publicacao: o nome esta cadastrado
-no registro. O ensaio nao prova a autenticacao, porque o `--dry-run` nao troca
-o token; so o primeiro release de verdade prova.
+**Trusted publishing, no token.** Since 25/09/2026 the three workflows
+authenticate to npm through the same OIDC as provenance: each package has, on
+npmjs.com, a trusted publisher pointing to `Rivocode/ui` and to its workflow
+file, and there is no `NPM_TOKEN` nor `registry-url` - without `registry-url`
+setup-node does not write `.npmrc`, and no empty token is left for npm to
+read. It requires npm 11.5.1 or newer, which is why the "Check the trusted
+publishing npm" step updates npm and fails early if the version does not get
+there. Renaming one of these three files breaks publishing: the name is
+registered in the registry. The dry run does not prove authentication,
+because `--dry-run` does not exchange the token; only the first real release
+proves it.

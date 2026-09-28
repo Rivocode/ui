@@ -7,7 +7,7 @@ import { RivoProvider } from "../src/provider/rivo-provider";
 
 /*
  * Os invariantes velhos (erro vence carregando, vazio so depois da consulta,
- * guard do clique na linha) vivem em onda-c.test.tsx e continuam valendo sem
+ * guard do clique na linha) vivem em wave-c.test.tsx e continuam valendo sem
  * uma linha editada: e a prova de que o motor novo nao quebrou a API.
  * Aqui entram so as capacidades novas.
  */

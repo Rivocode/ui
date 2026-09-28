@@ -103,7 +103,7 @@ vale também onde o web compõe peças e o nativo desenha tudo numa só - o
 já dá ao conteúdo que rola.
 
 Nem toda peça tem `classNames` aqui. A que tem no web e não tem aqui tem linha
-na tabela abaixo dizendo por quê, e `bun run check:assinatura` cobra a linha:
+na tabela abaixo dizendo por quê, e `bun run check:signature` cobra a linha:
 sem ela, a peça veste só pela raiz sem ninguém avisar.
 
 O que sobra dessas duas regras — prop que troca de nome, tipo que troca de
@@ -115,7 +115,7 @@ escritos em lugar nenhum.
 
 ## A assinatura, prop a prop
 
-**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:assinatura`.
+**195 divergências de assinatura em 88 peças.** As duas regras acima (tudo controlado, lista por `items`) valem em todo o catálogo; o que está aqui é o que sobra delas — prop que muda de nome, tipo que muda de forma, e variante que existe de um lado só. `—` quer dizer que não há prop equivalente daquele lado. Todas as três colunas são conferidas contra os dois pacotes por `bun run check:signature`.
 
 | Peça | No web | No React Native | O que muda na chamada |
 | --- | --- | --- | --- |
@@ -568,11 +568,11 @@ com `uri` local: `size` pode faltar, e `maxSize` só recusa o que mediu.
 ## Como esta tabela se mantém
 
 A tabela acima e a seção **"No React Native"** de cada página de peça saem da
-mesma fonte, `scripts/paridade-nativo.ts`:
+mesma fonte, `scripts/native-parity.ts`:
 
 ```sh
-bun run scripts/paridade-nativo.ts            # reescreve as duas
-bun run scripts/paridade-nativo.ts --check    # só confere
+bun run scripts/native-parity.ts            # reescreve as duas
+bun run scripts/native-parity.ts --check    # só confere
 ```
 
 O `--check` falha quando uma peça nova do catálogo não tem linha, quando uma

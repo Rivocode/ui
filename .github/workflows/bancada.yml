@@ -12,7 +12,7 @@ name: bancada
 # Entao a bancada compara a BASE com a CABECA, as duas medidas neste mesmo
 # runner, com o mesmo Chrome e as mesmas fontes. Plataforma cancela; o que
 # sobra e o commit. O porque inteiro, e as alternativas que perderam, esta no
-# cabecalho de `scripts/comparacao-da-bancada.ts`.
+# cabecalho de `scripts/bench-comparison.ts`.
 #
 # Workflow proprio, e nao job do `ci.yml`, de proposito: o `tag.yml` escuta o
 # `ci`, e uma bancada de navegador que demora ou tropeca nao pode segurar uma
@@ -76,23 +76,23 @@ jobs:
           bun install --frozen-lockfile
           bun run demo
           bun run "$GITHUB_WORKSPACE/scripts/shot.ts"
-          bun run "$GITHUB_WORKSPACE/scripts/regressao-visual.ts" --gravar-em "$RUNNER_TEMP/medida/base/retratos.json"
-          bun run "$GITHUB_WORKSPACE/scripts/acessibilidade.ts" --json "$RUNNER_TEMP/medida/base/acessibilidade.json"
+          bun run "$GITHUB_WORKSPACE/scripts/visual-regression.ts" --gravar-em "$RUNNER_TEMP/medida/base/retratos.json"
+          bun run "$GITHUB_WORKSPACE/scripts/accessibility.ts" --json "$RUNNER_TEMP/medida/base/acessibilidade.json"
           cp demo/assinaturas.json "$RUNNER_TEMP/medida/base/assinaturas.json"
 
       - name: Medir a cabeca
         run: |
           bun run demo
           bun run scripts/shot.ts
-          bun run scripts/regressao-visual.ts --gravar-em "$RUNNER_TEMP/medida/cabeca/retratos.json"
-          bun run scripts/acessibilidade.ts --json "$RUNNER_TEMP/medida/cabeca/acessibilidade.json"
+          bun run scripts/visual-regression.ts --gravar-em "$RUNNER_TEMP/medida/cabeca/retratos.json"
+          bun run scripts/accessibility.ts --json "$RUNNER_TEMP/medida/cabeca/acessibilidade.json"
           cp demo/assinaturas.json "$RUNNER_TEMP/medida/cabeca/assinaturas.json"
 
       - name: Comparar
         run: |
           flags=()
           if [ "$ACCEPTED" = "true" ]; then flags+=(--retrato-aceito); fi
-          bun run scripts/comparacao-da-bancada.ts \
+          bun run scripts/bench-comparison.ts \
             --base "$RUNNER_TEMP/medida/base" \
             --cabeca "$RUNNER_TEMP/medida/cabeca" \
             "${flags[@]}"

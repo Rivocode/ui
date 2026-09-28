@@ -11,7 +11,7 @@ import { slugify } from '@/slug'
  *
  * Telas inteiras, e nao pecas soltas. Cada uma e um arquivo so em `blocks/`,
  * que importa somente dos tres caminhos da biblioteca, do zod, do lucide e do
- * React - `test/blocos-de-pagina.test.tsx` cobra isso -, entao o que a pessoa
+ * React - `test/page-blocks.test.tsx` cobra isso -, entao o que a pessoa
  * copia daqui cola num projeto e compila.
  *
  * O preview e SEMPRE uma moldura, inclusive no desktop. Um bloco e uma pagina:

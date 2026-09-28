@@ -63,7 +63,7 @@ import {
 } from "../../native/src";
 /* O grafico entra pelo subcaminho, e nao pelo indice acima: o react-native-svg
    e peer opcional, e este app o instalou porque desenha. Quem nao desenha nao
-   paga - e `scripts/check-fronteira-do-chart.ts` guarda essa fronteira. */
+   paga - e `scripts/check-chart-boundary.ts` guarda essa fronteira. */
 import { ChartBar, ChartContainer, ChartDonut, ChartRadial } from "../../native/src/chart";
 /* Copiar e anexar tem cada um o SEU subcaminho, e um peer do Expo atras de
    cada um: expo-clipboard e expo-document-picker. Um subcaminho por peer, e

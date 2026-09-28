@@ -37,7 +37,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
-    "build": "rm -rf dist && bun run ../scripts/conteudo-do-mcp.ts --out dist/content.json && bun build src/cli.ts --target node --format esm --packages external --outdir dist"
+    "build": "rm -rf dist && bun run ../scripts/mcp-content.ts --out dist/content.json && bun build src/cli.ts --target node --format esm --packages external --outdir dist"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.1",

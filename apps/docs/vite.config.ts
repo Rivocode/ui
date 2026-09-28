@@ -115,7 +115,7 @@ function catalogIndex(): Plugin {
       /*
        * As duas formas de estar presente contam: `traduz` e a peca com o mesmo
        * nome, `vira` e a que chegou com outro. A conta sai da tabela de
-       * paridade, que `scripts/paridade-nativo.ts` gera e `check:paridade`
+       * paridade, que `scripts/native-parity.ts` gera e `check:parity`
        * segura - numero derivado dela nasce honesto. Ela era feita no
        * navegador, e so por isso o guia inteiro precisava estar carregado.
        */

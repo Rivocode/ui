@@ -2,7 +2,7 @@ import { act, create, type ReactTestInstance, type ReactTestRenderer } from "rea
 import type { ReactElement } from "react";
 
 import { RivoProvider, type RivoProviderProps } from "../src";
-import { declaredColor, variableDeclarations } from "./css-compilado";
+import { declaredColor, variableDeclarations } from "./compiled-css";
 
 /** Monta dentro do provider, como todo app monta. */
 const mounted: ReactTestRenderer[] = ((

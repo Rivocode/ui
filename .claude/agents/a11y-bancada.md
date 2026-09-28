@@ -13,12 +13,12 @@ para que continue assim.
 
 `check:colors` (cor literal), `check:contrast` (pares de texto, pares de
 estado com alfa composto, fronteira e anel a 3:1), `check:props`,
-`check:temas`, `check:contrato`, `check:previews` e os testes. Rode
+`check:themes`, `check:contract`, `check:previews` e os testes. Rode
 `bun run check` e não reimplemente nada dele.
 
 ## A bancada automática, antes de você
 
-`bun run a11y` (em `scripts/acessibilidade.ts`) monta a vitrine e mede cada
+`bun run a11y` (em `scripts/accessibility.ts`) monta a vitrine e mede cada
 página de `demo/` no Chrome: axe-core com as regras de layout de vitrine
 ignoradas e justificadas em `IGNORED_RULES` (e o nó de biblioteca, como a
 sentinela de foco da Base UI, em `IGNORED_NODES`), foco que sobrevive à ação

@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------
  * As props, para a pagina
  *
- * A tabela e gerada do compilador, pelo `scripts/props-do-catalogo.ts`, e
+ * A tabela e gerada do compilador, pelo `scripts/catalog-props.ts`, e
  * comitada como JSON. Tabela de prop escrita a mao e a primeira coisa a
  * apodrecer: renomeia-se uma prop, a tabela guarda o nome velho, e a pagina
  * mente com confianca. O que havia antes apodrecia um passo antes - as tabelas

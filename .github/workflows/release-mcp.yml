@@ -175,7 +175,7 @@ jobs:
 
       # O servidor construido, pelo stdio, com `node`: o mesmo comando que o
       # cliente MCP de quem instala vai rodar.
-      - run: bun run fumaca:mcp
+      - run: bun run smoke:mcp
 
       # `bin` sem o arquivo publicado passa como aviso, e nao como erro, e o
       # `content.json` fora do tarball deixaria o servidor sem nada a servir.

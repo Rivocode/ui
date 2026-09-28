@@ -90,7 +90,7 @@ Alem deles o web exporta `./styles.css`, `./fonts.css`, `./preset` e
 JSON DTCG 2025.10). O nativo exporta `./form`, `./chart`, `./clipboard`,
 `./file-upload`, `./ai`, `./dnd`, `./tokens`, `./contrast` e `./theme.css`, e
 tres binarios: `rivocode-ui-native-css`, `-theme` e `-init`. `check:chart`
-guarda as fronteiras (onze, nos dois pacotes) e `check:contrato` cobra que todo
+guarda as fronteiras (onze, nos dois pacotes) e `check:contract` cobra que todo
 export de subcaminho esteja no `conventions.md` E na skill.
 
 ## O React Native
@@ -102,7 +102,7 @@ portam** por decisao escrita, e **0 estao na fila**. `FILA_DECLARADA` esta
 vazia e o acordo e que continue: peca web nova nasce nos dois pacotes no mesmo
 dia, ou nasce com `nao` e o motivo.
 
-As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
+As 26 que nao portam, com a nota de cada uma em `scripts/native-parity.ts`:
 
 | Peca                | Por que nao                                                                                      |
 | ------------------- | ------------------------------------------------------------------------------------------------ |
@@ -136,14 +136,14 @@ As 26 que nao portam, com a nota de cada uma em `scripts/paridade-nativo.ts`:
 **Nome igual nao e API igual.** No nativo tudo e controlado (sem
 `defaultValue`) e a lista vem por `items`, nao por composicao. O que se
 reaproveita e o vocabulario de classes, o token e a escolha da peca; o JSX se
-reescreve. `check:assinatura` confere **222 divergencias de assinatura em 91
+reescreve. `check:signature` confere **222 divergencias de assinatura em 91
 pecas** contra os dois catalogos de props - o do nativo,
 `apps/docs/src/native-props.json` (117 pecas, 773 props), e artefato comitado,
-porque gerar exige `examples/native` instalado; `check:props:nativo` o mantem
+porque gerar exige `examples/native` instalado; `check:props:native` o mantem
 em dia no job `nativo` da CI, ao lado do `check:native:types`.
 
 Codigo puro atravessa por `src/shared/` e `src/hooks/common/`, espelhados em
-`native/`: **38 arquivos**, com `check:compartilhado` cobrando que o espelho
+`native/`: **38 arquivos**, com `check:shared` cobrando que o espelho
 nao tenha global nem import de plataforma, e 16 copias declaradas.
 
 ## O gate
@@ -154,38 +154,38 @@ saiu verde.
 
 A suite: **3096 testes em 227 arquivos, 23255 `expect`**, 0 falhas. Do nativo
 sao 971 testes em 75 arquivos; do web, 2125 em 152. A home do site exibe o
-mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:testes`
+mesmo numero (`TESTS` em `apps/docs/src/pages/home.tsx`), e `check:tests`
 falha se divergir.
 
 | Guarda                  | O que ela diz em 25/09                                                                                       |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `check:props`           | 308 entradas (pecas e partes), 4380 props; prop propria que colide com atributo herdado reprova              |
 | `check:colors`          | 188 arquivos sem cor literal fora de `src/tokens/`                                                           |
-| `check:opacidade`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
+| `check:opacity`       | 4 usos de opacidade parcial, todos declarados, 2 medidas de alfa                                             |
 | `check:contrast`        | 138 pares por tema, nos dois temas, mais 14 de `scales.css`                                                  |
-| `check:contrast:nativo` | por esquema: 60 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
+| `check:contrast:native-map` | por esquema: 60 de texto, 47 de 1.4.11, 1 de camada, 16 sobre tinta de serie, 3 do marcado; 7 papeis sem par |
 | `check:native:contrast` | espelho `native/scripts/contrast.mjs` em dia, 273 linhas medidas iguais                                      |
-| `check:temas`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
+| `check:themes`           | 90 tokens de tema e forma, 55 papeis obrigatorios                                                            |
 | `check:doc`             | 222 paginas, todas com codigo                                                                                |
-| `check:exemplos`        | nomes dos blocos `tsx` contra 752 nomes publicados por 14 entradas                                           |
+| `check:examples`        | nomes dos blocos `tsx` contra 752 nomes publicados por 14 entradas                                           |
 | `check:readme`          | 134 de 134 pecas citadas, nenhuma declarada fora                                                             |
 | `check:classes`         | 369 arquivos, toda classe gera regra, sem lista de excecao                                                   |
-| `check:grupos`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
+| `check:groups`          | 8 grupos declarados, cada um consumido e cada consumo declarado; declaracao sem consumo reprova              |
 | `check:cli`             | 4 arquivos de mesa fora dos 205 arquivos que a biblioteca alcanca no `dist/`                                 |
-| `check:tamanho`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 97% do limite   |
+| `check:size`         | raiz 143,4 de 156,2 KB gzip; `Button` sozinho 12,2 de 13,6 KB; todas as entradas entre 90% e 97% do limite   |
 | `check:skill`           | 128 props citadas nos exemplos da skill, todas existentes; `reference/native.md` contra a tabela do nativo   |
-| `check:lista-skill`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
-| `check:tema:nativo`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
-| `check:paridade`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
-| `check:pecas`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
+| `check:skill-list`     | 13 arquivos de referencia, no indice e no laco `curl` do site                                                |
+| `check:theme:native`     | 8 sementes, 37 derivados, 45 no `@theme`                                                                     |
+| `check:parity`        | 134 pecas: a tabela e as paginas dizem o mesmo                                                               |
+| `check:pieces`           | 134, igual ao README, ao `package.json` e a meta do site                                                     |
 | `check:demo`            | 133 de 134 na vitrine, 1 declarada fora (`ToastViewport`), em 21 paginas                                     |
-| `check:retratos`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
-| `check:receita`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
+| `check:portraits`        | 12 retratos de secao sobre 6 areas, 23256 quadrados, 90 marcadores no demo                                   |
+| `check:recipe`         | 7 arquivos, 9 diretivas de CSS, 5 peers, e nenhum Babel nos dois                                             |
 
-O `check:tamanho` esta perto do teto em todas as entradas (o `/ai` em 97%; a
+O `check:size` esta perto do teto em todas as entradas (o `/ai` em 97%; a
 `styles.css` desceu de 98% para 92% em 25/09, sem espaco em branco e sem as
 catorze regras que o scanner gerava de palavra que nao era classe): a proxima peca que crescer o pacote sobe o limite no mesmo commit, com o
-motivo no `why` de `scripts/orcamento-de-tamanho.ts`.
+motivo no `why` de `scripts/size-budget.ts`.
 
 ### Fora do gate: `a11y`, `shot`, `visual` e a bancada
 
@@ -198,7 +198,7 @@ roda o axe-core, o foco que sobrevive a acao, o alvo de 24px e o reflow a
 
 Na CI os tres rodam pela **bancada** (`.github/workflows/bancada.yml`), em PR e
 push na `main`, de forma DIFERENCIAL: base e cabeca no mesmo runner, julgadas
-por `scripts/comparacao-da-bancada.ts`. Ela reprova problema de acessibilidade
+por `scripts/bench-comparison.ts`. Ela reprova problema de acessibilidade
 que a base nao tinha e retrato que mudou sem a assinatura mudar junto; a
 etiqueta `retrato-aceito` e a valvula para diferenca que so existe no linux.
 
@@ -211,7 +211,7 @@ controlar, e que valem para quem mexer nele:
 
 - **Ladrilho sem pintar.** O `--screenshot` do Chrome sem janela fotografa
   antes de rasterizar a pagina alta. O `shot.ts` dirige o Chrome pelo protocolo
-  de depuracao (`launchChrome`, em `scripts/retratos.ts`, o mesmo do `a11y`),
+  de depuracao (`launchChrome`, em `scripts/portraits.ts`, o mesmo do `a11y`),
   captura em faixas de 2048px e costura o PNG.
 - **Fonte chegando depois da medida.** `demo/secao.html` espera o
   `document.fonts.ready` da pagina de dentro, remede quando ela muda de
@@ -234,17 +234,17 @@ guarda manda apagar a linha.
 
 | Lista             | Guarda                  | Tamanho | Quem esta nela                                                                                     |
 | ----------------- | ----------------------- | ------: | -------------------------------------------------------------------------------------------------- |
-| `DEBT`            | `check:comentarios`     |       0 | vazia                                                                                              |
-| `DEBT`            | `check:nomes`           |       0 | vazia                                                                                              |
-| `DEBT`            | `check:contrast:nativo` |       0 | vazia                                                                                              |
-| `FILA_DECLARADA`  | `check:paridade`        |       0 | vazia                                                                                              |
+| `DEBT`            | `check:comments`     |       0 | vazia                                                                                              |
+| `DEBT`            | `check:names`           |       0 | vazia                                                                                              |
+| `DEBT`            | `check:contrast:native-map` |       0 | vazia                                                                                              |
+| `FILA_DECLARADA`  | `check:parity`        |       0 | vazia                                                                                              |
 | `OUT_OF_SCOPE`    | `check:skill`           |       0 | removida: `reference/native.md` confere contra `native-props.json`                                 |
-| `OUT`             | `check:piso`            |       0 | vazia: `retratos` e `regressao-visual` varrem com `scanAtLeast`                                    |
+| `OUT`             | `check:floor`            |       0 | vazia: `retratos` e `regressao-visual` varrem com `scanAtLeast`                                    |
 | `OUT_OF_README`   | `check:readme`          |       0 | vazia: o `README.md` cita as 134 pecas                                                             |
 | `SEM_VITRINE`     | `check:demo`            |       1 | `ToastViewport` - o `RivoProvider` a monta, e nenhum app a escreve                                 |
-| `DECLARADAS`      | `check:opacidade`       |       4 | legenda de grafico (2), `Button` carregando, `ColorPicker` desabilitado                            |
+| `DECLARADAS`      | `check:opacity`       |       4 | legenda de grafico (2), `Button` carregando, `ColorPicker` desabilitado                            |
 | `OUT`             | `check:scripts`         |       6 | `regressao-visual`, `shot`, `acessibilidade`, `serve`, `props-do-catalogo-nativo`, `fumaca-do-mcp` |
-| `COPIA_DECLARADA` | `check:compartilhado`   |      16 | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 13                  |
+| `COPIA_DECLARADA` | `check:shared`   |      16 | codigo que nao atravessa: `useZodForm`, `RivoContext`, `normalizeColor` e mais 13                  |
 
 Fora do `check`, no `a11y`: `IGNORED_RULES` com 6 regras de layout de vitrine e
 `IGNORED_NODES` com 2 nos de biblioteca. `check:classes` nasceu sem lista de
@@ -277,7 +277,7 @@ Nenhum destes tem codigo a escrever aqui.
 ### O que nao foi medido
 
 - As pecas nativas em aparelho de verdade, alem dos itens do iPhone acima.
-- O `npx rivocode-ui-native-init` num Expo recem-criado: `check:receita` so
+- O `npx rivocode-ui-native-init` num Expo recem-criado: `check:recipe` so
   compara com o `examples/native`, onde a receita ja funciona.
 - A landing (repo `rivocode.com`): nao esta nesta maquina nem na organizacao do
   GitHub visivel daqui. A ultima medida era `^0.7.0`.
@@ -317,7 +317,7 @@ cd /Users/emanuelbacalhau/projects/rivocode/ui
 bun install                  # na raiz, nunca dentro de native/
 bun run check                # 37 passos, termina nos 3096 testes
 bun run build                # ha quebra que so aparece ao empacotar; constroi o mcp/dist
-bun run fumaca:mcp           # o servidor MCP pelo stdio
+bun run smoke:mcp           # o servidor MCP pelo stdio
 bun run shot && bun run visual   # os 56 retratos contra as assinaturas (~2 min)
 bun run a11y                 # axe, foco, alvo e reflow na vitrine
 cd apps/docs && bun run dev  # o site, local
@@ -339,18 +339,18 @@ gh secret list                                      # NPM_TOKEN ainda cadastrado
 grep -rn NPM_TOKEN .github/workflows                # nada: nenhum workflow o le
 git ls-remote --tags origin | grep -vc '\^{}'       # 36 tags
 ls .design-sync/docs/*.md | wc -l                   # 222 documentos
-bun run check:pecas                                 # 134 pecas (222 - 88 partes)
-grep -oE 'state: "[a-z]+"' scripts/paridade-nativo.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
-grep -n FILA_DECLARADA scripts/paridade-nativo.ts   # {} vazia
+bun run check:pieces                                 # 134 pecas (222 - 88 partes)
+grep -oE 'state: "[a-z]+"' scripts/native-parity.ts | sort | uniq -c   # 103 traduz, 5 vira, 26 nao
+grep -n FILA_DECLARADA scripts/native-parity.ts   # {} vazia
 node -e 'p=require("./package.json");console.log(p.scripts.check.split("&&").length)'   # 37
-bun run check:testes                                # 3096 testes em 227 arquivos
+bun run check:tests                                # 3096 testes em 227 arquivos
 bun test native/test                                # 762 em 63 arquivos
-bun run check:assinatura                            # 222 divergencias em 91 pecas
+bun run check:signature                            # 222 divergencias em 91 pecas
 node -e 'j=require("./apps/docs/src/native-props.json");console.log(Object.keys(j).length)'   # 117
-bun run check:compartilhado                         # 38 espelhados, 16 copias
+bun run check:shared                         # 38 espelhados, 16 copias
 bun run check:contrast | grep -cE '^ +ok'          # 290: 138 por tema mais 14 de scales.css
-bun run check:contrast:nativo                       # 60 + 47 + 1 + 16 + 3 por esquema
-bun run check:tamanho                               # a tabela do orcamento
+bun run check:contrast:native-map                       # 60 + 47 + 1 + 16 + 3 por esquema
+bun run check:size                               # a tabela do orcamento
 bun run check:demo                                  # 133 de 134, 1 fora
 bun run check:readme                                # 134 de 134, 0 fora
 bun run check:scripts                               # 6 fora do gate

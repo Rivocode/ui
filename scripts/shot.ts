@@ -12,7 +12,7 @@ import {
   shotName,
   requireChrome,
   slug,
-} from "./retratos";
+} from "./portraits";
 import { servir } from "./serve";
 
 const PAGES = [
@@ -106,7 +106,7 @@ const SECTION_SHOTS = chosen.map((section) => ({
 if (asked !== -1 && SECTION_SHOTS.length === 0) {
   console.error(
     `Nenhuma secao declarada casa com "${wanted}". As declaradas estao em` +
-      `\nscripts/retratos.ts, e marcar uma nova e por \`data-rc-shot\` no demo:\n` +
+      `\nscripts/portraits.ts, e marcar uma nova e por \`data-rc-shot\` no demo:\n` +
       SECTIONS.map((s) => `  ${s.page}/${slug(s.name)}/${s.theme}`).join("\n"),
   );
   process.exit(1);

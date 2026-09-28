@@ -1,4 +1,4 @@
-/* Gerado de src/shared/questionnaire.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/questionnaire.ts por bun run gen:shared. Nao editar. */
 
 export type QuestionnaireItemStatus = "unanswered" | "answered" | "skipped";
 

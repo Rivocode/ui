@@ -235,7 +235,7 @@ jobs:
 
       # A tabela de paridade e lida por quem planeja tela de celular. Publicar
       # com ela desatualizada e mandar usar substituto para peca que ja portou.
-      - run: bun run check:paridade
+      - run: bun run check:parity
 
       - run: bun test native/
 

@@ -267,7 +267,7 @@ test("quem apaga o contorno do foco repoe alguma coisa no lugar", async () => {
  * ordem, e a barra indeterminada girou meses na cara de quem pediu menos
  * movimento com a classe certa escrita ali do lado.
  *
- * E a mesma familia do `check:grupos`: o seletor existe, gera CSS, e nao casa
+ * E a mesma familia do `check:groups`: o seletor existe, gera CSS, e nao casa
  * nunca. O conserto e repetir a variante de dado na regra de movimento -
  * `motion-reduce:data-[indeterminate]:animate-none` -, que iguala a
  * especificidade e vence pela ordem.

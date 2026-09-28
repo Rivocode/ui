@@ -9,7 +9,7 @@
  * Medido no dia em que o `dnd` entrou, os quatro estavam limpos. A lista abaixo
  * e o `src/` inteiro menos `tokens`, que e o unico lugar onde a cor pode morar.
  */
-import { scanAtLeast } from "./varredura";
+import { scanAtLeast } from "./scan";
 
 const COLOR = /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?|oklch|oklab|lab|lch)\(/;
 const Z_INDEX = /z-index\s*:\s*-?\d+|\bz-\[?-?\d+\]?\b/;

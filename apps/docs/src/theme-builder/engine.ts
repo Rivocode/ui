@@ -33,7 +33,7 @@ import {
  * o tom que pesa mais sobre um preenchimento. As tabelas abaixo sao copia das
  * de `native/scripts/build-theme.mjs`, porque aquele modulo le o `tokens.json`
  * do disco no topo e nao roda no navegador. A copia nao envelhece calada:
- * `test/montador-de-tema.test.ts` roda os dois com as mesmas sementes e cobra
+ * `test/theme-builder.test.ts` roda os dois com as mesmas sementes e cobra
  * papel por papel.
  *
  * A medida e a do `src/lib/contrast.ts`, a mesma conta do `check-theme` e das

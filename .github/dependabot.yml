@@ -5,7 +5,7 @@ version: 2
 # sozinho, porque e decisao e nao rotina.
 #
 # `native/` fica de fora de proposito: ela nao e workspace, e instalar la cria
-# um segundo React (`check:instalacao`). As versoes que o nativo testa moram em
+# um segundo React (`check:install`). As versoes que o nativo testa moram em
 # `examples/native`.
 updates:
   - package-ecosystem: "bun"

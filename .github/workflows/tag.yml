@@ -55,7 +55,7 @@ jobs:
       max-parallel: 1
       matrix:
         # A tabela de cada pacote - manifesto, prefixo, CHANGELOG e workflow -
-        # mora em `TARGETS`, dentro de `scripts/decisao-de-release.ts`, para
+        # mora em `TARGETS`, dentro de `scripts/release-decision.ts`, para
         # nao existir em dois lugares. Aqui fica so a chave.
         package: [web, native, mcp]
 
@@ -92,7 +92,7 @@ jobs:
       # A decisao mora numa funcao pura, e nao aqui: `decideRelease` recebe a
       # versao, as tags que existem, as versoes do registro, o texto do
       # CHANGELOG e a mensagem do commit, e devolve o veredito com o motivo.
-      # `test/decisao-de-release.test.ts` cobre os quatro motivos de barrar e o
+      # `test/release-decision.test.ts` cobre os quatro motivos de barrar e o
       # caminho feliz, nos tres pacotes - o que nao daria para provar se a
       # decisao fosse um `if` de shell escrito neste arquivo.
       #
@@ -106,7 +106,7 @@ jobs:
       # tudo o que este workflow faz.
       - name: Decidir
         id: decidir
-        run: bun run scripts/decisao-de-release.ts ${{ matrix.package }}
+        run: bun run scripts/release-decision.ts ${{ matrix.package }}
 
       # A tag aponta para o commit que o `ci` aprovou, que e o que esta
       # em HEAD depois do checkout acima.

@@ -2,7 +2,7 @@ import { describe, expect, spyOn, test } from "bun:test";
 
 import { tokens } from "../tokens";
 import { render, byClass, byType, paintedColor, variableDeclarations } from "./helpers";
-import { declaredColor } from "./css-compilado";
+import { declaredColor } from "./compiled-css";
 import { Button } from "../src/button";
 import { Switch } from "../src/switch";
 import { ChartContainer } from "../src/chart/chart";

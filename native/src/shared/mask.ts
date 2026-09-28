@@ -1,4 +1,4 @@
-/* Gerado de src/shared/mask.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/mask.ts por bun run gen:shared. Nao editar. */
 
 export const MASKS = {
   cpf: "999.999.999-99",

@@ -4,7 +4,7 @@ import { slugify } from './slug'
  * Os blocos de pagina, uma vez.
  *
  * O site (pages/blocks.tsx), o markdown cru (agent-docs.ts) e a guarda
- * (test/blocos-de-pagina.test.tsx) leem daqui. O codigo de cada bloco mora em
+ * (test/page-blocks.test.tsx) leem daqui. O codigo de cada bloco mora em
  * `blocks/<file>.tsx` e e o mesmo arquivo que roda no preview e que a pessoa
  * copia: nao ha segunda copia para envelhecer.
  * ------------------------------------------------------------------------- */

@@ -1,4 +1,4 @@
-/* Gerado de src/shared/steps.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/steps.ts por bun run gen:shared. Nao editar. */
 
 export type StepsLabels = {
   position: (step: number, total: number) => string;

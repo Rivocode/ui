@@ -23,7 +23,7 @@
  * linha em `SEM_VITRINE` dizendo POR QUE nao aparece. As duas respostas sao
  * validas; o silencio, nao.
  *
- * `SEM_VITRINE` **so encolhe**, como o `DEBT` do `check:comentarios` e a
+ * `SEM_VITRINE` **so encolhe**, como o `DEBT` do `check:comments` e a
  * `FILA_DECLARADA` da paridade: peca que passou a aparecer no demo e erro, e a
  * guarda manda apagar a linha. Lista de excecao que nao encolhe vira o lugar
  * onde a divida mora sem incomodar ninguem.
@@ -42,7 +42,7 @@ const DOCS = ".design-sync/docs";
 const DEMO = "demo";
 
 /**
- * A mesma fonte do `check:pecas` e da `catalogPieces()` da paridade.
+ * A mesma fonte do `check:pieces` e da `catalogPieces()` da paridade.
  *
  * `.design-sync/docs/` menos as partes, e o `findParent` de
  * `apps/docs/src/parts.ts` e quem decide o que e parte - o mesmo que a barra

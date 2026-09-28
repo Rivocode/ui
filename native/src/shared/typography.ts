@@ -1,4 +1,4 @@
-/* Gerado de src/shared/typography.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/typography.ts por bun run gen:shared. Nao editar. */
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 

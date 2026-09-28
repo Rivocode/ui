@@ -51,7 +51,7 @@ quando um dos nove sai de sincronia.
    pede 3:1; texto sobre fundo de estado pede 4,5:1 com o alfa composto.
 
 9. **O lado nativo, no mesmo dia.** Escreva a linha da peça em
-   `scripts/paridade-nativo.ts` antes de dizer que terminou: `check:paridade`
+   `scripts/native-parity.ts` antes de dizer que terminou: `check:parity`
    recusa página sem linha. Se a peça porta, construa o par em `native/src/` na
    mesma leva: a API não é a mesma (no nativo tudo é controlado e a lista vem
    por `items`), mas a escolha da peça e o vocabulário de classes são. Se não

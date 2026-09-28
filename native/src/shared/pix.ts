@@ -1,4 +1,4 @@
-/* Gerado de src/shared/pix.ts por bun run gen:compartilhado. Nao editar. */
+/* Gerado de src/shared/pix.ts por bun run gen:shared. Nao editar. */
 
 const cleanTaxId = (text: string) => text.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
 

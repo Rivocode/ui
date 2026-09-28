@@ -127,7 +127,7 @@ uma NF-e não anexa arquivo nenhum; um índice comum arrastaria o
 `expo-document-picker` para o projeto dele, que é exatamente o custo que este
 arranjo existe para não cobrar. Módulo do Expo no celular não é bytes: é build.
 A fronteira dos dois é guardada junto com a do gráfico e a do formulário, nos
-dois pacotes, por `scripts/check-fronteira-do-chart.ts`.
+dois pacotes, por `scripts/check-chart-boundary.ts`.
 
 **A confirmação de copiar passa a ser dupla, e no web bastava uma.** A regra da
 peça não muda: copiar é a ação sem resultado visível, e sem confirmação a
